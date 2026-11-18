@@ -1,13 +1,8 @@
-import Link from "next/link";
 import { sessionRequest } from "../../../../../lib/session";
 import { formatReportTime } from "../../../report-details";
 import { WorkflowForm } from "../../../workflow-form";
-
-export const matchDecisions = {
-  pending: "Awaiting review",
-  confirmed: "Confirmed by Reviewer",
-  dismissed: "Dismissed by Reviewer",
-} as const;
+import type { PossibleMatch } from "./match-decisions";
+import { PossibleMatches } from "./possible-matches";
 
 type Triage = {
   method_version: string;
@@ -19,12 +14,7 @@ type Triage = {
   category: string;
   corrected_category: string;
   categories: Record<string, string>;
-  matches: {
-    reference: string;
-    location: string;
-    occurred_at: string;
-    decision: keyof typeof matchDecisions;
-  }[];
+  matches: PossibleMatch[];
 });
 
 async function loadTriage(reference: string): Promise<Triage | null> {
@@ -59,27 +49,7 @@ export async function TriagePanel({ reference, version }: { reference: string; v
             </select>
           </WorkflowForm>
           <h3>Possible duplicate reports</h3>
-          {triage.matches.length === 0 ? <p>No possible matches among cases assigned to you.</p> : (
-            <ul className="report-list">
-              {triage.matches.map((match) => (
-                <li key={match.reference}>
-                  <Link href={`/workspace/reviewer/cases/${match.reference}`} prefetch={false}>{match.location}</Link>
-                  <p>{formatReportTime(match.occurred_at)} · {matchDecisions[match.decision]}</p>
-                  {match.decision === "pending" && (
-                    <WorkflowForm key={version} path={`${path}/matches/${match.reference}`}
-                      version={version} label="Save match decision">
-                      <label htmlFor={`match-${match.reference}`}>Possible match decision</label>
-                      <select id={`match-${match.reference}`} name="decision" defaultValue="" required>
-                        <option value="">Choose a decision</option>
-                        <option value="confirmed">Confirm match</option>
-                        <option value="dismissed">Dismiss match</option>
-                      </select>
-                    </WorkflowForm>
-                  )}
-                </li>
-              ))}
-            </ul>
-          )}
+          <PossibleMatches reference={reference} version={version} matches={triage.matches} />
         </>
       )}
     </section>

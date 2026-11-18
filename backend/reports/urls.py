@@ -12,6 +12,10 @@ urlpatterns = [
     path("review/<uuid:reference>/triage", triage_views.case_triage),
     path("review/<uuid:reference>/triage/category", triage_views.correct_category),
     path("review/<uuid:reference>/triage/matches/<uuid:candidate>", triage_views.decide_match),
+    path(
+        "review/<uuid:reference>/triage/matches/<uuid:candidate>/reverse",
+        triage_views.reverse_match,
+    ),
     path("reports/<uuid:reference>/clarification", workflow.clarify),
     path("reports", views.reports),
     path("reports/<uuid:reference>", views.report_detail),

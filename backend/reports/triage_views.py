@@ -97,6 +97,23 @@ def correct_category(request, reference):
     return Response({"version": report.version})
 
 
+class MatchReversal(FeedbackVersion):
+    reason = serializers.CharField(max_length=2000)
+
+
+def locked_pair(reports, reference, candidate, version):
+    # Hold both report locks in a consistent order so neither assignment can change.
+    locked = list(reports.filter(pk__in=[reference, candidate]).order_by("pk").select_for_update())
+    if len(locked) != 2:
+        raise Http404
+    first, second = locked
+    report = first if first.pk == reference else second
+    if report.version != version:
+        raise Conflict("This case has changed. Refresh before trying again.")
+    match = get_object_or_404(TriageMatch.objects.select_for_update(), first=first, second=second)
+    return report, match
+
+
 @never_cache
 @api_view(["POST"])
 @parser_classes([JSONParser])
@@ -106,21 +123,36 @@ def decide_match(request, reference, candidate):
     serializer = MatchDecision(data=request.data)
     serializer.is_valid(raise_exception=True)
     data = serializer.validated_data
-    # Hold both report locks in a consistent order so neither assignment can change.
-    locked = list(reports.filter(pk__in=[reference, candidate]).order_by("pk").select_for_update())
-    if len(locked) != 2:
-        raise Http404
-    first, second = locked
-    report = first if first.pk == reference else second
-    if report.version != data["version"]:
-        raise Conflict("This case has changed. Refresh before trying again.")
+    report, match = locked_pair(reports, reference, candidate, data["version"])
     ready_job(reference)
-    match = get_object_or_404(TriageMatch, first=first, second=second)
     if match.decision != TriageMatch.Decision.PENDING:
         raise Conflict("This match already has a Reviewer decision.")
     match.decision = data["decision"]
     match.save(update_fields=["decision"])
     record_change(report, request.user, ReviewEvent.Action.DECIDE_MATCH, {
         "candidate": str(candidate), "match_decision": match.decision,
+    })
+    return Response({"version": report.version})
+
+
+@never_cache
+@api_view(["POST"])
+@parser_classes([JSONParser])
+@transaction.atomic
+def reverse_match(request, reference, candidate):
+    reports = assigned_reports(request)
+    serializer = MatchReversal(data=request.data)
+    serializer.is_valid(raise_exception=True)
+    data = serializer.validated_data
+    report, match = locked_pair(reports, reference, candidate, data["version"])
+    if match.decision != TriageMatch.Decision.CONFIRMED:
+        raise Conflict("Only a confirmed match can be reversed.")
+    # The pair and both reports remain. Earlier audit entries are left unchanged.
+    match.decision = TriageMatch.Decision.REVERSED
+    match.save(update_fields=["decision"])
+    record_change(report, request.user, ReviewEvent.Action.REVERSE_MATCH, {
+        "candidate": str(candidate),
+        "previous_decision": TriageMatch.Decision.CONFIRMED,
+        "reason": data["reason"],
     })
     return Response({"version": report.version})
