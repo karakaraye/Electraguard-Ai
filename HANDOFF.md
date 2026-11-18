@@ -2,6 +2,31 @@
 
 **Current branch** `feature/reverse-confirmed-match`, created from the Stage 5 checkpoint `eef8d92` on `work`. Commit `fad8927` adds the backend reversal API. The following commit adds the Reviewer UI and this handoff.
 
+## Handover to Greatness Charles
+
+### Where things stand
+
+- **`work` branch.** Contains the five completed prototype stages: observer reporting with private evidence, case assignment, reviewer decisions and audit history, advisory AI triage, and the internal observation dashboard.
+- **Draft PR #1** (`feature/reverse-confirmed-match` into `work`, https://github.com/karakaraye/Electraguard-Ai/pull/1). Adds an audited Reviewer action to reverse an incorrect duplicate match. Frontend lint, type checking, the production build, and Chromium checks against a stub API passed. PostgreSQL verification and the real-stack Chromium demo are still pending. See [Match reversal checks](#match-reversal-checks).
+
+### Your first task: verify the latest PR commit
+
+1. Check out the latest commit of PR #1 and note its full hash.
+2. Create a dedicated PostgreSQL 17 database for verification and use only synthetic data. Installing PostgreSQL directly on Windows is fine (README, "Option B — Existing PostgreSQL"). Docker is optional (README, "Option A").
+3. Run the migrations, the accounts and reports test suite, and `sqlmigrate reports 0005`, using the commands under [Match reversal checks](#match-reversal-checks). On Windows PowerShell, use `.\backend\.venv\Scripts\python.exe` wherever those commands use `backend/.venv/bin/python`. Migration 0005 should show two `-- Alter field` comments and no SQL statements.
+4. Run the Stage 5 fictional demo in Chromium against the real frontend and Django backend (README, "Stage 5 fictional demo"). Check the Administrator dashboard at each step:
+   - Before confirming the match: **2 reports / 2 incidents**.
+   - After the Reviewer confirms the match: **2 reports / 1 incident**.
+   - After the Reviewer reverses it with a reason: **2 reports / 2 incidents**.
+
+   Also verify that both reports remain available and that the assigned Reviewer's audit history shows both the original confirmation and the reversal reason.
+5. Send back the commit tested, the commands run, the result of each, and any blockers.
+
+### Hackathon preparation
+
+- Rehearse the demo locally and record a two-minute walkthrough.
+- Before deploying anywhere, confirm whether the judges need a public link.
+
 ## Match reversal (this branch)
 
 - **Backend (`fad8927`).** `POST /api/review/<reference>/triage/matches/<candidate>/reverse` takes `{version, reason}`. The reason is required, cannot be blank, and is capped at 2,000 characters. Both report locks are taken in primary-key order, and both reports must still be assigned to the requesting Reviewer. The match changes from `confirmed` to `reversed`, and a `reverse_match` audit entry (`candidate`, `previous_decision`, `reason`) is saved in the same transaction. Stale and repeated requests return 409 without adding audit entries. Reports, the original confirmation entry, and closure snapshots are unchanged. `get_history` applies the same candidate-visibility filter to reversal entries as to match decisions. Migration `0005_match_reversal` only changes the allowed values of two fields. The dashboard code is unchanged because it already groups only confirmed links. A reversed match cannot be confirmed again.
