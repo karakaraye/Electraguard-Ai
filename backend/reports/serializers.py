@@ -2,6 +2,10 @@ from rest_framework import serializers
 
 from .models import Evidence, Report, ReviewEvent
 
+# Audit entries that name another report. They are shown only while that report
+# is assigned to the Reviewer reading the history.
+MATCH_ACTIONS = {ReviewEvent.Action.DECIDE_MATCH, ReviewEvent.Action.REVERSE_MATCH}
+
 
 class EvidenceSerializer(serializers.ModelSerializer):
     class Meta:
@@ -53,10 +57,7 @@ class ReviewCaseSerializer(ReportDetailSerializer):
 
     def get_history(self, report):
         events = report.review_events.all()
-        references = [
-            event.change["candidate"] for event in events
-            if event.action == ReviewEvent.Action.DECIDE_MATCH
-        ]
+        references = [event.change["candidate"] for event in events if event.action in MATCH_ACTIONS]
         visible = {
             str(reference) for reference in Report.objects.filter(
                 reference__in=references, assigned_reviewer=self.context["reviewer"]
@@ -64,7 +65,7 @@ class ReviewCaseSerializer(ReportDetailSerializer):
         }
         events = [
             event for event in events
-            if event.action != ReviewEvent.Action.DECIDE_MATCH or event.change["candidate"] in visible
+            if event.action not in MATCH_ACTIONS or event.change["candidate"] in visible
         ]
         return ReviewEventSerializer(events, many=True).data
 
