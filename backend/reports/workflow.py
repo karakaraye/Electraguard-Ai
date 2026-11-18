@@ -1,0 +1,154 @@
+from django.db import transaction
+from django.db.models import Prefetch
+from django.shortcuts import get_object_or_404
+from django.views.decorators.cache import never_cache
+from rest_framework.decorators import api_view, parser_classes
+from rest_framework.exceptions import APIException, ValidationError
+from rest_framework.parsers import JSONParser
+from rest_framework.response import Response
+
+from accounts.models import User
+from accounts.permissions import require_role
+
+from .models import Report, ReviewEvent
+from .serializers import (
+    AssignmentSerializer,
+    AssignmentSummarySerializer,
+    ClarificationSerializer,
+    ReportSerializer,
+    ReviewActionSerializer,
+    ReviewCaseSerializer,
+)
+from .views import own_reports, with_attachment_metadata
+
+Action = ReviewEvent.Action
+Status = Report.Status
+
+TRANSITIONS = {
+    Action.START: (Status.SUBMITTED, Status.IN_REVIEW),
+    Action.REQUEST_CLARIFICATION: (Status.IN_REVIEW, Status.NEEDS_CLARIFICATION),
+    Action.RESPOND: (Status.NEEDS_CLARIFICATION, Status.IN_REVIEW),
+    Action.CLOSE: (Status.IN_REVIEW, Status.CLOSED),
+}
+
+
+class Conflict(APIException):
+    status_code = 409
+
+
+def assigned_reports(request):
+    require_role(request.user, User.Role.REVIEWER)
+    return Report.objects.filter(assigned_reviewer=request.user)
+
+
+def locked_report(queryset, reference, version):
+    report = get_object_or_404(queryset.select_for_update(), reference=reference)
+    if report.version != version:
+        raise Conflict("This case has changed. Refresh before trying again.")
+    return report
+
+
+def record_change(report, actor, action, change, field=None):
+    # The calling view holds the report lock until both changes are committed.
+    report.version += 1
+    report.save(update_fields=["version", field] if field else ["version"])
+    ReviewEvent.objects.create(
+        report=report, actor=actor, action=action, version=report.version, change=change
+    )
+
+
+def transition(report, actor, action, data):
+    before, after = TRANSITIONS[action]
+    if report.status != before:
+        raise Conflict("This action is unavailable for the current case status.")
+    change = {"from_status": before, "to_status": after}
+    change.update({field: data[field] for field in ("note", "outcome") if field in data})
+    if action == Action.CLOSE:
+        change["attachment_ids"] = [
+            str(attachment_id) for attachment_id in report.attachments.values_list("id", flat=True)
+        ]
+    report.status = after
+    record_change(report, actor, action, change, "status")
+    return Response({"version": report.version, "status": report.status})
+
+
+@never_cache
+@api_view(["GET"])
+def assignments(request):
+    require_role(request.user, User.Role.ADMINISTRATOR)
+    reports = Report.objects.exclude(status=Status.CLOSED).select_related("assigned_reviewer")
+    reviewers = User.objects.filter(role=User.Role.REVIEWER, is_active=True).order_by("email")
+    return Response({
+        "reports": AssignmentSummarySerializer(reports, many=True).data,
+        "reviewers": list(reviewers.values("id", "email")),
+    })
+
+
+@never_cache
+@api_view(["POST"])
+@parser_classes([JSONParser])
+@transaction.atomic
+def assign(request, reference):
+    require_role(request.user, User.Role.ADMINISTRATOR)
+    serializer = AssignmentSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+    data = serializer.validated_data
+    report = locked_report(Report.objects.all(), reference, data["version"])
+    if report.status == Status.CLOSED:
+        raise Conflict("A closed case cannot be reassigned.")
+    reviewer = User.objects.select_for_update().filter(
+        pk=data["reviewer"], role=User.Role.REVIEWER, is_active=True
+    ).first()
+    if reviewer is None:
+        raise ValidationError("Select an active Reviewer.")
+    if report.assigned_reviewer_id == reviewer.pk:
+        raise Conflict("This Reviewer already has the case.")
+    previous = report.assigned_reviewer
+    report.assigned_reviewer = reviewer
+    record_change(report, request.user, Action.ASSIGN, {
+        "previous_reviewer": previous.email if previous else None,
+        "reviewer": reviewer.email,
+    }, "assigned_reviewer")
+    return Response(AssignmentSummarySerializer(report).data)
+
+
+@never_cache
+@api_view(["GET"])
+def review_queue(request):
+    return Response(ReportSerializer(assigned_reports(request), many=True).data)
+
+
+@never_cache
+@api_view(["GET"])
+@transaction.atomic
+def review_case(request, reference):
+    report = get_object_or_404(with_attachment_metadata(assigned_reports(request).select_for_update()).prefetch_related(
+        Prefetch("review_events", queryset=ReviewEvent.objects.select_related("actor"))
+    ), reference=reference)
+    return Response(ReviewCaseSerializer(report, context={"reviewer": request.user}).data)
+
+
+@never_cache
+@api_view(["POST"])
+@parser_classes([JSONParser])
+@transaction.atomic
+def review_action(request, reference):
+    queryset = assigned_reports(request)
+    serializer = ReviewActionSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+    data = serializer.validated_data
+    report = locked_report(queryset, reference, data["version"])
+    return transition(report, request.user, data["action"], data)
+
+
+@never_cache
+@api_view(["POST"])
+@parser_classes([JSONParser])
+@transaction.atomic
+def clarify(request, reference):
+    queryset = own_reports(request)
+    serializer = ClarificationSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+    data = serializer.validated_data
+    report = locked_report(queryset, reference, data["version"])
+    return transition(report, request.user, Action.RESPOND, data)

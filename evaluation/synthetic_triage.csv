@@ -1,0 +1,30 @@
+id,split,incident,category,minutes,location,description
+D01,development,D-ramp,access,60,Maple Training Hall,Wheelchair users turned back after crates blocked the ramp.
+D02,development,D-ramp,access,65,Maple Training Hall,The ramp was blocked by crates and wheelchair users had to turn back.
+D03,development,D-device,materials,80,Maple Training Hall,The accreditation device stopped working and staff called for replacement equipment.
+D04,development,D-device,materials,85,Maple Training Hall,Staff asked for replacement equipment when the accreditation device stopped working.
+D05,development,D-instructions,procedure,100,Maple Training Hall,Observers did not hear the counting procedure instructions.
+D06,development,D-conduct,conduct,102,Maple Training Hall,A staff member threatened an observer near the rear gate.
+D07,development,D-other,other,103,Maple Training Hall,Someone left a water bottle behind and I cannot tell if anything else happened.
+H01,heldout,H-ramp,access,600,Cedar Training Hall,Wheelchair users could not enter because a crate blocked the ramp.
+H02,heldout,H-ramp,access,605,Cedar Training Hall,A crate blocked the ramp and wheelchair users could not get inside.
+H03,heldout,H-ramp-second,access,615,Cedar Training Hall,Wheelchair users could not enter because a bench blocked the side ramp.
+H04,heldout,H-gate,access,620,Hill Training Hall,The locked entrance gate stopped observers from entering.
+H05,heldout,H-device,materials,624,Cedar Training Hall,The accreditation device stopped working and staff requested a replacement unit.
+H06,heldout,H-device,materials,635,Cedar Training Hall,The check-in tablet froze so the desk asked for a spare.
+H07,heldout,H-paper,materials,645,Hill Training Hall,The polling station ran out of forms after ballot papers arrived late.
+H08,heldout,H-seal,materials,646,Cedar Training Hall,A mangled seal was visible on the box before opening.
+H09,heldout,H-count,procedure,650,Cedar Training Hall,Observers could not hear the counting procedure instructions from the back.
+H10,heldout,H-count,procedure,655,Cedar Training Hall,People at the rear missed the instructions on how the tally would be done.
+H11,heldout,H-delay,procedure,660,Hill Training Hall,Polling staff opened later than scheduled and gave no reason for the delay.
+H12,heldout,H-log,procedure,674,Hill Training Hall,The team repeated accreditation steps after noticing that the log omitted the time.
+H13,heldout,H-threat,conduct,675,Cedar Training Hall,A staff member threatened an observer near the entrance gate.
+H14,heldout,H-threat,conduct,678,Cedar Training Hall,One observer was threatened by a staff member near the entrance gate.
+H15,heldout,H-push,conduct,680,Cedar Training Hall,People in a crowd argued and pushed others near the entrance.
+H16,heldout,H-shout,conduct,685,Cedar Training Hall,An observer heard a warning that sounded like intimidation by a staff member.
+H17,heldout,H-bottle,other,687,Cedar Training Hall,I saw a water bottle next to the gate.
+H18,heldout,H-ambiguous,other,692,Cedar Training Hall,An observer mentioned harassment but could not say what happened or whom it involved.
+H19,heldout,H-ambiguous-delay,other,697,Hill Training Hall,Someone mentioned a delay and a box but gave no details.
+H20,heldout,H-late-ramp,access,800,Cedar Training Hall,Wheelchair users could not enter because a crate blocked the ramp.
+H21,heldout,H-seal,materials,654,Cedar Training Hall,The box arrived with a damaged seal before opening.
+H22,heldout,H-delay,procedure,667,Hill Training Hall,Polling staff opened later than scheduled and did not say why.
