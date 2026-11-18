@@ -94,3 +94,9 @@ select {
 .dashboard-table th, .dashboard-table td { padding: .45rem 0; border-bottom: 1px solid #cad9d0; text-align: left; }
 .dashboard-table th:last-child, .dashboard-table td:last-child { text-align: right; }
 .dashboard-table tbody th { font-weight: 500; }
+.secondary-button { background: #fff; color: #125645; border-color: #125645; justify-self: start; }
+.match-reversal { margin-top: .75rem; padding: 1rem; border: 1px solid #cad9d0; border-radius: .6rem; }
+.match-reversal h4 { margin: 0 0 .5rem; }
+.match-reversal form { margin-top: .5rem; }
+.match-confirm fieldset { margin-top: .5rem; }
+.match-notice { font-weight: 650; }

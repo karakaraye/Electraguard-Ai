@@ -4,7 +4,8 @@ import { redirectToWorkspace, sessionRequest } from "../../../../../lib/session"
 import { reportStatuses, reviewOutcomes, type ReviewCase } from "../../../observer/report-types";
 import { formatReportTime, ReportDetails } from "../../../report-details";
 import { WorkflowForm } from "../../../workflow-form";
-import { matchDecisions, TriagePanel } from "./triage-panel";
+import { matchDecisions } from "./match-decisions";
+import { TriagePanel } from "./triage-panel";
 import { Suspense } from "react";
 
 export default async function ReviewCasePage({ params }: { params: Promise<{ reference: string }> }) {
@@ -69,6 +70,9 @@ export default async function ReviewCasePage({ params }: { params: Promise<{ ref
               {change.category && <p>{change.previous_category} → {change.category}</p>}
               {change.match_decision && change.candidate &&
                 <p>{matchDecisions[change.match_decision]} · {change.candidate}</p>}
+              {change.previous_decision && change.candidate &&
+                <p>{matchDecisions[change.previous_decision]} → {matchDecisions.reversed} · {change.candidate}</p>}
+              {change.reason && <p className="review-note">Reason: {change.reason}</p>}
               {change.note && <p className="review-note">{change.note}</p>}
             </li>
           ))}
