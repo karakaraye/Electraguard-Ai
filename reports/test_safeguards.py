@@ -1,6 +1,7 @@
 import secrets
 from datetime import timedelta
 from io import StringIO
+from ipaddress import ip_address
 from unittest.mock import patch
 
 from django.core.management import call_command
@@ -67,3 +68,17 @@ class SafeguardTests(TestCase):
         for _ in range(20):
             self.assertEqual(self.client.post("/review/sign-in/", {}).status_code, 200)
         self.assertEqual(self.client.post("/admin/login/", {}).status_code, 429)
+
+    @override_settings(TRUSTED_PROXY_IPS=frozenset({ip_address("192.0.2.4")}))
+    @patch("reports.middleware.time", return_value=1000)
+    def test_only_configured_proxy_can_supplant_peer_for_request_budget(self, clock):
+        first = Client(REMOTE_ADDR="192.0.2.4", HTTP_X_REAL_IP="198.51.100.12")
+        second = Client(REMOTE_ADDR="192.0.2.4", HTTP_X_REAL_IP="198.51.100.13")
+        direct = Client(REMOTE_ADDR="192.0.2.10", HTTP_X_REAL_IP="198.51.100.12")
+        invalid = Client(REMOTE_ADDR="192.0.2.4", HTTP_X_REAL_IP="198.51.100.12, 198.51.100.13")
+        for _ in range(30):
+            self.assertEqual(first.post("/api/receipt/", {}, content_type="application/json").status_code, 400)
+        self.assertEqual(first.post("/api/receipt/", {}, content_type="application/json").status_code, 429)
+        for client in (second, direct, invalid):
+            self.assertEqual(client.post("/api/receipt/", {}, content_type="application/json").status_code, 400)
+        self.assertEqual(RequestWindow.objects.count(), 4)

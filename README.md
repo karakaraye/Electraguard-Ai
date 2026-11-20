@@ -42,3 +42,5 @@ Run `python manage.py test` with `TRACK5_DEBUG=1` for local verification. Use au
 `python manage.py purge_reports --days 30` counts reports older than the selected window. The day count is an example. Use the retention window approved for the organisation. Adding `--apply` permanently removes eligible records, associated receipts, audit entries, and links from the active database. Backup retention and restoration procedures are managed separately.
 
 Use the [isolated field trial checklist](OPERATIONS.md) for HTTPS, retention, network rate controls, access configuration and field verification. The public interface does not contain prepopulated reports.
+
+See the [staging profile](staging/README.md) for the HTTPS and PostgreSQL stack, and the [backup and restore runbook](docs/BACKUP-RESTORE.md) for a disposable restore rehearsal.

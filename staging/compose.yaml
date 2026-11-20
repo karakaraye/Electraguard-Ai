@@ -1,0 +1,104 @@
+name: track5-staging
+
+x-application: &application
+  image: track5-staging-app
+  build:
+    context: ..
+    dockerfile: staging/Dockerfile
+  environment:
+    TRACK5_DEBUG: "0"
+    TRACK5_SECRET_KEY: ${TRACK5_SECRET_KEY:?Set TRACK5_SECRET_KEY}
+    TRACK5_INTAKE_TOKEN: ${TRACK5_INTAKE_TOKEN:?Set TRACK5_INTAKE_TOKEN}
+    TRACK5_ALLOWED_HOSTS: ${TRACK5_ALLOWED_HOSTS:?Set TRACK5_ALLOWED_HOSTS}
+    TRACK5_TRUST_HTTPS_PROXY: "1"
+    TRACK5_TRUSTED_PROXY_IPS: ${TRACK5_EDGE_IP:-172.29.65.2}
+    TRACK5_RECEIPT_LIFETIME_DAYS: ${TRACK5_RECEIPT_LIFETIME_DAYS:-30}
+    TRACK5_INTAKE_PAUSED: ${TRACK5_INTAKE_PAUSED:-0}
+    POSTGRES_HOST: db
+    POSTGRES_DB: track5_staging
+    POSTGRES_USER: track5_staging
+    POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD}
+  networks:
+    - database
+  depends_on:
+    db:
+      condition: service_healthy
+
+services:
+  db:
+    image: postgres:18-bookworm
+    environment:
+      POSTGRES_DB: track5_staging
+      POSTGRES_USER: track5_staging
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD}
+    healthcheck:
+      test: ["CMD", "pg_isready", "--host=127.0.0.1", "--username=track5_staging", "--dbname=track5_staging"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+    networks:
+      - database
+    volumes:
+      - postgres:/var/lib/postgresql
+
+  prepare:
+    <<: *application
+    command: ["sh", "-ec", "python manage.py migrate --noinput && python manage.py collectstatic --noinput"]
+    volumes:
+      - static:/app/staticfiles
+
+  app:
+    <<: *application
+    depends_on:
+      db:
+        condition: service_healthy
+      prepare:
+        condition: service_completed_successfully
+    networks:
+      - database
+      - edge
+    healthcheck:
+      test: ["CMD", "python", "-c", "import socket; socket.create_connection(('127.0.0.1', 8000), timeout=2).close()"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+  proxy:
+    image: nginx:1.28-alpine
+    depends_on:
+      app:
+        condition: service_healthy
+    networks:
+      edge:
+        ipv4_address: ${TRACK5_EDGE_IP:-172.29.65.2}
+    ports:
+      - target: 8443
+        published: "${TRACK5_HTTPS_PORT:-8443}"
+        host_ip: 127.0.0.1
+        protocol: tcp
+    volumes:
+      - type: bind
+        source: ./nginx.conf
+        target: /etc/nginx/nginx.conf
+        read_only: true
+        bind:
+          create_host_path: false
+      - type: bind
+        source: ${TRACK5_TLS_DIR:?Set TRACK5_TLS_DIR to the external PEM directory}
+        target: /etc/track5/tls
+        read_only: true
+        bind:
+          create_host_path: false
+      - static:/app/staticfiles:ro
+
+networks:
+  database:
+    internal: true
+  edge:
+    ipam:
+      config:
+        - subnet: ${TRACK5_EDGE_SUBNET:-172.29.65.0/24}
+
+volumes:
+  postgres:
+  static:

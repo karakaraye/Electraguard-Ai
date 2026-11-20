@@ -1,4 +1,5 @@
 import os
+from ipaddress import ip_address
 from pathlib import Path
 
 from django.core.exceptions import ImproperlyConfigured
@@ -57,6 +58,14 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 if os.environ.get("TRACK5_TRUST_HTTPS_PROXY") == "1":
     SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+try:
+    TRUSTED_PROXY_IPS = frozenset(
+        ip_address(value.strip())
+        for value in os.environ.get("TRACK5_TRUSTED_PROXY_IPS", "").split(",")
+        if value.strip()
+    )
+except ValueError as failure:
+    raise ImproperlyConfigured("TRACK5_TRUSTED_PROXY_IPS requires exact proxy IP addresses.") from failure
 
 INSTALLED_APPS = [
     "django.contrib.admin",

@@ -1,0 +1,11 @@
+*
+!requirements.txt
+!manage.py
+!config/
+!config/**
+!reports/
+!reports/**
+!staging/
+!staging/requirements.txt
+**/__pycache__/
+**/*.pyc
