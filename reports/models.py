@@ -29,6 +29,13 @@ class Report(models.Model):
     description = models.CharField(max_length=1000)
     status = models.CharField(max_length=16, choices=Status.choices, default=Status.RECEIVED)
     version = models.PositiveIntegerField(default=0)
+    assigned_to = models.ForeignKey(
+        settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.PROTECT,
+        related_name="assigned_reports",
+    )
+
+    class Meta:
+        permissions = [("assign_report", "Can assign reports")]
 
 
 class ReviewEvent(models.Model):
@@ -37,9 +44,26 @@ class ReviewEvent(models.Model):
     status = models.CharField(max_length=16, choices=Report.Status.choices)
     version = models.PositiveIntegerField()
     reason = models.CharField(max_length=32)
+    note = models.CharField(max_length=400, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         constraints = [
             models.UniqueConstraint(fields=("report", "version"), name="one_audit_event_per_version"),
+        ]
+
+
+class ReportLink(models.Model):
+    class Decision(models.TextChoices):
+        LINKED = "linked", "Linked"
+        SEPARATE = "separate", "Kept separate"
+
+    first = models.ForeignKey(Report, on_delete=models.CASCADE, related_name="+")
+    second = models.ForeignKey(Report, on_delete=models.CASCADE, related_name="+")
+    decision = models.CharField(max_length=8, choices=Decision.choices)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=("first", "second"), name="unique_report_pair"),
+            models.CheckConstraint(condition=models.Q(first__lt=models.F("second")), name="ordered_report_pair"),
         ]

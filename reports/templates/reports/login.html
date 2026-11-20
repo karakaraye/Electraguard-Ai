@@ -1,0 +1,3 @@
+{% extends "reports/base.html" %}
+{% block title %}Reviewer sign in | Election observation{% endblock %}
+{% block content %}<div class="observer"><h1>Reviewer sign in</h1><form method="post">{% csrf_token %}{{ form.as_p }}<input type="hidden" name="next" value="{{ next }}"><button class="primary stretch">Sign in</button></form></div>{% endblock %}

@@ -1,0 +1,28 @@
+{% extends "reports/base.html" %}
+{% block title %}Overview | Election observation{% endblock %}
+{% block home %}/review/{% endblock %}
+{% block nav %}{% include "reports/review_nav.html" with overview=True %}{% endblock %}
+{% block content %}
+<div class="workspace">
+<h1>Overview</h1>
+<form class="filters" method="get">
+<label class="inline-label" for="window">Receipt window</label>
+<select name="days" id="window">
+<option value="7" {% if days == 7 %}selected{% endif %}>Last 7 days</option>
+<option value="30" {% if days == 30 %}selected{% endif %}>Last 30 days</option>
+</select><button>Apply</button>
+</form>
+<dl class="totals">
+<div><dt>Reports received</dt><dd>{{ received }}</dd></div>
+<div><dt>Incident groups</dt><dd>{{ distinct }}</dd></div>
+<div><dt>Open and unassigned</dt><dd>{{ unassigned }}</dd></div>
+</dl>
+<h2>Review progress</h2>
+<dl class="totals">
+<div><dt>Awaiting review</dt><dd>{{ counts.received }}</dd></div>
+<div><dt>In review</dt><dd>{{ counts.in_review }}</dd></div>
+<div><dt>Closed</dt><dd>{{ counts.closed }}</dd></div>
+</dl>
+<p class="muted">Incident groups combine reviewer-linked reports received within the selected window. These totals describe the reports received by this workspace.</p>
+</div>
+{% endblock %}

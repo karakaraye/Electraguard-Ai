@@ -1,0 +1,49 @@
+{% extends "reports/base.html" %}{% load static %}
+{% block title %}File a report | Election observation{% endblock %}
+{% block scripts %}<script type="module" src="{% static 'reports/observer.js' %}"></script>{% endblock %}
+{% block nav %}<nav><a href="#status" id="status-link">Check status</a></nav>{% endblock %}
+{% block content %}
+<div class="observer">
+<section id="entry">
+<h1 tabindex="-1">File a report</h1>
+<noscript><p>Enable JavaScript to file a report or check status.</p></noscript>
+<form id="report-form" method="post">
+<label for="area">Approximate area</label><input id="area" name="area" placeholder="e.g. Area 04" maxlength="120" required>
+<label for="occurred">Incident time (WAT)</label><input id="occurred" name="occurred" type="datetime-local" required>
+<label for="category">Category</label>
+<select id="category" name="category" required><option value="">Select a category</option><option value="access">Access or accessibility</option><option value="materials">Materials or equipment</option><option value="procedure">Process or procedure</option><option value="conduct">Conduct or safety</option><option value="other">Other or unsure</option></select>
+<fieldset><legend>Did you see it yourself?</legend><div class="segmented"><label><input type="radio" name="firsthand" value="yes" required> Yes</label><label><input type="radio" name="firsthand" value="no" required> No</label></div></fieldset>
+<label for="description">What happened?</label><textarea id="description" name="description" rows="4" maxlength="1000" placeholder="Briefly describe the incident" aria-describedby="description-help" required></textarea>
+<small id="description-help">Leave out names and identifying details.</small>
+<label class="check"><input type="checkbox" name="persist"> Save a copy of this text on my device</label>
+<small>Use this option only on a private device. Queued text expires after 24 hours.</small>
+<button class="primary stretch" type="submit">Submit report</button>
+</form>
+</section>
+<section id="pending" hidden>
+<h1 tabindex="-1">Report pending</h1>
+<p id="pending-message" role="status"></p>
+<form id="retry-form" method="post">
+<label for="intake">Organisation access code</label><input id="intake" type="password" autocomplete="off" maxlength="256" required>
+<button class="primary stretch" type="submit">Send or retry submission</button>
+</form>
+<button id="drop" class="text-button" type="button">Remove from this device</button>
+</section>
+<section id="received" hidden>
+<h1 tabindex="-1">Report received</h1>
+<p>The organisation has received this report.</p>
+<p id="received-reference"></p>
+<label for="private-receipt">Private receipt code</label><input id="private-receipt" type="password" readonly>
+<small>Save this code privately. It lets you check the report status.</small>
+<div class="actions"><button id="copy" type="button">Copy code</button><button id="reveal" type="button">Show code</button></div>
+<div class="actions"><a id="use-receipt" class="primary button" href="#status">Check report status</a><button id="another" type="button">File another report</button></div>
+</section>
+<section id="status" hidden>
+<h1 tabindex="-1">Check report status</h1>
+<form id="status-form" method="post"><label for="lookup">Private receipt code</label><input id="lookup" type="password" autocomplete="off" pattern="[a-fA-F0-9]{64}" required><button class="primary stretch">Check status</button></form>
+<p id="status-result" role="status"></p>
+<a href="#report">Back to reporting</a>
+</section>
+<p id="feedback" role="alert"></p>
+</div>
+{% endblock %}

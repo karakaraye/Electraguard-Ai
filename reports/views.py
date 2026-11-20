@@ -1,19 +1,21 @@
 import hashlib
 import json
 import re
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from hmac import compare_digest
 from uuid import UUID
 
 from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.core.exceptions import RequestDataTooBig
 from django.db import IntegrityError, transaction
+from django.db.models import Q
 from django.http import JsonResponse
 from django.middleware.csrf import get_token
 from django.views.decorators.cache import never_cache
-from django.views.decorators.http import require_GET, require_POST
+from django.views.decorators.http import require_GET, require_POST, require_http_methods
 
-from .models import Report, ReviewEvent
+from .models import Report, ReportLink, ReviewEvent
 
 RECEIPT_PATTERN = re.compile(r"[0-9a-f]{64}")
 CLOSURE_REASONS = {"corroborated", "insufficient_information", "out_of_scope"}
@@ -143,19 +145,47 @@ def receipt(request):
 def queue(request):
     if not request.user.has_perm("reports.view_report"):
         return error("Review access is required.", 403)
-    reports = Report.objects.order_by("-received_at", "-pk")[:50]
-    return JsonResponse({"reports": [
-        {**acknowledgement(report), "area": report.area, "category": report.category,
+    reports = scoped_reports(request.user).select_related("assigned_to")
+    if request.GET.get("unassigned") == "1":
+        reports = reports.filter(assigned_to__isnull=True)
+    status = request.GET.get("status", "")
+    if status in Report.Status.values:
+        reports = reports.filter(status=status)
+    query = request.GET.get("q", "").strip()[:120]
+    if query:
+        reports = reports.filter(Q(reference__istartswith=query) | Q(area__icontains=query))
+    return JsonResponse({"reports": [report_summary(report, request.user)
+                                     for report in reports.order_by("-received_at", "-pk")[:50]]})
+
+
+def scoped_reports(user):
+    if user.has_perm("reports.assign_report"):
+        return Report.objects.all()
+    return Report.objects.filter(assigned_to=user)
+
+
+def report_summary(report, user):
+    return {
+        **acknowledgement(report), "area": report.area, "category": report.category,
          "occurred_at": report.occurred_at.isoformat(), "firsthand": report.firsthand,
-         "description": report.description, "version": report.version}
-        for report in reports
-    ]})
+        "description": report.description, "version": report.version,
+        "assigned_to": report.assigned_to.get_username() if report.assigned_to else None,
+        "can_review": user.has_perm("reports.change_report"),
+    }
 
 
 @never_cache
-@require_POST
+@require_http_methods(["GET", "POST"])
 @transaction.atomic
 def review(request, reference):
+    if not request.user.has_perm("reports.view_report"):
+        return error("Review access is required.", 403)
+    scope = scoped_reports(request.user)
+    report = scope.filter(reference=reference).first()
+    if report is None:
+        return error("Report not found.", 404)
+    if request.method == "GET":
+        return detail(request.user, scope, report)
     if not request.user.has_perms(["reports.view_report", "reports.change_report"]):
         return error("Review access is required.", 403)
     try:
@@ -169,14 +199,11 @@ def review(request, reference):
             raise ValueError("Choose a supported action and disposition.")
     except ValueError as failure:
         return error(str(failure), 400)
-    report = Report.objects.filter(reference=reference).first()
-    if report is None:
-        return error("Report not found.", 404)
     expected, next_status = (
         (Report.Status.RECEIVED, Report.Status.IN_REVIEW) if action == "start"
         else (Report.Status.IN_REVIEW, Report.Status.CLOSED)
     )
-    updated = Report.objects.filter(pk=report.pk, status=expected, version=version).update(
+    updated = scope.filter(pk=report.pk, status=expected, version=version).update(
         status=next_status, version=version + 1,
     )
     if not updated:
@@ -185,3 +212,116 @@ def review(request, reference):
         report=report, actor=request.user, status=next_status, version=version + 1, reason=reason,
     )
     return JsonResponse({"status": next_status, "version": version + 1})
+
+
+def detail(user, scope, report):
+    window = timedelta(minutes=90)
+    nearby = Q(area__iexact=report.area, occurred_at__range=(
+        report.occurred_at - window, report.occurred_at + window,
+    ))
+    links = ReportLink.objects.filter(Q(first=report) | Q(second=report))
+    decisions = {
+        second if first == report.pk else first: decision
+        for first, second, decision in links.values_list("first_id", "second_id", "decision")
+    }
+    candidates = scope.filter(nearby | Q(pk__in=decisions)).exclude(pk=report.pk)
+    candidates = candidates.select_related("assigned_to").order_by("-received_at")[:12]
+    return JsonResponse({
+        "report": report_summary(report, user),
+        "events": list(report.events.order_by("version").select_related("actor").values(
+            "actor__username", "created_at", "reason", "note",
+        )),
+        "candidates": [
+            {**report_summary(candidate, user), "decision": decisions.get(candidate.pk),
+             "minutes_apart": round(abs((report.occurred_at - candidate.occurred_at).total_seconds()) / 60)}
+            for candidate in candidates
+        ],
+    })
+
+
+def reviewer_accounts():
+    return [
+        user for user in get_user_model().objects.filter(is_active=True).order_by("username")
+        if user.has_perms(["reports.view_report", "reports.change_report"])
+    ]
+
+
+@never_cache
+@require_GET
+def assignees(request):
+    if not request.user.has_perms(["reports.view_report", "reports.assign_report"]):
+        return error("Assignment access is required.", 403)
+    return JsonResponse({"reviewers": [
+        {"id": user.pk, "label": user.get_username()} for user in reviewer_accounts()
+    ]})
+
+
+@never_cache
+@require_POST
+@transaction.atomic
+def assign(request, reference):
+    if not request.user.has_perms(["reports.view_report", "reports.assign_report"]):
+        return error("Assignment access is required.", 403)
+    try:
+        data = read_object(request)
+        version, reviewer_id = data.get("version"), data.get("reviewer")
+        if type(version) is not int or version < 0 or type(reviewer_id) is not int:
+            raise ValueError("Choose a reviewer and provide the current report version.")
+    except ValueError as failure:
+        return error(str(failure), 400)
+    reviewer = get_user_model().objects.filter(pk=reviewer_id, is_active=True).first()
+    if reviewer is None or not reviewer.has_perms(["reports.view_report", "reports.change_report"]):
+        return error("Choose an active reviewer.", 400)
+    report = Report.objects.filter(reference=reference).first()
+    if report is None:
+        return error("Report not found.", 404)
+    updated = Report.objects.filter(pk=report.pk, version=version).exclude(
+        status=Report.Status.CLOSED,
+    ).exclude(assigned_to=reviewer).update(assigned_to=reviewer, version=version + 1)
+    if not updated:
+        return error("The report changed or is already assigned to this reviewer.", 409)
+    ReviewEvent.objects.create(report=report, actor=request.user, status=report.status,
+                               version=version + 1, reason="assignment_changed",
+                               note=reviewer.get_username())
+    return JsonResponse({"version": version + 1})
+
+
+@never_cache
+@require_POST
+@transaction.atomic
+def decide_link(request, reference, candidate):
+    if not request.user.has_perms(["reports.view_report", "reports.change_report"]):
+        return error("Review access is required.", 403)
+    try:
+        data = read_object(request)
+        decision, note = text(data, "decision", 8), text(data, "note", 400)
+        versions = data.get("versions")
+        if (decision not in ReportLink.Decision.values or not isinstance(versions, dict)
+                or any(type(versions.get(str(key))) is not int for key in (reference, candidate))):
+            raise ValueError("Provide a decision and the current versions of both reports.")
+    except ValueError as failure:
+        return error(str(failure), 400)
+    pair = list(scoped_reports(request.user).select_for_update().filter(
+        reference__in=(reference, candidate),
+    ).order_by("pk"))
+    if len(pair) != 2:
+        return error("Reports not found.", 404)
+    first, second = pair
+    for report in pair:
+        if report.version != versions[str(report.reference)]:
+            return error("A report changed. Refresh before trying again.", 409)
+    existing = ReportLink.objects.filter(first=first, second=second).first()
+    if existing and existing.decision == decision:
+        return error("This decision is already recorded.", 409)
+    if existing is None and (
+        first.area.lower() != second.area.lower()
+        or abs(first.occurred_at - second.occurred_at) > timedelta(minutes=90)
+    ):
+        return error("These reports are outside the comparison window.", 400)
+    ReportLink.objects.update_or_create(first=first, second=second, defaults={"decision": decision})
+    for report in pair:
+        report.version += 1
+        report.save(update_fields=["version"])
+        ReviewEvent.objects.create(report=report, actor=request.user, status=report.status,
+                                   version=report.version, reason="reports_" + decision, note=note)
+    return JsonResponse({"decision": decision})

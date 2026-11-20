@@ -1,0 +1,17 @@
+{% load static %}<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}Election observation{% endblock %}</title>
+<link rel="stylesheet" href="{% static 'reports/style.css' %}">
+{% block scripts %}{% endblock %}
+</head>
+<body>
+<header class="bar">
+<a class="brand" href="{% block home %}/{% endblock %}"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 3h8l6 6v12H5z"/><path d="M13 3v6h6"/></svg>Election observation</a>
+{% block nav %}{% endblock %}
+</header>
+<main>{% block content %}{% endblock %}</main>
+</body>
+</html>

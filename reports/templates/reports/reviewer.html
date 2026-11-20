@@ -1,0 +1,13 @@
+{% extends "reports/base.html" %}{% load static %}
+{% block title %}Review queue | Election observation{% endblock %}
+{% block home %}/review/{% endblock %}
+{% block scripts %}<script type="module" src="{% static 'reports/reviewer.js' %}"></script>{% endblock %}
+{% block nav %}{% include "reports/review_nav.html" %}{% endblock %}
+{% block content %}
+<div class="workspace">
+<h1>{% if assignments %}Assignments{% else %}Review queue{% endif %}</h1>
+<div class="filters"><input id="search" type="search" aria-label="Search reports" placeholder="Search reports"><select id="filter" aria-label="Report status"><option value="">Status: All</option><option value="received">Received</option><option value="in_review">In review</option><option value="closed">Closed</option></select>{% if assignments %}<select id="assignment-filter" aria-label="Assignment"><option value="1">Unassigned</option><option value="">All assignments</option></select>{% endif %}</div>
+<p id="queue-feedback" role="status"></p>
+<div class="work-grid"><ul id="report-list" aria-label="Reports"></ul><section id="selected" aria-label="Selected report"></section></div>
+</div>
+{% endblock %}

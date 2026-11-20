@@ -1,0 +1,8 @@
+<nav class="review-nav">
+<a {% if not assignments and not overview %}aria-current="page"{% endif %} href="/review/">Review queue</a>
+{% if can_assign or overview %}
+<a {% if assignments %}aria-current="page"{% endif %} href="/review/assignments/">Assignments</a>
+<a {% if overview %}aria-current="page"{% endif %} href="/review/overview/">Overview</a>
+{% endif %}
+<form method="post" action="{% url 'review-logout' %}">{% csrf_token %}<button class="text-button">Sign out</button></form>
+</nav>
