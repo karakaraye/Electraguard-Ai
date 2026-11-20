@@ -12,10 +12,12 @@ from django.db import IntegrityError, transaction
 from django.db.models import Q
 from django.http import JsonResponse
 from django.middleware.csrf import get_token
+from django.utils import timezone as django_timezone
 from django.views.decorators.cache import never_cache
 from django.views.decorators.http import require_GET, require_POST, require_http_methods
 
 from .models import Report, ReportLink, ReviewEvent
+from .suggestions import RANKING_POOL_LIMIT, REVIEW_CANDIDATE_LIMIT, WINDOW_MINUTES, rank_candidates
 
 RECEIPT_PATTERN = re.compile(r"[0-9a-f]{64}")
 CLOSURE_REASONS = {"corroborated", "insufficient_information", "out_of_scope"}
@@ -96,6 +98,8 @@ def csrf(request):
 @never_cache
 @require_POST
 def submit(request):
+    if settings.INTAKE_PAUSED:
+        return error("Report intake is paused. Keep this report and retry later.", 503)
     provided = request.headers.get("X-Intake-Token", "")
     if not settings.INTAKE_TOKEN or not compare_digest(
         provided.encode("utf-8"), settings.INTAKE_TOKEN.encode("utf-8")
@@ -134,7 +138,8 @@ def receipt(request):
         secret_hash = receipt_digest(read_object(request))
     except ValueError as failure:
         return error(str(failure), 400)
-    report = Report.objects.filter(receipt_digest=secret_hash).first()
+    cutoff = django_timezone.now() - timedelta(days=settings.RECEIPT_LIFETIME_DAYS)
+    report = Report.objects.filter(receipt_digest=secret_hash, received_at__gte=cutoff).first()
     if report is None:
         return error("Receipt not found.", 404)
     return JsonResponse(acknowledgement(report))
@@ -215,7 +220,7 @@ def review(request, reference):
 
 
 def detail(user, scope, report):
-    window = timedelta(minutes=90)
+    window = timedelta(minutes=WINDOW_MINUTES)
     nearby = Q(area__iexact=report.area, occurred_at__range=(
         report.occurred_at - window, report.occurred_at + window,
     ))
@@ -224,8 +229,10 @@ def detail(user, scope, report):
         second if first == report.pk else first: decision
         for first, second, decision in links.values_list("first_id", "second_id", "decision")
     }
-    candidates = scope.filter(nearby | Q(pk__in=decisions)).exclude(pk=report.pk)
-    candidates = candidates.select_related("assigned_to").order_by("-received_at")[:12]
+    scoped = scope.select_related("assigned_to").order_by("-received_at", "-pk")
+    decided = list(scoped.filter(pk__in=decisions))
+    pool = scoped.filter(nearby).exclude(pk__in=[report.pk, *decisions])[:RANKING_POOL_LIMIT]
+    candidates = rank_candidates(report, pool)[:REVIEW_CANDIDATE_LIMIT]
     return JsonResponse({
         "report": report_summary(report, user),
         "events": list(report.events.order_by("version").select_related("actor").values(
@@ -234,7 +241,7 @@ def detail(user, scope, report):
         "candidates": [
             {**report_summary(candidate, user), "decision": decisions.get(candidate.pk),
              "minutes_apart": round(abs((report.occurred_at - candidate.occurred_at).total_seconds()) / 60)}
-            for candidate in candidates
+            for candidate in [*candidates, *decided]
         ],
     })
 
@@ -315,7 +322,7 @@ def decide_link(request, reference, candidate):
         return error("This decision is already recorded.", 409)
     if existing is None and (
         first.area.lower() != second.area.lower()
-        or abs(first.occurred_at - second.occurred_at) > timedelta(minutes=90)
+        or abs(first.occurred_at - second.occurred_at) > timedelta(minutes=WINDOW_MINUTES)
     ):
         return error("These reports are outside the comparison window.", 400)
     ReportLink.objects.update_or_create(first=first, second=second, defaults={"decision": decision})

@@ -7,17 +7,17 @@
 <section id="entry">
 <h1 tabindex="-1">File a report</h1>
 <noscript><p>Enable JavaScript to file a report or check status.</p></noscript>
-<form id="report-form" method="post">
-<label for="area">Approximate area</label><input id="area" name="area" placeholder="e.g. Area 04" maxlength="120" required>
+<form id="report-form" method="post" autocomplete="off">
+<label for="area">Approximate area</label><input id="area" name="area" placeholder="e.g. Area 04" maxlength="120" spellcheck="false" required>
 <label for="occurred">Incident time (WAT)</label><input id="occurred" name="occurred" type="datetime-local" required>
 <label for="category">Category</label>
 <select id="category" name="category" required><option value="">Select a category</option><option value="access">Access or accessibility</option><option value="materials">Materials or equipment</option><option value="procedure">Process or procedure</option><option value="conduct">Conduct or safety</option><option value="other">Other or unsure</option></select>
 <fieldset><legend>Did you see it yourself?</legend><div class="segmented"><label><input type="radio" name="firsthand" value="yes" required> Yes</label><label><input type="radio" name="firsthand" value="no" required> No</label></div></fieldset>
-<label for="description">What happened?</label><textarea id="description" name="description" rows="4" maxlength="1000" placeholder="Briefly describe the incident" aria-describedby="description-help" required></textarea>
+<label for="description">What happened?</label><textarea id="description" name="description" rows="4" maxlength="1000" placeholder="Briefly describe the incident" aria-describedby="description-help" spellcheck="false" required></textarea>
 <small id="description-help">Leave out names and identifying details.</small>
-<label class="check"><input type="checkbox" name="persist"> Save a copy of this text on my device</label>
-<small>Use this option only on a private device. Queued text expires after 24 hours.</small>
-<button class="primary stretch" type="submit">Submit report</button>
+<label class="check"><input id="persist" type="checkbox" name="persist" aria-describedby="persist-help"> Save a copy of this text on my device</label>
+<small id="persist-help">Use this option only on a private device. Queued text expires after 24 hours.</small>
+<button class="primary stretch" type="submit" id="submit-report" disabled>Submit report</button>
 </form>
 </section>
 <section id="pending" hidden>
@@ -34,7 +34,7 @@
 <p>The organisation has received this report.</p>
 <p id="received-reference"></p>
 <label for="private-receipt">Private receipt code</label><input id="private-receipt" type="password" readonly>
-<small>Save this code privately. It lets you check the report status.</small>
+<small>Save this code privately. Anyone with it can check the report status.</small>
 <div class="actions"><button id="copy" type="button">Copy code</button><button id="reveal" type="button">Show code</button></div>
 <div class="actions"><a id="use-receipt" class="primary button" href="#status">Check report status</a><button id="another" type="button">File another report</button></div>
 </section>

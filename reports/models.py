@@ -67,3 +67,17 @@ class ReportLink(models.Model):
             models.UniqueConstraint(fields=("first", "second"), name="unique_report_pair"),
             models.CheckConstraint(condition=models.Q(first__lt=models.F("second")), name="ordered_report_pair"),
         ]
+
+
+class RequestWindow(models.Model):
+    route = models.CharField(max_length=12)
+    client_digest = models.CharField(max_length=64)
+    expires_at = models.BigIntegerField(db_index=True)
+    count = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=("route", "client_digest", "expires_at"), name="one_counter_per_request_window",
+            ),
+        ]

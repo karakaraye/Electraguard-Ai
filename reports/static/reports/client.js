@@ -1,10 +1,11 @@
-export async function post(path, body, headers = {}) {
-  const csrf = await fetch("/api/csrf/", { cache: "no-store" });
+export async function post(path, body, headers = {}, signal) {
+  const csrf = await fetch("/api/csrf/", { cache: "no-store", signal });
   if (!csrf.ok) throw new Error("Could not establish a connection.");
   const { token } = await csrf.json();
   const response = await fetch(path, {
     method: "POST",
     cache: "no-store",
+    signal,
     headers: { "Content-Type": "application/json", "X-CSRFToken": token, ...headers },
     body: JSON.stringify(body),
   });

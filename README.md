@@ -35,10 +35,10 @@ Get a CSRF token and cookie from `GET /api/csrf/` before sending JSON POSTs. Sen
 | `POST /api/review/<reference>/assignment/` | Send the current `version` and numeric `reviewer` ID. Requires the assignment permission. |
 | `POST /api/review/<reference>/links/<candidate>/` | Send `decision` (`linked` or `separate`), `note` and `versions` keyed by both report references. Both reports must be in the reviewer's scope. |
 
-Run `python manage.py test` with `TRACK5_DEBUG=1` for local verification. Use authorised materials in isolated tests. Intake currently uses a shared organisation credential. Related reports use a same-area and 90-minute time-window heuristic.
+Run `python manage.py test` with `TRACK5_DEBUG=1` for local verification. Use authorised materials in isolated tests. Intake uses a shared organisation credential. For comparison, reports are scoped to the reviewer and limited to the same area and a 90-minute incident window. Suggestions are ranked by description overlap, time proximity, and shared category. Reviewed links remain accessible separately from the ranked list. Run `python -m reports.suggestion_benchmark` to reproduce the authored benchmark. The benchmark contains no workspace data and does not establish field accuracy.
 
 ### Report retention
 
 `python manage.py purge_reports --days 30` counts reports older than the selected window. The day count is an example. Use the retention window approved for the organisation. Adding `--apply` permanently removes eligible records, associated receipts, audit entries, and links from the active database. Backup retention and restoration procedures are managed separately.
 
-This build is for local development and testing. Set a production secret and HTTPS, confirm the organisation's retention policy, add network rate controls, and validate operational safeguards before field deployment.
+Use the [isolated field trial checklist](OPERATIONS.md) for HTTPS, retention, network rate controls, access configuration and field verification. The public interface does not contain prepopulated reports.
