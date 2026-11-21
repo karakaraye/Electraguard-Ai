@@ -1,4 +1,5 @@
 #!/bin/sh
+(
 set -eu
 
 ELECTRAGUARD_MIGRATOR_PASSWORD=$(cat /run/secrets/database_migrator)
@@ -24,3 +25,4 @@ ALTER DEFAULT PRIVILEGES FOR ROLE electraguard_migrator IN SCHEMA public
     GRANT USAGE, SELECT ON SEQUENCES TO electraguard_runtime;
 COMMIT;
 SQL
+)
