@@ -18,7 +18,7 @@ const roles = {
   otherReviewer: ["second-reviewer@qa.example", "QA_SECOND_REVIEWER_PASSWORD", "/workspace/reviewer"],
   admin: ["administrator@qa.example", "QA_ADMINISTRATOR_PASSWORD", "/workspace/administrator"],
 };
-const evidence = resolve(root, "tests/fixtures/evidence.png");
+const evidence = resolve(root, process.env.QA_EVIDENCE_PATH ?? "tests/fixtures/evidence.png");
 const unchanged = "Synthetic entrance observation for automated QA.";
 let step = "start Chromium";
 
@@ -42,6 +42,13 @@ async function signIn(browser, role, width) {
   await page.getByLabel("Password").fill(password);
   await page.getByRole("button", { name: "Sign in", exact: true }).click();
   await page.waitForURL(new URL(workspace, origin).href);
+  if (origin.protocol === "https:") {
+    const cookies = await context.cookies(origin.href);
+    for (const name of ["sessionid", "csrftoken"]) {
+      const cookie = cookies.find((entry) => entry.name === name);
+      assert(cookie?.secure && cookie.httpOnly, "Expected Secure and HttpOnly session and CSRF cookies.");
+    }
+  }
   return page;
 }
 
@@ -264,7 +271,13 @@ async function run(browser, width, date, previousDate) {
 }
 
 async function main() {
-  const browser = await chromium.launch({ executablePath: process.env.QA_CHROMIUM_PATH || undefined });
+  const tlsPin = process.env.QA_CHROMIUM_TLS_PIN;
+  assert(!tlsPin || (origin.protocol === "https:" && /^[A-Za-z0-9+/]{43}=$/.test(tlsPin)),
+    "Use a SHA-256 public-key pin only for the loopback HTTPS fixture.");
+  const browser = await chromium.launch({
+    executablePath: process.env.QA_CHROMIUM_PATH || undefined,
+    args: tlsPin ? [`--ignore-certificate-errors-spki-list=${tlsPin}`] : [],
+  });
   const anchor = new Date(process.env.QA_DATE ?? "2026-04-16");
   assert(Number.isFinite(anchor.getTime()), "Set QA_DATE to an unused fictional incident date.");
   function fixtureDate(offset) {

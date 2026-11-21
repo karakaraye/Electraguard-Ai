@@ -1,0 +1,13 @@
+**
+!backend/
+!backend/requirements.txt
+!backend/manage.py
+!backend/accounts/
+!backend/accounts/**
+!backend/config/
+!backend/config/**
+!backend/reports/
+!backend/reports/**
+!deploy/
+!deploy/django-entrypoint.sh
+**/__pycache__/

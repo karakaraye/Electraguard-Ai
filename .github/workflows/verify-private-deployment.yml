@@ -1,0 +1,64 @@
+name: Verify private deployment
+
+on: workflow_dispatch
+
+permissions:
+  contents: read
+
+jobs:
+  tls-smoke:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      ELECTRAGUARD_RELEASE: ${{ github.sha }}
+      ELECTRAGUARD_HOST: electraguard.test
+      OBSERVATION_INTAKE_ENABLED: "false"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Configure isolated runtime
+        shell: bash
+        run: |
+          set -euo pipefail
+          secret_dir="$(mktemp -d)"
+          tls_dir="$(mktemp -d)"
+          for secret_name in django postgres-bootstrap postgres-migrator postgres-runtime; do
+            openssl rand -hex 48 > "$secret_dir/$secret_name"
+            chmod 0444 "$secret_dir/$secret_name"
+          done
+          openssl req -x509 -newkey rsa:2048 -nodes -days 1 -sha256 \
+            -subj "/CN=$ELECTRAGUARD_HOST" -addext "subjectAltName=DNS:$ELECTRAGUARD_HOST" \
+            -keyout "$tls_dir/privkey.pem" -out "$tls_dir/fullchain.pem"
+          printf 'ELECTRAGUARD_SECRET_DIR=%s\nELECTRAGUARD_TLS_DIR=%s\n' "$secret_dir" "$tls_dir" >> "$GITHUB_ENV"
+      - name: Build, migrate and start
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker compose -f deploy/compose.yaml config --quiet
+          docker compose -f deploy/compose.yaml --profile maintenance build backend frontend
+          docker compose -f deploy/compose.yaml up -d --wait postgres
+          docker compose -f deploy/compose.yaml --profile maintenance run --rm migrate
+          docker compose -f deploy/compose.yaml up -d --wait backend frontend gateway
+      - name: Check HTTPS and origin isolation
+        shell: bash
+        run: |
+          set -euo pipefail
+          origin="https://$ELECTRAGUARD_HOST"
+          tls=(--cacert "$ELECTRAGUARD_TLS_DIR/fullchain.pem" --resolve "$ELECTRAGUARD_HOST:443:127.0.0.1")
+          page="$(mktemp)"
+          curl "${tls[@]}" --fail --silent --show-error --retry 8 --retry-all-errors -o "$page" "$origin/sign-in"
+          grep -Fq 'Sign in' "$page"
+          headers="$(mktemp)"
+          curl "${tls[@]}" --fail --silent --show-error -D "$headers" -o /dev/null "$origin/api/auth/csrf"
+          grep -iq '^strict-transport-security:' "$headers"
+          grep -iq '^set-cookie: csrftoken=.*httponly.*secure' "$headers"
+          for origin_port in 3000 5432 8000 8081; do
+            if timeout 2 bash -c "echo >/dev/tcp/127.0.0.1/$origin_port" 2>/dev/null; then
+              printf 'Unexpected exposed origin port %s\n' "$origin_port" >&2
+              exit 1
+            fi
+          done
+      - name: Stop isolated runtime
+        if: always()
+        run: docker compose -f deploy/compose.yaml down --volumes

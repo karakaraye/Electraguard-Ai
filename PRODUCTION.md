@@ -6,6 +6,8 @@ ElectraGuard serves authorised observation organisations. Observers report what 
 
 The production baseline is the authenticated Django, PostgreSQL and Next.js application on `work`. The earlier field-trial branch changes identity, routing and storage semantics. Its operational material can inform deployment and recovery work. Each proposed change must preserve authenticated ownership, assignment, clarification and the closure evidence snapshot.
 
+Use [the engineering handoff](docs/engineering-handoff.md) for the current slice and [field operations](docs/field-operations.md) for the operating approvals. Deployment and recovery steps are in [private deployment](deploy/README.md) and [restore acceptance](docs/restore-verification.md).
+
 - One accountable observation organisation is the initial deployment boundary. A second organisation requires separate deployment or a reviewed tenant isolation design.
 - Use the existing black-and-white interface, with colour reserved for status. Test field workflows on phones before desktop polish.
 - Keep reporting and photo uploads separate and recoverable. Preserve the original account, exact evidence references and the human assessment. Provide clear guidance for shared phones, uncertain saves, sensitive images and help.
@@ -31,6 +33,8 @@ Production settings require an explicit strong Django secret, concrete allowed h
 
 Named accounts are provisioned using the command documented in [README](README.md). Confirm the operator is authorised before creating accounts. Keep deployment secrets in the approved runtime secret store and production records out of development, QA and support exports.
 
+Production starts with new observation intake paused. Setting `OBSERVATION_INTAKE_ENABLED=true` and restarting all application replicas opens intake. A pause preserves same-payload receipt recovery, attachment uploads for existing open reports, clarification and review. Operate pauses at a coordinated deployment boundary.
+
 Independently reconcile internal dashboard totals within the authorised database:
 
 ```powershell
@@ -50,3 +54,4 @@ Production use requires a verified target deployment and approval of the operati
 - Frontend lint, typecheck and production build passed locally.
 - The hosted CI definition is committed locally. Its action hashes match the referenced tags. No hosted run has been recorded.
 - The isolated browser suite still needs a run against the new test-account setup. The linked build-and-start command was blocked by local execution policy.
+- A loopback TLS environment verified production cookies, CSRF, private evidence, a 2 MiB upload, receipt recovery and report closure. PostgreSQL backup and restore matched the source counts and integrity checks. This evidence covers the API transport and isolated data recovery. The target deployment, hosted browser workflow and approved recovery objectives are separate open gates.
