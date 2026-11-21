@@ -4,7 +4,7 @@ ElectraGuard AI is a supplementary, nonpartisan #AI4Elections Track 5 prototype 
 
 ElectraGuard AI supports election observation and incident documentation alongside Nigeria’s existing electoral processes. Official electoral decisions remain with the appropriate authorities.
 
-INEC and other authorized bodies retain their official responsibilities. ElectraGuard AI has no role in voter registration, voting, counting, collation, declaring results, or resolving electoral disputes. The prototype uses its own database and operates independently of live electoral systems. Stage 1 covers sign-in and role workspaces for Observer, Reviewer, and Administrator. The Administrator manages this prototype’s workspace and has no electoral authority. Stage 2 adds observer reporting and private evidence. Stage 3 adds reviewer assignment, clarification, and internal observation assessments. Stage 4 adds advisory triage suggestions for assigned Reviewers. Stage 5 adds an internal observation dashboard and a fictional demo.
+INEC and other authorised bodies retain their official responsibilities. ElectraGuard operates independently of live electoral systems. The application supports authenticated observation reports, private evidence, case assignment, clarification, human assessment and internal reporting. An application Administrator manages workspace routing and has no electoral authority.
 
 ## Windows PowerShell setup
 
@@ -15,7 +15,7 @@ if (-not (Test-Path .env)) { Copy-Item .env.example .env }
 notepad .env
 ```
 
-Replace the secret key and database password placeholders with your own local values. For the optional demo accounts, also replace all three demo password placeholders with distinct local passwords. A password manager can generate the values. Keep `.env` local.
+Replace the secret key and database password placeholders with your own local values. A password manager can generate the values. Keep `.env` local.
 
 ### Option A — PostgreSQL with Docker Compose
 
@@ -46,19 +46,15 @@ py -3.12 -m venv backend/.venv
 npm.cmd --prefix frontend ci
 ```
 
-### Seed fictional demo accounts
+### Provision a named account
 
-Run this explicitly after migrations. It requires `DJANGO_DEBUG=true` and the three configured demo passwords. It creates missing accounts and refreshes their passwords from local configuration. Existing users with a conflicting role or privilege cause the seed to abort.
+An authorised operator provisions application accounts interactively. Password prompts use hidden input. Use an organisation-approved password handoff until managed identity and self-service credential recovery are in place.
 
 ```powershell
-.\backend\.venv\Scripts\python.exe backend/manage.py seed_demo
+.\backend\.venv\Scripts\python.exe backend/manage.py provision_account --email operator@your-organisation.example --role administrator
 ```
 
-| Workspace | Email | Local password variable |
-| --- | --- | --- |
-| Observer | `observer@demo.example` | `DEMO_OBSERVER_PASSWORD` |
-| Reviewer | `reviewer@demo.example` | `DEMO_REVIEWER_PASSWORD` |
-| Administrator | `administrator@demo.example` | `DEMO_ADMINISTRATOR_PASSWORD` |
+The available roles are `observer`, `reviewer`, and `administrator`. The command refuses existing accounts and does not grant Django staff or superuser privileges.
 
 ### Run the application
 
@@ -79,12 +75,12 @@ Open `http://localhost:3000`. Use the hostname in `FRONTEND_ORIGIN` consistently
 | Variable | Purpose |
 | --- | --- |
 | `DJANGO_SECRET_KEY` | Required local Django secret key |
-| `DJANGO_DEBUG` | Set to `true` for local HTTP development and demo seeding |
+| `DJANGO_DEBUG` | Set explicitly to `true` for local HTTP development |
 | `DJANGO_ALLOWED_HOSTS` | Comma-separated backend hostnames |
 | `FRONTEND_ORIGIN` | Trusted frontend origin for CSRF checks |
+| `DJANGO_TRUST_PROXY_HTTPS` | Enable only when a trusted ingress overwrites the forwarded protocol header and clients cannot reach Django directly |
 | `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD` | Required PostgreSQL connection settings |
 | `POSTGRES_HOST`, `POSTGRES_PORT` | Database host and port. Defaults are `127.0.0.1` and `5432`. |
-| `DEMO_OBSERVER_PASSWORD`, `DEMO_REVIEWER_PASSWORD`, `DEMO_ADMINISTRATOR_PASSWORD` | Required only for explicit demo seeding |
 | `DJANGO_API_ORIGIN` | Optional Next.js environment override for the backend URL. Defaults to `http://127.0.0.1:8000`. Set it in the frontend terminal before running Next.js, including at build time. |
 
 Django loads the root `.env` and gives existing process variables precedence. Next.js reads its own process environment for the optional API override.
@@ -95,7 +91,7 @@ Next.js proxies browser API requests to Django on the same browser origin. Djang
 
 ### Observer reporting
 
-Sign in as an Observer and enter an incident date and time, approximate location, and short description. The form interprets times in the device’s time zone. Report detail displays West Africa Time. Use synthetic information for demos. A saved report shows its reference and appears as **Submitted** under **My Reports**.
+Sign in as an Observer and enter an incident date and time, approximate location, and short description. The form interprets times in the device’s time zone. Report detail displays West Africa Time. A saved report shows its reference and appears as **Submitted** under **My Reports**.
 
 If a save cannot be confirmed, use **Retry report** on the same form to send the original submission key. If you already left the form, check **My Reports** for the saved report before entering it again. Use localhost or HTTPS so the browser can generate secure submission keys.
 
@@ -120,7 +116,7 @@ Apply migrations, then run the worker in a separate PowerShell terminal from the
 .\backend\.venv\Scripts\python.exe backend/manage.py run_triage
 ```
 
-For a one-time run, add `--once`. Add `--retry-failed` on startup to requeue failed jobs for the current method version. A report has one job, and each possible report pair has one shared suggestion. Use only synthetic reports for demos.
+For a one-time run, add `--once`. Add `--retry-failed` on startup to requeue failed jobs for the current method version. A report has one job, and each possible report pair has one shared suggestion. Use an isolated database for evaluation.
 
 The local `local-lexical-v1` method suggests categories by comparing report descriptions with labeled synthetic examples. It identifies possible duplicates using a 90-minute window, approximate-location word overlap, and description similarity. It uses incident times, location text, and descriptions. Evidence attachments and account identities are outside the model input. Processing runs locally without an external AI service.
 
@@ -134,9 +130,9 @@ Sign in as an Administrator and open **Observation dashboard**. Django restricts
 
 **Submitted reports** counts every report in the date range across all statuses. The outcomes breakdown counts closed reports. **Outcome unavailable** accounts for any older closed record without a recognised outcome. The category breakdown uses the Reviewer correction when available, then the suggestion, then Uncategorized. Report-only mode omits the group total and refuses match decisions. Existing link history is retained in storage.
 
-### Fictional release demo
+### Production readiness
 
-Use the [release runbook](RELEASE.md) for the worker-off replay, expected dashboard totals, verification record, and separate pre-seeded fallback.
+See [production delivery and launch gates](PRODUCTION.md).
 
 ### Synthetic triage evaluation
 
@@ -154,7 +150,7 @@ npm.cmd --prefix frontend run typecheck
 npm.cmd --prefix frontend run build
 ```
 
-To check the browser workflow, sign in with each demo account and confirm the matching workspace and email. Try opening a different role's workspace URL while signed in and confirm you return to your own workspace. Sign out and revisit the protected URL. The sign-in page should appear.
+To check the browser workflow, use the isolated QA procedure in [PRODUCTION.md](PRODUCTION.md). Verify the matching workspace, cross-role redirects and return to sign-in after sign-out.
 
 To check reporting manually, submit a synthetic report as an Observer with an invalid file renamed to end in `.png`. Verify that the report still shows a reference, then select a valid synthetic PNG and retry the attachment. Open the report from **My Reports** and confirm the status and download. In a separate session as another Observer, the report should be absent from **My Reports**, and the copied report and attachment URLs should return HTTP 404. The backend tests also cover same-key submission replay and access by other roles.
 

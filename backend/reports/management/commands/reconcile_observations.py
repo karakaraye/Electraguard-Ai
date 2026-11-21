@@ -2,7 +2,6 @@ import json
 from collections import Counter
 from datetime import date
 
-from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 from django.db import connection
 
@@ -10,15 +9,13 @@ from reports.models import Report, Triage
 
 
 class Command(BaseCommand):
-    help = "Recompute a fictional report-only dashboard from PostgreSQL for a WAT date range."
+    help = "Recompute internal aggregate dashboard totals from PostgreSQL for a WAT date range."
 
     def add_arguments(self, parser):
         parser.add_argument("--start", required=True, type=date.fromisoformat)
         parser.add_argument("--end", required=True, type=date.fromisoformat)
 
     def handle(self, *args, **options):
-        if not settings.DEBUG:
-            raise CommandError("Use this command only with a fictional demo database and DJANGO_DEBUG=true.")
         start, end = options["start"], options["end"]
         if start > end:
             raise CommandError("The first WAT date must be on or before the last WAT date.")

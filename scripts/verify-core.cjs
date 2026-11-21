@@ -12,14 +12,14 @@ if (existsSync(envFile)) process.loadEnvFile(envFile);
 const origin = new URL(process.env.QA_FRONTEND_ORIGIN ?? "http://localhost:3149");
 assert(["localhost", "127.0.0.1"].includes(origin.hostname), "Run only against the isolated local fixture.");
 const roles = {
-  observer: ["observer@demo.example", "DEMO_OBSERVER_PASSWORD", "/workspace/observer"],
-  otherObserver: ["qa-second-observer@demo.example", "QA_SECOND_OBSERVER_PASSWORD", "/workspace/observer"],
-  reviewer: ["reviewer@demo.example", "DEMO_REVIEWER_PASSWORD", "/workspace/reviewer"],
-  otherReviewer: ["qa-second-reviewer@demo.example", "QA_SECOND_REVIEWER_PASSWORD", "/workspace/reviewer"],
-  admin: ["administrator@demo.example", "DEMO_ADMINISTRATOR_PASSWORD", "/workspace/administrator"],
+  observer: ["observer@qa.example", "QA_OBSERVER_PASSWORD", "/workspace/observer"],
+  otherObserver: ["second-observer@qa.example", "QA_SECOND_OBSERVER_PASSWORD", "/workspace/observer"],
+  reviewer: ["reviewer@qa.example", "QA_REVIEWER_PASSWORD", "/workspace/reviewer"],
+  otherReviewer: ["second-reviewer@qa.example", "QA_SECOND_REVIEWER_PASSWORD", "/workspace/reviewer"],
+  admin: ["administrator@qa.example", "QA_ADMINISTRATOR_PASSWORD", "/workspace/administrator"],
 };
-const evidence = resolve(root, "demo/synthetic-evidence.png");
-const unchanged = "Fictional entrance observation for release rehearsal.";
+const evidence = resolve(root, "tests/fixtures/evidence.png");
+const unchanged = "Synthetic entrance observation for automated QA.";
 let step = "start Chromium";
 
 async function open(page, path) {
