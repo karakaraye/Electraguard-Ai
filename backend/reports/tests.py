@@ -65,11 +65,26 @@ class ReportingTests(TestCase):
         report = Report.objects.get()
         self.assertEqual(report.observer, self.owner)
         self.assertEqual(report.status, Report.Status.SUBMITTED)
+        self.assertEqual(report.polling_unit_code, "")
 
         self.client.force_login(self.other)
         second = self.submit(key)
         self.assertEqual(second.status_code, 201)
         self.assertNotEqual(first.data["reference"], second.data["reference"])
+
+    def test_optional_polling_unit_code_participates_in_idempotency(self):
+        self.client.force_login(self.owner)
+        key = uuid4()
+        payload = {**self.payload, "polling_unit_code": " FICT-001 "}
+        first = self.submit(key, payload)
+        self.assertEqual(first.status_code, 201)
+        self.assertEqual(first.data["polling_unit_code"], "FICT-001")
+        retry = self.submit(key, payload)
+        self.assertEqual(retry.status_code, 200)
+        self.assertEqual(retry.data, first.data)
+        self.assertEqual(self.submit(key).status_code, 409)
+        self.assertEqual(self.submit(payload={**self.payload, "polling_unit_code": "x" * 33}).status_code, 400)
+        self.assertEqual(Report.objects.count(), 1)
 
     def test_validation_and_csrf(self):
         client = APIClient(enforce_csrf_checks=True)

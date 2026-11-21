@@ -2,6 +2,7 @@ from collections import Counter
 from datetime import datetime, time
 from zoneinfo import ZoneInfo
 
+from django.db.models import OuterRef, Subquery
 from django.views.decorators.cache import never_cache
 from rest_framework import serializers
 from rest_framework.decorators import api_view
@@ -10,7 +11,8 @@ from rest_framework.response import Response
 from accounts.models import User
 from accounts.permissions import require_role
 
-from .models import Report, Triage, TriageMatch
+from .capabilities import GROUPING_ENABLED
+from .models import Report, ReviewEvent, Triage, TriageMatch
 
 
 class DateFilters(serializers.Serializer):
@@ -56,20 +58,34 @@ def dashboard(request):
         reports = reports.filter(**{
             f"occurred_at__{comparison}": datetime.combine(date, boundary, ZoneInfo("Africa/Lagos"))
         })
-    rows = list(reports.order_by().values_list(
-        "reference", "status", "triage__corrected_category", "triage__category"
+    closure_outcomes = ReviewEvent.objects.filter(
+        report_id=OuterRef("pk"), action=ReviewEvent.Action.CLOSE,
+    ).order_by("-version").values("change__outcome")[:1]
+    rows = list(reports.annotate(assessment=Subquery(closure_outcomes)).order_by().values_list(
+        "reference", "status", "triage__corrected_category", "triage__category", "assessment",
     ))
-    statuses = Counter(status for _, status, _, _ in rows)
-    categories = Counter(corrected or suggested or "uncategorized" for _, _, corrected, suggested in rows)
-    links = TriageMatch.objects.filter(
-        decision=TriageMatch.Decision.CONFIRMED
-    ).values_list("first_id", "second_id").iterator()
-    return Response({
+    statuses = Counter(row[1] for row in rows)
+    categories = Counter(row[2] or row[3] or "uncategorized" for row in rows)
+    known_outcomes = Report.Outcome.values
+    outcomes = Counter(
+        outcome if outcome in known_outcomes else "unrecorded"
+        for _, status, _, _, outcome in rows if status == Report.Status.CLOSED
+    )
+    result = {
         "report_count": len(rows),
-        "incident_count": incident_count((row[0] for row in rows), links) if rows else 0,
         "statuses": [{"label": label, "count": statuses[key]} for key, label in Report.Status.choices],
+        "outcomes": [
+            {"label": label, "count": outcomes[key]}
+            for key, label in [*Report.Outcome.choices, ("unrecorded", "Outcome unavailable")]
+        ],
         "categories": [
             {"label": label, "count": categories[key]}
             for key, label in [*Triage.Category.choices, ("uncategorized", "Uncategorized")]
         ],
-    })
+    }
+    if GROUPING_ENABLED:
+        links = TriageMatch.objects.filter(
+            decision=TriageMatch.Decision.CONFIRMED
+        ).values_list("first_id", "second_id").iterator()
+        result["incident_count"] = incident_count((row[0] for row in rows), links) if rows else 0
+    return Response(result)

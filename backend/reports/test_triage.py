@@ -8,7 +8,7 @@ from rest_framework.test import APIClient
 
 from accounts.models import User
 
-from .models import Report, Triage, TriageMatch
+from .models import Report, ReviewEvent, Triage, TriageMatch
 from .triage import METHOD_VERSION, process_next
 
 
@@ -66,12 +66,10 @@ class AdvisoryTriageTests(TestCase):
         self.assertEqual(response.data["category"], "access")
         self.assertEqual(response.data["method_version"], METHOD_VERSION)
         self.assertTrue(response.data["attempted_at"])
-        self.assertEqual([str(match["reference"]) for match in response.data["matches"]], [duplicate])
+        self.assertNotIn("matches", response.data)
         self.assertNotIn(hidden, response.content.decode())
-        self.assertEqual(
-            [str(match["reference"]) for match in self.client.get(f"/api/review/{duplicate}/triage").data["matches"]],
-            [current],
-        )
+        first, second = sorted((current, duplicate))
+        self.assertTrue(TriageMatch.objects.filter(first_id=first, second_id=second).exists())
         self.assertEqual(TriageMatch.objects.count(), 3)
         self.assertEqual(Triage.objects.count(), 6)
         self.assertEqual(self.client.get(f"/api/review/{hidden}/triage").status_code, 404)
@@ -81,33 +79,33 @@ class AdvisoryTriageTests(TestCase):
             }).status_code, 404,
         )
 
-    def test_feedback_is_audited_and_candidate_reassignment_hides_match_history(self):
+    def test_report_only_mode_keeps_category_feedback_and_blocks_match_writes(self):
         current = self.submit(self.reviewer)
         confirmed = self.submit(self.reviewer, occurred_at="2026-05-01T09:04:00+01:00")
-        dismissed = self.submit(self.reviewer, occurred_at="2026-05-01T09:06:00+01:00")
         self.run_worker()
         self.client.force_login(self.reviewer)
         path = f"/api/review/{current}/triage"
         self.assertEqual(self.client.post(f"{path}/category", {}, format="json").status_code, 403)
         self.assertEqual(self.post(f"{path}/category", {"version": 0, "category": "other"}).status_code, 200)
         self.assertEqual(self.post(f"{path}/category", {"version": 0, "category": "conduct"}).status_code, 409)
-        self.assertEqual(self.post(f"{path}/matches/{confirmed}", {
-            "version": 1, "decision": "confirmed",
-        }).status_code, 200)
-        self.assertEqual(self.post(f"{path}/matches/{dismissed}", {
-            "version": 2, "decision": "dismissed",
-        }).status_code, 200)
+        for decision in ("confirmed", "dismissed"):
+            self.assertEqual(self.post(f"{path}/matches/{confirmed}", {
+                "version": 1, "decision": decision,
+            }).status_code, 404)
+        match = TriageMatch.objects.get()
+        self.assertEqual(match.decision, TriageMatch.Decision.PENDING)
         data = self.client.get(path).data
         self.assertEqual((data["category"], data["corrected_category"]), ("access", "other"))
-        self.assertEqual(
-            {str(match["reference"]): match["decision"] for match in data["matches"]},
-            {confirmed: "confirmed", dismissed: "dismissed"},
-        )
+        self.assertNotIn("matches", data)
         report = Report.objects.get(pk=current)
         self.assertEqual(report.status, Report.Status.SUBMITTED)
-        self.assertEqual(Report.objects.count(), 3)
+        self.assertEqual(report.version, 1)
+        ReviewEvent.objects.create(
+            report=report, actor=self.reviewer, version=2, action=ReviewEvent.Action.DECIDE_MATCH,
+            change={"candidate": confirmed, "match_decision": "confirmed"},
+        )
         history = self.client.get(f"/api/review/{current}").data["history"]
-        self.assertEqual([event["action"] for event in history], ["correct_category", "decide_match", "decide_match"])
+        self.assertEqual([event["action"] for event in history], ["correct_category"])
         self.assertTrue(all(event["actor"] == self.reviewer.email for event in history))
         self.assertTrue(all(event["created_at"] for event in history))
 
@@ -120,7 +118,7 @@ class AdvisoryTriageTests(TestCase):
         self.client.force_login(self.reviewer)
         for api_path in (path, f"/api/review/{current}"):
             self.assertNotIn(confirmed, self.client.get(api_path).content.decode())
-        self.assertEqual(report.review_events.count(), 3)
+        self.assertEqual(report.review_events.count(), 2)
         self.assertEqual(self.post(f"{path}/matches/{confirmed}", {
             "version": 3, "decision": "dismissed",
         }).status_code, 404)

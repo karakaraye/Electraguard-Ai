@@ -8,6 +8,7 @@ from rest_framework.decorators import api_view, parser_classes
 from rest_framework.parsers import JSONParser
 from rest_framework.response import Response
 
+from .capabilities import GROUPING_ENABLED
 from .models import ReviewEvent, Triage, TriageMatch
 from .triage import METHOD_VERSION
 from .workflow import Conflict, assigned_reports, locked_report, record_change
@@ -28,19 +29,20 @@ def case_triage(request, reference):
         "attempted_at": job.attempted_at,
     }
     if job.status == Triage.Status.READY:
-        matches = TriageMatch.objects.filter(
-            Q(first=report) | Q(second=report),
-            first__assigned_reviewer=request.user,
-            second__assigned_reviewer=request.user,
-        ).select_related("first", "second").defer(
-            "first__description", "second__description",
-        ).order_by("-score", "pk")[:5]
         result.update({
             "category": job.category,
             "corrected_category": job.corrected_category,
             "categories": dict(Triage.Category.choices),
-            "matches": [match_summary(match, report.pk) for match in matches],
         })
+        if GROUPING_ENABLED:
+            matches = TriageMatch.objects.filter(
+                Q(first=report) | Q(second=report),
+                first__assigned_reviewer=request.user,
+                second__assigned_reviewer=request.user,
+            ).select_related("first", "second").defer(
+                "first__description", "second__description",
+            ).order_by("-score", "pk")[:5]
+            result["matches"] = [match_summary(match, report.pk) for match in matches]
     return Response(result)
 
 
@@ -103,6 +105,8 @@ def correct_category(request, reference):
 @transaction.atomic
 def decide_match(request, reference, candidate):
     reports = assigned_reports(request)
+    if not GROUPING_ENABLED:
+        raise Http404
     serializer = MatchDecision(data=request.data)
     serializer.is_valid(raise_exception=True)
     data = serializer.validated_data

@@ -1,5 +1,6 @@
 from rest_framework import serializers
 
+from . import capabilities
 from .models import Evidence, Report, ReviewEvent
 
 
@@ -10,9 +11,14 @@ class EvidenceSerializer(serializers.ModelSerializer):
 
 
 class ReportSerializer(serializers.ModelSerializer):
+    polling_unit_code = serializers.CharField(max_length=32, allow_blank=True, default="")
+
     class Meta:
         model = Report
-        fields = ["reference", "occurred_at", "location", "description", "status", "created_at"]
+        fields = [
+            "reference", "occurred_at", "location", "polling_unit_code", "description",
+            "status", "created_at",
+        ]
         read_only_fields = ["reference", "status", "created_at"]
 
 
@@ -25,23 +31,53 @@ class ReportDetailSerializer(ReportSerializer):
 
 class ObserverReportDetailSerializer(ReportDetailSerializer):
     clarification = serializers.SerializerMethodField()
+    clarification_history = serializers.SerializerMethodField()
+    outcome = serializers.SerializerMethodField()
 
     def get_clarification(self, report):
-        if report.status == Report.Status.NEEDS_CLARIFICATION:
-            event = report.review_events.filter(
-                action=ReviewEvent.Action.REQUEST_CLARIFICATION,
-                version__lte=report.version,
-            ).last()
-            return event.change["note"] if event else None
+        if report.status != Report.Status.NEEDS_CLARIFICATION:
+            return None
+        for event in reversed(report.observer_events):
+            if event.action == ReviewEvent.Action.REQUEST_CLARIFICATION:
+                return event.change["note"]
+        return None
+
+    def get_clarification_history(self, report):
+        return ObserverClarificationSerializer(
+            (event for event in report.observer_events if event.action != ReviewEvent.Action.CLOSE),
+            many=True,
+        ).data
+
+    def get_outcome(self, report):
+        if report.status != Report.Status.CLOSED:
+            return None
+        for event in reversed(report.observer_events):
+            if event.action == ReviewEvent.Action.CLOSE:
+                return dict(Report.Outcome.choices).get(event.change.get("outcome"))
         return None
 
     class Meta(ReportDetailSerializer.Meta):
-        fields = [*ReportDetailSerializer.Meta.fields, "version", "clarification"]
+        fields = [
+            *ReportDetailSerializer.Meta.fields, "version", "clarification", "clarification_history", "outcome",
+        ]
+
+
+class ObserverClarificationSerializer(serializers.ModelSerializer):
+    note = serializers.CharField(source="change.note")
+
+    class Meta:
+        model = ReviewEvent
+        fields = ["action", "created_at", "note"]
 
 
 class ReviewEventSerializer(serializers.ModelSerializer):
-    actor = serializers.EmailField(source="actor.email")
+    actor = serializers.SerializerMethodField()
     action_label = serializers.CharField(source="get_action_display")
+
+    def get_actor(self, event):
+        if event.action == ReviewEvent.Action.RESPOND:
+            return "Observer"
+        return event.actor.email
 
     class Meta:
         model = ReviewEvent
@@ -53,6 +89,9 @@ class ReviewCaseSerializer(ReportDetailSerializer):
 
     def get_history(self, report):
         events = report.review_events.all()
+        if not capabilities.GROUPING_ENABLED:
+            visible_events = [event for event in events if event.action != ReviewEvent.Action.DECIDE_MATCH]
+            return ReviewEventSerializer(visible_events, many=True).data
         references = [
             event.change["candidate"] for event in events
             if event.action == ReviewEvent.Action.DECIDE_MATCH

@@ -14,7 +14,7 @@ from rest_framework.response import Response
 from accounts.models import User
 from accounts.permissions import require_role
 
-from .models import Evidence, Report, Triage
+from .models import Evidence, Report, ReviewEvent, Triage
 from .serializers import EvidenceSerializer, ObserverReportDetailSerializer, ReportSerializer
 from .triage import METHOD_VERSION
 from .uploads import read_evidence
@@ -62,6 +62,13 @@ def report_detail(request, reference):
         with_attachment_metadata(own_reports(request)),
         reference=reference,
     )
+    report.observer_events = list(report.review_events.filter(
+        action__in=[
+            ReviewEvent.Action.REQUEST_CLARIFICATION, ReviewEvent.Action.RESPOND,
+            ReviewEvent.Action.CLOSE,
+        ],
+        version__lte=report.version,
+    ).only("action", "change", "created_at"))
     return Response(ObserverReportDetailSerializer(report).data)
 
 

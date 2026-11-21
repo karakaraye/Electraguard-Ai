@@ -26,6 +26,7 @@ class Report(models.Model):
     submission_key = models.UUIDField()
     occurred_at = models.DateTimeField(db_index=True)
     location = models.CharField(max_length=160)
+    polling_unit_code = models.CharField(max_length=32, blank=True, default="")
     description = models.CharField(max_length=1000)
     status = models.CharField(max_length=24, choices=Status.choices, default=Status.SUBMITTED)
     created_at = models.DateTimeField(auto_now_add=True)

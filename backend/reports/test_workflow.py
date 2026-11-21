@@ -149,7 +149,11 @@ class ReviewWorkflowTests(TestCase):
         self.assertEqual(self.action("close", 5, **decision).status_code, 409)
         history = self.client.get(self.case_url).data["history"]
         self.assertEqual([event["version"] for event in history], [1, 2, 3, 4, 5])
-        self.assertEqual(history[-2]["actor"], self.observer.email)
+        self.assertEqual(history[-2]["actor"], "Observer")
+        self.assertEqual(
+            ReviewEvent.objects.get(report_id=self.ref, action=ReviewEvent.Action.RESPOND).actor,
+            self.observer,
+        )
         self.assertEqual(history[-1]["change"], {
             "from_status": "in_review", "to_status": "closed",
             "attachment_ids": [self.evidence_id], **decision,
@@ -157,7 +161,20 @@ class ReviewWorkflowTests(TestCase):
         self.assertEqual(self.assign(self.replacement, 5).status_code, 409)
         self.client.force_login(self.observer)
         self.assertEqual(self.client.get("/api/reports").data[0]["status"], "closed")
-        self.assertNotIn("history", self.client.get(self.report_url).data)
+        detail = self.client.get(self.report_url).data
+        self.assertNotIn("history", detail)
+        self.assertEqual(detail["outcome"], "Corroborated by available evidence")
+        self.assertEqual(
+            [(event["action"], event["note"]) for event in detail["clarification_history"]],
+            [("request_clarification", question), ("respond", "Fictional north entrance.")],
+        )
+        for event in detail["clarification_history"]:
+            self.assertEqual(set(event), {"action", "created_at", "note"})
+        self.assertNotIn(decision["note"], str(detail))
+        self.assertNotIn(self.reviewer.email, str(detail))
+        self.client.force_login(self.other_observer)
+        self.assertEqual(self.client.get(self.report_url).status_code, 404)
+        self.client.force_login(self.observer)
         token = self.client.get("/api/auth/csrf").json()["csrfToken"]
         upload = self.client.post(
             f"{self.report_url}/attachments",
