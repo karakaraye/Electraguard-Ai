@@ -3,7 +3,11 @@ from django.urls import include, path
 from accounts import views
 from accounts.models import User
 
+from . import health
+
 urlpatterns = [
+    path("health/live", health.live),
+    path("health/ready", health.ready),
     path("api/", include("reports.urls")),
     path("api/auth/csrf", views.csrf_token),
     path("api/auth/sign-in", views.sign_in),

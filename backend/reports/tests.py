@@ -4,7 +4,7 @@ from uuid import uuid4
 from django.conf import settings
 from django.contrib.sessions.models import Session
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.utils import timezone
 from PIL import Image
 from rest_framework.test import APIClient
@@ -87,6 +87,25 @@ class ReportingTests(TestCase):
         second = self.submit(key)
         self.assertEqual(second.status_code, 201)
         self.assertNotEqual(first.data["reference"], second.data["reference"])
+
+    def test_paused_intake_preserves_receipt_recovery_and_existing_evidence_uploads(self):
+        self.client.force_login(self.owner)
+        key = uuid4()
+        original = self.submit(key)
+        self.assertEqual(original.status_code, 201)
+        with override_settings(OBSERVATION_INTAKE_ENABLED=False):
+            paused = self.submit()
+            self.assertEqual(paused.status_code, 503)
+            self.assertEqual(paused.data["code"], "intake_paused")
+            replay = self.submit(key)
+            self.assertEqual(replay.status_code, 200)
+            self.assertEqual(replay.data["reference"], original.data["reference"])
+            self.assertEqual(self.submit(key, {**self.payload, "location": "Changed"}).status_code, 409)
+            report_url = f"{self.url}/{original.data['reference']}"
+            self.assertEqual(self.upload(report_url, self.image()).status_code, 201)
+            self.client.force_login(self.other)
+            self.assertEqual(self.submit(key).status_code, 503)
+            self.assertEqual(Report.objects.count(), 1)
 
     def test_optional_polling_unit_code_participates_in_idempotency(self):
         self.client.force_login(self.owner)

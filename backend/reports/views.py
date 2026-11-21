@@ -1,6 +1,7 @@
 from hashlib import sha256
 from io import BytesIO
 
+from django.conf import settings
 from django.db import transaction
 from django.db.models import Prefetch
 from django.http import FileResponse
@@ -40,9 +41,18 @@ def reports(request):
     serializer = ReportSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
     fields = serializer.validated_data
-    report, created = queryset.get_or_create(
-        observer=request.user, submission_key=key, defaults=fields
-    )
+    if settings.OBSERVATION_INTAKE_ENABLED:
+        report, created = queryset.get_or_create(
+            observer=request.user, submission_key=key, defaults=fields
+        )
+    else:
+        report = queryset.filter(submission_key=key).first()
+        if report is None:
+            return Response({
+                "code": "intake_paused",
+                "detail": "New reports are paused. Keep this page open and try again when intake resumes.",
+            }, status=503)
+        created = False
     if not created and any(getattr(report, field) != value for field, value in fields.items()):
         return Response({"detail": "This submission key belongs to a different report."}, status=409)
     Triage.objects.get_or_create(report=report, defaults={"method_version": METHOD_VERSION})

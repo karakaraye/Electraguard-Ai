@@ -12,6 +12,9 @@ SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "")
 if not SECRET_KEY:
     raise ImproperlyConfigured("Set DJANGO_SECRET_KEY.")
 DEBUG = os.getenv("DJANGO_DEBUG", "").lower() == "true"
+OBSERVATION_INTAKE_ENABLED = os.getenv(
+    "OBSERVATION_INTAKE_ENABLED", "true" if DEBUG else "false"
+).lower() == "true"
 host_setting = os.getenv("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1" if DEBUG else "")
 ALLOWED_HOSTS = [host.strip() for host in host_setting.split(",") if host.strip()]
 frontend_origin = os.getenv("FRONTEND_ORIGIN", "http://localhost:3000" if DEBUG else "")
@@ -76,3 +79,17 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.IsAuthenticated"],
     "DEFAULT_RENDERER_CLASSES": ["rest_framework.renderers.JSONRenderer"],
 }
+
+if not DEBUG:
+    LOGGING = {
+        "version": 1,
+        "disable_existing_loggers": False,
+        "filters": {"private_requests": {"()": "config.logging_filters.PrivateRequestFilter"}},
+        "handlers": {
+            "private_http": {"class": "logging.StreamHandler", "filters": ["private_requests"]},
+        },
+        "loggers": {
+            name: {"handlers": ["private_http"], "propagate": False, "level": "WARNING"}
+            for name in ("django.request", "django.security", "django.server")
+        },
+    }

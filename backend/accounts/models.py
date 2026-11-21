@@ -42,3 +42,16 @@ class User(AbstractUser):
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
     objects = UserManager()
+
+
+class AccountOffboarding(models.Model):
+    class Reason(models.TextChoices):
+        ACCESS_ENDED = "access_ended", "Access no longer required"
+        ROLE_CHANGED = "role_changed", "Role changed"
+        CREDENTIAL_RISK = "credential_risk", "Suspected credential compromise"
+
+    account = models.ForeignKey(User, on_delete=models.PROTECT, related_name="offboarding_events")
+    authorized_by = models.ForeignKey(User, on_delete=models.PROTECT, related_name="+")
+    role = models.CharField(max_length=16, choices=User.Role.choices)
+    reason = models.CharField(max_length=24, choices=Reason.choices)
+    created_at = models.DateTimeField(auto_now_add=True)

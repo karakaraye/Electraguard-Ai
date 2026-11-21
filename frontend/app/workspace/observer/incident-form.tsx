@@ -69,6 +69,13 @@ export function IncidentForm() {
       const response = await csrfPost("/api/reports", submission.body, {
         "Content-Type": "application/json", "Idempotency-Key": submission.key,
       });
+      if (response.status === 503) {
+        const unavailable = await response.json().catch(() => null);
+        if (unavailable?.code === "intake_paused") {
+          setError("New reports are paused. Keep this page open and retry when intake resumes.");
+          return;
+        }
+      }
       if (response.status === 400) {
         setAttempt(null);
         const responseErrors: Record<string, unknown> = await response.json();
