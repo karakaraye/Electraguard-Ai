@@ -2,6 +2,16 @@
 
 Before accepting observations, assign the backup and recovery owner and approve storage, encryption, key access, retention, recovery point and recovery time. Record the PostgreSQL version, application revision, migration state, backup time and expected recovery point in restricted operational records.
 
+For an operator-managed OpenPGP backup, verify the full recipient fingerprint out of band, configure the authorised PostgreSQL credential through libpq and use the encrypted backup command. The routine backup host needs only the approved public key. Use a backup directory that supports atomic hard links.
+
+```sh
+bash deploy/backup-encrypted.sh approved_source_database APPROVED_FINGERPRINT /approved/backups/release.pgdump.gpg
+```
+
+On the isolated recovery host, decrypt into approved encrypted scratch storage and verify decryption exits successfully before giving the plaintext archive to PostgreSQL. Keep the recovery key off the routine backup host and dispose of scratch copies under policy.
+
+The PostgreSQL restore and integrity checker passed locally. The OpenPGP command passed shell syntax validation. The Windows OpenPGP agent could not start, so the full encrypted round trip remains a deployment acceptance check.
+
 1. Pause new intake during a planned consistency checkpoint, or establish the exact snapshot boundary using the approved PostgreSQL backup mechanism. Obtain aggregate verification output for that same snapshot.
 2. Restore into an isolated database with no application listener, public route or worker attached. Use a matching PostgreSQL major version and the approved restore credential. Keep credentials out of command arguments and logs.
 3. Compare the restored database to the approved snapshot expectations. Use a PostgreSQL service or standard libpq environment and a read-only role to run the checker.
