@@ -13,6 +13,7 @@ export function SignOut() {
     try {
       const response = await authPost("sign-out");
       if (response.ok) {
+        window.dispatchEvent(new Event("workspace-access-lost"));
         window.location.replace("/sign-in");
         return;
       }

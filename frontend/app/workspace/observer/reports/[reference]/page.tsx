@@ -1,7 +1,6 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { redirectToWorkspace, sessionRequest } from "../../../../../lib/session";
-import { ReportDetails } from "../../../report-details";
+import { formatReportTime, ReportDetails } from "../../../report-details";
 import { WorkflowForm } from "../../../workflow-form";
 import { EvidenceForm } from "../../evidence-form";
 import type { ObserverReport } from "../../report-types";
@@ -18,11 +17,7 @@ export default async function ReportPage({ params }: { params: Promise<{ referen
   return (
     <section className="panel">
       <h1>Incident report</h1>
-      <p><Link href="/workspace/observer/reports">My Reports</Link></p>
-      <ReportDetails report={report} />
-      {report.status === "closed" ? (
-        <p>Evidence uploads are unavailable because this case is closed. You can still download existing evidence.</p>
-      ) : <EvidenceForm reference={report.reference} />}
+      <p><a href={"/workspace/observer/reports"}>My Reports</a></p>
       {report.clarification && (
         <section className="review-section">
           <h2>Clarification requested</h2>
@@ -32,6 +27,27 @@ export default async function ReportPage({ params }: { params: Promise<{ referen
             <label htmlFor="clarification-response">Clarification response</label>
             <textarea id="clarification-response" name="note" maxLength={2000} rows={4} required />
           </WorkflowForm>
+        </section>
+      )}
+      <ReportDetails report={report} />
+      {report.status === "closed" ? (
+        <section className="review-section">
+          <h2>Observation assessment</h2>
+          <p>{report.outcome ?? "No outcome is available for this case."}</p>
+        </section>
+      ) : <EvidenceForm reference={report.reference} />}
+      {report.clarification_history?.length > 0 && (
+        <section className="review-section">
+          <h2>Clarification history</h2>
+          <ol className="report-list">
+            {report.clarification_history.map(({ action, note, created_at }) => (
+              <li key={`${created_at}-${action}`}>
+                <strong>{action === "respond" ? "Your reply" : "Clarification requested"}</strong>
+                <p>{formatReportTime(created_at)}</p>
+                <p className="review-note">{note}</p>
+              </li>
+            ))}
+          </ol>
         </section>
       )}
     </section>

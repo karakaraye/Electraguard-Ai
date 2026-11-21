@@ -16,6 +16,7 @@ export function ReportDetails({ report }: { report: ReportDetail }) {
         <dt>Status</dt><dd>{reportStatuses[report.status]}</dd>
         <dt>Incident date and time</dt><dd>{formatReportTime(report.occurred_at)}</dd>
         <dt>Approximate location</dt><dd>{report.location}</dd>
+        {report.polling_unit_code && <><dt>Polling-unit code</dt><dd>{report.polling_unit_code}</dd></>}
         <dt>Description</dt><dd>{report.description}</dd>
       </dl>
       <h2>Private evidence</h2>

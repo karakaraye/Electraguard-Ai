@@ -16,17 +16,24 @@ export type Report = {
   reference: string;
   occurred_at: string;
   location: string;
+  polling_unit_code?: string;
   description: string;
   status: ReportStatus;
 };
 
 export type Attachment = { id: string; name: string };
 export type ReportDetail = Report & { attachments: Attachment[] };
-export type ObserverReport = ReportDetail & { clarification: string | null; version: number };
+export type ObserverReport = ReportDetail & {
+  clarification: string | null;
+  clarification_history: { action: "request_clarification" | "respond"; created_at: string; note: string }[];
+  outcome: string | null;
+  version: number;
+};
 export type ReviewEvent = {
   version: number;
   actor: string;
   created_at: string;
+  action: string;
   action_label: string;
   change: {
     previous_reviewer?: string | null;
@@ -35,6 +42,7 @@ export type ReviewEvent = {
     to_status?: ReportStatus;
     note?: string;
     outcome?: keyof typeof reviewOutcomes;
+    attachment_ids?: string[];
     previous_category?: string;
     category?: string;
     candidate?: string;

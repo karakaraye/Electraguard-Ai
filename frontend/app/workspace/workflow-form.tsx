@@ -31,9 +31,14 @@ export function WorkflowForm({ path, version, action, label, children }: {
         router.refresh();
         return;
       }
-      if (response.status === 409 || response.status === 404 || response.status === 403) {
+      if ([401, 403, 404].includes(response.status)) {
+        window.dispatchEvent(new Event("workspace-access-lost"));
+        window.location.replace("/?access=changed");
+        return;
+      }
+      if (response.status === 409) {
         setStale(true);
-        setError("This case or your access has changed. Refresh to see what is available.");
+        setError("This case has changed. Refresh it before trying again.");
       } else if (response.status === 400) {
         const details = Object.values(await response.json()).flat();
         setError(details.find((detail): detail is string => typeof detail === "string")
@@ -54,11 +59,7 @@ export function WorkflowForm({ path, version, action, label, children }: {
         <button>{pending ? "Saving…" : label}</button>
       </fieldset>
       {error && <p role="alert">{error}</p>}
-      {stale && <button type="button" onClick={() => {
-        setStale(false);
-        setError("");
-        router.refresh();
-      }}>Refresh case</button>}
+      {stale && <button type="button" onClick={() => window.location.reload()}>Refresh case</button>}
     </form>
   );
 }

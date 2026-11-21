@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { redirectToWorkspace, sessionRequest } from "../../../../../lib/session";
 import { reportStatuses, reviewOutcomes, type ReviewCase } from "../../../observer/report-types";
@@ -7,12 +6,16 @@ import { WorkflowForm } from "../../../workflow-form";
 import { matchDecisions, TriagePanel } from "./triage-panel";
 import { Suspense } from "react";
 
-export default async function ReviewCasePage({ params }: { params: Promise<{ reference: string }> }) {
+export default async function ReviewCasePage({ params, searchParams }: {
+  params: Promise<{ reference: string }>;
+  searchParams: Promise<{ status?: string }>;
+}) {
   const { reference } = await params;
+  const { status } = await searchParams;
   if (!/^[0-9a-f-]{36}$/.test(reference)) notFound();
   const response = await sessionRequest(`review/${reference}`);
   if (response.status === 403 || response.status === 401) await redirectToWorkspace();
-  if (response.status === 404) notFound();
+  if (response.status === 404) await redirectToWorkspace();
   if (!response.ok) throw new Error("Could not retrieve the review case.");
   const report: ReviewCase = await response.json();
   const actionPath = `/api/review/${reference}/actions`;
@@ -20,7 +23,7 @@ export default async function ReviewCasePage({ params }: { params: Promise<{ ref
   return (
     <section className="panel">
       <h1>Review case</h1>
-      <p><Link href="/workspace/reviewer/cases">Review queue</Link></p>
+      <p><a href={`/workspace/reviewer/cases${status ? `?status=${encodeURIComponent(status)}` : ""}`}>Review queue</a></p>
       <p>Review decisions are internal observation assessments. Official electoral decisions remain with the appropriate authorities.</p>
       <ReportDetails report={report} />
 
@@ -37,16 +40,28 @@ export default async function ReviewCasePage({ params }: { params: Promise<{ ref
             <textarea id="clarification-request" name="note" maxLength={2000} rows={3} required />
           </WorkflowForm>
           <WorkflowForm key={`close-${report.version}`} path={actionPath} version={report.version}
-            action="close" label="Close case">
-            <label htmlFor="outcome">Internal assessment outcome</label>
-            <select id="outcome" name="outcome" defaultValue="" required>
-              <option value="">Choose an outcome</option>
-              {Object.entries(reviewOutcomes).map(([value, label]) =>
-                <option key={value} value={value}>{label}</option>
-              )}
-            </select>
+            action="close" label="Confirm closure">
+            <h3>Record assessment</h3>
+            <p id="closure-effect">Closure records the evidence available at that time and ends report updates.</p>
+            <p>Evidence available now</p>
+            {report.attachments.length ? (
+              <ul className="report-list">{report.attachments.map(({ id, name }) => <li key={id}>{name}</li>)}</ul>
+            ) : <p>No evidence attached.</p>}
+            <div role="group" aria-labelledby="outcome-title">
+              <p id="outcome-title">Internal assessment outcome</p>
+              {Object.entries(reviewOutcomes).map(([value, label]) => (
+                <label className="check-control" key={value}>
+                  <input type="radio" name="outcome" value={value} required />
+                  {label}
+                </label>
+              ))}
+            </div>
             <label htmlFor="rationale">Closing rationale</label>
             <textarea id="rationale" name="note" maxLength={2000} rows={4} required />
+            <label className="check-control">
+              <input type="checkbox" required aria-describedby="closure-effect" />
+              I confirm this assessment closes the case
+            </label>
           </WorkflowForm>
         </section>
       )}
@@ -58,14 +73,26 @@ export default async function ReviewCasePage({ params }: { params: Promise<{ ref
       <section className="review-section">
         <h2>Audit history</h2>
         <ol className="report-list">
-          {report.history.map(({ version, action_label, actor, created_at, change }) => (
+          {report.history.map(({ version, action, action_label, actor, created_at, change }) => (
             <li key={version}>
               <strong>{action_label}</strong>
-              <p>{actor} · {formatReportTime(created_at)}</p>
+              <p>{action === "respond" ? "Observer" : actor} · {formatReportTime(created_at)}</p>
               {change.reviewer && <p>{change.previous_reviewer ?? "Unassigned"} → {change.reviewer}</p>}
               {change.from_status && change.to_status &&
                 <p>{reportStatuses[change.from_status]} → {reportStatuses[change.to_status]}</p>}
               {change.outcome && <p>{reviewOutcomes[change.outcome]}</p>}
+              {change.attachment_ids && (
+                <>
+                  <p>Evidence recorded at closure</p>
+                  {change.attachment_ids.length ? (
+                    <ul>
+                      {change.attachment_ids.map((id) => (
+                        <li key={id}>{report.attachments.find((attachment) => attachment.id === id)?.name ?? id}</li>
+                      ))}
+                    </ul>
+                  ) : <p>No evidence at closure.</p>}
+                </>
+              )}
               {change.category && <p>{change.previous_category} → {change.category}</p>}
               {change.match_decision && change.candidate &&
                 <p>{matchDecisions[change.match_decision]} · {change.candidate}</p>}

@@ -19,7 +19,7 @@ type Triage = {
   category: string;
   corrected_category: string;
   categories: Record<string, string>;
-  matches: {
+  matches?: {
     reference: string;
     location: string;
     occurred_at: string;
@@ -58,6 +58,7 @@ export async function TriagePanel({ reference, version }: { reference: string; v
               ))}
             </select>
           </WorkflowForm>
+          {triage.matches && <>
           <h3>Possible duplicate reports</h3>
           {triage.matches.length === 0 ? <p>No possible matches among cases assigned to you.</p> : (
             <ul className="report-list">
@@ -80,6 +81,7 @@ export async function TriagePanel({ reference, version }: { reference: string; v
               ))}
             </ul>
           )}
+          </>}
         </>
       )}
     </section>

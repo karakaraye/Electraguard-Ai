@@ -5,21 +5,31 @@ import { useRouter } from "next/navigation";
 import { csrfPost } from "../../../lib/auth-client";
 
 export async function uploadEvidence(reference: string, file: File) {
+  if (!file.size || file.size > 2 * 1024 * 1024 || (file.type && !evidenceTypes.includes(file.type))) {
+    throw new Error("Choose a JPEG or PNG image up to 2 MiB.");
+  }
   const body = new FormData();
   body.set("file", file);
-  const response = await csrfPost(`/api/reports/${reference}/attachments`, body);
+  let response: Response;
+  try {
+    response = await csrfPost(`/api/reports/${reference}/attachments`, body);
+  } catch {
+    throw new Error("The upload could not be confirmed.");
+  }
   if (response.ok) return;
   if (response.status === 409) {
     throw new Error("Evidence uploads are unavailable because this case is closed.");
   }
   if (response.status === 400) {
-    const { file: detail } = await response.json();
+    const problem: { file?: unknown } | null = await response.json().catch(() => null);
+    const detail = Array.isArray(problem?.file) ? problem.file[0] : problem?.file;
     throw new Error(typeof detail === "string" ? detail : "Choose a valid JPEG or PNG image.");
   }
   throw new Error("The upload could not be confirmed.");
 }
 
-export const evidenceAccept = "image/jpeg,image/png";
+const evidenceTypes = ["image/jpeg", "image/png"];
+export const evidenceAccept = evidenceTypes.join(",");
 export const evidenceHint = "Use a JPEG or PNG image up to 2 MiB and 16 megapixels.";
 
 export function EvidenceForm({
