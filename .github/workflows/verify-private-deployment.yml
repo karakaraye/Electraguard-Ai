@@ -69,6 +69,33 @@ jobs:
               exit 1
             fi
           done
+      - name: Verify encrypted backup and restore
+        shell: bash
+        run: |
+          set -euo pipefail
+          scratch="$(mktemp -d)"
+          export GNUPGHOME="$scratch/gnupg"
+          mkdir -m 0700 "$GNUPGHOME" "$scratch/bin"
+          cat > "$scratch/bin/pg_dump" <<'RUN_DUMP'
+          #!/usr/bin/env bash
+          exec docker compose -f deploy/compose.yaml exec -T postgres pg_dump --username=electraguard_bootstrap "$@"
+          RUN_DUMP
+          chmod 0700 "$scratch/bin/pg_dump"
+          gpg --batch --pinentry-mode loopback --passphrase '' \
+            --quick-generate-key 'ElectraGuard backup check <backup@qa.example>' default default 1d
+          recipient="$(gpg --batch --with-colons --fingerprint backup@qa.example |
+            awk -F: '$1 == "fpr" && !seen++ { print $10 }')"
+          PATH="$scratch/bin:$PATH" bash deploy/backup-encrypted.sh electraguard "$recipient" "$scratch/backup.gpg"
+          gpg --batch --output "$scratch/restore.dump" --decrypt "$scratch/backup.gpg"
+          db=(docker compose -f deploy/compose.yaml exec -T postgres)
+          "${db[@]}" createdb --username=electraguard_bootstrap electraguard_recovery_ci
+          "${db[@]}" pg_restore --username=electraguard_bootstrap --exit-on-error --no-owner --no-privileges \
+            --dbname=electraguard_recovery_ci < "$scratch/restore.dump"
+          query='SELECT count(*) FROM django_migrations;'
+          expected="$("${db[@]}" psql -U electraguard_bootstrap -d electraguard -Atqc "$query")"
+          restored="$("${db[@]}" psql -U electraguard_bootstrap -d electraguard_recovery_ci -Atqc "$query")"
+          test "$expected" -gt 0
+          test "$expected" = "$restored"
       - name: Stop isolated runtime
         if: always()
         run: docker compose -f deploy/compose.yaml down --volumes
