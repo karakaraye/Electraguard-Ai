@@ -10,7 +10,7 @@ bash deploy/backup-encrypted.sh approved_source_database APPROVED_FINGERPRINT /a
 
 On the isolated recovery host, decrypt into approved encrypted scratch storage and verify decryption exits successfully before giving the plaintext archive to PostgreSQL. Keep the recovery key off the routine backup host and dispose of scratch copies under policy.
 
-The PostgreSQL restore and integrity checker passed locally. The OpenPGP command passed shell syntax validation. The Windows OpenPGP agent could not start, so the full encrypted round trip remains a deployment acceptance check.
+The PostgreSQL restore and integrity checker passed locally with generated records. Hosted acceptance separately ran the OpenPGP backup command, decrypted its output and restored the migrated database into an isolated database with matching migration counts. The organisation still needs to approve the recovery key and recovery targets. [Hosted recovery check](https://github.com/karakaraye/Electraguard-Ai/actions/runs/44945800755)
 
 1. Pause new intake during a planned consistency checkpoint, or establish the exact snapshot boundary using the approved PostgreSQL backup mechanism. Obtain aggregate verification output for that same snapshot.
 2. Restore into an isolated database with no application listener, public route or worker attached. Use a matching PostgreSQL major version and the approved restore credential. Keep credentials out of command arguments and logs.
