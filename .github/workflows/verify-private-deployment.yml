@@ -6,6 +6,10 @@ on:
     branches: [production-readiness]
     paths:
       - "deploy/**"
+      - "backend/**"
+      - "frontend/**"
+      - "scripts/verify-core.cjs"
+      - "tests/fixtures/**"
       - ".github/workflows/verify-private-deployment.yml"
 
 concurrency:
@@ -21,12 +25,17 @@ jobs:
     timeout-minutes: 20
     env:
       ELECTRAGUARD_RELEASE: ${{ github.sha }}
-      ELECTRAGUARD_HOST: electraguard.test
+      ELECTRAGUARD_HOST: localhost
+      COMPOSE_PROJECT_NAME: electraguard-acceptance
       OBSERVATION_INTAKE_ENABLED: "false"
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: "24"
+          package-manager-cache: false
       - name: Configure isolated runtime
         shell: bash
         run: |
@@ -96,6 +105,40 @@ jobs:
           restored="$("${db[@]}" psql -U electraguard_bootstrap -d electraguard_recovery_ci -Atqc "$query")"
           test "$expected" -gt 0
           test "$expected" = "$restored"
+      - name: Verify all three roles through the Docker HTTPS gateway
+        shell: bash
+        run: |
+          set -euo pipefail
+          compose=(docker compose -f deploy/compose.yaml)
+          export OBSERVATION_INTAKE_ENABLED=true
+          "${compose[@]}" up -d --wait backend
+          container="$("${compose[@]}" ps -q backend)"
+          export QA_COMPOSE_PROJECT="$(docker inspect --format '{{ index .Config.Labels "com.docker.compose.project" }}' "$container")"
+          test "$QA_COMPOSE_PROJECT" = electraguard-acceptance
+          fixture_env=(-e QA_COMPOSE_PROJECT)
+          for role in OBSERVER SECOND_OBSERVER REVIEWER SECOND_REVIEWER ADMINISTRATOR; do
+            variable="QA_${role}_PASSWORD"
+            password="$(openssl rand -hex 24)"
+            printf '::add-mask::%s\n' "$password"
+            export "$variable=$password"
+            fixture_env+=(-e "$variable")
+          done
+          unset password
+          "${compose[@]}" exec -T "${fixture_env[@]}" backend /usr/local/bin/electraguard-django \
+            python manage.py shell < tests/fixtures/provision_browser_accounts.py
+          scratch="$(mktemp -d)"
+          npm install --prefix "$scratch" --ignore-scripts --no-save playwright@1.62.1
+          export NODE_PATH="$scratch/node_modules"
+          if command -v google-chrome >/dev/null; then
+            export QA_CHROMIUM_PATH="$(command -v google-chrome)"
+          else
+            "$scratch/node_modules/.bin/playwright" install chromium
+          fi
+          export QA_FRONTEND_ORIGIN="https://$ELECTRAGUARD_HOST"
+          export NODE_EXTRA_CA_CERTS="$ELECTRAGUARD_TLS_DIR/fullchain.pem"
+          export QA_CHROMIUM_TLS_PIN="$(openssl x509 -in "$NODE_EXTRA_CA_CERTS" -pubkey -noout |
+            openssl pkey -pubin -outform der | openssl dgst -sha256 -binary | openssl enc -base64)"
+          node scripts/verify-core.cjs
       - name: Stop isolated runtime
         if: always()
         run: docker compose -f deploy/compose.yaml down --volumes

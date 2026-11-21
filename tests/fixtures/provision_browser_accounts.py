@@ -1,4 +1,4 @@
-"""Run through Django shell against a dedicated local browser test database."""
+"""Run through Django shell against an isolated browser acceptance database."""
 
 import os
 
@@ -10,11 +10,19 @@ from accounts.models import User
 
 def provision():
     database = settings.DATABASES["default"]
-    if (
-        not settings.DEBUG or database["NAME"] != "electraguard_qa"
-        or database["HOST"] not in {"127.0.0.1", "localhost", "::1"}
-    ):
-        raise RuntimeError("Use DEBUG and the isolated loopback electraguard_qa database.")
+    local_fixture = (
+        settings.DEBUG and database["NAME"] == "electraguard_qa"
+        and database["HOST"] in {"127.0.0.1", "localhost", "::1"}
+    )
+    compose_fixture = (
+        os.getenv("QA_COMPOSE_PROJECT") == "electraguard-acceptance" and not settings.DEBUG
+        and database["NAME"] == "electraguard" and database["HOST"] == "postgres"
+        and settings.ALLOWED_HOSTS == ["localhost"]
+        and settings.CSRF_TRUSTED_ORIGINS == ["https://localhost"]
+        and settings.OBSERVATION_INTAKE_ENABLED
+    )
+    if not (local_fixture or compose_fixture):
+        raise RuntimeError("Use an isolated browser acceptance database.")
     roles = {
         "observer": User.Role.OBSERVER,
         "second-observer": User.Role.OBSERVER,
