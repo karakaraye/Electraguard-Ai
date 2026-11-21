@@ -1,7 +1,46 @@
+from io import StringIO
+from unittest.mock import patch
+
+from django.core.management import call_command
+from django.core.management.base import CommandError
 from django.test import TestCase
 from rest_framework.test import APIClient
 
 from .models import User
+
+
+class AccountProvisioningTests(TestCase):
+    command = "accounts.management.commands.provision_account"
+
+    def provision(self, email, password, confirmation):
+        with (
+            patch(f"{self.command}.sys.stdin.isatty", return_value=True),
+            patch(f"{self.command}.sys.stderr.isatty", return_value=True),
+            patch(f"{self.command}.getpass", side_effect=[password, confirmation]),
+        ):
+            call_command(
+                "provision_account", "--email", email, "--role", User.Role.ADMINISTRATOR,
+                stdout=StringIO(),
+            )
+
+    def test_named_account_has_only_the_application_role(self):
+        password = "Test-only cedar ridge weatherproof 5"
+        self.provision("Operator@tests.example", password, password)
+        account = User.objects.get(email="operator@tests.example")
+        self.assertEqual(account.role, User.Role.ADMINISTRATOR)
+        self.assertFalse(account.is_staff)
+        self.assertFalse(account.is_superuser)
+        self.assertTrue(account.check_password(password))
+        with self.assertRaisesMessage(CommandError, "already exists"):
+            self.provision(account.email, "another credential", "another credential")
+        account.refresh_from_db()
+        self.assertTrue(account.check_password(password))
+
+    def test_weak_or_unconfirmed_password_creates_no_account(self):
+        for password, confirmation in (("weak", "weak"), ("first input", "different input")):
+            with self.subTest(password=password), self.assertRaises(CommandError):
+                self.provision("operator@tests.example", password, confirmation)
+        self.assertFalse(User.objects.exists())
 
 
 class SessionAndRoleTests(TestCase):
