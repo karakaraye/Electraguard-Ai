@@ -101,7 +101,7 @@ If a save cannot be confirmed, use **Retry report** on the same form to send the
 
 Evidence is optional. The server accepts JPEG and PNG still images up to 2 MiB and 16 megapixels. PostgreSQL holds the original files, and the API checks Observer ownership or current Reviewer assignment on every download. If the report saves but the upload fails, use **Retry attachment** with the same file or select a replacement. You can also add evidence from report detail while the case is open. After closure, existing evidence remains downloadable and new uploads are rejected.
 
-The observer API accepts JSON at `POST /api/reports` with `occurred_at` (ISO 8601), `location`, and `description`, plus a UUID in the `Idempotency-Key` header. Replaying the same submission returns HTTP 200 with the original reference. Reusing a key for changed report fields returns HTTP 409. The key is scoped to the signed-in Observer. `GET /api/reports` and `GET /api/reports/<reference>` serve the owner’s list and detail. Uploads use the multipart `file` field at `POST /api/reports/<reference>/attachments`. Uploading identical bytes to the same report returns the existing attachment. Downloads use `GET /api/reports/<reference>/attachments/<attachment-id>`. Writes use the same CSRF flow as sign-in and sign-out.
+The observer API accepts JSON at `POST /api/reports` with `occurred_at` (ISO 8601), `location`, `description`, and optional `polling_unit_code`, plus a UUID in the `Idempotency-Key` header. Replaying the same submission returns HTTP 200 with the original reference. Reusing a key for changed report fields returns HTTP 409. The key is scoped to the signed-in Observer. `GET /api/reports` and `GET /api/reports/<reference>` serve the owner’s list and detail. Uploads use the multipart `file` field at `POST /api/reports/<reference>/attachments`. Uploading identical bytes to the same report returns the existing attachment. Downloads use `GET /api/reports/<reference>/attachments/<attachment-id>`. Writes use the same CSRF flow as sign-in and sign-out.
 
 ### Reviewer workflow
 
@@ -124,36 +124,19 @@ For a one-time run, add `--once`. Add `--retry-failed` on startup to requeue fai
 
 The local `local-lexical-v1` method suggests categories by comparing report descriptions with labeled synthetic examples. It identifies possible duplicates using a 90-minute window, approximate-location word overlap, and description similarity. It uses incident times, location text, and descriptions. Evidence attachments and account identities are outside the model input. Processing runs locally without an external AI service.
 
-Open an assigned case to see the processing status, suggested category, and up to five possible matches among cases currently assigned to you. Refresh the page after the worker runs. Use **Correct category** to record a human correction and **Possible match decision** to confirm or dismiss a pair. Both actions create audit entries. Both reports retain their own case records, assignments, and assessment status. Manual review is available even if triage is pending or unavailable. Only the assigned human Reviewer can assess or close a case.
+Open an assigned case to see the processing status and suggested category. Refresh the page after the worker runs. **Correct category** records an audited human correction. Only the assigned human Reviewer can assess or close a case. Manual review works while triage is pending or unavailable.
 
-The Reviewer API reads suggestions at `GET /api/review/<reference>/triage`. Category corrections and match decisions are versioned, CSRF-protected writes at `POST /api/review/<reference>/triage/category` and `POST /api/review/<reference>/triage/matches/<candidate>`. Django checks both assignments for match actions and filters previous match audit entries when a candidate is no longer assigned to the Reviewer.
+The Reviewer API reads suggestions at `GET /api/review/<reference>/triage`. Category corrections are versioned and CSRF-protected at `POST /api/review/<reference>/triage/category`.
 
 ### Internal observation dashboard
 
 Sign in as an Administrator and open **Observation dashboard**. Django restricts `GET /api/dashboard` to the application Administrator role. The optional `start` and `end` dates are inclusive incident dates in West Africa Time. The dashboard returns aggregate counts only.
 
-**Submitted reports** counts every report in the date range, including reports now in review or closed. **Distinct incidents** counts connected groups formed by Reviewer-confirmed links. A group is counted when at least one member is in the date range, including when a report outside the range connects two in-range reports. Pending and dismissed suggestions leave totals unchanged. Status and category breakdowns count reports. The category uses the Reviewer correction when available, then the suggested category, then Uncategorized.
+**Submitted reports** counts every report in the date range across all statuses. The outcomes breakdown counts closed reports. **Outcome unavailable** accounts for any older closed record without a recognised outcome. The category breakdown uses the Reviewer correction when available, then the suggestion, then Uncategorized. Report-only mode omits the group total and refuses match decisions. Existing link history is retained in storage.
 
-### Stage 5 fictional demo
+### Fictional release demo
 
-Use a fresh local demo database to replay the full workflow. Set a dedicated database name in `.env`. With Docker Compose, use a new project name such as `docker compose -p electraguard-stage5 up -d --wait db` and choose a free `POSTGRES_PORT`. With an existing PostgreSQL server, create the dedicated database using the instructions above. From the repository root:
-
-```powershell
-.\backend\.venv\Scripts\python.exe backend/manage.py migrate
-.\backend\.venv\Scripts\python.exe backend/manage.py seed_dashboard_demo
-```
-
-The seed creates the fictional role accounts and one counterpart report at **Fictional Cedar Training Hall** on **12 March 2026 at 09:00 WAT**. The command is safe to rerun and retains existing review progress. Use a fresh database for a clean replay.
-
-1. Sign in as the Observer. Submit a second report at the same location for **12 March 2026 at 09:05 WAT**. The incident form uses the device time zone, so enter the corresponding local time if needed. Use the synthetic description “A crate blocked the ramp and wheelchair users could not enter.” Attach [synthetic-evidence.png](demo/synthetic-evidence.png).
-2. Sign in as the Administrator and assign both reports to the same demo Reviewer. Start the worker, or drain the queue after both submissions:
-
-   ```powershell
-   .\backend\.venv\Scripts\python.exe backend/manage.py run_triage --once
-   ```
-
-3. As the Reviewer, open the new report, download its evidence, and confirm the suggested match. Start review and close the new report with **Corroborated by available evidence** and a fictional rationale. Verify the rationale is in the audit history.
-4. As the Administrator, apply a date filter of **12 March 2026** for both bounds. Expect **2 submitted reports**, **1 distinct incident**, **1 Submitted**, **1 Closed**, and **2 Access or accessibility** reports. Before confirming the link, the same two reports count as two incidents.
+Use the [release runbook](RELEASE.md) for the worker-off replay, expected dashboard totals, verification record, and separate pre-seeded fallback.
 
 ### Synthetic triage evaluation
 

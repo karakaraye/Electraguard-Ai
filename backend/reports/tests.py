@@ -1,8 +1,11 @@
 from io import BytesIO
 from uuid import uuid4
 
+from django.conf import settings
+from django.contrib.sessions.models import Session
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
+from django.utils import timezone
 from PIL import Image
 from rest_framework.test import APIClient
 
@@ -52,6 +55,19 @@ class ReportingTests(TestCase):
         response = self.submit()
         self.assertEqual(response.status_code, 201, response.data)
         return f"{self.url}/{response.data['reference']}"
+
+    def test_expired_session_cannot_read_own_report_or_evidence(self):
+        report_url = self.create_report()
+        attachment = self.upload(report_url, self.image())
+        self.assertEqual(attachment.status_code, 201)
+        evidence_url = f"{report_url}/attachments/{attachment.data['id']}"
+        session_key = self.client.cookies[settings.SESSION_COOKIE_NAME].value
+        Session.objects.filter(session_key=session_key).update(expire_date=timezone.now())
+
+        for url in (report_url, evidence_url):
+            with self.subTest(url=url):
+                self.client.cookies[settings.SESSION_COOKIE_NAME] = session_key
+                self.assertEqual(self.client.get(url).status_code, 403)
 
     def test_submission_replay_and_conflict(self):
         self.client.force_login(self.owner)
