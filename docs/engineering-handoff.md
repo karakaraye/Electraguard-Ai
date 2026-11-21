@@ -6,6 +6,8 @@ Read [the production plan](../PRODUCTION.md) and [field operations](field-operat
 
 Product, planning and design set requirements, priorities, field journeys and interface direction. Engineering owns architecture, implementation, migrations, release checks and operational evidence. Treat new guidance from the project owner or the designated product/design lead as the input to technical delivery. Bring contradictions and privacy implications back with a concrete decision request and keep independent work moving.
 
+When the project owner hands over coordination, the product/design supervisor may restructure how the team works, including the backlog, ownership map, handoff and review cadence. The supervising engineering agent directs technical work and verifies delivery against that structure. Update the ownership map before overlapping edits.
+
 ## Current work
 
 | Area | State | Next evidence |
@@ -21,6 +23,7 @@ Product, planning and design set requirements, priorities, field journeys and in
 - Preserve authenticated observer ownership, private evidence, assigned access, original accounts and human assessment. Keep grouping gated and triage advisory. Resolve policy questions with the accountable owner.
 - Use isolated test input and keep secrets and records out of diffs, logs and handoff artifacts. Keep intake paused until the production and operating gates pass. Publishing, external deployment and real record collection require the relevant authorisation.
 - Update this handoff after each completed slice. Record commands, results, unresolved failures and the next owner. Use the release plan to decide whether evidence closes a launch gate.
+- Commit each verified slice promptly in the shared checkout so collaborators can inspect the commits. Keep unrelated changes outside the commit. Work in parallel on separate files when another collaborator starts. Remote publication requires separate approval.
 
 ## Verification ledger
 
