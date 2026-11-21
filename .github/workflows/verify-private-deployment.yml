@@ -1,6 +1,16 @@
 name: Verify private deployment
 
-on: workflow_dispatch
+on:
+  workflow_dispatch:
+  push:
+    branches: [production-readiness]
+    paths:
+      - "deploy/**"
+      - ".github/workflows/verify-private-deployment.yml"
+
+concurrency:
+  group: private-deployment-${{ github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: read

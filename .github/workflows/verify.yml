@@ -6,6 +6,7 @@ on:
     branches:
       - main
       - work
+      - production-readiness
 
 permissions:
   contents: read
