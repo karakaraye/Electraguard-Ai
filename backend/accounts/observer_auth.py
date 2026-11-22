@@ -148,6 +148,26 @@ def locked(row):
     )
 
 
+def register_failure(row, credential, now):
+    now_ts = now.timestamp()
+    row.attempts = [timestamp for timestamp in row.attempts if timestamp > (now - DAY).timestamp()]
+    row.attempts.append(now_ts)
+    row.permanently_locked = len(row.attempts) >= 10
+    short_lock = sum(timestamp > (now - CODE_WINDOW).timestamp() for timestamp in row.attempts) >= 5
+    row.locked_until = now + CODE_WINDOW if short_lock else None
+    row.save()
+    if row.permanently_locked or short_lock:
+        if credential and credential.status != Status.REVOKED:
+            credential.status = Status.LOCKED
+            credential.save(update_fields=["status"])
+            ObserverSecurityAlert.objects.create(
+                organisation_id=credential.organisation_id, credential=credential,
+                permanent=row.permanently_locked,
+            )
+        return locked(row)
+    return invalid_credentials()
+
+
 @endpoint("GET")
 def csrf(request):
     return throttle(request, "csrf-ip", 60, 60) or JsonResponse({"csrf_token": get_token(request)})
@@ -189,23 +209,7 @@ def authenticate_code(request, code, pin):
         return locked(row)
 
     if not correct or (setup and credential.setup_expires_at <= now):
-        now_ts = now.timestamp()
-        row.attempts = [timestamp for timestamp in row.attempts if timestamp > (now - DAY).timestamp()]
-        row.attempts.append(now_ts)
-        row.permanently_locked = len(row.attempts) >= 10
-        short_lock = sum(timestamp > (now - CODE_WINDOW).timestamp() for timestamp in row.attempts) >= 5
-        row.locked_until = now + CODE_WINDOW if short_lock else None
-        row.save()
-        if row.permanently_locked or short_lock:
-            if credential and credential.status != Status.REVOKED:
-                credential.status = Status.LOCKED
-                credential.save(update_fields=["status"])
-                ObserverSecurityAlert.objects.create(
-                    organisation_id=credential.organisation_id, credential=credential,
-                    permanent=row.permanently_locked,
-                )
-            return locked(row)
-        return invalid_credentials()
+        return register_failure(row, credential, now)
 
     if not credential.user.is_active:
         return invalid_credentials()
@@ -257,19 +261,77 @@ def set_pin(request, data):
         if not valid:
             return validation({"new_pin": field_error(data, "new_pin", "Enter a six-digit PIN.")})
         field = (
-            {"code": "pin_reused", "message": "Choose a PIN different from the start of the setup PIN."}
+            {"code": "pin_same_as_setup", "message": "Choose a PIN different from the start of the setup PIN."}
             if reused else {"code": "pin_too_simple", "message": "Avoid repeated or sequential digits."}
         )
         return error(422, "validation_failed", "Choose a different PIN.", fields={"new_pin": field})
 
     credential.pin_hash = pin_hash(pin)
-    credential.setup_hash = credential.setup_prefix_hash = ""
+    credential.setup_hash = ""
     credential.setup_expires_at = credential.token_expires_at = None
     credential.token_digest = None
     credential.status = Status.ACTIVE
     credential.save()
     start_observer_session(request, credential.user)
     return JsonResponse({"status": "signed_in", "me": identity(request)})
+
+
+@endpoint("POST")
+def change_pin(request, data):
+    if not request.user.is_authenticated:
+        return error(401, "not_authenticated", "Sign in to continue.")
+    if request.user.role != User.Role.OBSERVER:
+        return error(403, "forbidden", "Your role cannot do this.")
+
+    limited = throttle(request, "sign-in-ip", 30, 600)
+    if limited is not None:
+        return limited
+    current, new = data.get("current_pin"), data.get("new_pin")
+    fields = {
+        name: field_error(data, name, "Enter a six-digit PIN.")
+        for name, value in (("current_pin", current), ("new_pin", new))
+        if not pin_format(value, (6,))
+    }
+    if fields:
+        return validation(fields)
+    return change_credential_pin(request, current, new)
+
+
+@transaction.atomic
+def change_credential_pin(request, current, new):
+    credentials = org_scope(request, ObserverCode).filter(user=request.user)
+    code = credentials.values_list("code", flat=True).first()
+    if code is None:
+        return error(403, "forbidden", "An observer code is required.")
+    row = locked_throttle("code", code)
+    credential = credentials.select_for_update().get(code=code)
+    now = timezone.now()
+
+    correct = verify_pin(current, credential.pin_hash)
+    if credential.status not in (Status.ACTIVE, Status.LOCKED) or not credential.user.is_active:
+        return invalid_credentials()
+    if row.permanently_locked or (row.locked_until and row.locked_until > now):
+        return locked(row)
+    if not correct:
+        return register_failure(row, credential, now)
+
+    if too_simple(new):
+        return validation({"new_pin": {
+            "code": "pin_too_simple", "message": "Avoid repeated or sequential digits.",
+        }})
+    if new == current:
+        return validation({"new_pin": {
+            "code": "pin_reused", "message": "Choose a PIN different from your current PIN.",
+        }})
+    if credential.setup_prefix_hash and verify_pin(new, credential.setup_prefix_hash):
+        return validation({"new_pin": {
+            "code": "pin_same_as_setup", "message": "Choose a PIN different from the start of the setup PIN.",
+        }})
+
+    credential.pin_hash = pin_hash(new)
+    credential.status = Status.ACTIVE
+    credential.save(update_fields=["pin_hash", "status"])
+    return HttpResponse(status=204)
 
 
 @endpoint("POST")

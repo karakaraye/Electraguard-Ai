@@ -1,0 +1,154 @@
+{
+  "dataset_version": "2026-11-22.1",
+  "source": "synthetic",
+  "states": [
+    {
+      "state_code": "SYN-KN",
+      "name": "Synthetic Kano",
+      "lgas": [
+        {
+          "lga_code": "SYN-KN-01",
+          "name": "Fictional LGA 1",
+          "wards": [
+            {
+              "ward_code": "SYN-KN-01-01",
+              "name": "Fictional ward 1",
+              "units": [
+                [
+                  "SYN-KN-01-01-001",
+                  "Fictional training unit 1"
+                ],
+                [
+                  "SYN-KN-01-01-002",
+                  "Fictional training unit 2"
+                ]
+              ]
+            },
+            {
+              "ward_code": "SYN-KN-01-02",
+              "name": "Fictional ward 2",
+              "units": [
+                [
+                  "SYN-KN-01-02-001",
+                  "Fictional training unit 1"
+                ],
+                [
+                  "SYN-KN-01-02-002",
+                  "Fictional training unit 2"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "lga_code": "SYN-KN-02",
+          "name": "Fictional LGA 2",
+          "wards": [
+            {
+              "ward_code": "SYN-KN-02-01",
+              "name": "Fictional ward 1",
+              "units": [
+                [
+                  "SYN-KN-02-01-001",
+                  "Fictional training unit 1"
+                ],
+                [
+                  "SYN-KN-02-01-002",
+                  "Fictional training unit 2"
+                ]
+              ]
+            },
+            {
+              "ward_code": "SYN-KN-02-02",
+              "name": "Fictional ward 2",
+              "units": [
+                [
+                  "SYN-KN-02-02-001",
+                  "Fictional training unit 1"
+                ],
+                [
+                  "SYN-KN-02-02-002",
+                  "Fictional training unit 2"
+                ]
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "state_code": "SYN-LA",
+      "name": "Synthetic Lagos",
+      "lgas": [
+        {
+          "lga_code": "SYN-LA-01",
+          "name": "Fictional LGA 1",
+          "wards": [
+            {
+              "ward_code": "SYN-LA-01-01",
+              "name": "Fictional ward 1",
+              "units": [
+                [
+                  "SYN-LA-01-01-001",
+                  "Fictional training unit 1"
+                ],
+                [
+                  "SYN-LA-01-01-002",
+                  "Fictional training unit 2"
+                ]
+              ]
+            },
+            {
+              "ward_code": "SYN-LA-01-02",
+              "name": "Fictional ward 2",
+              "units": [
+                [
+                  "SYN-LA-01-02-001",
+                  "Fictional training unit 1"
+                ],
+                [
+                  "SYN-LA-01-02-002",
+                  "Fictional training unit 2"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "lga_code": "SYN-LA-02",
+          "name": "Fictional LGA 2",
+          "wards": [
+            {
+              "ward_code": "SYN-LA-02-01",
+              "name": "Fictional ward 1",
+              "units": [
+                [
+                  "SYN-LA-02-01-001",
+                  "Fictional training unit 1"
+                ],
+                [
+                  "SYN-LA-02-01-002",
+                  "Fictional training unit 2"
+                ]
+              ]
+            },
+            {
+              "ward_code": "SYN-LA-02-02",
+              "name": "Fictional ward 2",
+              "units": [
+                [
+                  "SYN-LA-02-02-001",
+                  "Fictional training unit 1"
+                ],
+                [
+                  "SYN-LA-02-02-002",
+                  "Fictional training unit 2"
+                ]
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

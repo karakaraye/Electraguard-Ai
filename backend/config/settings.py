@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "accounts",
     "reports",
+    "reference",
 ]
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",

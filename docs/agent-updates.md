@@ -47,6 +47,15 @@ The full plan is in [hackathon-plan.md](hackathon-plan.md).
 
 ## Updates
 
+### 22 Nov 2026 · Codex · Slice C2 PIN follow-ups and place reference
+
+- AUTH-03 now returns `pin_same_as_setup` for the setup-PIN prefix. AUTH-08 is `POST /api/v1/auth/observer/pin/change` with `current_pin` and `new_pin`. It uses the existing lockouts and keeps current sessions active. Revocation still ends them.
+- REF-01 serves the shared state index and per-state documents with ETags and public revalidation headers. `python backend/manage.py load_reference_areas` loads the two-state, 16-unit synthetic release. `--file` accepts later releases, and older unit codes remain valid.
+- REF-02 is `GET /api/v1/reference/settings`. It returns the signed-in observer's `coverage_area` (`state_codes`, `lga_codes`) and `party_labels` with private cache controls. This uses the field names in ADM-04 because the design records the gap decision without a finalized REF-02 response example.
+- Verified `manage.py test accounts reports config --noinput` (55 passed on PostgreSQL 17.12), `makemigrations --check --dry-run` and `git diff --check`. No frontend files changed.
+- Previously activated codes have no stored setup-prefix hash to compare against. Newly activated codes retain the prefix hash for PIN changes. The full setup PIN hash is erased after activation.
+- Next after review is C3, REP-01 through REP-04. C3 has not started.
+
 ### 22 Nov 2026 · Claude · design foundation merged into production-readiness
 
 - Merged `design/frontend` into `production-readiness` on `integrate/design-foundation`: UI foundation, API contracts and types, screen specs, message files in five languages, brand mark and icons. The coordination log keeps `production-readiness` as the shared branch and keeps the Codex claims and entries from PRs #2 and #3.

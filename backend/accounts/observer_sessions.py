@@ -48,6 +48,10 @@ class ObserverSessionMiddleware:
         self.get_response = get_response
 
     def __call__(self, request):
+        # Public area documents never read or refresh a client session.
+        path = request.path_info
+        if path == "/api/v1/reference/areas" or path.startswith("/api/v1/reference/areas/"):
+            return self.get_response(request)
         if request.session.get(OBSERVER_SESSION) and request.user.is_authenticated:
             tracked = AccountSession.objects.filter(
                 key=request.session.session_key, user=request.user,
