@@ -117,7 +117,7 @@ export function UploadItem({
                 {t("ui.upload.chooseAgain")}
               </Button>
             ) : null}
-            {onRemove && state !== "uploading" ? (
+            {onRemove ? (
               <Button variant="quiet" icon={<TrashIcon />} onClick={onRemove} data-testid={`${testId}-remove`}>
                 {t("ui.upload.remove")}
               </Button>

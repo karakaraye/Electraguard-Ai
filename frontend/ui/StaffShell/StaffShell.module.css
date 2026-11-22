@@ -285,3 +285,7 @@
   outline-offset: var(--focus-offset);
   box-shadow: var(--focus-halo);
 }
+
+.themeSwitcher {
+  display: inline-flex;
+}
