@@ -39,7 +39,7 @@ Split observers from citizens, sign observers in with the observer code and 6-di
 ### View `revoked`
 1. `--danger` triangle icon + title `o03.revoked.title`; body `o03.revoked.body`.
 2. If items are on the phone for that code: `Banner` (attn) `o03.revoked.unsent` + `o03.revoked.unsentHint`.
-3. Pinned: primary `o03.revoked.signInNew` → sign-in view. Secondary (only when items exist) `o03.revoked.clear` → confirm `Sheet` using `common.discard.*` wording (plural deletion), then deletes them.
+3. Pinned: primary `o03.revoked.signInNew` → sign-in view. Secondary (only when items exist) `o03.revoked.clear` → confirm `Sheet` `o03.revoked.clearTitle`, `o03.revoked.clearBody`, primary danger `o03.revoked.clearConfirm`, secondary `ui.cancel`; then deletes them.
 
 **Tablet 768 px:** each view is a single centred column (max 28 rem for forms); the choose tiles sit side by side (2 columns) with the link under them.
 
@@ -63,7 +63,7 @@ Split observers from citizens, sign observers in with the observer code and 6-di
 | revoked | with / without unsent items | `code_revoked` anywhere | as layout |
 
 ## Message keys
-`o03.title`, `o03.observer`, `o03.observerHint`, `o03.citizen`, `o03.citizenHint`, `o03.checkStatus`, `o03.signIn.*` (all), `o03.setPin.*` (all), `o03.revoked.*` (all), `common.error.tooManyTries`, `common.error.server`, `common.error.sessionExpired`, `common.discard.*`, `ui.back`.
+`o03.title`, `o03.observer`, `o03.observerHint`, `o03.citizen`, `o03.citizenHint`, `o03.checkStatus`, `o03.signIn.*` (all), `o03.setPin.*` (all), `o03.revoked.*` (all), `common.error.tooManyTries`, `common.error.server`, `common.error.sessionExpired`, `ui.cancel`, `ui.back`.
 
 ## API
 - **AUTH-01** sign-in (code, PIN) → session cookie (HttpOnly) + `{code, organisationId, expiresAt}` or `pin_setup_required` + setup token, `wrong_credentials` + `triesLeft`, `locked` + `retryAfterSeconds`, `code_revoked`.

@@ -20,7 +20,7 @@ Let observers in the same area coordinate on a shared problem, opt-in, text only
 ### Thread
 1. Title = topic; sub-line area + `o18.closesAt`. Menu: `o18.thread.leave`.
 2. Note `o18.thread.shareNote` at the top (`--ink-2`, info icon), always visible.
-3. Posts oldest first, paged upward ("Show earlier" as a quiet button). Each post: author as observer code in tabular figures, or `o18.thread.you`, or `o18.thread.moderator` (bold); time; text. Hidden posts show `o18.thread.hidden` in `--ink-3`. Queued posts show `o18.thread.queued`.
+3. Posts oldest first, paged upward (quiet button `o18.thread.earlier`). Each post: author as observer code in tabular figures, or `o18.thread.you`, or `o18.thread.moderator` (bold); time; text. Hidden posts show `o18.thread.hidden` in `--ink-3`. Queued posts show `o18.thread.queued`.
 4. Composer pinned above the keyboard: `TextArea` `o18.thread.postLabel` with hint `o18.thread.postHint` (shown on first focus), 500-character limit with `ui.charCount`, primary `o18.thread.post` (`o18.thread.posting`). No attachment button exists.
 
 **Tablet 768 px:** list left, thread right.

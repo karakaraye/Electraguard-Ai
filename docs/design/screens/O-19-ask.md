@@ -42,7 +42,7 @@ Answer an observer's question only from approved documents, always with the sour
 - Questions are not stored on the phone after the session.
 
 ## Logic notes
-- The answer is displayed as retrieved passages, not paraphrased by the phone. If the server returns a passage in another language than the locale (no approved translation), it is shown with a small language label so nobody thinks it was translated by the app.
+- The answer is displayed as retrieved passages, not paraphrased by the phone. If the server returns a passage in another language than the locale (no approved translation), it is shown with the label `o19.otherLanguage` so nobody thinks it was translated by the app.
 
 ## Accessibility
 - After Ask, focus stays on the button; the answer area announces "Answer ready" or the no-answer sentence.

@@ -34,7 +34,7 @@ Change language, change PIN, read the privacy notice, see what is waiting on thi
 | Clear confirm | tap clear | `Sheet` `o20.signOut.title`, `o20.signOut.body`, `o20.signOut.unsentWarning` if items queued, primary danger `o20.signOut.confirm`, secondary `o20.signOut.sendFirst` (when online and items queued), `ui.cancel` |
 | Clearing | confirm | AUTH-05 if online (best effort; clearing never waits on the network), then delete IndexedDB stores, caches with user data, `localStorage` keys (locale too), service-worker user caches; app shell cache kept so the app still opens offline |
 | Signed out | done | O-03 / O-01 with `o20.signOut.signedOut` shown once |
-| Offline sign-out | no network | local session cleared; AUTH-05 is retried later is **not** possible (no session left), so the server session simply expires; state this in the privacy notice |
+| Offline sign-out | no network | the local session is cleared at once. AUTH-05 cannot be retried later (no session is left on the phone), so the server session ends at its normal expiry. The privacy notice says so. |
 
 ## Message keys
 `o20.*` (all), `o03.signIn.pinFormat`, `o03.signIn.offline`, `o03.setPin.mismatch`, `o03.setPin.tooSimple`, `common.error.tooManyTries`, `o04.sendNow`, `o01.*` (sheet), `ui.cancel`, `ui.back`.
