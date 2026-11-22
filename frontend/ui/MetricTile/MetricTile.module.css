@@ -1,0 +1,34 @@
+.tile {
+  display: grid;
+  align-content: start;
+  gap: var(--s-1);
+  min-width: 0;
+  padding: var(--s-4) 0 var(--s-3);
+  border-top: 2px solid var(--ink);
+}
+
+.label {
+  margin: 0;
+  color: var(--ink);
+  font: var(--t-label);
+  letter-spacing: var(--t-label-tracking);
+  overflow-wrap: anywhere;
+}
+
+.value {
+  margin: 0;
+  color: var(--ink);
+  font: var(--t-display);
+  font-variant-numeric: tabular-nums;
+}
+
+.value[data-suppressed] {
+  font: var(--t-heading);
+  padding: 0.3rem 0;
+}
+
+.period {
+  margin: 0;
+  color: var(--ink-2);
+  font: var(--t-small);
+}

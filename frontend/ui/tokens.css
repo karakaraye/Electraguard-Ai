@@ -1,0 +1,228 @@
+/*
+ * ElectraGuard design tokens (design contract, section 4).
+ *
+ * Scope rules
+ * - Only custom properties, @font-face and two prefixed utilities live here, so
+ *   importing this file never restyles existing pages.
+ * - Light is the default. A subtree (or <html>) opts into another theme with
+ *   data-theme="dark" or data-theme="system" (follows the device).
+ * - Density: observer and citizen screens use the default (larger) values;
+ *   staff screens set data-density="staff".
+ */
+
+/* ---------- Fonts: Noto Sans variable, weights 400-700, self-hosted ---------- */
+
+@font-face {
+  font-family: "Noto Sans";
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url("/fonts/noto-sans-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+    U+2000-206F, U+20A6, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* Hausa, Yoruba and Igbo letters and tone marks: ɓ ɗ ƙ ƴ ẹ ọ ṣ ị ụ ṅ ń ǹ ḿ and combining marks */
+@font-face {
+  font-family: "Noto Sans";
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url("/fonts/noto-sans-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-017F, U+0181, U+0186, U+0189-018A, U+018E-0190, U+0194, U+0198-0199,
+    U+019D, U+01B3-01B4, U+01CD-01DC, U+01F8-01F9, U+0253-0254, U+0256-0257, U+0259, U+025B,
+    U+0263, U+0272, U+0300-0304, U+0306-0308, U+030C, U+0323, U+0329, U+0331, U+1E0C-1E0D,
+    U+1E24-1E25, U+1E3E-1E3F, U+1E44-1E45, U+1E62-1E63, U+1EA0-1EA1, U+1EB8-1EB9,
+    U+1ECA-1ECD, U+1EE4-1EE5;
+}
+
+/* Metric-matched system fallback, so the swap to Noto Sans does not move the layout */
+@font-face {
+  font-family: "Noto Sans Fallback";
+  src: local("Roboto"), local("Segoe UI"), local("Arial");
+  ascent-override: 106.9%;
+  descent-override: 29.3%;
+  line-gap-override: 0%;
+  size-adjust: 101%;
+}
+
+:root {
+  --font: "Noto Sans", "Noto Sans Fallback", system-ui, "Segoe UI", Roboto, sans-serif;
+
+  /* ---------- Type scale: weight size/line-height family ---------- */
+  --t-display: 700 2.25rem/1.1 var(--font);
+  --t-title: 700 1.625rem/1.2 var(--font);
+  --t-heading: 600 1.25rem/1.3 var(--font);
+  --t-body-lg: 400 1.125rem/1.5 var(--font);
+  --t-body: 400 1rem/1.5 var(--font);
+  --t-small: 400 0.875rem/1.4 var(--font);
+  --t-label: 600 0.875rem/1.2 var(--font);
+  --t-label-tracking: 0.02em;
+
+  /* Body text for the current audience (observer and citizen default) */
+  --t-base: var(--t-body-lg);
+  --t-base-size: 1.125rem;
+
+  /* ---------- Colour: ink on paper ---------- */
+  --ink: #0b0b0c;
+  --ink-2: #3a3a3d;
+  --ink-3: #5f5f63;
+  --paper: #ffffff;
+  --paper-2: #f4f4f2;
+  --rule: #d8d8d4;
+  /* Control outlines need 3:1 against the surface (WCAG 1.4.11); --rule is for hairlines only */
+  --rule-control: #707075;
+  --on-ink: #ffffff;
+
+  /* ---------- Colour: status, always with a shape and a text label ---------- */
+  --ok: #0f6b3a;
+  --ok-bg: #e5f1ea;
+  --attn: #8a5a00;
+  --attn-bg: #fff4d6;
+  --wait: #4a4a4f;
+  --wait-bg: #ededea;
+  --danger: #a3141c;
+  --danger-bg: #fbe9ea;
+  --info: #1f4e8c;
+  --info-bg: #e7eef7;
+
+  /* ---------- Focus: 3px ink outline with a 2px paper gap ---------- */
+  --focus-ring: #0b0b0c;
+  --focus-gap: #ffffff;
+  --focus-outline: 3px solid var(--focus-ring);
+  --focus-offset: 2px;
+  --focus-halo: 0 0 0 2px var(--focus-gap);
+
+  /* ---------- Space (px scale 4, 8, 12, 16, 24, 32, 48, 64) ---------- */
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-5: 24px;
+  --s-6: 32px;
+  --s-7: 48px;
+  --s-8: 64px;
+  --gutter: 16px;
+  --measure: 34rem;
+
+  /* ---------- Shape and elevation ---------- */
+  --radius: 10px;
+  --radius-pill: 999px;
+  --shadow-sheet: 0 -1px 0 var(--rule), 0 12px 40px rgb(11 11 12 / 0.18);
+
+  /* ---------- Controls ---------- */
+  --control-h: 52px;
+  --target-min: 48px;
+  --border-w: 1.5px;
+
+  /* ---------- Motion ---------- */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-sheet: cubic-bezier(0.32, 0.72, 0, 1);
+  --dur-press: 120ms;
+  --dur-fade: 150ms;
+  --dur-step: 180ms;
+  --dur-sheet: 200ms;
+  --dur-tick: 320ms;
+
+  /* ---------- Layers ---------- */
+  --z-sticky: 10;
+  --z-menu: 20;
+}
+
+@media (min-width: 600px) {
+  :root {
+    --gutter: 24px;
+  }
+}
+
+/* ---------- Dark theme ---------- */
+[data-theme="dark"] {
+  --ink: #f4f4f2;
+  --ink-2: #c9c9c6;
+  --ink-3: #9d9d99;
+  --paper: #111112;
+  --paper-2: #1b1b1d;
+  --rule: #34343a;
+  --rule-control: #8c8c92;
+  --on-ink: #111112;
+  --ok: #7fd6a2;
+  --ok-bg: #11291c;
+  --attn: #f0c46a;
+  --attn-bg: #2d2410;
+  --wait: #c9c9c6;
+  --wait-bg: #29292d;
+  --danger: #ff9a9e;
+  --danger-bg: #3a1517;
+  --info: #a4c2f2;
+  --info-bg: #142339;
+  --focus-ring: #f4f4f2;
+  --focus-gap: #111112;
+  --shadow-sheet: 0 -1px 0 var(--rule), 0 12px 40px rgb(0 0 0 / 0.55);
+  color-scheme: dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  [data-theme="system"] {
+    --ink: #f4f4f2;
+    --ink-2: #c9c9c6;
+    --ink-3: #9d9d99;
+    --paper: #111112;
+    --paper-2: #1b1b1d;
+    --rule: #34343a;
+    --rule-control: #8c8c92;
+    --on-ink: #111112;
+    --ok: #7fd6a2;
+    --ok-bg: #11291c;
+    --attn: #f0c46a;
+    --attn-bg: #2d2410;
+    --wait: #c9c9c6;
+    --wait-bg: #29292d;
+    --danger: #ff9a9e;
+    --danger-bg: #3a1517;
+    --info: #a4c2f2;
+    --info-bg: #142339;
+    --focus-ring: #f4f4f2;
+    --focus-gap: #111112;
+    --shadow-sheet: 0 -1px 0 var(--rule), 0 12px 40px rgb(0 0 0 / 0.55);
+    color-scheme: dark;
+  }
+}
+
+[data-theme="light"] {
+  color-scheme: light;
+}
+
+/* ---------- Staff density ---------- */
+[data-density="staff"] {
+  --t-base: var(--t-body);
+  --t-base-size: 1rem;
+  --control-h: 44px;
+}
+
+/* ---------- Reduced motion: every transition and animation becomes instant ---------- */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-press: 0ms;
+    --dur-fade: 0ms;
+    --dur-step: 0ms;
+    --dur-sheet: 0ms;
+    --dur-tick: 0ms;
+  }
+}
+
+/* ---------- Utilities ---------- */
+.eg-tnum {
+  font-variant-numeric: tabular-nums;
+}
+
+.eg-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}

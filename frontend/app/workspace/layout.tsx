@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, type ReactNode } from "react";
+import { LegacyFrame } from "../legacy-frame";
 import { SignOut } from "./[role]/sign-out";
 
 export default function WorkspaceLayout({ children }: { children: ReactNode }) {
@@ -28,9 +29,11 @@ export default function WorkspaceLayout({ children }: { children: ReactNode }) {
   }, []);
 
   return (
-    <div ref={content}>
-      <div className="workspace-session"><SignOut /></div>
-      {children}
-    </div>
+    <LegacyFrame>
+      <div ref={content}>
+        <div className="workspace-session"><SignOut /></div>
+        {children}
+      </div>
+    </LegacyFrame>
   );
 }

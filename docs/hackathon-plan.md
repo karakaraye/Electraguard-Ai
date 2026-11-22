@@ -1,7 +1,9 @@
 # ElectraGuard AI: full build plan
 
 **Hackathon:** #AI4Elections (Rise Networks), Track 5: Election Observation and Citizen Accountability, with Tracks 1–4 built into it
-**Team:** Kara (team lead, owns `karakaraye/Electraguard-Ai`) and the team as registered
+**Team:** Kara (team lead, owns `karakaraye/Electraguard-Ai`) and the owner, the two co-owners of Cairn
+**Ownership:** ElectraGuard AI is a Cairn product. Company registration is on hold; the owner and Kara will handle it together.
+**Branding:** ElectraGuard has its own mark (the E+G monogram) and is credited as "ElectraGuard AI, by Cairn". Cairn products never use the Cairn logo.
 **Version:** 2, 22 November 2026. Replaces version 1. Built on the owner's decisions of 22 November.
 **Key dates:** forked repo and running notebook by 24 Nov (Bootcamp 1) · one-page sprint plan by 27 Nov (Bootcamp 6) · feature freeze 11 Dec · **submission 13 Dec** · Demo Day 15–16 Dec
 
@@ -15,7 +17,8 @@
 | Observer sign-in | **Observer codes, not email** | Observers use a code + PIN. No name, email or phone in the observation system. |
 | AI-assistance disclosure | Do it, sensibly | One factual line in the README acknowledgements and the per-part note that the template asks for (section 13.3) |
 | Hosting | **Microsoft Azure**, through the organisers' partnership; login details come through the hackathon Slack, which has not been shared yet | Azure work waits for the Slack and the login. Until then everything is built and tested on the existing Docker stack. Section 9 stays the target design. |
-| Company name | **Cairn Assure** (22 Nov) | Team/company name in the README, footer and docs; Gmail `cairnassure` |
+| Company | **Cairn**, co-owned by the owner and Kara; registration on hold (22 Nov) | Footer and README credit: "ElectraGuard AI, by Cairn". No Cairn logo on the product. |
+| Product mark | **E+G monogram** (direction B, `design/brand`) | Used in the app bar, icons and favicon; Cairn stones and the tally mark are rejected |
 | Build order | **Front end designed first, properly, then the logic behind it**; both designed together so every screen has a real API behind it and every API has a screen | Section 11.2 changed: a design phase with screen-by-screen API contracts comes before feature logic |
 | Coordination | One place where all agents are updated | `docs/agent-updates.md`: every agent reads it before starting and writes to it after each slice |
 | Languages | Owner translates and approves | All text is drafted in English, Pidgin, Hausa, Yorùbá and Igbo. The owner corrects and signs off each language. |

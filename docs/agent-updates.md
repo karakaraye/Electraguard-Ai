@@ -8,7 +8,8 @@ The full plan is in [hackathon-plan.md](hackathon-plan.md).
 
 | Item | State |
 |---|---|
-| Company / team name | **Cairn** (confirmed by the owner, 22 Nov) |
+| Company | **Cairn**, co-owned by the owner and Kara. Registration on hold. |
+| Product branding | Own mark: **E+G monogram**. Credit line "ElectraGuard AI, by Cairn". Never the Cairn logo. |
 | Plan | `docs/hackathon-plan.md` version 2, approved direction: full working system, nothing skipped |
 | Phase | **Design phase: front end first.** Claude is designing every screen with its API contract on branch `design/frontend`, in a separate worktree, so it does not touch files Codex is editing. |
 | Observer sign-in | Observer code + PIN (decided). No email for observers. |
@@ -45,6 +46,11 @@ The full plan is in [hackathon-plan.md](hackathon-plan.md).
 
 ## Updates
 
+### 22 Nov 2026 · Claude · design foundation merged into production-readiness
+
+- Merged `design/frontend` into `production-readiness` on `integrate/design-foundation`: UI foundation, API contracts and types, screen specs, message files in five languages, brand mark and icons. The coordination log keeps `production-readiness` as the shared branch and keeps the Codex claims and entries from PRs #2 and #3.
+- C1 (PR #3) already implements AUTH-01/02/03/06/07. Still to apply from the gap decisions: G2 (`pin_same_as_setup`; C1 currently returns `pin_reused`) and G12 (AUTH-08 change PIN).
+
 ### 22 Nov 2026 · Codex · Slice C1 observer code and PIN sign-in
 
 - Added organisation fields and backfilled the existing application records to the initial organisation. Report, evidence, reviewer, triage and dashboard access now starts with the actor's organisation.
@@ -65,6 +71,33 @@ The full plan is in [hackathon-plan.md](hackathon-plan.md).
 - Brought the coordination log and hackathon plan over from `design/frontend`, updated rule 0 to identify `production-readiness` as the shared branch, and added an MIT licence for the Cairn team (name confirmed by the owner).
 - Verified that the hackathon plan matches its source, Git's whitespace checks pass, and the slice contains only the three claimed paths.
 - Next, the reviewer checks the draft PR and its CI results before integrating the slice.
+
+### 22 Nov 2026 · Claude · foundation merged; observer screens being built; backend may start
+
+- Merged `design/ui-foundation`: tokens, 24 components, icons and pictograms, i18n library, dev gallery at `/dev/ui`. Lint, typecheck and build pass; axe clean.
+- Now building: observer flow O-01 to O-12 with the offline outbox (`design/observer-flow`), and the brand integration (monogram icons, manifest, "by Cairn" credit, root layout) on `design/brand-integration`.
+- **For Codex / Kara's agents: the backend can start now.** Implement `docs/design/api-contracts.md` under `/api/v1/` with the amendments listed below (G1–G15), on a branch named `backend/v1-contracts`, committing and pushing each slice with tests. Start with AUTH-01..08, REF-01..02, REP-01..05, MED-01..05 (the observer path). Do not change anything under `frontend/`.
+
+### 22 Nov 2026 · Claude · screen specs reconciled with the contracts; gap decisions
+
+- Merged `design/reconcile`: the screen specs now use the contract ids, paths, fields and error codes.
+- **Contract amendments to apply when the backend is built (decided):**
+  - G1: no "tries left" count. G2: AUTH-03 returns field error `pin_same_as_setup`.
+  - G3: REP-02 returns `counts` (total, needs_attention). G14: REP-02 filter `needs_attention` = open question or unread message.
+  - G4/G5: new **REF-02** organisation public settings for signed-in observers (coverage states, party labels A–E).
+  - G6: result-sheet fields may be `null` with `unreadable: true`. G7: REP-01 accepts `time_known: false` for date-only.
+  - G8: REP-02 carries `last_message_preview` on the observer's own reports.
+  - G9: keep the minimal on-phone index (reference, code, category, ward, status, time); amend contract §1.8 to allow it.
+  - G10: REP-03 adds `reviewer_assigned`; observers can message any time, delivered when a reviewer is assigned.
+  - G11: follow the contract (citizen needs the secret). G12: new **AUTH-08** change PIN. G13: reading DIS-02 marks posts read.
+  - G15: MED-01 replay after an expired session starts a new upload session for the same `client_attachment_id`.
+
+### 22 Nov 2026 · Claude · ownership, branding, API contracts merged
+
+- Kara and the owner co-own Cairn; ElectraGuard is a Cairn product. Registration is on hold.
+- Mark: **E+G monogram** (direction B on `design/brand`). Cairn stones and tally are rejected. Credit line everywhere: "ElectraGuard AI, by Cairn".
+- Merged `design/api-contracts`: `docs/design/api-contracts.md` (55 contracts) and `frontend/lib/api/`. It is the source of truth; `design/reconcile` is aligning the screen specs to it.
+- **Decisions on the API open questions:** citizen/SMS/USSD reports go to one configured organisation (`PUBLIC_INTAKE_ORGANISATION_ID`); observer sessions 24 h idle / 7 days max; reviewers see blurred media, the original is kept and viewable only by the assigned reviewer with a recorded reason; duplicates assigned to others show metadata only; approved rumour responses appear on the public page; citizen replies are text only; staff invites are a one-time link shown to the admin; SMS keywords accepted in all five languages; existing administrator accounts become coordinators unless the admin changes them.
 
 ### 22 Nov 2026 · Claude · observer screen specs merged; decisions on open questions
 

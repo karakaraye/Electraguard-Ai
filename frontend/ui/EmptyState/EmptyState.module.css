@@ -1,0 +1,30 @@
+.empty {
+  display: grid;
+  justify-items: start;
+  gap: var(--s-2);
+  max-width: var(--measure);
+  padding: var(--s-6) 0;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+}
+
+.title {
+  margin: 0;
+  color: var(--ink);
+  font: var(--t-heading);
+  text-wrap: balance;
+}
+
+.text {
+  color: var(--ink-2);
+  font: var(--t-base);
+}
+
+.text p {
+  margin: 0;
+  line-height: inherit;
+}
+
+.action {
+  margin-top: var(--s-3);
+}

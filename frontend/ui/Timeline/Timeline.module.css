@@ -1,0 +1,101 @@
+.timeline {
+  display: grid;
+  gap: var(--s-4);
+  color: var(--ink);
+}
+
+.chain {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  margin: 0;
+  padding: var(--s-2) var(--s-3);
+  border: 1px solid currentColor;
+  border-radius: var(--radius);
+  font: var(--t-label);
+}
+
+.chain[data-chain="intact"] {
+  color: var(--ok);
+  background: var(--ok-bg);
+}
+
+.chain[data-chain="broken"] {
+  color: var(--danger);
+  background: var(--danger-bg);
+}
+
+.chain[data-chain="unknown"] {
+  color: var(--wait);
+  background: var(--wait-bg);
+}
+
+.list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.event {
+  position: relative;
+  display: grid;
+  gap: 2px;
+  padding: 0 0 var(--s-4) var(--s-5);
+}
+
+/* The rail */
+.event::before {
+  content: "";
+  position: absolute;
+  left: 5px;
+  top: 14px;
+  bottom: 0;
+  width: 1px;
+  background: var(--rule);
+}
+
+.event:last-child::before {
+  display: none;
+}
+
+.dot {
+  position: absolute;
+  left: 0;
+  top: 5px;
+  width: 11px;
+  height: 11px;
+  border: 2px solid var(--ink);
+  border-radius: 50%;
+  background: var(--paper);
+}
+
+.event[data-broken] .dot {
+  border-color: var(--danger);
+  background: var(--danger);
+  border-radius: 0;
+  transform: rotate(45deg) scale(0.85);
+}
+
+.change {
+  margin: 0;
+  font: var(--t-label);
+  font-size: 1rem;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 var(--s-3);
+  margin: 0;
+  color: var(--ink-2);
+  font: var(--t-small);
+}
+
+.detail {
+  margin: var(--s-1) 0 0;
+  color: var(--ink-2);
+  font: var(--t-small);
+  overflow-wrap: anywhere;
+}
