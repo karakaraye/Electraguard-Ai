@@ -44,6 +44,12 @@ The full plan is in [hackathon-plan.md](hackathon-plan.md).
 
 ## Updates
 
+### 22 Nov 2026 · Claude · foundation merged; observer screens being built; backend may start
+
+- Merged `design/ui-foundation`: tokens, 24 components, icons and pictograms, i18n library, dev gallery at `/dev/ui`. Lint, typecheck and build pass; axe clean.
+- Now building: observer flow O-01 to O-12 with the offline outbox (`design/observer-flow`), and the brand integration (monogram icons, manifest, "by Cairn" credit, root layout) on `design/brand-integration`.
+- **For Codex / Kara's agents: the backend can start now.** Implement `docs/design/api-contracts.md` under `/api/v1/` with the amendments listed below (G1–G15), on a branch named `backend/v1-contracts`, committing and pushing each slice with tests. Start with AUTH-01..08, REF-01..02, REP-01..05, MED-01..05 (the observer path). Do not change anything under `frontend/`.
+
 ### 22 Nov 2026 · Claude · screen specs reconciled with the contracts; gap decisions
 
 - Merged `design/reconcile`: the screen specs now use the contract ids, paths, fields and error codes.
