@@ -45,11 +45,15 @@ def csrf_failure(request, reason=""):
     return django_csrf_failure(request, reason)
 
 
-def endpoint(method):
+def reject_nonfinite(value):
+    raise ValueError(f"Invalid JSON constant: {value}")
+
+
+def endpoint(method, *, max_body_bytes=None):
     def decorate(view):
         @never_cache
         @wraps(view)
-        def wrapped(request):
+        def wrapped(request, **kwargs):
             if request.method != method:
                 response = error(405, "method_not_allowed", "This method is not available.")
                 response["Allow"] = method
@@ -58,7 +62,10 @@ def endpoint(method):
                 if request.content_type != "application/json":
                     return error(400, "bad_request", "Send a JSON object.")
                 try:
-                    data = json.loads(request.body)
+                    raw_body = request.body
+                    if max_body_bytes is not None and len(raw_body) > max_body_bytes:
+                        return error(413, "payload_too_large", "The request is too large.")
+                    data = json.loads(raw_body, parse_constant=reject_nonfinite)
                 except RequestDataTooBig:
                     return error(413, "payload_too_large", "The request is too large.")
                 except (ValueError, RecursionError):
@@ -66,11 +73,11 @@ def endpoint(method):
                 if not isinstance(data, dict):
                     return error(400, "bad_request", "Send a JSON object.")
                 try:
-                    return view(request, data)
+                    return view(request, data, **kwargs)
                 except OperationalError:
                     return error(503, "service_unavailable", "The service is temporarily unavailable.")
             try:
-                return view(request)
+                return view(request, **kwargs)
             except OperationalError:
                 return error(503, "service_unavailable", "The service is temporarily unavailable.")
         return wrapped

@@ -13,6 +13,7 @@ class EvidenceSerializer(serializers.ModelSerializer):
 
 
 class ReportSerializer(serializers.ModelSerializer):
+    description = serializers.CharField(max_length=1000)
     polling_unit_code = serializers.CharField(max_length=32, allow_blank=True, default="")
 
     class Meta:

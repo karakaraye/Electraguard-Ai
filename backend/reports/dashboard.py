@@ -52,7 +52,7 @@ def dashboard(request):
     filters = DateFilters(data=request.query_params)
     filters.is_valid(raise_exception=True)
     dates = filters.validated_data
-    reports = org_scope(request, Report)
+    reports = org_scope(request, Report).exclude(status=Report.Status.WITHDRAWN)
     for field, date in dates.items():
         comparison = "gte" if field == "start" else "lte"
         boundary = time.min if field == "start" else time.max
@@ -74,7 +74,7 @@ def dashboard(request):
     )
     result = {
         "report_count": len(rows),
-        "statuses": [{"label": label, "count": statuses[key]} for key, label in Report.Status.choices],
+        "statuses": [{"label": label, "count": statuses[key]} for key, label in Report.Status.choices if key != Report.Status.WITHDRAWN],
         "outcomes": [
             {"label": label, "count": outcomes[key]}
             for key, label in [*Report.Outcome.choices, ("unrecorded", "Outcome unavailable")]

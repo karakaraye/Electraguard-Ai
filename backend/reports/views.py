@@ -24,7 +24,7 @@ from .uploads import read_evidence
 
 def own_reports(request):
     require_role(request.user, User.Role.OBSERVER)
-    return org_scope(request, Report).filter(observer=request.user)
+    return org_scope(request, Report).filter(observer=request.user).exclude(status=Report.Status.WITHDRAWN)
 
 
 @never_cache

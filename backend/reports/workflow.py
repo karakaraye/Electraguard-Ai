@@ -77,7 +77,7 @@ def transition(report, actor, action, data):
 @api_view(["GET"])
 def assignments(request):
     require_role(request.user, User.Role.ADMINISTRATOR)
-    reports = org_scope(request, Report).exclude(status=Status.CLOSED).select_related("assigned_reviewer")
+    reports = org_scope(request, Report).exclude(status__in=[Status.CLOSED, Status.WITHDRAWN]).select_related("assigned_reviewer")
     reviewers = org_scope(request, User).filter(role=User.Role.REVIEWER, is_active=True).order_by("email")
     return Response({
         "reports": AssignmentSummarySerializer(reports, many=True).data,
@@ -95,7 +95,7 @@ def assign(request, reference):
     serializer.is_valid(raise_exception=True)
     data = serializer.validated_data
     report = locked_report(org_scope(request, Report), reference, data["version"])
-    if report.status == Status.CLOSED:
+    if report.status in (Status.CLOSED, Status.WITHDRAWN):
         raise Conflict("A closed case cannot be reassigned.")
     reviewer = org_scope(request, User).select_for_update().filter(
         pk=data["reviewer"], role=User.Role.REVIEWER, is_active=True
