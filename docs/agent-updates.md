@@ -34,10 +34,20 @@ The full plan is in [hackathon-plan.md](hackathon-plan.md).
 | Area | Owner | Branch / location | Files |
 |---|---|---|---|
 | Front-end design system, screens, API contracts | Claude | `design/frontend` | `frontend/app/(observer)/…`, `frontend/app/(staff)/…`, `frontend/app/(public)/…`, `frontend/ui/…`, `frontend/messages/…`, `docs/design/…` |
+| Product mark and lockups | Claude (brand agent) | `design/brand` | `docs/design/brand/…` |
+| Design tokens, components, icons, i18n library, dev gallery | Claude (UI agent) | `design/ui-foundation` | `frontend/ui/…`, `frontend/lib/i18n/…`, `frontend/public/fonts/…`, `frontend/app/(dev)/…` |
+| API contracts and TypeScript API types | Claude (system design agent) | `design/api-contracts` | `docs/design/api-contracts.md`, `frontend/lib/api/…` |
+| Observer and citizen screen specs, message files in 5 languages | Claude (UX agent) | `design/observer-screens` | `docs/design/screens/…`, `frontend/messages/…` |
 | Existing observer edits in progress | Codex | `work` (this worktree, uncommitted) | `frontend/app/workspace/observer/…`, `frontend/app/styles.css`, `scripts/verify-core.cjs` |
 | Backend, migrations, tests, deployment | Codex | `work` | `backend/…`, `deploy/…`, `.github/…` |
 
 ## Updates
+
+### 22 Nov 2026 · Claude · four design workstreams running in parallel
+
+- Started four parallel design workstreams, each on its own branch (see the ownership table): the mark, the UI foundation, the API contracts, and the observer screen specs with copy in five languages.
+- Claude reviews each branch and merges it into `design/frontend`. Nobody merges their own branch.
+- **For Kara's agents and Codex:** do not edit the paths in those four rows. Backend work that implements the API waits for `docs/design/api-contracts.md` on `design/frontend`.
 
 ### 22 Nov 2026 · Claude · design phase started
 
