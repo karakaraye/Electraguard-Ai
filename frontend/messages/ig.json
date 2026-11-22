@@ -15,7 +15,123 @@
     "optional": "Ọ bụghị mmanye",
     "charCount": "Mkpụrụedemede {count} n'ime {max}",
     "listen": "Gee ntị",
-    "stopListening": "Kwụsị"
+    "stopListening": "Kwụsị",
+    "productName": "ElectraGuard",
+    "skipToContent": "Wufee gaa n'ọdịnaya",
+    "pleaseWait": "Chere obere oge",
+    "errorPrefix": "Njehie:",
+    "yes": "Ee",
+    "no": "Mba",
+    "selected": "Ahọrọla ya",
+    "network": {
+      "offline": "Netwọk adịghị. A ga-eziga akụkọ ndị a mgbe netwọk dị.",
+      "offlineQueued": "{count, plural, one {Netwọk adịghị. Akụkọ # nọ na ekwentị a, a ga-ezigakwa ya mgbe netwọk dị.} other {Netwọk adịghị. Akụkọ # nọ na ekwentị a, a ga-ezigakwa ha mgbe netwọk dị.}}",
+      "online": "Netwọk alọghachila."
+    },
+    "stepper": {
+      "progress": "Nzọụkwụ {current} n'ime {total}"
+    },
+    "textarea": {
+      "count": "Mkpụrụedemede {count} n'ime {max}",
+      "remaining": "{remaining, plural, =0 {Enweghị mkpụrụedemede fọdụrụ.} one {Mkpụrụedemede # fọdụrụ.} other {Mkpụrụedemede # fọdụrụ.}}"
+    },
+    "select": {
+      "choose": "Họrọ otu"
+    },
+    "search": {
+      "clear": "Hichapụ",
+      "noMatches": "Ọ dịghị ihe dabara. Nwaa mkpụrụedemede ole na ole.",
+      "results": "{count, plural, =0 {Enweghị nsonaazụ} one {Nsonaazụ #} other {Nsonaazụ #}}",
+      "instructions": "Pịnye ka ịchọọ. Jiri akụ elu na ala họrọ."
+    },
+    "when": {
+      "legend": "Oge ole ka ọ mere?",
+      "justNow": "Ugbu a",
+      "earlierToday": "Tupu ugbu a taa",
+      "anotherDay": "Ụbọchị ọzọ",
+      "time": "Oge",
+      "date": "Ụbọchị",
+      "timeOptional": "Oge, ma ị maara ya",
+      "zone": "Oge Ọdịda Anyanwụ Afrịka (WAT)",
+      "future": "Oge ahụ erubeghị. Họrọ oge gafeworo.",
+      "required": "Tinye oge ọ mere.",
+      "dateRequired": "Tinye ụbọchị ọ mere.",
+      "olderThanWeek": "Nke a gafere ụbọchị 7. Lelee ma ụbọchị ahụ ziri ezi."
+    },
+    "status": {
+      "onPhone": "Ọ nọ na ekwentị a",
+      "notConfirmed": "Anyị enwetabeghị nkwenye",
+      "received": "Anatala ya",
+      "inReview": "A na-enyocha ya",
+      "question": "Ajụjụ maka gị",
+      "closed": "Emechiela ya",
+      "withdrawn": "E wepụla ya",
+      "saved": "Echekwala",
+      "failed": "Ọ dara ada",
+      "urgent": "Ọ dị ngwa ngwa"
+    },
+    "receipt": {
+      "label": "Koodu nnata gị",
+      "copy": "Detuo koodu ahụ",
+      "copied": "Edetuola ya",
+      "copyFailed": "Enweghị ike idetu ya. Dee koodu ahụ ide.",
+      "save": "Chekwaa ya dị ka foto",
+      "receivedAt": "Anatala ya {time}",
+      "next": "Ihe na-esote",
+      "imageTitle": "Nnata ElectraGuard"
+    },
+    "upload": {
+      "waiting": "Ọ na-eche netwọk",
+      "uploading": "A na-eziga ya {percent}%",
+      "saved": "Echekwala",
+      "failed": "E zigaghị ya",
+      "missing": "Faịlụ adịghịzi na ekwentị a",
+      "retry": "Nwaa ọzọ",
+      "remove": "Hichapụ",
+      "chooseAgain": "Họrọ faịlụ ọzọ",
+      "estimate": "{size} · ihe dị ka {time} iji ziga",
+      "kind": "{kind, select, photo {Foto} video {Vidiyo} voice {Ozi olu} other {Faịlụ}}"
+    },
+    "time": {
+      "seconds": "{count, plural, one {sekọnd #} other {sekọnd #}}",
+      "minutes": "{count, plural, one {nkeji #} other {nkeji #}}"
+    },
+    "language": {
+      "label": "Asụsụ",
+      "choose": "Họrọ asụsụ gị"
+    },
+    "theme": {
+      "label": "Ọdịdị",
+      "system": "Dị ka ngwa gị",
+      "light": "Ìhè",
+      "dark": "Ọchịchịrị"
+    },
+    "table": {
+      "sortAscending": "Edozigharịrị site na obere ruo nnukwu",
+      "sortDescending": "Edozigharịrị site na nnukwu ruo obere",
+      "sortBy": "Hazie site na {column}",
+      "empty": "Enweghị ihe a ga-egosi."
+    },
+    "metric": {
+      "fewerThan": "n'okpuru {threshold}"
+    },
+    "suggestion": {
+      "label": "Ndụmọdụ",
+      "accept": "Nabata ya",
+      "correct": "Gbazie ya",
+      "accepted": "Anabatala ya",
+      "corrected": "Agbaziri ya",
+      "confidence": "Ntụkwasị obi: {level, select, high {Elu} medium {Etiti} other {Dị ala}}",
+      "reasons": "Ihe mere eji tụpụta nke a"
+    },
+    "timeline": {
+      "intact": "Ọgbụgbụ ndekọ adịghị agbajiri",
+      "broken": "Ọgbụgbụ ndekọ agbajiela: e gbanwere otu ndekọ",
+      "unknown": "Anyị elebeghị ọgbụgbụ ndekọ"
+    },
+    "nav": {
+      "main": "Isi"
+    }
   },
   "common": {
     "appName": "ElectraGuard",
@@ -46,7 +162,9 @@
       "question": "Ajụjụ maka gị",
       "closed": "Emechiela ya",
       "withdrawn": "E wepụla ya",
-      "waitingCode": "Ọ na-eche koodu ọhụrụ"
+      "waitingCode": "Ọ na-eche koodu ọhụrụ",
+      "needsAttention": "Ọ chọrọ nlebara anya gị",
+      "needsAttentionHint": "Anyị enweghị ike ịnabata ya ugbu a. Meghee ya, mezie ihe e depụtara, ziga ya ọzọ."
     },
     "outcome": {
       "confirmed": "Ihe akaebe gosiri na ọ bụ eziokwu",
@@ -105,7 +223,8 @@
     "line4": "Ọ bụrụ na mmadụ nọ n'ihe egwu, kpọọ 112. Ngwa a anaghị ezite enyemaka.",
     "listen": "Gee ntị na nke a",
     "privacyLink": "Gụọ ọkwa nzuzo zuru ezu",
-    "continue": "Aghọtara m"
+    "continue": "Aghọtara m",
+    "line5": "Ọ bụrụ na i jiri Kwuo okwu, ọrụ okwu ekwentị gị nwere ike ịhazi olu gị ka ọ bụrụ okwu."
   },
   "o03": {
     "title": "Ònye ka ị bụ?",
@@ -117,21 +236,22 @@
     "signIn": {
       "title": "Banye",
       "codeLabel": "Koodu onye nlebanya",
-      "codeHint": "Ọ dị na kaadị gị. Ọmụmaatụ: OBS-7K2P",
+      "codeHint": "Ọ dị na kaadị gị. Ọmụmaatụ: OBS-7K2P9D",
       "pinLabel": "PIN",
-      "pinHint": "Ọnụọgụ 6. Na nke mbụ, jiri PIN dị na kaadị gị.",
+      "pinHint": "Ọnụọgụ 6. Na nke mbụ, jiri PIN mmalite nwere ọnụọgụ 8 dị na kaadị gị.",
       "showPin": "Gosi PIN",
       "hidePin": "Zoo PIN",
       "submit": "Banye",
       "submitting": "A na-abanye",
       "offline": "Ị chọrọ netwọk iji banye. Gaa ebe netwọk dị, wee nwaa ọzọ.",
       "codeEmpty": "Tinye koodu onye nlebanya gị.",
-      "codeFormat": "Koodu onye nlebanya dị ka OBS-7K2P. Lelee kaadị gị.",
-      "pinFormat": "PIN gị bụ ọnụọgụ 6.",
+      "codeFormat": "Koodu onye nlebanya dị ka OBS-7K2P9D. Lelee kaadị gị.",
+      "pinFormat": "PIN gị bụ ọnụọgụ 6, ma ọ bụ ọnụọgụ 8 na nke mbụ.",
       "wrong": "Koodu ma ọ bụ PIN ahụ ezighị ezi. Lelee kaadị gị wee nwaa ọzọ.",
       "triesLeft": "{count, plural, one {Ohere # fọdụrụ tupu i chere obere oge.} other {Ohere # fọdụrụ tupu i chere obere oge.}}",
       "revoked": "Koodu a anaghị arụ ọrụ ọzọ. Rịọ onye nhazi gị ka o nye gị nke ọhụrụ.",
-      "forgot": "I chefuru PIN gị? Onye nhazi gị nwere ike inye gị koodu ọhụrụ."
+      "forgot": "I chefuru PIN gị? Onye nhazi gị nwere ike inye gị koodu ọhụrụ.",
+      "lockedAdmin": "E mechiri koodu a n'ihi na i nwara ọtụtụ ugboro. Rịọ onye nhazi gị ka o setịgharịa PIN gị."
     },
     "setPin": {
       "title": "Họrọ PIN nke gị",
@@ -184,7 +304,12 @@
       "body": "Mgbe ahụ, ọ ga-emeghe n'enweghị netwọk.",
       "add": "Tinye na ihu ekwentị",
       "notNow": "Ọ bụghị ugbu a"
-    }
+    },
+    "waitingCode": "{count, plural, one {Akụkọ # sitere na koodu na-adịghịzi arụ ọrụ nọ na ekwentị a.} other {Akụkọ # sitere na koodu na-adịghịzi arụ ọrụ nọ na ekwentị a.}}",
+    "sendWaiting": "Ziga ya jiri koodu m",
+    "deleteWaiting": "Hichapụ ha",
+    "needsAttention": "{count, plural, one {Akụkọ # chọrọ nlebara anya gị tupu e zigaa ya.} other {Akụkọ # chọrọ nlebara anya gị tupu e zigaa ya.}}",
+    "fix": "Mezie ya"
   },
   "incident": {
     "draftKept": "Echekwara akụkọ gị na ekwentị a.",
@@ -252,7 +377,9 @@
     "listMissing": "Ndepụta ebe ntuli aka adịbeghị na ekwentị a. Jikọọ na netwọk otu ugboro ka ị budata ya.",
     "listDownloading": "A na-ebudata ndepụta ebe ntuli aka ({percent}%)",
     "error": "Họrọ ebe ntuli aka, ma ọ bụ họrọ wọọdụ wee pịa \"Amaghị m ebe ntuli aka ahụ\".",
-    "noGps": "Anyị anaghị eji ozi ebe ekwentị gị nọ."
+    "noGps": "Anyị anaghị eji ozi ebe ekwentị gị nọ.",
+    "searchNeedsState": "Buru ụzọ họrọ steeti gị n'okpuru. Mgbe ahụ ị nwere ike ịchọ ebe ntuli aka ya.",
+    "listDownloadingNoPercent": "A na-ebudata ndepụta ebe ntuli aka"
   },
   "o08": {
     "title": "Olee mgbe o mere?",
@@ -289,7 +416,9 @@
     "nameKeep": "Ọ bụghị aha, debe ya",
     "tooShort": "Dekwuo ntakịrị ka onye nyocha ghọta. Opekata mpe mkpụrụedemede {min}.",
     "tooLong": "Nke ahụ dị ogologo karịa. Mee ka ọ dị n'okpuru mkpụrụedemede {max}.",
-    "sourceError": "Họrọ otu i si mara."
+    "sourceError": "Họrọ otu i si mara.",
+    "speakNote": "Kwuo okwu na-eji ọrụ okwu ekwentị gị, nke nwere ike izipu olu gị n'aka ụlọ ọrụ na-ahụ maka ya ka ọ ghọọ okwu. Ị nwere ike ịpị akara maịkrofon dị na kiiboodu gị kama.",
+    "speakNoteOk": "Malite ikwu okwu"
   },
   "o10": {
     "title": "Ị ga-agbakwunye foto, vidiyo ma ọ bụ olu?",
@@ -301,7 +430,7 @@
     "voiceLimit": "Ruo nkeji 2",
     "file": "Họrọ faịlụ",
     "blur": "Zoo ihu ndị mmadụ",
-    "blurHint": "Ọ na-ezo ihu tupu ọ hapụ ekwentị a.",
+    "blurHint": "Anyị na-ezo ihu ndị anyị nwere ike ịhụ. Lelee tupu i ziga.",
     "locationRemoved": "Ehichapụla ozi ebe",
     "size": "{size} · ihe dị ka {time} iji ziga ugbu a",
     "sizeOffline": "{size} · ọ ga-aga mgbe i nwere netwọk",
@@ -318,7 +447,11 @@
     "recording": "A na-edekọ {time}",
     "stopRecording": "Kwụsị ndekọ",
     "skip": "Gaa n'ihu n'enweghị ya",
-    "spaceLow": "Ekwentị a fọrọ obere ka o jupụta. Vidiyo buru ibu nwere ike ọ gaghị adaba."
+    "spaceLow": "Ekwentị a fọrọ obere ka o jupụta. Vidiyo buru ibu nwere ike ọ gaghị adaba.",
+    "videoTooLong": "Họrọ vidiyo na-erughị sekọnd 60.",
+    "voiceTooLong": "Họrọ ozi olu na-erughị nkeji 2.",
+    "unreadable": "Enweghị ike imepe faịlụ a. Nwaa nke ọzọ.",
+    "itemName": "{kind, select, photo {Foto} video {Vidiyo} other {Ozi olu}} {n}"
   },
   "o11": {
     "title": "Lelee wee ziga",
@@ -338,7 +471,9 @@
     "savedOffline": "Echekwara ya na ekwentị a. Ọ ga-aga mgbe i nwere netwọk.",
     "queueFull": "Akụkọ {max} na-eche na ekwentị a. Buru ụzọ ziga ha, ma ọ bụ hichapụ otu.",
     "intakePaused": "Otu gị akwụsịla nnata akụkọ ọhụrụ. Echekwara akụkọ gị na ekwentị a. Ọ ga-aga mgbe ha malitere ọzọ.",
-    "notConfirmed": "Anyị zipụrụ akụkọ gị, mana anyị anụbeghị azịza. Anyị na-elele. A gaghị eziga ya ugboro abụọ."
+    "notConfirmed": "Anyị zipụrụ akụkọ gị, mana anyị anụbeghị azịza. Anyị na-elele. A gaghị eziga ya ugboro abụọ.",
+    "withdrawn": "E wepụla akụkọ a, ya mere enweghị nnata. Ọ dịghị ihe ọzọ ga-eme ya.",
+    "needsAttention": "Anyị enweghị ike ịnabata akụkọ a ugbu a. Mezie akụkụ ndị e depụtara n'okpuru, ziga ya ọzọ."
   },
   "o12": {
     "title": "Anatala akụkọ",
@@ -360,12 +495,17 @@
       "failed": "E zigaghị ya",
       "retry": "Nwaa ọzọ",
       "missing": "Faịlụ a adịghịzi na ekwentị. Họrọ faịlụ ahụ ọzọ.",
-      "chooseAgain": "Họrọ faịlụ ọzọ"
+      "chooseAgain": "Họrọ faịlụ ọzọ",
+      "closed": "Emechiela akụkọ ahụ, ya mere enweghị ike itinye faịlụ a.",
+      "cannotRemove": "Onye nyocha amalitela, ya mere enweghị ike iwepụ faịlụ a ọzọ."
     },
     "keepOpen": "Hapụ ngwa a ka ọ nọrọ na-emeghe ruo mgbe ihe niile dere Echekwala.",
     "viewReport": "Hụ akụkọ a",
     "another": "Kọọ ihe ọzọ",
-    "home": "Laghachi na Mbido"
+    "home": "Laghachi na Mbido",
+    "citizen": {
+      "keep": "Dee koodu a ma ọ bụ chekwaa foto ahụ. Ị chọrọ ya iji lelee akụkọ gị."
+    }
   },
   "o13": {
     "title": "Akụkọ m",

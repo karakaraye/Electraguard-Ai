@@ -15,7 +15,123 @@
     "optional": "E no compulsory",
     "charCount": "{count} out of {max} letters",
     "listen": "Listen",
-    "stopListening": "Stop"
+    "stopListening": "Stop",
+    "productName": "ElectraGuard",
+    "skipToContent": "Skip go the main part",
+    "pleaseWait": "Wait small",
+    "errorPrefix": "Wahala:",
+    "yes": "Yes",
+    "no": "No",
+    "selected": "Dem don choose am",
+    "network": {
+      "offline": "No network. Reports go send when network come.",
+      "offlineQueued": "{count, plural, one {No network. # report dey this phone and e go send when network come.} other {No network. # reports dey this phone and dem go send when network come.}}",
+      "online": "Network don come back."
+    },
+    "stepper": {
+      "progress": "Step {current} out of {total}"
+    },
+    "textarea": {
+      "count": "{count} out of {max} letters",
+      "remaining": "{remaining, plural, =0 {No letter remain.} one {# letter remain.} other {# letters remain.}}"
+    },
+    "select": {
+      "choose": "Choose one"
+    },
+    "search": {
+      "clear": "Clear am",
+      "noMatches": "Nothing match. Try fewer letters.",
+      "results": "{count, plural, =0 {No result} one {# result} other {# results}}",
+      "instructions": "Type to search. Use the up and down arrow to choose."
+    },
+    "when": {
+      "legend": "Wen e happen?",
+      "justNow": "Just now",
+      "earlierToday": "Earlier today",
+      "anotherDay": "Another day",
+      "time": "Time",
+      "date": "Date",
+      "timeOptional": "Time, if you sabi am",
+      "zone": "West Africa Time (WAT)",
+      "future": "That time never reach yet. Choose time wey don pass.",
+      "required": "Put the time wey e happen.",
+      "dateRequired": "Put the date wey e happen.",
+      "olderThanWeek": "This pass 7 days ago. Check say the date correct."
+    },
+    "status": {
+      "onPhone": "E dey this phone",
+      "notConfirmed": "We never confirm am yet",
+      "received": "Dem don receive am",
+      "inReview": "Dem dey review am",
+      "question": "Question dey for you",
+      "closed": "E don close",
+      "withdrawn": "You don withdraw am",
+      "saved": "E don save",
+      "failed": "E fail",
+      "urgent": "E urgent"
+    },
+    "receipt": {
+      "label": "Your receipt code",
+      "copy": "Copy the code",
+      "copied": "E don copy",
+      "copyFailed": "We no fit copy am. Write the code down.",
+      "save": "Save am as picture",
+      "receivedAt": "Dem receive am {time}",
+      "next": "Wetin go happen next",
+      "imageTitle": "ElectraGuard receipt"
+    },
+    "upload": {
+      "waiting": "E dey wait for network",
+      "uploading": "E dey send {percent}%",
+      "saved": "E don save",
+      "failed": "E never send",
+      "missing": "File no dey this phone again",
+      "retry": "Try again",
+      "remove": "Remove",
+      "chooseAgain": "Choose file again",
+      "estimate": "{size} · about {time} to send",
+      "kind": "{kind, select, photo {Photo} video {Video} voice {Voice note} other {File}}"
+    },
+    "time": {
+      "seconds": "{count, plural, one {# second} other {# seconds}}",
+      "minutes": "{count, plural, one {# minute} other {# minutes}}"
+    },
+    "language": {
+      "label": "Language",
+      "choose": "Choose your language"
+    },
+    "theme": {
+      "label": "How the app dey look",
+      "system": "Same as your phone",
+      "light": "Light",
+      "dark": "Dark"
+    },
+    "table": {
+      "sortAscending": "Dem arrange am from small go big",
+      "sortDescending": "Dem arrange am from big go small",
+      "sortBy": "Arrange by {column}",
+      "empty": "Nothing dey to show."
+    },
+    "metric": {
+      "fewerThan": "less than {threshold}"
+    },
+    "suggestion": {
+      "label": "We suggest am",
+      "accept": "Accept am",
+      "correct": "Correct am",
+      "accepted": "Dem don accept am",
+      "corrected": "Dem don correct am",
+      "confidence": "How sure: {level, select, high {High} medium {Medium} other {Low}}",
+      "reasons": "Why we suggest am"
+    },
+    "timeline": {
+      "intact": "Record chain no break",
+      "broken": "Record chain don break: dem change one entry",
+      "unknown": "We never check the record chain yet"
+    },
+    "nav": {
+      "main": "Main"
+    }
   },
   "common": {
     "appName": "ElectraGuard",
@@ -46,7 +162,9 @@
       "question": "Question dey for you",
       "closed": "E don close",
       "withdrawn": "You don withdraw am",
-      "waitingCode": "E dey wait for new code"
+      "waitingCode": "E dey wait for new code",
+      "needsAttention": "E need your attention",
+      "needsAttentionHint": "We no fit accept am yet. Open am, fix wetin dem mark, then send am again."
     },
     "outcome": {
       "confirmed": "Evidence confirm am",
@@ -105,7 +223,8 @@
     "line4": "If person fit dey for danger, call 112. This app no dey send help.",
     "listen": "Listen to am",
     "privacyLink": "Read the full privacy notice",
-    "continue": "I don understand"
+    "continue": "I don understand",
+    "line5": "If you use Talk am, your phone speech service fit process your voice to turn am to words."
   },
   "o03": {
     "title": "Who you be?",
@@ -117,21 +236,22 @@
     "signIn": {
       "title": "Sign in",
       "codeLabel": "Observer code",
-      "codeHint": "E dey your card. Example: OBS-7K2P",
+      "codeHint": "E dey your card. Example: OBS-7K2P9D",
       "pinLabel": "PIN",
-      "pinHint": "6 numbers. For the first time, use the PIN wey dey your card.",
+      "pinHint": "6 numbers. For the first time, use the 8-number setup PIN wey dey your card.",
       "showPin": "Show PIN",
       "hidePin": "Hide PIN",
       "submit": "Sign in",
       "submitting": "E dey sign in",
       "offline": "You need network to sign in. Move go where network dey, then try again.",
       "codeEmpty": "Put your observer code.",
-      "codeFormat": "Observer code dey look like OBS-7K2P. Check your card.",
-      "pinFormat": "Your PIN na 6 numbers.",
+      "codeFormat": "Observer code dey look like OBS-7K2P9D. Check your card.",
+      "pinFormat": "Your PIN na 6 numbers, or 8 numbers the first time.",
       "wrong": "The code or PIN no correct. Check your card and try again.",
       "triesLeft": "{count, plural, one {# try remain before you go wait small.} other {# tries remain before you go wait small.}}",
       "revoked": "This code no dey work again. Ask your coordinator for new one.",
-      "forgot": "You forget your PIN? Your coordinator fit give you new code."
+      "forgot": "You forget your PIN? Your coordinator fit give you new code.",
+      "lockedAdmin": "This code don lock because you try too many times. Ask your coordinator to reset your PIN."
     },
     "setPin": {
       "title": "Choose your own PIN",
@@ -184,7 +304,12 @@
       "body": "Then e go open even without network.",
       "add": "Add am to home screen",
       "notNow": "No be now"
-    }
+    },
+    "waitingCode": "{count, plural, one {# report from code wey no dey work again dey this phone.} other {# reports from code wey no dey work again dey this phone.}}",
+    "sendWaiting": "Send am with my code",
+    "deleteWaiting": "Delete dem",
+    "needsAttention": "{count, plural, one {# report need your attention before e fit send.} other {# reports need your attention before dem fit send.}}",
+    "fix": "Fix am"
   },
   "incident": {
     "draftKept": "Your report dey saved for this phone.",
@@ -252,7 +377,9 @@
     "listMissing": "The polling-unit list never dey this phone. Connect to network one time to download am.",
     "listDownloading": "E dey download the polling-unit list ({percent}%)",
     "error": "Choose polling unit, or choose ward and tap \"I no know the polling unit\".",
-    "noGps": "We no dey use your phone location at all."
+    "noGps": "We no dey use your phone location at all.",
+    "searchNeedsState": "Choose your state below first. Then you fit search im polling units.",
+    "listDownloadingNoPercent": "E dey download the polling-unit list"
   },
   "o08": {
     "title": "When e happen?",
@@ -289,7 +416,9 @@
     "nameKeep": "E no be name, keep am",
     "tooShort": "Write small more so reviewer go understand. At least {min} letters.",
     "tooLong": "E too long. Make e no pass {max} letters.",
-    "sourceError": "Choose how you take know."
+    "sourceError": "Choose how you take know.",
+    "speakNote": "Talk am dey use your phone speech service. E fit send your voice go the company wey run am so e turn am to words. You fit tap the microphone for your keyboard instead.",
+    "speakNoteOk": "Start to talk"
   },
   "o10": {
     "title": "You wan add photo, video or voice?",
@@ -301,7 +430,7 @@
     "voiceLimit": "No pass 2 minutes",
     "file": "Choose file",
     "blur": "Hide faces (blur)",
-    "blurHint": "E go hide faces before e comot this phone.",
+    "blurHint": "We blur the faces wey we fit see. Check before you send.",
     "locationRemoved": "We don remove location",
     "size": "{size} · e go take about {time} to send now",
     "sizeOffline": "{size} · e go send when network come",
@@ -318,7 +447,11 @@
     "recording": "E dey record {time}",
     "stopRecording": "Stop recording",
     "skip": "Continue without am",
-    "spaceLow": "This phone don almost full. Big videos fit no enter."
+    "spaceLow": "This phone don almost full. Big videos fit no enter.",
+    "videoTooLong": "Choose video wey no pass 60 seconds.",
+    "voiceTooLong": "Choose voice note wey no pass 2 minutes.",
+    "unreadable": "We no fit open this file. Try another one.",
+    "itemName": "{kind, select, photo {Photo} video {Video} other {Voice note}} {n}"
   },
   "o11": {
     "title": "Check am and send",
@@ -338,7 +471,9 @@
     "savedOffline": "We save am for this phone. E never send. E go send when network come.",
     "queueFull": "{max} reports don already dey wait for this phone. Send dem first, or delete one.",
     "intakePaused": "Your organisation don stop new reports for now. Your report dey saved for this phone. E go send when dem start again.",
-    "notConfirmed": "We don send your report but we never hear back. We dey check. E no go send two times."
+    "notConfirmed": "We don send your report but we never hear back. We dey check. E no go send two times.",
+    "withdrawn": "You don withdraw this report, so no receipt dey. Nothing go happen with am again.",
+    "needsAttention": "We no fit accept this report yet. Fix the parts wey dem mark below, then send am again."
   },
   "o12": {
     "title": "Dem don receive your report",
@@ -360,12 +495,17 @@
       "failed": "E never send",
       "retry": "Try again",
       "missing": "This file no dey this phone again. Choose the file again.",
-      "chooseAgain": "Choose file again"
+      "chooseAgain": "Choose file again",
+      "closed": "The report don close, so you no fit add this file.",
+      "cannotRemove": "Reviewer don start, so you no fit remove this file again."
     },
     "keepOpen": "Leave the app open until everything show \"E don save\".",
     "viewReport": "See this report",
     "another": "Report another thing",
-    "home": "Go back home"
+    "home": "Go back home",
+    "citizen": {
+      "keep": "Write this code down or save the image. You need am to check your report."
+    }
   },
   "o13": {
     "title": "My reports",

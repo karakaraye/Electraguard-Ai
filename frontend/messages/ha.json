@@ -15,7 +15,123 @@
     "optional": "Ba dole ba",
     "charCount": "Haruffa {count} cikin {max}",
     "listen": "Saurara",
-    "stopListening": "Tsaya"
+    "stopListening": "Tsaya",
+    "productName": "ElectraGuard",
+    "skipToContent": "Tsallake zuwa abin da ke ciki",
+    "pleaseWait": "Ka jira ɗan lokaci",
+    "errorPrefix": "Kuskure:",
+    "yes": "Ee",
+    "no": "A'a",
+    "selected": "An zaɓa",
+    "network": {
+      "offline": "Babu sabis. Za a aika rahotanni idan sabis ya dawo.",
+      "offlineQueued": "{count, plural, one {Babu sabis. Rahoto # yana kan wannan wayar, za a aika shi idan sabis ya dawo.} other {Babu sabis. Rahotanni # suna kan wannan wayar, za a aika su idan sabis ya dawo.}}",
+      "online": "Sabis ya dawo."
+    },
+    "stepper": {
+      "progress": "Mataki na {current} cikin {total}"
+    },
+    "textarea": {
+      "count": "Haruffa {count} cikin {max}",
+      "remaining": "{remaining, plural, =0 {Babu sauran haruffa.} one {Saura harafi #.} other {Saura haruffa #.}}"
+    },
+    "select": {
+      "choose": "Zaɓi ɗaya"
+    },
+    "search": {
+      "clear": "Share",
+      "noMatches": "Babu abin da ya yi daidai. Ka gwada haruffa kaɗan.",
+      "results": "{count, plural, =0 {Babu sakamako} one {Sakamako #} other {Sakamako #}}",
+      "instructions": "Rubuta don nema. Yi amfani da kibiyoyin sama da ƙasa don zaɓa."
+    },
+    "when": {
+      "legend": "Yaushe abin ya faru?",
+      "justNow": "Yanzu-yanzu",
+      "earlierToday": "Da farko yau",
+      "anotherDay": "Wata rana",
+      "time": "Lokaci",
+      "date": "Kwanan wata",
+      "timeOptional": "Lokaci, idan ka sani",
+      "zone": "Lokacin Afirka ta Yamma (WAT)",
+      "future": "Wannan lokacin bai riga ya yi ba. Ka zaɓi lokacin da ya wuce.",
+      "required": "Shigar da lokacin da abin ya faru.",
+      "dateRequired": "Shigar da ranar da abin ya faru.",
+      "olderThanWeek": "Wannan ya wuce kwanaki 7. Ka duba ko ranar daidai ce."
+    },
+    "status": {
+      "onPhone": "Yana kan wannan wayar",
+      "notConfirmed": "Ba a tabbatar ba tukuna",
+      "received": "An karɓa",
+      "inReview": "Ana dubawa",
+      "question": "Tambaya gare ka",
+      "closed": "An rufe",
+      "withdrawn": "An janye",
+      "saved": "An ajiye",
+      "failed": "Ya gaza",
+      "urgent": "Gaggawa"
+    },
+    "receipt": {
+      "label": "Lambar rasiti ɗinka",
+      "copy": "Kwafi lambar",
+      "copied": "An kwafa",
+      "copyFailed": "Ba a iya kwafa ba. Ka rubuta lambar a takarda.",
+      "save": "Ajiye a matsayin hoto",
+      "receivedAt": "An karɓa {time}",
+      "next": "Abin da zai biyo baya",
+      "imageTitle": "Rasiti na ElectraGuard"
+    },
+    "upload": {
+      "waiting": "Ana jiran sabis",
+      "uploading": "Ana aikawa {percent}%",
+      "saved": "An ajiye",
+      "failed": "Ba a aika ba",
+      "missing": "Fayil ba ya kan wannan wayar",
+      "retry": "Sake gwadawa",
+      "remove": "Cire",
+      "chooseAgain": "Sake zaɓar fayil",
+      "estimate": "{size} · kusan {time} don aikawa",
+      "kind": "{kind, select, photo {Hoto} video {Bidiyo} voice {Saƙon murya} other {Fayil}}"
+    },
+    "time": {
+      "seconds": "{count, plural, one {daƙiƙa #} other {daƙiƙu #}}",
+      "minutes": "{count, plural, one {minti #} other {mintuna #}}"
+    },
+    "language": {
+      "label": "Harshe",
+      "choose": "Zaɓi harshenka"
+    },
+    "theme": {
+      "label": "Kamanni",
+      "system": "Daidai da na'ura",
+      "light": "Haske",
+      "dark": "Duhu"
+    },
+    "table": {
+      "sortAscending": "An jera daga ƙarami zuwa babba",
+      "sortDescending": "An jera daga babba zuwa ƙarami",
+      "sortBy": "Jera bisa {column}",
+      "empty": "Babu abin nunawa."
+    },
+    "metric": {
+      "fewerThan": "ƙasa da {threshold}"
+    },
+    "suggestion": {
+      "label": "Shawara",
+      "accept": "Karɓa",
+      "correct": "Gyara",
+      "accepted": "An amince",
+      "corrected": "An gyara",
+      "confidence": "Tabbaci: {level, select, high {Babba} medium {Matsakaici} other {Ƙanƙanta}}",
+      "reasons": "Dalilin wannan shawara"
+    },
+    "timeline": {
+      "intact": "Jerin bayanan bai lalace ba",
+      "broken": "Jerin bayanan ya lalace: an canza wani shiga",
+      "unknown": "Ba a duba jerin bayanan ba tukuna"
+    },
+    "nav": {
+      "main": "Babba"
+    }
   },
   "common": {
     "appName": "ElectraGuard",
@@ -46,7 +162,9 @@
       "question": "Tambaya gare ka",
       "closed": "An rufe",
       "withdrawn": "An janye",
-      "waitingCode": "Ana jiran sabuwar lamba"
+      "waitingCode": "Ana jiran sabuwar lamba",
+      "needsAttention": "Yana buƙatar hankalinka",
+      "needsAttentionHint": "Ba mu iya karɓa ba tukuna. Ka buɗe shi, ka gyara abin da aka yi wa alama, sannan ka sake aikawa."
     },
     "outcome": {
       "confirmed": "Shaida ta tabbatar",
@@ -105,7 +223,8 @@
     "line4": "Idan wani yana iya kasancewa cikin haɗari, ka kira 112. Wannan manhaja ba ta aika da taimako.",
     "listen": "Saurari wannan",
     "privacyLink": "Karanta cikakkiyar sanarwar sirri",
-    "continue": "Na fahimta"
+    "continue": "Na fahimta",
+    "line5": "Idan ka yi amfani da Yi magana, sabis ɗin magana na wayarka na iya sarrafa muryarka don mayar da ita rubutu."
   },
   "o03": {
     "title": "Kai wane ne?",
@@ -117,21 +236,22 @@
     "signIn": {
       "title": "Shiga",
       "codeLabel": "Lambar mai sa ido",
-      "codeHint": "Tana kan katinka. Misali: OBS-7K2P",
+      "codeHint": "Tana kan katinka. Misali: OBS-7K2P9D",
       "pinLabel": "PIN",
-      "pinHint": "Lambobi 6. A karon farko, yi amfani da PIN da ke kan katinka.",
+      "pinHint": "Lambobi 6. A karon farko, yi amfani da PIN na saitin mai lambobi 8 da ke kan katinka.",
       "showPin": "Nuna PIN",
       "hidePin": "Ɓoye PIN",
       "submit": "Shiga",
       "submitting": "Ana shiga",
       "offline": "Kana buƙatar sabis don shiga. Ka matsa zuwa wurin da ake da sabis, sannan ka sake gwadawa.",
       "codeEmpty": "Shigar da lambar mai sa ido.",
-      "codeFormat": "Lambar mai sa ido tana kama da OBS-7K2P. Ka duba katinka.",
-      "pinFormat": "PIN ɗinka lambobi 6 ne.",
+      "codeFormat": "Lambar mai sa ido tana kama da OBS-7K2P9D. Ka duba katinka.",
+      "pinFormat": "PIN ɗinka lambobi 6 ne, ko lambobi 8 a karon farko.",
       "wrong": "Lambar ko PIN ba daidai ba ne. Ka duba katinka sannan ka sake gwadawa.",
       "triesLeft": "{count, plural, one {Saura gwaji # kafin ɗan jira.} other {Saura gwaje-gwaje # kafin ɗan jira.}}",
       "revoked": "Wannan lambar ba ta aiki yanzu. Ka nemi sabuwa daga jagoranka.",
-      "forgot": "Ka manta PIN ɗinka? Jagoranka zai iya ba ka sabuwar lamba."
+      "forgot": "Ka manta PIN ɗinka? Jagoranka zai iya ba ka sabuwar lamba.",
+      "lockedAdmin": "An kulle wannan lambar saboda an gwada sau da yawa. Ka roƙi jagoranka ya sake saita PIN ɗinka."
     },
     "setPin": {
       "title": "Zaɓi PIN naka",
@@ -184,7 +304,12 @@
       "body": "Daga nan za ta buɗe ko da babu sabis.",
       "add": "Saka a allon farko",
       "notNow": "Ba yanzu ba"
-    }
+    },
+    "waitingCode": "{count, plural, one {Rahoto # daga lambar da ba ta aiki yana kan wannan wayar.} other {Rahotanni # daga lambar da ba ta aiki suna kan wannan wayar.}}",
+    "sendWaiting": "Aika da lambata",
+    "deleteWaiting": "Share su",
+    "needsAttention": "{count, plural, one {Rahoto # yana buƙatar hankalinka kafin a iya aika shi.} other {Rahotanni # suna buƙatar hankalinka kafin a iya aika su.}}",
+    "fix": "Gyara shi"
   },
   "incident": {
     "draftKept": "An ajiye rahotonka a kan wannan wayar.",
@@ -252,7 +377,9 @@
     "listMissing": "Jerin rumfunan zaɓe bai shigo wannan wayar ba tukuna. Ka haɗa da sabis sau ɗaya don sauke shi.",
     "listDownloading": "Ana sauke jerin rumfunan zaɓe ({percent}%)",
     "error": "Zaɓi rumfar zaɓe, ko ka zaɓi mazaɓa sannan ka taɓa \"Ban san rumfar zaɓen ba\".",
-    "noGps": "Ba ma amfani da wurin da wayarka take, ko kaɗan."
+    "noGps": "Ba ma amfani da wurin da wayarka take, ko kaɗan.",
+    "searchNeedsState": "Da farko ka zaɓi jiharka a ƙasa. Sai ka nemi rumfunan zaɓenta.",
+    "listDownloadingNoPercent": "Ana sauke jerin rumfunan zaɓe"
   },
   "o08": {
     "title": "Yaushe ya faru?",
@@ -289,7 +416,9 @@
     "nameKeep": "Ba suna ba ne, bar shi",
     "tooShort": "Ka ƙara rubutu kaɗan don mai dubawa ya fahimta. Aƙalla haruffa {min}.",
     "tooLong": "Wannan ya yi tsawo. Kada ya wuce haruffa {max}.",
-    "sourceError": "Zaɓi yadda ka sani."
+    "sourceError": "Zaɓi yadda ka sani.",
+    "speakNote": "Yi magana yana amfani da sabis ɗin magana na wayarka, wanda zai iya aika muryarka ga kamfanin da ke gudanar da shi don mayar da ita rubutu. Za ka iya taɓa makirufo a madannin wayarka maimakon haka.",
+    "speakNoteOk": "Fara magana"
   },
   "o10": {
     "title": "Ƙara hotuna, bidiyo ko murya?",
@@ -301,7 +430,7 @@
     "voiceLimit": "Har zuwa minti 2",
     "file": "Zaɓi fayil",
     "blur": "Ɓoye fuskoki",
-    "blurHint": "Yana ɓoye fuskoki kafin ya bar wannan wayar.",
+    "blurHint": "Muna ɓoye fuskokin da za mu iya gani. Ka duba kafin ka aika.",
     "locationRemoved": "An cire bayanin wuri",
     "size": "{size} · zai ɗauki kusan {time} a aika yanzu",
     "sizeOffline": "{size} · za a aika idan ka samu sabis",
@@ -318,7 +447,11 @@
     "recording": "Ana naɗi {time}",
     "stopRecording": "Dakatar da naɗi",
     "skip": "Ci gaba ba tare da su ba",
-    "spaceLow": "Wannan wayar ta kusa cika. Manyan bidiyo ba za su iya shiga ba."
+    "spaceLow": "Wannan wayar ta kusa cika. Manyan bidiyo ba za su iya shiga ba.",
+    "videoTooLong": "Zaɓi bidiyo da bai wuce daƙiƙa 60 ba.",
+    "voiceTooLong": "Zaɓi saƙon murya da bai wuce mintuna 2 ba.",
+    "unreadable": "Ba a iya buɗe wannan fayil ba. Ka gwada wani.",
+    "itemName": "{kind, select, photo {Hoto} video {Bidiyo} other {Saƙon murya}} {n}"
   },
   "o11": {
     "title": "Duba ka aika",
@@ -338,7 +471,9 @@
     "savedOffline": "An ajiye shi a kan wannan wayar. Za a aika idan ka samu sabis.",
     "queueFull": "Akwai rahotanni {max} da ke jira a kan wannan wayar. Ka fara aika su, ko ka goge ɗaya.",
     "intakePaused": "Ƙungiyarka ta dakatar da karɓar sababbin rahotanni. An ajiye rahotonka a kan wannan wayar. Za a aika idan sun sake farawa.",
-    "notConfirmed": "Mun aika rahotonka, amma ba mu ji amsa ba tukuna. Muna bincikawa. Ba za a aika sau biyu ba."
+    "notConfirmed": "Mun aika rahotonka, amma ba mu ji amsa ba tukuna. Muna bincikawa. Ba za a aika sau biyu ba.",
+    "withdrawn": "An janye wannan rahoto, don haka babu rasiti. Babu abin da zai ƙara faruwa da shi.",
+    "needsAttention": "Ba mu iya karɓar wannan rahoto ba tukuna. Ka gyara sassan da aka yi wa alama a ƙasa, sannan ka sake aikawa."
   },
   "o12": {
     "title": "An karɓi rahoto",
@@ -360,12 +495,17 @@
       "failed": "Ba a aika ba",
       "retry": "Sake gwadawa",
       "missing": "Wannan fayil ba ya kan wayar yanzu. Sake zaɓar fayil ɗin.",
-      "chooseAgain": "Sake zaɓar fayil"
+      "chooseAgain": "Sake zaɓar fayil",
+      "closed": "An rufe rahoton, don haka ba za a iya ƙara wannan fayil ba.",
+      "cannotRemove": "Mai dubawa ya fara, don haka ba za a iya cire wannan fayil ba kuma."
     },
     "keepOpen": "Ka bar manhajar a buɗe har sai duk abubuwan sun nuna An ajiye.",
     "viewReport": "Duba wannan rahoton",
     "another": "Kai wani rahoto daban",
-    "home": "Koma gida"
+    "home": "Koma gida",
+    "citizen": {
+      "keep": "Ka rubuta wannan lambar ko ka ajiye hoton. Za ka buƙace ta don duba rahotonka."
+    }
   },
   "o13": {
     "title": "Rahotannina",

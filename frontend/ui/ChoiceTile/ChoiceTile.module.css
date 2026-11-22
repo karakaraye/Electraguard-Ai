@@ -186,6 +186,31 @@
   padding: var(--s-4) calc(var(--s-3) + 28px) var(--s-4) var(--s-4);
 }
 
+.yesNo[data-stacked] {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+@media (min-width: 600px) {
+  .yesNo[data-stacked] {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.yesNo .tile[data-tone="danger"] {
+  border-color: var(--danger);
+}
+
+.answerIcon {
+  display: inline-flex;
+  flex: none;
+  color: var(--danger);
+}
+
+.answerIcon svg {
+  width: 28px;
+  height: 28px;
+}
+
 .yesNo .tick {
   top: 50%;
   transform: translateY(-50%);

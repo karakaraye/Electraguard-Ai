@@ -11,8 +11,8 @@ import "../tokens.css";
 import styles from "./AppShell.module.css";
 
 export type AppShellProps = {
-  /** Short screen name in the top bar. The screen question goes in the content as <h1>. */
-  title?: string;
+  /** Short screen name (or the product mark) in the top bar. The screen question goes in the content as <h1>. */
+  title?: ReactNode;
   /** Where Back goes. Without it, Back calls onBack, or the browser history. */
   backHref?: string;
   onBack?: () => void;

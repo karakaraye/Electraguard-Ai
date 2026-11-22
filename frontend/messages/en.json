@@ -161,7 +161,9 @@
       "question": "Question for you",
       "closed": "Closed",
       "withdrawn": "Withdrawn",
-      "waitingCode": "Waiting for a new code"
+      "waitingCode": "Waiting for a new code",
+      "needsAttention": "Needs your attention",
+      "needsAttentionHint": "We could not accept it yet. Open it, fix what is marked, and send again."
     },
     "outcome": {
       "confirmed": "Confirmed by evidence",
@@ -220,7 +222,8 @@
     "line4": "If someone may be in danger, call 112. This app does not send help.",
     "listen": "Listen to this",
     "privacyLink": "Read the full privacy notice",
-    "continue": "I understand"
+    "continue": "I understand",
+    "line5": "If you use Speak, your phone's speech service may process your voice to turn it into words."
   },
   "o03": {
     "title": "Who are you?",
@@ -232,21 +235,22 @@
     "signIn": {
       "title": "Sign in",
       "codeLabel": "Observer code",
-      "codeHint": "It is on your card. Example: OBS-7K2P",
+      "codeHint": "It is on your card. Example: OBS-7K2P9D",
       "pinLabel": "PIN",
-      "pinHint": "6 numbers. The first time, use the PIN on your card.",
+      "pinHint": "6 numbers. The first time, use the 8-number setup PIN on your card.",
       "showPin": "Show PIN",
       "hidePin": "Hide PIN",
       "submit": "Sign in",
       "submitting": "Signing in",
       "offline": "You need network to sign in. Move to a place with network, then try again.",
       "codeEmpty": "Enter your observer code.",
-      "codeFormat": "Observer codes look like OBS-7K2P. Check your card.",
-      "pinFormat": "Your PIN is 6 numbers.",
+      "codeFormat": "Observer codes look like OBS-7K2P9D. Check your card.",
+      "pinFormat": "Your PIN is 6 numbers, or 8 numbers the first time.",
       "wrong": "The code or PIN is not right. Check your card and try again.",
       "triesLeft": "{count, plural, one {# try left before a short wait.} other {# tries left before a short wait.}}",
       "revoked": "This code no longer works. Ask your coordinator for a new one.",
-      "forgot": "Forgot your PIN? Your coordinator can give you a new code."
+      "forgot": "Forgot your PIN? Your coordinator can give you a new code.",
+      "lockedAdmin": "This code is locked after too many tries. Ask your coordinator to reset your PIN."
     },
     "setPin": {
       "title": "Choose your own PIN",
@@ -299,7 +303,12 @@
       "body": "Then it opens without network.",
       "add": "Add to home screen",
       "notNow": "Not now"
-    }
+    },
+    "waitingCode": "{count, plural, one {# report from a code that no longer works is on this phone.} other {# reports from a code that no longer works are on this phone.}}",
+    "sendWaiting": "Send with my code",
+    "deleteWaiting": "Delete them",
+    "needsAttention": "{count, plural, one {# report needs your attention before it can send.} other {# reports need your attention before they can send.}}",
+    "fix": "Fix it"
   },
   "incident": {
     "draftKept": "Your report is saved on this phone.",
@@ -367,7 +376,9 @@
     "listMissing": "The polling-unit list is not on this phone yet. Connect to network once to download it.",
     "listDownloading": "Downloading the polling-unit list ({percent}%)",
     "error": "Choose a polling unit, or choose a ward and tap \"I don't know the polling unit\".",
-    "noGps": "We never use your phone's location."
+    "noGps": "We never use your phone's location.",
+    "searchNeedsState": "Choose your state below first. Then you can search its polling units.",
+    "listDownloadingNoPercent": "Downloading the polling-unit list"
   },
   "o08": {
     "title": "When did it happen?",
@@ -404,7 +415,9 @@
     "nameKeep": "It is not a name, keep it",
     "tooShort": "Write a little more so a reviewer can understand. At least {min} letters.",
     "tooLong": "That is too long. Keep it under {max} letters.",
-    "sourceError": "Choose how you know."
+    "sourceError": "Choose how you know.",
+    "speakNote": "Speak uses your phone's speech service, which may send your voice to its provider to turn it into words. You can tap the microphone on your keyboard instead.",
+    "speakNoteOk": "Start speaking"
   },
   "o10": {
     "title": "Add photos, video or voice?",
@@ -416,7 +429,7 @@
     "voiceLimit": "Up to 2 minutes",
     "file": "Choose file",
     "blur": "Blur faces",
-    "blurHint": "Hides faces before it leaves this phone.",
+    "blurHint": "Faces we can detect are blurred. Check before sending.",
     "locationRemoved": "Location removed",
     "size": "{size} · about {time} to send now",
     "sizeOffline": "{size} · will send when you have network",
@@ -433,7 +446,11 @@
     "recording": "Recording {time}",
     "stopRecording": "Stop recording",
     "skip": "Continue without",
-    "spaceLow": "This phone is almost full. Large videos may not fit."
+    "spaceLow": "This phone is almost full. Large videos may not fit.",
+    "videoTooLong": "Choose a clip of 60 seconds or less.",
+    "voiceTooLong": "Choose a voice note of 2 minutes or less.",
+    "unreadable": "This file could not be opened. Try another one.",
+    "itemName": "{kind, select, photo {Photo} video {Video} other {Voice note}} {n}"
   },
   "o11": {
     "title": "Check and send",
@@ -453,7 +470,9 @@
     "savedOffline": "Saved on this phone. It will send when you have network.",
     "queueFull": "There are already {max} reports waiting on this phone. Send them first, or delete one.",
     "intakePaused": "Your organisation has paused new reports. Your report is saved on this phone and will send when they start again.",
-    "notConfirmed": "We sent your report but have not heard back. We are checking. It will not be sent twice."
+    "notConfirmed": "We sent your report but have not heard back. We are checking. It will not be sent twice.",
+    "withdrawn": "This report was withdrawn, so there is no receipt. Nothing more will happen with it.",
+    "needsAttention": "We could not accept this report yet. Fix the parts marked below, then send it again."
   },
   "o12": {
     "title": "Report received",
@@ -475,12 +494,17 @@
       "failed": "Not sent",
       "retry": "Try again",
       "missing": "This file is no longer on the phone. Choose the file again.",
-      "chooseAgain": "Choose file again"
+      "chooseAgain": "Choose file again",
+      "closed": "The report is closed, so this file cannot be added.",
+      "cannotRemove": "A reviewer has started, so this file can no longer be removed."
     },
     "keepOpen": "Keep the app open until all items say Saved.",
     "viewReport": "See this report",
     "another": "Report something else",
-    "home": "Back to home"
+    "home": "Back to home",
+    "citizen": {
+      "keep": "Write this code down or save the image. You need it to check your report."
+    }
   },
   "o13": {
     "title": "My reports",
