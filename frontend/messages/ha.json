@@ -150,7 +150,10 @@
       "unsent": "{count, plural, one {Ba a aika rahoto # da ke kan wannan wayar ba.} other {Ba a aika rahotanni # da ke kan wannan wayar ba.}}",
       "unsentHint": "Ka karɓi sabuwar lamba daga jagoranka. Bayan ka shiga da ita, za ka iya aika su ko goge su.",
       "signInNew": "Shiga da sabuwar lamba",
-      "clear": "Goge su daga wannan wayar"
+      "clear": "Goge su daga wannan wayar",
+      "clearTitle": "A goge waɗannan rahotannin daga wannan wayar?",
+      "clearBody": "Ba a taɓa aika su ba. Idan ka goge su, za su ɓace gaba ɗaya. Ba za a iya dawo da su ba.",
+      "clearConfirm": "Goge rahotanni"
     }
   },
   "o04": {
@@ -488,7 +491,8 @@
     "needUnit": "Ka fara cike Isowa don mu san rumfar zaɓenka.",
     "unanswered": "{count, plural, one {Tambaya # ba ta da amsa. A aika haka?} other {Tambayoyi # ba su da amsa. A aika haka?}}",
     "sendAnyway": "Aika haka nan",
-    "goBack": "Amsa su"
+    "goBack": "Amsa su",
+    "draftExists": "Akwai rahoton da ba ka gama ba. Mun buɗe shi. Ka gama shi ko ka goge shi tukuna, sannan ka kai rahoton wannan."
   },
   "o16": {
     "title": "Duba takardar sakamako",
@@ -566,7 +570,8 @@
       "leaveBody": "Ba za ka sake ganin sababbin saƙonni ba. Saƙonninka za su ci gaba da kasancewa sai dai idan mai kula da tattaunawa ya cire su.",
       "leaveConfirm": "Fita",
       "removed": "Ba ka cikin wannan tattaunawa yanzu.",
-      "tooLong": "Kada saƙo ya wuce haruffa {max}."
+      "tooLong": "Kada saƙo ya wuce haruffa {max}.",
+      "earlier": "Nuna rubuce-rubucen da suka gabata"
     }
   },
   "o19": {
@@ -582,7 +587,8 @@
     "savedGuides": "Takardun bayani da aka ajiye",
     "note": "Amsoshi suna fitowa ne daga takardun bayani da aka amince da su kawai. Ba shawarar shari'a ba ne.",
     "error": "Ba mu iya samun amsa ba. Sake gwadawa.",
-    "empty": "Rubuta tambayar da kake son yi."
+    "empty": "Rubuta tambayar da kake son yi.",
+    "otherLanguage": "An amince da wannan takardar bayani a {language} kawai."
   },
   "o20": {
     "title": "Saituna",

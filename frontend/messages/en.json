@@ -149,7 +149,10 @@
       "unsent": "{count, plural, one {# report on this phone was not sent.} other {# reports on this phone were not sent.}}",
       "unsentHint": "Get a new code from your coordinator. After you sign in with it, you can send or delete them.",
       "signInNew": "Sign in with a new code",
-      "clear": "Delete them from this phone"
+      "clear": "Delete them from this phone",
+      "clearTitle": "Delete these reports from this phone?",
+      "clearBody": "They were never sent. If you delete them, they are gone for good. This cannot be undone.",
+      "clearConfirm": "Delete reports"
     }
   },
   "o04": {
@@ -487,7 +490,8 @@
     "needUnit": "Fill in Arrival first so we know your polling unit.",
     "unanswered": "{count, plural, one {# question has no answer. Send anyway?} other {# questions have no answer. Send anyway?}}",
     "sendAnyway": "Send anyway",
-    "goBack": "Answer them"
+    "goBack": "Answer them",
+    "draftExists": "You have a report you did not finish. We opened it. Finish or delete it first, then report this."
   },
   "o16": {
     "title": "Check the result sheet",
@@ -565,7 +569,8 @@
       "leaveBody": "You will stop seeing new posts. Your posts stay unless a moderator removes them.",
       "leaveConfirm": "Leave",
       "removed": "You are no longer in this discussion.",
-      "tooLong": "Keep posts under {max} letters."
+      "tooLong": "Keep posts under {max} letters.",
+      "earlier": "Show earlier posts"
     }
   },
   "o19": {
@@ -581,7 +586,8 @@
     "savedGuides": "Saved guides",
     "note": "Answers only come from approved guides. They are not legal advice.",
     "error": "We could not get an answer. Try again.",
-    "empty": "Type a question to ask."
+    "empty": "Type a question to ask.",
+    "otherLanguage": "This guide is only approved in {language}."
   },
   "o20": {
     "title": "Settings",

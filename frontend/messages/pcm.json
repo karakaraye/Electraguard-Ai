@@ -150,7 +150,10 @@
       "unsent": "{count, plural, one {# report for this phone never send.} other {# reports for this phone never send.}}",
       "unsentHint": "Collect new code from your coordinator. After you sign in with am, you fit send dem or delete dem.",
       "signInNew": "Sign in with new code",
-      "clear": "Delete dem from this phone"
+      "clear": "Delete dem from this phone",
+      "clearTitle": "You wan delete these reports from this phone?",
+      "clearBody": "Dem never send at all. If you delete dem, dem don go for good. You no fit bring dem back.",
+      "clearConfirm": "Delete reports"
     }
   },
   "o04": {
@@ -488,7 +491,8 @@
     "needUnit": "Fill \"When you reach\" first, so we go know your polling unit.",
     "unanswered": "{count, plural, one {# question no get answer. You still wan send?} other {# questions no get answer. You still wan send?}}",
     "sendAnyway": "Send am like that",
-    "goBack": "Make I answer dem"
+    "goBack": "Make I answer dem",
+    "draftExists": "You get one report wey you never finish. We don open am. Finish am or delete am first, then report this one."
   },
   "o16": {
     "title": "Check the result sheet",
@@ -566,7 +570,8 @@
       "leaveBody": "You no go see new posts again. Your posts go remain, unless moderator remove dem.",
       "leaveConfirm": "Leave",
       "removed": "You no dey this discussion again.",
-      "tooLong": "Make your post no pass {max} letters."
+      "tooLong": "Make your post no pass {max} letters.",
+      "earlier": "Show the posts wey dey before"
     }
   },
   "o19": {
@@ -582,7 +587,8 @@
     "savedGuides": "Saved guides",
     "note": "Answers dey come only from guides wey dem approve. Dem no be legal advice.",
     "error": "We no fit get answer. Try again.",
-    "empty": "Type question to ask."
+    "empty": "Type question to ask.",
+    "otherLanguage": "Dem approve this guide for {language} only."
   },
   "o20": {
     "title": "Settings",

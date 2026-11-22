@@ -150,7 +150,10 @@
       "unsent": "{count, plural, one {Akụkọ # nọ na ekwentị a, e zigaghị ya.} other {Akụkọ # nọ na ekwentị a, e zigaghị ha.}}",
       "unsentHint": "Nweta koodu ọhụrụ n'aka onye nhazi gị. Mgbe i jiri ya banye, ị nwere ike iziga ha ma ọ bụ hichapụ ha.",
       "signInNew": "Banye site na koodu ọhụrụ",
-      "clear": "Hichapụ ha na ekwentị a"
+      "clear": "Hichapụ ha na ekwentị a",
+      "clearTitle": "Hichapụ akụkọ ndị a na ekwentị a?",
+      "clearBody": "E zigaghị ha. Ọ bụrụ na i hichapụ ha, ha ga-efu kpamkpam. A gaghị enwe ike iweghachi ha.",
+      "clearConfirm": "Hichapụ akụkọ"
     }
   },
   "o04": {
@@ -488,7 +491,8 @@
     "needUnit": "Buru ụzọ jupụta Ọbịbịa ka anyị mara ebe ntuli aka gị.",
     "unanswered": "{count, plural, one {Ajụjụ # enweghị azịza. Ziga n'agbanyeghị?} other {Ajụjụ # enweghị azịza. Ziga n'agbanyeghị?}}",
     "sendAnyway": "Ziga n'agbanyeghị",
-    "goBack": "Zaa ha"
+    "goBack": "Zaa ha",
+    "draftExists": "Ị nwere akụkọ ị na-emechabeghị. Anyị emepela ya. Mechaa ya ma ọ bụ hichapụ ya mbụ, wee kọọ nke a."
   },
   "o16": {
     "title": "Lelee mpempe akwụkwọ nsonaazụ",
@@ -566,7 +570,8 @@
       "leaveBody": "Ị gaghị ahụ ihe ọhụrụ e dere ọzọ. Ihe i dere ga-anọ ma ọ bụrụ na onye nlekọta mkparịta ụka ehichapụghị ha.",
       "leaveConfirm": "Hapụ",
       "removed": "Ị nọghịzi na mkparịta ụka a.",
-      "tooLong": "Mee ka ihe i dere dị n'okpuru mkpụrụedemede {max}."
+      "tooLong": "Mee ka ihe i dere dị n'okpuru mkpụrụedemede {max}.",
+      "earlier": "Gosi ozi ndị bu ụzọ"
     }
   },
   "o19": {
@@ -582,7 +587,8 @@
     "savedGuides": "Ntuziaka echekwara",
     "note": "Azịza na-esi naanị na ntuziaka akwadoro. Ha abụghị ndụmọdụ iwu.",
     "error": "Anyị enweghị ike inweta azịza. Nwaa ọzọ.",
-    "empty": "Pịnye ajụjụ ị chọrọ ịjụ."
+    "empty": "Pịnye ajụjụ ị chọrọ ịjụ.",
+    "otherLanguage": "Akwadoro ntụziaka a naanị n'asụsụ {language}."
   },
   "o20": {
     "title": "Ntọala",

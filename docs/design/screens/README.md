@@ -189,3 +189,21 @@ flowchart TD
 8. DIS-03 must return authors only as observer code or `moderator`, and a `hidden` flag (content removed) for moderated posts.
 9. RS-01 returns suggestions only; it must not return totals, sums, winners or any cross-unit data.
 10. REP-07 should be one small call so Home costs one request on 2G.
+
+## Open questions for the owner
+
+Each spec that depends on one of these links here by number. The specs follow the recommendation until the owner decides.
+
+| # | Question | Recommendation in the specs |
+|---|---|---|
+| Q1 | After a report is received, may the phone keep a minimal index (ref, receipt code, category, ward, status, time) so My reports works offline? | Yes, minimal index only; no text or media (R8). "Sign out and clear this phone" removes it. |
+| Q2 | Citizen receipt: should "Keep this code on this phone" default to on? | On. Losing the code means losing the status; only the code is kept, and the switch is visible on C-01. |
+| Q3 | When a code is revoked with reports still queued on the phone, may the next code holder send them (server records the device link), or must they only be deleted? | Allow send or delete, as the plan says ("wait for the new code holder to clear or send them"). The server should mark them "sent after revocation" for reviewers. |
+| Q4 | Blur faces: on phones without face detection, is "blurred on the server before anyone sees it" acceptable wording? | Yes; the hint says "Hides faces before it leaves this phone" only where the phone does it, otherwise the server-side wording. Needs one extra string once decided. |
+| Q5 | A video longer than 60 s: trim to the first 60 s on the phone, or refuse and ask to record again? | Trim and say so on the item. |
+| Q6 | Dictation uses the phone browser's speech engine, which may send audio to its provider. Keep it (with a line in the privacy notice), or turn it off? | Keep, disclosed in the privacy notice; the keyboard microphone is offered where the browser has no engine. |
+| Q7 | Allow more than one open incident draft? | No: one draft keeps the flow simple; O-15 opens the existing draft with `o15.draftExists`. |
+| Q8 | SMS short code: until a commercial short code exists, show the gateway sandbox number? | Yes, from one config value (`SMS_SHORT_CODE`). |
+| Q9 | Should changing a PIN end the code's other sessions? | No (revocation does that); easy to switch on in AUTH-07. |
+| Q10 | May a citizen answer a reviewer's question with the receipt code alone (from another phone or after clearing)? | Yes, rate limited and length capped. |
+| Q11 | Hausa uses the masculine/neutral "ka" form throughout, as most Hausa apps do. Keep, or use a neutral construction? | Keep for the drafts; owner to confirm. |

@@ -150,7 +150,10 @@
       "unsent": "{count, plural, one {Ìròyìn # lórí fóònù yìí kò tíì lọ.} other {Ìròyìn # lórí fóònù yìí kò tíì lọ.}}",
       "unsentHint": "Gba kóòdù tuntun lọ́wọ́ olùṣètò rẹ. Lẹ́yìn tí o bá fi wọlé, o lè fi wọ́n ránṣẹ́ tàbí pa wọ́n rẹ́.",
       "signInNew": "Wọlé pẹ̀lú kóòdù tuntun",
-      "clear": "Pa wọ́n rẹ́ kúrò lórí fóònù yìí"
+      "clear": "Pa wọ́n rẹ́ kúrò lórí fóònù yìí",
+      "clearTitle": "Ṣé kí a pa àwọn ìròyìn wọ̀nyí rẹ́ lórí fóònù yìí?",
+      "clearBody": "A kò fi wọ́n ránṣẹ́ rí. Tí o bá pa wọ́n rẹ́, wọn yóò lọ pátápátá. A kò lè dá wọn padà.",
+      "clearConfirm": "Pa àwọn ìròyìn rẹ́"
     }
   },
   "o04": {
@@ -488,7 +491,8 @@
     "needUnit": "Kọ́kọ́ kún Ìdé kí a lè mọ ibùdó ìdìbò rẹ.",
     "unanswered": "{count, plural, one {Ìbéèrè # kò ní ìdáhùn. Ṣé kí a fi ránṣẹ́ bẹ́ẹ̀?} other {Ìbéèrè # kò ní ìdáhùn. Ṣé kí a fi ránṣẹ́ bẹ́ẹ̀?}}",
     "sendAnyway": "Fi ránṣẹ́ bẹ́ẹ̀",
-    "goBack": "Dáhùn wọn"
+    "goBack": "Dáhùn wọn",
+    "draftExists": "Ìròyìn kan wà tí o kò parí. A ti ṣí i. Parí rẹ̀ tàbí pa á rẹ́ ná, lẹ́yìn náà fi ìròyìn èyí ránṣẹ́."
   },
   "o16": {
     "title": "Ṣàyẹ̀wò ìwé èsì",
@@ -566,7 +570,8 @@
       "leaveBody": "O kò ní rí ọ̀rọ̀ tuntun mọ́. Àwọn ọ̀rọ̀ rẹ yóò wà níbẹ̀ àyàfi tí alábòójútó ìjíròrò bá yọ wọ́n kúrò.",
       "leaveConfirm": "Kúrò",
       "removed": "O kò sí nínú ìjíròrò yìí mọ́.",
-      "tooLong": "Jẹ́ kí ọ̀rọ̀ rẹ kéré sí lẹ́tà {max}."
+      "tooLong": "Jẹ́ kí ọ̀rọ̀ rẹ kéré sí lẹ́tà {max}.",
+      "earlier": "Fi àwọn ọ̀rọ̀ ìṣáájú hàn"
     }
   },
   "o19": {
@@ -582,7 +587,8 @@
     "savedGuides": "Àwọn ìtọ́sọ́nà tí a fi pamọ́",
     "note": "Àwọn ìdáhùn ń wá láti inú àwọn ìtọ́sọ́nà tí a fọwọ́ sí nìkan. Wọn kì í ṣe ìmọ̀ràn òfin.",
     "error": "A kò rí ìdáhùn gbà. Gbìyànjú lẹ́ẹ̀kan sí i.",
-    "empty": "Tẹ ìbéèrè kan láti béèrè."
+    "empty": "Tẹ ìbéèrè kan láti béèrè.",
+    "otherLanguage": "Èdè {language} nìkan ni a fọwọ́ sí ìtọ́sọ́nà yìí ní."
   },
   "o20": {
     "title": "Ètò",
