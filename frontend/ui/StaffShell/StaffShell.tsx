@@ -65,7 +65,7 @@ export function StaffShell({
     nav.map((item) => {
       const Icon = item.icon;
       return (
-        <li key={item.href}>
+        <li key={`${item.href}-${item.label}`}>
           <Link
             href={item.href}
             className={variant === "side" ? styles.sideLink : styles.tabLink}

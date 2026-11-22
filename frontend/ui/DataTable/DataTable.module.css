@@ -35,7 +35,6 @@
   border-bottom: 1px solid var(--rule);
   text-align: left;
   vertical-align: top;
-  overflow-wrap: anywhere;
 }
 
 .table thead th {
@@ -56,12 +55,14 @@
 }
 
 .numeric {
+  white-space: nowrap;
   text-align: right !important;
   font-variant-numeric: tabular-nums;
 }
 
 .rowHeader {
   font-weight: 600;
+  white-space: nowrap;
 }
 
 .sort {

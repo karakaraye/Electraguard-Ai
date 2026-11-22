@@ -36,6 +36,7 @@
 /* ---------- Top bar ---------- */
 
 .top {
+  container-type: inline-size;
   position: sticky;
   top: 0;
   z-index: var(--z-sticky);
@@ -107,6 +108,24 @@
   line-height: 1.3;
   text-align: center;
   color: var(--ink-2);
+}
+
+/* Very large text: Back and Menu share the first row, the title gets its own */
+@container (max-width: 18rem) {
+  .topInner {
+    grid-template-columns: auto minmax(0, 1fr);
+    row-gap: 0;
+  }
+  .title {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    padding: 0 var(--s-2) var(--s-2);
+    text-align: start;
+  }
+  .menu {
+    grid-column: 2;
+    grid-row: 1;
+  }
 }
 
 /* ---------- Network bar ---------- */

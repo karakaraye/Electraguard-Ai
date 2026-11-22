@@ -231,7 +231,6 @@
   padding: var(--s-1) 2px;
   color: var(--ink-2);
   font: var(--t-label);
-  font-size: 0.8125rem;
   line-height: 1.15;
   text-align: center;
   text-decoration: none;
@@ -288,4 +287,12 @@
 
 .themeSwitcher {
   display: inline-flex;
+}
+
+/* Tab labels: whole words, hyphenated only when a word cannot fit */
+.tabLink .linkLabel {
+  flex: none;
+  max-width: 100%;
+  overflow-wrap: normal;
+  hyphens: auto;
 }
