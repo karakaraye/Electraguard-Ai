@@ -30,9 +30,11 @@ Capture a short description by typing or speaking, guide the reporter to describ
 | Listening | Speak tapped and permission granted | listening label, Stop, words stream in; auto-stops after 60 s of speech or 8 s of silence |
 | Dictation unavailable | no Web Speech API, or locale not supported by the engine (likely for pcm/ha/yo/ig) | tapping Speak shows `o09.speakUnavailable` inline under the button (no error colour); the button stays to re-read the tip |
 | Mic denied | permission denied | `o09.micDenied` inline; typing still works |
-| Validation: short | Continue with fewer than 20 characters (trimmed) | `o09.tooShort` with `min`=20 |
-| Validation: long | paste beyond 2000 | text kept, `o09.tooLong` with `max`=2000; Continue blocked until shortened |
-| Validation: source | no source selected | `o09.sourceError` |
+| Short text | Continue with 1 to 19 characters (trimmed) | `o09.tooShort` with `min`=20 as a hint; Continue still works once the observer confirms by tapping it a second time (the contract accepts 1 to 2000 characters, so this is advice, not a rule) |
+| Validation: empty | Continue with nothing (trimmed), or server `422` `fields.description.code = required` / `min_length` | `o09.tooShort`; Continue blocked |
+| Validation: long | paste beyond 2000, or server `422` `fields.description.code = max_length` (`limit: 2000`) | text kept, `o09.tooLong` with `max`=2000; Continue blocked until shortened |
+| Validation: characters | server `422` for a control character (only newline is allowed) | the phone removes control characters on paste, so this is not expected |
+| Validation: source | no source selected, or server `fields.firsthand.code = required` | `o09.sourceError` |
 | Name check | on Continue, text matches the name heuristic and has not been acknowledged | warning banner shown, Continue blocked once; `o09.nameKeep` acknowledges (stored per text hash) and continues; editing the text re-enables the check |
 | Offline | always works (dictation may need network on some phones; then "unavailable" state) | — |
 | Sending / server / success / empty | n/a | — |
@@ -41,7 +43,11 @@ Capture a short description by typing or speaking, guide the reporter to describ
 `ui.stepOf`, `o09.*` (all), `ui.charCount`, `common.continue`, `ui.back`.
 
 ## API
-None on this step. Draft fields: `description` (string, ≤ 2000), `source: "self" | "told"`, `nameCheckAcknowledged: boolean`. The server runs its own personal-data check on REP-01 and reviewers see a flag; the phone check is only a prompt.
+None called by this step. Draft fields, named as REP-01 sends them:
+- `description` (string, 1 to 2000 characters after trimming; text is NFC-normalised by the server).
+- `firsthand` (boolean, required): `o09.sourceSelf` = `true` ("I saw this myself"), `o09.sourceTold` = `false`.
+- `input_method` (`"typed" | "dictated" | "mixed"`, optional): `dictated` when all text came from dictation, `mixed` when dictation and typing were both used. It is for evaluation only and reviewers never see it as a credibility signal.
+- `nameCheckAcknowledged` stays on the phone and is **not** sent (the contract has no field for it). The server runs its own name check after commit and raises `possible_names` for the reviewer; the phone check is only a prompt.
 
 ## Logic notes
 - **Name heuristic (on the phone, no network):** two or more consecutive capitalised words not at sentence start and not in a stop list (place names from REF-01, category words, common titles like "INEC", "Presiding Officer"); honorific + word (`Mr`, `Mrs`, `Alhaji`, `Chief`, `Hon.`, `Oga`, `Mama`, `Baba`, `Chief`); or a Nigerian phone number pattern (`0[789][01]\d{8}`, `+234...`). It warns once; it never blocks or rewrites.

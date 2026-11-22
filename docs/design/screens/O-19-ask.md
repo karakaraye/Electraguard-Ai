@@ -11,11 +11,11 @@ Answer an observer's question only from approved documents, always with the sour
 
 ## Layout
 **Phone 360 px** (`AppShell`, title `o19.title`, Back):
-1. `TextArea` (2 rows, grows to 5) labelled `o19.label`, hint `o19.hint`, 300-character limit. `DictationButton` beside it on tablet, under it on phone (same behaviour as O-09).
+1. `TextArea` (2 rows, grows to 5) labelled `o19.label`, hint `o19.hint`, 500-character limit (the contract takes 3 to 500 characters). `DictationButton` beside it on tablet, under it on phone (same behaviour as O-09).
 2. Primary `o19.ask` directly under the field (not pinned, so the answer area stays visible above the keyboard).
 3. Answer area (`aria-live="polite"`):
-   - The answer as quoted passages from the approved guide (block quote style with a hairline rule on all four sides, not a side stripe), then `o19.source` with the document title and section, and quiet `o19.openSource`.
-   - Or `o19.noAnswer` with the coordinator note.
+   - The answer as the returned `passages[].text`, quoted exactly (block quote style with a hairline rule on all four sides, not a side stripe), then `o19.source` with `source.title` and `source.section` (and `source.version`), and quiet `o19.openSource` linking to `source.url`.
+   - Or, when `status` is `abstained`, `o19.noAnswer` (the same sentence as the contract's `ask.abstain` key) with the coordinator note.
 4. Note `o19.note` (`--ink-2`) at the end.
 5. Section `o19.savedGuides`: links to the guide documents cached on the phone (titles from the guide index).
 
@@ -25,24 +25,23 @@ Answer an observer's question only from approved documents, always with the sour
 | State | Trigger | What shows |
 |---|---|---|
 | First view | open | empty field; saved guides listed |
-| Empty submit | Ask with empty field | `o19.empty` |
-| Asking | ASK-01 in flight | button `o19.asking`, disabled |
-| Answer | ASK-01 ok with sources | passages + source |
-| No approved answer | ASK-01 `no_approved_answer` | `o19.noAnswer` (never a guess) |
+| Empty submit | Ask with fewer than 3 characters, or server `422 validation_failed` on `question` | `o19.empty` |
+| Asking | ASK-01 in flight (CSRF token from AUTH-01 first) | button `o19.asking`, disabled |
+| Answer | ASK-01 `200` with `status: "answered"` | passages + source; when `fallback_language_used` is true the passages are in English and `o19.otherLanguage` says so |
+| No approved answer | ASK-01 `200` with `status: "abstained"` and no passages (below the retrieval threshold; not an error) | `o19.noAnswer` (never a guess) |
 | Offline | no network | `o19.offline`; Ask disabled; saved guides remain usable |
-| Server error | fails | `o19.error` + `ui.retry` |
-| Rate limited | `rate_limited` | `common.error.tooManyTries` |
+| Server error | `5xx` / `503 service_unavailable`, `403 csrf_failed` (the phone fetches AUTH-01 again once and retries) | `o19.error` + `ui.retry` |
+| Rate limited | `429 rate_limited` (20 per minute per session or IP) | `common.error.tooManyTries` with `Retry-After` |
 
 ## Message keys
 `o19.*`, `o09.speak`, `o09.listening`, `o09.stop`, `o09.speakUnavailable`, `common.error.tooManyTries`, `ui.retry`, `ui.back`.
 
 ## API
-- **ASK-01** `{question, locale}` → `{answered: true, passages: [{text, documentId, documentTitle, section, guideSlug, anchor}]}` or `{answered: false}`.
-- The guide index and documents are cached by the service worker (contract 7).
-- Questions are not stored on the phone after the session.
+- **ASK-01** `POST /api/v1/ask` with `{question, language, audience}`; `question` 3 to 500 characters, `language` the current locale (`en`, `pcm`, `ha`, `yo`, `ig`), `audience: "observer"` (the server uses `observer` only for an observer session, so the observer guide is included). No `Idempotency-Key` (no side effects). Response: `{status: "answered" | "abstained", language, passages: [{text, source: {document_id, title, section, version, language, url}, score}], fallback_language_used}`.
+- The guide documents are cached by the service worker; `source.url` (for example `/guide/opening-late#if-late`) opens the cached page. Questions are not stored by the server (only counts by language and status) and not on the phone after the session.
 
 ## Logic notes
-- The answer is displayed as retrieved passages, not paraphrased by the phone. If the server returns a passage in another language than the locale (no approved translation), it is shown with the label `o19.otherLanguage` so nobody thinks it was translated by the app.
+- The answer is displayed as retrieved passages, not paraphrased by the phone. If `fallback_language_used` is true (no approved passage in the locale, so the server returned the English one), it is shown with the label `o19.otherLanguage` so nobody thinks it was translated by the app.
 
 ## Accessibility
 - After Ask, focus stays on the button; the answer area announces "Answer ready" or the no-answer sentence.

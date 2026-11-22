@@ -16,7 +16,21 @@ Pick the kind of event with one tap on a picture, readable without the label. "N
 2. Title `o05.title`; hint `o05.hint`.
 3. `ChoiceTile` grid, 2 columns, 12 px gap, each tile min 120 px tall: 40 px pictogram above the label (labels wrap to 3 lines; never truncated). Order is fixed:
    1. `o05.tile.materials` (box) · 2. `o05.tile.equipment` (broken device) · 3. `o05.tile.queues` (queue of people) · 4. `o05.tile.intimidation` (raised fist/threat) · 5. `o05.tile.access` (steps/wheelchair) · 6. `o05.tile.information` (speech bubble with ?) · 7. `o05.tile.misinformation` (phone with warning) · 8. `o05.tile.inducement` (hand passing money) · 9. `o05.tile.goodPractice` (thumbs up) · 10. `o05.tile.notSure` (question mark).
-4. When `access` is selected, a group expands **inline under the grid** (not a modal): `o05.access.title`, hint `o05.access.hint`, checkboxes `steps`, `distance`, `noAssistance`, `noLargePrint`, `noSignLanguage`, `other`. Optional.
+   Each tile sends one wire value of `category_observer` (REP-01), so every other screen reads the same ids:
+
+   | Tile key | `category_observer` |
+   |---|---|
+   | `materials` | `late_materials` |
+   | `equipment` | `equipment_failure` |
+   | `queues` | `queues_crowding` |
+   | `intimidation` | `intimidation_violence` |
+   | `access` | `access_barrier` |
+   | `information` | `lack_of_information` |
+   | `misinformation` | `misinformation` |
+   | `inducement` | `vote_buying` |
+   | `goodPractice` | `good_practice` |
+   | `notSure` | `not_sure` |
+4. When `access` is selected, a group expands **inline under the grid** (not a modal): `o05.access.title`, hint `o05.access.hint`, checkboxes `steps`, `distance`, `noAssistance`, `noLargePrint`, `noSignLanguage`, `other`, which send `access_barrier_details` values `steps_no_ramp`, `distance`, `no_assistance`, `no_large_print_braille`, `no_sign_language`, `other` (optional, many; sent only with `access_barrier`, otherwise the server answers `not_allowed_for_kind`).
 5. Pinned bottom: primary `common.continue`.
 
 **Tablet 768 px:** 3 columns; at ≥ 1024 px 5 columns (2 rows). Access options in 2 columns.
@@ -37,13 +51,14 @@ Pick the kind of event with one tap on a picture, readable without the label. "N
 Category labels in `o05.tile.*` are reused by every list and summary (O-11, O-13, O-14, O-17, P-01). Do not create copies.
 
 ## API
-- **REF-01** (cached): category ids, ordering and whether each is enabled for this election. The phone ships with the default list so this screen works before the first REF-01 download. If REF-01 disables a category, its tile is hidden; the order of the rest is kept.
-- Draft field: `categoryId` (one of `materials, equipment, queues, intimidation, access, information, misinformation, inducement, goodPractice, notSure`), `accessBarriers: string[]`.
+- **None called by this step.** The ten categories and their order are fixed by the contract (REP-01 `category_observer`) and ship with the app; REF-01 carries no category list and cannot disable one, so no tile is ever hidden by the server.
+- Draft fields (wire values, so REP-01 needs no mapping): `category_observer` (one of `late_materials, equipment_failure, queues_crowding, intimidation_violence, access_barrier, lack_of_information, misinformation, vote_buying, good_practice, not_sure`), `access_barrier_details: string[]`.
+- Citizen mode sends the same fields with REP-05.
 
 ## Logic notes
-- Changing the category later never clears other steps.
+- Changing the category later never clears other steps, except that leaving `access_barrier` clears `access_barrier_details`.
 - `intimidation` pre-selects nothing on O-06; the danger question is always asked for every category, because danger is not only violence.
-- "Not sure" is stored as `notSure`; the server's AI suggestion is shown to reviewers only as "Suggested" (contract rule 7), never to the reporter as a decision.
+- "Not sure" is stored as `not_sure` (observer only: triage never suggests it); the server's AI suggestion is shown to reviewers only as "Suggested" (contract REP-01, server-side work after commit), never to the reporter as a decision.
 
 ## Accessibility
 - Radio group labelled by the title; arrow keys move between tiles; each tile's accessible name is its label (pictograms `aria-hidden`).
