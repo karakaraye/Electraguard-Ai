@@ -118,6 +118,7 @@ jobs:
           export QA_CHROMIUM_TLS_PIN="$(openssl x509 -in "$NODE_EXTRA_CA_CERTS" -pubkey -noout |
             openssl pkey -pubin -outform der | openssl dgst -sha256 -binary | openssl enc -base64)"
           export QA_EVIDENCE_PATH="$scratch/evidence.png"
+          export QA_SLOW_ATTACHMENT_RETRY=true
           "${compose[@]}" exec -T backend python - > "$QA_EVIDENCE_PATH" <<'PNG'
           from io import BytesIO
           import sys

@@ -167,9 +167,32 @@ async function run(browser, width, date, previousDate) {
   await observer.getByRole("button", { name: "Retry attachment" }).click();
   assert.equal((await firstUpload).status(), 201);
   await observer.getByText("The upload could not be confirmed.", { exact: true }).waitFor();
+  let retryNetwork;
+  let networkRuleApplied = false;
+  if (width === 360 && process.env.QA_SLOW_ATTACHMENT_RETRY === "true") {
+    retryNetwork = await observer.context().newCDPSession(observer);
+    await retryNetwork.send("Network.enable");
+    const { ruleIds: [ruleId] } = await retryNetwork.send("Network.emulateNetworkConditionsByRule", {
+      offline: false,
+      matchedNetworkConditions: [{
+        urlPattern: new URL(attachmentPath, origin).href,
+        latency: 250,
+        downloadThroughput: 128 * 1024,
+        uploadThroughput: 128 * 1024,
+      }],
+    });
+    retryNetwork.on("Network.requestWillBeSentExtraInfo", ({ appliedNetworkConditionsId }) => {
+      if (appliedNetworkConditionsId === ruleId) networkRuleApplied = true;
+    });
+  }
   const retryUpload = attachmentResponse();
   await observer.getByRole("button", { name: "Retry attachment" }).click();
   assert.equal((await retryUpload).status(), 200);
+  if (retryNetwork) {
+    assert(networkRuleApplied, "Chromium must apply the upload throttle to the retry.");
+    await retryNetwork.detach();
+    console.log("Attachment retry passed with 250 ms latency and 128 KiB/s throughput.");
+  }
   await observer.getByText("Evidence saved.", { exact: true }).waitFor();
   const { attachments } = await (await api(observer, reportPath)).json();
   assert.equal(attachments.length, 1);
@@ -208,7 +231,7 @@ async function run(browser, width, date, previousDate) {
   step = `worker-free clarification and assessment at ${width}px`;
   await open(reviewer, "/workspace/reviewer/cases?status=submitted");
   await enlargeAndCheck(reviewer, "Review queue", width);
-  await reviewer.getByRole("link", { name: "Fictional training hall", exact: true }).click();
+  await reviewer.locator(`a[href="${casePath}?status=submitted"]`).click();
   await enlargeAndCheck(reviewer, "Review case", width);
   await reviewer.getByRole("button", { name: "Start review", exact: true }).click();
   await reviewer.getByLabel("Question for the Observer").fill("Which entrance was affected?");
