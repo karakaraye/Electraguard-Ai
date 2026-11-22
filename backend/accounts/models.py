@@ -8,10 +8,17 @@ from django.db import models
 INITIAL_ORGANISATION = UUID("362183b8-99c0-4a26-976a-8d0098db0cd3")
 
 
+def default_party_labels():
+    return ["A", "B", "C", "D", "E"]
+
+
 class Organisation(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     name = models.CharField(max_length=160)
     intake_paused = models.BooleanField(default=False)
+    coverage_state_codes = models.JSONField(default=list)
+    coverage_lga_codes = models.JSONField(default=list)
+    party_labels = models.JSONField(default=default_party_labels)
 
 
 class OrganisationOwned(models.Model):

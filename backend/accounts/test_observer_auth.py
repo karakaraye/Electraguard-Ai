@@ -17,6 +17,7 @@ from .observer_credentials import check_symbol, generate_code, normalize_code
 CSRF = "/api/v1/auth/csrf"
 SIGN_IN = "/api/v1/auth/observer/sign-in"
 SET_PIN = "/api/v1/auth/observer/pin"
+CHANGE_PIN = "/api/v1/auth/observer/pin/change"
 SIGN_OUT = "/api/v1/auth/sign-out"
 ME = "/api/v1/auth/me"
 PERSONAL = "246807"
@@ -65,7 +66,7 @@ class ObserverAuthTests(TestCase):
         for pin in ("111111", "123456", "987654", self.setup_pin[:6]):
             response = self.post(SET_PIN, {"setup_token": token, "new_pin": pin})
             self.assertEqual((response.status_code, response.json()["error"]["fields"]["new_pin"]["code"]),
-                             (422, "pin_reused" if pin == self.setup_pin[:6] else "pin_too_simple"))
+                             (422, "pin_same_as_setup" if pin == self.setup_pin[:6] else "pin_too_simple"))
         response = self.post(SET_PIN, {"setup_token": token, "new_pin": PERSONAL})
         self.assertEqual(response.status_code, 200, response.content)
         self.assertGreater(int(response.cookies[settings.SESSION_COOKIE_NAME]["max-age"]), 0)
@@ -162,6 +163,38 @@ class ObserverAuthTests(TestCase):
         self.assertEqual(self.sign_in("831729").status_code, 401)
         response = self.sign_in(PERSONAL)
         self.assertEqual((response.status_code, response.json()["error"]["code"]), (403, "code_revoked"))
+
+    def test_change_pin_rejects_wrong_current_pin_and_weak_replacement(self):
+        payload = {"current_pin": PERSONAL, "new_pin": "926471"}
+        self.assertEqual(self.post(CHANGE_PIN, payload).status_code, 401)
+        self.assertEqual(self.activate().status_code, 200)
+        result = self.post(CHANGE_PIN, {**payload, "current_pin": "831729"})
+        self.assertEqual((result.status_code, result.json()["error"]["code"]), (401, "invalid_credentials"))
+        for replacement, expected in (
+            ("123456", "pin_too_simple"), (PERSONAL, "pin_reused"),
+            (self.setup_pin[:6], "pin_same_as_setup"),
+        ):
+            response = self.post(CHANGE_PIN, {**payload, "new_pin": replacement})
+            self.assertEqual(
+                (response.status_code, response.json()["error"]["fields"]["new_pin"]["code"]),
+                (422, expected),
+            )
+
+    def test_change_pin_preserves_other_sessions_and_revocation_still_ends_them(self):
+        self.assertEqual(self.activate().status_code, 200)
+        other = Client(enforce_csrf_checks=True)
+        self.assertEqual(self.sign_in(PERSONAL, phone=other).status_code, 200)
+        before = set(AccountSession.objects.values_list("key", flat=True))
+        self.assertEqual(self.post(CHANGE_PIN, {"current_pin": PERSONAL, "new_pin": "926471"}).status_code, 204)
+        self.assertEqual(set(AccountSession.objects.values_list("key", flat=True)), before)
+        self.assertTrue(self.phone.get(ME).json()["authenticated"])
+        self.assertTrue(other.get(ME).json()["authenticated"])
+
+        third = Client(enforce_csrf_checks=True)
+        self.assertEqual(self.sign_in(PERSONAL, phone=third).status_code, 401)
+        self.assertEqual(self.sign_in("926471", phone=third).status_code, 200)
+        call_command("revoke_observer_code", self.code, stdout=StringIO())
+        self.assertFalse(other.get(ME).json()["authenticated"])
 
     def test_sign_out_everywhere_and_anonymous_me(self):
         self.assertEqual(self.phone.get(ME).json()["user"], None)

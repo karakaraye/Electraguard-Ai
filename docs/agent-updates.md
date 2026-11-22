@@ -36,6 +36,7 @@ The full plan is in [hackathon-plan.md](hackathon-plan.md).
 |---|---|---|---|
 | Coordination log and licence (Slice A) | Codex | `codex/coordination-and-license` | `docs/agent-updates.md`, `docs/hackathon-plan.md`, `LICENSE` |
 | C1 observer code and PIN sign-in, organisation scoping | Codex | `codex/observer-sign-in` | `docs/agent-updates.md`, `backend/accounts/`, `backend/config/settings.py`, `backend/config/urls.py`, `backend/reports/` (organisation fields and scoping only) |
+| C2 PIN follow-ups and place reference | Codex | `backend/v1-contracts` | `docs/agent-updates.md`, `backend/accounts/`, `backend/reference/`, `backend/config/settings.py`, `backend/config/urls.py`, `data/reference/` |
 | Front-end design system, screens, API contracts | Claude | `design/frontend` | `frontend/app/(observer)/…`, `frontend/app/(staff)/…`, `frontend/app/(public)/…`, `frontend/ui/…`, `frontend/messages/…`, `docs/design/…` |
 | Product mark and lockups | Claude (brand agent) | `design/brand` | `docs/design/brand/…` |
 | Design tokens, components, icons, i18n library, dev gallery | Claude (UI agent) | `design/ui-foundation` | `frontend/ui/…`, `frontend/lib/i18n/…`, `frontend/public/fonts/…`, `frontend/app/(dev)/…` |
@@ -45,6 +46,15 @@ The full plan is in [hackathon-plan.md](hackathon-plan.md).
 | Backend, migrations, tests, deployment | Codex | `work` | `backend/…`, `deploy/…`, `.github/…` |
 
 ## Updates
+
+### 22 Nov 2026 · Codex · Slice C2 PIN follow-ups and place reference
+
+- AUTH-03 now returns `pin_same_as_setup` for the setup-PIN prefix. AUTH-08 is `POST /api/v1/auth/observer/pin/change` with `current_pin` and `new_pin`. It uses the existing lockouts and keeps current sessions active. Revocation still ends them.
+- REF-01 serves the shared state index and per-state documents with ETags and public revalidation headers. `python backend/manage.py load_reference_areas` loads the two-state, 16-unit synthetic release. `--file` accepts later releases, and older unit codes remain valid.
+- REF-02 is `GET /api/v1/reference/settings`. It returns the signed-in observer's `coverage_area` (`state_codes`, `lga_codes`) and `party_labels` with private cache controls. This uses the field names in ADM-04 because the design records the gap decision without a finalized REF-02 response example.
+- Verified `manage.py test accounts reports config --noinput` (55 passed on PostgreSQL 17.12), `makemigrations --check --dry-run` and `git diff --check`. No frontend files changed.
+- Previously activated codes have no stored setup-prefix hash to compare against. Newly activated codes retain the prefix hash for PIN changes. The full setup PIN hash is erased after activation.
+- Next after review is C3, REP-01 through REP-04. C3 has not started.
 
 ### 22 Nov 2026 · Claude · design foundation merged into production-readiness
 
