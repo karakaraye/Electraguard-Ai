@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ElectraGuard mark directions</title>
+<title>ElectraGuard mark (chosen)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;700&display=swap" rel="stylesheet">
@@ -87,17 +87,17 @@
 </head>
 <body>
 <header class="top">
-  <h1>ElectraGuard AI: three mark directions</h1>
-  <p>Pure black on white and pure white on black. Favicons are drawn on a 16 px grid and shown at 1× and 4×.</p>
+  <h1>ElectraGuard AI: the chosen mark</h1>
+  <p>Chosen by the owner on 22 Nov 2026: the E+G monogram. Pure black on white and pure white on black. Favicons are drawn on a 16 px grid and shown at 1× and 4×.</p>
 </header>
 
 <section class="decision">
-  <h2>Decision for the owner</h2>
-  <p>Brand architecture §5.1 says every product has its own drawing and must not reuse or rearrange the Cairn stones. Direction A breaks that rule on purpose, as a sibling of the company mark. Keep §5.1 and choose B (recommended) or C, or waive §5.1 for ElectraGuard and choose A.</p>
+  <h2>Decision recorded</h2>
+  <p>The owner chose the E+G monogram. The Cairn stones and tally directions were rejected and removed. Cairn products never use the Cairn logo, so the product is credited with the plain-text line “ElectraGuard AI, by Cairn”, set in the product's own type with no Cairn symbol. Use the credit lockup where the credit is shown.</p>
 </section>
 <main id="dirs"></main>
 
-<footer>Wordmark: Noto Sans SemiBold, “AI” in Noto Sans Regular. Source files: docs/design/brand/&lt;direction&gt;/. Cairn Assure, November 2026.</footer>
+<footer>Wordmark: Noto Sans SemiBold, “AI” in Noto Sans Regular. Source files: docs/design/brand/monogram/. Cairn Assure, November 2026.</footer>
 
 <template id="dir-tpl">
   <section class="dir">
@@ -115,6 +115,10 @@
       </div>
       <div class="tile stack"><img data-src="lockup-stacked.svg" alt=""><span class="cap">Stacked</span></div>
       <div class="tile dark stack"><img data-src="lockup-stacked-white.svg" alt=""><span class="cap">Stacked, reversed</span></div>
+      <div style="grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+      <div class="tile"><img data-src="lockup-credit.svg" alt="" style="height:72px;width:auto"><span class="cap">With credit line</span></div>
+      <div class="tile dark"><img data-src="lockup-credit-white.svg" alt="" style="height:72px;width:auto"><span class="cap">With credit line, reversed</span></div>
+      </div>
     </div>
     <div class="row2">
       <div class="ladder">
@@ -148,14 +152,9 @@
 
 <script>
   const DIRS = [
-    { id: "cairn", name: "Direction A · sibling of the company mark", label: "Cairn",
-      why: "Three resting stones, the waymarker people build so the next walker can trust the path. It is a deliberate sibling of the Cairn Assure company mark (also three stacked stones), so it needs the owner to waive brand architecture §5.1.",
-      tag: "Needs the owner to waive §5.1" },
-    { id: "monogram", name: "Direction B · own drawing", label: "Monogram",
+    { id: "monogram", name: "Chosen mark", label: "Monogram",
       why: "E and G drawn as one letterform: three arms of the E on a curved spine, with the G’s spur rising on the right. It owns the name, has no pictorial reading to misread, and stays a solid block at 16 px.",
-      tag: "Recommended if §5.1 stands" },
-    { id: "tally", name: "Direction C · own drawing", label: "Tally",
-      why: "Four strokes and one across: the gate tally people use to count what they see by hand. It says “observed and counted”, needs no literacy, and points at no side." },
+      tag: "Chosen by the owner" },
   ];
   const main = document.getElementById("dirs");
   const tpl = document.getElementById("dir-tpl");

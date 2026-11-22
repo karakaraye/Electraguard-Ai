@@ -1,4 +1,4 @@
-"""Build every ElectraGuard mark file from plain geometry.
+"""Build the ElectraGuard monogram files (the chosen mark) from plain geometry.
 
 Usage: NOTO_SANS_DIR=<folder with noto-sans-latin-{400,600}-normal.woff> python generate.py docs/design/brand
 (the .woff files come from the npm package @fontsource/noto-sans). Needs fonttools and uharfbuzz.
@@ -163,28 +163,7 @@ def cap_of(size):
     return size * SEMI.cap / SEMI.upem
 
 
-# ---------------------------------------------------------------- A. Cairn
-def stone(x, y, w, h, rl, rr, ry, rb):
-    """Resting stone: domed top (x radii rl / rr, y radius ry), flatter base (radius rb)."""
-    return [("M", x, y + h - rb), ("L", x, y + ry), ("A", rl, ry, 0, 0, 1, x + rl, y),
-            ("L", x + w - rr, y), ("A", rr, ry, 0, 0, 1, x + w, y + ry), ("L", x + w, y + h - rb),
-            ("A", rb, rb, 0, 0, 1, x + w - rb, y + h), ("L", x + rb, y + h),
-            ("A", rb, rb, 0, 0, 1, x, y + h - rb), ("Z",)]
-
-
-def cairn48():
-    top = apply(stone(20, 8.25, 18, 7.5, 8, 7, 4.75, 2.75), rotate_about(-6, 29, 12))
-    return [stone(4, 30, 40, 11, 13, 9, 6.5, 4), stone(7, 18.5, 29, 9, 9, 11, 5.5, 3.5), top]
-
-
-def cairn16():
-    # whole pixels; 45-degree chamfers stand in for the domes at this size
-    return [poly((1, 13), (3, 11), (12, 11), (15, 13), (15, 15), (1, 15)),
-            poly((2, 8), (4, 6), (11, 6), (13, 8), (13, 10), (2, 10)),
-            poly((7, 3), (8, 2), (13, 2), (14, 3), (14, 5), (7, 5))]
-
-
-# ---------------------------------------------------------------- B. Monogram (E and G)
+# ---------------------------------------------------------------- Monogram (E and G), the chosen mark
 def monogram48():
     # one outline: curved spine shared by E and G, three arms, and the G's spur rising on the right
     R, r = 14, 6
@@ -200,45 +179,9 @@ def monogram16():
                  (11, 11), (11, 8), (14, 8), (14, 14), (4, 14), (2, 12), (2, 4))]
 
 
-# ---------------------------------------------------------------- C. Tally (four strokes, one across)
-def tally(bars, y0, y1, a, b, half, gap):
-    """bars: [(x0, x1)]; the cross stroke is the band around y = a + b*x, half-height `half`,
-    with a knock-out of `gap` above and below it cut into the bars."""
-    shapes = []
-    for (x0, x1) in bars:
-        up = lambda x: a + b * x - half - gap
-        lo = lambda x: a + b * x + half + gap
-        shapes.append(poly((x0, y0), (x1, y0), (x1, up(x1)), (x0, up(x0))))
-        shapes.append(poly((x0, lo(x0)), (x1, lo(x1)), (x1, y1), (x0, y1)))
-    return shapes
-
-
-def tally48():
-    bars = [(8, 13), (17, 22), (26, 31), (35, 40)]
-    a, b, half = 39.5, -0.5, 2.75          # cross stroke from (3, 38) to (45, 17)
-    xs, xe = 3, 45
-    cross = poly((xs, a + b * xs - half), (xe, a + b * xe - half), (xe, a + b * xe + half), (xs, a + b * xs + half))
-    return tally(bars, 6, 42, a, b, half, 2.25) + [cross]
-
-
-def tally16():
-    bars = [(1, 3), (5, 7), (9, 11), (13, 15)]   # odd x edges keep every cut on whole pixels
-    # cross stroke corners on whole pixels: (1,11)-(15,4) top edge, (1,13)-(15,6) bottom edge
-    cross = poly((1, 11), (15, 4), (15, 6), (1, 13))
-    shapes = []
-    for (x0, x1) in bars:
-        top = lambda x: 11 - 0.5 * (x - 1) - 1      # 1 px knock-out above
-        bot = lambda x: 13 - 0.5 * (x - 1) + 1      # 1 px knock-out below
-        shapes.append(poly((x0, 1), (x1, 1), (x1, top(x1)), (x0, top(x0))))
-        shapes.append(poly((x0, bot(x0)), (x1, bot(x1)), (x1, 15), (x0, 15)))
-    return shapes + [cross]
-
-
 # name: (48-grid builder, 16-grid builder, artwork bounds on the 48 grid, optical lift for the app icon)
 MARKS = {
-    "cairn": (cairn48, cairn16, (4, 6.4, 44, 41), 0.02),
     "monogram": (monogram48, monogram16, (6, 6, 42, 42), 0.0),
-    "tally": (tally48, tally16, (3, 6, 45, 42), 0.0),
 }
 
 
@@ -264,6 +207,9 @@ STACK_TYPE = 0.80    # wordmark size in the stacked lockup, relative to the hori
 ICON_ART = 0.52      # artwork's longer side as a share of the 512 icon canvas
 ICON_SAFE = 0.66     # every point of the art stays inside a centred circle of this diameter
 
+CREDIT_TEXT = "by Cairn"
+CREDIT_SCALE = 0.62  # credit type size relative to the wordmark size
+
 LOCKUP_METRICS = {}
 
 for name, (b48, b16, (bx0, by0, bx1, by1), lift) in MARKS.items():
@@ -284,6 +230,25 @@ for name, (b48, b16, (bx0, by0, bx1, by1), lift) in MARKS.items():
         inner = paths(big, fill, Xf(1, 0, -bx0, -by0)) + f'<path fill="{fill}" d="{wd}"/>'
         write(f"{folder}/lockup-horizontal{suffix}.svg", svg(W, MH, inner))
         LOCKUP_METRICS.setdefault(name, {})["h_cap_ratio"] = cap_of(size) / MH
+
+        # horizontal lockup with the credit line "by Cairn" under the wordmark (plain text, no Cairn symbol)
+        csize = size * CREDIT_SCALE
+        ccap = cap_of(csize)
+        cgap = cap_of(size) * 0.45
+        block = cap_of(size) + cgap + ccap
+        top = MH / 2 - block / 2
+        wbase = top + cap_of(size)
+        cbase = wbase + cgap + ccap
+        wd3, ww3 = wordmark(size, MW + gap, wbase)
+        cd, cw = REG.path(CREDIT_TEXT, csize, MW + gap, cbase, tracking=0.01)
+        W2 = MW + gap + max(ww3, cw)
+        inner = (paths(big, fill, Xf(1, 0, -bx0, -by0)) + f'<path fill="{fill}" d="{wd3}"/>' +
+                 f'<path fill="{fill}" d="{cd}"/>')
+        # the ascender of "l" and the descender of "y" reach past the symbol, so the box grows to hold them
+        ymin = min(0, wbase - 0.76 * size - 0.2)
+        ymax = max(MH, cbase + 0.25 * csize + 0.2)
+        write(f"{folder}/lockup-credit{suffix}.svg", svg(W2, ymax - ymin, inner, vb=f"0 {f(ymin)} {f(W2)} {f(ymax - ymin)}"))
+        LOCKUP_METRICS[name]["credit_size_ratio"] = csize / (ymax - ymin)
 
         # stacked lockup
         ssize = size * STACK_TYPE

@@ -9,6 +9,7 @@
     "close": "Close",
     "cancel": "Cancel",
     "menu": "Menu",
+    "byCairn": "by Cairn",
     "stepOf": "Step {current} out of {total}",
     "required": "You must fill am",
     "optional": "E no compulsory",

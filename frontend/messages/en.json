@@ -8,6 +8,7 @@
     "close": "Close",
     "cancel": "Cancel",
     "menu": "Menu",
+    "byCairn": "by Cairn",
     "stepOf": "Step {current} of {total}",
     "required": "Needed",
     "optional": "Optional",

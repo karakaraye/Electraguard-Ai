@@ -1,3 +1,4 @@
+export { BrandMark, type BrandMarkProps } from "./BrandMark/BrandMark";
 export { AppShell, type AppShellProps } from "./AppShell/AppShell";
 export { Banner, type BannerProps } from "./Banner/Banner";
 export { Button, ButtonLink, type ButtonProps, type ButtonLinkProps, type ButtonVariant } from "./Button/Button";
