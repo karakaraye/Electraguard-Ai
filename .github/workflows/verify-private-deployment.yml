@@ -25,6 +25,7 @@ jobs:
     timeout-minutes: 20
     env:
       ELECTRAGUARD_RELEASE: ${{ github.sha }}
+      ROLLBACK_BASELINE: 46562d47886e9a06cabe6f040dce291d78b45047
       ELECTRAGUARD_HOST: localhost
       COMPOSE_PROJECT_NAME: electraguard-acceptance
       OBSERVATION_INTAKE_ENABLED: "false"
@@ -36,6 +37,11 @@ jobs:
         with:
           node-version: "24"
           package-manager-cache: false
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ env.ROLLBACK_BASELINE }}
+          path: .local/rollback-baseline
+          persist-credentials: false
       - name: Configure isolated runtime
         shell: bash
         run: |
@@ -161,6 +167,57 @@ jobs:
           test "$(grep -cx t "$scratch/source.manifest")" = 3
           cmp -s "$scratch/source.manifest" "$scratch/restore.manifest"
           printf '%s\n' 'Encrypted restore matched 2 closed cases, 2 maximum-size images, and their audit history.'
+          restored_db=electraguard_recovery_ci
+          "${db[@]}" psql -X -U electraguard_bootstrap -d "$restored_db" -v ON_ERROR_STOP=1 <<'SQL'
+          REVOKE CONNECT ON DATABASE electraguard_recovery_ci FROM PUBLIC;
+          GRANT CONNECT ON DATABASE electraguard_recovery_ci TO electraguard_runtime;
+          GRANT SELECT ON accounts_user TO electraguard_runtime;
+          GRANT SELECT, DELETE ON django_session TO electraguard_runtime;
+          SQL
+          source_sessions_sql='SELECT count(*) FROM django_session;'
+          source_before="$("${db[@]}" psql -X -U electraguard_bootstrap -d electraguard -Atqc "$source_sessions_sql")"
+          test "$source_before" -gt 0
+          docker compose -f deploy/compose.yaml run --rm --no-deps -T \
+            -e POSTGRES_DB="$restored_db" -e OBSERVATION_INTAKE_ENABLED=false backend \
+            python manage.py shell < tests/fixtures/verify_restored_session.py
+          source_after="$("${db[@]}" psql -X -U electraguard_bootstrap -d electraguard -Atqc "$source_sessions_sql")"
+          test "$source_before" = "$source_after"
+      - name: Rehearse application image rollback with intake paused
+        shell: bash
+        run: |
+          set -euo pipefail
+          compose=(docker compose -f deploy/compose.yaml)
+          source=(docker compose -f deploy/compose.yaml exec -T postgres
+            psql -X -U electraguard_bootstrap -d electraguard -Atq -v ON_ERROR_STOP=1)
+          scratch="$(mktemp -d)"
+          query=tests/fixtures/restore_acceptance.sql
+          "${source[@]}" < "$query" > "$scratch/before"
+          test "$(grep -cx t "$scratch/before")" = 3
+          candidate="$ELECTRAGUARD_RELEASE"
+          baseline=.local/rollback-baseline
+          for service in backend frontend; do
+            docker build -f "$baseline/deploy/$service.Dockerfile" \
+              -t "electraguard-$service:$ROLLBACK_BASELINE" "$baseline"
+          done
+          export OBSERVATION_INTAKE_ENABLED=false
+          for release in "$ROLLBACK_BASELINE" "$candidate"; do
+            export ELECTRAGUARD_RELEASE="$release"
+            "${compose[@]}" up -d --wait --no-build backend frontend gateway
+            for service in backend frontend; do
+              container="$("${compose[@]}" ps -q "$service")"
+              test "$(docker inspect --format '{{.Config.Image}}' "$container")" = "electraguard-$service:$release"
+            done
+            curl --cacert "$ELECTRAGUARD_TLS_DIR/fullchain.pem" \
+              --resolve "$ELECTRAGUARD_HOST:443:127.0.0.1" --fail --silent --show-error \
+              --retry 8 --retry-delay 1 --retry-all-errors -o "$scratch/sign-in.html" \
+              "https://$ELECTRAGUARD_HOST/sign-in"
+            grep -Fq 'Sign in' "$scratch/sign-in.html"
+            "${compose[@]}" exec -T backend /usr/local/bin/electraguard-django python manage.py shell \
+              -c 'from django.conf import settings; assert not settings.OBSERVATION_INTAKE_ENABLED'
+            "${source[@]}" < "$query" > "$scratch/after"
+            cmp -s "$scratch/before" "$scratch/after"
+          done
+          printf '%s\n' 'Previous and candidate images served HTTPS with intake paused and preserved the database.'
       - name: Stop isolated runtime
         if: always()
         run: docker compose -f deploy/compose.yaml down --volumes

@@ -8,7 +8,7 @@ from django.conf import settings
 from django.core.management import call_command
 from django.core.management.base import CommandError
 from django.db import close_old_connections, connection
-from django.test import TestCase, TransactionTestCase
+from django.test import TestCase, TransactionTestCase, override_settings
 from rest_framework.test import APIClient
 
 from reports.models import Report, ReviewEvent
@@ -209,6 +209,27 @@ class SessionAndRoleTests(TestCase):
         self.assertEqual(self.client.post(self.sign_out).status_code, 403)
         for role in User.Role:
             self.assertEqual(self.client.get(f"/api/workspaces/{role}").status_code, 403)
+
+    @override_settings(OBSERVATION_INTAKE_ENABLED=False)
+    def test_restore_revocation_invalidates_cookie_without_disabling_user(self):
+        role = User.Role.REVIEWER
+        self.client.force_login(self.users[role])
+        self.assertEqual(self.client.get(self.me).status_code, 200)
+        args = ("revoke_restored_sessions", "--isolated-restore", "--confirm-database")
+        with self.assertRaisesMessage(CommandError, "confirmation does not match"):
+            call_command(*args, "wrong_database", stdout=StringIO())
+        with override_settings(OBSERVATION_INTAKE_ENABLED=True):
+            with self.assertRaisesMessage(CommandError, "Pause intake"):
+                call_command(*args, connection.settings_dict["NAME"], stdout=StringIO())
+        self.assertEqual(self.client.get(self.me).status_code, 200)
+
+        output = StringIO()
+        call_command(*args, connection.settings_dict["NAME"], stdout=output)
+        self.assertIn("Revoked restored sessions: 1.", output.getvalue())
+        self.assertEqual(self.client.get(self.me).status_code, 403)
+        self.assertEqual(self.client.post(
+            self.sign_in, self.credentials(role), HTTP_X_CSRFTOKEN=self.csrf(),
+        ).status_code, 200)
 
     def test_every_role_can_access_only_its_own_workspace(self):
         for role, user in self.users.items():
