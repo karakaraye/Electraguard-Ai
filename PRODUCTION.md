@@ -6,7 +6,7 @@ ElectraGuard serves authorised observation organisations. Observers report what 
 
 The production baseline is the authenticated Django, PostgreSQL and Next.js application on `work`. The earlier field-trial branch changes identity, routing and storage semantics. Its operational material can inform deployment and recovery work. Each proposed change must preserve authenticated ownership, assignment, clarification and the closure evidence snapshot.
 
-Use [the engineering handoff](docs/engineering-handoff.md) for the current slice and [field operations](docs/field-operations.md) for the operating approvals. Deployment and recovery steps are in [private deployment](deploy/README.md) and [restore acceptance](docs/restore-verification.md).
+Use [the engineering handoff](docs/engineering-handoff.md) for the current slice and [field operations](docs/field-operations.md) for the operating approvals. Deployment and recovery steps are in [private deployment](deploy/README.md), the [recovery policy proposal](docs/recovery-policy.md) and [restore acceptance](docs/restore-verification.md).
 
 - One accountable observation organisation is the initial deployment boundary. A second organisation requires separate deployment or a reviewed tenant isolation design.
 - Use the existing black-and-white interface, with colour reserved for status. Test field workflows on phones before desktop polish.

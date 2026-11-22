@@ -137,6 +137,19 @@ jobs:
           sys.stdout.buffer.write(data)
           PNG
           node scripts/verify-core.cjs
+      - name: Exercise the private operations alert signal
+        shell: bash
+        run: |
+          set -euo pipefail
+          if output="$(docker compose -f deploy/compose.yaml exec -T backend \
+            /usr/local/bin/electraguard-django python manage.py check_observation_operations \
+            --alert-pending-age-seconds 1)"; then
+            echo 'The pending queue should have triggered the isolated alert threshold.' >&2
+            exit 1
+          else
+            test "$?" = 1
+          fi
+          printf '%s' "$output" | node -e 'const {readFileSync}=require("node:fs"); const assert=require("node:assert/strict"); const result=JSON.parse(readFileSync(0,"utf8")); assert.equal(result.triage.pending,2); assert.deepEqual(result.alerts,["triage_pending_age"]);'
       - name: Verify encrypted backup and restore
         shell: bash
         run: |

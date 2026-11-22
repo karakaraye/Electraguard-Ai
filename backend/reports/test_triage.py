@@ -1,8 +1,11 @@
+from datetime import timedelta
 from io import StringIO
+import json
 from unittest.mock import patch
 from uuid import uuid4
 
 from django.core.management import call_command
+from django.core.management.base import CommandError
 from django.test import TestCase
 from rest_framework.test import APIClient
 
@@ -42,6 +45,35 @@ class AdvisoryTriageTests(TestCase):
 
     def run_worker(self, **options):
         call_command("run_triage", once=True, stdout=StringIO(), stderr=StringIO(), **options)
+
+    def test_operations_thresholds_emit_only_aggregate_information(self):
+        pending = self.submit()
+        failed = self.submit()
+        Triage.objects.filter(report_id=failed).update(status=Triage.Status.FAILED)
+        created_at = Report.objects.get(pk=pending).created_at
+        output = StringIO()
+        with patch(
+            "reports.management.commands.check_observation_operations.now",
+            return_value=created_at + timedelta(seconds=120),
+        ), self.assertRaisesMessage(CommandError, "threshold was reached"):
+            call_command(
+                "check_observation_operations", "--alert-pending-age-seconds", "120",
+                "--alert-failed-count", "1", stdout=output,
+            )
+        result = json.loads(output.getvalue())
+        self.assertEqual(result["triage"], {
+            "pending": 1, "ready": 0, "failed": 1, "oldest_pending_report_age_seconds": 120,
+        })
+        self.assertEqual(result["alerts"], ["triage_pending_age", "triage_failed_count"])
+        for private in (pending, failed, self.observer.email, "Fictional Cedar Training Hall"):
+            self.assertNotIn(str(private), output.getvalue())
+
+    def test_operations_threshold_ignores_an_empty_queue(self):
+        output = StringIO()
+        call_command("check_observation_operations", "--alert-pending-age-seconds", "1", stdout=output)
+        result = json.loads(output.getvalue())
+        self.assertIsNone(result["triage"]["oldest_pending_report_age_seconds"])
+        self.assertEqual(result["alerts"], [])
 
     def test_worker_suggests_true_duplicate_and_excludes_similar_unrelated_reports(self):
         key = uuid4()
