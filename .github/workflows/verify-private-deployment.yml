@@ -78,33 +78,6 @@ jobs:
               exit 1
             fi
           done
-      - name: Verify encrypted backup and restore
-        shell: bash
-        run: |
-          set -euo pipefail
-          scratch="$(mktemp -d)"
-          export GNUPGHOME="$scratch/gnupg"
-          mkdir -m 0700 "$GNUPGHOME" "$scratch/bin"
-          cat > "$scratch/bin/pg_dump" <<'RUN_DUMP'
-          #!/usr/bin/env bash
-          exec docker compose -f deploy/compose.yaml exec -T postgres pg_dump --username=electraguard_bootstrap "$@"
-          RUN_DUMP
-          chmod 0700 "$scratch/bin/pg_dump"
-          gpg --batch --pinentry-mode loopback --passphrase '' \
-            --quick-generate-key 'ElectraGuard backup check <backup@qa.example>' default default 1d
-          recipient="$(gpg --batch --with-colons --fingerprint backup@qa.example |
-            awk -F: '$1 == "fpr" && !seen++ { print $10 }')"
-          PATH="$scratch/bin:$PATH" bash deploy/backup-encrypted.sh electraguard "$recipient" "$scratch/backup.gpg"
-          gpg --batch --output "$scratch/restore.dump" --decrypt "$scratch/backup.gpg"
-          db=(docker compose -f deploy/compose.yaml exec -T postgres)
-          "${db[@]}" createdb --username=electraguard_bootstrap electraguard_recovery_ci
-          "${db[@]}" pg_restore --username=electraguard_bootstrap --exit-on-error --no-owner --no-privileges \
-            --dbname=electraguard_recovery_ci < "$scratch/restore.dump"
-          query='SELECT count(*) FROM django_migrations;'
-          expected="$("${db[@]}" psql -U electraguard_bootstrap -d electraguard -Atqc "$query")"
-          restored="$("${db[@]}" psql -U electraguard_bootstrap -d electraguard_recovery_ci -Atqc "$query")"
-          test "$expected" -gt 0
-          test "$expected" = "$restored"
       - name: Verify all three roles through the Docker HTTPS gateway
         shell: bash
         run: |
@@ -138,7 +111,56 @@ jobs:
           export NODE_EXTRA_CA_CERTS="$ELECTRAGUARD_TLS_DIR/fullchain.pem"
           export QA_CHROMIUM_TLS_PIN="$(openssl x509 -in "$NODE_EXTRA_CA_CERTS" -pubkey -noout |
             openssl pkey -pubin -outform der | openssl dgst -sha256 -binary | openssl enc -base64)"
+          export QA_EVIDENCE_PATH="$scratch/evidence.png"
+          "${compose[@]}" exec -T backend python - > "$QA_EVIDENCE_PATH" <<'PNG'
+          from io import BytesIO
+          import sys
+          from PIL import Image, PngImagePlugin
+
+          image = Image.new("RGB", (16, 16), "white")
+          def png(note):
+              buf = BytesIO()
+              metadata = PngImagePlugin.PngInfo()
+              metadata.add_text("test", note)
+              image.save(buf, format="PNG", pnginfo=metadata)
+              return buf.getvalue()
+
+          limit = 2 * 1024 * 1024
+          data = png("x" * (limit - len(png(""))))
+          assert len(data) == limit
+          sys.stdout.buffer.write(data)
+          PNG
           node scripts/verify-core.cjs
+      - name: Verify encrypted backup and restore
+        shell: bash
+        run: |
+          set -euo pipefail
+          scratch="$(mktemp -d)"
+          export GNUPGHOME="$scratch/gnupg"
+          mkdir -m 0700 "$GNUPGHOME" "$scratch/bin"
+          cat > "$scratch/bin/pg_dump" <<'RUN_DUMP'
+          #!/usr/bin/env bash
+          exec docker compose -f deploy/compose.yaml exec -T postgres pg_dump --username=electraguard_bootstrap "$@"
+          RUN_DUMP
+          chmod 0700 "$scratch/bin/pg_dump"
+          gpg --batch --pinentry-mode loopback --passphrase '' \
+            --quick-generate-key 'ElectraGuard backup check <backup@qa.example>' default default 1d
+          recipient="$(gpg --batch --with-colons --fingerprint backup@qa.example |
+            awk -F: '$1 == "fpr" && !seen++ { print $10 }')"
+          PATH="$scratch/bin:$PATH" bash deploy/backup-encrypted.sh electraguard "$recipient" "$scratch/backup.gpg"
+          gpg --batch --output "$scratch/restore.dump" --decrypt "$scratch/backup.gpg"
+          db=(docker compose -f deploy/compose.yaml exec -T postgres)
+          "${db[@]}" createdb --username=electraguard_bootstrap electraguard_recovery_ci
+          "${db[@]}" pg_restore --username=electraguard_bootstrap --exit-on-error --no-owner --no-privileges \
+            --dbname=electraguard_recovery_ci < "$scratch/restore.dump"
+          query=tests/fixtures/restore_acceptance.sql
+          "${db[@]}" psql -X -U electraguard_bootstrap -d electraguard -Atq -v ON_ERROR_STOP=1 \
+            < "$query" > "$scratch/source.manifest"
+          "${db[@]}" psql -X -U electraguard_bootstrap -d electraguard_recovery_ci -Atq -v ON_ERROR_STOP=1 \
+            < "$query" > "$scratch/restore.manifest"
+          test "$(grep -cx t "$scratch/source.manifest")" = 3
+          cmp -s "$scratch/source.manifest" "$scratch/restore.manifest"
+          printf '%s\n' 'Encrypted restore matched 2 closed cases, 2 maximum-size images, and their audit history.'
       - name: Stop isolated runtime
         if: always()
         run: docker compose -f deploy/compose.yaml down --volumes
