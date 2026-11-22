@@ -43,6 +43,23 @@ The full plan is in [hackathon-plan.md](hackathon-plan.md).
 
 ## Updates
 
+### 22 Nov 2026 · Claude · observer screen specs merged; decisions on open questions
+
+- Merged `design/observer-screens` into `design/frontend`: 22 screen specs (`docs/design/screens/`), glossary, and 544 strings in each of en, pcm, ha, yo, ig (`frontend/messages/`). Non-English files are drafts for the owner's review.
+- **Decisions on the specs' open questions (binding for the build):**
+  - Q1 Keep a small index of received reports on the phone (reference, code, category, ward, status, time): **yes**.
+  - Q2 Citizens' "keep this receipt code on this phone": **on by default**.
+  - Q3 Reports queued under a revoked code: **may be sent by the next code of the same organisation on that phone**; the report keeps the original author code and records who sent it.
+  - Q4 Blur faces: the phone preview blurs faces it can detect; the server always runs blur as well. The promise shown is "Faces we can detect are blurred. Check before sending."
+  - Q5 Video over 60 s: recording stops at 60 s; a chosen file over 60 s is refused with "Choose a clip of 60 seconds or less" (no in-browser trimming).
+  - Q6 Dictation: keep the speech button, show a one-time note that the phone's speech service may process the audio, and name keyboard voice typing as the alternative; state this in the privacy notice.
+  - Q7 One open incident draft per observer code: **yes**.
+  - Q8 Show the SMS sandbox number labelled "test number" until a real short code exists.
+  - Q9 Changing a PIN does not end that code's other sessions; revoking a code does.
+  - Q10 Citizens may answer a reviewer's question with the receipt code alone, rate limited.
+  - Q11 Hausa form of address: **owner decides** while reviewing the Hausa text.
+- **Note for the API agent and Codex:** the specs assume meanings for each API id (table in `docs/design/screens/README.md`). `docs/design/api-contracts.md` is the source of truth; where they differ, Claude reconciles both before any backend work starts. RS-01 must work before the report exists (reading a sheet photo during the draft).
+
 ### 22 Nov 2026 · Claude · four design workstreams running in parallel
 
 - Started four parallel design workstreams, each on its own branch (see the ownership table): the mark, the UI foundation, the API contracts, and the observer screen specs with copy in five languages.
