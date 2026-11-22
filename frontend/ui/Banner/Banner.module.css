@@ -1,0 +1,97 @@
+.banner {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: start;
+  gap: var(--s-3);
+  margin: 0;
+  padding: var(--s-4);
+  border: 1px solid currentColor;
+  border-radius: var(--radius);
+}
+
+.banner[data-tone="ok"] {
+  color: var(--ok);
+  background: var(--ok-bg);
+  --badge-bg: var(--ok-bg);
+}
+
+.banner[data-tone="attn"] {
+  color: var(--attn);
+  background: var(--attn-bg);
+  --badge-bg: var(--attn-bg);
+}
+
+.banner[data-tone="wait"] {
+  color: var(--wait);
+  background: var(--wait-bg);
+  --badge-bg: var(--wait-bg);
+}
+
+.banner[data-tone="danger"] {
+  color: var(--danger);
+  background: var(--danger-bg);
+  --badge-bg: var(--danger-bg);
+}
+
+.banner[data-tone="info"] {
+  color: var(--info);
+  background: var(--info-bg);
+  --badge-bg: var(--info-bg);
+}
+
+.shape {
+  display: inline-flex;
+  padding-top: 3px;
+}
+
+.body {
+  display: grid;
+  gap: var(--s-1);
+  min-width: 0;
+}
+
+.title {
+  margin: 0;
+  font: var(--t-label);
+  font-size: var(--t-base-size);
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+/* Body text in ink for 7:1 contrast; the tone lives in the border, shape and title */
+.text {
+  color: var(--ink);
+  font: var(--t-small);
+  font-size: max(0.875rem, calc(var(--t-base-size) - 0.125rem));
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.text p {
+  margin: 0;
+  line-height: inherit;
+}
+
+.action {
+  margin-top: var(--s-2);
+}
+
+.dismiss {
+  display: grid;
+  place-items: center;
+  width: var(--target-min);
+  height: var(--target-min);
+  min-height: 0;
+  margin: calc(var(--s-3) * -1) calc(var(--s-3) * -1) 0 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.dismiss:focus-visible {
+  outline: var(--focus-outline);
+  outline-offset: -4px;
+}

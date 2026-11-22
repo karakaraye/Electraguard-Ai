@@ -1,0 +1,196 @@
+.shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+  background: var(--paper);
+  color: var(--ink);
+  font: var(--t-base);
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+.preview {
+  min-height: 100%;
+}
+
+.skip {
+  position: absolute;
+  left: var(--s-2);
+  top: var(--s-2);
+  z-index: calc(var(--z-sticky) + 1);
+  padding: var(--s-3) var(--s-4);
+  border-radius: var(--radius);
+  background: var(--ink);
+  color: var(--on-ink);
+  font: var(--t-label);
+  transform: translateY(-200%);
+}
+
+.skip:focus-visible {
+  transform: none;
+  outline: var(--focus-outline);
+  outline-offset: var(--focus-offset);
+  box-shadow: var(--focus-halo);
+}
+
+/* ---------- Top bar ---------- */
+
+.top {
+  container-type: inline-size;
+  position: sticky;
+  top: 0;
+  z-index: var(--z-sticky);
+  padding-top: env(safe-area-inset-top);
+  background: var(--paper);
+  border-bottom: 1px solid var(--rule);
+}
+
+.topInner {
+  display: grid;
+  grid-template-columns: minmax(0, auto) minmax(0, 1fr) minmax(0, auto);
+  align-items: center;
+  gap: var(--s-2);
+  max-width: 44rem;
+  min-height: 56px;
+  margin: 0 auto;
+  padding: var(--s-1) calc(var(--gutter) - var(--s-2));
+}
+
+.back,
+.menu {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-1);
+  min-height: var(--target-min);
+  min-width: var(--target-min);
+  margin: 0;
+  padding: 0 var(--s-2);
+  border: 0;
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--ink);
+  font: var(--t-label);
+  font-size: 1rem;
+  text-decoration: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform var(--dur-press) var(--ease-out);
+}
+
+.back:active,
+.menu:active {
+  transform: scale(0.97);
+}
+
+.back:focus-visible,
+.menu:focus-visible {
+  outline: var(--focus-outline);
+  outline-offset: calc(var(--focus-offset) * -1);
+  box-shadow: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .back:hover,
+  .menu:hover {
+    background: var(--paper-2);
+  }
+}
+
+.menu {
+  justify-self: end;
+}
+
+.title {
+  margin: 0;
+  overflow-wrap: anywhere;
+  font: var(--t-label);
+  font-size: 1rem;
+  line-height: 1.3;
+  text-align: center;
+  color: var(--ink-2);
+}
+
+/* Very large text: Back and Menu share the first row, the title gets its own */
+@container (max-width: 18rem) {
+  .topInner {
+    grid-template-columns: auto minmax(0, 1fr);
+    row-gap: 0;
+  }
+  .title {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    padding: 0 var(--s-2) var(--s-2);
+    text-align: start;
+  }
+  .menu {
+    grid-column: 2;
+    grid-row: 1;
+  }
+}
+
+/* ---------- Network bar ---------- */
+
+.networkInner {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--s-2);
+  max-width: 44rem;
+  margin: 0 auto;
+  padding: var(--s-3) var(--gutter);
+  font: var(--t-small);
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--ink);
+}
+
+.networkBar {
+  margin: 0;
+  background: var(--wait-bg);
+  border-bottom: 1px solid var(--rule);
+}
+
+.networkInner svg {
+  flex: none;
+  width: 20px;
+  height: 20px;
+}
+
+.banner {
+  width: 100%;
+  max-width: 44rem;
+  margin: 0 auto;
+  padding: var(--s-4) var(--gutter) 0;
+}
+
+/* ---------- Content ---------- */
+
+.content {
+  flex: 1 0 auto;
+  width: 100%;
+  max-width: 44rem;
+  margin: 0 auto;
+  padding: var(--s-5) var(--gutter) var(--s-6);
+  outline: none;
+}
+
+/* ---------- Pinned action area ---------- */
+
+.actions {
+  position: sticky;
+  bottom: var(--kb, 0px);
+  z-index: var(--z-sticky);
+  background: var(--paper);
+  border-top: 1px solid var(--rule);
+}
+
+.actionsInner {
+  display: grid;
+  gap: var(--s-2);
+  max-width: 44rem;
+  margin: 0 auto;
+  padding: var(--s-3) var(--gutter) max(var(--s-3), env(safe-area-inset-bottom));
+}
+
+.actions[data-keyboard] .actionsInner {
+  padding-bottom: var(--s-2);
+}

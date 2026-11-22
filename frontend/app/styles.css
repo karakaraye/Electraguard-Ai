@@ -15,7 +15,7 @@ body { margin: 0; }
   font-weight: 700;
 }
 
-main { padding: clamp(1rem, 7vw, 5rem) 1rem; }
+.legacy-main { padding: clamp(1rem, 7vw, 5rem) 1rem; }
 .panel {
   max-width: 32rem;
   margin: auto;

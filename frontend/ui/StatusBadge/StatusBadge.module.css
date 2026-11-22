@@ -1,0 +1,55 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 100%;
+  min-height: 28px;
+  padding: 3px 10px 3px 8px;
+  border: 1px solid currentColor;
+  border-radius: var(--radius-pill);
+  font: var(--t-label);
+  letter-spacing: var(--t-label-tracking);
+  line-height: 1.25;
+  vertical-align: middle;
+  overflow-wrap: anywhere;
+}
+
+.badge svg {
+  flex: none;
+}
+
+.badge[data-size="lg"] {
+  min-height: 34px;
+  padding: 5px 14px 5px 10px;
+  font-size: 1rem;
+}
+
+.badge[data-tone="ok"] {
+  color: var(--ok);
+  background: var(--ok-bg);
+  --badge-bg: var(--ok-bg);
+}
+
+.badge[data-tone="attn"] {
+  color: var(--attn);
+  background: var(--attn-bg);
+  --badge-bg: var(--attn-bg);
+}
+
+.badge[data-tone="wait"] {
+  color: var(--wait);
+  background: var(--wait-bg);
+  --badge-bg: var(--wait-bg);
+}
+
+.badge[data-tone="danger"] {
+  color: var(--danger);
+  background: var(--danger-bg);
+  --badge-bg: var(--danger-bg);
+}
+
+.badge[data-tone="info"] {
+  color: var(--info);
+  background: var(--info-bg);
+  --badge-bg: var(--info-bg);
+}

@@ -1,0 +1,147 @@
+.button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--control-h);
+  min-width: var(--target-min);
+  margin: 0;
+  padding: 0 var(--s-5);
+  border: var(--border-w) solid transparent;
+  border-radius: var(--radius);
+  font: var(--t-label);
+  font-size: var(--t-base-size);
+  letter-spacing: 0.01em;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    transform var(--dur-press) var(--ease-out),
+    background-color var(--dur-fade) ease,
+    color var(--dur-fade) ease,
+    border-color var(--dur-fade) ease;
+}
+
+/* Keep the touch target at least 48px even when the visible control is 44px (staff density) */
+.button::after {
+  content: "";
+  position: absolute;
+  inset: 50% auto auto 50%;
+  width: max(100%, var(--target-min));
+  height: max(100%, var(--target-min));
+  transform: translate(-50%, -50%);
+}
+
+.button:focus-visible {
+  outline: var(--focus-outline);
+  outline-offset: var(--focus-offset);
+  box-shadow: var(--focus-halo);
+}
+
+.button:active:not([aria-disabled="true"]) {
+  transform: scale(0.97);
+}
+
+.block {
+  display: flex;
+  width: 100%;
+}
+
+.primary {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--on-ink);
+}
+
+.secondary {
+  background: var(--paper);
+  border-color: var(--ink);
+  color: var(--ink);
+}
+
+.quiet {
+  background: transparent;
+  color: var(--ink);
+  padding: 0 var(--s-3);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+
+.danger {
+  background: var(--danger);
+  border-color: var(--danger);
+  color: var(--paper);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .primary:hover:not([aria-disabled="true"]) {
+    background: var(--ink-2);
+    border-color: var(--ink-2);
+  }
+  .secondary:hover:not([aria-disabled="true"]) {
+    background: var(--paper-2);
+  }
+  .quiet:hover:not([aria-disabled="true"]) {
+    text-decoration-thickness: 2px;
+  }
+  .danger:hover:not([aria-disabled="true"]) {
+    background: color-mix(in srgb, var(--danger) 86%, var(--ink));
+  }
+}
+
+/* Disabled: no opacity wash (it fails contrast); a hatched outline instead */
+.button[aria-disabled="true"] {
+  cursor: not-allowed;
+}
+
+.button[aria-disabled="true"]:not([aria-busy="true"]) {
+  background: var(--paper-2);
+  border-color: var(--rule-control);
+  border-style: dashed;
+  color: var(--ink-3);
+}
+
+.quiet[aria-disabled="true"]:not([aria-busy="true"]) {
+  background: transparent;
+  border-color: transparent;
+}
+
+.button[aria-busy="true"] {
+  cursor: progress;
+}
+
+/* Label and loading text share one grid cell, so the width never jumps */
+.stack {
+  display: inline-grid;
+  align-items: center;
+  justify-items: center;
+}
+
+.stack > * {
+  grid-area: 1 / 1;
+}
+
+.label,
+.loading {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  padding: var(--s-2) 0;
+}
+
+.label[data-hidden] {
+  visibility: hidden;
+}
+
+.icon {
+  display: inline-flex;
+  flex: none;
+}
+
+.icon svg {
+  width: 1.25em;
+  height: 1.25em;
+}

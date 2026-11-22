@@ -1,0 +1,791 @@
+{
+  "_locale": "en",
+  "_note": "Source language. Keys are namespaced by screen id (docs/design/screens). Variables use {name}; counts use ICU plurals.",
+  "ui": {
+    "back": "Back",
+    "offline": "Offline",
+    "retry": "Try again",
+    "close": "Close",
+    "cancel": "Cancel",
+    "menu": "Menu",
+    "byCairn": "by Cairn",
+    "stepOf": "Step {current} of {total}",
+    "required": "Needed",
+    "optional": "Optional",
+    "charCount": "{count} of {max} letters",
+    "listen": "Listen",
+    "stopListening": "Stop",
+    "productName": "ElectraGuard",
+    "skipToContent": "Skip to content",
+    "pleaseWait": "Please wait",
+    "errorPrefix": "Error:",
+    "yes": "Yes",
+    "no": "No",
+    "selected": "Selected",
+    "network": {
+      "offline": "Offline. Reports will send when you have network.",
+      "offlineQueued": "{count, plural, one {Offline. # report is saved on this phone and will send when you have network.} other {Offline. # reports are saved on this phone and will send when you have network.}}",
+      "online": "Back online."
+    },
+    "stepper": {
+      "progress": "Step {current} of {total}"
+    },
+    "textarea": {
+      "count": "{count} of {max} characters",
+      "remaining": "{remaining, plural, =0 {No characters left.} one {# character left.} other {# characters left.}}"
+    },
+    "select": {
+      "choose": "Choose one"
+    },
+    "search": {
+      "clear": "Clear",
+      "noMatches": "No matches. Try fewer letters.",
+      "results": "{count, plural, =0 {No results} one {# result} other {# results}}",
+      "instructions": "Type to search. Use the up and down arrows to choose."
+    },
+    "when": {
+      "legend": "When did it happen?",
+      "justNow": "Just now",
+      "earlierToday": "Earlier today",
+      "anotherDay": "Another day",
+      "time": "Time",
+      "date": "Date",
+      "timeOptional": "Time, if you know it",
+      "zone": "West Africa Time (WAT)",
+      "future": "That time has not happened yet. Choose a time that has passed.",
+      "required": "Enter the time it happened.",
+      "dateRequired": "Enter the date it happened.",
+      "olderThanWeek": "This is more than 7 days ago. Check the date is right."
+    },
+    "status": {
+      "onPhone": "On this phone",
+      "notConfirmed": "Not confirmed yet",
+      "received": "Received",
+      "inReview": "In review",
+      "question": "Question for you",
+      "closed": "Closed",
+      "withdrawn": "Withdrawn",
+      "saved": "Saved",
+      "failed": "Failed",
+      "urgent": "Urgent"
+    },
+    "receipt": {
+      "label": "Your receipt code",
+      "copy": "Copy code",
+      "copied": "Copied",
+      "copyFailed": "Could not copy. Write the code down.",
+      "save": "Save as image",
+      "receivedAt": "Received {time}",
+      "next": "What happens next",
+      "imageTitle": "ElectraGuard receipt"
+    },
+    "upload": {
+      "waiting": "Waiting for network",
+      "uploading": "Uploading {percent}%",
+      "saved": "Saved",
+      "failed": "Did not send",
+      "missing": "File no longer on this phone",
+      "retry": "Try again",
+      "remove": "Remove",
+      "chooseAgain": "Choose the file again",
+      "estimate": "{size} · about {time} to send",
+      "kind": "{kind, select, photo {Photo} video {Video} voice {Voice note} other {File}}"
+    },
+    "time": {
+      "seconds": "{count, plural, one {# second} other {# seconds}}",
+      "minutes": "{count, plural, one {# minute} other {# minutes}}"
+    },
+    "language": {
+      "label": "Language",
+      "choose": "Choose your language"
+    },
+    "theme": {
+      "label": "Appearance",
+      "system": "Same as device",
+      "light": "Light",
+      "dark": "Dark"
+    },
+    "table": {
+      "sortAscending": "Sorted ascending",
+      "sortDescending": "Sorted descending",
+      "sortBy": "Sort by {column}",
+      "empty": "Nothing to show."
+    },
+    "metric": {
+      "fewerThan": "fewer than {threshold}"
+    },
+    "suggestion": {
+      "label": "Suggested",
+      "accept": "Accept",
+      "correct": "Correct",
+      "accepted": "Accepted",
+      "corrected": "Corrected",
+      "confidence": "Confidence: {level, select, high {High} medium {Medium} other {Low}}",
+      "reasons": "Why this was suggested"
+    },
+    "timeline": {
+      "intact": "Record chain intact",
+      "broken": "Record chain broken: an entry was changed",
+      "unknown": "Record chain not checked yet"
+    },
+    "nav": {
+      "main": "Main"
+    }
+  },
+  "common": {
+    "appName": "ElectraGuard",
+    "continue": "Continue",
+    "save": "Save",
+    "edit": "Change",
+    "yes": "Yes",
+    "no": "No",
+    "done": "Done",
+    "home": "Home",
+    "showAll": "Show all",
+    "showLess": "Show less",
+    "wat": "West Africa Time",
+    "network": {
+      "offline": "Offline. Reports will send when you have network.",
+      "back": "Network is back. Sending what is on this phone.",
+      "slow": "Network is slow. Keep the app open while it sends."
+    },
+    "status": {
+      "onPhone": "On this phone",
+      "onPhoneHint": "Saved on this phone. It will send when you have network.",
+      "sending": "Sending",
+      "notConfirmed": "Not confirmed yet",
+      "notConfirmedHint": "We sent it but have not heard back. We will check again by ourselves. It will not be sent twice.",
+      "received": "Received",
+      "receivedHint": "A reviewer will look at it.",
+      "inReview": "Being reviewed",
+      "question": "Question for you",
+      "closed": "Closed",
+      "withdrawn": "Withdrawn",
+      "waitingCode": "Waiting for a new code"
+    },
+    "outcome": {
+      "confirmed": "Confirmed by evidence",
+      "notEnough": "Not enough evidence",
+      "outside": "Outside what we observe"
+    },
+    "reporter": {
+      "observer": "Observer",
+      "citizen": "Citizen"
+    },
+    "time": {
+      "justNow": "Just now",
+      "minutesAgo": "{count, plural, one {# minute ago} other {# minutes ago}}",
+      "hoursAgo": "{count, plural, one {# hour ago} other {# hours ago}}",
+      "at": "{time}, {date}"
+    },
+    "error": {
+      "network": "No network right now. Your work is saved on this phone.",
+      "server": "Something went wrong on our side. Your work is safe. Try again in a minute.",
+      "sessionExpired": "For your safety, please enter your PIN again.",
+      "revoked": "This observer code no longer works. Ask your coordinator for a new code.",
+      "intakePaused": "Your organisation has paused new reports for now. Your report is saved on this phone and will send when they start again.",
+      "tooManyTries": "Too many tries. Wait {minutes, plural, one {# minute} other {# minutes}} and try again.",
+      "notFound": "We could not find that. Check it and try again.",
+      "storageFull": "This phone is full. Send what is waiting, or remove some photos and videos."
+    },
+    "discard": {
+      "title": "Delete this report?",
+      "body": "What you wrote and any photos, videos or voice notes will be removed from this phone. This cannot be undone.",
+      "confirm": "Delete report",
+      "keep": "Keep it"
+    },
+    "pinSheet": {
+      "title": "Enter your PIN",
+      "body": "Your reports are waiting to send. Enter your 6-digit PIN to send them.",
+      "label": "PIN",
+      "submit": "Send now",
+      "wrong": "That PIN is not right. Try again.",
+      "later": "Not now"
+    }
+  },
+  "o01": {
+    "title": "Choose your language",
+    "hint": "You can change it later in Settings.",
+    "en": "English",
+    "pcm": "Naijá",
+    "ha": "Hausa",
+    "yo": "Yorùbá",
+    "ig": "Igbo"
+  },
+  "o02": {
+    "title": "What this app keeps",
+    "line1": "We do not ask your name.",
+    "line2": "We remove the location from your photos.",
+    "line3": "You can withdraw a report before review starts.",
+    "line4": "If someone may be in danger, call 112. This app does not send help.",
+    "listen": "Listen to this",
+    "privacyLink": "Read the full privacy notice",
+    "continue": "I understand"
+  },
+  "o03": {
+    "title": "Who are you?",
+    "observer": "I am an accredited observer",
+    "observerHint": "Sign in with the code and PIN from your card",
+    "citizen": "Report as a citizen",
+    "citizenHint": "No account. You get a receipt code.",
+    "checkStatus": "Check a report with a receipt code",
+    "signIn": {
+      "title": "Sign in",
+      "codeLabel": "Observer code",
+      "codeHint": "It is on your card. Example: OBS-7K2P",
+      "pinLabel": "PIN",
+      "pinHint": "6 numbers. The first time, use the PIN on your card.",
+      "showPin": "Show PIN",
+      "hidePin": "Hide PIN",
+      "submit": "Sign in",
+      "submitting": "Signing in",
+      "offline": "You need network to sign in. Move to a place with network, then try again.",
+      "codeEmpty": "Enter your observer code.",
+      "codeFormat": "Observer codes look like OBS-7K2P. Check your card.",
+      "pinFormat": "Your PIN is 6 numbers.",
+      "wrong": "The code or PIN is not right. Check your card and try again.",
+      "triesLeft": "{count, plural, one {# try left before a short wait.} other {# tries left before a short wait.}}",
+      "revoked": "This code no longer works. Ask your coordinator for a new one.",
+      "forgot": "Forgot your PIN? Your coordinator can give you a new code."
+    },
+    "setPin": {
+      "title": "Choose your own PIN",
+      "body": "Pick 6 numbers you will remember. Do not use your birthday or 123456. Do not share it.",
+      "newLabel": "New PIN",
+      "confirmLabel": "Type the new PIN again",
+      "submit": "Save my PIN",
+      "submitting": "Saving",
+      "tooSimple": "That PIN is too easy to guess. Try different numbers.",
+      "mismatch": "The two PINs are not the same. Type them again.",
+      "sameAsCard": "Choose a PIN that is different from the one on your card.",
+      "done": "Your PIN is saved. Use it next time you sign in."
+    },
+    "revoked": {
+      "title": "This observer code no longer works",
+      "body": "Your coordinator has stopped this code. You have been signed out on every phone.",
+      "unsent": "{count, plural, one {# report on this phone was not sent.} other {# reports on this phone were not sent.}}",
+      "unsentHint": "Get a new code from your coordinator. After you sign in with it, you can send or delete them.",
+      "signInNew": "Sign in with a new code",
+      "clear": "Delete them from this phone",
+      "clearTitle": "Delete these reports from this phone?",
+      "clearBody": "They were never sent. If you delete them, they are gone for good. This cannot be undone.",
+      "clearConfirm": "Delete reports"
+    }
+  },
+  "o04": {
+    "title": "Home",
+    "signedInAs": "Observer {code}",
+    "citizenMode": "Citizen report",
+    "report": "Report something",
+    "continueDraft": "Continue your report",
+    "draftSaved": "Started {time}",
+    "checklist": "Polling-day checklist",
+    "checklistProgress": "{done} of {total} stages sent",
+    "myReports": "My reports",
+    "myReportsCount": "{count, plural, =0 {No reports yet} one {# report} other {# reports}}",
+    "messages": "Messages",
+    "messagesCount": "{count, plural, =0 {Nothing new} one {# report needs you} other {# reports need you}}",
+    "discussions": "Discussions",
+    "discussionsInvite": "{count, plural, one {# invitation} other {# invitations}}",
+    "ask": "Ask ElectraGuard",
+    "askHint": "Help and rules from approved guides",
+    "unsent": "{count, plural, one {# report is on this phone and not sent yet.} other {# reports are on this phone and not sent yet.}}",
+    "sendNow": "Send now",
+    "questionBanner": "{count, plural, one {A reviewer has a question for you.} other {Reviewers have # questions for you.}}",
+    "answer": "Answer",
+    "intakePaused": "Your organisation has paused new reports. You can still write reports. They will wait on this phone.",
+    "install": {
+      "title": "Add ElectraGuard to your home screen",
+      "body": "Then it opens without network.",
+      "add": "Add to home screen",
+      "notNow": "Not now"
+    }
+  },
+  "incident": {
+    "draftKept": "Your report is saved on this phone.",
+    "discard": "Delete this report"
+  },
+  "o05": {
+    "title": "What happened?",
+    "hint": "Choose the closest one. Not sure is fine.",
+    "tile": {
+      "materials": "Late or missing materials",
+      "equipment": "Equipment failure",
+      "queues": "Queues or crowding",
+      "intimidation": "Intimidation or violence",
+      "access": "Access barrier",
+      "information": "People lack information",
+      "misinformation": "Misinformation seen here",
+      "inducement": "Vote buying or inducement",
+      "goodPractice": "Good practice",
+      "notSure": "Not sure"
+    },
+    "access": {
+      "title": "What kind of barrier?",
+      "hint": "Choose all that fit.",
+      "steps": "Steps or no ramp",
+      "distance": "Too far to reach",
+      "noAssistance": "No help for people who need it",
+      "noLargePrint": "No large print or braille",
+      "noSignLanguage": "No sign language",
+      "other": "Something else"
+    },
+    "error": "Choose one picture to continue."
+  },
+  "o06": {
+    "title": "Is anyone in danger right now?",
+    "hint": "Danger means someone could be hurt now.",
+    "yes": "Yes, someone is in danger",
+    "no": "No",
+    "error": "Choose Yes or No.",
+    "emergency": {
+      "title": "Get safe first",
+      "step1": "Move away from the danger to a safe place.",
+      "step2": "Call 112 for police, fire or ambulance.",
+      "step3": "Tell your coordinator if you can.",
+      "call": "Call 112",
+      "noDispatch": "This app does not send help. Your report goes to reviewers, not to the police.",
+      "continue": "I am safe. Continue my report",
+      "later": "Finish the report later"
+    }
+  },
+  "o07": {
+    "title": "Where did it happen?",
+    "searchLabel": "Polling unit code or name",
+    "searchHint": "Example: 24-05-08-011",
+    "orChoose": "Or choose step by step",
+    "state": "State",
+    "lga": "Local government area",
+    "ward": "Ward",
+    "unit": "Polling unit",
+    "choose": "Choose",
+    "unknownUnit": "I don't know the polling unit",
+    "unknownUnitNote": "We will use the ward only.",
+    "useToday": "Use my polling unit today: {unit}",
+    "noResults": "No polling unit matches \"{query}\". Check the code, or choose step by step.",
+    "selected": "Selected: {place}",
+    "listMissing": "The polling-unit list is not on this phone yet. Connect to network once to download it.",
+    "listDownloading": "Downloading the polling-unit list ({percent}%)",
+    "error": "Choose a polling unit, or choose a ward and tap \"I don't know the polling unit\".",
+    "noGps": "We never use your phone's location."
+  },
+  "o08": {
+    "title": "When did it happen?",
+    "justNow": "Just now",
+    "earlierToday": "Earlier today",
+    "anotherDay": "Another day",
+    "timeLabel": "Time",
+    "dateLabel": "Date",
+    "watNote": "All times are West Africa Time.",
+    "future": "That time has not happened yet. Choose an earlier time.",
+    "old": {
+      "title": "This was more than 7 days ago",
+      "body": "Is the date right? Older events are still useful, but reviewers need to know.",
+      "confirm": "Yes, the date is right",
+      "change": "Change the date"
+    },
+    "error": "Choose a time."
+  },
+  "o09": {
+    "title": "Tell us what happened",
+    "label": "What happened",
+    "hint1": "What did you see?",
+    "hint2": "Who was affected? Use roles, not names.",
+    "hint3": "Is it still happening?",
+    "speak": "Speak",
+    "listening": "Listening. Speak now.",
+    "stop": "Stop",
+    "speakUnavailable": "Speaking is not available on this phone. Tap the microphone on your keyboard to talk instead.",
+    "micDenied": "The app cannot use the microphone. You can type, or allow the microphone in your phone settings.",
+    "source": "How do you know?",
+    "sourceSelf": "I saw this myself",
+    "sourceTold": "Someone told me",
+    "nameWarning": "This may name a person. Please describe roles, not names. For example: \"a party agent\", \"a presiding officer\".",
+    "nameKeep": "It is not a name, keep it",
+    "tooShort": "Write a little more so a reviewer can understand. At least {min} letters.",
+    "tooLong": "That is too long. Keep it under {max} letters.",
+    "sourceError": "Choose how you know."
+  },
+  "o10": {
+    "title": "Add photos, video or voice?",
+    "hint": "This is optional. You can send without it.",
+    "photo": "Take photo",
+    "video": "Record video",
+    "videoLimit": "Up to 60 seconds",
+    "voice": "Record voice note",
+    "voiceLimit": "Up to 2 minutes",
+    "file": "Choose file",
+    "blur": "Blur faces",
+    "blurHint": "Hides faces before it leaves this phone.",
+    "locationRemoved": "Location removed",
+    "size": "{size} · about {time} to send now",
+    "sizeOffline": "{size} · will send when you have network",
+    "retake": "Retake",
+    "remove": "Remove",
+    "removeConfirm": "Remove this item?",
+    "count": "{count, plural, =0 {Nothing added} one {# item added} other {# items added}}",
+    "limitItems": "You can add up to {max} items.",
+    "tooBig": "This file is too big. Choose one under {max}.",
+    "wrongType": "This kind of file cannot be added. Choose a photo, video or voice recording.",
+    "cameraDenied": "The app cannot use the camera. You can choose a file instead, or allow the camera in your phone settings.",
+    "micDenied": "The app cannot use the microphone. You can choose a file instead, or allow the microphone in your phone settings.",
+    "processing": "Preparing {name}",
+    "recording": "Recording {time}",
+    "stopRecording": "Stop recording",
+    "skip": "Continue without",
+    "spaceLow": "This phone is almost full. Large videos may not fit."
+  },
+  "o11": {
+    "title": "Check and send",
+    "hint": "Check each part. Tap Change to fix it.",
+    "what": "What happened",
+    "danger": "Danger",
+    "dangerYes": "Someone was in danger",
+    "dangerNo": "No one in danger",
+    "where": "Where",
+    "when": "When",
+    "description": "What you wrote",
+    "source": "How you know",
+    "evidence": "Photos, video, voice",
+    "noEvidence": "None",
+    "send": "Send report",
+    "sending": "Sending",
+    "savedOffline": "Saved on this phone. It will send when you have network.",
+    "queueFull": "There are already {max} reports waiting on this phone. Send them first, or delete one.",
+    "intakePaused": "Your organisation has paused new reports. Your report is saved on this phone and will send when they start again.",
+    "notConfirmed": "We sent your report but have not heard back. We are checking. It will not be sent twice."
+  },
+  "o12": {
+    "title": "Report received",
+    "codeLabel": "Receipt code",
+    "receivedAt": "Received {time}",
+    "copy": "Copy code",
+    "copied": "Code copied",
+    "next": {
+      "title": "What happens next",
+      "line1": "A reviewer will read your report.",
+      "line2": "If they have a question, you will see it in Messages.",
+      "line3": "You can withdraw it until review starts."
+    },
+    "attachments": "Photos, video, voice",
+    "upload": {
+      "waiting": "Waiting for network",
+      "uploading": "Sending {percent}%",
+      "saved": "Saved",
+      "failed": "Not sent",
+      "retry": "Try again",
+      "missing": "This file is no longer on the phone. Choose the file again.",
+      "chooseAgain": "Choose file again"
+    },
+    "keepOpen": "Keep the app open until all items say Saved.",
+    "viewReport": "See this report",
+    "another": "Report something else",
+    "home": "Back to home"
+  },
+  "o13": {
+    "title": "My reports",
+    "filter": {
+      "all": "All",
+      "needsYou": "Needs you",
+      "onPhone": "On this phone"
+    },
+    "empty": "No reports yet. When you send a report, it will show here.",
+    "emptyFilter": "Nothing here right now.",
+    "offlineList": "Offline. Showing what this phone knows. Status may be older.",
+    "updated": "Updated {time}",
+    "loading": "Getting your reports",
+    "loadError": "We could not get your reports. Try again.",
+    "checklistStage": "Checklist: {stage}",
+    "resultSheet": "Result-sheet check",
+    "unknownPlace": "Ward only"
+  },
+  "o14": {
+    "title": "Report {ref}",
+    "observed": "Happened {time}",
+    "received": "Received {time}",
+    "notSentYet": "Not sent yet",
+    "question": {
+      "title": "Question for you",
+      "replyLabel": "Your answer",
+      "send": "Send answer",
+      "sending": "Sending",
+      "queued": "Your answer is saved on this phone. It will send when you have network.",
+      "sent": "Answer sent. The reviewer can see it."
+    },
+    "conversation": {
+      "title": "Messages with your reviewer",
+      "empty": "No messages yet.",
+      "you": "You",
+      "reviewer": "Reviewer",
+      "formalQuestion": "Question",
+      "label": "Write a message",
+      "send": "Send message",
+      "attach": "Add photo or voice",
+      "queued": "On this phone",
+      "notAssigned": "A reviewer has not been assigned yet. You can still write; they will see it."
+    },
+    "attachments": "Photos, video, voice",
+    "details": "What you reported",
+    "contentNotKept": "To keep this phone safe, the full text is not kept here. It is with the reviewers.",
+    "withdraw": {
+      "button": "Withdraw this report",
+      "title": "Withdraw this report?",
+      "body": "Your text, photos, videos and voice notes will be deleted. Reviewers will only see that a report was withdrawn. This cannot be undone.",
+      "confirm": "Withdraw report",
+      "keep": "Keep it",
+      "done": "You withdrew this report.",
+      "tooLate": "Review has started, so this report can no longer be withdrawn. You can send a message to the reviewer instead.",
+      "offline": "You need network to withdraw a report."
+    },
+    "deleteLocal": {
+      "button": "Delete from this phone",
+      "note": "This report was never sent. Deleting it removes it for good."
+    },
+    "closedNote": "This report is closed. Thank you for reporting.",
+    "loadError": "We could not open this report. Try again.",
+    "loading": "Opening report"
+  },
+  "o15": {
+    "title": "Polling-day checklist",
+    "hint": "Fill each stage when it happens. Each stage sends on its own.",
+    "stage": {
+      "arrival": "Arrival",
+      "opening": "Opening",
+      "accreditation": "Accreditation",
+      "voting": "Voting",
+      "closing": "Closing and counting",
+      "results": "Results posted"
+    },
+    "stageState": {
+      "notStarted": "Not started",
+      "draft": "Started",
+      "onPhone": "On this phone",
+      "received": "Received"
+    },
+    "q": {
+      "arrivalUnit": "Which polling unit are you at?",
+      "arrivalTime": "What time did you arrive?",
+      "openedOnTime": "Did it open on time?",
+      "materialsPresent": "Were all materials there?",
+      "materialsList": "Which materials were missing?",
+      "officialsPresent": "Were the officials there?",
+      "agentsPresent": "Were party agents there?",
+      "deviceWorking": "Was the accreditation device working?",
+      "queueSize": "How big was the queue?",
+      "priority": "Did older people, disabled people and pregnant women go first?",
+      "secrecy": "Could people vote in secret?",
+      "assistance": "Was help available for voters who needed it?",
+      "disruption": "Was there any disruption?",
+      "inducementSeen": "Did you see anyone offer money or gifts for votes?",
+      "closedOnTime": "Did it close on time?",
+      "countPublic": "Was the counting done where people could see?",
+      "agentsSigned": "Did the party agents sign the result sheet?",
+      "sheetPosted": "Was the result sheet posted for the public?"
+    },
+    "material": {
+      "ballots": "Ballot papers",
+      "resultSheets": "Result sheets",
+      "boxes": "Ballot boxes",
+      "booths": "Voting booths",
+      "ink": "Ink",
+      "device": "Accreditation device",
+      "register": "Voter register"
+    },
+    "queue": {
+      "none": "No queue",
+      "small": "Fewer than 50",
+      "medium": "50 to 200",
+      "large": "More than 200"
+    },
+    "reportThis": "Report this as an incident",
+    "reportThisHint": "We fill in what, where and when for you.",
+    "checkSheet": "Check the result sheet",
+    "send": "Send this stage",
+    "sending": "Sending",
+    "received": "Stage received {time}",
+    "savedOffline": "Saved on this phone. It will send when you have network.",
+    "needUnit": "Fill in Arrival first so we know your polling unit.",
+    "unanswered": "{count, plural, one {# question has no answer. Send anyway?} other {# questions have no answer. Send anyway?}}",
+    "sendAnyway": "Send anyway",
+    "goBack": "Answer them",
+    "draftExists": "You have a report you did not finish. We opened it. Finish or delete it first, then report this."
+  },
+  "o16": {
+    "title": "Check the result sheet",
+    "notResult": "Consistency check for review. This is not a result.",
+    "rules": "Only use the sheet posted for the public. We never add up votes or show a winner.",
+    "photo": {
+      "title": "Take a photo of the posted sheet",
+      "take": "Take photo",
+      "retake": "Retake",
+      "file": "Choose file",
+      "tip": "Hold the phone straight. Make sure all numbers are sharp and in the light.",
+      "reading": "Reading the numbers from the photo",
+      "readFailed": "We could not read the numbers. Please type them from the sheet.",
+      "offline": "No network, so we cannot read the photo now. Please type the numbers from the sheet.",
+      "skip": "Type the numbers instead"
+    },
+    "numbers": {
+      "title": "Type exactly what the sheet shows",
+      "hint": "Even if a number looks wrong, type what is written. Reviewers check it.",
+      "suggested": "Suggested from the photo. Check it against the sheet.",
+      "registered": "Registered voters",
+      "accredited": "Accredited voters",
+      "party": "Votes for party {label}",
+      "rejected": "Rejected ballots",
+      "blank": "Leave empty if the sheet does not show it",
+      "notNumber": "Use numbers only, like 245.",
+      "tooBig": "That number is too big for one polling unit. Check it again."
+    },
+    "confirm": "I checked every number against the posted sheet",
+    "confirmError": "Tick the box after you check every number.",
+    "send": "Send for review",
+    "sending": "Sending"
+  },
+  "o17": {
+    "title": "Messages",
+    "hint": "Reports where a reviewer has written to you.",
+    "questionTag": "Question for you",
+    "newMessage": "{count, plural, one {# new message} other {# new messages}}",
+    "empty": "No messages. When a reviewer writes to you, it will show here.",
+    "loading": "Getting messages",
+    "loadError": "We could not get your messages. Try again.",
+    "offline": "Offline. New messages will show when you have network."
+  },
+  "o18": {
+    "title": "Discussions",
+    "hint": "Talk with other observers in your area about a shared problem. Only your observer code is shown.",
+    "invitations": "Invitations",
+    "joined": "Your discussions",
+    "invite": {
+      "from": "Invited by a moderator",
+      "area": "Area: {area}",
+      "join": "Join",
+      "decline": "No, thank you",
+      "rules": "If you join, others in this discussion see your observer code and what you write. They never see your reports."
+    },
+    "members": "{count, plural, one {# member} other {# members}}",
+    "closesAt": "Closes {time}",
+    "closed": "This discussion is closed.",
+    "empty": "No discussions. A moderator may invite you if there is a shared problem in your area.",
+    "loading": "Getting discussions",
+    "loadError": "We could not get discussions. Try again.",
+    "thread": {
+      "postLabel": "Write a post",
+      "postHint": "Text only. No names, phone numbers or exact places. Ward is the smallest place to mention.",
+      "post": "Post",
+      "posting": "Posting",
+      "queued": "On this phone",
+      "hidden": "A moderator hid this post.",
+      "you": "You",
+      "moderator": "Moderator",
+      "empty": "No posts yet.",
+      "shareNote": "To use something from here in your own report, write it in your report yourself.",
+      "leave": "Leave discussion",
+      "leaveTitle": "Leave this discussion?",
+      "leaveBody": "You will stop seeing new posts. Your posts stay unless a moderator removes them.",
+      "leaveConfirm": "Leave",
+      "removed": "You are no longer in this discussion.",
+      "tooLong": "Keep posts under {max} letters.",
+      "earlier": "Show earlier posts"
+    }
+  },
+  "o19": {
+    "title": "What do you want to know?",
+    "label": "Your question",
+    "hint": "Example: What should I do if the polling unit opens late?",
+    "ask": "Ask",
+    "asking": "Finding an answer",
+    "source": "Source: {title}",
+    "openSource": "Open the guide",
+    "noAnswer": "I don't have an approved answer to that. Contact your coordinator.",
+    "offline": "You need network to ask a question. Saved guides are below.",
+    "savedGuides": "Saved guides",
+    "note": "Answers only come from approved guides. They are not legal advice.",
+    "error": "We could not get an answer. Try again.",
+    "empty": "Type a question to ask.",
+    "otherLanguage": "This guide is only approved in {language}."
+  },
+  "o20": {
+    "title": "Settings",
+    "language": "Language",
+    "pin": {
+      "change": "Change PIN",
+      "currentLabel": "Current PIN",
+      "newLabel": "New PIN",
+      "confirmLabel": "Type the new PIN again",
+      "save": "Save new PIN",
+      "saved": "Your new PIN is saved.",
+      "wrongCurrent": "Your current PIN is not right."
+    },
+    "privacy": "Privacy notice",
+    "storage": "On this phone: {reports, plural, =0 {no reports waiting} one {# report waiting} other {# reports waiting}}, {size} of media",
+    "signOut": {
+      "button": "Sign out",
+      "clearButton": "Sign out and clear this phone",
+      "clearHint": "Use this on a shared phone. It removes everything ElectraGuard keeps here.",
+      "title": "Sign out and clear this phone?",
+      "body": "Drafts, saved reports and messages on this phone will be removed. Reports already received stay safe with the reviewers.",
+      "unsentWarning": "{count, plural, one {# report is not sent yet. It will be lost.} other {# reports are not sent yet. They will be lost.}}",
+      "sendFirst": "Send them first",
+      "confirm": "Clear and sign out",
+      "signedOut": "You are signed out."
+    },
+    "version": "Version {version}"
+  },
+  "c01": {
+    "title": "Report received",
+    "codeLabel": "Your receipt code",
+    "writeDown": "Write this code down or save it as a picture. You need it to check your report.",
+    "receivedAt": "Received {time}",
+    "copy": "Copy code",
+    "copied": "Code copied",
+    "saveImage": "Save as picture",
+    "saved": "Picture saved",
+    "keepOnPhone": "Keep this code on this phone",
+    "keepOnPhoneHint": "Turn this off if other people use this phone.",
+    "next": {
+      "title": "What happens next",
+      "line1": "A reviewer will read your report.",
+      "line2": "Check its status with your code on this app, on the website, or by SMS.",
+      "line3": "If a reviewer asks a question, you can answer it when you check."
+    },
+    "sms": "By SMS: send STATUS {code} to {shortCode}",
+    "checkStatus": "Check status",
+    "another": "Report something else",
+    "citizenLabel": "Citizen report, not from an accredited observer"
+  },
+  "p01": {
+    "title": "Check a report",
+    "label": "Receipt code",
+    "hint": "Example: EG-4H7Q-92KD",
+    "check": "Check",
+    "checking": "Checking",
+    "savedCodes": "Codes on this phone",
+    "removeCode": "Remove from this phone",
+    "formatError": "Receipt codes look like EG-4H7Q-92KD. Check the letters and numbers.",
+    "notFound": "We could not find a report with this code. Check each letter and number.",
+    "offline": "You need network to check a report.",
+    "tooMany": "Too many checks. Wait {minutes, plural, one {# minute} other {# minutes}} and try again.",
+    "result": {
+      "status": "Status",
+      "received": "Received {time}",
+      "updated": "Last change {time}",
+      "category": "What was reported"
+    },
+    "question": {
+      "title": "A reviewer has a question",
+      "replyLabel": "Your answer",
+      "send": "Send answer",
+      "sent": "Answer sent. Thank you."
+    },
+    "explain": {
+      "received": "Your report is waiting for a reviewer.",
+      "inReview": "A reviewer is looking at your report.",
+      "question": "A reviewer needs more information from you. Answer below.",
+      "closed": "Review is finished.",
+      "withdrawn": "This report was withdrawn."
+    },
+    "sms": "No smartphone? Send STATUS and your code to {shortCode}."
+  }
+}

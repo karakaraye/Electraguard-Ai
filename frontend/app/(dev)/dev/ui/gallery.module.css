@@ -1,0 +1,241 @@
+.gallery {
+  --gallery-gap: var(--s-6);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--s-7);
+  max-width: 76rem;
+  margin: calc(clamp(1rem, 7vw, 5rem) * -1) auto 0;
+  padding: var(--s-6) var(--gutter) var(--s-8);
+  background: var(--paper-2);
+  color: var(--ink);
+  font: var(--t-base);
+  color-scheme: light;
+}
+
+.gallery[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  justify-content: space-between;
+  gap: var(--s-4);
+  padding-bottom: var(--s-5);
+  border-bottom: 2px solid var(--ink);
+}
+
+.title {
+  margin: 0;
+  font: var(--t-title);
+  overflow-wrap: anywhere;
+}
+
+.lede {
+  margin: var(--s-1) 0 0;
+  color: var(--ink-2);
+  font: var(--t-body);
+}
+
+.themeControl {
+  display: inline-flex;
+  flex-wrap: wrap;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: var(--border-w) solid var(--rule-control);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.themeOption {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--target-min);
+  padding: 0 var(--s-4);
+  font: var(--t-label);
+  cursor: pointer;
+}
+
+.themeOption + .themeOption {
+  border-left: 1px solid var(--rule);
+}
+
+.themeOption input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.themeOption[data-checked] {
+  background: var(--ink);
+  color: var(--on-ink);
+}
+
+.themeOption:has(input:focus-visible) {
+  outline: var(--focus-outline);
+  outline-offset: -5px;
+}
+
+.section {
+  display: grid;
+  gap: var(--s-4);
+  min-width: 0;
+}
+
+.sectionTitle {
+  margin: 0;
+  font: var(--t-heading);
+  overflow-wrap: anywhere;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 20rem), 1fr));
+  gap: var(--s-4);
+  align-items: start;
+}
+
+.specimen {
+  display: grid;
+  gap: var(--s-3);
+  min-width: 0;
+  margin: 0;
+  padding: var(--s-4);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: var(--paper);
+}
+
+.wide {
+  grid-column: 1 / -1;
+}
+
+.specimenLabel {
+  color: var(--ink-2);
+  font: var(--t-label);
+  letter-spacing: var(--t-label-tracking);
+}
+
+.specimenBody {
+  display: grid;
+  gap: var(--s-4);
+  min-width: 0;
+}
+
+.stack {
+  display: grid;
+  gap: var(--s-4);
+  justify-items: stretch;
+  min-width: 0;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+}
+
+.typeScale {
+  display: grid;
+  gap: var(--s-3);
+  padding: var(--s-4);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: var(--paper);
+  overflow-wrap: anywhere;
+}
+
+.typeScale p {
+  margin: 0;
+}
+
+.swatches {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 9rem), 1fr));
+  gap: var(--s-3);
+}
+
+.swatch {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  font: var(--t-small);
+}
+
+.chip {
+  flex: none;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--rule-control);
+  border-radius: 6px;
+}
+
+.iconGrid,
+.pictoGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 7rem), 1fr));
+  gap: var(--s-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pictoGrid {
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 9.5rem), 1fr));
+}
+
+.iconGrid li,
+.pictoGrid li {
+  display: grid;
+  justify-items: center;
+  align-content: start;
+  gap: var(--s-2);
+  padding: var(--s-4) var(--s-2);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: var(--paper);
+  color: var(--ink);
+  font: var(--t-small);
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+.frames {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 22rem), 1fr));
+  gap: var(--s-5);
+}
+
+.frame {
+  height: 40rem;
+  overflow: auto;
+  border: 2px solid var(--ink);
+  border-radius: var(--radius);
+  background: var(--paper);
+}
+
+.staffFrame {
+  height: 52rem;
+}
+
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 9rem), 1fr));
+  gap: var(--s-4);
+}
+
+/* Grid containers without explicit columns size to min-content; pin them to the container */
+.section,
+.specimen,
+.specimenBody,
+.stack {
+  grid-template-columns: minmax(0, 1fr);
+}
