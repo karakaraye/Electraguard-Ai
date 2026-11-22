@@ -10,7 +10,7 @@ bash deploy/backup-encrypted.sh approved_source_database APPROVED_FINGERPRINT /a
 
 On the isolated recovery host, decrypt into approved encrypted scratch storage and verify decryption exits successfully before giving the plaintext archive to PostgreSQL. Keep the recovery key off the routine backup host and dispose of scratch copies under policy.
 
-The PostgreSQL restore and integrity checker passed locally. The OpenPGP command passed shell syntax validation. The Windows OpenPGP agent could not start, so the full encrypted round trip remains a deployment acceptance check.
+The PostgreSQL restore and integrity checker passed locally with generated records. Hosted Docker acceptance ran the OpenPGP backup command after the browser test, decrypted its output and restored two closed reports, two 2 MiB photos and their audit history into an isolated database. The comparison checked report and audit digests, attachment hashes, closure snapshots and migration counts. The organisation still needs to approve the recovery key and recovery targets. [Hosted recovery check](https://github.com/karakaraye/Electraguard-Ai/actions/runs/44976829468)
 
 1. Pause new intake during a planned consistency checkpoint, or establish the exact snapshot boundary using the approved PostgreSQL backup mechanism. Obtain aggregate verification output for that same snapshot.
 2. Restore into an isolated database with no application listener, public route or worker attached. Use a matching PostgreSQL major version and the approved restore credential. Keep credentials out of command arguments and logs.
@@ -22,5 +22,5 @@ python scripts/verify-restored-data.py --database approved_restore_database --co
 
 The checker returns zero when structural and evidence integrity checks pass and aggregates agree. It returns one for integrity problems or mismatched counts, and two for an unreadable database, schema or baseline. Compare the database migration state and the approved backup identity separately. Review any legacy closure without an attachment snapshot before accepting the restore.
 
-4. Test permissions and receipt recovery on the isolated restore. Verify offboarded users remain disabled, formerly assigned users cannot download evidence, and the dashboard reconciles. Revoke restored sessions before any traffic switch. Confirm application and migration roles have their expected access.
+4. With application traffic stopped and intake paused, revoke all sessions in the isolated restore using `python backend/manage.py revoke_restored_sessions --isolated-restore --confirm-database approved_restore_database`. This requires explicit confirmation of the configured database name. Verify the restored cookies fail and new sign-ins work. Check offboarding, former assignees, private evidence, receipts, dashboard reconciliation and database privileges before any traffic switch.
 5. Record recovery duration, the restored point, access retention and any expected loss. Get operator approval before changing traffic. Handle the isolated copy under the organisation's retention and access policies.

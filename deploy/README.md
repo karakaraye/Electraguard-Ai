@@ -22,4 +22,14 @@ docker compose -f deploy/compose.yaml up -d --wait backend frontend gateway
 
 After migration, verify the sign-in page and authenticated HTTPS workflow from the intended private network. Check production cookie flags, unauthorised access, a maximum-size accepted photo, and report confirmation replay. Confirm no database or origin ports are reachable from client networks. Verify the worker starts separately with the `triage` profile and that manual review works while it is stopped.
 
+## Readiness and triage alerts
+
+Use the backend readiness check for PostgreSQL connectivity and run the operations command from the restricted operator environment. Its JSON contains the intake setting, aggregate triage counts, and the age in seconds of the oldest report with pending triage. Run it at the interval approved by the deployment owner.
+
+```sh
+python manage.py check_observation_operations
+```
+
+For a deployment that operates the advisory worker, pass approved thresholds with `--alert-pending-age-seconds` and `--alert-failed-count`. A threshold triggers when the value reaches the supplied limit, emits an alert code, and exits with status 1. Keep queue alerts off during a planned worker outage. Test delivery to the approved response channel before launch.
+
 For an update, capture a verified backup, keep intake paused, and migrate using the candidate image before switching application images. Reopen only after the acceptance checks and operator approval. For rollback, use the preceding application images with a compatible database schema. When a migration requires database recovery, use the approved isolated restore procedure and account for writes after the backup before switching traffic.

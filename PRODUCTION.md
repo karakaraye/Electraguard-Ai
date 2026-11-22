@@ -6,7 +6,7 @@ ElectraGuard serves authorised observation organisations. Observers report what 
 
 The production baseline is the authenticated Django, PostgreSQL and Next.js application on `work`. The earlier field-trial branch changes identity, routing and storage semantics. Its operational material can inform deployment and recovery work. Each proposed change must preserve authenticated ownership, assignment, clarification and the closure evidence snapshot.
 
-Use [the engineering handoff](docs/engineering-handoff.md) for the current slice and [field operations](docs/field-operations.md) for the operating approvals. Deployment and recovery steps are in [private deployment](deploy/README.md) and [restore acceptance](docs/restore-verification.md).
+Use [the engineering handoff](docs/engineering-handoff.md) for the current slice and [field operations](docs/field-operations.md) for the operating approvals. Deployment and recovery steps are in [private deployment](deploy/README.md), the [recovery policy proposal](docs/recovery-policy.md) and [restore acceptance](docs/restore-verification.md).
 
 - One accountable observation organisation is the initial deployment boundary. A second organisation requires separate deployment or a reviewed tenant isolation design.
 - Use the existing black-and-white interface, with colour reserved for status. Test field workflows on phones before desktop polish.
@@ -52,6 +52,6 @@ Production use requires a verified target deployment and approval of the operati
 - PostgreSQL suite with accounts, reports and deployment configuration passed all 28 tests. A separate database migrated from empty, accepted the isolated browser fixture setup, and showed no schema drift. The operator reconciliation command returned zero observations for the empty range.
 - Production Django client checks covered HTTPS redirects, untrusted hosts, framing, HSTS, cookie protection and proxy trust. `manage.py check --deploy` reported domain-dependent HSTS subdomain and preload warnings. The actual ingress is still unverified.
 - Frontend lint, typecheck and production build passed locally.
-- The hosted CI definition is committed locally. Its action hashes match the referenced tags. No hosted run has been recorded.
-- The isolated browser suite still needs a run against the new test-account setup. The linked build-and-start command was blocked by local execution policy.
-- A loopback TLS environment verified production cookies, CSRF, private evidence, a 2 MiB upload, receipt recovery and report closure. PostgreSQL backup and restore matched the source counts and integrity checks. This evidence covers the API transport and isolated data recovery. The target deployment, hosted browser workflow and approved recovery objectives are separate open gates.
+- GitHub Actions passed backend and frontend checks, the packaged private HTTPS smoke test, and an encrypted backup and restore on `production-readiness`. [Application verification](https://github.com/karakaraye/Electraguard-Ai/actions/runs/44945800730) · [Deployment and recovery verification](https://github.com/karakaraye/Electraguard-Ai/actions/runs/44945800755)
+- The hosted Docker browser suite passed all three roles through private HTTPS at 320 and 360 CSS pixels with 200% text. The workflow now repeats this check on relevant changes to the production branch. [Docker browser run](https://github.com/karakaraye/Electraguard-Ai/actions/runs/44956437613)
+- A loopback TLS environment verified production cookies, CSRF, private evidence, a 2 MiB upload, receipt recovery and report closure. PostgreSQL backup and restore matched the source counts and integrity checks. The intended deployment host, recovery objectives and physical field acceptance are open gates.

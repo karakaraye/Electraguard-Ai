@@ -1,8 +1,12 @@
 "use client";
 
-import { useState, type FormEvent, type ReactNode } from "react";
+import { useState, useSyncExternalStore, type FormEvent, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { csrfPost } from "../../lib/auth-client";
+
+const subscribeToHydration = () => () => {};
+const clientReady = () => true;
+const serverReady = () => false;
 
 export function WorkflowForm({ path, version, action, label, children }: {
   path: string;
@@ -12,6 +16,7 @@ export function WorkflowForm({ path, version, action, label, children }: {
   children?: ReactNode;
 }) {
   const router = useRouter();
+  const hydrated = useSyncExternalStore(subscribeToHydration, clientReady, serverReady);
   const [pending, setPending] = useState(false);
   const [error, setError] = useState("");
   const [stale, setStale] = useState(false);
@@ -54,7 +59,7 @@ export function WorkflowForm({ path, version, action, label, children }: {
 
   return (
     <form method="post" onSubmit={submit}>
-      <fieldset disabled={pending || stale}>
+      <fieldset disabled={!hydrated || pending || stale}>
         {children}
         <button>{pending ? "Saving…" : label}</button>
       </fieldset>

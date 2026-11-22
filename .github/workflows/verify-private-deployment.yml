@@ -6,6 +6,10 @@ on:
     branches: [production-readiness]
     paths:
       - "deploy/**"
+      - "backend/**"
+      - "frontend/**"
+      - "scripts/verify-core.cjs"
+      - "tests/fixtures/**"
       - ".github/workflows/verify-private-deployment.yml"
 
 concurrency:
@@ -21,11 +25,22 @@ jobs:
     timeout-minutes: 20
     env:
       ELECTRAGUARD_RELEASE: ${{ github.sha }}
-      ELECTRAGUARD_HOST: electraguard.test
+      ROLLBACK_BASELINE: 46562d47886e9a06cabe6f040dce291d78b45047
+      ELECTRAGUARD_HOST: localhost
+      COMPOSE_PROJECT_NAME: electraguard-acceptance
       OBSERVATION_INTAKE_ENABLED: "false"
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: "24"
+          package-manager-cache: false
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ env.ROLLBACK_BASELINE }}
+          path: .local/rollback-baseline
           persist-credentials: false
       - name: Configure isolated runtime
         shell: bash
@@ -69,6 +84,73 @@ jobs:
               exit 1
             fi
           done
+      - name: Verify all three roles through the Docker HTTPS gateway
+        shell: bash
+        run: |
+          set -euo pipefail
+          compose=(docker compose -f deploy/compose.yaml)
+          export OBSERVATION_INTAKE_ENABLED=true
+          "${compose[@]}" up -d --wait backend
+          container="$("${compose[@]}" ps -q backend)"
+          export QA_COMPOSE_PROJECT="$(docker inspect --format '{{ index .Config.Labels "com.docker.compose.project" }}' "$container")"
+          test "$QA_COMPOSE_PROJECT" = electraguard-acceptance
+          fixture_env=(-e QA_COMPOSE_PROJECT)
+          for role in OBSERVER SECOND_OBSERVER REVIEWER SECOND_REVIEWER ADMINISTRATOR; do
+            variable="QA_${role}_PASSWORD"
+            password="$(openssl rand -hex 24)"
+            printf '::add-mask::%s\n' "$password"
+            export "$variable=$password"
+            fixture_env+=(-e "$variable")
+          done
+          unset password
+          "${compose[@]}" exec -T "${fixture_env[@]}" backend /usr/local/bin/electraguard-django \
+            python manage.py shell < tests/fixtures/provision_browser_accounts.py
+          scratch="$(mktemp -d)"
+          npm install --prefix "$scratch" --ignore-scripts --no-save playwright@1.62.1
+          export NODE_PATH="$scratch/node_modules"
+          if command -v google-chrome >/dev/null; then
+            export QA_CHROMIUM_PATH="$(command -v google-chrome)"
+          else
+            "$scratch/node_modules/.bin/playwright" install chromium
+          fi
+          export QA_FRONTEND_ORIGIN="https://$ELECTRAGUARD_HOST"
+          export NODE_EXTRA_CA_CERTS="$ELECTRAGUARD_TLS_DIR/fullchain.pem"
+          export QA_CHROMIUM_TLS_PIN="$(openssl x509 -in "$NODE_EXTRA_CA_CERTS" -pubkey -noout |
+            openssl pkey -pubin -outform der | openssl dgst -sha256 -binary | openssl enc -base64)"
+          export QA_EVIDENCE_PATH="$scratch/evidence.png"
+          export QA_SLOW_ATTACHMENT_RETRY=true
+          "${compose[@]}" exec -T backend python - > "$QA_EVIDENCE_PATH" <<'PNG'
+          from io import BytesIO
+          import sys
+          from PIL import Image, PngImagePlugin
+
+          image = Image.new("RGB", (16, 16), "white")
+          def png(note):
+              buf = BytesIO()
+              metadata = PngImagePlugin.PngInfo()
+              metadata.add_text("test", note)
+              image.save(buf, format="PNG", pnginfo=metadata)
+              return buf.getvalue()
+
+          limit = 2 * 1024 * 1024
+          data = png("x" * (limit - len(png(""))))
+          assert len(data) == limit
+          sys.stdout.buffer.write(data)
+          PNG
+          node scripts/verify-core.cjs
+      - name: Exercise the private operations alert signal
+        shell: bash
+        run: |
+          set -euo pipefail
+          if output="$(docker compose -f deploy/compose.yaml exec -T backend \
+            /usr/local/bin/electraguard-django python manage.py check_observation_operations \
+            --alert-pending-age-seconds 1)"; then
+            echo 'The pending queue should have triggered the isolated alert threshold.' >&2
+            exit 1
+          else
+            test "$?" = 1
+          fi
+          printf '%s' "$output" | node -e 'const {readFileSync}=require("node:fs"); const assert=require("node:assert/strict"); const result=JSON.parse(readFileSync(0,"utf8")); assert.equal(result.triage.pending,2); assert.deepEqual(result.alerts,["triage_pending_age"]);'
       - name: Verify encrypted backup and restore
         shell: bash
         run: |
@@ -91,11 +173,65 @@ jobs:
           "${db[@]}" createdb --username=electraguard_bootstrap electraguard_recovery_ci
           "${db[@]}" pg_restore --username=electraguard_bootstrap --exit-on-error --no-owner --no-privileges \
             --dbname=electraguard_recovery_ci < "$scratch/restore.dump"
-          query='SELECT count(*) FROM django_migrations;'
-          expected="$("${db[@]}" psql -U electraguard_bootstrap -d electraguard -Atqc "$query")"
-          restored="$("${db[@]}" psql -U electraguard_bootstrap -d electraguard_recovery_ci -Atqc "$query")"
-          test "$expected" -gt 0
-          test "$expected" = "$restored"
+          query=tests/fixtures/restore_acceptance.sql
+          "${db[@]}" psql -X -U electraguard_bootstrap -d electraguard -Atq -v ON_ERROR_STOP=1 \
+            < "$query" > "$scratch/source.manifest"
+          "${db[@]}" psql -X -U electraguard_bootstrap -d electraguard_recovery_ci -Atq -v ON_ERROR_STOP=1 \
+            < "$query" > "$scratch/restore.manifest"
+          test "$(grep -cx t "$scratch/source.manifest")" = 3
+          cmp -s "$scratch/source.manifest" "$scratch/restore.manifest"
+          printf '%s\n' 'Encrypted restore matched 2 closed cases, 2 maximum-size images, and their audit history.'
+          restored_db=electraguard_recovery_ci
+          "${db[@]}" psql -X -U electraguard_bootstrap -d "$restored_db" -v ON_ERROR_STOP=1 <<'SQL'
+          REVOKE CONNECT ON DATABASE electraguard_recovery_ci FROM PUBLIC;
+          GRANT CONNECT ON DATABASE electraguard_recovery_ci TO electraguard_runtime;
+          GRANT SELECT ON accounts_user TO electraguard_runtime;
+          GRANT SELECT, DELETE ON django_session TO electraguard_runtime;
+          SQL
+          source_sessions_sql='SELECT count(*) FROM django_session;'
+          source_before="$("${db[@]}" psql -X -U electraguard_bootstrap -d electraguard -Atqc "$source_sessions_sql")"
+          test "$source_before" -gt 0
+          docker compose -f deploy/compose.yaml run --rm --no-deps -T \
+            -e POSTGRES_DB="$restored_db" -e OBSERVATION_INTAKE_ENABLED=false backend \
+            python manage.py shell < tests/fixtures/verify_restored_session.py
+          source_after="$("${db[@]}" psql -X -U electraguard_bootstrap -d electraguard -Atqc "$source_sessions_sql")"
+          test "$source_before" = "$source_after"
+      - name: Rehearse application image rollback with intake paused
+        shell: bash
+        run: |
+          set -euo pipefail
+          compose=(docker compose -f deploy/compose.yaml)
+          source=(docker compose -f deploy/compose.yaml exec -T postgres
+            psql -X -U electraguard_bootstrap -d electraguard -Atq -v ON_ERROR_STOP=1)
+          scratch="$(mktemp -d)"
+          query=tests/fixtures/restore_acceptance.sql
+          "${source[@]}" < "$query" > "$scratch/before"
+          test "$(grep -cx t "$scratch/before")" = 3
+          candidate="$ELECTRAGUARD_RELEASE"
+          baseline=.local/rollback-baseline
+          for service in backend frontend; do
+            docker build -f "$baseline/deploy/$service.Dockerfile" \
+              -t "electraguard-$service:$ROLLBACK_BASELINE" "$baseline"
+          done
+          export OBSERVATION_INTAKE_ENABLED=false
+          for release in "$ROLLBACK_BASELINE" "$candidate"; do
+            export ELECTRAGUARD_RELEASE="$release"
+            "${compose[@]}" up -d --wait --no-build backend frontend gateway
+            for service in backend frontend; do
+              container="$("${compose[@]}" ps -q "$service")"
+              test "$(docker inspect --format '{{.Config.Image}}' "$container")" = "electraguard-$service:$release"
+            done
+            curl --cacert "$ELECTRAGUARD_TLS_DIR/fullchain.pem" \
+              --resolve "$ELECTRAGUARD_HOST:443:127.0.0.1" --fail --silent --show-error \
+              --retry 8 --retry-delay 1 --retry-all-errors -o "$scratch/sign-in.html" \
+              "https://$ELECTRAGUARD_HOST/sign-in"
+            grep -Fq 'Sign in' "$scratch/sign-in.html"
+            "${compose[@]}" exec -T backend /usr/local/bin/electraguard-django python manage.py shell \
+              -c 'from django.conf import settings; assert not settings.OBSERVATION_INTAKE_ENABLED'
+            "${source[@]}" < "$query" > "$scratch/after"
+            cmp -s "$scratch/before" "$scratch/after"
+          done
+          printf '%s\n' 'Previous and candidate images served HTTPS with intake paused and preserved the database.'
       - name: Stop isolated runtime
         if: always()
         run: docker compose -f deploy/compose.yaml down --volumes
