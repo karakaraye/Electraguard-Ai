@@ -8,7 +8,7 @@ The full plan is in [hackathon-plan.md](hackathon-plan.md).
 
 | Item | State |
 |---|---|
-| Company / team name | **Cairn Assure** |
+| Company / team name | **Cairn** (confirmed by the owner, 22 Nov) |
 | Plan | `docs/hackathon-plan.md` version 2, approved direction: full working system, nothing skipped |
 | Phase | **Design phase: front end first.** Claude is designing every screen with its API contract on branch `design/frontend`, in a separate worktree, so it does not touch files Codex is editing. |
 | Observer sign-in | Observer code + PIN (decided). No email for observers. |
@@ -46,7 +46,7 @@ The full plan is in [hackathon-plan.md](hackathon-plan.md).
 
 ### 22 Nov 2026 · Codex · Slice A coordination log and licence
 
-- Brought the coordination log and hackathon plan over from `design/frontend`, updated rule 0 to identify `production-readiness` as the shared branch, and added an MIT licence for the Cairn Assure team.
+- Brought the coordination log and hackathon plan over from `design/frontend`, updated rule 0 to identify `production-readiness` as the shared branch, and added an MIT licence for the Cairn team (name confirmed by the owner).
 - Verified that the hackathon plan matches its source, Git's whitespace checks pass, and the slice contains only the three claimed paths.
 - Next, the reviewer checks the draft PR and its CI results before integrating the slice.
 
