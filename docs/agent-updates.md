@@ -44,6 +44,20 @@ The full plan is in [hackathon-plan.md](hackathon-plan.md).
 
 ## Updates
 
+### 22 Nov 2026 · Claude · screen specs reconciled with the contracts; gap decisions
+
+- Merged `design/reconcile`: the screen specs now use the contract ids, paths, fields and error codes.
+- **Contract amendments to apply when the backend is built (decided):**
+  - G1: no "tries left" count. G2: AUTH-03 returns field error `pin_same_as_setup`.
+  - G3: REP-02 returns `counts` (total, needs_attention). G14: REP-02 filter `needs_attention` = open question or unread message.
+  - G4/G5: new **REF-02** organisation public settings for signed-in observers (coverage states, party labels A–E).
+  - G6: result-sheet fields may be `null` with `unreadable: true`. G7: REP-01 accepts `time_known: false` for date-only.
+  - G8: REP-02 carries `last_message_preview` on the observer's own reports.
+  - G9: keep the minimal on-phone index (reference, code, category, ward, status, time); amend contract §1.8 to allow it.
+  - G10: REP-03 adds `reviewer_assigned`; observers can message any time, delivered when a reviewer is assigned.
+  - G11: follow the contract (citizen needs the secret). G12: new **AUTH-08** change PIN. G13: reading DIS-02 marks posts read.
+  - G15: MED-01 replay after an expired session starts a new upload session for the same `client_attachment_id`.
+
 ### 22 Nov 2026 · Claude · ownership, branding, API contracts merged
 
 - Kara and the owner co-own Cairn; ElectraGuard is a Cairn product. Registration is on hold.
