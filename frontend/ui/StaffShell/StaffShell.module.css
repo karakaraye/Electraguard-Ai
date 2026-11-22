@@ -1,0 +1,287 @@
+.shell {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr) auto;
+  min-height: 100dvh;
+  background: var(--paper-2);
+  color: var(--ink);
+  font: var(--t-base);
+}
+
+.preview {
+  min-height: 100%;
+}
+
+.skip {
+  position: absolute;
+  left: var(--s-2);
+  top: var(--s-2);
+  z-index: calc(var(--z-sticky) + 1);
+  padding: var(--s-3) var(--s-4);
+  border-radius: var(--radius);
+  background: var(--ink);
+  color: var(--on-ink);
+  font: var(--t-label);
+  transform: translateY(-200%);
+}
+
+.skip:focus-visible {
+  transform: none;
+  outline: var(--focus-outline);
+  outline-offset: var(--focus-offset);
+}
+
+/* ---------- Side navigation (from 1024px) ---------- */
+
+.side {
+  display: none;
+}
+
+.brand {
+  margin: 0 0 var(--s-5);
+  padding: 0 var(--s-3);
+  font: var(--t-heading);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.sideList,
+.tabList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sideList {
+  display: grid;
+  gap: 2px;
+}
+
+.sideLink {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  min-height: var(--target-min);
+  padding: 0 var(--s-3);
+  border-radius: var(--radius);
+  color: var(--ink-2);
+  font: var(--t-label);
+  font-size: 0.9375rem;
+  text-decoration: none;
+}
+
+.sideLink[aria-current="page"] {
+  background: var(--ink);
+  color: var(--on-ink);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .sideLink:not([aria-current="page"]):hover {
+    background: var(--paper-2);
+    color: var(--ink);
+  }
+}
+
+.sideLink:focus-visible,
+.tabLink:focus-visible {
+  outline: var(--focus-outline);
+  outline-offset: var(--focus-offset);
+  box-shadow: var(--focus-halo);
+}
+
+.linkLabel {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.count {
+  min-width: 24px;
+  padding: 0 6px;
+  border: 1px solid currentColor;
+  border-radius: var(--radius-pill);
+  font: var(--t-label);
+  font-size: 0.8125rem;
+  line-height: 20px;
+  text-align: center;
+}
+
+@media (min-width: 1024px) {
+  .shell {
+    grid-template-columns: 15rem minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr);
+  }
+
+  .side {
+    display: block;
+    position: sticky;
+    top: 0;
+    align-self: start;
+    height: 100dvh;
+    padding: var(--s-5) var(--s-3);
+    border-right: 1px solid var(--rule);
+    background: var(--paper);
+    overflow-y: auto;
+  }
+
+  .preview .side {
+    height: 100%;
+    position: static;
+  }
+
+  .tabs {
+    display: none;
+  }
+}
+
+/* ---------- Header and content ---------- */
+
+.column {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-3);
+  min-height: 64px;
+  padding: var(--s-3) var(--gutter);
+  border-bottom: 1px solid var(--rule);
+  background: var(--paper);
+}
+
+.title {
+  margin: 0;
+  font: var(--t-heading);
+  overflow-wrap: anywhere;
+}
+
+.headerEnd {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-2);
+}
+
+.main {
+  flex: 1 0 auto;
+  min-width: 0;
+  padding: var(--s-5) var(--gutter) var(--s-6);
+  outline: none;
+}
+
+/* ---------- Queue and case split ---------- */
+
+.split {
+  display: grid;
+  gap: var(--s-4);
+}
+
+.split[data-focus="list"] .detailPane,
+.split[data-focus="detail"] .listPane {
+  display: none;
+}
+
+@media (min-width: 900px) {
+  .split {
+    grid-template-columns: minmax(18rem, 24rem) minmax(0, 1fr);
+    align-items: start;
+  }
+
+  .split[data-focus] .listPane,
+  .split[data-focus] .detailPane {
+    display: block;
+  }
+}
+
+.listPane,
+.detailPane {
+  min-width: 0;
+}
+
+/* ---------- Bottom tabs (phones and tablets) ---------- */
+
+.tabs {
+  position: sticky;
+  bottom: 0;
+  z-index: var(--z-sticky);
+  padding-bottom: env(safe-area-inset-bottom);
+  border-top: 1px solid var(--rule);
+  background: var(--paper);
+}
+
+.tabList {
+  display: grid;
+  grid-auto-columns: minmax(0, 1fr);
+  grid-auto-flow: column;
+}
+
+.tabLink {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  min-height: 60px;
+  padding: var(--s-1) 2px;
+  color: var(--ink-2);
+  font: var(--t-label);
+  font-size: 0.8125rem;
+  line-height: 1.15;
+  text-align: center;
+  text-decoration: none;
+}
+
+.tabLink[aria-current="page"] {
+  color: var(--ink);
+}
+
+.tabLink[aria-current="page"]::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 20%;
+  right: 20%;
+  height: 3px;
+  background: var(--ink);
+}
+
+.tabLink .count {
+  position: absolute;
+  top: 4px;
+  left: calc(50% + 6px);
+  background: var(--paper);
+}
+
+.tabLink .linkLabel {
+  flex: none;
+}
+
+/* ---------- Theme switcher ---------- */
+
+.themeSelect {
+  min-height: var(--target-min);
+  margin: 0;
+  padding: 0 var(--s-6) 0 var(--s-3);
+  border: var(--border-w) solid var(--rule-control);
+  border-radius: var(--radius);
+  background: var(--paper)
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%235f5f63' stroke-width='1.75' stroke-linecap='square'%3E%3Cpath d='m6.5 9.5 5.5 5.5 5.5-5.5'/%3E%3C/svg%3E")
+    no-repeat right 8px center / 20px;
+  color: var(--ink);
+  font: var(--t-small);
+  font-weight: 600;
+  appearance: none;
+  cursor: pointer;
+}
+
+.themeSelect:focus-visible {
+  outline: var(--focus-outline);
+  outline-offset: var(--focus-offset);
+  box-shadow: var(--focus-halo);
+}
