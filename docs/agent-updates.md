@@ -8,7 +8,8 @@ The full plan is in [hackathon-plan.md](hackathon-plan.md).
 
 | Item | State |
 |---|---|
-| Company / team name | **Cairn Assure** |
+| Company | **Cairn**, co-owned by the owner and Kara. Registration on hold. |
+| Product branding | Own mark: **E+G monogram**. Credit line "ElectraGuard AI, by Cairn". Never the Cairn logo. |
 | Plan | `docs/hackathon-plan.md` version 2, approved direction: full working system, nothing skipped |
 | Phase | **Design phase: front end first.** Claude is designing every screen with its API contract on branch `design/frontend`, in a separate worktree, so it does not touch files Codex is editing. |
 | Observer sign-in | Observer code + PIN (decided). No email for observers. |
@@ -42,6 +43,13 @@ The full plan is in [hackathon-plan.md](hackathon-plan.md).
 | Backend, migrations, tests, deployment | Codex | `work` | `backend/…`, `deploy/…`, `.github/…` |
 
 ## Updates
+
+### 22 Nov 2026 · Claude · ownership, branding, API contracts merged
+
+- Kara and the owner co-own Cairn; ElectraGuard is a Cairn product. Registration is on hold.
+- Mark: **E+G monogram** (direction B on `design/brand`). Cairn stones and tally are rejected. Credit line everywhere: "ElectraGuard AI, by Cairn".
+- Merged `design/api-contracts`: `docs/design/api-contracts.md` (55 contracts) and `frontend/lib/api/`. It is the source of truth; `design/reconcile` is aligning the screen specs to it.
+- **Decisions on the API open questions:** citizen/SMS/USSD reports go to one configured organisation (`PUBLIC_INTAKE_ORGANISATION_ID`); observer sessions 24 h idle / 7 days max; reviewers see blurred media, the original is kept and viewable only by the assigned reviewer with a recorded reason; duplicates assigned to others show metadata only; approved rumour responses appear on the public page; citizen replies are text only; staff invites are a one-time link shown to the admin; SMS keywords accepted in all five languages; existing administrator accounts become coordinators unless the admin changes them.
 
 ### 22 Nov 2026 · Claude · observer screen specs merged; decisions on open questions
 
