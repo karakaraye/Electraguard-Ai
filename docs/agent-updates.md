@@ -48,6 +48,15 @@ The full plan is in [hackathon-plan.md](hackathon-plan.md).
 
 ## Updates
 
+### 22 Nov 2026 · Codex · Slice C3 observer reports
+
+- Added REP-01 through REP-04 under `/api/v1/reports`. Incident submission validates language, category, timestamps, a historical REF-01 place, and optional metadata. Date-only observations use midnight WAT and carry `time_known: false`. Checklist and result-sheet creation return `not_supported_yet`.
+- REP-01 and REP-04 store successful answers atomically with the report, scope replay by organisation, actor and operation, and compare canonical JSON digests. A concurrent matching write waits up to five seconds, then gets `request_in_progress` if still blocked. The operator command `prune_report_idempotency` removes records after 30 days and preserves stored withdrawal stubs. Schedule it through the deployment's maintenance mechanism.
+- The signed cursor is bound to the actor and filters. Counts cover the observer's full v1 list. Open clarification questions drive `needs_attention` until message storage arrives. Unread messages are zero and `last_message_preview` is null in this slice. Detail includes `reviewer_assigned`.
+- Withdrawal locks the report, clears its content and assignment, deletes evidence and triage data, and replaces the create replay with the withdrawn stub. Older legacy reports remain on the legacy API. New reports can be reviewed through the existing workflow, and withdrawn v1 reports are excluded from legacy reads and dashboard totals.
+- Verified `manage.py migrate`, `manage.py test accounts reports config --noinput` (61 passed on PostgreSQL 17.12), `makemigrations --check --dry-run`, and `git diff --check`. Tests covered concurrent replay, replay while intake is paused, validation, old reference codes, paging and isolation, and withdrawal. No frontend paths changed.
+- Next, review this slice and wire the v1 observer screens. Checklist, result-sheet creation and the new media API remain follow-on work. The receipt includes the contract's media limits for that later API. Legacy attachment limits still govern the existing upload endpoint.
+
 ### 22 Nov 2026 · Codex · Slice C2 PIN follow-ups and place reference
 
 - AUTH-03 now returns `pin_same_as_setup` for the setup-PIN prefix. AUTH-08 is `POST /api/v1/auth/observer/pin/change` with `current_pin` and `new_pin`. It uses the existing lockouts and keeps current sessions active. Revocation still ends them.
