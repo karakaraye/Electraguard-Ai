@@ -74,6 +74,9 @@ Shared code: `frontend/ui/` (design system), `frontend/lib/` (API client, offlin
 | `--paper-2` | #F4F4F2 | #1B1B1D | Page background, input fill |
 | `--rule` | #D8D8D4 | #34343A | Hairlines, borders |
 | `--focus` | #0B0B0C 3 px outline + 2 px #FFFFFF offset | inverted | Focus ring |
+| `--rule-control` | #707075 | #8C8C92 | Input and control borders (≥ 3:1, WCAG 1.4.11); `--rule` stays for hairlines |
+
+Status colours have a background and a dark value each; the values in `frontend/ui/tokens.css` are the reference. Staff buttons are 44 px visible with a 48 px tap area. Pictograms use a 2 px stroke on their 40 px grid. Font subsets must include U+1EA0–1EF9 (ẹ ọ ị ụ) and the combining tone marks U+0300–0303, U+0323. The root layout must not add its own header or `<main>` for the new route groups: the shells provide the landmarks.
 
 Status colours (the only colours) always come with a text label and an icon shape, never colour alone:
 
