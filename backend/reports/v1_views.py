@@ -16,7 +16,8 @@ from accounts.organisations import org_scope
 
 from .idempotency import idempotent
 from .incident_input import KINDS, aware_datetime, field, incident_input
-from .models import Evidence, Report, ReportIdempotency, ReviewEvent, Triage, TriageMatch
+from .media_lifecycle import cancel_report_uploads, describe_photo, remove_photo
+from .models import Evidence, MediaItem, Report, ReportIdempotency, ReviewEvent, Triage, TriageMatch
 from .triage import METHOD_VERSION
 from .workflow import record_change
 
@@ -128,7 +129,7 @@ def summary(report):
         "time_known": details.get("time_known"),
         "outcome": report.outcome, "has_open_question": report.status == Status.NEEDS_CLARIFICATION,
         "unread_messages": 0, "last_message_preview": None,
-        "last_activity_at": wat(report.activity), "media_count": report.media_count,
+        "last_activity_at": wat(report.activity), "media_count": report.media_count + report.photo_count,
     }
 
 
@@ -136,6 +137,7 @@ def read_reports(request):
     events = org_scope(request, ReviewEvent).filter(report_id=OuterRef("pk"))
     closure = events.filter(action=ReviewEvent.Action.CLOSE).order_by("-version")
     photos = org_scope(request, Evidence).filter(report_id=OuterRef("pk"))
+    photos_v1 = org_scope(request, MediaItem).filter(report_id=OuterRef("pk"), purpose="evidence")
     return owned(request).annotate(
         activity=Coalesce(
             Subquery(events.order_by("-version").values("created_at")[:1], output_field=DateTimeField()),
@@ -144,6 +146,9 @@ def read_reports(request):
         outcome=Subquery(closure.values("change__outcome")[:1]),
         media_count=Coalesce(Subquery(
             photos.order_by().values("report_id").annotate(count=Count("pk")).values("count")[:1]
+        ), 0),
+        photo_count=Coalesce(Subquery(
+            photos_v1.order_by().values("report_id").annotate(count=Count("pk")).values("count")[:1]
         ), 0),
         has_messages=Exists(events.filter(action__in=[
             ReviewEvent.Action.REQUEST_CLARIFICATION, ReviewEvent.Action.RESPOND,
@@ -236,6 +241,10 @@ def detail(request, reference):
         for pk, size, created in org_scope(request, Evidence).filter(report=report)
         .annotate(size=Length("content")).values_list("pk", "size", "created_at")
     ]
+    media.extend(
+        describe_photo(photo) for photo in org_scope(request, MediaItem)
+        .filter(report=report, purpose="evidence").order_by("created_at", "pk")
+    )
     return JsonResponse({
         **identity(report), "channel": "app", "outcome": report.outcome,
         **details, "description": report.description, "checklist": None, "result_sheet": None,
@@ -261,6 +270,10 @@ def perform_withdrawal(request, reference, data):
     org_scope(request, Triage).filter(report=report).delete()
     org_scope(request, TriageMatch).filter(Q(first=report) | Q(second=report)).delete()
     org_scope(request, Evidence).filter(report=report).delete()
+    cancel_report_uploads(report)
+    report.media_uploads.filter(organisation_id=report.organisation_id).delete()
+    for photo in org_scope(request, MediaItem).filter(report=report):
+        remove_photo(photo)
     report.status = Status.WITHDRAWN
     report.withdrawn_at = timezone.now()
     report.assigned_reviewer = report.occurred_at = None

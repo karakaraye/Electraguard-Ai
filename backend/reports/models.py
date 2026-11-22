@@ -68,6 +68,7 @@ class ReviewEvent(OrganisationOwned):
     class Action(models.TextChoices):
         CREATE = "create", "Created report"
         WITHDRAW = "withdraw", "Withdrew report"
+        REMOVE_MEDIA = "remove_media", "Removed evidence"
         ASSIGN = "assign", "Assigned reviewer"
         START = "start", "Started review"
         REQUEST_CLARIFICATION = "request_clarification", "Requested clarification"
@@ -145,3 +146,68 @@ class ReportIdempotency(OrganisationOwned):
                 fields=["organisation", "actor", "operation", "key"], name="reports_unique_request_key"
             ),
         ]
+
+
+class MediaItem(OrganisationOwned):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    report = models.ForeignKey(Report, related_name="media_items", on_delete=models.CASCADE)
+    purpose = models.CharField(max_length=12)
+    size_bytes = models.PositiveIntegerField()
+    original_sha256 = models.CharField(max_length=64)
+    sha256 = models.CharField(max_length=64)
+    blurred = models.BooleanField(default=False)
+    exif_removed = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=["report", "original_sha256"], name="report_unique_media_hash")
+        ]
+
+
+class UploadSession(OrganisationOwned):
+    class Status(models.TextChoices):
+        OPEN = "open", "Open"
+        EXPIRED = "expired", "Expired"
+        COMPLETED = "completed", "Completed"
+        CANCELLED = "cancelled", "Cancelled"
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    report = models.ForeignKey(Report, related_name="media_uploads", on_delete=models.CASCADE)
+    client_attachment_id = models.CharField(max_length=64)
+    content_type = models.CharField(max_length=32)
+    purpose = models.CharField(max_length=12)
+    size_bytes = models.PositiveIntegerField()
+    sha256 = models.CharField(max_length=64)
+    blur_faces = models.BooleanField(default=False)
+    received_bytes = models.PositiveIntegerField(default=0)
+    status = models.CharField(max_length=12, choices=Status.choices, default=Status.OPEN)
+    staging_id = models.UUIDField(default=uuid.uuid4)
+    expires_at = models.DateTimeField(db_index=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    media = models.ForeignKey(MediaItem, null=True, on_delete=models.SET_NULL)
+
+    class Meta:
+        ordering = ["-created_at"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["report", "client_attachment_id"], condition=models.Q(status="open"),
+                name="report_unique_open_attachment",
+            )
+        ]
+
+
+class MediaBlobDeletion(OrganisationOwned):
+    path = models.CharField(max_length=150, unique=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+class MediaAccess(OrganisationOwned):
+    media_id = models.UUIDField()
+    report = models.ForeignKey(Report, on_delete=models.CASCADE)
+    actor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
+    action = models.CharField(max_length=16)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        indexes = [models.Index(fields=["actor", "media_id", "action", "created_at"])]

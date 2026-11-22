@@ -1,6 +1,7 @@
 from django.urls import path
 from django.views.decorators.cache import never_cache
 
+from . import media_views as media
 from . import v1_views as views
 
 
@@ -19,6 +20,11 @@ def invalid_reference(request, reference):
 
 
 urlpatterns = [
+    path("reports/<uuid:reference>/uploads", media.start),
+    path("uploads/<uuid:reference>", media.upload_endpoint),
+    path("uploads/<uuid:reference>/complete", media.complete),
+    path("media/<uuid:reference>/content", media.download),
+    path("reports/<uuid:reference>/media/<uuid:media_id>", media.remove),
     path("reports", collection),
     path("reports/<uuid:reference>", views.detail),
     path("reports/<uuid:reference>/withdraw", views.withdraw),

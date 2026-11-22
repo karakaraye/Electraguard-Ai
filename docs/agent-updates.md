@@ -49,6 +49,16 @@ The full plan is in [hackathon-plan.md](hackathon-plan.md).
 
 ## Updates
 
+### 22 Nov 2026 · Codex · Slice C4 private photo uploads
+
+- Added observer MED-01 through MED-05 for JPEG/PNG. Uploads advertise 256 KiB chunks, expose saved progress, and check offsets, optional chunk hashes, declared size and the whole-file SHA-256. Replay of an expired upload opens a new session for its original attachment identifier. Video and audio return `not_supported_yet`.
+- Completion decodes and re-encodes a fresh JPEG, strips metadata including GPS, and records the original and stored SHA-256. The bounded photo transform runs inline and returns `ready`. The staged original is queued for deletion in the completion transaction, with immediate post-commit cleanup and retry through maintenance.
+- Every download checks the observer owner or current Reviewer assignment. Responses are private and no-store, with optional thumbnails and single byte ranges. Staff access is logged. Removing a photo is permitted only before review and audits its hash. Case closure snapshots saved photos and pending upload metadata, and withdrawal removes the photos and staged files.
+- Set `PRIVATE_MEDIA_ROOT` to a persistent, private directory outside web roots for deployment. Use `python backend/manage.py prune_private_media` at least every 15 minutes to remove expired bytes and retry queued deletions. The local backend is in place. Azure Blob, the production maintenance schedule, asynchronous processing and unusual-download alerting remain follow-on work.
+- The face-blur hook reports `blurred: false` even when requested. Server-side face detection and blur must be implemented and verified before the UI promises it. Legacy evidence endpoints remain available with their existing behaviour.
+- Verified `manage.py test accounts reports config --noinput` (70 passed on PostgreSQL 17.12), `makemigrations --check --dry-run`, `migrate --check`, and `git diff --check`. Coverage includes dropped chunks, replay after expiry, size/hash checks, an exact 2 MiB photo with GPS EXIF, permission changes, closure, withdrawal and removal. No frontend paths changed.
+- Next, review C4 and wire the observer's photo flow. Verify the private storage mount and cleanup schedule before deployment.
+
 ### 22 Nov 2026 · Codex · Slice C3 observer reports
 
 - Added REP-01 through REP-04 under `/api/v1/reports`. Incident submission validates language, category, timestamps, a historical REF-01 place, and optional metadata. Date-only observations use midnight WAT and carry `time_known: false`. Checklist and result-sheet creation return `not_supported_yet`.

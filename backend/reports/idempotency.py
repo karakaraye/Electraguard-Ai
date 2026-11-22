@@ -34,7 +34,7 @@ def lock_key(scope):
 
 
 @transaction.atomic
-def idempotent(request, operation, data, perform):
+def idempotent(request, operation, data, perform, *, replay=None):
     try:
         key = UUID(request.headers.get("Idempotency-Key", ""))
         if key.version != 4:
@@ -56,7 +56,16 @@ def idempotent(request, operation, data, perform):
     if previous is not None:
         if previous.digest != digest:
             return error(409, "idempotency_key_reused", "This send key belongs to a different request.")
-        response = JsonResponse(previous.body, status=200 if previous.status == 201 else previous.status)
+        if replay is None:
+            response = JsonResponse(previous.body, status=200 if previous.status == 201 else previous.status)
+        else:
+            result = replay(previous)
+            if not isinstance(result, tuple):
+                return result
+            _, body, report = result
+            previous.body = body
+            previous.save(update_fields=["body"])
+            response = JsonResponse(body, status=200)
         response["Idempotent-Replayed"] = "true"
         return response
 

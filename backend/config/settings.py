@@ -99,3 +99,7 @@ if not DEBUG:
             for name in ("django.request", "django.security", "django.server")
         },
     }
+
+PRIVATE_MEDIA_ROOT = Path(os.getenv(
+    "PRIVATE_MEDIA_ROOT", str(Path(__file__).resolve().parents[3] / ".electraguard-private-media")
+))
