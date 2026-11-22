@@ -16,8 +16,8 @@ import { uuidv4 } from "../api/client";
 import type { AccessBarrierDetail, Category, ChecklistQuestionId, Language, MediaKind } from "../api/types";
 import { atomically, del, get, idbAvailable, put } from "./db";
 
-export const STEPS = ["what", "danger", "where", "when", "describe", "evidence", "check"] as const;
-export type StepId = (typeof STEPS)[number];
+import type { StepId } from "./steps";
+export { STEPS, type StepId } from "./steps";
 
 export type WhenMode = "now" | "today" | "day";
 
@@ -163,7 +163,8 @@ export type DraftHandle = {
 /** The open draft for `owner`, kept in memory and mirrored to IndexedDB. */
 export function useDraft(owner: string | null, mode: IncidentDraft["mode"], language: Language): DraftHandle {
   const [draft, setDraft] = useState<IncidentDraft | null>(null);
-  const [ready, setReady] = useState(false);
+  const [loadedOwner, setLoadedOwner] = useState<string | null>(null);
+  const ready = owner !== null && loadedOwner === owner;
   const pending = useRef<IncidentDraft | null>(null);
   const timer = useRef<number | undefined>(undefined);
   const current = useRef<IncidentDraft | null>(null);
@@ -177,17 +178,16 @@ export function useDraft(owner: string | null, mode: IncidentDraft["mode"], lang
 
   useEffect(() => {
     let cancelled = false;
-    setReady(false);
     if (!owner) return;
     loadDraft(owner)
       .then((stored) => {
         if (cancelled) return;
         current.current = stored;
         setDraft(stored);
-        setReady(true);
+        setLoadedOwner(owner);
       })
       .catch(() => {
-        if (!cancelled) setReady(true);
+        if (!cancelled) setLoadedOwner(owner);
       });
     return () => {
       cancelled = true;

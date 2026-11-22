@@ -377,7 +377,6 @@ function WhenStep({ handle, nav, shell }: StepProps) {
 
 function cleanText(text: string) {
   // Only newline is allowed among control characters (contract 1.1).
-  // eslint-disable-next-line no-control-regex
   return text.replace(/[\u0000-\u0009\u000B-\u001F\u007F]/g, "");
 }
 
@@ -499,57 +498,56 @@ function CheckStep({ handle, nav, shell, sentId, setSentId, offline }: StepProps
     window.setTimeout(() => router.push("/o"), 2_000);
   }, [nav.citizen, router]);
 
-  // Follow the outbox item after Send: one source for what the screen says (R1).
-  useEffect(() => {
-    const item = report.item;
-    if (!sentId || !item) return;
-    if (report.state === "received" && item.server) {
-      const query = `just-sent=1${nav.citizen ? "&as=citizen" : ""}`;
-      router.replace(`/o/reports/${item.server.id}?${query}`);
-      return;
-    }
-    if (report.state === "withdrawn") {
-      setStatus("withdrawn");
-      return;
-    }
-    if (report.state === "needs_attention") {
-      void recoverDraft(item);
-      return;
-    }
-    if (item.wait_reason === "intake_paused") {
-      setStatus("intakePaused");
-      goHomeSoon();
-    } else if (report.state === "not_confirmed" && item.wait_reason === "server") {
-      setStatus("server");
-      goHomeSoon();
-    } else if (report.state === "not_confirmed") {
-      setStatus("notConfirmed");
-    } else if (report.state === "on_phone" && item.attempts === 0 && item.wait_reason !== null) {
-      setStatus("savedOffline");
-      goHomeSoon();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sentId, report.state, report.item?.wait_reason, report.item?.attempts]);
+  const recoverDraft = useCallback(
+    async (item: OutboxItem) => {
+      const rebuilt = itemToDraft(item);
+      const fields = item.last_error?.fields ?? {};
+      const code = item.last_error?.code;
+      const mapped: Partial<Record<CheckBlock, string>> = {};
+      for (const [path, error] of Object.entries(fields)) {
+        const block = FIELD_BLOCK.find(([pattern]) => pattern.test(path))?.[1];
+        if (block) mapped[block] = t.field(block, error.code);
+      }
+      if (code === "payload_too_large") mapped.describe = t.field("describe", "max_length");
+      if (rebuilt) {
+        await returnToDraft(item, rebuilt);
+        handle.update(() => rebuilt);
+      }
+      setSent(null);
+      setSentId(null);
+      setServerErrors(mapped);
+      setStatus("needsAttention");
+    },
+    [t, handle, setSentId],
+  );
 
-  async function recoverDraft(item: OutboxItem) {
-    const rebuilt = itemToDraft(item);
-    const fields = item.last_error?.fields ?? {};
-    const code = item.last_error?.code;
-    const mapped: Partial<Record<CheckBlock, string>> = {};
-    for (const [path, error] of Object.entries(fields)) {
-      const block = FIELD_BLOCK.find(([pattern]) => pattern.test(path))?.[1];
-      if (block) mapped[block] = t.field(block, error.code);
+  // What the screen says after Send comes from the outbox item: one source (R1).
+  const item = sentId ? report.item : null;
+  const followed: CheckStatus = !item
+    ? null
+    : report.state === "withdrawn"
+      ? "withdrawn"
+      : item.wait_reason === "intake_paused"
+        ? "intakePaused"
+        : report.state === "not_confirmed" && item.wait_reason === "server"
+          ? "server"
+          : report.state === "not_confirmed"
+            ? "notConfirmed"
+            : report.state === "on_phone" && item.attempts === 0 && item.wait_reason !== null
+              ? "savedOffline"
+              : null;
+  const shown: CheckStatus = followed ?? status;
+
+  useEffect(() => {
+    if (!item) return;
+    if (report.state === "received" && item.server) {
+      router.replace(`/o/reports/${item.server.id}?just-sent=1${nav.citizen ? "&as=citizen" : ""}`);
+    } else if (report.state === "needs_attention") {
+      void Promise.resolve().then(() => recoverDraft(item));
+    } else if (followed === "intakePaused" || followed === "server" || followed === "savedOffline") {
+      goHomeSoon();
     }
-    if (code === "payload_too_large") mapped.describe = t.field("describe", "max_length");
-    if (rebuilt) {
-      await returnToDraft(item, rebuilt);
-      handle.update(() => rebuilt);
-    }
-    setSent(null);
-    setSentId(null);
-    setServerErrors(mapped);
-    setStatus("needsAttention");
-  }
+  }, [item, report.state, followed, router, nav.citizen, recoverDraft, goHomeSoon]);
 
   if (!draft) return null;
 
@@ -570,7 +568,7 @@ function CheckStep({ handle, nav, shell, sentId, setSentId, offline }: StepProps
       firsthand={draft.firsthand}
       media={draft.media.map((media) => ({ id: media.client_media_id, kind: media.kind, previewUrl: previews[media.client_media_id] ?? null, name: media.name }))}
       errors={errors}
-      status={status}
+      status={shown}
       onHome={() => router.push(nav.citizen ? "/o/start?view=choose" : "/o")}
       onEdit={(block) => {
         const target: StepId = block === "source" ? "describe" : block === "describe" ? "describe" : block;

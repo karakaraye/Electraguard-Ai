@@ -537,7 +537,10 @@ export function EvidenceView({ items, recorder, onPick, onBlur, onRetake, onRemo
             return (
               <li key={item.id} className={styles.item} role="group" aria-label={`${item.name}, ${index + 1} / ${items.length}`} data-testid="o10-item">
                 <span className={styles.thumb} aria-hidden="true">
-                  {item.previewUrl && item.kind === "photo" ? <img src={item.previewUrl} alt="" /> : <Icon size={28} />}
+                  {item.previewUrl && item.kind === "photo" ? (
+                    // eslint-disable-next-line @next/next/no-img-element -- a local blob: URL, never sent anywhere
+                    <img src={item.previewUrl} alt="" />
+                  ) : <Icon size={28} />}
                 </span>
                 <div className={styles.itemBody}>
                   <p className={styles.itemName}>{item.processing ? t("o10.processing", { name: item.name }) : item.name}</p>
@@ -797,7 +800,10 @@ export function CheckView({
                   const Icon = kindIcon[item.kind];
                   return (
                     <span key={item.id} className={styles.thumb} title={item.name}>
-                      {item.previewUrl && item.kind === "photo" ? <img src={item.previewUrl} alt={item.name} /> : <Icon size={20} aria-label={item.name} />}
+                      {item.previewUrl && item.kind === "photo" ? (
+                        // eslint-disable-next-line @next/next/no-img-element -- a local blob: URL, never sent anywhere
+                        <img src={item.previewUrl} alt={item.name} />
+                      ) : <Icon size={20} aria-label={item.name} />}
                     </span>
                   );
                 })}

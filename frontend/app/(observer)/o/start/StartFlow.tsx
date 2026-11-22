@@ -36,7 +36,7 @@ export function StartFlow() {
   const [pin, setPin] = useState("");
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<SignInError | null>(null);
-  const [lockedUntil, setLockedUntil] = useState<number | null>(null);
+  const [locked, setLocked] = useState(false);
   const setupToken = useRef<string | null>(null);
   const [first, setFirst] = useState("");
   const [second, setSecond] = useState("");
@@ -101,7 +101,8 @@ export function StartFlow() {
         break;
       case "code_locked":
         if (after) {
-          setLockedUntil(Date.now() + after * 1000);
+          setLocked(true);
+          window.setTimeout(() => setLocked(false), after * 1000);
           setError({ field: "form", key: "common.error.tooManyTries", minutes: Math.max(1, Math.ceil(after / 60)) });
         } else {
           setError({ field: "form", key: "o03.signIn.lockedAdmin" });
@@ -229,7 +230,7 @@ export function StartFlow() {
           }}
           sending={sending}
           error={error}
-          lockedUntil={lockedUntil}
+          locked={locked}
         />
       );
     case "set-pin":

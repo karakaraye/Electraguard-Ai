@@ -271,3 +271,55 @@ export function resetMirror() {
   snapshot = { loaded: true, items: [], received: [], draftIds: [], paused: null };
   emit();
 }
+
+/** Remove one attachment from an outbox item (MED-05 already succeeded, or it never left the phone). */
+export async function removeMedia(itemId: string, clientMediaId: string): Promise<void> {
+  const item = snapshot.items.find((existing) => existing.id === itemId);
+  const media = item?.media.find((m) => m.client_media_id === clientMediaId);
+  if (!item || !media) return;
+  await saveItem({ ...item, media: item.media.filter((m) => m.client_media_id !== clientMediaId) });
+  await atomically(["blobs"], (tx) => {
+    tx.objectStore("blobs").delete(media.blob_key);
+    if (media.plain_blob_key) tx.objectStore("blobs").delete(media.plain_blob_key);
+  });
+}
+
+/** "Choose the file again": a new, prepared file for the same attachment, with new keys and a new session. */
+export async function replaceMediaFile(
+  itemId: string,
+  clientMediaId: string,
+  file: { blob_key: string; content_type: string; size_bytes: number; sha256: string; duration_ms: number | null },
+): Promise<void> {
+  const item = snapshot.items.find((existing) => existing.id === itemId);
+  if (!item) return;
+  await saveItem({
+    ...item,
+    media: item.media.map((m) =>
+      m.client_media_id === clientMediaId
+        ? {
+            ...m,
+            ...file,
+            start_key: uuidv4(),
+            complete_key: uuidv4(),
+            upload_id: null,
+            received_bytes: 0,
+            state: "waiting",
+            error_code: null,
+            attempts: 0,
+            next_at: 0,
+            hash_retry: false,
+            server_status: null,
+          }
+        : m,
+    ),
+  });
+}
+
+/** REP-03 media status after MED-03 (processing → ready / failed). */
+export async function setServerMediaStatus(itemId: string, mediaId: string, status: OutboxMedia["server_status"]): Promise<void> {
+  const item = snapshot.items.find((existing) => existing.id === itemId);
+  if (!item) return;
+  const target = item.media.find((m) => m.media_id === mediaId);
+  if (!target || target.server_status === status) return;
+  await saveMedia(item, { ...target, server_status: status, state: status === "failed" ? "missing" : target.state });
+}

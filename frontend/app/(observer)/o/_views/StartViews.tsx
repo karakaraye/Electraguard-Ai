@@ -185,14 +185,14 @@ export type SignInViewProps = Shell & {
   onBack: () => void;
   sending: boolean;
   error: SignInError | null;
-  /** Locked: the button stays disabled until this time. */
-  lockedUntil?: number | null;
+  /** Locked (too many tries): the button stays disabled. */
+  locked?: boolean;
 };
 
-export function SignInView({ code, pin, onCode, onCodeBlur, onPin, onSubmit, onBack, sending, error, lockedUntil, offline, banner }: SignInViewProps) {
+export function SignInView({ code, pin, onCode, onCodeBlur, onPin, onSubmit, onBack, sending, error, locked: lockedProp, offline, banner }: SignInViewProps) {
   const t = useT();
   const [show, setShow] = useState(false);
-  const locked = Boolean(lockedUntil && lockedUntil > Date.now()) || error?.key === "o03.signIn.lockedAdmin";
+  const locked = Boolean(lockedProp) || error?.key === "o03.signIn.lockedAdmin";
   const formError =
     error?.field === "form" ? (error.key === "common.error.tooManyTries" ? t(error.key, { minutes: error.minutes }) : t(error.key)) : null;
   return (

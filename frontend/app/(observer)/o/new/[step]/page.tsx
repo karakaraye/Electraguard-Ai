@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { STEPS } from "../../../../../lib/drafts";
+import { STEPS } from "../../../../../lib/drafts/steps";
 import { IncidentFlow } from "./IncidentFlow";
 
 /** The seven steps are known in advance, so each is a static page that works from the offline cache. */
