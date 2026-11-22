@@ -8,8 +8,8 @@ Ask one yes/no question. If yes, show emergency guidance at once (move to safety
 ## Entry and exit
 - **Entry:** Continue on O-05; O-11 Change on Danger.
 - **Exit:**
-  - "No" → saves `danger=false` and goes straight to O-07 (no Continue tap needed; one tap is one answer).
-  - "Yes" → saves `danger=true`, sets urgency to top, and shows the emergency view.
+  - "No" → saves `danger_now = false` and goes straight to O-07 (no Continue tap needed; one tap is one answer).
+  - "Yes" → saves `danger_now = true` and shows the emergency view (urgency is set by the server's triage after the report is received).
   - Emergency view: `o06.emergency.continue` → O-07; `o06.emergency.later` → Home with the draft kept (the draft card on Home says "Continue your report").
   - `tel:112` link opens the phone dialler (works without data; the browser leaves the app, the draft is already saved).
 - **Back:** question view → O-05. Emergency view → question view (answer kept, shown selected).
@@ -35,7 +35,7 @@ Ask one yes/no question. If yes, show emergency guidance at once (move to safety
 |---|---|---|
 | First view | arriving from O-05 | neither selected |
 | Filled (returning) | Back from O-07 or edit-return | previous answer selected |
-| Validation error | n/a (no Continue); in edit-return mode, if somehow empty, `o06.error` | — |
+| Validation error | n/a (no Continue); in edit-return mode, if somehow empty, `o06.error`. A server `422 validation_failed` with `fields.danger_now.code = required` returns the observer here from O-11. | — |
 | Emergency | Yes | emergency view; `aria-live` not used, focus moves to its title |
 | Offline | always works | 112 link works without data |
 | Server / sending / success / empty | n/a | none |
@@ -44,10 +44,10 @@ Ask one yes/no question. If yes, show emergency guidance at once (move to safety
 `ui.stepOf`, `o06.title`, `o06.hint`, `o06.yes`, `o06.no`, `o06.error`, `o06.emergency.*`, `ui.back`.
 
 ## API
-None on this step. The draft field `danger: boolean` is sent with REP-01; the server sets urgency. The app never calls any emergency service, never shares location, and never shows a "help is coming" message.
+None on this step. The draft field `danger_now: boolean` is sent with REP-01 (required; REP-05 for citizens); the server's triage sets urgency, not the phone. The app never calls any emergency service, never shares location, and never shows a "help is coming" message.
 
 ## Logic notes
-- Changing Yes → No later (from O-11) clears the urgency flag; the emergency view is not shown again for No.
+- Changing Yes → No later (from O-11) sends `danger_now = false` (nothing is sent until Send); the emergency view is not shown again for No.
 - Choosing Yes again from O-11 shows the emergency view again (safety over speed).
 - The 112 number is a constant in one config file (`frontend/lib/config.ts`, `EMERGENCY_NUMBER`), so it is changed in one place if needed.
 

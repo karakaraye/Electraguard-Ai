@@ -8,8 +8,8 @@ Use exactly these words in every screen, message file, SMS/USSD text, guide and 
 |---|---|---|---|---|---|---|
 | 1 | One thing an observer or citizen tells us about | report | report | rahoto | ìròyìn | akụkọ |
 | 2 | The short code shown after the server confirms a report (`EG-4H7Q-92KD`) | receipt code | receipt code | lambar rasiti | kóòdù ìjẹ́rìísí | koodu nnata |
-| 3 | The code printed on the observer's card (`OBS-7K2P`) | observer code | observer code | lambar mai sa ido | kóòdù olùwòye | koodu onye nlebanya |
-| 4 | The 6-digit secret number | PIN | PIN | PIN | PIN | PIN |
+| 3 | The code printed on the observer's card (`OBS-7K2P9D`) | observer code | observer code | lambar mai sa ido | kóòdù olùwòye | koodu onye nlebanya |
+| 4 | The 6-digit secret number (the card carries a one-time 8-digit setup PIN) | PIN | PIN | PIN | PIN | PIN |
 | 5 | The place where people vote | polling unit | polling unit | rumfar zaɓe | ibùdó ìdìbò | ebe ntuli aka |
 | 6 | The area made of several polling units | ward | ward | mazaɓa | wọ́ọ̀dù | wọọdụ |
 | 7 | The trained person who reads reports | reviewer | reviewer | mai dubawa | olùyẹ̀wò | onye nyocha |
@@ -30,6 +30,6 @@ Use exactly these words in every screen, message file, SMS/USSD text, guide and 
 
 - Natural speech over word-for-word. Short sentences. Reading age 9–11.
 - Hausa: hooked letters ɓ ɗ ƙ and ʼy where needed. Yorùbá: full tone marks and under-dots (ẹ ọ ṣ). Igbo: dotted vowels ị ọ ụ and ṅ.
-- Never translate codes, example values (`OBS-7K2P`, `EG-4H7Q-92KD`), `112`, `PIN`, or ICU variables (`{count}`, `{time}`).
+- Never translate codes, example values (`OBS-7K2P9D`, `EG-4H7Q-92KD`), `112`, `PIN`, or ICU variables (`{count}`, `{time}`).
 - Keep ICU plural syntax intact; translate only the words inside each branch. Yorùbá and Igbo have no grammatical plural, but keep the `one`/`other` branches so the code works.
 - "ElectraGuard" is never translated.
