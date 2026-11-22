@@ -8,3 +8,9 @@
 !frontend/app/**
 !frontend/lib/
 !frontend/lib/**
+!frontend/ui/
+!frontend/ui/**
+!frontend/messages/
+!frontend/messages/**
+!frontend/public/
+!frontend/public/**
