@@ -38,7 +38,7 @@ The full plan is in [hackathon-plan.md](hackathon-plan.md).
 | C1 observer code and PIN sign-in, organisation scoping | Codex | `codex/observer-sign-in` | `docs/agent-updates.md`, `backend/accounts/`, `backend/config/settings.py`, `backend/config/urls.py`, `backend/reports/` (organisation fields and scoping only) |
 | C2 PIN follow-ups and place reference | Codex | `backend/v1-contracts` | `docs/agent-updates.md`, `backend/accounts/`, `backend/reference/`, `backend/config/settings.py`, `backend/config/urls.py`, `data/reference/` |
 | C3 observer reports and idempotency | Codex | `backend/v1-reports` | `docs/agent-updates.md`, `backend/reports/`, `backend/reference/models.py`, `backend/accounts/observer_auth.py`, `backend/config/urls.py` |
-| C4 private photo uploads | Codex | `backend/v1-media` | `docs/agent-updates.md`, `backend/reports/`, `backend/config/settings.py` |
+| C4 private photo uploads and deployment | Codex | `backend/v1-media` | `docs/agent-updates.md`, `backend/reports/`, `backend/config/settings.py`, `deploy/compose.yaml`, `deploy/backend.Dockerfile`, `deploy/backup-encrypted.sh`, `docs/restore-verification.md`, `scripts/extract-recovery-bundle.py`, `scripts/verify-restored-data.py` |
 | Front-end design system, screens, API contracts | Claude | `design/frontend` | `frontend/app/(observer)/…`, `frontend/app/(staff)/…`, `frontend/app/(public)/…`, `frontend/ui/…`, `frontend/messages/…`, `docs/design/…` |
 | Product mark and lockups | Claude (brand agent) | `design/brand` | `docs/design/brand/…` |
 | Design tokens, components, icons, i18n library, dev gallery | Claude (UI agent) | `design/ui-foundation` | `frontend/ui/…`, `frontend/lib/i18n/…`, `frontend/public/fonts/…`, `frontend/app/(dev)/…` |
@@ -48,6 +48,14 @@ The full plan is in [hackathon-plan.md](hackathon-plan.md).
 | Backend, migrations, tests, deployment | Codex | `work` | `backend/…`, `deploy/…`, `.github/…` |
 
 ## Updates
+
+### 22 Nov 2026 · Codex · C4 deployment and recovery follow-up
+
+- Backend and worker share the named `private-media` volume at `/var/lib/electraguard/media`. The image primes that path with UID/GID 10001 and mode 0700. Compose configuration and an isolated two-container named-volume test verified the mapping and write access.
+- The operator backup command can encrypt a quiesced PostgreSQL dump and the private media tree as one bundle. The restore runbook covers a safe extractor, checks restored photo byte counts and SHA-256 against `MediaItem`, and describes mounting a separate restored volume. The legacy database-only backup invocation remains available for existing rehearsals.
+- Verified a real encrypted round trip between two isolated PostgreSQL 17 databases with a generated photo. Source and restored counts matched. The checker reported a mismatch after deliberate file corruption. The legacy database-only archive still decrypted as a PostgreSQL custom dump.
+- Reran `manage.py test accounts reports config --noinput` (70 passed), `makemigrations --check --dry-run`, shell and Python syntax checks, Compose configuration, and `git diff --check`. The full backend image build hit a PyPI proxy certificate error. The volume permission test used an isolated image based on PostgreSQL 17.
+- PR #7 is still outside `origin/production-readiness`. Once it lands, merge the shared branch into `backend/v1-media` and verify startup with the packaged app and reference-data folders.
 
 ### 22 Nov 2026 · Codex · Slice C4 private photo uploads
 

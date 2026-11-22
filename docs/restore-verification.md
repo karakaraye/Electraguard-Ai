@@ -1,26 +1,47 @@
-# PostgreSQL restore acceptance
+# PostgreSQL and private media restore acceptance
 
 Before accepting observations, assign the backup and recovery owner and approve storage, encryption, key access, retention, recovery point and recovery time. Record the PostgreSQL version, application revision, migration state, backup time and expected recovery point in restricted operational records.
 
-For an operator-managed OpenPGP backup, verify the full recipient fingerprint out of band, configure the authorised PostgreSQL credential through libpq and use the encrypted backup command. The routine backup host needs only the approved public key. Use a backup directory that supports atomic hard links.
+## Capture a consistent encrypted bundle
+
+1. Quiesce every writer, including Django, workers, maintenance commands and direct database writes. Pausing intake alone still permits mutations to existing reports and photos. Keep PostgreSQL running and keep writers stopped until the backup and its verification baseline finish.
+2. Use the approved PostgreSQL credential through libpq. Give the backup operator read-only filesystem access to the `private-media` volume used by the backend and worker at `/var/lib/electraguard/media`. On the Compose host, use an approved read-only mount or the volume mountpoint, and keep it out of any web root. Read back the database and private media against the same quiescent state when producing an aggregate baseline.
+3. Verify the full OpenPGP recipient fingerprint out of band. The routine backup host needs only the approved public key. Use an approved encrypted scratch filesystem for the temporary database dump and a backup directory that supports atomic hard links.
 
 ```sh
-bash deploy/backup-encrypted.sh approved_source_database APPROVED_FINGERPRINT /approved/backups/release.pgdump.gpg
+export ELECTRAGUARD_BACKUP_SCRATCH=/approved/encrypted-scratch
+bash deploy/backup-encrypted.sh approved_source_database APPROVED_FINGERPRINT \
+  /approved/backups/release.tar.gpg /approved/read-only/private-media
+
+python scripts/verify-restored-data.py --database approved_source_database \
+  --private-media-root /approved/read-only/private-media > approved_aggregate_baseline.json
 ```
 
-On the isolated recovery host, decrypt into approved encrypted scratch storage and verify decryption exits successfully before giving the plaintext archive to PostgreSQL. Keep the recovery key off the routine backup host and dispose of scratch copies under policy.
+Pass the media directory explicitly even when it is empty. The encrypted bundle contains `database.pgdump` and the `private-media/` tree, including staged uploads. The three-argument invocation without `PRIVATE_MEDIA_ROOT` is retained for legacy PostgreSQL-only rehearsals. Use the bundle for C4 recovery.
 
-The PostgreSQL restore and integrity checker passed locally with generated records. Hosted Docker acceptance ran the OpenPGP backup command after the browser test, decrypted its output and restored two closed reports, two 2 MiB photos and their audit history into an isolated database. The comparison checked report and audit digests, attachment hashes, closure snapshots and migration counts. The organisation still needs to approve the recovery key and recovery targets. [Hosted recovery check](https://github.com/karakaraye/Electraguard-Ai/actions/runs/44976829468)
+## Restore in isolation
 
-1. Pause new intake during a planned consistency checkpoint, or establish the exact snapshot boundary using the approved PostgreSQL backup mechanism. Obtain aggregate verification output for that same snapshot.
-2. Restore into an isolated database with no application listener, public route or worker attached. Use a matching PostgreSQL major version and the approved restore credential. Keep credentials out of command arguments and logs.
-3. Compare the restored database to the approved snapshot expectations. Use a PostgreSQL service or standard libpq environment and a read-only role to run the checker.
+Keep the recovery key off the routine backup host. Use a matching PostgreSQL major version and approved restore credentials. Keep credentials out of arguments and logs. Prepare a new isolated database and an empty recovery directory on encrypted scratch storage, with no application listener, public route or worker attached.
 
 ```sh
-python scripts/verify-restored-data.py --database approved_restore_database --compare approved_aggregate_baseline.json
+umask 077
+mkdir /approved/encrypted-scratch/recovery
+gpg --batch --output /approved/encrypted-scratch/release.tar \
+  --decrypt /approved/backups/release.tar.gpg
+python scripts/extract-recovery-bundle.py /approved/encrypted-scratch/release.tar \
+  /approved/encrypted-scratch/recovery
+pg_restore --exit-on-error --no-owner --no-privileges --dbname=approved_restore_database \
+  /approved/encrypted-scratch/recovery/database.pgdump
+
+python scripts/verify-restored-data.py --database approved_restore_database \
+  --private-media-root /approved/encrypted-scratch/recovery/private-media \
+  --compare approved_aggregate_baseline.json
 ```
 
-The checker returns zero when structural and evidence integrity checks pass and aggregates agree. It returns one for integrity problems or mismatched counts, and two for an unreadable database, schema or baseline. Compare the database migration state and the approved backup identity separately. Review any legacy closure without an attachment snapshot before accepting the restore.
+Proceed only after successful decryption. The extractor requires an empty directory and rejects links and unexpected paths. The checker compares each restored C4 photo's byte count and SHA-256 against its `MediaItem`, and checks PostgreSQL evidence, relationships, audit versions, and aggregates. It returns zero on success, one for integrity or count mismatches, and two for an unreadable database, schema or baseline. Compare the migration state and approved backup identity separately.
 
-4. With application traffic stopped and intake paused, revoke all sessions in the isolated restore using `python backend/manage.py revoke_restored_sessions --isolated-restore --confirm-database approved_restore_database`. This requires explicit confirmation of the configured database name. Verify the restored cookies fail and new sign-ins work. Check offboarding, former assignees, private evidence, receipts, dashboard reconciliation and database privileges before any traffic switch.
-5. Record recovery duration, the restored point, access retention and any expected loss. Get operator approval before changing traffic. Handle the isolated copy under the organisation's retention and access policies.
+After verification, copy the contents of `recovery/private-media/` into a **new isolated** Compose private media volume with writers stopped. Preserve the organisation directory tree. Set ownership to UID and GID `10001`, with directories mode `0700` and files mode `0600`. Run the checker again against the mounted copy. Keep the original installation's volume separate.
+
+With application traffic stopped and intake paused, revoke all sessions in the isolated restore using `python backend/manage.py revoke_restored_sessions --isolated-restore --confirm-database approved_restore_database`. Verify restored cookies fail and new sign-ins work. Check offboarding, reassignment, private evidence, receipts, dashboard reconciliation and database privileges before switching traffic. Record recovery duration, the restored point, access retention and expected loss. Get operator approval before switching traffic. Dispose of scratch copies under the organisation's retention and access policy.
+
+The earlier hosted recovery check verified two closed legacy reports and their PostgreSQL evidence and audit history. It predates the private media volume. [Hosted recovery check](https://github.com/karakaraye/Electraguard-Ai/actions/runs/44976829468)
