@@ -100,6 +100,9 @@ if not DEBUG:
         },
     }
 
-PRIVATE_MEDIA_ROOT = Path(os.getenv(
-    "PRIVATE_MEDIA_ROOT", str(Path(__file__).resolve().parents[3] / ".electraguard-private-media")
-))
+# The fallback is evaluated only when the variable is unset. Path.parent stays valid
+# in the shallow container layout (/app/config), where parents[3] does not exist.
+PRIVATE_MEDIA_ROOT = Path(
+    os.getenv("PRIVATE_MEDIA_ROOT")
+    or Path(__file__).resolve().parent.parent.parent.parent / ".electraguard-private-media"
+)
