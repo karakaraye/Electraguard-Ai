@@ -8,6 +8,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 from .models import User
+from .observer_sessions import track_session
 from .permissions import require_role
 
 
@@ -28,6 +29,7 @@ def sign_in(request):
     if user is None or user.role not in User.Role.values:
         return JsonResponse({"detail": "Invalid email or password."}, status=401)
     login(request, user)
+    track_session(request, user)
     return JsonResponse({"email": user.email, "role": user.role})
 
 

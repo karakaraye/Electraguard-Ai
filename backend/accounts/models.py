@@ -1,6 +1,24 @@
+from uuid import UUID, uuid4
+
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+
+
+INITIAL_ORGANISATION = UUID("362183b8-99c0-4a26-976a-8d0098db0cd3")
+
+
+class Organisation(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
+    name = models.CharField(max_length=160)
+    intake_paused = models.BooleanField(default=False)
+
+
+class OrganisationOwned(models.Model):
+    organisation = models.ForeignKey(Organisation, on_delete=models.PROTECT, default=INITIAL_ORGANISATION)
+
+    class Meta:
+        abstract = True
 
 
 class UserManager(BaseUserManager):
@@ -29,12 +47,13 @@ class UserManager(BaseUserManager):
         return self.create_user(email, password, **extra_fields)
 
 
-class User(AbstractUser):
+class User(AbstractUser, OrganisationOwned):
     class Role(models.TextChoices):
         OBSERVER = "observer", "Observer"
         REVIEWER = "reviewer", "Reviewer"
         ADMINISTRATOR = "administrator", "Administrator"
 
+    public_id = models.UUIDField(default=uuid4, editable=False, unique=True)
     username = None
     email = models.EmailField(unique=True)
     role = models.CharField(max_length=16, choices=Role.choices, blank=True, default="")
@@ -44,7 +63,7 @@ class User(AbstractUser):
     objects = UserManager()
 
 
-class AccountOffboarding(models.Model):
+class AccountOffboarding(OrganisationOwned):
     class Reason(models.TextChoices):
         ACCESS_ENDED = "access_ended", "Access no longer required"
         ROLE_CHANGED = "role_changed", "Role changed"
@@ -54,4 +73,45 @@ class AccountOffboarding(models.Model):
     authorized_by = models.ForeignKey(User, on_delete=models.PROTECT, related_name="+")
     role = models.CharField(max_length=16, choices=User.Role.choices)
     reason = models.CharField(max_length=24, choices=Reason.choices)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+class ObserverCode(OrganisationOwned):
+    class Status(models.TextChoices):
+        UNCLAIMED = "unclaimed", "Unclaimed"
+        ACTIVE = "active", "Active"
+        LOCKED = "locked", "Locked"
+        REVOKED = "revoked", "Revoked"
+
+    user = models.OneToOneField(User, on_delete=models.PROTECT, related_name="observer_credential")
+    code = models.CharField(max_length=10, unique=True)
+    label = models.CharField(max_length=80)
+    status = models.CharField(max_length=10, choices=Status.choices, default=Status.UNCLAIMED)
+    pin_hash = models.CharField(max_length=128, blank=True)
+    setup_hash = models.CharField(max_length=128, blank=True)
+    setup_prefix_hash = models.CharField(max_length=128, blank=True)
+    setup_expires_at = models.DateTimeField(null=True)
+    token_digest = models.CharField(max_length=64, unique=True, null=True)
+    token_expires_at = models.DateTimeField(null=True)
+    token_attempts = models.PositiveSmallIntegerField(default=0)
+
+
+class AuthThrottle(models.Model):
+    # Pseudonymised keys also let unknown credentials follow the same throttle path.
+    key = models.CharField(max_length=64, primary_key=True)
+    attempts = models.JSONField(default=list)
+    locked_until = models.DateTimeField(null=True)
+    permanently_locked = models.BooleanField(default=False)
+    updated_at = models.DateTimeField(auto_now=True, db_index=True)
+
+
+class AccountSession(OrganisationOwned):
+    key = models.CharField(max_length=40, primary_key=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    absolute_expires_at = models.DateTimeField(null=True)
+
+
+class ObserverSecurityAlert(OrganisationOwned):
+    credential = models.ForeignKey(ObserverCode, on_delete=models.PROTECT)
+    permanent = models.BooleanField()
     created_at = models.DateTimeField(auto_now_add=True)

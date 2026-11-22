@@ -8,6 +8,7 @@ from rest_framework.parsers import JSONParser
 from rest_framework.response import Response
 
 from accounts.models import User
+from accounts.organisations import org_scope
 from accounts.permissions import require_role
 
 from .models import Report, ReviewEvent
@@ -38,7 +39,7 @@ class Conflict(APIException):
 
 def assigned_reports(request):
     require_role(request.user, User.Role.REVIEWER)
-    return Report.objects.filter(assigned_reviewer=request.user)
+    return org_scope(request, Report).filter(assigned_reviewer=request.user)
 
 
 def locked_report(queryset, reference, version):
@@ -53,7 +54,7 @@ def record_change(report, actor, action, change, field=None):
     report.version += 1
     report.save(update_fields=["version", field] if field else ["version"])
     ReviewEvent.objects.create(
-        report=report, actor=actor, action=action, version=report.version, change=change
+        report=report, organisation_id=report.organisation_id, actor=actor, action=action, version=report.version, change=change
     )
 
 
@@ -65,7 +66,7 @@ def transition(report, actor, action, data):
     change.update({field: data[field] for field in ("note", "outcome") if field in data})
     if action == Action.CLOSE:
         change["attachment_ids"] = [
-            str(attachment_id) for attachment_id in report.attachments.values_list("id", flat=True)
+            str(attachment_id) for attachment_id in report.attachments.filter(organisation_id=report.organisation_id).values_list("id", flat=True)
         ]
     report.status = after
     record_change(report, actor, action, change, "status")
@@ -76,8 +77,8 @@ def transition(report, actor, action, data):
 @api_view(["GET"])
 def assignments(request):
     require_role(request.user, User.Role.ADMINISTRATOR)
-    reports = Report.objects.exclude(status=Status.CLOSED).select_related("assigned_reviewer")
-    reviewers = User.objects.filter(role=User.Role.REVIEWER, is_active=True).order_by("email")
+    reports = org_scope(request, Report).exclude(status=Status.CLOSED).select_related("assigned_reviewer")
+    reviewers = org_scope(request, User).filter(role=User.Role.REVIEWER, is_active=True).order_by("email")
     return Response({
         "reports": AssignmentSummarySerializer(reports, many=True).data,
         "reviewers": list(reviewers.values("id", "email")),
@@ -93,10 +94,10 @@ def assign(request, reference):
     serializer = AssignmentSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
     data = serializer.validated_data
-    report = locked_report(Report.objects.all(), reference, data["version"])
+    report = locked_report(org_scope(request, Report), reference, data["version"])
     if report.status == Status.CLOSED:
         raise Conflict("A closed case cannot be reassigned.")
-    reviewer = User.objects.select_for_update().filter(
+    reviewer = org_scope(request, User).select_for_update().filter(
         pk=data["reviewer"], role=User.Role.REVIEWER, is_active=True
     ).first()
     if reviewer is None:
@@ -122,10 +123,10 @@ def review_queue(request):
 @api_view(["GET"])
 @transaction.atomic
 def review_case(request, reference):
-    report = get_object_or_404(with_attachment_metadata(assigned_reports(request).select_for_update()).prefetch_related(
-        Prefetch("review_events", queryset=ReviewEvent.objects.select_related("actor"))
+    report = get_object_or_404(with_attachment_metadata(request, assigned_reports(request).select_for_update()).prefetch_related(
+        Prefetch("review_events", queryset=org_scope(request, ReviewEvent).select_related("actor"))
     ), reference=reference)
-    return Response(ReviewCaseSerializer(report, context={"reviewer": request.user}).data)
+    return Response(ReviewCaseSerializer(report, context={"reviewer": request.user, "request": request}).data)
 
 
 @never_cache
