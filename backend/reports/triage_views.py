@@ -8,6 +8,8 @@ from rest_framework.decorators import api_view, parser_classes
 from rest_framework.parsers import JSONParser
 from rest_framework.response import Response
 
+from accounts.organisations import org_scope
+
 from .capabilities import GROUPING_ENABLED
 from .models import ReviewEvent, Triage, TriageMatch
 from .triage import METHOD_VERSION
@@ -20,7 +22,7 @@ from .workflow import Conflict, assigned_reports, locked_report, record_change
 def case_triage(request, reference):
     reports = assigned_reports(request)
     report = get_object_or_404(reports.select_for_update(no_key=True), reference=reference)
-    job = Triage.objects.filter(report=report).first()
+    job = org_scope(request, Triage).filter(report=report).first()
     if job is None:
         return Response({"status": Triage.Status.PENDING, "method_version": METHOD_VERSION})
 
@@ -35,7 +37,7 @@ def case_triage(request, reference):
             "categories": dict(Triage.Category.choices),
         })
         if GROUPING_ENABLED:
-            matches = TriageMatch.objects.filter(
+            matches = org_scope(request, TriageMatch).filter(
                 Q(first=report) | Q(second=report),
                 first__assigned_reviewer=request.user,
                 second__assigned_reviewer=request.user,
@@ -70,8 +72,8 @@ class MatchDecision(FeedbackVersion):
     )
 
 
-def ready_job(reference):
-    job = Triage.objects.filter(report_id=reference, status=Triage.Status.READY).first()
+def ready_job(request, reference):
+    job = org_scope(request, Triage).filter(report_id=reference, status=Triage.Status.READY).first()
     if job is None:
         raise Conflict("Triage suggestions are unavailable for this case.")
     return job
@@ -87,7 +89,7 @@ def correct_category(request, reference):
     serializer.is_valid(raise_exception=True)
     data = serializer.validated_data
     report = locked_report(reports, reference, data["version"])
-    job = ready_job(reference)
+    job = ready_job(request, reference)
     previous = job.corrected_category or job.category
     if previous == data["category"]:
         raise Conflict("This category is already selected.")
@@ -118,8 +120,8 @@ def decide_match(request, reference, candidate):
     report = first if first.pk == reference else second
     if report.version != data["version"]:
         raise Conflict("This case has changed. Refresh before trying again.")
-    ready_job(reference)
-    match = get_object_or_404(TriageMatch, first=first, second=second)
+    ready_job(request, reference)
+    match = get_object_or_404(org_scope(request, TriageMatch), first=first, second=second)
     if match.decision != TriageMatch.Decision.PENDING:
         raise Conflict("This match already has a Reviewer decision.")
     match.decision = data["decision"]

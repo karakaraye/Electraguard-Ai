@@ -9,6 +9,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 from accounts.models import User
+from accounts.organisations import org_scope
 from accounts.permissions import require_role
 
 from .capabilities import GROUPING_ENABLED
@@ -51,14 +52,14 @@ def dashboard(request):
     filters = DateFilters(data=request.query_params)
     filters.is_valid(raise_exception=True)
     dates = filters.validated_data
-    reports = Report.objects.all()
+    reports = org_scope(request, Report)
     for field, date in dates.items():
         comparison = "gte" if field == "start" else "lte"
         boundary = time.min if field == "start" else time.max
         reports = reports.filter(**{
             f"occurred_at__{comparison}": datetime.combine(date, boundary, ZoneInfo("Africa/Lagos"))
         })
-    closure_outcomes = ReviewEvent.objects.filter(
+    closure_outcomes = org_scope(request, ReviewEvent).filter(
         report_id=OuterRef("pk"), action=ReviewEvent.Action.CLOSE,
     ).order_by("-version").values("change__outcome")[:1]
     rows = list(reports.annotate(assessment=Subquery(closure_outcomes)).order_by().values_list(
@@ -84,7 +85,7 @@ def dashboard(request):
         ],
     }
     if GROUPING_ENABLED:
-        links = TriageMatch.objects.filter(
+        links = org_scope(request, TriageMatch).filter(
             decision=TriageMatch.Decision.CONFIRMED
         ).values_list("first_id", "second_id").iterator()
         result["incident_count"] = incident_count((row[0] for row in rows), links) if rows else 0

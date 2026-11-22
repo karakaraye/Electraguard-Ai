@@ -3,8 +3,10 @@ import uuid
 from django.conf import settings
 from django.db import models
 
+from accounts.models import OrganisationOwned
 
-class Report(models.Model):
+
+class Report(OrganisationOwned):
     class Status(models.TextChoices):
         SUBMITTED = "submitted", "Submitted"
         IN_REVIEW = "in_review", "In review"
@@ -40,7 +42,7 @@ class Report(models.Model):
         ]
 
 
-class Evidence(models.Model):
+class Evidence(OrganisationOwned):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     report = models.ForeignKey(Report, related_name="attachments", on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
@@ -55,7 +57,7 @@ class Evidence(models.Model):
         ]
 
 
-class ReviewEvent(models.Model):
+class ReviewEvent(OrganisationOwned):
     class Action(models.TextChoices):
         ASSIGN = "assign", "Assigned reviewer"
         START = "start", "Started review"
@@ -79,7 +81,7 @@ class ReviewEvent(models.Model):
         ]
 
 
-class Triage(models.Model):
+class Triage(OrganisationOwned):
     class Status(models.TextChoices):
         PENDING = "pending", "Pending"
         READY = "ready", "Ready"
@@ -100,7 +102,7 @@ class Triage(models.Model):
     corrected_category = models.CharField(max_length=12, choices=Category.choices, blank=True)
 
 
-class TriageMatch(models.Model):
+class TriageMatch(OrganisationOwned):
     class Decision(models.TextChoices):
         PENDING = "pending", "Awaiting review"
         CONFIRMED = "confirmed", "Confirmed by Reviewer"
