@@ -1,0 +1,314 @@
+"""Build every ElectraGuard mark file from plain geometry.
+
+Usage: NOTO_SANS_DIR=<folder with noto-sans-latin-{400,600}-normal.woff> python generate.py docs/design/brand
+(the .woff files come from the npm package @fontsource/noto-sans). Needs fonttools and uharfbuzz.
+
+All transforms are baked into the path data, so no output file uses a transform attribute.
+"""
+import io, math, os, sys
+from fontTools.ttLib import TTFont
+from fontTools.pens.svgPathPen import SVGPathPen
+from fontTools.pens.transformPen import TransformPen
+import uharfbuzz as hb
+
+FONTDIR = os.environ["NOTO_SANS_DIR"]
+OUT = sys.argv[1]
+BLACK, WHITE = "#000", "#fff"
+
+
+def f(v):
+    s = f"{v:.2f}".rstrip("0").rstrip(".")
+    return "0" if s in ("-0", "") else s
+
+
+# ---------------------------------------------------------------- path model
+# A shape is a list of commands in absolute coordinates:
+#   ("M", x, y) · ("L", x, y) · ("A", rx, ry, rot, large, sweep, x, y) · ("Z",)
+
+class Xf:
+    """Uniform scale s, rotation deg about origin, then translate (tx, ty)."""
+    def __init__(self, s=1.0, deg=0.0, tx=0.0, ty=0.0):
+        self.s, self.deg, self.tx, self.ty = s, deg, tx, ty
+
+    def pt(self, x, y):
+        a = math.radians(self.deg)
+        c, n = math.cos(a), math.sin(a)
+        return (self.s * (x * c - y * n) + self.tx, self.s * (x * n + y * c) + self.ty)
+
+
+def rotate_about(deg, cx, cy):
+    a = math.radians(deg)
+    c, n = math.cos(a), math.sin(a)
+    # rotate about (cx, cy) == rotate about origin, then translate
+    return Xf(1, deg, cx - (cx * c - cy * n), cy - (cx * n + cy * c))
+
+
+def apply(shape, xf):
+    out = []
+    for cmd in shape:
+        if cmd[0] in "ML":
+            out.append((cmd[0], *xf.pt(cmd[1], cmd[2])))
+        elif cmd[0] == "A":
+            _, rx, ry, rot, la, sw, x, y = cmd
+            out.append(("A", rx * xf.s, ry * xf.s, rot + xf.deg, la, sw, *xf.pt(x, y)))
+        else:
+            out.append(cmd)
+    return out
+
+
+def d(shape):
+    """Serialise, dropping zero-length segments and using H/V where exact."""
+    parts, cur, start = [], None, None
+    for cmd in shape:
+        k = cmd[0]
+        if k == "M":
+            cur = start = (round(cmd[1], 3), round(cmd[2], 3))
+            parts.append(f"M{f(cur[0])} {f(cur[1])}")
+        elif k == "Z":
+            parts.append("Z"); cur = start
+        else:
+            x, y = round(cmd[-2], 3), round(cmd[-1], 3)
+            if (x, y) == cur:
+                continue
+            if k == "L":
+                if abs(x - cur[0]) < 1e-3:
+                    parts.append(f"V{f(y)}")
+                elif abs(y - cur[1]) < 1e-3:
+                    parts.append(f"H{f(x)}")
+                else:
+                    parts.append(f"L{f(x)} {f(y)}")
+            else:
+                _, rx, ry, rot, la, sw = cmd[:6]
+                rot = round(rot % 180, 2)
+                parts.append(f"A{f(rx)} {f(ry)} {f(rot)} {la} {sw} {f(x)} {f(y)}")
+            cur = (x, y)
+    return "".join(parts)
+
+
+def sample(shape, n=24):
+    """Points along a shape's outline, arcs included (SVG endpoint-to-centre conversion)."""
+    pts, cur = [], None
+    for cmd in shape:
+        if cmd[0] in "ML":
+            cur = (cmd[1], cmd[2]); pts.append(cur)
+        elif cmd[0] == "A":
+            _, rx, ry, rot, la, sw, x, y = cmd
+            phi = math.radians(rot); c, s_ = math.cos(phi), math.sin(phi)
+            dx, dy = (cur[0] - x) / 2, (cur[1] - y) / 2
+            x1, y1 = c * dx + s_ * dy, -s_ * dx + c * dy
+            lam = (x1 / rx) ** 2 + (y1 / ry) ** 2
+            if lam > 1:
+                rx, ry = rx * math.sqrt(lam), ry * math.sqrt(lam)
+            num = max(rx * rx * ry * ry - rx * rx * y1 * y1 - ry * ry * x1 * x1, 0)
+            k = math.sqrt(num / (rx * rx * y1 * y1 + ry * ry * x1 * x1)) * (-1 if la == sw else 1)
+            cx1, cy1 = k * rx * y1 / ry, -k * ry * x1 / rx
+            cx = c * cx1 - s_ * cy1 + (cur[0] + x) / 2
+            cy = s_ * cx1 + c * cy1 + (cur[1] + y) / 2
+            t1 = math.atan2((y1 - cy1) / ry, (x1 - cx1) / rx)
+            t2 = math.atan2((-y1 - cy1) / ry, (-x1 - cx1) / rx)
+            dt = t2 - t1
+            if sw and dt < 0: dt += 2 * math.pi
+            if not sw and dt > 0: dt -= 2 * math.pi
+            for i in range(1, n + 1):
+                t = t1 + dt * i / n
+                ex, ey = rx * math.cos(t), ry * math.sin(t)
+                pts.append((c * ex - s_ * ey + cx, s_ * ex + c * ey + cy))
+            cur = (x, y)
+    return pts
+
+
+def poly(*pts):
+    return [("M", *pts[0])] + [("L", *p) for p in pts[1:]] + [("Z",)]
+
+
+# ---------------------------------------------------------------- type
+class Face:
+    def __init__(self, weight):
+        tt = TTFont(os.path.join(FONTDIR, f"noto-sans-latin-{weight}-normal.woff"))
+        tt.flavor = None
+        buf = io.BytesIO(); tt.save(buf)
+        self.tt = TTFont(io.BytesIO(buf.getvalue()))
+        self.hbfont = hb.Font(hb.Face(buf.getvalue()))
+        self.upem = self.tt["head"].unitsPerEm
+        self.cap = self.tt["OS/2"].sCapHeight
+        self.gs = self.tt.getGlyphSet()
+        self.order = self.tt.getGlyphOrder()
+
+    def path(self, text, size, x0, baseline, tracking=0.0):
+        b = hb.Buffer(); b.add_str(text); b.guess_segment_properties()
+        hb.shape(self.hbfont, b, {"kern": True, "liga": True})
+        s = size / self.upem
+        x, parts = 0.0, []
+        for info, pos in zip(b.glyph_infos, b.glyph_positions):
+            pen = SVGPathPen(self.gs, ntos=f)
+            self.gs[self.order[info.codepoint]].draw(
+                TransformPen(pen, (s, 0, 0, -s, x0 + (x + pos.x_offset) * s, baseline - pos.y_offset * s)))
+            parts.append(pen.getCommands())
+            x += pos.x_advance + tracking * self.upem
+        return "".join(parts), (x - tracking * self.upem) * s
+
+
+SEMI, REG = Face(600), Face(400)
+
+
+def wordmark(size, x0, baseline):
+    """'ElectraGuard' SemiBold plus a quiet 'AI' in Regular."""
+    d1, w1 = SEMI.path("ElectraGuard", size, x0, baseline, tracking=-0.012)
+    gap = size * 0.30
+    d2, w2 = REG.path("AI", size, x0 + w1 + gap, baseline, tracking=0.02)
+    return d1 + d2, w1 + gap + w2
+
+
+def cap_of(size):
+    return size * SEMI.cap / SEMI.upem
+
+
+# ---------------------------------------------------------------- A. Cairn
+def stone(x, y, w, h, rl, rr, ry, rb):
+    """Resting stone: domed top (x radii rl / rr, y radius ry), flatter base (radius rb)."""
+    return [("M", x, y + h - rb), ("L", x, y + ry), ("A", rl, ry, 0, 0, 1, x + rl, y),
+            ("L", x + w - rr, y), ("A", rr, ry, 0, 0, 1, x + w, y + ry), ("L", x + w, y + h - rb),
+            ("A", rb, rb, 0, 0, 1, x + w - rb, y + h), ("L", x + rb, y + h),
+            ("A", rb, rb, 0, 0, 1, x, y + h - rb), ("Z",)]
+
+
+def cairn48():
+    top = apply(stone(20, 8.25, 18, 7.5, 8, 7, 4.75, 2.75), rotate_about(-6, 29, 12))
+    return [stone(4, 30, 40, 11, 13, 9, 6.5, 4), stone(7, 18.5, 29, 9, 9, 11, 5.5, 3.5), top]
+
+
+def cairn16():
+    # whole pixels; 45-degree chamfers stand in for the domes at this size
+    return [poly((1, 13), (3, 11), (12, 11), (15, 13), (15, 15), (1, 15)),
+            poly((2, 8), (4, 6), (11, 6), (13, 8), (13, 10), (2, 10)),
+            poly((7, 3), (8, 2), (13, 2), (14, 3), (14, 5), (7, 5))]
+
+
+# ---------------------------------------------------------------- B. Monogram (E and G)
+def monogram48():
+    # one outline: curved spine shared by E and G, three arms, and the G's spur rising on the right
+    R, r = 14, 6
+    return [[("M", 38, 6), ("A", 4, 4, 0, 0, 1, 42, 10), ("L", 42, 14), ("L", 20, 14),
+             ("A", r, r, 0, 0, 0, 14, 20), ("L", 29, 20), ("L", 29, 28), ("L", 14, 28),
+             ("A", r, r, 0, 0, 0, 20, 34), ("L", 34, 34), ("L", 34, 24), ("L", 42, 24),
+             ("L", 42, 38), ("A", 4, 4, 0, 0, 1, 38, 42), ("L", 20, 42),
+             ("A", R, R, 0, 0, 1, 6, 28), ("L", 6, 20), ("A", R, R, 0, 0, 1, 20, 6), ("Z",)]]
+
+
+def monogram16():
+    return [poly((4, 2), (14, 2), (14, 5), (5, 5), (5, 7), (10, 7), (10, 9), (5, 9), (5, 11),
+                 (11, 11), (11, 8), (14, 8), (14, 14), (4, 14), (2, 12), (2, 4))]
+
+
+# ---------------------------------------------------------------- C. Tally (four strokes, one across)
+def tally(bars, y0, y1, a, b, half, gap):
+    """bars: [(x0, x1)]; the cross stroke is the band around y = a + b*x, half-height `half`,
+    with a knock-out of `gap` above and below it cut into the bars."""
+    shapes = []
+    for (x0, x1) in bars:
+        up = lambda x: a + b * x - half - gap
+        lo = lambda x: a + b * x + half + gap
+        shapes.append(poly((x0, y0), (x1, y0), (x1, up(x1)), (x0, up(x0))))
+        shapes.append(poly((x0, lo(x0)), (x1, lo(x1)), (x1, y1), (x0, y1)))
+    return shapes
+
+
+def tally48():
+    bars = [(8, 13), (17, 22), (26, 31), (35, 40)]
+    a, b, half = 39.5, -0.5, 2.75          # cross stroke from (3, 38) to (45, 17)
+    xs, xe = 3, 45
+    cross = poly((xs, a + b * xs - half), (xe, a + b * xe - half), (xe, a + b * xe + half), (xs, a + b * xs + half))
+    return tally(bars, 6, 42, a, b, half, 2.25) + [cross]
+
+
+def tally16():
+    bars = [(1, 3), (5, 7), (9, 11), (13, 15)]   # odd x edges keep every cut on whole pixels
+    # cross stroke corners on whole pixels: (1,11)-(15,4) top edge, (1,13)-(15,6) bottom edge
+    cross = poly((1, 11), (15, 4), (15, 6), (1, 13))
+    shapes = []
+    for (x0, x1) in bars:
+        top = lambda x: 11 - 0.5 * (x - 1) - 1      # 1 px knock-out above
+        bot = lambda x: 13 - 0.5 * (x - 1) + 1      # 1 px knock-out below
+        shapes.append(poly((x0, 1), (x1, 1), (x1, top(x1)), (x0, top(x0))))
+        shapes.append(poly((x0, bot(x0)), (x1, bot(x1)), (x1, 15), (x0, 15)))
+    return shapes + [cross]
+
+
+# name: (48-grid builder, 16-grid builder, artwork bounds on the 48 grid, optical lift for the app icon)
+MARKS = {
+    "cairn": (cairn48, cairn16, (4, 6.4, 44, 41), 0.02),
+    "monogram": (monogram48, monogram16, (6, 6, 42, 42), 0.0),
+    "tally": (tally48, tally16, (3, 6, 45, 42), 0.0),
+}
+
+
+# ---------------------------------------------------------------- output
+def svg(w, h, inner, vb=None):
+    vb = vb or f"0 0 {f(w)} {f(h)}"
+    return (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="{vb}" width="{f(w)}" height="{f(h)}" '
+            f'role="img" aria-label="ElectraGuard AI"><title>ElectraGuard AI</title>{inner}</svg>\n')
+
+
+def paths(shapes, fill, xf=None):
+    return "".join(f'<path fill="{fill}" d="{d(apply(s, xf) if xf else s)}"/>' for s in shapes)
+
+
+def write(path, text):
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    with open(path, "w", encoding="utf-8", newline="\n") as fh:
+        fh.write(text)
+
+
+STACK_K = 1.1        # symbol scale in the stacked lockup, relative to the horizontal lockup
+STACK_TYPE = 0.80    # wordmark size in the stacked lockup, relative to the horizontal lockup
+ICON_ART = 0.52      # artwork's longer side as a share of the 512 icon canvas
+ICON_SAFE = 0.66     # every point of the art stays inside a centred circle of this diameter
+
+LOCKUP_METRICS = {}
+
+for name, (b48, b16, (bx0, by0, bx1, by1), lift) in MARKS.items():
+    folder = os.path.join(OUT, name)
+    big, small = b48(), b16()
+    MH, MW = by1 - by0, bx1 - bx0
+    size = (MH * 0.46) / (SEMI.cap / SEMI.upem)   # horizontal lockup: cap height = 46% of symbol height
+    gap = MH * 0.40
+
+    for suffix, fill in (("", BLACK), ("-white", WHITE)):
+        write(f"{folder}/mark{suffix}.svg", svg(48, 48, paths(big, fill)))
+        write(f"{folder}/favicon{suffix}.svg", svg(16, 16, paths(small, fill)))
+
+        # horizontal lockup, tight viewBox (clear space is a usage rule, not baked in)
+        baseline = MH / 2 + cap_of(size) / 2
+        wd, ww = wordmark(size, MW + gap, baseline)
+        W = MW + gap + ww
+        inner = paths(big, fill, Xf(1, 0, -bx0, -by0)) + f'<path fill="{fill}" d="{wd}"/>'
+        write(f"{folder}/lockup-horizontal{suffix}.svg", svg(W, MH, inner))
+        LOCKUP_METRICS.setdefault(name, {})["h_cap_ratio"] = cap_of(size) / MH
+
+        # stacked lockup
+        ssize = size * STACK_TYPE
+        scap = cap_of(ssize)
+        _, sw = wordmark(ssize, 0, 0)
+        mw, mh = MW * STACK_K, MH * STACK_K
+        sgap = scap * 1.2
+        SW, SH = max(sw, mw), mh + sgap + scap
+        wd2, _ = wordmark(ssize, (SW - sw) / 2, SH)
+        inner = (paths(big, fill, Xf(STACK_K, 0, (SW - mw) / 2 - bx0 * STACK_K, -by0 * STACK_K)) +
+                 f'<path fill="{fill}" d="{wd2}"/>')
+        write(f"{folder}/lockup-stacked{suffix}.svg", svg(SW, SH, inner))
+        LOCKUP_METRICS[name]["s_cap_ratio"] = scap / SH
+
+    # maskable Android icon
+    pts = [p for sh in big for p in sample(sh)]
+    cx, cy = (bx0 + bx1) / 2, (by0 + by1) / 2
+    k = ICON_ART * 512 / max(MW, MH)
+    far = max(math.hypot(x - cx, y - cy) for x, y in pts)
+    k = min(k, ICON_SAFE * 512 / 2 / far)
+    oy = -lift * 512
+    xf = Xf(k, 0, 256 - cx * k, 256 - cy * k + oy)
+    inner = '<rect width="512" height="512" fill="#000"/>' + paths(big, WHITE, xf)
+    write(f"{folder}/app-icon-maskable.svg", svg(512, 512, inner))
+    LOCKUP_METRICS[name]["icon_share"] = k * max(MW, MH) / 512
+
+for n, m in LOCKUP_METRICS.items():
+    print(n, {k: round(v, 3) for k, v in m.items()})
