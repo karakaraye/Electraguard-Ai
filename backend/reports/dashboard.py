@@ -11,7 +11,7 @@ from rest_framework.response import Response
 from accounts.models import User
 from accounts.permissions import require_role
 
-from .capabilities import GROUPING_ENABLED
+from . import capabilities
 from .models import Report, ReviewEvent, Triage, TriageMatch
 
 
@@ -83,7 +83,7 @@ def dashboard(request):
             for key, label in [*Triage.Category.choices, ("uncategorized", "Uncategorized")]
         ],
     }
-    if GROUPING_ENABLED:
+    if capabilities.GROUPING_ENABLED:
         links = TriageMatch.objects.filter(
             decision=TriageMatch.Decision.CONFIRMED
         ).values_list("first_id", "second_id").iterator()

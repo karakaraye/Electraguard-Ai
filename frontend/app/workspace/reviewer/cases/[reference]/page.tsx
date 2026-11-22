@@ -96,6 +96,9 @@ export default async function ReviewCasePage({ params, searchParams }: {
               {change.category && <p>{change.previous_category} → {change.category}</p>}
               {change.match_decision && change.candidate &&
                 <p>{matchDecisions[change.match_decision]} · {change.candidate}</p>}
+              {action === "reverse_match" && change.candidate &&
+                <p>{matchDecisions.confirmed} → {matchDecisions.reversed} · {change.candidate}</p>}
+              {change.reason && <p className="review-note">{change.reason}</p>}
               {change.note && <p className="review-note">{change.note}</p>}
             </li>
           ))}

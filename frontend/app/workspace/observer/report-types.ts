@@ -47,6 +47,8 @@ export type ReviewEvent = {
     category?: string;
     candidate?: string;
     match_decision?: "confirmed" | "dismissed";
+    previous_decision?: "confirmed";
+    reason?: string;
   };
 };
 export type ReviewCase = ReportDetail & { version: number; history: ReviewEvent[] };

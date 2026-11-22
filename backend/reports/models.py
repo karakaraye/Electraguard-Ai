@@ -64,6 +64,7 @@ class ReviewEvent(models.Model):
         CLOSE = "close", "Closed review"
         CORRECT_CATEGORY = "correct_category", "Corrected triage category"
         DECIDE_MATCH = "decide_match", "Reviewed possible match"
+        REVERSE_MATCH = "reverse_match", "Reversed match confirmation"
 
     report = models.ForeignKey(Report, related_name="review_events", on_delete=models.CASCADE)
     actor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
@@ -105,6 +106,7 @@ class TriageMatch(models.Model):
         PENDING = "pending", "Awaiting review"
         CONFIRMED = "confirmed", "Confirmed by Reviewer"
         DISMISSED = "dismissed", "Dismissed by Reviewer"
+        REVERSED = "reversed", "Confirmation reversed by Reviewer"
 
     first = models.ForeignKey(Report, related_name="+", on_delete=models.CASCADE)
     second = models.ForeignKey(Report, related_name="+", on_delete=models.CASCADE)

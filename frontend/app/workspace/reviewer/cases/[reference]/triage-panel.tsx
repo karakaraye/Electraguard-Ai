@@ -7,6 +7,7 @@ export const matchDecisions = {
   pending: "Awaiting review",
   confirmed: "Confirmed by Reviewer",
   dismissed: "Dismissed by Reviewer",
+  reversed: "Confirmation reversed by Reviewer",
 } as const;
 
 type Triage = {
@@ -75,6 +76,17 @@ export async function TriagePanel({ reference, version }: { reference: string; v
                         <option value="confirmed">Confirm match</option>
                         <option value="dismissed">Dismiss match</option>
                       </select>
+                    </WorkflowForm>
+                  )}
+                  {match.decision === "confirmed" && (
+                    <WorkflowForm key={version} path={`${path}/matches/${match.reference}/reverse`}
+                      version={version} label="Reverse confirmation">
+                      <p id={`reverse-effect-${match.reference}`}>
+                        Both reports and their case records stay unchanged. The original confirmation remains in the audit history.
+                      </p>
+                      <label htmlFor={`reverse-${match.reference}`}>Reason for reversing this match</label>
+                      <textarea id={`reverse-${match.reference}`} name="reason" maxLength={2000} rows={3} required
+                        aria-describedby={`reverse-effect-${match.reference}`} />
                     </WorkflowForm>
                   )}
                 </li>
