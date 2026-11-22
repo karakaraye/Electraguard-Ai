@@ -13,7 +13,123 @@
     "optional": "Optional",
     "charCount": "{count} of {max} letters",
     "listen": "Listen",
-    "stopListening": "Stop"
+    "stopListening": "Stop",
+    "productName": "ElectraGuard",
+    "skipToContent": "Skip to content",
+    "pleaseWait": "Please wait",
+    "errorPrefix": "Error:",
+    "yes": "Yes",
+    "no": "No",
+    "selected": "Selected",
+    "network": {
+      "offline": "Offline. Reports will send when you have network.",
+      "offlineQueued": "{count, plural, one {Offline. # report is saved on this phone and will send when you have network.} other {Offline. # reports are saved on this phone and will send when you have network.}}",
+      "online": "Back online."
+    },
+    "stepper": {
+      "progress": "Step {current} of {total}"
+    },
+    "textarea": {
+      "count": "{count} of {max} characters",
+      "remaining": "{remaining, plural, =0 {No characters left.} one {# character left.} other {# characters left.}}"
+    },
+    "select": {
+      "choose": "Choose one"
+    },
+    "search": {
+      "clear": "Clear",
+      "noMatches": "No matches. Try fewer letters.",
+      "results": "{count, plural, =0 {No results} one {# result} other {# results}}",
+      "instructions": "Type to search. Use the up and down arrows to choose."
+    },
+    "when": {
+      "legend": "When did it happen?",
+      "justNow": "Just now",
+      "earlierToday": "Earlier today",
+      "anotherDay": "Another day",
+      "time": "Time",
+      "date": "Date",
+      "timeOptional": "Time, if you know it",
+      "zone": "West Africa Time (WAT)",
+      "future": "That time has not happened yet. Choose a time that has passed.",
+      "required": "Enter the time it happened.",
+      "dateRequired": "Enter the date it happened.",
+      "olderThanWeek": "This is more than 7 days ago. Check the date is right."
+    },
+    "status": {
+      "onPhone": "On this phone",
+      "notConfirmed": "Not confirmed yet",
+      "received": "Received",
+      "inReview": "In review",
+      "question": "Question for you",
+      "closed": "Closed",
+      "withdrawn": "Withdrawn",
+      "saved": "Saved",
+      "failed": "Failed",
+      "urgent": "Urgent"
+    },
+    "receipt": {
+      "label": "Your receipt code",
+      "copy": "Copy code",
+      "copied": "Copied",
+      "copyFailed": "Could not copy. Write the code down.",
+      "save": "Save as image",
+      "receivedAt": "Received {time}",
+      "next": "What happens next",
+      "imageTitle": "ElectraGuard receipt"
+    },
+    "upload": {
+      "waiting": "Waiting for network",
+      "uploading": "Uploading {percent}%",
+      "saved": "Saved",
+      "failed": "Did not send",
+      "missing": "File no longer on this phone",
+      "retry": "Try again",
+      "remove": "Remove",
+      "chooseAgain": "Choose the file again",
+      "estimate": "{size} · about {time} to send",
+      "kind": "{kind, select, photo {Photo} video {Video} voice {Voice note} other {File}}"
+    },
+    "time": {
+      "seconds": "{count, plural, one {# second} other {# seconds}}",
+      "minutes": "{count, plural, one {# minute} other {# minutes}}"
+    },
+    "language": {
+      "label": "Language",
+      "choose": "Choose your language"
+    },
+    "theme": {
+      "label": "Appearance",
+      "system": "Same as device",
+      "light": "Light",
+      "dark": "Dark"
+    },
+    "table": {
+      "sortAscending": "Sorted ascending",
+      "sortDescending": "Sorted descending",
+      "sortBy": "Sort by {column}",
+      "empty": "Nothing to show."
+    },
+    "metric": {
+      "fewerThan": "fewer than {threshold}"
+    },
+    "suggestion": {
+      "label": "Suggested",
+      "accept": "Accept",
+      "correct": "Correct",
+      "accepted": "Accepted",
+      "corrected": "Corrected",
+      "confidence": "Confidence: {level, select, high {High} medium {Medium} other {Low}}",
+      "reasons": "Why this was suggested"
+    },
+    "timeline": {
+      "intact": "Record chain intact",
+      "broken": "Record chain broken: an entry was changed",
+      "unknown": "Record chain not checked yet"
+    },
+    "nav": {
+      "main": "Main"
+    }
   },
   "common": {
     "appName": "ElectraGuard",

@@ -1,0 +1,94 @@
+.card {
+  display: grid;
+  gap: var(--s-2);
+  padding: var(--s-4);
+  border: 1px dashed var(--info);
+  border-radius: var(--radius);
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.card[data-state="accepted"],
+.card[data-state="corrected"] {
+  border-style: solid;
+  border-color: var(--rule-control);
+}
+
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-2) var(--s-3);
+}
+
+.flag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 8px 2px 6px;
+  border: 1px solid var(--info);
+  border-radius: var(--radius-pill);
+  background: var(--info-bg);
+  color: var(--info);
+  font: var(--t-label);
+  letter-spacing: var(--t-label-tracking);
+}
+
+.field {
+  color: var(--ink-2);
+  font: var(--t-label);
+  letter-spacing: var(--t-label-tracking);
+}
+
+.value {
+  margin: 0;
+  font: var(--t-heading);
+  overflow-wrap: anywhere;
+}
+
+.value[data-struck] {
+  color: var(--ink-3);
+  font-weight: 400;
+  text-decoration: line-through;
+}
+
+.confidence {
+  margin: 0;
+  color: var(--ink-2);
+  font: var(--t-small);
+  font-weight: 600;
+}
+
+.reasons {
+  padding-top: var(--s-2);
+  border-top: 1px solid var(--rule);
+}
+
+.reasonsTitle {
+  margin: 0 0 var(--s-1);
+  font: var(--t-label);
+}
+
+.reasonList {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  padding-left: 1.2em;
+  color: var(--ink-2);
+  font: var(--t-small);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+  margin-top: var(--s-2);
+}
+
+.decision {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  margin: var(--s-1) 0 0;
+  font: var(--t-label);
+}
