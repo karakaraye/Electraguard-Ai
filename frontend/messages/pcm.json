@@ -822,5 +822,440 @@
       "withdrawn": "This report don withdraw."
     },
     "sms": "You no get smartphone? Send STATUS and your code go {shortCode}."
+  },
+  "staff": {
+    "nav": {
+      "queue": "[PCM draft] Review Queue",
+      "cases": "[PCM draft] Cases",
+      "assign": "[PCM draft] Assign",
+      "ops": "[PCM draft] Operations",
+      "rumours": "[PCM draft] Rumour Desk",
+      "publish": "[PCM draft] Publish",
+      "discussions": "[PCM draft] Discussions",
+      "codes": "[PCM draft] Observer Codes",
+      "staff": "[PCM draft] Staff Accounts",
+      "settings": "[PCM draft] Settings",
+      "security": "[PCM draft] Security"
+    },
+    "roles": {
+      "reviewer": "[PCM draft] Reviewer",
+      "moderator": "[PCM draft] Moderator",
+      "coordinator": "[PCM draft] Coordinator",
+      "org_admin": "[PCM draft] Admin"
+    },
+    "signOut": "[PCM draft] Sign out",
+    "signedInAs": "[PCM draft] Signed in as {name}",
+    "forbidden": "[PCM draft] You do not have permission to view this section.",
+    "networkError": "[PCM draft] Could not connect to the server. Check your network connection.",
+    "endpointNotReady": "[PCM draft] This endpoint is not available yet (HTTP 404).",
+    "loading": "[PCM draft] Loading staff data...",
+    "retry": "[PCM draft] Try again",
+    "save": "[PCM draft] Save changes",
+    "cancel": "[PCM draft] Cancel",
+    "confirm": "[PCM draft] Confirm",
+    "backToQueue": "[PCM draft] Back to queue"
+  },
+  "s01": {
+    "title": "[PCM draft] Staff sign-in",
+    "subtitle": "[PCM draft] Official election observation review portal",
+    "emailLabel": "[PCM draft] Email address",
+    "emailHint": "[PCM draft] Your registered staff email",
+    "passwordLabel": "[PCM draft] Password",
+    "signInButton": "[PCM draft] Sign in",
+    "signingIn": "[PCM draft] Signing in...",
+    "totpTitle": "[PCM draft] Two-factor authentication",
+    "totpHint": "[PCM draft] Enter the 6-digit verification code from your authenticator app.",
+    "totpLabel": "[PCM draft] Authenticator code",
+    "totpVerify": "[PCM draft] Verify code",
+    "totpVerifying": "[PCM draft] Verifying...",
+    "enrolTitle": "[PCM draft] Set up two-factor authentication",
+    "enrolSubtitle": "[PCM draft] Scan the code or enter the secret key into your authenticator app.",
+    "enrolSecretLabel": "[PCM draft] Secret key",
+    "enrolSecretCopy": "[PCM draft] Copy key",
+    "enrolSecretCopied": "[PCM draft] Copied",
+    "enrolUriLabel": "[PCM draft] Authenticator link",
+    "enrolCodeLabel": "[PCM draft] Enter the 6-digit code to confirm",
+    "enrolConfirm": "[PCM draft] Confirm and sign in",
+    "inviteTitle": "[PCM draft] Accept staff invitation",
+    "inviteSubtitle": "[PCM draft] Choose a secure password for your account.",
+    "newPasswordLabel": "[PCM draft] New password",
+    "newPasswordHint": "[PCM draft] At least 12 characters. Use a mix of letters, numbers, and symbols.",
+    "acceptInviteButton": "[PCM draft] Set password and continue",
+    "errors": {
+      "invalidCredentials": "[PCM draft] Email or password is wrong.",
+      "accountLocked": "[PCM draft] Too many failed tries. Try again in 15 minutes.",
+      "totpInvalid": "[PCM draft] That code did not work. Check the time on your phone and try again.",
+      "totpRequired": "[PCM draft] Two-factor verification required.",
+      "inviteInvalid": "[PCM draft] This invitation link is invalid or has expired.",
+      "rateLimited": "[PCM draft] Too many attempts. Please wait a moment."
+    }
+  },
+  "s02": {
+    "title": "[PCM draft] Review queue",
+    "subtitle": "[PCM draft] Cases ordered by urgency and danger",
+    "counts": {
+      "received": "[PCM draft] {count} received",
+      "inReview": "[PCM draft] {count} in review",
+      "question": "[PCM draft] {count} waiting on answer"
+    },
+    "filters": {
+      "all": "[PCM draft] All",
+      "status": "[PCM draft] Status",
+      "urgency": "[PCM draft] Urgency",
+      "category": "[PCM draft] Category",
+      "channel": "[PCM draft] Channel",
+      "hasEvidence": "[PCM draft] Has media",
+      "clear": "[PCM draft] Reset filters"
+    },
+    "columns": {
+      "urgency": "[PCM draft] Urgency",
+      "reference": "[PCM draft] Reference",
+      "category": "[PCM draft] Category",
+      "location": "[PCM draft] Location",
+      "occurred": "[PCM draft] Occurred",
+      "evidence": "[PCM draft] Evidence",
+      "status": "[PCM draft] Status"
+    },
+    "urgency": {
+      "urgent": "[PCM draft] Urgent",
+      "high": "[PCM draft] High",
+      "normal": "[PCM draft] Normal",
+      "low": "[PCM draft] Low"
+    },
+    "reasons": {
+      "danger_reported": "[PCM draft] Danger reported",
+      "intimidation": "[PCM draft] Intimidation",
+      "vote_buying": "[PCM draft] Vote buying",
+      "seen_firsthand": "[PCM draft] Firsthand",
+      "told_by_someone": "[PCM draft] Hearsay",
+      "video": "[PCM draft] Video",
+      "photo": "[PCM draft] Photo",
+      "audio": "[PCM draft] Audio",
+      "cluster": "[PCM draft] Area cluster",
+      "result_sheet_flag": "[PCM draft] Result sheet flag",
+      "citizen_report": "[PCM draft] Citizen report",
+      "sms_report": "[PCM draft] SMS report"
+    },
+    "empty": "[PCM draft] No cases matching the current filters.",
+    "emptySubtitle": "[PCM draft] New reports assigned to you will appear here.",
+    "loadMore": "[PCM draft] Load more cases"
+  },
+  "s03": {
+    "title": "[PCM draft] Case review",
+    "caseRef": "[PCM draft] Case {ref}",
+    "reporter": {
+      "observer": "[PCM draft] Accredited observer ({code})",
+      "citizen": "[PCM draft] Citizen report ({code})",
+      "sms": "[PCM draft] SMS report",
+      "ussd": "[PCM draft] USSD report"
+    },
+    "originalText": "[PCM draft] Original description",
+    "language": "[PCM draft] Language: {lang}",
+    "translation": "[PCM draft] Machine translation (NLLB-200)",
+    "translationNotice": "[PCM draft] Automated translation for review. Check original text if ambiguous.",
+    "redaction": {
+      "title": "[PCM draft] Redact personal names",
+      "hint": "[PCM draft] Specify character offsets to redact personal names before publication or sharing.",
+      "start": "[PCM draft] Start offset",
+      "end": "[PCM draft] End offset",
+      "addSpan": "[PCM draft] Add redaction span",
+      "clearSpans": "[PCM draft] Clear all redactions",
+      "save": "[PCM draft] Save redactions",
+      "preview": "[PCM draft] Redacted preview: [name removed]"
+    },
+    "details": {
+      "category": "[PCM draft] Category: {category}",
+      "danger": "[PCM draft] Danger reported: Yes",
+      "firsthand": "[PCM draft] Observed firsthand: Yes",
+      "location": "[PCM draft] Location",
+      "occurredAt": "[PCM draft] Occurred: {time}",
+      "receivedAt": "[PCM draft] Received: {time}",
+      "skew": "[PCM draft] Phone clock skew: {seconds}s"
+    },
+    "evidence": {
+      "title": "[PCM draft] Evidence & integrity",
+      "sha256": "[PCM draft] SHA-256 verified",
+      "exifRemoved": "[PCM draft] EXIF stripped",
+      "blurred": "[PCM draft] Faces blurred",
+      "unblur": "[PCM draft] View unblurred (recorded in audit)",
+      "transcript": "[PCM draft] Audio transcript",
+      "pendingUpload": "[PCM draft] Pending upload: {received} of {total} bytes received",
+      "noEvidence": "[PCM draft] No media attachments submitted."
+    },
+    "suggestions": {
+      "title": "[PCM draft] AI suggestions",
+      "notice": "[PCM draft] All suggestions are machine generated and require reviewer decision.",
+      "categorySuggested": "[PCM draft] Suggested category: {category}",
+      "urgencySuggested": "[PCM draft] Suggested urgency: {urgency}",
+      "accept": "[PCM draft] Accept suggestion",
+      "correct": "[PCM draft] Correct suggestion",
+      "correctLabel": "[PCM draft] Choose correction",
+      "saveCorrection": "[PCM draft] Apply correction"
+    },
+    "duplicates": {
+      "title": "[PCM draft] Duplicate candidates",
+      "sideBySide": "[PCM draft] Side-by-side comparison",
+      "similarity": "[PCM draft] {percent}% match",
+      "link": "[PCM draft] Link as duplicate",
+      "keepSeparate": "[PCM draft] Keep separate",
+      "linked": "[PCM draft] Linked",
+      "inaccessible": "[PCM draft] Report from another organisation (metadata only)"
+    },
+    "resultSheet": {
+      "title": "[PCM draft] Result sheet consistency check",
+      "disclaimer": "[PCM draft] Consistency check for review. This is not a result.",
+      "entryMethod": "[PCM draft] Entry method: {method}",
+      "flags": "[PCM draft] Flags detected",
+      "accreditedExceeds": "[PCM draft] Accredited voters exceed registered voters",
+      "sumDiffers": "[PCM draft] Party votes plus rejected votes differs from accredited count",
+      "roundNumbers": "[PCM draft] Unusually round numbers",
+      "benignCauses": "[PCM draft] Possible benign causes: copy error, unreadable digit"
+    },
+    "conversation": {
+      "title": "[PCM draft] Observer conversation",
+      "send": "[PCM draft] Send message",
+      "placeholder": "[PCM draft] Type a message to the observer...",
+      "markRead": "[PCM draft] Mark messages read",
+      "noMessages": "[PCM draft] No messages yet."
+    },
+    "actions": {
+      "title": "[PCM draft] Case actions",
+      "startReview": "[PCM draft] Start review",
+      "askQuestion": "[PCM draft] Ask formal question",
+      "questionLabel": "[PCM draft] Question for reporter",
+      "questionHint": "[PCM draft] The observer or citizen will see this question and can respond.",
+      "submitQuestion": "[PCM draft] Send question",
+      "closeCase": "[PCM draft] Close case",
+      "outcomeLabel": "[PCM draft] Outcome",
+      "outcome": {
+        "corroborated": "[PCM draft] Corroborated",
+        "insufficient_evidence": "[PCM draft] Insufficient evidence",
+        "out_of_scope": "[PCM draft] Out of scope"
+      },
+      "rationaleLabel": "[PCM draft] Internal rationale",
+      "rationaleHint": "[PCM draft] Explain why this case was corroborated, closed or dismissed. Never shown to reporters.",
+      "expectedMediaLabel": "[PCM draft] Confirm evidence considered in this closure",
+      "submitClose": "[PCM draft] Confirm closure"
+    },
+    "history": {
+      "title": "[PCM draft] Audit trail",
+      "chainIntact": "[PCM draft] Hash chain intact",
+      "chainBroken": "[PCM draft] Hash chain broken!"
+    }
+  },
+  "s04": {
+    "title": "[PCM draft] Case assignments",
+    "subtitle": "[PCM draft] Workload distribution and reviewer assignment",
+    "unassignedCount": "[PCM draft] {count} unassigned cases",
+    "reviewers": "[PCM draft] Active reviewers ({count})",
+    "openCases": "[PCM draft] {count} open cases ({urgent} urgent)",
+    "activeNow": "[PCM draft] Active now",
+    "suggestedBadge": "[PCM draft] Suggested: {name}",
+    "reasonFewest": "[PCM draft] Fewest open cases",
+    "reasonArea": "[PCM draft] Same LGA today",
+    "reasonFewestInArea": "[PCM draft] Fewest open cases in LGA",
+    "bulkAssign": "[PCM draft] Assign selected ({count})",
+    "takeSuggested": "[PCM draft] Take suggested reviewer",
+    "assignTo": "[PCM draft] Assign to...",
+    "selectAll": "[PCM draft] Select all",
+    "assignedSuccess": "[PCM draft] Assigned {count} cases successfully.",
+    "assignedError": "[PCM draft] Could not assign some cases: {error}"
+  },
+  "s05": {
+    "title": "[PCM draft] Operations room",
+    "subtitle": "[PCM draft] Aggregates, cluster warnings, and coverage monitoring",
+    "filterRange": "[PCM draft] Date range",
+    "today": "[PCM draft] Today",
+    "totals": {
+      "totalReports": "[PCM draft] Total reports",
+      "incidents": "[PCM draft] Incidents after links",
+      "urgentOpen": "[PCM draft] Urgent open",
+      "openQuestions": "[PCM draft] Questions open",
+      "resultFlags": "[PCM draft] Result sheet flags",
+      "withdrawn": "[PCM draft] Withdrawn"
+    },
+    "clusters": {
+      "title": "[PCM draft] Cluster warnings",
+      "badge": "[PCM draft] {count} reports in {window}m",
+      "baseline": "[PCM draft] Baseline: {baseline}",
+      "reviewButton": "[PCM draft] Mark reviewed",
+      "reviewNote": "[PCM draft] Review note (optional)",
+      "reviewedBadge": "[PCM draft] Reviewed",
+      "settings": "[PCM draft] Cluster thresholds",
+      "windowMinutes": "[PCM draft] Window (minutes)",
+      "minReports": "[PCM draft] Minimum reports",
+      "saveSettings": "[PCM draft] Update thresholds"
+    },
+    "coverage": {
+      "title": "[PCM draft] Coverage gaps",
+      "expected": "[PCM draft] {expected} expected polling units",
+      "withChecklist": "[PCM draft] {count} reported ({percent}%)",
+      "withoutChecklist": "[PCM draft] {count} missing",
+      "noAnswers": "[PCM draft] Units with most 'No' answers"
+    },
+    "lateMaterials": {
+      "title": "[PCM draft] Late materials risk",
+      "subtitle": "[PCM draft] Logistical prediction model",
+      "hours": "[PCM draft] {hours}h predicted transit",
+      "riskHigh": "[PCM draft] High risk",
+      "riskMedium": "[PCM draft] Medium risk",
+      "riskLow": "[PCM draft] Low risk"
+    },
+    "resultSheetFlags": {
+      "title": "[PCM draft] Result sheet flags",
+      "disclaimer": "[PCM draft] Consistency check for review. This is not a result.",
+      "openFlags": "[PCM draft] {count} sheets flagged for review"
+    },
+    "lgaBreakdown": {
+      "title": "[PCM draft] Reports by LGA",
+      "count": "[PCM draft] {count} reports ({urgent} urgent)",
+      "viewMap": "[PCM draft] Map view (LGA level)",
+      "viewTable": "[PCM draft] Table view"
+    }
+  },
+  "s06": {
+    "title": "[PCM draft] Rumour desk",
+    "subtitle": "[PCM draft] Track online claims, match with field observations, draft responses",
+    "newClaim": "[PCM draft] Log new claim",
+    "claimText": "[PCM draft] Claim text",
+    "source": "[PCM draft] Seen on",
+    "image": "[PCM draft] Upload screenshot/image",
+    "claimsList": "[PCM draft] Active claims",
+    "harmLevel": "[PCM draft] Harm risk: {level}",
+    "checkWorthiness": "[PCM draft] Check-worthiness: {level}",
+    "imageGuide": {
+      "title": "[PCM draft] Image verification guide",
+      "notice": "[PCM draft] Guidance only. Always verify with human judgment.",
+      "reverseSearch": "[PCM draft] Run reverse image search",
+      "checkDate": "[PCM draft] Verify date against claim timestamp",
+      "lookEdits": "[PCM draft] Inspect for image manipulations",
+      "compression": "[PCM draft] Compression artifact hint: {hint}"
+    },
+    "matches": {
+      "title": "[PCM draft] Matched field observations",
+      "corroboratedOnly": "[PCM draft] Only closed corroborated reports shown",
+      "pastClaims": "[PCM draft] Past verified claims"
+    },
+    "response": {
+      "title": "[PCM draft] Public response draft",
+      "textLabel": "[PCM draft] Response text",
+      "saveDraft": "[PCM draft] Save draft",
+      "approve": "[PCM draft] Approve response",
+      "reject": "[PCM draft] Reject draft",
+      "dismiss": "[PCM draft] Dismiss claim",
+      "draftedBy": "[PCM draft] Drafted by {name} at {time}",
+      "approvedBy": "[PCM draft] Approved by {name} at {time}",
+      "secondPersonNotice": "[PCM draft] Another coordinator must approve a response you drafted.",
+      "rejectNote": "[PCM draft] Rejection note"
+    }
+  },
+  "s07": {
+    "title": "[PCM draft] Publish snapshots",
+    "subtitle": "[PCM draft] Public aggregated releases with statistical privacy suppression",
+    "createTitle": "[PCM draft] Create new snapshot",
+    "cutoffLabel": "[PCM draft] Cutoff time",
+    "cutoffHint": "[PCM draft] Must be at least 60 minutes in the past.",
+    "createButton": "[PCM draft] Generate preview",
+    "scheduleTitle": "[PCM draft] Automatic hourly release",
+    "scheduleHint": "[PCM draft] Builds and publishes a snapshot every hour if checks pass.",
+    "scheduleOn": "[PCM draft] Hourly publishing is active",
+    "scheduleOff": "[PCM draft] Hourly publishing is paused",
+    "snapshotsList": "[PCM draft] Snapshot history",
+    "previewTitle": "[PCM draft] Snapshot preview (exact public data)",
+    "suppressionNotice": "[PCM draft] Counts below 5 are suppressed with 'fewer than 5'. Primary and secondary suppression applied.",
+    "excludedTitle": "[PCM draft] Excluded from snapshot",
+    "excludedNotClosed": "[PCM draft] {count} not yet closed",
+    "excludedWithdrawn": "[PCM draft] {count} withdrawn",
+    "excludedAfterCutoff": "[PCM draft] {count} after cutoff",
+    "approvePublish": "[PCM draft] Approve and publish",
+    "discard": "[PCM draft] Discard draft"
+  },
+  "s08": {
+    "title": "[PCM draft] Discussion moderation",
+    "subtitle": "[PCM draft] Community oversight and safety for observer forums",
+    "flagsInbox": "[PCM draft] Reported posts ({count})",
+    "flaggedBy": "[PCM draft] Flagged {count} times",
+    "reasons": "[PCM draft] Reasons: {reasons}",
+    "nameCheckAlert": "[PCM draft] Possible personal name detected",
+    "hidePost": "[PCM draft] Hide post",
+    "unhidePost": "[PCM draft] Unhide post",
+    "hideReason": "[PCM draft] Reason for hiding",
+    "removeMember": "[PCM draft] Remove member from forum",
+    "closeDiscussion": "[PCM draft] Close discussion",
+    "createDiscussion": "[PCM draft] Create new discussion",
+    "topic": "[PCM draft] Discussion topic",
+    "wardLga": "[PCM draft] Ward or LGA scope",
+    "inviteCodes": "[PCM draft] Invite observer codes"
+  },
+  "s09": {
+    "title": "[PCM draft] Observer code batches",
+    "subtitle": "[PCM draft] Batch generation, printable cards, and credential management",
+    "batches": "[PCM draft] Batches",
+    "createBatch": "[PCM draft] Create code batch",
+    "label": "[PCM draft] Batch label",
+    "count": "[PCM draft] Number of codes",
+    "printCards": "[PCM draft] Print code cards",
+    "printConfirm": "[PCM draft] Issue setup PINs and prepare printable cards",
+    "printNotice": "[PCM draft] Setup PINs are shown only once. Print or distribute immediately.",
+    "codesTable": "[PCM draft] Observer codes",
+    "searchCodes": "[PCM draft] Search codes",
+    "status": {
+      "unclaimed": "[PCM draft] Unclaimed",
+      "active": "[PCM draft] Active",
+      "locked": "[PCM draft] Locked",
+      "revoked": "[PCM draft] Revoked"
+    },
+    "actions": {
+      "revoke": "[PCM draft] Revoke code",
+      "reissue": "[PCM draft] Reissue code",
+      "resetPin": "[PCM draft] Reset PIN",
+      "reason": "[PCM draft] Reason"
+    }
+  },
+  "s10": {
+    "title": "[PCM draft] Staff accounts",
+    "subtitle": "[PCM draft] Manage staff access, roles, and two-factor credentials",
+    "staffList": "[PCM draft] Staff members ({count})",
+    "createStaff": "[PCM draft] Add staff member",
+    "displayName": "[PCM draft] Display name",
+    "email": "[PCM draft] Email address",
+    "roles": "[PCM draft] Assigned roles",
+    "roleAdminAlone": "[PCM draft] Admin role cannot be combined with reviewer, coordinator, or moderator.",
+    "inviteUrl": "[PCM draft] One-time invitation link",
+    "copyInvite": "[PCM draft] Copy link",
+    "reset2fa": "[PCM draft] Reset 2FA",
+    "offboard": "[PCM draft] Offboard staff",
+    "offboardReason": "[PCM draft] Offboarding reason",
+    "offboardWarning": "[PCM draft] Any open cases assigned to this user will be returned to the unassigned queue."
+  },
+  "s11": {
+    "title": "[PCM draft] Organisation settings",
+    "subtitle": "[PCM draft] Intake control, data retention, and election parameters",
+    "intakePause": "[PCM draft] Pause report intake",
+    "intakePauseHint": "[PCM draft] Temporarily stop accepting new reports from observers and citizens.",
+    "retention": "[PCM draft] Data retention period",
+    "retentionDays": "[PCM draft] {days} days",
+    "retentionConfirm": "[PCM draft] Shortening retention will delete older records at next purge.",
+    "electionDay": "[PCM draft] Election day",
+    "publicDelay": "[PCM draft] Public snapshot delay",
+    "delayMinutes": "[PCM draft] {minutes} minutes",
+    "partyLabels": "[PCM draft] Party labels on result sheets",
+    "saveSettings": "[PCM draft] Save organisation settings",
+    "auditExport": "[PCM draft] Export audit log"
+  },
+  "s12": {
+    "title": "[PCM draft] Security & audit monitoring",
+    "subtitle": "[PCM draft] Security rule alerts and cryptographic audit chain verification",
+    "alerts": "[PCM draft] Security alerts",
+    "severity": "[PCM draft] Severity",
+    "detector": "[PCM draft] Detector",
+    "updateStatus": "[PCM draft] Update status",
+    "auditVerify": "[PCM draft] Audit hash chain verification",
+    "chainStatus": "[PCM draft] Chain integrity",
+    "eventsChecked": "[PCM draft] {count} events verified",
+    "headHash": "[PCM draft] Chain head hash: {hash}",
+    "brokenEvent": "[PCM draft] First broken event: {id}",
+    "verifyNow": "[PCM draft] Run verification check",
+    "exportLog": "[PCM draft] Export audit log (JSONL/CSV)"
   }
 }
