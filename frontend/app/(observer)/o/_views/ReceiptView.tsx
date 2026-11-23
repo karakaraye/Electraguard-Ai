@@ -1,4 +1,5 @@
 "use client";
+import { BackgroundArt } from "../../../../ui/BackgroundArt/BackgroundArt";
 
 /* O-12 Report received, and the honest state of a report that is still on the phone. */
 
@@ -74,6 +75,7 @@ export function ReceiptView({ code, receivedAt, justSent, citizen, items, remove
       }
       data-testid="o12"
     >
+      <BackgroundArt />
       <div className={`${styles.screen} ${styles.wide}`}>
         <h1 className={styles.title}>{t("o12.title")}</h1>
         <div className={styles.receipt}>

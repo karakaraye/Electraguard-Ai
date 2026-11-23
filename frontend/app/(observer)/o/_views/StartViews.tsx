@@ -1,4 +1,5 @@
 "use client";
+import { BackgroundArt } from "../../../../ui/BackgroundArt/BackgroundArt";
 
 /* O-01 Language · O-02 What this app keeps · O-03 Who are you / Sign in / Choose your PIN / Code revoked */
 
@@ -38,6 +39,7 @@ export function LanguageView({ selected, onChoose, offline, banner }: LanguageVi
   const t = useT();
   return (
     <AppShell title={<AppBarTitle />} hideBack offline={offline} banner={banner} data-testid="o01">
+      <BackgroundArt clear="none" />
       <div className={styles.screen}>
         <h1 className={styles.title} id="o01-title" lang="en">
           {t("o01.title")}
@@ -107,6 +109,7 @@ export function NoticeView({ onBack, onContinue, readOnly, offline, banner }: No
       }
       data-testid="o02"
     >
+      <BackgroundArt />
       <div className={styles.screen}>
         <h1 className={styles.title}>{t("o02.title")}</h1>
         <ul className={styles.lines}>
@@ -138,6 +141,7 @@ export function ChooseView({ onBack, onObserver, onCitizen, onCheckStatus, offli
   const t = useT();
   return (
     <AppShell title={<AppBarTitle />} onBack={onBack} offline={offline} banner={banner} data-testid="o03-choose">
+      <BackgroundArt clear="none" />
       <div className={`${styles.screen} ${styles.wide}`}>
         <h1 className={styles.title}>{t("o03.title")}</h1>
         <div className={styles.choices}>

@@ -310,7 +310,8 @@
     "sendWaiting": "Ziga ya jiri koodu m",
     "deleteWaiting": "Hichapụ ha",
     "needsAttention": "{count, plural, one {Akụkọ # chọrọ nlebara anya gị tupu e zigaa ya.} other {Akụkọ # chọrọ nlebara anya gị tupu e zigaa ya.}}",
-    "fix": "Mezie ya"
+    "fix": "Mezie ya",
+    "purpose": "Kọọ ihe ị hụrụ n'ebe ntuli aka gị. Akụkọ ọ bụla na-enyere aka iwulite Naịjirịa ka mma."
   },
   "incident": {
     "draftKept": "Echekwara akụkọ gị na ekwentị a.",

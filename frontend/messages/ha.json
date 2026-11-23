@@ -310,7 +310,8 @@
     "sendWaiting": "Aika da lambata",
     "deleteWaiting": "Share su",
     "needsAttention": "{count, plural, one {Rahoto # yana buƙatar hankalinka kafin a iya aika shi.} other {Rahotanni # suna buƙatar hankalinka kafin a iya aika su.}}",
-    "fix": "Gyara shi"
+    "fix": "Gyara shi",
+    "purpose": "Ka ba da rahoton abin da ka gani a rumfar zaɓenka. Kowane rahoto yana taimakawa wajen gina Najeriya mafi kyau."
   },
   "incident": {
     "draftKept": "An ajiye rahotonka a kan wannan wayar.",

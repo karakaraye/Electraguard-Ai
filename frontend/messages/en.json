@@ -309,7 +309,8 @@
     "sendWaiting": "Send with my code",
     "deleteWaiting": "Delete them",
     "needsAttention": "{count, plural, one {# report needs your attention before it can send.} other {# reports need your attention before they can send.}}",
-    "fix": "Fix it"
+    "fix": "Fix it",
+    "purpose": "Report what you see at your polling unit. Every report helps build a better Nigeria."
   },
   "incident": {
     "draftKept": "Your report is saved on this phone.",

@@ -310,7 +310,8 @@
     "sendWaiting": "Fi kóòdù mi ránṣẹ́",
     "deleteWaiting": "Pa wọ́n rẹ́",
     "needsAttention": "{count, plural, one {Ìròyìn # nílò àfiyèsí rẹ kí ó tó lè lọ.} other {Ìròyìn # nílò àfiyèsí rẹ kí ó tó lè lọ.}}",
-    "fix": "Tún un ṣe"
+    "fix": "Tún un ṣe",
+    "purpose": "Ròyìn ohun tí o rí ní ibùdó ìdìbò rẹ. Gbogbo ìròyìn ń ràn wá lọ́wọ́ láti kọ́ Nàìjíríà tó dára jù."
   },
   "incident": {
     "draftKept": "A ti fi ìròyìn rẹ pamọ́ sórí fóònù yìí.",

@@ -310,7 +310,8 @@
     "sendWaiting": "Send am with my code",
     "deleteWaiting": "Delete dem",
     "needsAttention": "{count, plural, one {# report need your attention before e fit send.} other {# reports need your attention before dem fit send.}}",
-    "fix": "Fix am"
+    "fix": "Fix am",
+    "purpose": "Report wetin you see for your polling unit. Every report dey help build better Naija."
   },
   "incident": {
     "draftKept": "Your report dey saved for this phone.",
