@@ -79,8 +79,8 @@ class ObserverReportTests(TestCase):
 
     def test_validation_and_fixing_failed_request_with_same_key(self):
         cases = [
-            ({"kind": "checklist"}, "kind", "not_supported_yet"),
-            ({"kind": "result_sheet"}, "kind", "not_supported_yet"),
+            ({"kind": "checklist"}, "description", "not_allowed_for_kind"),
+            ({"kind": "result_sheet"}, "description", "not_allowed_for_kind"),
             ({"kind": "other"}, "kind", "invalid_choice"),
             ({"language": "xx"}, "language", "invalid_choice"),
             ({"category_observer": "other"}, "category_observer", "invalid_choice"),
@@ -134,7 +134,7 @@ class ObserverReportTests(TestCase):
         detail = self.client.get(f"{PATH}/{response.json()['id']}").json()
         self.assertFalse(detail["time_known"])
         self.assertTrue(detail["occurred_at"].endswith("T00:00:00+01:00"))
-        self.assertTrue(detail["description"].startswith("Café "))
+        self.assertTrue(detail["description"].startswith("CafÃ© "))
         self.assertEqual(detail["area"]["polling_unit_code"], "SYN-KN-01-01-001")
 
     def test_paging_counts_and_isolation(self):

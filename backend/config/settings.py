@@ -1,7 +1,6 @@
 from uuid import UUID
 import os
 from pathlib import Path
-from uuid import UUID
 
 from django.core.exceptions import ImproperlyConfigured
 from dotenv import load_dotenv
@@ -20,12 +19,6 @@ DEBUG = os.getenv("DJANGO_DEBUG", "").lower() == "true"
 OBSERVATION_INTAKE_ENABLED = os.getenv(
     "OBSERVATION_INTAKE_ENABLED", "true" if DEBUG else "false"
 ).lower() == "true"
-PUBLIC_INTAKE_ORGANISATION_ID = None
-if os.getenv("PUBLIC_INTAKE_ORGANISATION_ID"):
-    try:
-        PUBLIC_INTAKE_ORGANISATION_ID = UUID(os.environ["PUBLIC_INTAKE_ORGANISATION_ID"])
-    except ValueError as exc:
-        raise ImproperlyConfigured("PUBLIC_INTAKE_ORGANISATION_ID must be a UUID.") from exc
 host_setting = os.getenv("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1" if DEBUG else "")
 ALLOWED_HOSTS = [host.strip() for host in host_setting.split(",") if host.strip()]
 frontend_origin = os.getenv("FRONTEND_ORIGIN", "http://localhost:3000" if DEBUG else "")
@@ -120,3 +113,6 @@ PRIVATE_MEDIA_ROOT = Path(
     os.getenv("PRIVATE_MEDIA_ROOT")
     or Path(__file__).resolve().parent.parent.parent.parent / ".electraguard-private-media"
 )
+
+if os.getenv("PUBLIC_INTAKE_ORGANISATION_ID"):
+    PUBLIC_INTAKE_ORGANISATION_ID = UUID(os.environ["PUBLIC_INTAKE_ORGANISATION_ID"])
