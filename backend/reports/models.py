@@ -99,6 +99,7 @@ class ReviewEvent(OrganisationOwned):
 
 
 class Triage(OrganisationOwned):
+    suggestions = models.JSONField(default=dict, blank=True)
     class Status(models.TextChoices):
         PENDING = "pending", "Pending"
         READY = "ready", "Ready"

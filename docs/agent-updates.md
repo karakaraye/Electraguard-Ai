@@ -53,6 +53,12 @@ The full plan is in [hackathon-plan.md](hackathon-plan.md).
 
 ## Updates
 
+### 23 Nov 2026 · C11 intelligence and phone channels
+
+- SMS and USSD share the citizen report and reply persistence paths. The simulator exercises the same handlers and marks its reports for reviewer display and exclusion from public counts.
+- The triage worker writes advisory suggestions to the existing reviewer model. Late-materials risk rows are organisation-scoped and served by OPS-04. Duplicate suggestions remain subject to the existing grouping release gate.
+- An empty PostgreSQL database migrated successfully. Regenerating the evaluation reproduced the checked-in report byte-for-byte, with 87.1% held-out urgency recall and the category leakage audit intact.
+
 ### 23 Nov 2026 · Codex · Slice C8 staff authentication and account administration
 
 - Added AUTH-04 and AUTH-05 with password-only pending sessions and RFC 6238 verification. Pending sessions expire after five minutes and are fenced to AUTH-05, AUTH-06 and AUTH-07. Verified sessions use browser cookies and enforce a 30-minute idle timeout and eight-hour absolute lifetime. AUTH-06 removes tracked sessions on all devices when requested.

@@ -98,9 +98,14 @@ def shortlist(report):
 
 @transaction.atomic
 def process_next():
+    from intelligence.triage import process_next as process_incident
+
+    incident_status = process_incident()
+    if incident_status:
+        return incident_status
     job = Triage.objects.select_for_update(skip_locked=True).filter(
         status=Triage.Status.PENDING, method_version=METHOD_VERSION,
-    ).order_by("pk").first()
+    ).filter(report__receipt_code__isnull=True).order_by("pk").first()
     if job is None:
         return None
 
