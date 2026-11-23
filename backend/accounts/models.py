@@ -19,6 +19,13 @@ class Organisation(models.Model):
     coverage_state_codes = models.JSONField(default=list)
     coverage_lga_codes = models.JSONField(default=list)
     party_labels = models.JSONField(default=default_party_labels)
+    retention_days = models.PositiveSmallIntegerField(default=180)
+    election_day = models.DateField(null=True)
+    public_delay_minutes = models.PositiveSmallIntegerField(default=60)
+    simulator_enabled = models.BooleanField(default=False)
+    settings_version = models.PositiveIntegerField(default=0)
+    settings_updated_by = models.CharField(max_length=254, blank=True)
+    settings_updated_at = models.DateTimeField(null=True)
 
 
 class OrganisationOwned(models.Model):
@@ -59,11 +66,29 @@ class User(AbstractUser, OrganisationOwned):
         OBSERVER = "observer", "Observer"
         REVIEWER = "reviewer", "Reviewer"
         ADMINISTRATOR = "administrator", "Administrator"
+        COORDINATOR = "coordinator", "Coordinator"
+        MODERATOR = "moderator", "Moderator"
+        ORG_ADMIN = "org_admin", "Organisation admin"
 
     public_id = models.UUIDField(default=uuid4, editable=False, unique=True)
     username = None
     email = models.EmailField(unique=True)
     role = models.CharField(max_length=16, choices=Role.choices, blank=True, default="")
+    totp_secret = models.CharField(max_length=32, blank=True)
+    totp_last_step = models.BigIntegerField(default=-1)
+    staff_auth_generation = models.PositiveIntegerField(default=0)
+    staff_invite_digest = models.CharField(max_length=64, unique=True, null=True)
+    staff_invite_expires_at = models.DateTimeField(null=True)
+    staff_roles = models.JSONField(default=list)
+    staff_version = models.PositiveIntegerField(default=0)
+
+    @property
+    def effective_roles(self):
+        if self.staff_roles:
+            return self.staff_roles
+        if self.role == self.Role.ADMINISTRATOR:
+            return ["coordinator"]
+        return [self.role] if self.role else []
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
@@ -101,6 +126,8 @@ class ObserverCode(OrganisationOwned):
     token_digest = models.CharField(max_length=64, unique=True, null=True)
     token_expires_at = models.DateTimeField(null=True)
     token_attempts = models.PositiveSmallIntegerField(default=0)
+    activated_at = models.DateTimeField(null=True)
+    replaced_by = models.ForeignKey("self", on_delete=models.PROTECT, null=True, related_name="+")
 
 
 class AuthThrottle(models.Model):

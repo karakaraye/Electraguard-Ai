@@ -118,6 +118,10 @@ def download_evidence(request, reference, attachment_id):
     attachment = get_object_or_404(
         org_scope(request, Evidence), report__in=accessible.filter(reference=reference), id=attachment_id
     )
+    if request.user.role == User.Role.REVIEWER:
+        from security.detectors import media_access
+
+        media_access(request.user, attachment.id, download=True)
     extension = "jpg" if attachment.content_type == "image/jpeg" else "png"
     return FileResponse(
         BytesIO(attachment.content),

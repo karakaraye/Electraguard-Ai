@@ -58,7 +58,7 @@ def endpoint(method, *, max_body_bytes=None):
                 response = error(405, "method_not_allowed", "This method is not available.")
                 response["Allow"] = method
                 return response
-            if method == "POST":
+            if method in {"POST", "PUT", "PATCH"}:
                 if request.content_type != "application/json":
                     return error(400, "bad_request", "Send a JSON object.")
                 try:
@@ -104,10 +104,10 @@ def identity(request):
         result["user"] = {
             "id": str(user.public_id), "kind": "observer" if observer else "staff",
             "observer_code": credential.code if credential else None,
-            "roles": [user.role] if user.role else [],
+            "roles": user.effective_roles,
             "display_name": None if observer else user.get_full_name() or None,
             "email": None if observer else user.email,
-            "totp_enrolled": False,
+            "totp_enrolled": bool(user.totp_secret) if not observer else False,
             "organisation": {
                 "id": str(organisation.pk), "name": organisation.name,
                 "intake_paused": organisation.intake_paused or not settings.OBSERVATION_INTAKE_ENABLED,
@@ -170,6 +170,15 @@ def register_failure(row, credential, now):
             ObserverSecurityAlert.objects.create(
                 organisation_id=credential.organisation_id, credential=credential,
                 permanent=row.permanently_locked,
+            )
+            from security.detectors import notice
+
+            failures = len(row.attempts) if row.permanently_locked else sum(
+                timestamp > (now - CODE_WINDOW).timestamp() for timestamp in row.attempts
+            )
+            notice(
+                credential.organisation_id, "repeated_failed_pins", "observer_code", credential.code,
+                credential.code, {"failures": failures, "window_minutes": 1440 if row.permanently_locked else 15},
             )
         return locked(row)
     return invalid_credentials()
@@ -278,6 +287,7 @@ def set_pin(request, data):
     credential.setup_expires_at = credential.token_expires_at = None
     credential.token_digest = None
     credential.status = Status.ACTIVE
+    credential.activated_at = credential.activated_at or timezone.now()
     credential.save()
     start_observer_session(request, credential.user)
     return JsonResponse({"status": "signed_in", "me": identity(request)})
@@ -350,6 +360,12 @@ def sign_out(request, data):
     if request.user.is_authenticated:
         if everywhere:
             credential = org_scope(request, ObserverCode).select_for_update().filter(user=request.user).first()
+            if credential is None:
+                from django.db.models import F
+
+                User.objects.filter(pk=request.user.pk).update(
+                    staff_auth_generation=F("staff_auth_generation") + 1
+                )
             end_sessions(request.user, include_legacy=credential is None)
         else:
             org_scope(request, AccountSession).filter(key=request.session.session_key, user=request.user).delete()

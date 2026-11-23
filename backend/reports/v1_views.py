@@ -107,6 +107,14 @@ def create_report(request, data):
     org_scope(request, Triage).create(
         report=report, organisation_id=report.organisation_id, method_version=METHOD_VERSION,
     )
+    from security.detectors import intake
+    from staff.audit import record
+
+    intake(report.organisation_id)
+    record(
+        report.organisation_id, ReviewEvent.Action.CREATE, "report", report.pk,
+        actor=request.user, version=0, content={"to_status": "received"},
+    )
     return 201, {
         **identity(report), "version": report.version,
         "media_upload": {"max_items": 6, "max_total_bytes": 62914560},

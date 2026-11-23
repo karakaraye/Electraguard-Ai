@@ -9,7 +9,7 @@ from django.db import transaction
 from django.utils import timezone
 from django.utils.crypto import salted_hmac
 
-from .models import AuthThrottle, ObserverCode
+from .models import AuthThrottle, ObserverCode, User
 
 ALPHABET = "0123456789ABCDEFGHJKMNPQRSTVWXYZ"
 ALIASES = str.maketrans("OIL", "011")
@@ -66,6 +66,21 @@ def new_setup_pin(credential):
     credential.status = ObserverCode.Status.UNCLAIMED
     credential.save()
     return pin
+
+
+def issue_code(organisation, label):
+    while True:
+        code = generate_code()
+        throttle = locked_throttle("code", code)
+        if not ObserverCode.objects.filter(code=code).exists():
+            break
+    user = User.objects.create_user(
+        email=f"{code.lower()}@observer.invalid", role=User.Role.OBSERVER, organisation=organisation,
+    )
+    credential = ObserverCode(user=user, code=code, organisation=organisation, label=label)
+    pin = new_setup_pin(credential)
+    throttle.delete()
+    return credential, pin
 
 
 def digest(namespace, value):

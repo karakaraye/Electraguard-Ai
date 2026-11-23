@@ -56,6 +56,12 @@ def record_change(report, actor, action, change, field=None):
     ReviewEvent.objects.create(
         report=report, organisation_id=report.organisation_id, actor=actor, action=action, version=report.version, change=change
     )
+    from staff.audit import record
+
+    record(
+        report.organisation_id, action, "report", report.pk, actor=actor,
+        version=report.version, content=change,
+    )
 
 
 def transition(report, actor, action, data):

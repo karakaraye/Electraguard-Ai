@@ -1,11 +1,62 @@
 from django.urls import include, path
 
-from accounts import observer_auth, views
+from accounts import observer_auth, staff_auth, views
 from accounts.models import User
+from ops import clusters, observations, views as ops_views
+from publicdata import views as publish
+from rumours import views as rumour_views
+from security import views as security_views
+from staff import accounts as staff_accounts, assignments, audit, cases, codes, organisation_settings
 
 from . import health
 
 urlpatterns = [
+    path("api/v1/audit/export", audit.export),
+    path("api/v1/audit/verify", audit.verify),
+    path("api/v1/security/alerts", security_views.alerts),
+    path("api/v1/security/alerts/<uuid:alert_id>", security_views.update),
+    path("api/v1/admin/settings", organisation_settings.settings_view),
+    path("api/v1/admin/code-batches", codes.batches),
+    path("api/v1/admin/code-batches/<uuid:batch_id>/print-data", codes.print_data),
+    path("api/v1/admin/codes", codes.code_list),
+    path("api/v1/admin/codes/<str:observer_code>/revoke", codes.code_action, {"operation": "revoke"}),
+    path("api/v1/admin/codes/<str:observer_code>/reissue", codes.code_action, {"operation": "reissue"}),
+    path("api/v1/admin/codes/<str:observer_code>/reset-pin", codes.code_action, {"operation": "reset_pin"}),
+    path("api/v1/admin/staff", staff_accounts.staff),
+    path("api/v1/admin/staff/<uuid:staff_id>", staff_accounts.update),
+    path("api/v1/admin/staff/<uuid:staff_id>/reset-2fa", staff_accounts.operation, {"action": "reset_2fa"}),
+    path("api/v1/admin/staff/<uuid:staff_id>/offboard", staff_accounts.operation, {"action": "offboard_staff"}),
+    path("api/v1/review/cases/<uuid:reference>/actions", cases.case_actions),
+    path("api/v1/review/cases/<uuid:reference>", cases.case_detail),
+    path("api/v1/review/cases/<uuid:reference>/suggestions/<str:kind>", cases.case_edit),
+    path("api/v1/review/cases/<uuid:reference>/redaction", cases.case_edit),
+    path("api/v1/review/cases/<uuid:reference>/duplicates/<uuid:other>", cases.duplicate),
+    path("api/v1/review/queue", cases.queue),
+    path("api/v1/assignments", assignments.assignments),
+    path("api/v1/ops/late-materials-risk", ops_views.late_materials_risk),
+    path("api/v1/ops/overview", observations.overview),
+    path("api/v1/ops/coverage", observations.coverage),
+    path("api/v1/ops/clusters", clusters.clusters),
+    path("api/v1/ops/clusters/<uuid:warning_id>/review", clusters.review),
+    path("api/v1/ops/cluster-settings", clusters.settings_view),
+    path("api/v1/publish/snapshots", publish.snapshots),
+    path("api/v1/publish/snapshots/<uuid:snapshot_id>", publish.snapshot_detail),
+    path("api/v1/publish/snapshots/<uuid:snapshot_id>/approve", publish.snapshot_decision, {"decision": "approve"}),
+    path("api/v1/publish/snapshots/<uuid:snapshot_id>/discard", publish.snapshot_decision, {"decision": "discard"}),
+    path("api/v1/publish/schedule", publish.schedule),
+    path("api/v1/public/results", publish.results),
+    path("api/v1/rumours/claims", rumour_views.collection),
+    path("api/v1/rumours/claims/<uuid:claim_id>", rumour_views.detail),
+    path("api/v1/rumours/claims/<uuid:claim_id>/matches", rumour_views.matches),
+    path("api/v1/rumours/claims/<uuid:claim_id>/response", rumour_views.draft),
+    path("api/v1/rumours/claims/<uuid:claim_id>/response/approve", rumour_views.action, {"operation": "approve"}),
+    path("api/v1/rumours/claims/<uuid:claim_id>/response/reject", rumour_views.action, {"operation": "reject"}),
+    path("api/v1/rumours/claims/<uuid:claim_id>/dismiss", rumour_views.action, {"operation": "dismiss"}),
+    path("api/v1/auth/staff/sign-in", staff_auth.sign_in),
+    path("api/v1/auth/staff/totp", staff_auth.verify),
+    path("api/v1/auth/staff/totp/enrolment", staff_auth.enrol_start),
+    path("api/v1/auth/staff/totp/enrolment/confirm", staff_auth.enrol_confirm),
+    path("api/v1/auth/staff/invite", staff_auth.accept_invite),
     path("api/v1/", include("reports.v1_urls")),
     path("api/v1/reference/", include("reference.urls")),
     path("api/v1/auth/observer/pin/change", observer_auth.change_pin),
