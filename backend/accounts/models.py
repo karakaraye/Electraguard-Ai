@@ -16,6 +16,7 @@ class Organisation(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     name = models.CharField(max_length=160)
     intake_paused = models.BooleanField(default=False)
+    election_day = models.DateField(null=True, blank=True)
     coverage_state_codes = models.JSONField(default=list)
     coverage_lga_codes = models.JSONField(default=list)
     party_labels = models.JSONField(default=default_party_labels)
@@ -59,6 +60,7 @@ class User(AbstractUser, OrganisationOwned):
         OBSERVER = "observer", "Observer"
         REVIEWER = "reviewer", "Reviewer"
         ADMINISTRATOR = "administrator", "Administrator"
+        MODERATOR = "moderator", "Moderator"
 
     public_id = models.UUIDField(default=uuid4, editable=False, unique=True)
     username = None

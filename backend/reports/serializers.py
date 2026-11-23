@@ -78,7 +78,9 @@ class ReviewEventSerializer(serializers.ModelSerializer):
     action_label = serializers.CharField(source="get_action_display")
 
     def get_actor(self, event):
-        if event.action == ReviewEvent.Action.RESPOND:
+        if event.actor_id is None:
+            return "Citizen, not accredited"
+        if event.action == ReviewEvent.Action.RESPOND or event.change.get("author") == "observer":
             return "Observer"
         return event.actor.email
 
@@ -111,7 +113,7 @@ class ReviewCaseSerializer(ReportDetailSerializer):
         return ReviewEventSerializer(events, many=True).data
 
     class Meta(ReportDetailSerializer.Meta):
-        fields = [*ReportDetailSerializer.Meta.fields, "version", "history"]
+        fields = [*ReportDetailSerializer.Meta.fields, "version", "history", "kind", "structured_details", "result_flags"]
 
 
 class AssignmentSummarySerializer(serializers.ModelSerializer):

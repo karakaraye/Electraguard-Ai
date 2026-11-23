@@ -79,8 +79,8 @@ class ObserverReportTests(TestCase):
 
     def test_validation_and_fixing_failed_request_with_same_key(self):
         cases = [
-            ({"kind": "checklist"}, "kind", "not_supported_yet"),
-            ({"kind": "result_sheet"}, "kind", "not_supported_yet"),
+            ({"kind": "checklist"}, "stage", "invalid_choice"),
+            ({"kind": "result_sheet"}, "result_sheet", "required"),
             ({"kind": "other"}, "kind", "invalid_choice"),
             ({"language": "xx"}, "language", "invalid_choice"),
             ({"category_observer": "other"}, "category_observer", "invalid_choice"),

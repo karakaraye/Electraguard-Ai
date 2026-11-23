@@ -106,6 +106,8 @@ def assign(request, reference):
         raise Conflict("This Reviewer already has the case.")
     previous = report.assigned_reviewer
     report.assigned_reviewer = reviewer
+    report.reviewer_read_version = 0
+    report.save(update_fields=["reviewer_read_version"])
     record_change(report, request.user, Action.ASSIGN, {
         "previous_reviewer": previous.email if previous else None,
         "reviewer": reviewer.email,

@@ -3,10 +3,9 @@ import json
 from uuid import UUID
 
 from django.db import OperationalError, connection, transaction
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
 
 from accounts.observer_auth import error
-from accounts.organisations import org_scope
 
 from .models import ReportIdempotency
 
@@ -34,7 +33,7 @@ def lock_key(scope):
 
 
 @transaction.atomic
-def idempotent(request, operation, data, perform):
+def idempotent(request, operation, data, perform, *, citizen=None, record_model=ReportIdempotency):
     try:
         key = UUID(request.headers.get("Idempotency-Key", ""))
         if key.version != 4:
@@ -46,17 +45,23 @@ def idempotent(request, operation, data, perform):
     except ValueError:
         return error(400, "bad_request", "Send a valid JSON object.")
 
-    organisation = request.user.organisation_id
-    actor = request.user
-    if not lock_key(f"reports:{organisation}:{actor.pk}:{operation}:{key}"):
+    organisation, secret = citizen or (request.user.organisation_id, "")
+    actor = None if citizen else request.user
+    scope = secret if citizen else actor.pk
+    if not lock_key(f"reports:{organisation}:{scope}:{operation}:{key}"):
         return error(409, "request_in_progress", "This request is still being processed.", retry=2)
 
-    records = org_scope(request, ReportIdempotency).filter(actor=actor, operation=operation)
+    scope_fields = {"organisation_id": organisation, "actor": actor, "operation": operation}
+    if record_model is ReportIdempotency:
+        scope_fields["secret_scope"] = secret
+    records = record_model.objects.filter(**scope_fields)
     previous = records.filter(key=key).first()
     if previous is not None:
         if previous.digest != digest:
             return error(409, "idempotency_key_reused", "This send key belongs to a different request.")
-        response = JsonResponse(previous.body, status=200 if previous.status == 201 else previous.status)
+        response = HttpResponse(status=204) if previous.status == 204 else JsonResponse(
+            previous.body, status=200 if previous.status == 201 else previous.status,
+        )
         response["Idempotent-Replayed"] = "true"
         return response
 
@@ -64,8 +69,7 @@ def idempotent(request, operation, data, perform):
     if not isinstance(result, tuple):
         return result
     status, body, report = result
-    records.create(
-        actor=actor, organisation_id=organisation, operation=operation, key=key,
-        digest=digest, status=status, body=body, report=report,
-    )
-    return JsonResponse(body, status=status)
+    if record_model is ReportIdempotency:
+        scope_fields["report"] = report
+    records.create(**scope_fields, key=key, digest=digest, status=status, body=body)
+    return HttpResponse(status=204) if status == 204 else JsonResponse(body, status=status)

@@ -21,7 +21,9 @@ class Report(OrganisationOwned):
         OUT_OF_SCOPE = "out_of_scope", "Out of scope"
 
     reference = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    observer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
+    observer = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, on_delete=models.PROTECT)
+    channel = models.CharField(max_length=12, default="app")
+    receipt_secret_hash = models.CharField(max_length=64, blank=True, default="")
     assigned_reviewer = models.ForeignKey(
         settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.PROTECT,
         related_name="assigned_reports",
@@ -33,6 +35,11 @@ class Report(OrganisationOwned):
     polling_unit_code = models.CharField(max_length=128, blank=True, default="")
     description = models.CharField(max_length=2000)
     receipt_code = models.CharField(max_length=12, null=True, unique=True)
+    kind = models.CharField(max_length=16, default="incident")
+    structured_details = models.JSONField(default=dict, blank=True)
+    result_flags = models.JSONField(default=list, blank=True)
+    observer_read_version = models.PositiveIntegerField(default=0)
+    reviewer_read_version = models.PositiveIntegerField(default=0)
     observer_code = models.CharField(max_length=10, blank=True)
     incident_details = models.JSONField(default=dict)
     withdrawn_at = models.DateTimeField(null=True)
@@ -53,6 +60,7 @@ class Evidence(OrganisationOwned):
     report = models.ForeignKey(Report, related_name="attachments", on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
     content_type = models.CharField(max_length=20)
+    purpose = models.CharField(max_length=8, default="evidence")
     sha256 = models.CharField(max_length=64)
     content = models.BinaryField()
     created_at = models.DateTimeField(default=timezone.now, null=True)
@@ -72,12 +80,13 @@ class ReviewEvent(OrganisationOwned):
         START = "start", "Started review"
         REQUEST_CLARIFICATION = "request_clarification", "Requested clarification"
         RESPOND = "respond", "Responded to clarification"
+        MESSAGE = "message", "Sent message"
         CLOSE = "close", "Closed review"
         CORRECT_CATEGORY = "correct_category", "Corrected triage category"
         DECIDE_MATCH = "decide_match", "Reviewed possible match"
 
     report = models.ForeignKey(Report, related_name="review_events", on_delete=models.CASCADE)
-    actor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
+    actor = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, on_delete=models.PROTECT)
     created_at = models.DateTimeField(auto_now_add=True)
     version = models.PositiveIntegerField()
     action = models.CharField(max_length=24, choices=Action.choices)
@@ -130,7 +139,8 @@ class TriageMatch(OrganisationOwned):
 
 
 class ReportIdempotency(OrganisationOwned):
-    actor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
+    actor = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, on_delete=models.PROTECT)
+    secret_scope = models.CharField(max_length=64, blank=True, default="")
     operation = models.CharField(max_length=24)
     key = models.UUIDField()
     digest = models.CharField(max_length=64)
@@ -143,5 +153,9 @@ class ReportIdempotency(OrganisationOwned):
         constraints = [
             models.UniqueConstraint(
                 fields=["organisation", "actor", "operation", "key"], name="reports_unique_request_key"
+            ),
+            models.UniqueConstraint(
+                fields=["organisation", "secret_scope", "operation", "key"],
+                condition=models.Q(actor__isnull=True), name="reports_unique_citizen_key",
             ),
         ]

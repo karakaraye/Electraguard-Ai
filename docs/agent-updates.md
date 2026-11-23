@@ -48,6 +48,12 @@ The full plan is in [hackathon-plan.md](hackathon-plan.md).
 
 ## Updates
 
+### 23 Nov 2026 · Observer and citizen backend
+
+- Implemented structured observer reports, text conversations, citizen receipts and replies, opt-in discussions, and approved-document retrieval on `backend/cx-observer`. The [slice review](reviews/2026-11-23-backend-observer-slice.md) lists the migrations, run commands, and remaining integration gaps.
+- Result-sheet OCR validates uploads and returns `ocr_unavailable` on this host. Media upload integration, discussion retention, and security-monitor ingestion remain separate deployment or backend work.
+- The linked worktree's Git index is read-only in this session. The changes are available in the worktree for review.
+
 ### 22 Nov 2026 · Codex · Slice C3 observer reports
 
 - Added REP-01 through REP-04 under `/api/v1/reports`. Incident submission validates language, category, timestamps, a historical REF-01 place, and optional metadata. Date-only observations use midnight WAT and carry `time_known: false`. Checklist and result-sheet creation return `not_supported_yet`.
