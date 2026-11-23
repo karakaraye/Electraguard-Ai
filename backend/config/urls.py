@@ -1,6 +1,6 @@
 from django.urls import include, path
 
-from accounts import observer_auth, views
+from accounts import observer_auth, staff_admin, staff_auth, views
 from accounts.models import User
 
 from . import health
@@ -12,6 +12,15 @@ urlpatterns = [
     path("api/v1/auth/csrf", observer_auth.csrf),
     path("api/v1/auth/observer/sign-in", observer_auth.sign_in),
     path("api/v1/auth/observer/pin", observer_auth.set_pin),
+    path("api/v1/auth/staff/sign-in", staff_auth.sign_in),
+    path("api/v1/auth/staff/totp", staff_auth.verify),
+    path("api/v1/auth/staff/totp/enrolment", staff_auth.enrol),
+    path("api/v1/auth/staff/totp/enrolment/confirm", staff_auth.confirm),
+    path("api/v1/auth/staff/invite", staff_auth.accept_invite),
+    path("api/v1/admin/staff", staff_admin.staff_collection),
+    path("api/v1/admin/staff/<int:account_id>", staff_admin.update_staff),
+    path("api/v1/admin/staff/<int:account_id>/reset-2fa", staff_admin.reset_2fa),
+    path("api/v1/admin/staff/<int:account_id>/offboard", staff_admin.offboard_staff),
     path("api/v1/auth/sign-out", observer_auth.sign_out),
     path("api/v1/auth/me", observer_auth.me),
     path("health/live", health.live),

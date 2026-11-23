@@ -45,7 +45,7 @@ def cases(request):
 def permission(request, *, object_route=False):
     if not request.user.is_authenticated:
         return error(401, "not_authenticated", "Sign in to continue.")
-    if request.user.role != User.Role.REVIEWER:
+    if not request.user.has_role(User.Role.REVIEWER):
         return missing() if object_route else error(403, "forbidden", "Your role cannot do this.")
 
 

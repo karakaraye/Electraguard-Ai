@@ -53,6 +53,16 @@ The full plan is in [hackathon-plan.md](hackathon-plan.md).
 
 ## Updates
 
+### 23 Nov 2026 · Codex · Slice C8 staff authentication and account administration
+
+- Added AUTH-04 and AUTH-05 with password-only pending sessions and RFC 6238 verification. Pending sessions expire after five minutes and are fenced to AUTH-05, AUTH-06 and AUTH-07. Verified sessions use browser cookies and enforce a 30-minute idle timeout and eight-hour absolute lifetime. AUTH-06 removes tracked sessions on all devices when requested.
+- Added organisation-scoped ADM-03 staff management for verified organisation administrators. Staff roles can be combined except for organisation administrator. Reset ends sessions, and offboarding ends sessions, unassigns open cases, and records the corresponding audit and security events.
+- Invite URLs are returned once and expire after 72 hours. The database stores only the token digest. An idempotent retry returns the existing staff summary without the link. Legacy password sign-in remains available to existing and bootstrap accounts until they enrol or an administrator explicitly requires 2FA.
+- TOTP secrets use Fernet with a key derived from the deployment's Django secret. Keep the previous Django secret available through the comma-separated `DJANGO_SECRET_KEY_FALLBACKS` environment variable during a key rotation until enrolled staff have verified and their records have been re-encrypted. The pre-2FA client must retain its CSRF token across the password and TOTP steps.
+- Verified with PostgreSQL 17.12 using `python backend/manage.py test accounts reports config --noinput` (94 tests), `python backend/manage.py migrate --noinput`, `python backend/manage.py migrate --check`, `python backend/manage.py makemigrations --check --dry-run`, and `git diff --check`.
+- Next, connect the staff screens to C8 and test invite acceptance, enrolment, verification, reset, and offboarding in the browser. Retire legacy staff password-only sign-in after the staff screens are ready.
+- **Questions:** The contract does not say how to recover a lost invite response or renew an unused expired link. The current API keeps the link single-display and records no retrievable token. The account-wide TOTP lock lasts one hour from the tenth failure, which gives the failure window time to clear.
+
 ### 23 Nov 2026 · Codex · Slice C7 coordinator assignments and overview
 
 - Existing Administrator accounts migrate to Coordinator without changes to their Django privilege flags. The legacy sign-in and administrator workspace still use the old wire role. The v1 APIs require Coordinator. The Organisation administrator role is separate, with no new v1 permissions in this slice.
