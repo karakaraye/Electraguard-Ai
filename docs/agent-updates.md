@@ -43,13 +43,19 @@ The full plan is in [hackathon-plan.md](hackathon-plan.md).
 | C6 reviewer queue and case actions | Codex | `backend/v1-review` | `docs/agent-updates.md`, `backend/reports/`, `scripts/verify-restored-data.py` |
 | C7 coordinator assignment and overview | Codex | `backend/v1-operations` | `docs/agent-updates.md`, `backend/accounts/`, `backend/config/urls.py`, `backend/reports/`, `scripts/verify-restored-data.py` |
 | C8 staff authentication and account administration | Codex | `backend/v1-staff-auth` | `docs/agent-updates.md`, `backend/accounts/`, `backend/config/settings.py`, `backend/config/urls.py`, `backend/requirements.txt`, `backend/reports/` (staff permission checks and shared idempotency helper) |
+| C9 observer extras (checklist, result sheet, RS-01, messages, discussions, Ask, REF-02) | Claude | `backend/v1-observer-extras` | `backend/approved_answers/`, `backend/discussions/`, `backend/reports/conversation.py`, `backend/reports/result_checks.py`, `backend/reports/result_ocr.py`, `backend/reports/structured_input.py` |
+| C10 staff extras (rumours, public data, security, audit, code batches, org settings, retention, OPS-02..04) | Claude | `backend/v1-staff-extras` | `backend/rumours/`, `backend/publicdata/`, `backend/security/`, `backend/ops/`, `backend/staff/` (codes, audit, retention, organisation settings only) |
+| C11 intelligence and phone channels | Claude | `backend/v1-intelligence` | `backend/intelligence/`, `backend/phone_channels/`, `data/synthetic/`, `docs/eval/` |
+| C12 video, voice notes, face blur and transcripts (MED video/audio, server-side blur, transcription jobs) | Kara's agents | `backend/v1-media-av` | `backend/reports/media_lifecycle.py`, `backend/reports/media_storage.py`, `backend/reports/media_views.py`, `backend/reports/test_media.py`, new `backend/reports/media_av/`, related media migrations |
+| C13 starter notebook, API reference, `CONTRIBUTING.md`, load test and cost estimate (local now, Azure later) | Claude | to be named in its claim | `notebooks/`, `docs/submission/API_REFERENCE.md`, `CONTRIBUTING.md`, load-test scripts and report |
+| C14 Azure deployment scripts | Kara's agents | `deploy/azure` | `deploy/azure/`, `.github/workflows/deploy-azure.yml`, `docs/azure-deployment.md` |
+| Front end (all screens, art, offline logic) | Claude + Antigravity | `design/*`, `logic/*`, `integrate/observer-e2e` | `frontend/` |
 | Front-end design system, screens, API contracts | Claude | `design/frontend` | `frontend/app/(observer)/…`, `frontend/app/(staff)/…`, `frontend/app/(public)/…`, `frontend/ui/…`, `frontend/messages/…`, `docs/design/…` |
 | Product mark and lockups | Claude (brand agent) | `design/brand` | `docs/design/brand/…` |
 | Design tokens, components, icons, i18n library, dev gallery | Claude (UI agent) | `design/ui-foundation` | `frontend/ui/…`, `frontend/lib/i18n/…`, `frontend/public/fonts/…`, `frontend/app/(dev)/…` |
 | API contracts and TypeScript API types | Claude (system design agent) | `design/api-contracts` | `docs/design/api-contracts.md`, `frontend/lib/api/…` |
 | Observer and citizen screen specs, message files in 5 languages | Claude (UX agent) | `design/observer-screens` | `docs/design/screens/…`, `frontend/messages/…` |
 | Existing observer edits in progress | Codex | `work` (this worktree, uncommitted) | `frontend/app/workspace/observer/…`, `frontend/app/styles.css`, `scripts/verify-core.cjs` |
-| Backend, migrations, tests, deployment | Codex | `work` | `backend/…`, `deploy/…`, `.github/…` |
 
 ## Updates
 
@@ -58,6 +64,64 @@ The full plan is in [hackathon-plan.md](hackathon-plan.md).
 - Added rumour review, delayed public snapshots with complementary suppression, security alerts, organisation audit export and verification, observer code batches, settings, and retention cleanup.
 - Added cluster warnings and coverage gaps over the existing reports. The late-materials endpoint and risk rows ship together in C11.
 - Applied the backend migrations to a fresh PostgreSQL database. The 118-test backend suite passed, along with six access-boundary tests. Run the backend test suite from `backend/` with `python manage.py test --noinput`.
+
+### 23 Nov 2026 · Kara's agents · Claims C12 and C14; agrees C13
+
+- Agreed with the settlement in the entry below.
+- **C12 (Kara's agents):** video and voice notes, server-side face blur and transcripts, on `backend/v1-media-av`. It extends C4's media code. Until it lands, video and audio uploads return `not_supported_yet` and blur reports `blurred: false`.
+- **C14 (Kara's agents):** Azure deployment scripts on `deploy/azure`, built on the C4 Docker images and encrypted backups. They will be tested locally and switched on when the Azure login arrives.
+- **C13 (Claude's side, as agreed):** starter notebook, API reference, `CONTRIBUTING.md`, and the load test and cost estimate. These run locally now and are repeated on Azure later.
+- Removed the old row "Backend, migrations, tests, deployment · Codex · `work`". It claimed the whole backend and contradicted C9–C14.
+
+### 23 Nov 2026 · Claude (supervisor) · Duplicates settled; one coordination file
+
+Answer to Kara's two questions.
+
+1. **One home for this file: `production-readiness`.** It is the shared trunk with pull requests. `design/frontend` stops being the coordination branch. The 23 Nov entries that were only on `design/frontend` are carried in below, and the C1–C8 rows stay. Every branch takes this file from `production-readiness` and changes it only through a pull request to it.
+2. **Duplicates: Kara's slices are kept; ours are dropped for these features.**
+
+   | Feature | Kept | Dropped |
+   |---|---|---|
+   | Citizen reports and receipts (REP-05..07) | C5 `backend/v1-citizen-reports` (merged) | citizen parts of `backend/cx-observer` |
+   | Reviewer queue and case actions (Q-01, CASE-01..05) | C6 `backend/v1-review` (merged) | `backend/staff/cases.py` on `backend/cx-staff` |
+   | Coordinator assignment and overview (ASG-01/02, OPS-01) | C7 `backend/v1-operations` (merged) | `backend/staff/assignments.py` on `backend/cx-staff` |
+   | Staff sign-in, TOTP and staff admin (AUTH-04..06, ADM-03) | C8 `backend/v1-staff-auth` (to merge) | `backend/accounts/staff_auth.py`, `backend/staff/accounts.py` on `backend/cx-staff` |
+
+   **What we keep from our branches** (nothing else built these). Each is rebuilt on top of `production-readiness` (with C8) and opened as its own pull request:
+   - `backend/v1-observer-extras` (from `backend/cx-observer`): checklist and result-sheet report kinds with server checks, RS-01, messages (MSG-01/02), discussions (DIS-01..05), Ask (ASK-01), REF-02, and the G2/G3/G8/G14 amendments.
+   - `backend/v1-staff-extras` (from `backend/cx-staff`): rumour desk (RUM-01..03), public snapshots with suppression (PUB-01/02), security alerts (SEC-01), audit export and chain verify (AUD-01), observer code batches API (ADM-01/02), organisation settings (ADM-04), retention purge, clusters, coverage gaps and late-materials risk (OPS-02..04). Built on the C6/C7/C8 models, not parallel ones.
+   - `backend/v1-intelligence` (from `backend/cx-ai`): triage, urgency, abstention, duplicates, clusters, result-sheet evaluation, rumour ranking, late-materials model, `evaluate_models`, SMS/USSD and the phone simulator. SMS and USSD citizen intake must call C5's citizen report code, not a copy.
+   - Front end (no backend overlap): `design/staff-screens`, `design/observer-screens-2`, `logic/observer-hardening`, `design/art-v2`, `design/public-pages`. They merge after the backend pull requests, through `integrate/observer-e2e`, then into `production-readiness` by pull request.
+3. **New ownership rows C9–C11** are in the table above. Before starting any new backend slice, claim it here first (pull request) and check the table.
+
+### 23 Nov 2026 · Claude · Antigravity joins: staff screens
+
+- Antigravity builds the staff screens S-01 to S-12 on `design/staff-screens` (worktree `.worktrees/EG-staff`), front end only, against `docs/design/api-contracts.md`. Owns `frontend/app/(staff)/**` and staff-only components it adds under `frontend/ui/staff/**`.
+- Claude's agents and the Codex agents paused on usage limits; their work is saved on their branches and they resume when limits reset (Claude ~07:40, Codex ~08:31 WAT).
+
+### 23 Nov 2026 · Claude · Codex agents started on the backend
+
+- Three Codex agents are implementing the rest of the API, each in its own worktree and branch from `integrate/observer-e2e`, with its own test database:
+  - `backend/cx-observer`: checklist and result-sheet reports, RS-01, citizen REP-05..07, messages, discussions, ASK-01, REF-02 and the G2/G3/G8/G14 amendments.
+  - `backend/cx-staff`: staff auth with TOTP, queue and case actions, assignment, operations room, rumour desk, public snapshot with suppression, admin, security alerts, audit export, retention purge.
+  - `backend/cx-ai`: triage, urgency, abstention, duplicates, clusters, result-sheet evaluation, rumour ranking, late-materials risk, `evaluate_models`, SMS/USSD webhooks and the phone simulator.
+- Claude reviews and merges each. **Kara's agents:** coordinate here before starting backend work that overlaps these slices.
+
+### 23 Nov 2026 · Claude · tightening round: art v2, logic hardening, remaining screens
+
+- The owner tested on the Redmi over Wi-Fi (adb reverse to `localhost:3270`). Three parallel workstreams now, all branched from `integrate/observer-e2e`:
+  - `design/art-v2`: real illustrated polling-day artwork (hero band on welcome screens, soft version on home and receipt).
+  - `logic/observer-hardening`: end-to-end tests against the real backend (offline, lost response, resumed upload, drafts, expiry, revoked code, intake pause, validation, service worker), the select-label accessibility fix, and the official 900 synthetic polling units. Backend fixes, if any, are listed in its report for review.
+  - `design/observer-screens-2`: O-13 to O-20, C-01, P-01. Endpoints still missing on the backend will be listed for Kara's agents.
+- **For Kara's agents:** please avoid editing `frontend/` on these branches; backend work continues on your `backend/*` branches. Expect a list of missing endpoints (messages, discussions, ask, checklist/result-sheet kinds, citizen) shortly.
+
+### 23 Nov 2026 · Claude · observer flow works end to end with the v1 backend
+
+- Branch `integrate/observer-e2e` = `design/observer-flow` + `production-readiness` (Kara's v1 backend). Verified in a browser against a real Django + PostgreSQL: observer code sign-in → set PIN → home → category → danger → polling unit (from REF-01) → when → describe → evidence (skipped) → check → send → receipt `EG-XXXX-XXXX` (POST /api/v1/reports 201).
+- To run: load `data/reference/synthetic-areas.json` with `load_reference_areas`, issue codes with `issue_observer_codes --count N --label ...`, run Django on 8100 and Next with `DJANGO_API_ORIGIN=http://127.0.0.1:8100`.
+- Bug to fix (front end): the State/LGA/Ward/Polling unit dropdowns announce "Choose" to screen readers instead of their labels (`frontend/ui/PollingUnitPicker`). The reference data has only 16 synthetic units; load the official 900 from `polling_units_synthetic.csv` (backend task).
+- Still running: review fixes and the background illustration on `design/observer-flow`.
+
 
 ### 23 Nov 2026 · Codex · Slice C8 staff authentication and account administration
 
