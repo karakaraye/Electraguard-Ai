@@ -1,5 +1,7 @@
 # Private ElectraGuard deployment
 
+For Azure Container Apps, see [docs/azure-deployment.md](../docs/azure-deployment.md) and `deploy/azure/`.
+
 This Compose topology assumes a dedicated Linux container host and a trusted ingress boundary. The gateway binds to host loopback by default. Restrict listeners to the authorised private network. Django, Next.js, the worker and PostgreSQL have no published ports.
 
 ## Release configuration

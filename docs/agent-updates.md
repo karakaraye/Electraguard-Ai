@@ -48,7 +48,7 @@ The full plan is in [hackathon-plan.md](hackathon-plan.md).
 | C11 intelligence and phone channels | Claude | `backend/v1-intelligence` | `backend/intelligence/`, `backend/phone_channels/`, `data/synthetic/`, `docs/eval/` |
 | C12 video, voice notes, face blur and transcripts (MED video/audio, server-side blur, transcription jobs) | Kara's agents | `backend/v1-media-av` | `backend/reports/media_lifecycle.py`, `backend/reports/media_storage.py`, `backend/reports/media_views.py`, `backend/reports/test_media.py`, new `backend/reports/media_av/`, related media migrations |
 | C13 starter notebook, API reference, `CONTRIBUTING.md`, load test and cost estimate (local now, Azure later) | Claude | to be named in its claim | `notebooks/`, `docs/submission/API_REFERENCE.md`, `CONTRIBUTING.md`, load-test scripts and report |
-| C14 Azure deployment scripts | Kara's agents | `deploy/azure` | `deploy/azure/`, `.github/workflows/deploy-azure.yml`, `docs/azure-deployment.md` |
+| C14 Azure deployment scripts | Kara's agents | `deploy/azure` | `deploy/azure/`, `.github/workflows/deploy-azure.yml`, `docs/azure-deployment.md`, `deploy/README.md` (pointer), `docs/submission/SAFETY_AND_LIMITATIONS.md` (data location section only) |
 | Front end (all screens, art, offline logic) | Claude + Antigravity | `design/*`, `logic/*`, `integrate/observer-e2e` | `frontend/` |
 | Front-end design system, screens, API contracts | Claude | `design/frontend` | `frontend/app/(observer)/…`, `frontend/app/(staff)/…`, `frontend/app/(public)/…`, `frontend/ui/…`, `frontend/messages/…`, `docs/design/…` |
 | Product mark and lockups | Claude (brand agent) | `design/brand` | `docs/design/brand/…` |
@@ -58,6 +58,18 @@ The full plan is in [hackathon-plan.md](hackathon-plan.md).
 | Existing observer edits in progress | Codex | `work` (this worktree, uncommitted) | `frontend/app/workspace/observer/…`, `frontend/app/styles.css`, `scripts/verify-core.cjs` |
 
 ## Updates
+
+### 24 Nov 2026 · Kara's agents · Slice C14 Azure deployment scripts, region decided
+
+- `deploy/azure/` holds the Bicep template, the deploy script, the Azure gateway image and the database-role job. The stack:
+  - Container Apps for the gateway, frontend, backend, media worker and optional triage worker.
+  - PostgreSQL 17 Flexible Server in a private subnet.
+  - The private media share on Azure Files, reachable from the apps subnet only.
+  - Key Vault secrets mounted at `/run/secrets`, so the images run unchanged.
+  - Images built in Azure Container Registry from the committed tree.
+- Run `deploy/azure/deploy.sh all`, or the manual workflow `.github/workflows/deploy-azure.yml` (OIDC, `azure` environment with reviewers). Runbook: [azure-deployment.md](azure-deployment.md).
+- **Region (Kara's decision):** `southafricanorth`, the closest region to Nigeria. Report data is processed outside Nigeria. The Nigeria Data Protection Act's cross-border transfer rules are noted in [SAFETY_AND_LIMITATIONS.md](submission/SAFETY_AND_LIMITATIONS.md). Only that section is written so far; the rest of that document is still for the documentation owner.
+- Not yet run on Azure; Azure access is still pending.
 
 ### 23 Nov 2026 · C10 staff operations and administration
 
