@@ -1,0 +1,38 @@
+/* Base for the public route group: the root layout is html and body only, so each group sets its own base. */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  overflow-x: clip;
+}
+
+body {
+  margin: 0;
+  overflow-x: clip;
+}
+
+/* Overscroll areas outside the shell match the paper in both themes */
+html:has(.eg-public) {
+  background: #ffffff;
+}
+
+@media (prefers-color-scheme: dark) {
+  html:has(.eg-public) {
+    background: #111112;
+  }
+}
+
+:target {
+  scroll-margin-top: 24px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html:has(.eg-public) {
+    scroll-behavior: smooth;
+  }
+}

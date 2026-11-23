@@ -1,0 +1,286 @@
+.home {
+  display: grid;
+  gap: var(--s-7);
+}
+
+/* ---------- Hero: the statement, the one action, and the polling-day band under it ---------- */
+
+.hero {
+  position: relative;
+  /* A paint container makes the art's fixed position resolve to this band, not the viewport */
+  contain: paint;
+  margin-inline: calc(50% - 50vw);
+  padding: var(--s-7) var(--gutter) clamp(150px, 26vh, 250px);
+  border-bottom: 1px solid var(--rule);
+  background: var(--paper);
+}
+
+.heroText {
+  display: grid;
+  justify-items: start;
+  gap: var(--s-4);
+  max-width: 72rem;
+  margin: 0 auto;
+}
+
+.title {
+  max-width: 15ch;
+  margin: 0;
+  font: var(--t-display);
+  font-size: clamp(2.25rem, 1.5rem + 3.2vw, 3.75rem);
+  line-height: 1.06;
+  letter-spacing: -0.02em;
+  overflow-wrap: anywhere;
+  text-wrap: balance;
+}
+
+.lead {
+  max-width: 36rem;
+  margin: 0;
+  font: var(--t-body-lg);
+  font-size: clamp(1.125rem, 1rem + 0.4vw, 1.25rem);
+  color: var(--ink-2);
+}
+
+.actions {
+  display: grid;
+  justify-items: start;
+  gap: var(--s-2);
+  margin-top: var(--s-2);
+}
+
+.actionHint {
+  margin: 0;
+  font: var(--t-small);
+  color: var(--ink-2);
+}
+
+.basic {
+  max-width: 36rem;
+  margin: var(--s-2) 0 0;
+  font: var(--t-body);
+  color: var(--ink-2);
+}
+
+.basic a,
+.text a {
+  color: var(--ink);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.basic a:focus-visible,
+.more:focus-visible,
+.links a:focus-visible {
+  outline: var(--focus-outline);
+  outline-offset: var(--focus-offset);
+  box-shadow: var(--focus-halo);
+  border-radius: 4px;
+}
+
+@media (min-width: 600px) {
+  .hero {
+    padding-bottom: clamp(190px, 32vh, 330px);
+  }
+}
+
+@media (min-width: 1024px) {
+  .hero {
+    padding-top: var(--s-8);
+    padding-bottom: clamp(220px, 36vh, 400px);
+  }
+}
+
+@media (max-height: 520px) {
+  .hero {
+    padding-bottom: var(--s-7);
+  }
+}
+
+/* ---------- Check and results ---------- */
+
+.grid {
+  display: grid;
+  gap: var(--s-7);
+}
+
+@media (min-width: 900px) {
+  .grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: var(--s-8);
+  }
+}
+
+.block {
+  display: grid;
+  align-content: start;
+  gap: var(--s-3);
+  min-width: 0;
+}
+
+.heading {
+  margin: 0;
+  font: var(--t-title);
+  overflow-wrap: anywhere;
+}
+
+.text,
+.textStrong {
+  max-width: var(--measure);
+  margin: 0;
+  font: var(--t-body-lg);
+  color: var(--ink-2);
+}
+
+.textStrong {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.figure {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--s-2);
+  margin: var(--s-2) 0 0;
+}
+
+.number {
+  font: var(--t-display);
+  font-size: clamp(2.5rem, 2rem + 2vw, 3.5rem);
+  letter-spacing: -0.02em;
+}
+
+.unit {
+  font: var(--t-heading);
+}
+
+.figureSmall {
+  font: var(--t-heading);
+}
+
+.meta {
+  margin: 0;
+  font: var(--t-small);
+  color: var(--ink-2);
+}
+
+.notice {
+  margin: 0;
+  font: var(--t-label);
+  font-size: 0.9375rem;
+  color: var(--ink);
+}
+
+.more {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  justify-self: start;
+  min-height: var(--target-min);
+  color: var(--ink);
+  font: var(--t-label);
+  font-size: 1.0625rem;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.25em;
+}
+
+/* ---------- How it works: a real sequence, so it is numbered ---------- */
+
+.how {
+  display: grid;
+  gap: var(--s-4);
+  padding-top: var(--s-6);
+  border-top: 1px solid var(--rule);
+}
+
+.steps {
+  display: grid;
+  gap: var(--s-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: none;
+}
+
+.steps li {
+  display: grid;
+  grid-template-columns: 2.5rem minmax(0, 1fr);
+  gap: var(--s-3);
+  align-items: start;
+  max-width: 40rem;
+  font: var(--t-body-lg);
+}
+
+.stepNo {
+  display: inline-grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border: var(--border-w) solid var(--ink);
+  border-radius: 50%;
+  font: var(--t-label);
+  font-size: 1rem;
+}
+
+@media (min-width: 900px) {
+  .steps {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--s-6);
+  }
+
+  .steps li {
+    grid-template-columns: 1fr;
+    font: var(--t-body);
+    font-size: 1.0625rem;
+  }
+}
+
+/* ---------- Questions: a plain list of links, not cards ---------- */
+
+.help {
+  display: grid;
+  gap: var(--s-3);
+  padding-top: var(--s-6);
+  border-top: 1px solid var(--rule);
+}
+
+.links {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--rule);
+}
+
+.links li {
+  border-bottom: 1px solid var(--rule);
+}
+
+.links a {
+  display: grid;
+  gap: 2px;
+  padding: var(--s-4) 0;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.linkTitle {
+  font: var(--t-heading);
+  font-size: 1.125rem;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+
+.linkText {
+  font: var(--t-body);
+  color: var(--ink-2);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .links a:hover .linkTitle {
+    text-decoration-thickness: 2px;
+  }
+}

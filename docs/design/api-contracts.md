@@ -1034,6 +1034,28 @@ Discussion member labels are observer codes only. Posts are text only. No report
 - **Privacy:** questions are not stored; only counts by language and status are kept for the evaluation.
 - **Errors:** `422`, `429`, `403 csrf_failed`. **Limits:** 20/min per session or IP.
 
+#### GUIDE-01 · Approved guides (public, read only)
+
+- **Status:** NEW (added 23 Nov 2026 with the public pages). **Screens:** P-05 (`/guide`, `/guide/[slug]`), P-02 (guide links), P-04 (the source link of an ASK-01 passage opens `/guide/{slug}#{section id}`).
+- **Auth:** anyone. `Cache-Control: public, max-age=300`, `ETag`. The documents are the same approved set that ASK-01 quotes (`approved_answers.ApprovedDocument`), so a quoted passage can always be read in context.
+
+| Operation | Method and path | Query |
+|---|---|---|
+| `list` | `GET /api/v1/public/guides` | `language` (`en` · `pcm` · `ha` · `yo` · `ig`, default `en`) |
+| `get` | `GET /api/v1/public/guides/{slug}` | `language` |
+
+- **list 200:** `{"language": "yo", "documents": [{"slug": "opening-late", "document_id": "observer-guide", "title": "…", "version": "2026-11-25", "language": "yo", "fallback_language_used": false}]}`. `documents: []` when none are loaded (the screen's honest empty state). Observer-only documents are never listed here.
+- **get 200:**
+  ```json
+  { "slug": "opening-late", "document_id": "observer-guide", "title": "If the polling unit opens late", "version": "2026-11-25", "language": "en", "fallback_language_used": false, "approved_on": "2026-11-25",
+    "sections": [ { "id": "if-late", "heading": "If the polling unit opens late", "body": "Stay calm and wait.
+
+- Note the time materials arrived.
+- Report it as Late or missing materials." } ] }
+  ```
+- `body` is plain text: paragraphs separated by a blank line, lines beginning `- ` are list items. No HTML, no links; the screen escapes everything. If the document is not approved in the requested language the English version is returned with `fallback_language_used: true` and the screen says so.
+- **Errors:** `404 not_found` (unknown slug, or an observer-only document), `429`. **Limits:** 120/min per IP.
+
 ---
 
 ### RS

@@ -1,0 +1,56 @@
+/* Shared layout for the reading pages (Ask, Guides, Privacy, Phone): one header, one column. */
+
+.page {
+  display: grid;
+  gap: var(--s-6);
+  padding-top: var(--s-6);
+}
+
+.header {
+  display: grid;
+  gap: var(--s-3);
+  max-width: 44rem;
+}
+
+.title {
+  margin: 0;
+  font: var(--t-display);
+  font-size: clamp(2rem, 1.5rem + 2vw, 2.75rem);
+  letter-spacing: -0.015em;
+  overflow-wrap: anywhere;
+  text-wrap: balance;
+}
+
+.lead {
+  margin: 0;
+  font: var(--t-body-lg);
+  color: var(--ink-2);
+}
+
+.small {
+  max-width: 44rem;
+  margin: 0;
+  font: var(--t-small);
+  font-size: 0.9375rem;
+  color: var(--ink-2);
+}
+
+.link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  min-height: var(--target-min);
+  color: var(--ink);
+  font: var(--t-label);
+  font-size: 1.0625rem;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.25em;
+}
+
+.link:focus-visible {
+  outline: var(--focus-outline);
+  outline-offset: var(--focus-offset);
+  box-shadow: var(--focus-halo);
+  border-radius: 4px;
+}

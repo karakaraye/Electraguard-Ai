@@ -1,0 +1,105 @@
+.back {
+  justify-self: start;
+  text-decoration: none;
+}
+
+.list {
+  max-width: 44rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--rule);
+}
+
+.list li {
+  border-bottom: 1px solid var(--rule);
+}
+
+.list a {
+  display: grid;
+  gap: 2px;
+  padding: var(--s-4) 0;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.list a:focus-visible,
+.toc a:focus-visible {
+  outline: var(--focus-outline);
+  outline-offset: var(--focus-offset);
+  box-shadow: var(--focus-halo);
+  border-radius: 4px;
+}
+
+.listTitle {
+  font: var(--t-heading);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+
+.listMeta {
+  font: var(--t-small);
+  color: var(--ink-2);
+}
+
+.article {
+  display: grid;
+  gap: var(--s-6);
+  max-width: var(--measure);
+}
+
+.fallback {
+  margin: 0;
+  padding: var(--s-3);
+  border-radius: var(--radius);
+  background: var(--info-bg);
+  font: var(--t-body);
+}
+
+.toc {
+  padding: var(--s-4) 0;
+  border-block: 1px solid var(--rule);
+}
+
+.tocTitle {
+  margin: 0 0 var(--s-2);
+  font: var(--t-label);
+  color: var(--ink-2);
+}
+
+.toc ol {
+  display: grid;
+  gap: var(--s-1);
+  margin: 0;
+  padding-inline-start: 1.5rem;
+  font: var(--t-body-lg);
+}
+
+.toc a {
+  color: var(--ink);
+  text-underline-offset: 0.2em;
+}
+
+.section {
+  display: grid;
+  gap: var(--s-3);
+}
+
+.section h2 {
+  margin: 0;
+  font: var(--t-heading);
+}
+
+.section p,
+.section ul {
+  margin: 0;
+  font: var(--t-body-lg);
+  line-height: 1.6;
+}
+
+.section ul {
+  display: grid;
+  gap: var(--s-2);
+  padding-inline-start: 1.5rem;
+}

@@ -30,7 +30,7 @@ export type ContractId =
   | "MED-01" | "MED-02" | "MED-03" | "MED-04" | "MED-05"
   | "MSG-01" | "MSG-02"
   | "DIS-01" | "DIS-02" | "DIS-03" | "DIS-04" | "DIS-05"
-  | "ASK-01" | "RS-01"
+  | "ASK-01" | "GUIDE-01" | "RS-01"
   | "Q-01" | "CASE-01" | "CASE-02" | "CASE-03" | "CASE-04" | "CASE-05"
   | "ASG-01" | "ASG-02"
   | "OPS-01" | "OPS-02" | "OPS-03" | "OPS-04"
@@ -190,6 +190,10 @@ export const OPERATIONS = {
   "SIM-01.sms": { contract: "SIM-01", method: "POST", path: "/simulator/sms", callers: ALL, status: "NEW", idempotent: true, body: "json" },
   "SIM-01.inbox": { contract: "SIM-01", method: "GET", path: "/simulator/inbox", callers: ALL, status: "NEW", idempotent: false },
   "SIM-01.reset": { contract: "SIM-01", method: "POST", path: "/simulator/reset", callers: ALL, status: "NEW", idempotent: false, body: "json" },
+
+  // GUIDE (approved documents rendered on P-05; the same set ASK-01 quotes)
+  "GUIDE-01.list": { contract: "GUIDE-01", method: "GET", path: "/public/guides", callers: ALL, status: "NEW", idempotent: false },
+  "GUIDE-01.get": { contract: "GUIDE-01", method: "GET", path: "/public/guides/{slug}", callers: ALL, status: "NEW", idempotent: false },
 } as const satisfies Record<string, OperationSpec>;
 
 export type OperationId = keyof typeof OPERATIONS;
@@ -335,6 +339,9 @@ export interface OperationTypes {
   "SIM-01.sms": Io<T.SimSmsRequest, T.SimSmsResponse>;
   "SIM-01.inbox": Io<undefined, T.SimInboxResponse, { after?: string }>;
   "SIM-01.reset": Io<T.EmptyBody, T.SimResetResponse>;
+
+  "GUIDE-01.list": Io<undefined, T.GuideListResponse, { language?: T.Language }>;
+  "GUIDE-01.get": Io<undefined, T.GuideDocument, { language?: T.Language }>;
 }
 
 /** Fails to compile if an operation has no types or a type entry has no operation. */

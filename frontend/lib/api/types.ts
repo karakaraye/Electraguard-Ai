@@ -829,6 +829,37 @@ export interface AskResponse {
 }
 
 // ---------------------------------------------------------------------------
+// GUIDE
+// ---------------------------------------------------------------------------
+
+export interface GuideSummary {
+  slug: string;
+  document_id: string;
+  title: string;
+  version: string;
+  language: Language;
+}
+
+export interface GuideListResponse {
+  language: Language;
+  documents: Array<GuideSummary & { fallback_language_used: boolean }>;
+}
+
+export interface GuideSection {
+  /** Anchor id; ASK-01 source urls point at /guide/{slug}#{id}. */
+  id: string;
+  heading: string;
+  /** Plain text. Paragraphs are separated by a blank line; lines starting "- " are list items. */
+  body: string;
+}
+
+export interface GuideDocument extends GuideSummary {
+  fallback_language_used: boolean;
+  approved_on: DateString;
+  sections: GuideSection[];
+}
+
+// ---------------------------------------------------------------------------
 // RS
 // ---------------------------------------------------------------------------
 
