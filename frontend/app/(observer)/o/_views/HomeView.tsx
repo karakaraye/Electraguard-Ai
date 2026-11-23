@@ -190,7 +190,7 @@ export function HomeView(props: HomeViewProps) {
             </p>
           )}
           {rows.length === 0 ? (
-            <p className={styles.lead} data-testid="o04-purpose">
+            <p className={styles.purpose} data-testid="o04-purpose">
               {t("o04.purpose")}
             </p>
           ) : null}
