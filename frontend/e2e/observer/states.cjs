@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
 /*
  * Screenshots and axe checks for every observer screen state in the dev state viewer.
  * Usage: BASE=http://localhost:3100 OUT=../docs/design/observer-screens-shots node e2e/observer/states.cjs

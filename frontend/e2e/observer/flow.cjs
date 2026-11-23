@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
 /*
  * End-to-end checks of the observer flow against an intercepted /api/v1 (the
  * backend does not exist yet). Every response below follows

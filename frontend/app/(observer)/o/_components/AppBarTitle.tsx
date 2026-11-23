@@ -8,7 +8,7 @@ export function AppBarTitle() {
       <span aria-hidden="true" className={styles.appBarMark}>
         <BrandMark variant="symbol" size="bar" />
       </span>
-      <span>ElectraGuard AI</span>
+      <span className={styles.appBarName}>ElectraGuard AI</span>
     </span>
   );
 }
