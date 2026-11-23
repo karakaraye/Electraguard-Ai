@@ -186,7 +186,8 @@ def attach_ocr_photo(photo, report):
 
 
 def persist_report(actor, organisation, values, *, code="", secret_digest="", **extra):
-    area = values["incident_details"]["area"]
+    details = values["incident_details"]
+    area = details["area"]
     while True:
         reference = receipt()
         try:

@@ -8,7 +8,7 @@ from accounts.models import Organisation, User
 from reports.models import Report, Triage, TriageMatch
 
 from .learning import incident_models, rank_claims
-from .models import ClusterSuggestion, MaterialsRisk
+from .models import MaterialsRisk
 from .result_checks import evaluate_sheet
 from .triage import burst, process_next, urgency
 
@@ -43,7 +43,6 @@ class IntelligenceTests(TestCase):
         source.refresh_from_db()
         self.assertEqual(source.version, 0)
         self.assertEqual(source.status, Report.Status.SUBMITTED)
-        self.assertTrue(ClusterSuggestion.objects.filter(organisation=org).exists())
 
     def test_local_models_and_burst(self):
         self.assertTrue(burst(7, 16)[0])

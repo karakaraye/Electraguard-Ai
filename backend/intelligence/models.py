@@ -14,18 +14,3 @@ class MaterialsRisk(OrganisationOwned):
         constraints = [models.UniqueConstraint(
             fields=["organisation", "polling_unit_code"], name="intelligence_unique_materials_unit",
         )]
-
-
-class ClusterSuggestion(OrganisationOwned):
-    state_code = models.CharField(max_length=32)
-    lga_code = models.CharField(max_length=32)
-    category = models.CharField(max_length=32)
-    window_end = models.DateTimeField()
-    count = models.PositiveIntegerField()
-    baseline = models.FloatField()
-
-    class Meta:
-        constraints = [models.UniqueConstraint(
-            fields=["organisation", "lga_code", "category", "window_end"],
-            name="intelligence_unique_cluster_window",
-        )]

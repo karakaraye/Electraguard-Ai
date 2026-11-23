@@ -9,7 +9,6 @@ from django.utils import timezone
 from reports.models import Report, Triage, TriageMatch
 
 from .learning import incident_models
-from .models import ClusterSuggestion
 
 VERSIONS = {"category": "tfidf-lr-2026.13", "urgency": "rules+lr-2026.13", "duplicates": "char-3gram-2026.12"}
 WINDOW = timedelta(minutes=90)
@@ -93,11 +92,6 @@ def suggest_cluster(report, area, category):
     count = candidates.filter(created_at__gte=start, created_at__lt=end).count()
     history = candidates.filter(created_at__gte=start - WINDOW * BASELINE_WINDOWS, created_at__lt=start).count()
     flagged, baseline = burst(count, history)
-    if flagged:
-        ClusterSuggestion.objects.update_or_create(
-            organisation_id=report.organisation_id, lga_code=area["lga_code"], category=category,
-            window_end=end, defaults={"state_code": area["state_code"], "count": count, "baseline": baseline},
-        )
     return flagged
 
 

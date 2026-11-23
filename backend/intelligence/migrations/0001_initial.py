@@ -15,42 +15,6 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name="ClusterSuggestion",
-            fields=[
-                (
-                    "id",
-                    models.BigAutoField(
-                        auto_created=True,
-                        primary_key=True,
-                        serialize=False,
-                        verbose_name="ID",
-                    ),
-                ),
-                ("state_code", models.CharField(max_length=32)),
-                ("lga_code", models.CharField(max_length=32)),
-                ("category", models.CharField(max_length=32)),
-                ("window_end", models.DateTimeField()),
-                ("count", models.PositiveIntegerField()),
-                ("baseline", models.FloatField()),
-                (
-                    "organisation",
-                    models.ForeignKey(
-                        default=uuid.UUID("362183b8-99c0-4a26-976a-8d0098db0cd3"),
-                        on_delete=django.db.models.deletion.PROTECT,
-                        to="accounts.organisation",
-                    ),
-                ),
-            ],
-            options={
-                "constraints": [
-                    models.UniqueConstraint(
-                        fields=("organisation", "lga_code", "category", "window_end"),
-                        name="intelligence_unique_cluster_window",
-                    )
-                ],
-            },
-        ),
-        migrations.CreateModel(
             name="MaterialsRisk",
             fields=[
                 (
