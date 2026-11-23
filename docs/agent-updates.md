@@ -53,6 +53,12 @@ The full plan is in [hackathon-plan.md](hackathon-plan.md).
 
 ## Updates
 
+### 23 Nov 2026 · C9 observer backend extras
+
+- Added structured observer reports, private result-sheet photo reading, report conversations, ward discussions, and cited approved-document retrieval. Result-sheet consistency flags and benign explanations are visible to the assigned reviewer. Checks use individual sheets and publish no tallies.
+- The observer list includes attention counts, unread markers, and message previews. Existing setup PIN validation and observer reference settings remain in place.
+- Reused the citizen, reviewer, assignment, staff session, and private media paths. Verified the migrations on an empty PostgreSQL database.
+
 ### 23 Nov 2026 · Codex · Slice C8 staff authentication and account administration
 
 - Added AUTH-04 and AUTH-05 with password-only pending sessions and RFC 6238 verification. Pending sessions expire after five minutes and are fenced to AUTH-05, AUTH-06 and AUTH-07. Verified sessions use browser cookies and enforce a 30-minute idle timeout and eight-hour absolute lifetime. AUTH-06 removes tracked sessions on all devices when requested.

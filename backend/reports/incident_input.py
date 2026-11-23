@@ -36,9 +36,9 @@ def aware_datetime(value):
         return None
 
 
-def incident_input(data, header):
+def incident_input(data, header, *, incident=True):
     errors = {}
-    if data.get("kind") != "incident":
+    if incident and data.get("kind") != "incident":
         kind = data.get("kind")
         if isinstance(kind, str) and kind in KINDS:
             return {}, {"kind": field("not_supported_yet", "Only incident reports are available.")}
@@ -59,9 +59,9 @@ def incident_input(data, header):
         return value
 
     language = choice("language", {"en", "pcm", "ha", "yo", "ig"})
-    observed_category = choice("category_observer", CATEGORIES)
-    danger_now = boolean("danger_now")
-    firsthand = boolean("firsthand")
+    observed_category = choice("category_observer", CATEGORIES) if incident else None
+    danger_now = boolean("danger_now") if incident else None
+    firsthand = boolean("firsthand") if incident else None
     time_known = boolean("time_known", True)
     input_method = choice("input_method", {"typed", "dictated", "mixed"}, required=False)
     question = choice("from_checklist_question", QUESTIONS, required=False)
@@ -86,7 +86,11 @@ def incident_input(data, header):
 
     raw = data.get("description")
     description = normalize("NFC", raw.strip()) if isinstance(raw, str) else ""
-    if raw is None or (isinstance(raw, str) and not description):
+    if not incident:
+        for name in ("category_observer", "danger_now", "firsthand", "description", "input_method", "from_checklist_question"):
+            if name in data:
+                errors[name] = field("not_allowed_for_kind", "This field is for incident reports.")
+    elif raw is None or (isinstance(raw, str) and not description):
         errors["description"] = field("required", "Enter a description.")
     elif not isinstance(raw, str) or any(category(char) in {"Cc", "Cs"} and char != "\n" for char in description):
         errors["description"] = field("invalid", "Enter text without control characters.")
