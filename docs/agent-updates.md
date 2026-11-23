@@ -57,7 +57,7 @@ The full plan is in [hackathon-plan.md](hackathon-plan.md).
 
 - Added rumour review, delayed public snapshots with complementary suppression, security alerts, organisation audit export and verification, observer code batches, settings, and retention cleanup.
 - Added cluster warnings and coverage gaps over the existing reports. The late-materials endpoint and risk rows ship together in C11.
-- Applied the backend migrations to a fresh PostgreSQL database. The 24 focused feature tests and three access-boundary tests passed. Run the backend test suite from `backend/` with `python manage.py test --noinput`.
+- Applied the backend migrations to a fresh PostgreSQL database. The 118-test backend suite passed, along with six access-boundary tests. Run the backend test suite from `backend/` with `python manage.py test --noinput`.
 
 ### 23 Nov 2026 · Codex · Slice C8 staff authentication and account administration
 

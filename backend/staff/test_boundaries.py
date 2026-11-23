@@ -1,10 +1,14 @@
+from unittest.mock import patch
 from uuid import uuid4
 
 from django.test import Client, TestCase
+from django.utils import timezone
 
 from accounts.models import Organisation, User
 from accounts.staff_sessions import VERIFIED
 
+from .codes import LAGOS
+from .models import AuditEvent, CodeIssuance
 from .test_support import bind_staff_session
 
 
@@ -59,3 +63,58 @@ class StaffBoundariesTests(TestCase):
         self.assertEqual(limited.status_code, 429)
         self.assertIn("Retry-After", limited)
         self.assertEqual(self.sign_in(self.other).get(path).status_code, 200)
+
+
+    def test_batch_print_confirmation_and_same_key_reuse(self):
+        admin = self.sign_in(self.admin)
+        key = str(uuid4())
+        body = {"label": "Training", "count": 1}
+
+        def create(data, **headers):
+            return admin.post(self.url, data, content_type="application/json", **headers)
+
+        missing = create(body)
+        self.assertEqual(missing.json()["error"]["code"], "idempotency_key_required")
+        result = create(body, HTTP_IDEMPOTENCY_KEY=key).json()
+        different = create({**body, "label": "Other"}, HTTP_IDEMPOTENCY_KEY=key)
+        self.assertEqual(different.json()["error"]["code"], "idempotency_key_reused")
+        endpoint = f'{self.url}/{result["batch"]["id"]}/print-data'
+        denied = admin.post(endpoint, {}, content_type="application/json")
+        self.assertEqual(denied.json()["error"]["code"], "confirmation_required")
+        printed = admin.post(endpoint, {"confirm_reset_setup_pins": True}, content_type="application/json")
+        self.assertEqual(printed.status_code, 200)
+        self.assertEqual(printed.json()["cards"][0]["observer_code"], result["cards"][0]["observer_code"])
+        self.assertTrue(AuditEvent.objects.filter(organisation=self.admin.organisation, action="print_code_batch").exists())
+
+    def test_daily_code_limit_and_invalid_count(self):
+        admin = self.sign_in(self.admin)
+        CodeIssuance.objects.create(
+            organisation=self.admin.organisation, day=timezone.now().astimezone(LAGOS).date(), count=2000,
+        )
+        invalid = admin.post(
+            self.url, {"label": "Test", "count": 501}, content_type="application/json",
+            HTTP_IDEMPOTENCY_KEY=str(uuid4()),
+        )
+        self.assertEqual(invalid.status_code, 422)
+        limited = self.create_batch(admin)
+        self.assertEqual(limited.json()["error"]["code"], "rate_limited")
+        self.assertIn("Retry-After", limited)
+        self.assertEqual(self.create_batch(self.sign_in(self.other)).status_code, 201)
+
+    def test_rumour_rejects_malformed_image_before_storage(self):
+        from django.core.files.uploadedfile import SimpleUploadedFile
+
+        actor = User.objects.create_user("coordinator@example.test", role=User.Role.COORDINATOR)
+        client = self.sign_in(actor)
+        path = "/api/v1/rumours/claims"
+        data = {"seen_on": "other", "language": "en"}
+        fake = SimpleUploadedFile("not-an-image.jpg", b"Not an image", content_type="image/jpeg")
+        response = client.post(path, {**data, "image": fake}, HTTP_IDEMPOTENCY_KEY=str(uuid4()))
+        self.assertEqual(response.status_code, 415)
+        with patch("rumours.views.rate_limit", return_value=30):
+            response = client.post(
+                path, {**data, "text": "A claim"}, content_type="application/json",
+                HTTP_IDEMPOTENCY_KEY=str(uuid4()),
+            )
+        self.assertEqual(response.json()["error"]["code"], "rate_limited")
+        self.assertEqual(response["Retry-After"], "30")
