@@ -242,6 +242,10 @@ def describe_case_media(request, report):
 
 
 def conversation(report, events):
+    if report.observer_id:
+        from .conversation import messages as observer_messages
+
+        return observer_messages(report, "reviewer")
     replies = {}
     messages = []
     for event in events:
@@ -316,12 +320,13 @@ def case(request, reference):
             "occurred_at": row["occurred_at"], "device_saved_at": details.get("device_saved_at"),
             "received_at": row["received_at"], "clock_skew_seconds": None,
         },
-        "checklist": None, "result_sheet": None, "media": media,
+        "checklist": report.structured_details if report.kind == "checklist" else None,
+        "result_sheet": report.structured_details if report.kind == "result_sheet" else None, "media": media,
         "pending_uploads": [
             {"id": str(upload.pk), "kind": "photo", "size_bytes": upload.size_bytes, "received_bytes": upload.received_bytes}
             for upload in pending
         ],
-        "suggestions": suggestions(report, len(media)), "duplicates": [], "result_sheet_flags": [],
+        "suggestions": suggestions(report, len(media)), "duplicates": [], "result_sheet_flags": report.result_flags,
         "related_claims": [], "name_check": {"possible_names": False},
         "open_question": next((item for item in messages if item["question_state"] == "open"), None),
         "conversation": messages, "allowed_actions": [*actions, "redact"],

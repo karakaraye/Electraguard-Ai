@@ -34,6 +34,11 @@ class Report(OrganisationOwned):
     polling_unit_code = models.CharField(max_length=128, blank=True, default="")
     description = models.CharField(max_length=2000)
     receipt_code = models.CharField(max_length=12, null=True, unique=True)
+    kind = models.CharField(max_length=16, default="incident")
+    structured_details = models.JSONField(default=dict, blank=True)
+    result_flags = models.JSONField(default=list, blank=True)
+    observer_read_version = models.PositiveIntegerField(default=0)
+    reviewer_read_version = models.PositiveIntegerField(default=0)
     observer_code = models.CharField(max_length=10, blank=True)
     incident_details = models.JSONField(default=dict)
     review_suggestions = models.JSONField(default=dict)
@@ -57,6 +62,7 @@ class Evidence(OrganisationOwned):
     report = models.ForeignKey(Report, related_name="attachments", on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
     content_type = models.CharField(max_length=20)
+    purpose = models.CharField(max_length=8, default="evidence")
     sha256 = models.CharField(max_length=64)
     content = models.BinaryField()
     created_at = models.DateTimeField(default=timezone.now, null=True)
@@ -77,6 +83,7 @@ class ReviewEvent(OrganisationOwned):
         START = "start", "Started review"
         REQUEST_CLARIFICATION = "request_clarification", "Requested clarification"
         RESPOND = "respond", "Responded to clarification"
+        MESSAGE = "message", "Sent message"
         CLOSE = "close", "Closed review"
         ACCEPT_SUGGESTION = "accept_suggestion", "Accepted suggestion"
         CORRECT_SUGGESTION = "correct_suggestion", "Corrected suggestion"
@@ -247,3 +254,22 @@ class AssignmentBatch(OrganisationOwned):
         constraints = [
             models.UniqueConstraint(fields=["organisation", "actor", "key"], name="reports_unique_assignment_batch"),
         ]
+
+
+class OcrRead(OrganisationOwned):
+    """A result-sheet photo read before its report exists. Held for 24 hours."""
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    observer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    key = models.UUIDField()
+    photo_sha256 = models.CharField(max_length=64)
+    content_type = models.CharField(max_length=20)
+    content = models.BinaryField()
+    fields = models.JSONField()
+    model_version = models.CharField(max_length=40)
+    notice_key = models.CharField(max_length=40, null=True)
+    expires_at = models.DateTimeField(db_index=True)
+    used_by = models.ForeignKey(Report, null=True, on_delete=models.SET_NULL)
+
+    class Meta:
+        constraints = [models.UniqueConstraint(fields=["observer", "key"], name="reports_unique_ocr_key")]

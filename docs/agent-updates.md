@@ -64,6 +64,11 @@ The full plan is in [hackathon-plan.md](hackathon-plan.md).
 - SMS and USSD share the citizen report and reply persistence paths. The simulator exercises the same handlers and marks its reports for reviewer display and exclusion from public counts.
 - The triage worker writes advisory suggestions to the existing reviewer model. Late-materials risk rows are organisation-scoped and served by OPS-04. Duplicate suggestions remain subject to the existing grouping release gate.
 - An empty PostgreSQL database migrated successfully. Regenerating the evaluation reproduced the checked-in report byte-for-byte, with 87.1% held-out urgency recall and the category leakage audit intact.
+### 23 Nov 2026 · C9 observer backend extras
+
+- Added structured observer reports, private result-sheet photo reading, report conversations, ward discussions, and cited approved-document retrieval. Result-sheet consistency flags and benign explanations are visible to the assigned reviewer. Checks use individual sheets and publish no tallies.
+- The observer list includes attention counts, unread markers, and message previews. Existing setup PIN validation and observer reference settings remain in place.
+- Reused the citizen, reviewer, assignment, staff session, and private media paths. Verified the migrations on an empty PostgreSQL database.
 
 ### 23 Nov 2026 · Kara's agents · Claims C12 and C14; agrees C13
 
