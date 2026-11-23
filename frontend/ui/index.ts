@@ -28,3 +28,4 @@ export { formatBytes, formatWatDateTime, formatWatTime } from "./format";
 export { PollingUnitPicker, compactCode, type PlaceChange, type PlaceValue, type PollingUnitPickerProps, type StateListStatus } from "./PollingUnitPicker/PollingUnitPicker";
 export { DictationButton, type DictationButtonProps, type DictationState } from "./DictationButton/DictationButton";
 export { MediaCapture, useVoiceRecorder, formatClock, type CaptureSource, type MediaCaptureProps, type VoiceRecorder } from "./MediaCapture/MediaCapture";
+export { BackgroundArt, type BackgroundArtProps } from "./BackgroundArt/BackgroundArt";
