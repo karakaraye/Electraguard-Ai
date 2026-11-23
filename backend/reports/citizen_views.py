@@ -208,8 +208,12 @@ def reply_to_question(request, report_id, data):
         return limited
     if report.status in (Status.WITHDRAWN, Status.CLOSED):
         return error(409, f"report_{report.status}", "This report no longer accepts replies.")
-    event = org_scope(request, ReviewEvent, public=True).filter(
-        report=report, action=Action.REQUEST_CLARIFICATION,
+    return persist_reply(report, data)
+
+
+def persist_reply(report, data):
+    event = ReviewEvent.objects.filter(
+        report=report, organisation_id=report.organisation_id, action=Action.REQUEST_CLARIFICATION,
     ).order_by("-version").first()
     expected = question_id(report.pk, event.version) if event else None
     if report.status != Status.NEEDS_CLARIFICATION or expected is None or data.get("question_id") != expected:

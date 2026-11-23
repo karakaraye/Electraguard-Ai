@@ -84,6 +84,11 @@ def urgency_rules(report, photo_count):
 def suggestions(report, photo_count):
     triage = current_triage(report)
     ready = triage and triage.status == Triage.Status.READY
+    if ready and triage.suggestions:
+        result = {**triage.suggestions}
+        for name in ("category", "urgency"):
+            result[name] = {**result[name], **report.review_suggestions.get(name, {})}
+        return result
     category = LEGACY_CATEGORY.get(triage.category) if ready else None
     level, reasons = urgency_rules(report, photo_count)
     values = {}
@@ -237,6 +242,10 @@ def describe_case_media(request, report):
 
 
 def conversation(report, events):
+    if report.observer_id:
+        from .conversation import messages as observer_messages
+
+        return observer_messages(report, "reviewer")
     replies = {}
     messages = []
     for event in events:
@@ -287,12 +296,17 @@ def case(request, reference):
         report=report, status=UploadSession.Status.OPEN, expires_at__gt=timezone.now(),
     )
     actions = [action for action, (states, _, _) in TRANSITIONS.items() if report.status in states]
+    reporter_label = report.observer_code or "Observer" if report.observer_id else {
+        "sms": "SMS reporter", "ussd": "USSD reporter",
+    }.get(row["channel"], "Citizen, not accredited")
+    if details.get("simulated"):
+        reporter_label += " (Simulated)"
     return JsonResponse({
         "id": row["id"], "receipt_code": row["receipt_code"], "kind": row["kind"], "channel": row["channel"],
         "status": row["status"], "outcome": row["outcome"], "version": report.version,
         "reporter": {
             "type": "observer" if report.observer_id else "citizen", "accredited": bool(report.observer_id),
-            "label": (report.observer_code or "Observer") if report.observer_id else "Citizen, not accredited",
+            "label": reporter_label,
         },
         "language": details.get("language"),
         "original": {
@@ -306,12 +320,13 @@ def case(request, reference):
             "occurred_at": row["occurred_at"], "device_saved_at": details.get("device_saved_at"),
             "received_at": row["received_at"], "clock_skew_seconds": None,
         },
-        "checklist": None, "result_sheet": None, "media": media,
+        "checklist": report.structured_details if report.kind == "checklist" else None,
+        "result_sheet": report.structured_details if report.kind == "result_sheet" else None, "media": media,
         "pending_uploads": [
             {"id": str(upload.pk), "kind": "photo", "size_bytes": upload.size_bytes, "received_bytes": upload.received_bytes}
             for upload in pending
         ],
-        "suggestions": suggestions(report, len(media)), "duplicates": [], "result_sheet_flags": [],
+        "suggestions": suggestions(report, len(media)), "duplicates": [], "result_sheet_flags": report.result_flags,
         "related_claims": [], "name_check": {"possible_names": False},
         "open_question": next((item for item in messages if item["question_state"] == "open"), None),
         "conversation": messages, "allowed_actions": [*actions, "redact"],
@@ -436,7 +451,8 @@ def decide_suggestion(request, report, kind, data):
         return validation({"decision": field("invalid_choice", "Choose accept or correct.")})
     triage = current_triage(report)
     original = (
-        (LEGACY_CATEGORY.get(triage.category) if kind == "category" else urgency_rules(report, 0)[0])
+        (triage.suggestions[kind]["value"] if triage.suggestions else
+         LEGACY_CATEGORY.get(triage.category) if kind == "category" else urgency_rules(report, 0)[0])
         if triage and triage.status == Triage.Status.READY else None
     )
     if decision == "accept" and original is None:
