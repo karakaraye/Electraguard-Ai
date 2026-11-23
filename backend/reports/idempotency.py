@@ -16,14 +16,14 @@ def request_digest(request, data):
     return hashlib.sha256(f"{request.method}\n{request.path_info}\n{canonical}".encode()).hexdigest()
 
 
-def lock_key(scope):
+def lock_key(scope, *, timeout="5s"):
     # No pending record is necessary. The lock is released even if the worker crashes.
     key = int.from_bytes(hashlib.sha256(scope.encode()).digest()[:8], "big", signed=True)
     try:
         with transaction.atomic(), connection.cursor() as cursor:
             cursor.execute("SELECT current_setting('lock_timeout')")
             previous = cursor.fetchone()[0]
-            cursor.execute("SELECT set_config('lock_timeout', '5s', true)")
+            cursor.execute("SELECT set_config('lock_timeout', %s, true)", [timeout])
             cursor.execute("SELECT pg_advisory_xact_lock(%s)", [key])
             cursor.execute("SELECT set_config('lock_timeout', %s, true)", [previous])
     except OperationalError as exc:

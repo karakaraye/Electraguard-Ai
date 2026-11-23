@@ -17,7 +17,6 @@ from accounts.organisations import org_scope
 from .idempotency import idempotent
 from .incident_input import KINDS, aware_datetime, field, incident_input
 from .models import Evidence, Report, ReportIdempotency, ReviewEvent, Triage, TriageMatch
-from .triage import METHOD_VERSION
 from .workflow import record_change
 
 Status = Report.Status
@@ -105,7 +104,7 @@ def create_report(request, data):
         version=0, action=ReviewEvent.Action.CREATE, change={"to_status": "received"},
     )
     org_scope(request, Triage).create(
-        report=report, organisation_id=report.organisation_id, method_version=METHOD_VERSION,
+        report=report, organisation_id=report.organisation_id, method_version="tfidf-lr-2026.12",
     )
     return 201, {
         **identity(report), "version": report.version,

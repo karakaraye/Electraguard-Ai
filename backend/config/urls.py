@@ -2,10 +2,13 @@ from django.urls import include, path
 
 from accounts import observer_auth, views
 from accounts.models import User
+from intelligence.views import materials_risk
 
 from . import health
 
 urlpatterns = [
+    path("api/v1/ops/late-materials-risk", materials_risk),
+    path("api/v1/", include("phone_channels.urls")),
     path("api/v1/", include("reports.v1_urls")),
     path("api/v1/reference/", include("reference.urls")),
     path("api/v1/auth/observer/pin/change", observer_auth.change_pin),

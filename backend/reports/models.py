@@ -21,7 +21,7 @@ class Report(OrganisationOwned):
         OUT_OF_SCOPE = "out_of_scope", "Out of scope"
 
     reference = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    observer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
+    observer = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, on_delete=models.PROTECT)
     assigned_reviewer = models.ForeignKey(
         settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.PROTECT,
         related_name="assigned_reports",
@@ -77,7 +77,7 @@ class ReviewEvent(OrganisationOwned):
         DECIDE_MATCH = "decide_match", "Reviewed possible match"
 
     report = models.ForeignKey(Report, related_name="review_events", on_delete=models.CASCADE)
-    actor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
+    actor = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, on_delete=models.PROTECT)
     created_at = models.DateTimeField(auto_now_add=True)
     version = models.PositiveIntegerField()
     action = models.CharField(max_length=24, choices=Action.choices)
@@ -91,6 +91,8 @@ class ReviewEvent(OrganisationOwned):
 
 
 class Triage(OrganisationOwned):
+    suggestions = models.JSONField(default=dict, blank=True)
+
     class Status(models.TextChoices):
         PENDING = "pending", "Pending"
         READY = "ready", "Ready"

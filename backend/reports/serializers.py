@@ -80,7 +80,7 @@ class ReviewEventSerializer(serializers.ModelSerializer):
     def get_actor(self, event):
         if event.action == ReviewEvent.Action.RESPOND:
             return "Observer"
-        return event.actor.email
+        return event.actor.email if event.actor_id else "Citizen"
 
     class Meta:
         model = ReviewEvent

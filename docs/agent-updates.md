@@ -45,8 +45,15 @@ The full plan is in [hackathon-plan.md](hackathon-plan.md).
 | Observer and citizen screen specs, message files in 5 languages | Claude (UX agent) | `design/observer-screens` | `docs/design/screens/…`, `frontend/messages/…` |
 | Existing observer edits in progress | Codex | `work` (this worktree, uncommitted) | `frontend/app/workspace/observer/…`, `frontend/app/styles.css`, `scripts/verify-core.cjs` |
 | Backend, migrations, tests, deployment | Codex | `work` | `backend/…`, `deploy/…`, `.github/…` |
+| Local intelligence and phone channels | Backend intelligence and phone slice | `backend/cx-ai` | `backend/intelligence/`, `backend/phone_channels/`, `data/synthetic/`, related app registration and report migrations |
 
 ## Updates
+
+### 23 Nov 2026 · Backend intelligence and phone channels
+
+- Added SMS-01, USSD-01, SIM-01 and OPS-04. Local evaluation covers A1–A6, A8 and A13 using the official synthetic data.
+- The staff slice can read `Triage.suggestions`, `TriageMatch` and `ClusterSuggestion`. Integrate the five result-sheet checks with the observer slice, and exclude `incident_details.simulated` reports from public snapshots.
+- [Slice report](reviews/2026-11-23-backend-ai-sms-slice.md) records verification, run commands and integration notes.
 
 ### 22 Nov 2026 · Codex · Slice C3 observer reports
 
