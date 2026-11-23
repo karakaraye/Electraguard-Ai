@@ -103,13 +103,13 @@ export function StartFlow() {
         if (after) {
           setLocked(true);
           window.setTimeout(() => setLocked(false), after * 1000);
-          setError({ field: "form", key: "common.error.tooManyTries", minutes: Math.max(1, Math.ceil(after / 60)) });
+          setError({ field: "form", key: "common.error.tooManyTries", minutes: Math.max(1, Math.ceil(after / 60)), until: Date.now() + after * 1000 });
         } else {
           setError({ field: "form", key: "o03.signIn.lockedAdmin" });
         }
         break;
       case "rate_limited":
-        setError({ field: "form", key: "common.error.tooManyTries", minutes: Math.max(1, Math.ceil((after ?? 60) / 60)) });
+        setError({ field: "form", key: "common.error.tooManyTries", minutes: Math.max(1, Math.ceil((after ?? 60) / 60)), until: Date.now() + (after ?? 60) * 1000 });
         break;
       case "code_revoked":
         setError({ field: "code", key: "o03.signIn.revoked" });

@@ -95,3 +95,27 @@
   font-weight: 600;
   font-variant-numeric: tabular-nums;
 }
+
+.selected {
+  margin: calc(var(--s-3) * -1) 0 0;
+  color: var(--ink);
+  font: var(--t-label);
+  font-size: var(--t-base-size);
+  overflow-wrap: anywhere;
+}
+
+.selected:empty {
+  display: none;
+}
+
+.missingNote {
+  display: block;
+  margin-top: var(--s-1);
+}
+
+.missingError {
+  margin: 0;
+  color: var(--danger);
+  font: var(--t-small);
+  font-weight: 600;
+}

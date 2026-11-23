@@ -250,7 +250,8 @@
       "triesLeft": "{count, plural, one {# try left before a short wait.} other {# tries left before a short wait.}}",
       "revoked": "This code no longer works. Ask your coordinator for a new one.",
       "forgot": "Forgot your PIN? Your coordinator can give you a new code.",
-      "lockedAdmin": "This code is locked after too many tries. Ask your coordinator to reset your PIN."
+      "lockedAdmin": "This code is locked after too many tries. Ask your coordinator to reset your PIN.",
+      "lockedUntil": "Too many tries. You can try again at {time}."
     },
     "setPin": {
       "title": "Choose your own PIN",
@@ -378,7 +379,9 @@
     "error": "Choose a polling unit, or choose a ward and tap \"I don't know the polling unit\".",
     "noGps": "We never use your phone's location.",
     "searchNeedsState": "Choose your state below first. Then you can search its polling units.",
-    "listDownloadingNoPercent": "Downloading the polling-unit list"
+    "listDownloadingNoPercent": "Downloading the polling-unit list",
+    "listMissingKept": "Your answers are kept. Come back when you have network.",
+    "unknownUnitNeedsList": "Available after the list downloads."
   },
   "o08": {
     "title": "When did it happen?",
@@ -472,7 +475,10 @@
     "intakePaused": "Your organisation has paused new reports. Your report is saved on this phone and will send when they start again.",
     "notConfirmed": "We sent your report but have not heard back. We are checking. It will not be sent twice.",
     "withdrawn": "This report was withdrawn, so there is no receipt. Nothing more will happen with it.",
-    "needsAttention": "We could not accept this report yet. Fix the parts marked below, then send it again."
+    "needsAttention": "We could not accept this report yet. Fix the parts marked below, then send it again.",
+    "savedTitle": "Saved on this phone",
+    "checkingTitle": "Checking your report",
+    "summaryTitle": "Your report"
   },
   "o12": {
     "title": "Report received",
@@ -504,6 +510,9 @@
     "home": "Back to home",
     "citizen": {
       "keep": "Write this code down or save the image. You need it to check your report."
+    },
+    "pending": {
+      "noCode": "No receipt code yet. You get one when the report is received."
     }
   },
   "o13": {

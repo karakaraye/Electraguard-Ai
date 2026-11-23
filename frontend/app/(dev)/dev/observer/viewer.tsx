@@ -9,7 +9,7 @@
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useEffect, type ReactElement } from "react";
-import { setLocale, useLocale } from "../../../../lib/i18n/client";
+import { setLocale, useLocale, useT } from "../../../../lib/i18n/client";
 import { isLocale } from "../../../../lib/i18n/config";
 import { setThemePreference } from "../../../../ui";
 import { HomeView, type HomeViewProps } from "../../../(observer)/o/_views/HomeView";
@@ -44,6 +44,11 @@ import {
 } from "./fixtures";
 
 const noop = () => undefined;
+
+type Translate = ReturnType<typeof useT>;
+
+/* Attachment names come from the message files (o10.itemName), in the language on screen. */
+const nm = (t: Translate, kind: "photo" | "video" | "audio", n: number) => t("o10.itemName", { kind, n });
 const shell = { onBack: noop, onDiscard: noop };
 
 function signIn(extra: Partial<SignInViewProps>): ReactElement {
@@ -142,10 +147,10 @@ function describe(extra: Partial<DescribeViewProps>): ReactElement {
 }
 
 const recorderIdle = { elapsedMs: null, start: async () => undefined, stop: noop };
-const evidenceItems: EvidenceViewProps["items"] = [
-  { id: "a", kind: "photo", name: "Photo 1", sizeBytes: 812_000, previewUrl: FIXTURE_PREVIEW, blur: false, processing: false },
-  { id: "b", kind: "video", name: "Video 2", sizeBytes: 8_123_456, previewUrl: null, blur: true, processing: false },
-  { id: "c", kind: "audio", name: "Voice note 3", sizeBytes: 412_000, previewUrl: null, blur: false, processing: false },
+const evidenceItems = (t: Translate): EvidenceViewProps["items"] => [
+  { id: "a", kind: "photo", name: nm(t, "photo", 1), sizeBytes: 812_000, previewUrl: FIXTURE_PREVIEW, blur: false, processing: false },
+  { id: "b", kind: "video", name: nm(t, "video", 2), sizeBytes: 8_123_456, previewUrl: null, blur: true, processing: false },
+  { id: "c", kind: "audio", name: nm(t, "audio", 3), sizeBytes: 412_000, previewUrl: null, blur: false, processing: false },
 ];
 
 function evidence(extra: Partial<EvidenceViewProps>): ReactElement {
@@ -167,7 +172,7 @@ function evidence(extra: Partial<EvidenceViewProps>): ReactElement {
   );
 }
 
-function check(extra: Partial<CheckViewProps>): ReactElement {
+function check(t: Translate, extra: Partial<CheckViewProps>): ReactElement {
   return (
     <CheckView
       {...shell}
@@ -180,8 +185,8 @@ function check(extra: Partial<CheckViewProps>): ReactElement {
       description={FIXTURE_TEXT}
       firsthand
       media={[
-        { id: "a", kind: "photo", previewUrl: FIXTURE_PREVIEW, name: "Photo 1" },
-        { id: "c", kind: "audio", previewUrl: null, name: "Voice note 2" },
+        { id: "a", kind: "photo", previewUrl: FIXTURE_PREVIEW, name: nm(t, "photo", 1) },
+        { id: "c", kind: "audio", previewUrl: null, name: nm(t, "audio", 2) },
       ]}
       errors={{}}
       status={null}
@@ -213,13 +218,13 @@ function receipt(extra: Partial<ReceiptViewProps>): ReactElement {
   );
 }
 
-const uploads: ReceiptViewProps["items"] = [
-  { id: "a", kind: "photo", name: "Photo 1", sizeBytes: 812_000, state: "saved", progress: 1, removable: true },
-  { id: "b", kind: "video", name: "Video 2", sizeBytes: 8_123_456, state: "uploading", progress: 0.42, removable: false },
-  { id: "c", kind: "audio", name: "Voice note 3", sizeBytes: 412_000, state: "waiting", progress: 0, removable: true },
+const uploads = (t: Translate): ReceiptViewProps["items"] => [
+  { id: "a", kind: "photo", name: nm(t, "photo", 1), sizeBytes: 812_000, state: "saved", progress: 1, removable: true },
+  { id: "b", kind: "video", name: nm(t, "video", 2), sizeBytes: 8_123_456, state: "uploading", progress: 0.42, removable: false },
+  { id: "c", kind: "audio", name: nm(t, "audio", 3), sizeBytes: 412_000, state: "waiting", progress: 0, removable: true },
 ];
 
-export const SCREENS: Record<string, Record<string, () => ReactElement>> = {
+export const SCREENS: Record<string, Record<string, (t: Translate) => ReactElement>> = {
   o01: {
     first: () => <LanguageView selected={null} onChoose={noop} />,
     selected: () => <LanguageView selected="ha" onChoose={noop} />,
@@ -237,7 +242,7 @@ export const SCREENS: Record<string, Record<string, () => ReactElement>> = {
     offline: () => signIn({ pin: "123987", offline: true, error: { field: "form", key: "o03.signIn.offline" } }),
     sending: () => signIn({ pin: "123987", sending: true }),
     wrong: () => signIn({ error: { field: "pin", key: "o03.signIn.wrong" } }),
-    locked: () => signIn({ locked: true, error: { field: "form", key: "common.error.tooManyTries", minutes: 15 } }),
+    locked: () => signIn({ locked: true, error: { field: "form", key: "common.error.tooManyTries", minutes: 15, until: Date.parse("2026-12-05T10:15:00+01:00") } }),
     revoked: () => signIn({ error: { field: "code", key: "o03.signIn.revoked" } }),
     server: () => signIn({ pin: "123987", error: { field: "form", key: "common.error.server" } }),
   },
@@ -302,48 +307,48 @@ export const SCREENS: Record<string, Record<string, () => ReactElement>> = {
   },
   o10: {
     empty: () => evidence({}),
-    items: () => evidence({ items: evidenceItems }),
+    items: (t) => evidence({ items: evidenceItems(t) }),
     recording: () => evidence({ recorder: { ...recorderIdle, elapsedMs: 47_000 } }),
-    processing: () => evidence({ items: [{ ...evidenceItems[0], processing: true }] }),
-    limit: () => evidence({ items: [...evidenceItems, ...evidenceItems.map((i) => ({ ...i, id: `${i.id}2` }))], limitReached: true, notices: [{ key: "o10.limitItems", vars: { max: 6 }, tone: "attn" }] }),
-    "too-big": () => evidence({ notices: [{ key: "o10.tooBig", vars: { max: "25 MB" }, tone: "attn" }] }),
+    processing: (t) => evidence({ items: [{ ...evidenceItems(t)[0], processing: true }] }),
+    limit: (t) => evidence({ items: [...evidenceItems(t), ...evidenceItems(t).map((i) => ({ ...i, id: `${i.id}2` }))], limitReached: true, notices: [{ key: "o10.limitItems", vars: { max: 6 }, tone: "attn" }] }),
+    "too-big": () => evidence({ notices: [{ key: "o10.tooBig", vars: { max: "2 MB" }, tone: "attn" }] }),
     "too-long": () => evidence({ notices: [{ key: "o10.videoTooLong", tone: "attn" }] }),
     "mic-denied": () => evidence({ notices: [{ key: "o10.micDenied", tone: "attn" }] }),
-    offline: () => evidence({ offline: true, items: evidenceItems.slice(0, 1), estimate: () => null }),
+    offline: (t) => evidence({ offline: true, items: evidenceItems(t).slice(0, 1), estimate: () => null }),
   },
   o11: {
-    first: () => check({}),
-    "long-text": () => check({ description: FIXTURE_LONG_TEXT, danger: true, justNow: true }),
-    access: () => check({ category: "access_barrier", access: ["steps_no_ramp", "no_sign_language"], media: [] }),
-    sending: () => check({ status: "sending" }),
-    "saved-offline": () => check({ status: "savedOffline", offline: true }),
-    "not-confirmed": () => check({ status: "notConfirmed" }),
-    "intake-paused": () => check({ status: "intakePaused" }),
-    "queue-full": () => check({ status: "queueFull" }),
-    server: () => check({ status: "server" }),
-    "needs-attention": () => check({ status: "needsAttention", errors: { when: "That time has not happened yet. Choose an earlier time.", where: "Choose a polling unit, or choose a ward and tap \"I don't know the polling unit\"." } }),
-    incomplete: () => check({ firsthand: null, danger: null, errors: { danger: "Choose Yes or No.", source: "Choose how you know." } }),
+    first: (t) => check(t, {}),
+    "long-text": (t) => check(t, { description: FIXTURE_LONG_TEXT, danger: true, justNow: true }),
+    access: (t) => check(t, { category: "access_barrier", access: ["steps_no_ramp", "no_sign_language"], media: [] }),
+    sending: (t) => check(t, { status: "sending" }),
+    "saved-offline": (t) => check(t, { status: "savedOffline", offline: true }),
+    "not-confirmed": (t) => check(t, { status: "notConfirmed" }),
+    "intake-paused": (t) => check(t, { status: "intakePaused" }),
+    "queue-full": (t) => check(t, { status: "queueFull" }),
+    server: (t) => check(t, { status: "server" }),
+    "needs-attention": (t) => check(t, { status: "needsAttention", errors: { when: "That time has not happened yet. Choose an earlier time.", where: "Choose a polling unit, or choose a ward and tap \"I don't know the polling unit\"." } }),
+    incomplete: (t) => check(t, { firsthand: null, danger: null, errors: { danger: "Choose Yes or No.", source: "Choose how you know." } }),
   },
   o12: {
     "no-attachments": () => receipt({ justSent: true }),
-    uploading: () => receipt({ items: uploads }),
-    failed: () =>
+    uploading: (t) => receipt({ items: uploads(t) }),
+    failed: (t) =>
       receipt({
         items: [
-          { ...uploads[0] },
-          { id: "b", kind: "video", name: "Video 2", sizeBytes: 8_123_456, state: "failed", progress: 0, removable: true },
-          { id: "c", kind: "audio", name: "Voice note 3", sizeBytes: 412_000, state: "missing", progress: 0, removable: true },
-          { id: "d", kind: "photo", name: "Photo 4", sizeBytes: 3_100_000, state: "failed", progress: 0, reasonKey: "o10.tooBig", reasonVars: { max: "2 MB" }, removable: true },
+          { ...uploads(t)[0] },
+          { id: "b", kind: "video", name: nm(t, "video", 2), sizeBytes: 8_123_456, state: "failed", progress: 0, reasonKey: "o10.videoTooLong", removable: true },
+          { id: "c", kind: "audio", name: nm(t, "audio", 3), sizeBytes: 412_000, state: "missing", progress: 0, removable: true },
+          { id: "d", kind: "photo", name: nm(t, "photo", 4), sizeBytes: 3_100_000, state: "failed", progress: 0, reasonKey: "o10.tooBig", reasonVars: { max: "2 MB" }, removable: true },
         ],
       }),
-    "all-saved": () => receipt({ items: uploads.map((u) => ({ ...u, state: "saved" as const, progress: 1 })) }),
-    offline: () => receipt({ offline: true, items: uploads.map((u) => (u.state === "uploading" ? { ...u, state: "waiting" as const } : u)) }),
+    "all-saved": (t) => receipt({ items: uploads(t).map((u) => ({ ...u, state: "saved" as const, progress: 1 })) }),
+    offline: (t) => receipt({ offline: true, items: uploads(t).map((u) => (u.state === "uploading" ? { ...u, state: "waiting" as const } : u)) }),
     citizen: () => receipt({ citizen: true, justSent: true }),
   },
   pending: {
-    "on-phone": () => <PendingView state="on_phone" offline onHome={noop} />,
-    "not-confirmed": () => <PendingView state="not_confirmed" offline={false} onHome={noop} />,
-    "needs-attention": () => <PendingView state="needs_attention" offline={false} onHome={noop} />,
+    "on-phone": () => <PendingView state="on_phone" category="queues_crowding" place={FIXTURE_PLACE} occurredAt={FIXTURE_OCCURRED_AT} offline onHome={noop} />,
+    "not-confirmed": () => <PendingView state="not_confirmed" category="intimidation_violence" place={FIXTURE_PLACE} occurredAt={FIXTURE_OCCURRED_AT} offline={false} onHome={noop} />,
+    "needs-attention": () => <PendingView state="needs_attention" category="late_materials" place={FIXTURE_PLACE} occurredAt={FIXTURE_OCCURRED_AT} offline={false} onHome={noop} />,
     unknown: () => <PendingView state="unknown" offline={false} onHome={noop} />,
   },
 };
@@ -355,6 +360,7 @@ export function ObserverStateViewer() {
   const lang = params.get("lang");
   const theme = params.get("theme");
   const { locale, loading } = useLocale();
+  const t = useT();
 
   useEffect(() => {
     if (lang && isLocale(lang) && lang !== locale) void setLocale(lang);
@@ -368,7 +374,7 @@ export function ObserverStateViewer() {
   if ((lang && lang !== locale) || loading) return null;
 
   const render = screen && state ? SCREENS[screen]?.[state] : undefined;
-  if (render) return <div data-viewer-ready="true">{render()}</div>;
+  if (render) return <div data-viewer-ready="true">{render(t)}</div>;
 
   return (
     <main style={{ maxWidth: "44rem", margin: "0 auto", padding: "24px 16px", font: "400 1rem/1.5 system-ui, sans-serif" }}>

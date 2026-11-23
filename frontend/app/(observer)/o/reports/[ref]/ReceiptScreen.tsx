@@ -21,15 +21,27 @@ import { useT } from "../../../../../lib/i18n/client";
 import { useFocusTitle, useNetwork } from "../../_lib/network";
 import { PendingView, ReceiptView, type ReceiptItem } from "../../_views/ReceiptView";
 
-const REASON: Record<string, { key: string; vars?: Record<string, string | number> }> = {
-  payload_too_large: { key: "o10.tooBig", vars: { max: "25 MB" } },
-  unsupported_media_type: { key: "o10.wrongType" },
-  media_limit_reached: { key: "o10.limitItems", vars: { max: 6 } },
-  report_closed: { key: "o12.upload.closed" },
-  report_withdrawn: { key: "o11.withdrawn" },
-  media_unreadable: { key: "o12.upload.failed" },
-  validation_failed: { key: "o10.videoTooLong" },
-};
+/* Limits are the MED contract's per-kind limits (api-contracts.md, MED): photo 2 MiB, video 25 MiB, audio 4 MiB, 6 items per report. */
+const MAX_LABEL: Record<MediaKind, string> = { photo: "2 MB", video: "25 MB", audio: "4 MB" };
+
+function reasonFor(code: string, kind: MediaKind): { key: string; vars?: Record<string, string | number> } | undefined {
+  switch (code) {
+    case "payload_too_large":
+      return { key: "o10.tooBig", vars: { max: MAX_LABEL[kind] } };
+    case "unsupported_media_type":
+      return { key: "o10.wrongType" };
+    case "media_limit_reached":
+      return { key: "o10.limitItems", vars: { max: 6 } };
+    case "report_closed":
+      return { key: "o12.upload.closed" };
+    case "report_withdrawn":
+      return { key: "o11.withdrawn" };
+    case "validation_failed":
+      return { key: kind === "audio" ? "o10.voiceTooLong" : "o10.videoTooLong" };
+    default:
+      return undefined;
+  }
+}
 
 const ACCEPT: Record<MediaKind, string> = { photo: "image/*", video: "video/*", audio: "audio/*" };
 
@@ -75,9 +87,18 @@ export function ReceiptScreen() {
     if (justSent) kick();
   }, [justSent]);
 
+  // The report is sent: the phone's Back button goes Home, never back into the send steps (O-11).
+  useEffect(() => {
+    if (!justSent) return;
+    const home = citizen ? "/o/start?view=choose" : "/o";
+    const onPop = () => router.replace(home);
+    window.addEventListener("popstate", onPop);
+    return () => window.removeEventListener("popstate", onPop);
+  }, [justSent, citizen, router]);
+
   if (!loaded) return null;
   if (report.state === "unknown") {
-    return report.item || report.entry ? null : <PendingView state="unknown" offline={offline} onHome={() => router.push("/o")} />;
+    return report.item || report.entry ? null : <PendingView state="unknown" offline={offline} onHome={() => router.replace("/o")} />;
   }
 
   const receipt = item?.server ?? (report.entry ? { receipt_code: report.entry.receipt_code, received_at: report.entry.received_at } : null);
@@ -85,8 +106,11 @@ export function ReceiptScreen() {
     return (
       <PendingView
         state={report.state}
+        category={item?.summary.category_observer ?? report.entry?.category_observer ?? null}
+        place={item?.summary.place_label ?? item?.summary.ward_name ?? report.entry?.ward_name ?? null}
+        occurredAt={item?.summary.occurred_at ?? report.entry?.occurred_at ?? null}
         offline={offline}
-        onHome={() => router.push("/o")}
+        onHome={() => router.replace("/o")}
         action={
           report.state === "on_phone" || report.state === "not_confirmed" ? (
             <Button block disabled={offline} onClick={() => kick()} data-testid="pending-send-now">
@@ -100,7 +124,7 @@ export function ReceiptScreen() {
 
   const received = report.state === "received" || report.state === "in_review" || report.state === "question" || report.state === "closed";
   const items: ReceiptItem[] = (item?.media ?? []).map((media) => {
-    const reason = media.state === "rejected" && media.error_code ? REASON[media.error_code] ?? { key: "o12.upload.failed" } : undefined;
+    const reason = media.state === "rejected" && media.error_code ? reasonFor(media.error_code, media.kind) : undefined;
     return {
       id: media.client_media_id,
       kind: media.kind,

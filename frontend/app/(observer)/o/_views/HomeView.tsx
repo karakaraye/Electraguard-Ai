@@ -98,7 +98,6 @@ export function HomeView(props: HomeViewProps) {
               <Button variant="secondary" disabled={offline} onClick={props.onSendNow} data-testid="o04-send-now">
                 {t("o04.sendNow")}
               </Button>
-              {offline ? <span className={styles.meta}>{t("ui.offline")}</span> : null}
             </div>
           }
           data-testid="o04-unsent"

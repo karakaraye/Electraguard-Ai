@@ -251,7 +251,8 @@
       "triesLeft": "{count, plural, one {# try remain before you go wait small.} other {# tries remain before you go wait small.}}",
       "revoked": "This code no dey work again. Ask your coordinator for new one.",
       "forgot": "You forget your PIN? Your coordinator fit give you new code.",
-      "lockedAdmin": "This code don lock because you try too many times. Ask your coordinator to reset your PIN."
+      "lockedAdmin": "This code don lock because you try too many times. Ask your coordinator to reset your PIN.",
+      "lockedUntil": "You don try too many times. You fit try again by {time}."
     },
     "setPin": {
       "title": "Choose your own PIN",
@@ -379,7 +380,9 @@
     "error": "Choose polling unit, or choose ward and tap \"I no know the polling unit\".",
     "noGps": "We no dey use your phone location at all.",
     "searchNeedsState": "Choose your state below first. Then you fit search im polling units.",
-    "listDownloadingNoPercent": "E dey download the polling-unit list"
+    "listDownloadingNoPercent": "E dey download the polling-unit list",
+    "listMissingKept": "We keep wetin you don write. Come back when network dey.",
+    "unknownUnitNeedsList": "You fit use am after the list don download."
   },
   "o08": {
     "title": "When e happen?",
@@ -473,7 +476,10 @@
     "intakePaused": "Your organisation don stop new reports for now. Your report dey saved for this phone. E go send when dem start again.",
     "notConfirmed": "We don send your report but we never hear back. We dey check. E no go send two times.",
     "withdrawn": "You don withdraw this report, so no receipt dey. Nothing go happen with am again.",
-    "needsAttention": "We no fit accept this report yet. Fix the parts wey dem mark below, then send am again."
+    "needsAttention": "We no fit accept this report yet. Fix the parts wey dem mark below, then send am again.",
+    "savedTitle": "We save am for this phone",
+    "checkingTitle": "We dey check your report",
+    "summaryTitle": "Your report"
   },
   "o12": {
     "title": "Dem don receive your report",
@@ -505,6 +511,9 @@
     "home": "Go back home",
     "citizen": {
       "keep": "Write this code down or save the image. You need am to check your report."
+    },
+    "pending": {
+      "noCode": "Receipt code never dey yet. You go get am when dem receive the report."
     }
   },
   "o13": {
