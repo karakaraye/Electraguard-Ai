@@ -59,6 +59,21 @@ def record_change(report, actor, action, change, field=None):
     )
 
 
+def closure_snapshot(report):
+    snapshot = {"attachment_ids": [
+        str(attachment_id) for attachment_id in report.attachments.filter(organisation_id=report.organisation_id).values_list("id", flat=True)
+    ]}
+    pending = cancel_report_uploads(report)
+    media = [
+        {"id": str(pk), "sha256": digest}
+        for pk, digest in report.media_items.filter(organisation_id=report.organisation_id)
+        .order_by("pk").values_list("pk", "sha256")
+    ]
+    if media or pending:
+        snapshot.update(media_ids=media, pending_uploads=pending)
+    return snapshot
+
+
 def transition(report, actor, action, data):
     before, after = TRANSITIONS[action]
     if report.status != before:
@@ -66,17 +81,7 @@ def transition(report, actor, action, data):
     change = {"from_status": before, "to_status": after}
     change.update({field: data[field] for field in ("note", "outcome") if field in data})
     if action == Action.CLOSE:
-        change["attachment_ids"] = [
-            str(attachment_id) for attachment_id in report.attachments.filter(organisation_id=report.organisation_id).values_list("id", flat=True)
-        ]
-        pending = cancel_report_uploads(report)
-        media = [
-            {"id": str(pk), "sha256": digest}
-            for pk, digest in report.media_items.filter(organisation_id=report.organisation_id)
-            .order_by("pk").values_list("pk", "sha256")
-        ]
-        if media or pending:
-            change.update(media_ids=media, pending_uploads=pending)
+        change.update(closure_snapshot(report))
     report.status = after
     record_change(report, actor, action, change, "status")
     return Response({"version": report.version, "status": report.status})

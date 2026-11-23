@@ -36,6 +36,9 @@ class Report(OrganisationOwned):
     receipt_code = models.CharField(max_length=12, null=True, unique=True)
     observer_code = models.CharField(max_length=10, blank=True)
     incident_details = models.JSONField(default=dict)
+    review_suggestions = models.JSONField(default=dict)
+    redacted_description = models.TextField(null=True)
+    redactions = models.JSONField(default=list)
     withdrawn_at = models.DateTimeField(null=True)
     status = models.CharField(max_length=24, choices=Status.choices, default=Status.SUBMITTED)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -75,6 +78,9 @@ class ReviewEvent(OrganisationOwned):
         REQUEST_CLARIFICATION = "request_clarification", "Requested clarification"
         RESPOND = "respond", "Responded to clarification"
         CLOSE = "close", "Closed review"
+        ACCEPT_SUGGESTION = "accept_suggestion", "Accepted suggestion"
+        CORRECT_SUGGESTION = "correct_suggestion", "Corrected suggestion"
+        REDACT = "redact", "Redacted report text"
         CORRECT_CATEGORY = "correct_category", "Corrected triage category"
         DECIDE_MATCH = "decide_match", "Reviewed possible match"
 
@@ -212,7 +218,8 @@ class MediaAccess(OrganisationOwned):
     media_id = models.UUIDField()
     report = models.ForeignKey(Report, on_delete=models.CASCADE)
     actor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
-    action = models.CharField(max_length=16)
+    action = models.CharField(max_length=20)
+    reason = models.CharField(max_length=500, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:

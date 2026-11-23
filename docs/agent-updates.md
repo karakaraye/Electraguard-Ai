@@ -40,6 +40,7 @@ The full plan is in [hackathon-plan.md](hackathon-plan.md).
 | C3 observer reports and idempotency | Codex | `backend/v1-reports` | `docs/agent-updates.md`, `backend/reports/`, `backend/reference/models.py`, `backend/accounts/observer_auth.py`, `backend/config/urls.py` |
 | C4 private photo uploads and deployment | Codex | `backend/v1-media` | `docs/agent-updates.md`, `backend/reports/`, `backend/config/settings.py`, `deploy/compose.yaml`, `deploy/backend.Dockerfile`, `deploy/backup-encrypted.sh`, `docs/restore-verification.md`, `scripts/extract-recovery-bundle.py`, `scripts/verify-restored-data.py` |
 | C5 citizen reports and receipts | Codex | `backend/v1-citizen-reports` | `docs/agent-updates.md`, `backend/reports/`, `backend/accounts/organisations.py`, `backend/config/settings.py`, `scripts/verify-restored-data.py` |
+| C6 reviewer queue and case actions | Codex | `backend/v1-review` | `docs/agent-updates.md`, `backend/reports/`, `scripts/verify-restored-data.py` |
 | Front-end design system, screens, API contracts | Claude | `design/frontend` | `frontend/app/(observer)/…`, `frontend/app/(staff)/…`, `frontend/app/(public)/…`, `frontend/ui/…`, `frontend/messages/…`, `docs/design/…` |
 | Product mark and lockups | Claude (brand agent) | `design/brand` | `docs/design/brand/…` |
 | Design tokens, components, icons, i18n library, dev gallery | Claude (UI agent) | `design/ui-foundation` | `frontend/ui/…`, `frontend/lib/i18n/…`, `frontend/public/fonts/…`, `frontend/app/(dev)/…` |
@@ -49,6 +50,15 @@ The full plan is in [hackathon-plan.md](hackathon-plan.md).
 | Backend, migrations, tests, deployment | Codex | `work` | `backend/…`, `deploy/…`, `.github/…` |
 
 ## Updates
+
+### 23 Nov 2026 · Codex · Slice C6 reviewer queue and case actions
+
+- Added Q-01 and CASE-01/02/03/05 under `/api/v1/review`. Queue results are organisation-scoped and assigned to the current Reviewer, with urgency ordering, repeatable filters and a signed cursor. Assigned case detail combines evidence, triage, conversation and audit events, including citizen replies. Coordinators receive no case content.
+- Actions check the case version and current assignment under the report lock. The close action accepts an open question, requires matching saved media IDs, snapshots both legacy attachments and C4 photos and hashes, and records any pending uploads. Successful action retries replay after checking assignment again. Category and urgency decisions and Unicode redaction spans write audits. The redaction audit stores a digest and spans. Ordinary responses and later triage use the redacted description.
+- V1 MED-04 only displays a blurred copy to Reviewers. For an unblurred photo, the assigned Reviewer must request `variant=original` and send `X-Media-Access-Reason`, which is recorded. C4 discarded raw uploads, so this returns the metadata-cleaned source. Server-side blur is still pending. Legacy evidence for pre-v1 reports retains its compatibility path. V1 cases cannot use the legacy evidence route to bypass the reason check.
+- Grouping remains gated. Machine translation and the organisation hash chain are outside this slice, so case detail reports unavailable translation and an unverified chain. Queue sorting uses the assigned result set in memory. Revisit this for higher-volume deployments.
+- Ran `manage.py migrate`, `manage.py test accounts reports config --noinput` (80 passed on PostgreSQL 17.12), `makemigrations --check --dry-run`, `migrate --check` and `git diff --check`. Coverage includes assignment boundaries and reassignment, all action/state pairs, stale versions, media snapshots, restricted downloads, citizen replies, redaction and suggestion audits. No frontend paths changed.
+- Next, review the backend slice and wire the reviewer screens, including the original-photo reason prompt. Complete blur and legacy evidence migration before retiring the compatibility path.
 
 ### 23 Nov 2026 · Codex · Slice C5 citizen reports
 

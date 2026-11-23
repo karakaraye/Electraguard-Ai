@@ -112,7 +112,10 @@ def upload_evidence(request, reference):
 @api_view(["GET"])
 def download_evidence(request, reference, attachment_id):
     if request.user.role == User.Role.REVIEWER:
-        accessible = org_scope(request, Report).filter(assigned_reviewer=request.user)
+        # New reports use MED-04, where unblurred access requires a recorded reason.
+        accessible = org_scope(request, Report).filter(
+            assigned_reviewer=request.user, receipt_code__isnull=True,
+        )
     else:
         accessible = own_reports(request)
     attachment = get_object_or_404(
