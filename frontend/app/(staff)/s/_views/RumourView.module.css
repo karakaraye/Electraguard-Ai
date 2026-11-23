@@ -1,0 +1,109 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-5);
+  width: 100%;
+}
+
+.topSection {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--s-3);
+}
+
+.layoutSplit {
+  display: grid;
+  grid-template-columns: minmax(280px, 1fr) minmax(320px, 1.5fr);
+  gap: var(--s-4);
+  align-items: start;
+}
+
+@media (max-width: 899px) {
+  .layoutSplit {
+    grid-template-columns: 1fr;
+  }
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+  padding: var(--s-4);
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+}
+
+.claimList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+}
+
+.claimRow {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+  padding: var(--s-3);
+  background: var(--paper-2);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  cursor: pointer;
+  text-align: left;
+}
+
+.claimRow:hover {
+  border-color: var(--ink);
+}
+
+.claimRow[data-selected="true"] {
+  border: 2px solid var(--ink);
+  background: var(--paper);
+}
+
+.claimMeta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: var(--ink-2);
+  flex-wrap: wrap;
+}
+
+.guideBox {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+  padding: var(--s-3);
+  background: var(--paper-2);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+}
+
+.promptList {
+  margin: 0;
+  padding-left: var(--s-4);
+  font-size: 0.875rem;
+}
+
+.responseBox {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+  padding: var(--s-4);
+  background: var(--paper-2);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+}
+
+.secondPersonNotice {
+  padding: var(--s-2) var(--s-3);
+  background: var(--attn-bg);
+  border: 1px solid var(--attn-border);
+  color: var(--attn-ink);
+  border-radius: var(--radius);
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
