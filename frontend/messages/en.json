@@ -188,7 +188,8 @@
       "intakePaused": "Your organisation has paused new reports for now. Your report is saved on this phone and will send when they start again.",
       "tooManyTries": "Too many tries. Wait {minutes, plural, one {# minute} other {# minutes}} and try again.",
       "notFound": "We could not find that. Check it and try again.",
-      "storageFull": "This phone is full. Send what is waiting, or remove some photos and videos."
+      "storageFull": "This phone is full. Send what is waiting, or remove some photos and videos.",
+      "unavailable": "This is not available yet. Try again later."
     },
     "discard": {
       "title": "Delete this report?",
@@ -310,7 +311,9 @@
     "deleteWaiting": "Delete them",
     "needsAttention": "{count, plural, one {# report needs your attention before it can send.} other {# reports need your attention before they can send.}}",
     "fix": "Fix it",
-    "purpose": "Report what you see at your polling unit. Every report helps build a better Nigeria."
+    "purpose": "Report what you see at your polling unit. Every report helps build a better Nigeria.",
+    "tasks": "What you can do",
+    "allReports": "See all my reports"
   },
   "incident": {
     "draftKept": "Your report is saved on this phone.",
@@ -531,7 +534,10 @@
     "loadError": "We could not get your reports. Try again.",
     "checklistStage": "Checklist: {stage}",
     "resultSheet": "Result-sheet check",
-    "unknownPlace": "Ward only"
+    "unknownPlace": "Ward only",
+    "filterLabel": "Show",
+    "more": "Show more reports",
+    "resultCount": "{count, plural, =0 {No reports shown} one {# report shown} other {# reports shown}}"
   },
   "o14": {
     "title": "Report {ref}",
@@ -544,7 +550,11 @@
       "send": "Send answer",
       "sending": "Sending",
       "queued": "Your answer is saved on this phone. It will send when you have network.",
-      "sent": "Answer sent. The reviewer can see it."
+      "sent": "Answer sent. The reviewer can see it.",
+      "asked": "Asked {time}",
+      "empty": "Write your answer first.",
+      "alreadyAnswered": "This question was already answered or closed. You can send your text as a message instead.",
+      "sendAsMessage": "Send as a message"
     },
     "conversation": {
       "title": "Messages with your reviewer",
@@ -556,7 +566,16 @@
       "send": "Send message",
       "attach": "Add photo or voice",
       "queued": "On this phone",
-      "notAssigned": "A reviewer has not been assigned yet. You can still write; they will see it."
+      "notAssigned": "A reviewer has not been assigned yet. You can still write; they will see it.",
+      "loading": "Getting messages",
+      "loadError": "We could not get the messages. They will show when we can reach the server.",
+      "offline": "Offline. Messages show when you have network. You can still write; it will send later.",
+      "write": "Write a message, or add a photo or voice note.",
+      "attached": "Added: {name}",
+      "openAttachment": "Open the file",
+      "unsent": "Your message that was not sent",
+      "answered": "answered",
+      "closedUnanswered": "closed without an answer"
     },
     "attachments": "Photos, video, voice",
     "details": "What you reported",
@@ -577,7 +596,26 @@
     },
     "closedNote": "This report is closed. Thank you for reporting.",
     "loadError": "We could not open this report. Try again.",
-    "loading": "Opening report"
+    "loading": "Opening report",
+    "description": "What you wrote",
+    "receivedLabel": "Received",
+    "withdrawnLabel": "Withdrawn",
+    "view": "Open {kind, select, photo {photo} video {video} other {voice note}} {n}",
+    "add": "Add photo, video or voice",
+    "addOffline": "You need network to add a file to a sent report.",
+    "tooLong": "Keep it under 2000 letters.",
+    "writesRefused": "This report no longer takes messages. Your text is kept below so you can copy it.",
+    "hint": {
+      "inReview": "A reviewer is looking at it. You can send them a message.",
+      "question": "A reviewer needs more information. Answer the question above."
+    },
+    "media": {
+      "tooBig": "This file is too big. Photos up to 2 MB, video up to 25 MB, voice up to 4 MB.",
+      "tooLong": "Video up to 60 seconds and voice up to 2 minutes.",
+      "limit": "A report can have up to 6 files.",
+      "failed": "The file did not send. Check your network and try again.",
+      "processing": "Being prepared. It opens in a few minutes."
+    }
   },
   "o15": {
     "title": "Polling-day checklist",
@@ -623,7 +661,9 @@
       "booths": "Voting booths",
       "ink": "Ink",
       "device": "Accreditation device",
-      "register": "Voter register"
+      "register": "Voter register",
+      "stamps": "Stamps and seals",
+      "other": "Something else"
     },
     "queue": {
       "none": "No queue",
@@ -642,7 +682,13 @@
     "unanswered": "{count, plural, one {# question has no answer. Send anyway?} other {# questions have no answer. Send anyway?}}",
     "sendAnyway": "Send anyway",
     "goBack": "Answer them",
-    "draftExists": "You have a report you did not finish. We opened it. Finish or delete it first, then report this."
+    "draftExists": "You have a report you did not finish. We opened it. Finish or delete it first, then report this.",
+    "answer": {
+      "notSeen": "I did not see"
+    },
+    "answerInvalid": "Choose one of the answers.",
+    "unitRequired": "Choose the polling unit you are at. A ward alone is not enough here.",
+    "unansweredHint": "You can send now and fill the rest later, or go back and answer them."
   },
   "o16": {
     "title": "Check the result sheet",
@@ -657,7 +703,12 @@
       "reading": "Reading the numbers from the photo",
       "readFailed": "We could not read the numbers. Please type them from the sheet.",
       "offline": "No network, so we cannot read the photo now. Please type the numbers from the sheet.",
-      "skip": "Type the numbers instead"
+      "skip": "Type the numbers instead",
+      "alt": "Photo of the posted result sheet",
+      "view": "See the photo",
+      "tooBig": "This photo is too big. Take it again a little further away.",
+      "tooMany": "Too many photos read in the last hour. Type the numbers from the sheet.",
+      "unavailable": "Reading photos is not available yet. Type the numbers from the sheet."
     },
     "numbers": {
       "title": "Type exactly what the sheet shows",
@@ -669,7 +720,9 @@
       "rejected": "Rejected ballots",
       "blank": "Leave empty if the sheet does not show it",
       "notNumber": "Use numbers only, like 245.",
-      "tooBig": "That number is too big for one polling unit. Check it again."
+      "tooBig": "That number is too big for one polling unit. Check it again.",
+      "checkThis": "Check this number",
+      "required": "Type the number on the sheet. Type 0 if the sheet shows 0."
     },
     "confirm": "I checked every number against the posted sheet",
     "confirmError": "Tick the box after you check every number.",
@@ -721,8 +774,24 @@
       "leaveConfirm": "Leave",
       "removed": "You are no longer in this discussion.",
       "tooLong": "Keep posts under {max} letters.",
-      "earlier": "Show earlier posts"
-    }
+      "earlier": "Show earlier posts",
+      "more": "Show newer posts",
+      "emptyPost": "Write something first.",
+      "noUnitCode": "Name the ward, not the polling unit.",
+      "flag": "Report this post",
+      "flagTitle": "What is wrong with this post?",
+      "flagBody": "A moderator will look at it. The writer is not told who reported it.",
+      "flagged": "Thank you. A moderator will look at the post.",
+      "flagReason": {
+        "names_a_person": "It names a person",
+        "too_specific_location": "It gives an exact place",
+        "abusive": "It is abusive",
+        "other": "Something else"
+      }
+    },
+    "offline": "Offline. Discussions show when you have network.",
+    "needNetwork": "You need network to join or leave a discussion.",
+    "unread": "{count, plural, one {# new} other {# new}}"
   },
   "o19": {
     "title": "What do you want to know?",
@@ -738,7 +807,12 @@
     "note": "Answers only come from approved guides. They are not legal advice.",
     "error": "We could not get an answer. Try again.",
     "empty": "Type a question to ask.",
-    "otherLanguage": "This guide is only approved in {language}."
+    "otherLanguage": "This guide is only approved in {language}.",
+    "appTitle": "Ask ElectraGuard",
+    "ready": "Answer ready.",
+    "version": "version {version}",
+    "openSourceNamed": "Open {title}",
+    "noGuides": "No guides are saved on this phone yet. They are saved when you open them with network."
   },
   "o20": {
     "title": "Settings",
@@ -750,7 +824,9 @@
       "confirmLabel": "Type the new PIN again",
       "save": "Save new PIN",
       "saved": "Your new PIN is saved.",
-      "wrongCurrent": "Your current PIN is not right."
+      "wrongCurrent": "Your current PIN is not right.",
+      "format": "Your PIN is 6 numbers.",
+      "reused": "Choose a PIN you have not used before, and not the one on your card."
     },
     "privacy": "Privacy notice",
     "storage": "On this phone: {reports, plural, =0 {no reports waiting} one {# report waiting} other {# reports waiting}}, {size} of media",
@@ -763,7 +839,9 @@
       "unsentWarning": "{count, plural, one {# report is not sent yet. It will be lost.} other {# reports are not sent yet. They will be lost.}}",
       "sendFirst": "Send them first",
       "confirm": "Clear and sign out",
-      "signedOut": "You are signed out."
+      "signedOut": "You are signed out.",
+      "everywhere": "Sign out on every phone",
+      "unsentKept": "{count, plural, one {# report is not sent yet. It stays on this phone and sends when you sign in again with this code.} other {# reports are not sent yet. They stay on this phone and send when you sign in again with this code.}}"
     },
     "version": "Version {version}"
   },
@@ -787,7 +865,9 @@
     "sms": "By SMS: send STATUS {code} to {shortCode}",
     "checkStatus": "Check status",
     "another": "Report something else",
-    "citizenLabel": "Citizen report, not from an accredited observer"
+    "citizenLabel": "Citizen report, not from an accredited observer",
+    "testNumber": "test number",
+    "secretMissing": "This file cannot be added from this phone."
   },
   "p01": {
     "title": "Check a report",
@@ -811,7 +891,8 @@
       "title": "A reviewer has a question",
       "replyLabel": "Your answer",
       "send": "Send answer",
-      "sent": "Answer sent. Thank you."
+      "sent": "Answer sent. Thank you.",
+      "needSecret": "A question is waiting. You can answer it only on the phone that sent the report."
     },
     "explain": {
       "received": "Your report is waiting for a reviewer.",
@@ -820,6 +901,7 @@
       "closed": "Review is finished.",
       "withdrawn": "This report was withdrawn."
     },
-    "sms": "No smartphone? Send STATUS and your code to {shortCode}."
+    "sms": "No smartphone? Send STATUS and your code to {shortCode}.",
+    "checkCode": "Check {code}"
   }
 }

@@ -188,10 +188,12 @@ export function StartFlow() {
       return (
         <NoticeView
           offline={offline}
-          onBack={() => go("language")}
+          onBack={() => (params.get("from") === "settings" ? router.push("/o/settings") : go("language"))}
           onContinue={() => {
             markNoticeSeen(NOTICE_VERSION);
-            go("choose");
+            // Read again from Settings (O-20): back to Settings, not into sign-in.
+            if (params.get("from") === "settings") router.push("/o/settings");
+            else go("choose");
           }}
         />
       );

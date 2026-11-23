@@ -7,7 +7,7 @@
  */
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { isoWithOffset } from "../../../../../lib/api/client";
 import { STEPS, useDraft, type DraftHandle, type IncidentDraft, type StepId } from "../../../../../lib/drafts";
 import { useLocale, useT } from "../../../../../lib/i18n/client";
@@ -21,7 +21,7 @@ import {
   useReportState,
   type OutboxItem,
 } from "../../../../../lib/outbox";
-import { whenToInstant, whenProblem, type WhenValue } from "../../../../../ui";
+import { Banner, whenToInstant, whenProblem, type WhenValue } from "../../../../../ui";
 import { fromWat, watParts } from "../../../../../ui/hooks";
 import { useFocusTitle, useNetwork } from "../../_lib/network";
 import { looksLikeName, textHash } from "../../_lib/name-check";
@@ -153,6 +153,18 @@ export function IncidentFlow() {
   const { offline } = useNetwork();
   const { draft } = handle;
   const [sentId, setSentId] = useState<string | null>(null);
+  const t = useT();
+  // O-15 "Report this as an incident" with a draft already open: say why this draft opened (Q7).
+  const [draftExists, setDraftExists] = useState(() => {
+    if (typeof window === "undefined") return false;
+    try {
+      const value = window.sessionStorage.getItem("eg.draftExists") === "1";
+      window.sessionStorage.removeItem("eg.draftExists");
+      return value;
+    } catch {
+      return false;
+    }
+  });
 
   useEffect(() => {
     if (!citizen && ready && !session) router.replace("/o/start");
@@ -181,6 +193,7 @@ export function IncidentFlow() {
           })
       : undefined,
     offline,
+    banner: draftExists ? <Banner tone="attn" title={t("o15.draftExists")} onDismiss={() => setDraftExists(false)} data-testid="o15-draft-exists" /> : undefined,
   };
 
   switch (nav.step) {
@@ -201,7 +214,7 @@ export function IncidentFlow() {
   }
 }
 
-type StepProps = { handle: DraftHandle; nav: Nav; shell: { onBack: () => void; onDiscard?: () => void; offline: boolean } };
+type StepProps = { handle: DraftHandle; nav: Nav; shell: { onBack: () => void; onDiscard?: () => void; offline: boolean; banner?: ReactNode } };
 
 /* ---------- O-05 ---------- */
 
@@ -541,7 +554,7 @@ function CheckStep({ handle, nav, shell, sentId, setSentId, offline }: StepProps
   useEffect(() => {
     if (!item) return;
     if (report.state === "received" && item.server) {
-      router.replace(`/o/reports/${item.server.id}?just-sent=1${nav.citizen ? "&as=citizen" : ""}`);
+      router.replace(nav.citizen ? `/r/receipt/${encodeURIComponent(item.server.receipt_code)}?just-sent=1` : `/o/reports/${item.server.id}?just-sent=1`);
     } else if (report.state === "needs_attention") {
       void Promise.resolve().then(() => recoverDraft(item));
     } else if (followed === "intakePaused" || followed === "server" || followed === "savedOffline") {

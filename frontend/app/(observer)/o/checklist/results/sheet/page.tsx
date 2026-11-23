@@ -60,16 +60,17 @@ function ResultSheetScreen() {
   const queued = pending.find((item): item is Extract<PendingItem, { kind: "result_sheet" }> => item.kind === "result_sheet" && item.owner === code && !item.report_id);
 
   // A refused sheet comes back with its numbers so the observer can fix and resend with the same key.
-  useEffect(() => {
-    if (!queued || queued.state !== "needs_attention" || Object.keys(values).length) return;
+  const queuedValues = useMemo(() => {
+    if (!queued || queued.state !== "needs_attention") return null;
     const sheet = queued.body.result_sheet;
-    setValues({
+    return {
       registered: String(sheet.registered),
       accredited: String(sheet.accredited),
       rejected: String(sheet.rejected),
       ...Object.fromEntries(Object.entries(sheet.votes).map(([label, value]) => [`votes.${label}`, String(value)])),
-    });
-  }, [queued, values]);
+    } as Record<string, string>;
+  }, [queued]);
+  const shownValues = Object.keys(values).length ? values : (queuedValues ?? values);
 
   useEffect(
     () =>
@@ -164,7 +165,7 @@ function ResultSheetScreen() {
   function validate(): Record<string, string> {
     const out: Record<string, string> = {};
     for (const field of fields) {
-      const value = (values[field.id] ?? "").trim();
+      const value = (shownValues[field.id] ?? "").trim();
       if (!value) out[field.id] = t("o16.numbers.required");
       else if (!/^\d+$/.test(value)) out[field.id] = t("o16.numbers.notNumber");
       else if (Number(value) > MAX_VALUE) out[field.id] = t("o16.numbers.tooBig");
@@ -190,7 +191,7 @@ function ResultSheetScreen() {
       setSentKey(queued.key);
       return;
     }
-    const number = (id: string) => Number(values[id]);
+    const number = (id: string) => Number(shownValues[id]);
     const votes = Object.fromEntries(labels.map((label) => [label, number(`votes.${label}`)]));
     const useOcr = Boolean(ocr);
     let stored: Extract<PendingItem, { kind: "result_sheet" }>["photo"] = null;
@@ -254,9 +255,9 @@ function ResultSheetScreen() {
       onSkip={() => router.push("/o/checklist/results/sheet?view=numbers")}
       onContinue={() => router.push("/o/checklist/results/sheet?view=numbers")}
       fields={fields}
-      values={values}
+      values={shownValues}
       onValue={(id, value) => {
-        setValues((current) => ({ ...current, [id]: value.replace(/\s/g, "") }));
+        setValues({ ...shownValues, [id]: value.replace(/\s/g, "") });
         setTouched((current) => new Set(current).add(id));
         setErrors((current) => {
           const next = { ...current };

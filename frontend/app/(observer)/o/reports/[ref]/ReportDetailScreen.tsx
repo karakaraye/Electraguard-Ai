@@ -11,7 +11,7 @@ import { openPinSheet } from "../../_components/ObserverRuntime";
 import { QUESTIONS, STAGES, MATERIALS, QUEUE_SIZES } from "../../_lib/checklist";
 import { prepareAndUpload, refusalKey } from "../../_lib/media";
 import { useFocusTitle, useNetwork } from "../../_lib/network";
-import { dropPending, enqueue, onPendingDone, usePending, type PendingItem } from "../../_lib/pending";
+import { dropPending, enqueue, onPendingDone, onPendingRefused, usePending, type PendingItem } from "../../_lib/pending";
 import { OUTBOX_BADGE, OUTCOME_KEY, SERVER_BADGE, SERVER_HINT } from "../../_lib/status";
 import { useLoad } from "../../_lib/useLoad";
 import { useSignedIn } from "../../_lib/useSignedIn";
@@ -152,33 +152,37 @@ export function ReportDetailScreen() {
 
   // Refusals of queued replies and messages (contract MSG-02 errors).
   const mine = pending.filter((p): p is Extract<PendingItem, { kind: "message" }> => p.kind === "message" && p.report_id === serverId);
-  useEffect(() => {
-    for (const p of mine) {
-      if (p.state !== "needs_attention") continue;
-      if (p.key === replyKey && p.error_code === "question_closed") {
-        setReplyState("closed");
-      } else if (p.error_code === "report_closed" || p.error_code === "report_withdrawn") {
-        setWritesRefused(true);
-        if (p.key === replyKey) setReplyState(null);
-        void dropPending(p.key);
-        detail.reload();
-      } else if (p.error_code === "rate_limited") {
-        if (p.key === replyKey) setReplyError(t("common.error.tooManyTries", { minutes: 60 }));
-        else setMessageError(t("common.error.tooManyTries", { minutes: 60 }));
-      } else if (p.key === replyKey || p.key === messageKey) {
-        const error = t(p.fields?.body?.code === "max_length" ? "o14.tooLong" : "common.error.server");
-        if (p.key === replyKey) {
-          setReplyState(null);
-          setReplyError(error);
+  useEffect(
+    () =>
+      onPendingRefused((p) => {
+        if (p.kind !== "message" || p.report_id !== serverId) return;
+        if (p.key === replyKey && p.error_code === "question_closed") {
+          setReplyState("closed");
+        } else if (p.error_code === "report_closed" || p.error_code === "report_withdrawn") {
+          setWritesRefused(true);
+          if (p.key === replyKey) setReplyState(null);
+          void dropPending(p.key);
+          detail.reload();
+        } else if (p.error_code === "rate_limited") {
+          if (p.key === replyKey) setReplyError(t("common.error.tooManyTries", { minutes: 60 }));
+          else setMessageError(t("common.error.tooManyTries", { minutes: 60 }));
         } else {
-          setMessageKey(null);
-          setMessageError(error);
+          const error = t(p.fields?.body?.code === "max_length" ? "o14.tooLong" : "common.error.server");
+          if (p.key === replyKey) {
+            setReplyState(null);
+            setReplyError(error);
+            setReply(p.body.body);
+          } else {
+            setMessageKey(null);
+            setMessageError(error);
+            setDraft(p.body.body);
+          }
+          void dropPending(p.key);
         }
-        void dropPending(p.key);
-      }
-    }
+      }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pending]);
+    [replyKey, serverId, t],
+  );
 
   const replyPending = replyKey ? pending.find((p) => p.key === replyKey) : undefined;
   const shownReplyState = replyState === "sent" || replyState === "closed" ? replyState : replyPending ? (offline || replyPending.wait === "network" ? "queued" : "sending") : replyState;

@@ -13,7 +13,9 @@ import { api, onApiEvent } from "../../../../lib/api/client";
 import { useT } from "../../../../lib/i18n/client";
 import { kick, markWaitingCode, setPaused, startSync, useOutbox } from "../../../../lib/outbox";
 import { Button, Field, Sheet } from "../../../../ui";
+import { resumeAfterSignIn, startPending } from "../_lib/pending";
 import { clearSession, getSession, markExpired, signedIn, useObserverSession } from "../_lib/session";
+import { flushPendingSignOut } from "../_lib/signOut";
 import styles from "./observer.module.css";
 
 /* ---------- "Enter your PIN" prompt store ---------- */
@@ -56,8 +58,20 @@ export function ObserverRuntime({ children }: { children: ReactNode }) {
   useEffect(registerServiceWorker, []);
 
   useEffect(() => {
-    startSync({ owners: () => [getSession()?.code, "citizen"].filter((owner): owner is string => Boolean(owner)) });
+    const owners = () => [getSession()?.code, "citizen"].filter((owner): owner is string => Boolean(owner));
+    startSync({ owners });
+    // Checklist stages, result sheets, messages and posts (lib/outbox carries incident reports only).
+    startPending(owners);
   }, [session?.code]);
+
+  // "Clear this phone" ran offline: end the server session once the network is back (O-20).
+  useEffect(() => {
+    if (session) return;
+    void flushPendingSignOut();
+    const onOnline = () => void flushPendingSignOut();
+    window.addEventListener("online", onOnline);
+    return () => window.removeEventListener("online", onOnline);
+  }, [session]);
 
   useEffect(
     () =>
@@ -117,6 +131,7 @@ function PinSheet({ open, code, onClose }: { open: boolean; code: string; onClos
       setPaused(null);
       onClose();
       kick();
+      resumeAfterSignIn();
       return;
     }
     setPin("");

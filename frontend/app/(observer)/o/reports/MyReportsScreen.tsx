@@ -23,8 +23,8 @@ export function MyReportsScreen() {
   const pending = usePending();
   const { offline } = useNetwork();
   const [filter, setFilter] = useState<ReportsFilter>("all");
-  const [more, setMore] = useState<ReportListItem[]>([]);
-  const [cursor, setCursor] = useState<string | null>(null);
+  // Extra pages belong to one first-page answer; a fresh first page starts again.
+  const [extra, setExtra] = useState<{ base: number | null; items: ReportListItem[]; cursor: string | null }>({ base: null, items: [], cursor: null });
   const [loadingMore, setLoadingMore] = useState(false);
 
   useFocusTitle("o13");
@@ -39,13 +39,9 @@ export function MyReportsScreen() {
     if (list.status === "auth") openPinSheet();
   }, [list.status]);
 
-  // A fresh first page resets the extra pages.
-  useEffect(() => {
-    if (list.data) {
-      setMore([]);
-      setCursor(list.data.next_cursor);
-    }
-  }, [list.data]);
+  const fresh = extra.base !== null && extra.base === list.updatedAt;
+  const more = fresh ? extra.items : [];
+  const cursor = fresh ? extra.cursor : (list.data?.next_cursor ?? null);
 
   const code = session?.code;
   const rows = useMemo(() => {
@@ -90,10 +86,7 @@ export function MyReportsScreen() {
         setLoadingMore(true);
         const page = await api("REP-02", { query: { limit: 50, cursor } });
         setLoadingMore(false);
-        if (page.ok) {
-          setMore((current) => [...current, ...page.data.items]);
-          setCursor(page.data.next_cursor);
-        }
+        if (page.ok) setExtra({ base: list.updatedAt, items: [...more, ...page.data.items], cursor: page.data.next_cursor });
       }}
       onRetry={list.reload}
       onReport={() => router.push("/o/new/what")}

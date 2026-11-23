@@ -161,6 +161,14 @@ export function onPendingDone(listener: (done: Done) => void): () => void {
   return () => doneListeners.delete(listener);
 }
 
+const refusedListeners = new Set<(item: PendingItem) => void>();
+
+/** Called once when the server refuses a write for good (the item stays as "needs attention"). */
+export function onPendingRefused(listener: (item: PendingItem) => void): () => void {
+  refusedListeners.add(listener);
+  return () => refusedListeners.delete(listener);
+}
+
 function announce(done: Done) {
   for (const listener of doneListeners) listener(done);
 }
@@ -287,7 +295,9 @@ async function send(item: PendingItem) {
     return;
   }
   const fields = !result.ok ? ((result.error as { fields?: Base["fields"] }).fields ?? null) : null;
-  patch(item.key, { state: "needs_attention", wait: null, error_code: plan.kind === "stop" ? plan.code : "bad_request", fields });
+  const refused = { ...item, state: "needs_attention", wait: null, error_code: plan.kind === "stop" ? plan.code : "bad_request", fields } as PendingItem;
+  patch(item.key, refused);
+  for (const listener of refusedListeners) listener(refused);
   if (item.kind === "checklist") markStageWaiting(item.owner, item.day, item.stage, "needs_attention");
 }
 
@@ -309,4 +319,10 @@ async function sendPhoto(item: Extract<PendingItem, { kind: "result_sheet" }>, r
     return;
   }
   patch(item.key, { state: "queued", attempts: item.attempts + 1, next_at: Date.now() + result.delayMs, wait: "network" });
+}
+
+/** "Sign out and clear this phone": every code's queued writes and their photos. */
+export async function clearPending() {
+  for (const item of read().items) if (item.kind === "result_sheet" && item.photo) await del("blobs", item.photo.blob_key).catch(() => undefined);
+  write([]);
 }
