@@ -53,6 +53,12 @@ The full plan is in [hackathon-plan.md](hackathon-plan.md).
 
 ## Updates
 
+### 23 Nov 2026 · C10 staff operations and administration
+
+- Added rumour review, delayed public snapshots with complementary suppression, security alerts, organisation audit export and verification, observer code batches, settings, and retention cleanup.
+- Added cluster warnings and coverage gaps over the existing reports. The late-materials endpoint and risk rows ship together in C11.
+- Applied the backend migrations to a fresh PostgreSQL database. Run the backend test suite from `backend/` with `python manage.py test --noinput`.
+
 ### 23 Nov 2026 · Codex · Slice C8 staff authentication and account administration
 
 - Added AUTH-04 and AUTH-05 with password-only pending sessions and RFC 6238 verification. Pending sessions expire after five minutes and are fenced to AUTH-05, AUTH-06 and AUTH-07. Verified sessions use browser cookies and enforce a 30-minute idle timeout and eight-hour absolute lifetime. AUTH-06 removes tracked sessions on all devices when requested.

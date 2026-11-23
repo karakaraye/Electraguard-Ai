@@ -283,6 +283,8 @@ def set_pin(request, data):
     credential.setup_expires_at = credential.token_expires_at = None
     credential.token_digest = None
     credential.status = Status.ACTIVE
+    if credential.activated_at is None:
+        credential.activated_at = timezone.now()
     credential.save()
     start_observer_session(request, credential.user)
     return JsonResponse({"status": "signed_in", "me": identity(request)})
@@ -342,7 +344,7 @@ def change_credential_pin(request, current, new):
 
     credential.pin_hash = pin_hash(new)
     credential.status = Status.ACTIVE
-    credential.save(update_fields=["pin_hash", "status"])
+    credential.save(update_fields=["activated_at", "pin_hash", "status"])
     return HttpResponse(status=204)
 
 
