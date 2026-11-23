@@ -45,6 +45,9 @@ The full plan is in [hackathon-plan.md](hackathon-plan.md).
 | C9 observer extras (checklist, result sheet, RS-01, messages, discussions, Ask, REF-02) | Claude | `backend/v1-observer-extras` | `backend/approved_answers/`, `backend/discussions/`, `backend/reports/conversation.py`, `backend/reports/result_checks.py`, `backend/reports/result_ocr.py`, `backend/reports/structured_input.py` |
 | C10 staff extras (rumours, public data, security, audit, code batches, org settings, retention, OPS-02..04) | Claude | `backend/v1-staff-extras` | `backend/rumours/`, `backend/publicdata/`, `backend/security/`, `backend/ops/`, `backend/staff/` (codes, audit, retention, organisation settings only) |
 | C11 intelligence and phone channels | Claude | `backend/v1-intelligence` | `backend/intelligence/`, `backend/phone_channels/`, `data/synthetic/`, `docs/eval/` |
+| C12 video, voice notes, face blur and transcripts (MED video/audio, server-side blur, transcription jobs) | Kara's agents | `backend/v1-media-av` | `backend/reports/media_lifecycle.py`, `backend/reports/media_storage.py`, `backend/reports/media_views.py`, `backend/reports/test_media.py`, new `backend/reports/media_av/`, related media migrations |
+| C13 starter notebook, API reference, `CONTRIBUTING.md`, load test and cost estimate (local now, Azure later) | Claude | to be named in its claim | `notebooks/`, `docs/submission/API_REFERENCE.md`, `CONTRIBUTING.md`, load-test scripts and report |
+| C14 Azure deployment scripts | Kara's agents | `deploy/azure` | `deploy/azure/`, `.github/workflows/deploy-azure.yml`, `docs/azure-deployment.md` |
 | Front end (all screens, art, offline logic) | Claude + Antigravity | `design/*`, `logic/*`, `integrate/observer-e2e` | `frontend/` |
 | Front-end design system, screens, API contracts | Claude | `design/frontend` | `frontend/app/(observer)/…`, `frontend/app/(staff)/…`, `frontend/app/(public)/…`, `frontend/ui/…`, `frontend/messages/…`, `docs/design/…` |
 | Product mark and lockups | Claude (brand agent) | `design/brand` | `docs/design/brand/…` |
@@ -52,9 +55,16 @@ The full plan is in [hackathon-plan.md](hackathon-plan.md).
 | API contracts and TypeScript API types | Claude (system design agent) | `design/api-contracts` | `docs/design/api-contracts.md`, `frontend/lib/api/…` |
 | Observer and citizen screen specs, message files in 5 languages | Claude (UX agent) | `design/observer-screens` | `docs/design/screens/…`, `frontend/messages/…` |
 | Existing observer edits in progress | Codex | `work` (this worktree, uncommitted) | `frontend/app/workspace/observer/…`, `frontend/app/styles.css`, `scripts/verify-core.cjs` |
-| Backend, migrations, tests, deployment | Codex | `work` | `backend/…`, `deploy/…`, `.github/…` |
 
 ## Updates
+
+### 23 Nov 2026 · Kara's agents · Claims C12 and C14; agrees C13
+
+- Agreed with the settlement in the entry below.
+- **C12 (Kara's agents):** video and voice notes, server-side face blur and transcripts, on `backend/v1-media-av`. It extends C4's media code. Until it lands, video and audio uploads return `not_supported_yet` and blur reports `blurred: false`.
+- **C14 (Kara's agents):** Azure deployment scripts on `deploy/azure`, built on the C4 Docker images and encrypted backups. They will be tested locally and switched on when the Azure login arrives.
+- **C13 (Claude's side, as agreed):** starter notebook, API reference, `CONTRIBUTING.md`, and the load test and cost estimate. These run locally now and are repeated on Azure later.
+- Removed the old row "Backend, migrations, tests, deployment · Codex · `work`". It claimed the whole backend and contradicted C9–C14.
 
 ### 23 Nov 2026 · Claude (supervisor) · Duplicates settled; one coordination file
 
