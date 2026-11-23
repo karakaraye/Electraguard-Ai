@@ -155,9 +155,9 @@ def verify(connection, private_media_root=None):
 
         cursor.execute("""
             SELECT count(*) FROM reports_report report
-            JOIN accounts_user owner ON owner.id = report.observer_id
+            LEFT JOIN accounts_user owner ON owner.id = report.observer_id
             LEFT JOIN accounts_user reviewer ON reviewer.id = report.assigned_reviewer_id
-            WHERE owner.role <> 'observer' OR reviewer.role <> 'reviewer'
+            WHERE (report.observer_id IS NOT NULL AND owner.role <> 'observer') OR reviewer.role <> 'reviewer'
         """)
         errors["invalid_report_roles"] = cursor.fetchone()[0]
 
@@ -180,13 +180,13 @@ def verify(connection, private_media_root=None):
 
         cursor.execute("""
             SELECT count(*) FROM reports_reviewevent event
-            JOIN accounts_user actor ON actor.id = event.actor_id
+            LEFT JOIN accounts_user actor ON actor.id = event.actor_id
             JOIN reports_report report ON report.reference = event.report_id
-            WHERE (event.action = 'assign' AND actor.role <> 'administrator')
+            WHERE (event.action = 'assign' AND actor.role IS DISTINCT FROM 'administrator')
                OR (event.action IN ('respond', 'create', 'withdraw', 'remove_media')
-                   AND actor.id <> report.observer_id)
+                   AND event.actor_id IS DISTINCT FROM report.observer_id)
                OR (event.action NOT IN ('assign', 'respond', 'create', 'withdraw', 'remove_media')
-                   AND actor.role <> 'reviewer')
+                   AND actor.role IS DISTINCT FROM 'reviewer')
                OR (event.action = 'close' AND actor.id IS DISTINCT FROM report.assigned_reviewer_id)
         """)
         errors["invalid_audit_actors"] = cursor.fetchone()[0]

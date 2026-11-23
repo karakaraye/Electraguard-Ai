@@ -21,7 +21,8 @@ class Report(OrganisationOwned):
         OUT_OF_SCOPE = "out_of_scope", "Out of scope"
 
     reference = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    observer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
+    observer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, null=True)
+    receipt_secret_digest = models.CharField(max_length=64, blank=True, editable=False)
     assigned_reviewer = models.ForeignKey(
         settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.PROTECT,
         related_name="assigned_reports",
@@ -78,7 +79,7 @@ class ReviewEvent(OrganisationOwned):
         DECIDE_MATCH = "decide_match", "Reviewed possible match"
 
     report = models.ForeignKey(Report, related_name="review_events", on_delete=models.CASCADE)
-    actor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
+    actor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     version = models.PositiveIntegerField()
     action = models.CharField(max_length=24, choices=Action.choices)
@@ -131,7 +132,8 @@ class TriageMatch(OrganisationOwned):
 
 
 class ReportIdempotency(OrganisationOwned):
-    actor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
+    actor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, null=True)
+    citizen_digest = models.CharField(max_length=64, blank=True)
     operation = models.CharField(max_length=24)
     key = models.UUIDField()
     digest = models.CharField(max_length=64)
@@ -144,6 +146,10 @@ class ReportIdempotency(OrganisationOwned):
         constraints = [
             models.UniqueConstraint(
                 fields=["organisation", "actor", "operation", "key"], name="reports_unique_request_key"
+            ),
+            models.UniqueConstraint(
+                fields=["organisation", "citizen_digest", "operation", "key"],
+                condition=models.Q(actor__isnull=True), name="reports_unique_citizen_request",
             ),
         ]
 
@@ -211,3 +217,12 @@ class MediaAccess(OrganisationOwned):
 
     class Meta:
         indexes = [models.Index(fields=["actor", "media_id", "action", "created_at"])]
+
+
+class CitizenReply(OrganisationOwned):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    report = models.ForeignKey(Report, on_delete=models.CASCADE)
+    event = models.OneToOneField(ReviewEvent, related_name="citizen_reply", on_delete=models.CASCADE)
+    question_id = models.UUIDField()
+    body = models.CharField(max_length=2000)
+    created_at = models.DateTimeField(auto_now_add=True)

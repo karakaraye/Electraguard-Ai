@@ -50,6 +50,14 @@ The full plan is in [hackathon-plan.md](hackathon-plan.md).
 
 ## Updates
 
+### 23 Nov 2026 · Codex · Slice C5 citizen reports
+
+- Implemented the backend citizen-report contracts REP-05 through REP-07 and citizen withdrawal under REP-04. Submissions use the configured public intake organisation, versioned place data and CSRF. Receipt secrets are stored as SHA-256 digests. Idempotency is scoped to the secret and organisation.
+- Public status returns only the receipt, status, outcome, open-question flag and WAT dates. The receipt secret is required for conversation, replies and withdrawal. Replies reuse the report lock and audit version, store the text separately from the audit event, and appear to the assigned Reviewer as Citizen, not accredited. Withdrawal reuses the report purge and stub replay.
+- Verified `manage.py migrate`, `manage.py test accounts reports config --noinput` (75 passed on PostgreSQL 17.12), clean migration and whitespace checks, and restore checker syntax. No frontend paths changed.
+- Public throttling and enumeration warnings are process-local. Configure `PUBLIC_INTAKE_ORGANISATION_ID` in the Django environment if public intake should use an organisation other than the initial one. The production intake gate still governs submissions. Browser integration, citizen media and a shared rate limiter and security monitor remain follow-on work.
+- Next, review this branch and wire receipt creation, status and proof handling into the citizen screens. Keep receipt secrets out of URLs and logs.
+
 ### 22 Nov 2026 · Codex · C4 deployment and recovery follow-up
 
 - Backend and worker share the named `private-media` volume at `/var/lib/electraguard/media`. The image primes that path with UID/GID 10001 and mode 0700. Compose configuration and an isolated two-container named-volume test verified the mapping and write access.
