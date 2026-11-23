@@ -159,6 +159,8 @@ export function PollingUnitPicker({
         {states ? (
           <Select
             label={t("o07.state")}
+            aria-label={t("o07.state")}
+          aria-label={t("o07.state")}
             placeholder={t("o07.choose")}
             options={states.map((item) => ({ value: item.state_code, label: item.name }))}
             value={value.state_code ?? ""}
@@ -211,6 +213,7 @@ export function PollingUnitPicker({
       <div className={styles.drill}>
         <Select
           label={t("o07.state")}
+          aria-label={t("o07.state")}
           placeholder={t("o07.choose")}
           options={(states ?? []).map((item) => ({ value: item.state_code, label: item.name }))}
           value={value.state_code ?? ""}
@@ -222,6 +225,7 @@ export function PollingUnitPicker({
         />
         <Select
           label={t("o07.lga")}
+          aria-label={t("o07.lga")}
           placeholder={t("o07.choose")}
           options={(state?.lgas ?? []).map((item) => ({ value: item.lga_code, label: item.name }))}
           value={value.lga_code ?? ""}
@@ -231,6 +235,7 @@ export function PollingUnitPicker({
         />
         <Select
           label={t("o07.ward")}
+          aria-label={t("o07.ward")}
           placeholder={t("o07.choose")}
           options={(lga?.wards ?? []).map((item) => ({ value: item.ward_code, label: item.name }))}
           value={value.ward_code ?? ""}
@@ -240,6 +245,7 @@ export function PollingUnitPicker({
         />
         <Select
           label={t("o07.unit")}
+          aria-label={t("o07.unit")}
           placeholder={t("o07.choose")}
           options={(ward?.units ?? []).map(([code, name]) => ({ value: code, label: `${name} (${code})` }))}
           value={value.polling_unit_code ?? ""}
