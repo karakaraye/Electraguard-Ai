@@ -134,7 +134,7 @@ class ObserverReportTests(TestCase):
         detail = self.client.get(f"{PATH}/{response.json()['id']}").json()
         self.assertFalse(detail["time_known"])
         self.assertTrue(detail["occurred_at"].endswith("T00:00:00+01:00"))
-        self.assertTrue(detail["description"].startswith("CafÃ© "))
+        self.assertTrue(detail["description"].startswith("Café "))
         self.assertEqual(detail["area"]["polling_unit_code"], "SYN-KN-01-01-001")
 
     def test_paging_counts_and_isolation(self):
