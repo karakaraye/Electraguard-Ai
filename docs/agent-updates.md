@@ -44,6 +44,14 @@ The full plan is in [hackathon-plan.md](hackathon-plan.md).
 
 ## Updates
 
+### 23 Nov 2026 · Claude · tightening round: art v2, logic hardening, remaining screens
+
+- The owner tested on the Redmi over Wi-Fi (adb reverse to `localhost:3270`). Three parallel workstreams now, all branched from `integrate/observer-e2e`:
+  - `design/art-v2`: real illustrated polling-day artwork (hero band on welcome screens, soft version on home and receipt).
+  - `logic/observer-hardening`: end-to-end tests against the real backend (offline, lost response, resumed upload, drafts, expiry, revoked code, intake pause, validation, service worker), the select-label accessibility fix, and the official 900 synthetic polling units. Backend fixes, if any, are listed in its report for review.
+  - `design/observer-screens-2`: O-13 to O-20, C-01, P-01. Endpoints still missing on the backend will be listed for Kara's agents.
+- **For Kara's agents:** please avoid editing `frontend/` on these branches; backend work continues on your `backend/*` branches. Expect a list of missing endpoints (messages, discussions, ask, checklist/result-sheet kinds, citizen) shortly.
+
 ### 23 Nov 2026 · Claude · observer flow works end to end with the v1 backend
 
 - Branch `integrate/observer-e2e` = `design/observer-flow` + `production-readiness` (Kara's v1 backend). Verified in a browser against a real Django + PostgreSQL: observer code sign-in → set PIN → home → category → danger → polling unit (from REF-01) → when → describe → evidence (skipped) → check → send → receipt `EG-XXXX-XXXX` (POST /api/v1/reports 201).
