@@ -159,3 +159,22 @@ class ReportIdempotency(OrganisationOwned):
                 condition=models.Q(actor__isnull=True), name="reports_unique_citizen_key",
             ),
         ]
+
+
+class OcrRead(OrganisationOwned):
+    """A result-sheet photo read before its report exists. Held for 24 hours."""
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    observer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    key = models.UUIDField()
+    photo_sha256 = models.CharField(max_length=64)
+    content_type = models.CharField(max_length=20)
+    content = models.BinaryField()
+    fields = models.JSONField()
+    model_version = models.CharField(max_length=40)
+    notice_key = models.CharField(max_length=40, null=True)
+    expires_at = models.DateTimeField(db_index=True)
+    used_by = models.ForeignKey(Report, null=True, on_delete=models.SET_NULL)
+
+    class Meta:
+        constraints = [models.UniqueConstraint(fields=["observer", "key"], name="reports_unique_ocr_key")]

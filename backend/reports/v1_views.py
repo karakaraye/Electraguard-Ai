@@ -16,7 +16,7 @@ from accounts.organisations import org_scope
 
 from .idempotency import idempotent, lock_key
 from .incident_input import KINDS, WAT, aware_datetime, field, incident_input
-from .models import Evidence, Report, ReportIdempotency, ReviewEvent, Triage, TriageMatch
+from .models import Evidence, OcrRead, Report, ReportIdempotency, ReviewEvent, Triage, TriageMatch
 from .result_checks import check_result_sheet
 from .structured_input import checklist_input, result_input
 from .triage import METHOD_VERSION
@@ -65,6 +65,33 @@ def receipt():
     return f"EG-{prefix[:4]}-{prefix[4:]}{check_symbol(prefix)}"
 
 
+def ocr_photo(request, value):
+    try:
+        identifier = UUID(value) if isinstance(value, str) else None
+    except ValueError:
+        identifier = None
+    if identifier is None:
+        return None
+    return OcrRead.objects.select_for_update().filter(
+        pk=identifier, observer=request.user, organisation_id=request.user.organisation_id,
+        expires_at__gt=timezone.now(), used_by__isnull=True,
+    ).first()
+
+
+def ocr_disagreements(photo, structured):
+    """List fields where the photo reading and the observer's number differ."""
+    read = {"registered": photo.fields["registered"], "accredited": photo.fields["accredited"],
+            "rejected": photo.fields["rejected"], **{f"votes.{k}": v for k, v in photo.fields["votes"].items()}}
+    entered = {"registered": structured["registered"], "accredited": structured["accredited"],
+               "rejected": structured["rejected"], **{f"votes.{k}": v for k, v in structured["votes"].items()}}
+    differing = sorted(k for k, v in read.items() if v["value"] is not None and entered.get(k) != v["value"])
+    if not differing:
+        return []
+    return [{"code": "ocr_disagreement", "fields": differing,
+             "explanation": "The numbers typed differ from the photo reading for: " + ", ".join(differing) + ".",
+             "benign_explanation": "Photo reading can misread handwriting; the observer may have corrected it."}]
+
+
 def create_report(request, data):
     retry = rate_limit("report-create", str(request.user.public_id), 60, 3600)
     if retry is not None:
@@ -80,13 +107,16 @@ def create_report(request, data):
     values, errors = incident_input(data, request.headers.get("X-Device-Time"), incident=kind not in ("checklist", "result_sheet"))
     structured = {}
     flags = []
+    photo = None
     if kind == "checklist":
         structured = checklist_input(data, errors)
     elif kind == "result_sheet":
         structured = result_input(data, request.user.organisation.party_labels, errors)
         sheet = data.get("result_sheet")
         if isinstance(sheet, dict) and sheet.get("ocr_id") is not None:
-            errors["result_sheet.ocr_id"] = field("invalid", "Choose an available photo.")
+            photo = ocr_photo(request, sheet["ocr_id"])
+            if photo is None:
+                errors["result_sheet.ocr_id"] = field("invalid", "Choose an available photo.")
     if errors:
         return validation(errors)
     details = values["incident_details"]
@@ -122,8 +152,15 @@ def create_report(request, data):
             flags.append({"code": "unconfirmed_fields", "explanation": "Some fields were not confirmed against the sheet.",
                           "benign_explanation": "The observer may have been unable to read part of the photo."})
     code = org_scope(request, ObserverCode).filter(user=request.user).values_list("code", flat=True).first()
+    if photo is not None:
+        flags.extend(ocr_disagreements(photo, structured))
     report = save_report(request.user.organisation_id, request.user, kind, values,
                          observer_code=code or "", structured_details=structured, result_flags=flags)
+    if photo is not None:
+        Evidence.objects.create(report=report, organisation_id=report.organisation_id, name="result-sheet",
+                                content_type=photo.content_type, sha256=photo.photo_sha256, content=photo.content)
+        photo.used_by, photo.content = report, b""
+        photo.save(update_fields=["used_by", "content"])
     return created(report)
 
 
