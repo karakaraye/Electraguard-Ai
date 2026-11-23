@@ -1,10 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import type { ReactNode } from "react";
+import type { ComponentType, ReactNode } from "react";
 import { useLocale } from "../../lib/i18n/client";
 import { formatWatDateTime } from "../format";
-import { categoryPictograms, ChevronRightIcon, type IncidentCategory } from "../icons";
+import { categoryPictograms, ChevronRightIcon, type IconProps, type IncidentCategory } from "../icons";
 import { StatusBadge, type ReportStatus } from "../StatusBadge/StatusBadge";
 import styles from "./ReportRow.module.css";
 
@@ -22,6 +22,10 @@ export type ReportRowProps = {
   status: ReportStatus;
   /** Extra line, e.g. "Question for you: reply by 16:00". */
   note?: ReactNode;
+  /** A pictogram for rows that are not incidents (checklist stage, result-sheet check). */
+  pictogram?: ComponentType<IconProps>;
+  /** Hide the time line (for rows whose time is not known). */
+  hideTime?: boolean;
   "data-testid"?: string;
 };
 
@@ -35,10 +39,12 @@ export function ReportRow({
   reference,
   status,
   note,
+  pictogram,
+  hideTime,
   "data-testid": testId = "report-row",
 }: ReportRowProps) {
   const { locale } = useLocale();
-  const Pictogram = categoryPictograms[category];
+  const Pictogram = pictogram ?? categoryPictograms[category];
   return (
     <li className={styles.item}>
       <Link href={href} className={styles.row} data-testid={testId}>
@@ -48,8 +54,8 @@ export function ReportRow({
         <span className={styles.main}>
           <span className={styles.title}>{categoryLabel}</span>
           <span className={styles.meta}>
-            <span>{place}</span>
-            <span className="eg-tnum">{formatWatDateTime(observedAt, locale)}</span>
+            {place ? <span>{place}</span> : null}
+            {hideTime ? null : <span className="eg-tnum">{formatWatDateTime(observedAt, locale)}</span>}
             {reference ? <span className="eg-tnum">{reference}</span> : null}
           </span>
           {note ? <span className={styles.note}>{note}</span> : null}

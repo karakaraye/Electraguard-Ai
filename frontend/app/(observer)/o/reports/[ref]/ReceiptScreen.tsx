@@ -199,6 +199,7 @@ export function ReceiptScreen() {
           setAccept(ACCEPT[media.kind]);
           window.requestAnimationFrame(() => chooseInput.current?.click());
         }}
+        onView={citizen || item?.channel === "citizen" || !serverId ? undefined : () => router.replace(`/o/reports/${serverId}`)}
         onAnother={() => router.push(citizen ? "/o/new/what?as=citizen" : "/o/new/what")}
         onHome={() => router.replace(citizen ? "/o/start?view=choose" : "/o")}
       />
