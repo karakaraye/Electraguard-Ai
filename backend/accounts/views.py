@@ -18,6 +18,10 @@ def csrf_token(request):
     return JsonResponse({"csrfToken": get_token(request)})
 
 
+def legacy_role(user):
+    return User.Role.ADMINISTRATOR if user.role == User.Role.COORDINATOR else user.role
+
+
 @never_cache
 @require_POST
 @csrf_protect
@@ -30,7 +34,7 @@ def sign_in(request):
         return JsonResponse({"detail": "Invalid email or password."}, status=401)
     login(request, user)
     track_session(request, user)
-    return JsonResponse({"email": user.email, "role": user.role})
+    return JsonResponse({"email": user.email, "role": legacy_role(user)})
 
 
 @never_cache
@@ -43,7 +47,7 @@ def sign_out(request):
 @never_cache
 @api_view(["GET"])
 def current_user(request):
-    return Response({"email": request.user.email, "role": request.user.role})
+    return Response({"email": request.user.email, "role": legacy_role(request.user)})
 
 
 @never_cache

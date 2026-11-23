@@ -30,7 +30,7 @@ ALLOWED = {
     "match_decisions": ("pending", "confirmed", "dismissed"),
     "offboarding_reasons": ("access_ended", "role_changed", "credential_risk"),
 }
-ROLES = ("", "observer", "reviewer", "administrator")
+ROLES = ("", "observer", "reviewer", "administrator", "coordinator", "org_admin")
 OUTCOMES = ("corroborated", "insufficient_evidence", "out_of_scope")
 ORPHAN_CHECKS = (
     ("reports_report", "observer_id", "accounts_user", "id"),
@@ -183,7 +183,7 @@ def verify(connection, private_media_root=None):
             SELECT count(*) FROM reports_reviewevent event
             LEFT JOIN accounts_user actor ON actor.id = event.actor_id
             JOIN reports_report report ON report.reference = event.report_id
-            WHERE (event.action = 'assign' AND actor.role IS DISTINCT FROM 'administrator')
+            WHERE (event.action = 'assign' AND (actor.role IS NULL OR actor.role NOT IN ('administrator', 'coordinator')))
                OR (event.action IN ('respond', 'create', 'withdraw', 'remove_media')
                    AND event.actor_id IS DISTINCT FROM report.observer_id)
                OR (event.action NOT IN ('assign', 'respond', 'create', 'withdraw', 'remove_media')

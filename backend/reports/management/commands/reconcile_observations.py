@@ -1,6 +1,7 @@
 import json
 from collections import Counter
 from datetime import date
+from uuid import UUID
 
 from django.core.management.base import BaseCommand, CommandError
 from django.db import connection
@@ -14,6 +15,7 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument("--start", required=True, type=date.fromisoformat)
         parser.add_argument("--end", required=True, type=date.fromisoformat)
+        parser.add_argument("--organisation", type=UUID, help="Reconcile one organisation.")
 
     def handle(self, *args, **options):
         start, end = options["start"], options["end"]
@@ -39,9 +41,11 @@ class Command(BaseCommand):
                     LIMIT 1
                 ) AS closure ON true
                 WHERE (report.occurred_at AT TIME ZONE 'Africa/Lagos')::date BETWEEN %s AND %s
+                  AND report.status <> 'withdrawn'
+                  AND (%s::uuid IS NULL OR report.organisation_id = %s::uuid)
                 GROUP BY 1, 2, 3
                 """,
-                [start, end],
+                [start, end, options["organisation"], options["organisation"]],
             )
             rows = cursor.fetchall()
 

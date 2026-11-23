@@ -41,6 +41,7 @@ The full plan is in [hackathon-plan.md](hackathon-plan.md).
 | C4 private photo uploads and deployment | Codex | `backend/v1-media` | `docs/agent-updates.md`, `backend/reports/`, `backend/config/settings.py`, `deploy/compose.yaml`, `deploy/backend.Dockerfile`, `deploy/backup-encrypted.sh`, `docs/restore-verification.md`, `scripts/extract-recovery-bundle.py`, `scripts/verify-restored-data.py` |
 | C5 citizen reports and receipts | Codex | `backend/v1-citizen-reports` | `docs/agent-updates.md`, `backend/reports/`, `backend/accounts/organisations.py`, `backend/config/settings.py`, `scripts/verify-restored-data.py` |
 | C6 reviewer queue and case actions | Codex | `backend/v1-review` | `docs/agent-updates.md`, `backend/reports/`, `scripts/verify-restored-data.py` |
+| C7 coordinator assignment and overview | Codex | `backend/v1-operations` | `docs/agent-updates.md`, `backend/accounts/`, `backend/config/urls.py`, `backend/reports/`, `scripts/verify-restored-data.py` |
 | Front-end design system, screens, API contracts | Claude | `design/frontend` | `frontend/app/(observer)/…`, `frontend/app/(staff)/…`, `frontend/app/(public)/…`, `frontend/ui/…`, `frontend/messages/…`, `docs/design/…` |
 | Product mark and lockups | Claude (brand agent) | `design/brand` | `docs/design/brand/…` |
 | Design tokens, components, icons, i18n library, dev gallery | Claude (UI agent) | `design/ui-foundation` | `frontend/ui/…`, `frontend/lib/i18n/…`, `frontend/public/fonts/…`, `frontend/app/(dev)/…` |
@@ -50,6 +51,15 @@ The full plan is in [hackathon-plan.md](hackathon-plan.md).
 | Backend, migrations, tests, deployment | Codex | `work` | `backend/…`, `deploy/…`, `.github/…` |
 
 ## Updates
+
+### 23 Nov 2026 · Codex · Slice C7 coordinator assignments and overview
+
+- Existing Administrator accounts migrate to Coordinator without changes to their Django privilege flags. The legacy sign-in and administrator workspace still use the old wire role. The v1 APIs require Coordinator. The Organisation administrator role is separate, with no new v1 permissions in this slice.
+- ASG-01 returns org-scoped summaries to ward level and active Reviewer workloads. It includes same-LGA suggestions, filters and a signed cursor. It omits case text, messages, photos and polling-unit details. Active-now reflects a tracked unexpired session.
+- ASG-02 supports one or up to 100 assignments. It checks report version, state, and Reviewer organisation and activity. Every item commits with its audit and replay result. A retry can resume an interrupted batch from the first uncommitted item. Reassignment removes the former Reviewer's case and photo access on their next request. Assignment batch replay records use the existing 30-day maintenance command.
+- OPS-01 filters by inclusive observed dates in WAT. It includes observer and citizen totals and status, outcome, category, channel, urgency and LGA breakdowns. Withdrawals are counted separately by withdrawal date because the observed time is purged. Grouping remains gated. `reconcile_observations --organisation <uuid>` compares report and status counts for the same scope and dates. Its legacy category labels remain available.
+- Verified `manage.py migrate`, `manage.py test accounts reports config --noinput` (86 passed on PostgreSQL 17.12), `makemigrations --check --dry-run`, `migrate --check`, restore checker syntax and `git diff --check`. Tests covered role migration and compatibility, org isolation, partial and interrupted batches, reassignment and photos, and WAT reconciliation. No frontend paths changed.
+- Next, review this slice and wire the coordinator screens. Queue urgency sorting and overview aggregation currently operate on filtered rows in memory. Benchmark before using them on a large dataset.
 
 ### 23 Nov 2026 · Codex · Slice C6 reviewer queue and case actions
 

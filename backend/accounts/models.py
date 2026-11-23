@@ -59,6 +59,8 @@ class User(AbstractUser, OrganisationOwned):
         OBSERVER = "observer", "Observer"
         REVIEWER = "reviewer", "Reviewer"
         ADMINISTRATOR = "administrator", "Administrator"
+        COORDINATOR = "coordinator", "Coordinator"
+        ORG_ADMIN = "org_admin", "Organisation administrator"
 
     public_id = models.UUIDField(default=uuid4, editable=False, unique=True)
     username = None

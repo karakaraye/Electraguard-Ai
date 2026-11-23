@@ -233,3 +233,16 @@ class CitizenReply(OrganisationOwned):
     question_id = models.UUIDField()
     body = models.CharField(max_length=2000)
     created_at = models.DateTimeField(auto_now_add=True)
+
+
+class AssignmentBatch(OrganisationOwned):
+    actor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
+    key = models.UUIDField()
+    digest = models.CharField(max_length=64)
+    results = models.JSONField(default=list)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=["organisation", "actor", "key"], name="reports_unique_assignment_batch"),
+        ]

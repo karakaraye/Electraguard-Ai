@@ -238,12 +238,14 @@ class SessionAndRoleTests(TestCase):
                     self.sign_in, self.credentials(role), HTTP_X_CSRFTOKEN=self.csrf()
                 )
                 self.assertEqual(response.status_code, 200)
-                self.assertEqual(self.client.get(self.me).json(), {"email": user.email, "role": role})
+                expected_role = User.Role.ADMINISTRATOR if role == User.Role.COORDINATOR else role
+                self.assertEqual(self.client.get(self.me).json(), {"email": user.email, "role": expected_role})
                 for workspace in User.Role:
                     response = self.client.get(f"/api/workspaces/{workspace}")
-                    self.assertEqual(response.status_code, 200 if workspace == role else 403)
-                    if workspace == role:
-                        self.assertEqual(response.json()["title"], f"{role.label} Workspace")
+                    permitted = workspace == role or workspace == expected_role
+                    self.assertEqual(response.status_code, 200 if permitted else 403)
+                    if permitted:
+                        self.assertEqual(response.json()["title"], f"{workspace.label} Workspace")
 
                 self.assertEqual(self.client.post(self.sign_out).status_code, 403)
                 self.assertEqual(
