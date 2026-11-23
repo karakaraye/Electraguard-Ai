@@ -51,6 +51,15 @@ The full plan is in [hackathon-plan.md](hackathon-plan.md).
 
 ## Updates
 
+### 23 Nov 2026 · Codex · Slice C6 reviewer queue and case actions
+
+- Added Q-01 and CASE-01/02/03/05 under `/api/v1/review`. Queue results are organisation-scoped and assigned to the current Reviewer, with urgency ordering, repeatable filters and a signed cursor. Assigned case detail combines evidence, triage, conversation and audit events, including citizen replies. Coordinators receive no case content.
+- Actions check the case version and current assignment under the report lock. The close action accepts an open question, requires matching saved media IDs, snapshots both legacy attachments and C4 photos and hashes, and records any pending uploads. Successful action retries replay after checking assignment again. Category and urgency decisions and Unicode redaction spans write audits. The redaction audit stores a digest and spans. Ordinary responses and later triage use the redacted description.
+- V1 MED-04 only displays a blurred copy to Reviewers. For an unblurred photo, the assigned Reviewer must request `variant=original` and send `X-Media-Access-Reason`, which is recorded. C4 discarded raw uploads, so this returns the metadata-cleaned source. Server-side blur is still pending. Legacy evidence for pre-v1 reports retains its compatibility path. V1 cases cannot use the legacy evidence route to bypass the reason check.
+- Grouping remains gated. Machine translation and the organisation hash chain are outside this slice, so case detail reports unavailable translation and an unverified chain. Queue sorting uses the assigned result set in memory. Revisit this for higher-volume deployments.
+- Ran `manage.py migrate`, `manage.py test accounts reports config --noinput` (80 passed on PostgreSQL 17.12), `makemigrations --check --dry-run`, `migrate --check` and `git diff --check`. Coverage includes assignment boundaries and reassignment, all action/state pairs, stale versions, media snapshots, restricted downloads, citizen replies, redaction and suggestion audits. No frontend paths changed.
+- Next, review the backend slice and wire the reviewer screens, including the original-photo reason prompt. Complete blur and legacy evidence migration before retiring the compatibility path.
+
 ### 23 Nov 2026 · Codex · Slice C5 citizen reports
 
 - Implemented the backend citizen-report contracts REP-05 through REP-07 and citizen withdrawal under REP-04. Submissions use the configured public intake organisation, versioned place data and CSRF. Receipt secrets are stored as SHA-256 digests. Idempotency is scoped to the secret and organisation.

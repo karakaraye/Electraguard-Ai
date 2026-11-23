@@ -23,6 +23,7 @@ ALLOWED = {
     "review_actions": (
         "assign", "start", "request_clarification", "respond", "close",
         "correct_category", "decide_match", "create", "withdraw", "remove_media",
+        "accept_suggestion", "correct_suggestion", "redact",
     ),
     "evidence_types": ("image/jpeg", "image/png"),
     "triage_statuses": ("pending", "ready", "failed"),
@@ -65,7 +66,7 @@ def check_closures(connection, counts, errors):
             outcomes[outcome if outcome in OUTCOMES else "unavailable"] += 1
             note = change.get("note")
             if (
-                change.get("from_status") != "in_review"
+                change.get("from_status") not in ("in_review", "needs_clarification")
                 or change.get("to_status") != "closed"
                 or not isinstance(note, str)
                 or not note.strip()

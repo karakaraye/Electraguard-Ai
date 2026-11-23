@@ -1,0 +1,509 @@
+from collections import Counter
+from hashlib import sha256
+from unicodedata import category, normalize
+from uuid import UUID
+
+from django.core import signing
+from django.db import transaction
+from django.db.models import Count, IntegerField, OuterRef, Prefetch, Subquery, Value
+from django.db.models.functions import Coalesce, Length
+from django.http import JsonResponse
+from django.utils import timezone
+
+from accounts.models import User
+from accounts.observer_auth import endpoint, error, validation, wat
+from accounts.organisations import org_scope
+
+from .citizen_views import reply_message
+from .idempotency import idempotent
+from .incident_input import CATEGORIES, KINDS, aware_datetime, field
+from .models import Evidence, MediaItem, Report, ReviewEvent, Triage, UploadSession
+from .media_lifecycle import describe_photo
+from .v1_views import STATES, identity, missing, question_id
+from .workflow import closure_snapshot, record_change
+
+Status = Report.Status
+Action = ReviewEvent.Action
+URGENCIES = ("low", "normal", "high", "urgent")
+ACTIVE = (Status.SUBMITTED, Status.IN_REVIEW, Status.NEEDS_CLARIFICATION)
+TRANSITIONS = {
+    "start": ((Status.SUBMITTED,), Status.IN_REVIEW, Action.START),
+    "ask": ((Status.IN_REVIEW,), Status.NEEDS_CLARIFICATION, Action.REQUEST_CLARIFICATION),
+    "close": ((Status.IN_REVIEW, Status.NEEDS_CLARIFICATION), Status.CLOSED, Action.CLOSE),
+}
+LEGACY_CATEGORY = {
+    "access": "access_barrier", "materials": "late_materials", "conduct": "intimidation_violence",
+    "procedure": "not_sure", "other": "not_sure",
+}
+CURSOR = "reviewer-queue-v1"
+
+
+def cases(request):
+    return org_scope(request, Report).filter(assigned_reviewer=request.user).exclude(status=Status.WITHDRAWN)
+
+
+def permission(request, *, object_route=False):
+    if not request.user.is_authenticated:
+        return error(401, "not_authenticated", "Sign in to continue.")
+    if request.user.role != User.Role.REVIEWER:
+        return missing() if object_route else error(403, "forbidden", "Your role cannot do this.")
+
+
+def channel(report):
+    return "app" if report.observer_id else "citizen"
+
+
+def current_triage(report):
+    triage = getattr(report, "triage", None)
+    return triage if triage and triage.organisation_id == report.organisation_id else None
+
+
+def urgency_rules(report, photo_count):
+    details = report.incident_details
+    reasons = []
+    level = "normal"
+    if details.get("danger_now"):
+        level = "urgent"
+        reasons.append("danger_reported")
+    flagged = {"intimidation_violence": "intimidation", "vote_buying": "vote_buying"}.get(
+        details.get("category_observer")
+    )
+    if flagged:
+        if level != "urgent":
+            level = "high"
+        reasons.append(flagged)
+    if details.get("firsthand") is not None:
+        reasons.append("seen_firsthand" if details["firsthand"] else "told_by_someone")
+    if photo_count:
+        reasons.append("photo")
+    if not report.observer_id:
+        reasons.append("citizen_report")
+    return level, reasons
+
+
+def suggestions(report, photo_count):
+    triage = current_triage(report)
+    ready = triage and triage.status == Triage.Status.READY
+    category = LEGACY_CATEGORY.get(triage.category) if ready else None
+    level, reasons = urgency_rules(report, photo_count)
+    values = {}
+    for name, value, evidence in (("category", category, []), ("urgency", level if ready else None, reasons)):
+        decision = report.review_suggestions.get(name, {})
+        values[name] = {
+            "value": decision.get("value", value), "decision": decision.get("decision"),
+            "corrected_value": decision.get("corrected_value"), "confidence": None,
+            "reasons": evidence,
+        }
+    return {
+        "status": triage.status if triage else "pending",
+        "model_versions": {"category": triage.method_version if triage else None, "urgency": "rules-v1", "duplicates": None},
+        **values, "abstained": category in (None, "not_sure"),
+    }
+
+
+def queue_item(report, photo_count, events):
+    suggestion = suggestions(report, photo_count)
+    category, urgency = suggestion["category"], suggestion["urgency"]
+    observed = report.incident_details.get("category_observer") or "not_sure"
+    triage = current_triage(report)
+    legacy_correction = LEGACY_CATEGORY.get(triage.corrected_category) if triage else None
+    corrected = category["corrected_value"] or legacy_correction
+    closing = next((event for event in reversed(events) if event.action == Action.CLOSE), None)
+    return {
+        **identity(report), "channel": channel(report),
+        "category": {
+            "value": corrected or category["value"] or observed,
+            "source": "corrected" if corrected else ("suggested" if category["value"] else "observer"),
+        },
+        "urgency": {
+            "level": urgency["corrected_value"] or urgency["value"] or urgency_rules(report, photo_count)[0],
+            "source": "corrected" if urgency["corrected_value"] else "suggested",
+            "reasons": urgency["reasons"],
+        },
+        "area": report.incident_details.get("area"),
+        "occurred_at": wat(report.occurred_at) if report.occurred_at else None,
+        "media_counts": {"photo": photo_count, "video": 0, "audio": 0},
+        "has_open_question": report.status == Status.NEEDS_CLARIFICATION, "unread_messages": 0,
+        "flags": {"possible_duplicate": False, "result_sheet_flags": 0, "possible_names": False},
+        "last_activity_at": wat(events[-1].created_at if events else report.created_at),
+        "outcome": closing.change.get("outcome") if closing else None,
+    }
+
+
+def queue_parameters(query):
+    filters, problems = {}, {}
+    choices = {
+        "status": set(STATES.values()), "category": CATEGORIES, "urgency": set(URGENCIES),
+        "channel": {"app", "citizen", "sms", "ussd"}, "kind": KINDS, "has_evidence": {"true", "false"},
+        "state_code": None, "lga_code": None,
+    }
+    for name, allowed in choices.items():
+        values = sorted(set(query.getlist(name)))
+        if any(not value or len(value) > 128 or (allowed is not None and value not in allowed) for value in values):
+            problems[name] = field("invalid_choice", "Choose a valid filter.")
+        if values:
+            filters[name] = values
+    try:
+        limit = int(query.get("limit", "50"))
+        if not 1 <= limit <= 100:
+            raise ValueError
+    except ValueError:
+        limit = 50
+        problems["limit"] = field("invalid", "Use a limit from 1 to 100.")
+    return filters, limit, problems
+
+
+def matches(item, filters):
+    values = {
+        **item, **(item["area"] or {}), "category": item["category"]["value"],
+        "urgency": item["urgency"]["level"], "has_evidence": "true" if item["media_counts"]["photo"] else "false",
+    }
+    return all(values.get(name) in choices for name, choices in filters.items())
+
+
+def report_events(request):
+    return org_scope(request, ReviewEvent).select_related("actor", "citizen_reply")
+
+
+@endpoint("GET")
+def queue(request):
+    blocked = permission(request)
+    if blocked is not None:
+        return blocked
+    filters, limit, problems = queue_parameters(request.GET)
+    filters.setdefault("status", [STATES[status] for status in ACTIVE])
+    cursor = request.GET.get("cursor")
+    boundary = None
+    owner = str(request.user.public_id)
+    if cursor:
+        try:
+            cursor_owner, cursor_filters, rank, danger, received, pk = signing.loads(cursor, salt=CURSOR)
+            when = aware_datetime(received)
+            if cursor_owner != owner or cursor_filters != filters or when is None:
+                raise ValueError
+            boundary = (rank, danger, when, str(UUID(pk)))
+        except (signing.BadSignature, ValueError, TypeError):
+            problems["cursor"] = field("invalid", "Use the cursor returned for these filters.")
+    if problems:
+        return validation(problems)
+
+    scoped = cases(request)
+    counts = {STATES[state]: scoped.filter(status=state).count() for state in ACTIVE}
+
+    def photo_count(model):
+        photo_rows = org_scope(request, model).filter(report_id=OuterRef("pk")).order_by()
+        return Coalesce(
+            Subquery(photo_rows.values("report_id").annotate(n=Count("pk")).values("n"), output_field=IntegerField()),
+            Value(0),
+        )
+
+    reports = scoped.filter(status__in=[state for state, wire in STATES.items() if wire in filters["status"]])
+    reports = reports.select_related("triage").annotate(
+        photo_count=photo_count(MediaItem) + photo_count(Evidence),
+    ).defer("description", "redacted_description", "redactions").prefetch_related(Prefetch("review_events", queryset=report_events(request), to_attr="case_events"))
+    ordered = []
+    for report in reports:
+        item = queue_item(report, report.photo_count, report.case_events)
+        if not matches(item, filters):
+            continue
+        key = (-URGENCIES.index(item["urgency"]["level"]), not report.incident_details.get("danger_now", False),
+               report.created_at, str(report.pk))
+        if boundary is None or key > boundary:
+            ordered.append((key, item))
+    ordered.sort(key=lambda row: row[0])
+    page = ordered[:limit]
+    next_cursor = None
+    if len(ordered) > limit:
+        rank, danger, received, pk = page[-1][0]
+        next_cursor = signing.dumps([owner, filters, rank, danger, received.isoformat(), pk], salt=CURSOR)
+    return JsonResponse({"items": [item for _, item in page], "counts": counts, "next_cursor": next_cursor})
+
+
+def describe_case_media(request, report):
+    legacy = org_scope(request, Evidence).filter(report=report).defer("content").annotate(bytes=Length("content"))
+    media = [
+        {"id": str(item.pk), "kind": "photo", "status": "ready", "size_bytes": item.bytes,
+         "duration_ms": None, "sha256": item.sha256, "original_sha256": item.sha256,
+         "integrity_verified": True, "blurred": False, "exif_removed": False, "transcript": None,
+         "created_at": wat(item.created_at) if item.created_at else None}
+        for item in legacy
+    ]
+    for item in org_scope(request, MediaItem).filter(report=report).order_by("created_at", "pk"):
+        media.append({
+            **describe_photo(item), "sha256": item.sha256, "original_sha256": item.original_sha256,
+            "integrity_verified": True, "transcript": None,
+        })
+    return media
+
+
+def conversation(report, events):
+    replies = {}
+    messages = []
+    for event in events:
+        if event.action == Action.RESPOND:
+            reply = getattr(event, "citizen_reply", None)
+            if reply:
+                message = reply_message(reply)
+                replies[message["reply_to"]] = message
+            elif messages and "note" in event.change:
+                identifier = messages[-1]["id"]
+                replies[identifier] = {
+                    "id": question_id(report.pk, event.version), "kind": "reply", "author": "observer",
+                    "author_label": "Observer", "body": event.change["note"], "attachment": None,
+                    "question_state": None, "reply_to": identifier, "created_at": wat(event.created_at), "read": True,
+                }
+        elif event.action == Action.REQUEST_CLARIFICATION:
+            messages.append({
+                "id": question_id(report.pk, event.version), "kind": "formal_question", "author": "reviewer",
+                "author_label": "Reviewer", "body": event.change["note"], "attachment": None,
+                "question_state": "closed_unanswered", "reply_to": None, "created_at": wat(event.created_at), "read": True,
+            })
+    if messages and report.status == Status.NEEDS_CLARIFICATION:
+        messages[-1]["question_state"] = "open"
+    result = []
+    for question in messages:
+        result.append(question)
+        if question["id"] in replies:
+            question["question_state"] = "answered"
+            result.append(replies[question["id"]])
+    return result
+
+
+@endpoint("GET")
+@transaction.atomic
+def case(request, reference):
+    blocked = permission(request, object_route=True)
+    if blocked is not None:
+        return blocked
+    report = cases(request).select_for_update(no_key=True).filter(pk=reference).first()
+    if report is None:
+        return missing()
+    events = list(report_events(request).filter(report=report).exclude(action=Action.DECIDE_MATCH))
+    media = describe_case_media(request, report)
+    row = queue_item(report, len(media), events)
+    details = report.incident_details
+    messages = conversation(report, events)
+    pending = org_scope(request, UploadSession).filter(
+        report=report, status=UploadSession.Status.OPEN, expires_at__gt=timezone.now(),
+    )
+    actions = [action for action, (states, _, _) in TRANSITIONS.items() if report.status in states]
+    return JsonResponse({
+        "id": row["id"], "receipt_code": row["receipt_code"], "kind": row["kind"], "channel": row["channel"],
+        "status": row["status"], "outcome": row["outcome"], "version": report.version,
+        "reporter": {
+            "type": "observer" if report.observer_id else "citizen", "accredited": bool(report.observer_id),
+            "label": (report.observer_code or "Observer") if report.observer_id else "Citizen, not accredited",
+        },
+        "language": details.get("language"),
+        "original": {
+            "description": report.description, "redacted_description": report.redacted_description,
+            "redactions": report.redactions,
+        },
+        "translation": {"status": "unavailable", "text": None},
+        "category_observer": details.get("category_observer"), "access_barrier_details": details.get("access_barrier_details", []),
+        "danger_now": details.get("danger_now", False), "firsthand": details.get("firsthand"), "area": row["area"],
+        "times": {
+            "occurred_at": row["occurred_at"], "device_saved_at": details.get("device_saved_at"),
+            "received_at": row["received_at"], "clock_skew_seconds": None,
+        },
+        "checklist": None, "result_sheet": None, "media": media,
+        "pending_uploads": [
+            {"id": str(upload.pk), "kind": "photo", "size_bytes": upload.size_bytes, "received_bytes": upload.received_bytes}
+            for upload in pending
+        ],
+        "suggestions": suggestions(report, len(media)), "duplicates": [], "result_sheet_flags": [],
+        "related_claims": [], "name_check": {"possible_names": False},
+        "open_question": next((item for item in messages if item["question_state"] == "open"), None),
+        "conversation": messages, "allowed_actions": [*actions, "redact"],
+        "history": {"chain_intact": None, "events": [
+            {
+                "id": str(event.pk), "version": event.version, "action": event.action,
+                "actor_label": ("Citizen" if not event.actor_id else (
+                    "Observer" if event.actor_id == report.observer_id else event.actor.get_full_name() or event.actor.role.title()
+                )), "created_at": wat(event.created_at), "change": event.change,
+            } for event in events
+        ]},
+    })
+
+
+def write_case(request, reference, operation, data, perform):
+    blocked = permission(request, object_route=True)
+    if blocked is not None:
+        return blocked
+    if not cases(request).filter(pk=reference).exists():
+        return missing()
+
+    def locked():
+        return cases(request).select_for_update(no_key=True).filter(pk=reference).first()
+
+    def execute():
+        report = locked()
+        if report is None:
+            return missing()
+        version = data.get("version")
+        if type(version) is not int or version < 0:
+            return validation({"version": field("invalid", "Provide a nonnegative case version.")})
+        if report.version != version:
+            return error(409, "stale_version", "This case has changed. Refresh before trying again.")
+        return perform(report)
+
+    def replay(record):
+        report = locked()
+        return (record.status, record.body, report) if report is not None else missing()
+
+    return idempotent(request, operation, data, execute, replay=replay)
+
+
+def validate_text(data, name):
+    raw = data.get(name)
+    text = normalize("NFC", raw.strip()) if isinstance(raw, str) else ""
+    if not text:
+        return None, field("required", "Enter text.")
+    if len(text) > 2000:
+        return None, field("max_length", "Use 2000 characters or fewer.", limit=2000)
+    if any(category(char) in {"Cc", "Cs"} and char != "\n" for char in text):
+        return None, field("invalid", "Enter text without control characters.")
+    return text, None
+
+
+def apply_action(request, report, data):
+    action = data.get("action")
+    if not isinstance(action, str) or action not in TRANSITIONS:
+        return validation({"action": field("invalid_choice", "Choose start, ask or close.")})
+    prior, next_status, audit_action = TRANSITIONS[action]
+    if report.status not in prior:
+        return error(409, "invalid_transition", "This action is unavailable for the current case status.")
+
+    change = {"from_status": report.status, "to_status": next_status}
+    result = {"id": str(report.pk), "status": STATES[next_status], "outcome": None}
+    allowed_fields = {"start": set(), "ask": {"question"}, "close": {"rationale", "outcome", "expected_media_ids"}}
+    problems = {
+        name: field("not_allowed_for_kind", "This field is unavailable for this action.")
+        for name in ({"question", "rationale", "outcome", "expected_media_ids"} - allowed_fields[action])
+        if name in data
+    }
+    if action in ("ask", "close"):
+        name = "question" if action == "ask" else "rationale"
+        text, problem = validate_text(data, name)
+        if problem:
+            problems[name] = problem
+        else:
+            change["note"] = text
+    if action == "close":
+        outcome = data.get("outcome")
+        if outcome not in Report.Outcome.values:
+            problems["outcome"] = field("invalid_choice" if outcome is not None else "required", "Choose a valid outcome.")
+        expected = data.get("expected_media_ids")
+        try:
+            if not isinstance(expected, list):
+                raise ValueError
+            expected_ids = [str(UUID(value)) for value in expected if isinstance(value, str)]
+            if len(expected_ids) != len(expected) or len(set(expected_ids)) != len(expected_ids):
+                raise ValueError
+        except ValueError:
+            problems["expected_media_ids"] = field("invalid", "Provide a list of distinct media identifiers.")
+    if problems:
+        return validation(problems)
+
+    if action == "close":
+        current = {str(pk) for model in (Evidence, MediaItem) for pk in org_scope(request, model)
+                   .filter(report=report).values_list("pk", flat=True)}
+        if current != set(expected_ids):
+            return error(409, "closure_evidence_changed", "New evidence was saved since you opened the case. Review it before closing.")
+        snapshot = closure_snapshot(report)
+        change.update(snapshot, outcome=outcome)
+        result.update(
+            outcome=outcome,
+            closure={"media_ids": sorted(current), "pending_uploads": snapshot.get("pending_uploads", [])},
+        )
+    report.status = next_status
+    record_change(report, request.user, audit_action, change, "status")
+    if action == "ask":
+        result["question_id"] = question_id(report.pk, report.version)
+    return 200, {**result, "version": report.version}, report
+
+
+@endpoint("POST", max_body_bytes=65536)
+def actions(request, data, reference):
+    return write_case(request, reference, "CASE-02", data, lambda report: apply_action(request, report, data))
+
+
+def decide_suggestion(request, report, kind, data):
+    if kind not in ("category", "urgency"):
+        return missing()
+    decision = data.get("decision")
+    if decision not in ("accept", "correct"):
+        return validation({"decision": field("invalid_choice", "Choose accept or correct.")})
+    triage = current_triage(report)
+    original = (
+        (LEGACY_CATEGORY.get(triage.category) if kind == "category" else urgency_rules(report, 0)[0])
+        if triage and triage.status == Triage.Status.READY else None
+    )
+    if decision == "accept" and original is None:
+        return error(409, "invalid_transition", "There is no ready suggestion to accept.")
+    value = data.get("value")
+    if decision == "correct" and (
+        not isinstance(value, str) or value not in (CATEGORIES if kind == "category" else URGENCIES) or value == original
+    ):
+        return validation({"value": field("invalid_choice", "Choose a different valid value.")})
+    output = {"value": original, "decision": "accepted" if decision == "accept" else "corrected",
+              "corrected_value": value if decision == "correct" else None}
+    report.review_suggestions = {**report.review_suggestions, kind: output}
+    record_change(
+        report, request.user,
+        Action.ACCEPT_SUGGESTION if decision == "accept" else Action.CORRECT_SUGGESTION,
+        {"suggestion": kind, **output}, "review_suggestions",
+    )
+    return 200, {"version": report.version, "suggestion": output}, report
+
+
+@endpoint("POST", max_body_bytes=65536)
+def suggestion(request, data, reference, kind):
+    return write_case(request, reference, "CASE-03", data, lambda report: decide_suggestion(request, report, kind, data))
+
+
+def apply_redaction(request, report, data):
+    spans = data.get("spans")
+    if not isinstance(spans, list):
+        return validation({"spans": field("invalid", "Provide a list of redaction spans.")})
+    length = len(report.description)
+    intervals = []
+    problems = {}
+    for index, span in enumerate(spans):
+        if not isinstance(span, dict):
+            problems[f"spans.{index}"] = field("invalid", "Provide start and end offsets.")
+            continue
+        start, end = span.get("start"), span.get("end")
+        if type(start) is not int or start < 0:
+            problems[f"spans.{index}.start"] = field("min_value", "Start must be a nonnegative integer.", limit=0)
+        elif type(end) is not int or end <= start:
+            problems[f"spans.{index}.end"] = field("min_value", "End must be after start.", limit=start + 1)
+        elif end > length:
+            problems[f"spans.{index}.end"] = field("max_value", "End exceeds the original text.", limit=length)
+        else:
+            intervals.append((start, end, index))
+    intervals.sort()
+    chunks, previous = [], 0
+    for start, end, index in intervals:
+        if start < previous:
+            problems[f"spans.{index}.start"] = field("invalid", "Redaction spans must not overlap.")
+        chunks.extend((report.description[previous:start], "[name removed]"))
+        previous = max(previous, end)
+    if problems:
+        return validation(problems)
+
+    report.redactions = [{"start": start, "end": end} for start, end, _ in intervals]
+    report.redacted_description = "".join([*chunks, report.description[previous:]]) if intervals else None
+    report.save(update_fields=["redactions", "redacted_description"])
+    record_change(report, request.user, Action.REDACT, {
+        "spans": report.redactions,
+        "sha256": sha256((report.redacted_description or report.description).encode()).hexdigest(),
+    })
+    return 200, {
+        "version": report.version, "redacted_description": report.redacted_description, "redactions": report.redactions,
+    }, report
+
+
+@endpoint("POST", max_body_bytes=65536)
+def redact(request, data, reference):
+    return write_case(request, reference, "CASE-05", data, lambda report: apply_redaction(request, report, data))

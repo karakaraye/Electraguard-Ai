@@ -14,6 +14,12 @@ class EvidenceSerializer(serializers.ModelSerializer):
 
 class ReportSerializer(serializers.ModelSerializer):
     description = serializers.CharField(max_length=1000)
+
+    def to_representation(self, report):
+        result = super().to_representation(report)
+        if report.redacted_description is not None:
+            result["description"] = report.redacted_description
+        return result
     polling_unit_code = serializers.CharField(max_length=32, allow_blank=True, default="")
 
     class Meta:

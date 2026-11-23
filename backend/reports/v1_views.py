@@ -258,7 +258,7 @@ def detail(request, reference):
     )
     return JsonResponse({
         **identity(report), "channel": "app", "outcome": report.outcome,
-        **details, "description": report.description, "checklist": None, "result_sheet": None,
+        **details, "description": report.redacted_description if report.redacted_description is not None else report.description, "checklist": None, "result_sheet": None,
         "occurred_at": wat(report.occurred_at), "closed_at": wat(closure.created_at) if closure else None,
         "withdrawn_at": None, "media": media, "open_question": question,
         "reviewer_assigned": report.assigned_reviewer_id is not None,
@@ -293,10 +293,13 @@ def withdraw_report(request, report, data, *, public=False):
     report.withdrawn_at = timezone.now()
     report.assigned_reviewer = report.occurred_at = None
     report.description = report.location = report.polling_unit_code = report.observer_code = ""
-    report.incident_details = {}
+    report.incident_details = report.review_suggestions = {}
+    report.redacted_description = None
+    report.redactions = []
     report.save(update_fields=[
         "status", "withdrawn_at", "assigned_reviewer", "occurred_at", "description",
         "location", "polling_unit_code", "observer_code", "incident_details",
+        "review_suggestions", "redacted_description", "redactions",
     ])
     record_change(report, None if public else request.user, ReviewEvent.Action.WITHDRAW, {
         "from_status": "received", "to_status": "withdrawn",

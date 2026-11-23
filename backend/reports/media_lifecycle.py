@@ -1,3 +1,5 @@
+from django.utils import timezone
+
 from accounts.observer_auth import wat
 
 from .media_storage import photo_key, schedule_delete, staging_key
@@ -15,9 +17,13 @@ def retire_upload(upload, status):
 
 def cancel_report_uploads(report):
     pending = []
+    now = timezone.now()
     for upload in report.media_uploads.filter(organisation_id=report.organisation_id, status=UploadSession.Status.OPEN):
-        pending.append({"id": str(upload.pk), "kind": "photo", "size_bytes": upload.size_bytes})
-        retire_upload(upload, UploadSession.Status.CANCELLED)
+        if upload.expires_at > now:
+            pending.append({"id": str(upload.pk), "kind": "photo", "size_bytes": upload.size_bytes})
+            retire_upload(upload, UploadSession.Status.CANCELLED)
+        else:
+            retire_upload(upload, UploadSession.Status.EXPIRED)
     return pending
 
 

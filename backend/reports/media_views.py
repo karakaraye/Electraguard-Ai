@@ -3,6 +3,7 @@ from datetime import timedelta
 from functools import wraps
 from hashlib import sha256
 from io import BytesIO
+from unicodedata import category
 from uuid import uuid4
 
 from django.core.exceptions import RequestDataTooBig
@@ -399,22 +400,24 @@ def partial_response(raw, header):
     return response
 
 
-def log_download(request, photo, download):
-    action = "download_media" if download else "view_media"
+
+def log_download(request, photo, download, reason=""):
+    action = "download_original" if reason else ("download_media" if download else "view_media")
     access = org_scope(request, MediaAccess).filter(actor=request.user, media_id=photo.pk, action=action)
     with transaction.atomic():
         if not lock_key(f"media-access:{request.user.pk}:{photo.pk}:{action}"):
             return False
-        if not access.filter(created_at__gt=timezone.now() - timedelta(minutes=10)).exists():
+        if reason or not access.filter(created_at__gt=timezone.now() - timedelta(minutes=10)).exists():
             access.create(
                 organisation_id=photo.organisation_id, report=photo.report,
-                actor=request.user, media_id=photo.pk, action=action,
+                actor=request.user, media_id=photo.pk, action=action, reason=reason,
             )
     return True
 
 
 @endpoint("GET")
 @storage_errors
+@transaction.atomic
 def download(request, reference):
     if not request.user.is_authenticated:
         return missing()
@@ -430,13 +433,44 @@ def download(request, reference):
         return missing()
     photo = photos.first()
     variant = request.GET.get("variant", "display")
-    if photo is None or variant not in ("display", "thumb"):
+    reviewer = actor.role == User.Role.REVIEWER
+    legacy = None
+    if photo is None and reviewer and variant == "original":
+        legacy = org_scope(request, Evidence).filter(
+            pk=reference, report__organisation_id=actor.organisation_id,
+            report__assigned_reviewer=actor,
+        ).exclude(report__status=Report.Status.WITHDRAWN).defer("content").first()
+    item = photo or legacy
+    if item is None or variant not in ("display", "thumb", "original"):
         return missing()
-    try:
-        with storage().read(photo_key(photo.organisation_id, photo.pk)) as file:
-            raw = file.read()
-    except FileNotFoundError:
-        return error(503, "service_unavailable", "Private media is temporarily unavailable.")
+    if reviewer:
+        assigned = org_scope(request, Report).select_for_update(no_key=True).filter(
+            pk=item.report_id, assigned_reviewer=actor,
+        ).exclude(status=Report.Status.WITHDRAWN).first()
+        if assigned is None:
+            return missing()
+    reason = ""
+    if variant == "original":
+        # C4 discarded the raw upload. This is the metadata-cleaned unblurred photo.
+        if not reviewer or (photo and photo.blurred):
+            return missing()
+        reason = request.headers.get("X-Media-Access-Reason", "").strip()
+        if not reason or len(reason) > 500 or any(category(char) in {"Cc", "Cs"} for char in reason):
+            return validation({"reason": field("invalid", "Provide a reason of 1 to 500 printable characters.")})
+    elif reviewer and not photo.blurred:
+        return error(409, "invalid_transition", "A blurred copy of this photo is unavailable.")
+
+    if legacy:
+        try:
+            raw, _ = clean_photo(bytes(legacy.content), legacy.content_type, False)
+        except ValueError:
+            return error(422, "media_unreadable", "The photo could not be decoded.")
+    else:
+        try:
+            with storage().read(photo_key(photo.organisation_id, photo.pk)) as file:
+                raw = file.read()
+        except FileNotFoundError:
+            return error(503, "service_unavailable", "Private media is temporarily unavailable.")
 
     if variant == "thumb":
         with Image.open(BytesIO(raw)) as image:
@@ -447,7 +481,7 @@ def download(request, reference):
     response = partial_response(raw, request.headers.get("Range"))
     as_attachment = request.GET.get("download") == "1"
     if response.status_code in (200, 206):
-        if actor.role == User.Role.REVIEWER and not log_download(request, photo, as_attachment):
+        if reviewer and not log_download(request, item, as_attachment, reason):
             return error(503, "service_unavailable", "Private media is temporarily unavailable.")
         response["Content-Disposition"] = f'{"attachment" if as_attachment else "inline"}; filename="photo.jpg"'
         response["Content-Length"] = len(response.content)
