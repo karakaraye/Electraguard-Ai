@@ -189,3 +189,48 @@ class PhoneTests(TestCase):
         other = Organisation.objects.create(name="Other")
         self.client.force_login(User.objects.create_user("other@example.test", organisation=other))
         self.assertEqual(self.client.get(SIM + "inbox").status_code, 404)
+
+    def test_sms_report_with_real_unit_and_ward_codes(self):
+        for code, field in (("SYN-KN-01-01-001", "polling_unit_code"), ("SYN-KN-01-01", "ward_code")):
+            self.sms(f"REPORT 4 {code} Young men scaring voters")
+            report = Report.objects.latest("pk")
+            self.assertEqual(report.description, "Young men scaring voters")
+            self.assertEqual(report.incident_details["area"][field], code)
+            self.assertEqual(report.incident_details["area"]["ward_code"], "SYN-KN-01-01")
+        self.sms("REPORT 4 SYN-KN-09-09-009 Young men scaring voters")
+        self.assertEqual(Report.objects.count(), 2)
+        self.assertIn("REPORT <0-9>", OutboundSMS.objects.last().text)
+
+    def test_sms_hyphenated_first_word_without_digits_is_description_text(self):
+        self.sms("REPORT 4 Mid-term style harassment at the gate")
+        self.assertEqual(Report.objects.get().description, "Mid-term style harassment at the gate")
+
+    def test_sms_keywords_tolerate_case_and_whitespace(self):
+        self.sms("report\n4   Thugs at the gate")
+        self.assertEqual(Report.objects.get().description, "Thugs at the gate")
+        self.sms("  Status\t" + Report.objects.get().receipt_code)
+        self.assertIn("received", OutboundSMS.objects.last().text)
+
+    def test_ussd_screens_match_contract_in_every_language(self):
+        for language in "12345":
+            for text in ("", language, f"{language}*4", f"{language}*4*2", f"{language}*4*2*1",
+                         f"{language}*4*2*1*1", f"{language}*4*2*1*1*At*the gate"):
+                screen = self.ussd(text, session=f"s{language}")
+                self.assertTrue(screen.startswith("CON "), screen)
+                self.assertLessEqual(len(screen), 182)
+                self.assertTrue(screen.isascii())
+        self.assertIn("Choose state:", self.ussd("1*4*2"))
+        self.assertIn("Choose LGA:", self.ussd("1*4*2*1"))
+        self.assertTrue(self.ussd("1*4*2*1*1").endswith("letters):"))
+        confirm = self.ussd("1*4*2*1*1*At the gate")
+        self.assertRegex(confirm, r"^CON Send\? Violence/threats in .+\n1 Send 2 Cancel$")
+
+    def test_ussd_report_has_no_ward_or_unit_and_unknown_firsthand(self):
+        self.ussd("1*4*2*1*1*At the gate")
+        self.ussd("1*4*2*1*1*At the gate*1")
+        details = Report.objects.get().incident_details
+        self.assertEqual(details["channel"], "ussd")
+        self.assertIsNone(details["firsthand"])
+        self.assertFalse(details["danger_now"])
+        self.assertIsNone(details["area"]["polling_unit_code"])
+        self.assertTrue(details["area"]["lga_code"])

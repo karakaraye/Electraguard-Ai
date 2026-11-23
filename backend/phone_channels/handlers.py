@@ -19,7 +19,7 @@ PAUSED = "Reporting is paused. Please try later."
 LIMIT = "Too many messages. Please try later."
 UNAVAILABLE = "Please try again later."
 PHONE = re.compile(r"\+[1-9][0-9]{7,14}\Z")
-AREA_CODE = re.compile(r"[A-Z0-9]+-[A-Z0-9]+(?:-[A-Z0-9]+){0,2}\Z")
+AREA_CODE = re.compile(r"[A-Z0-9]+(?:-[A-Z0-9]+){1,5}\Z")
 
 
 class ChannelLimited(Exception):
@@ -84,7 +84,8 @@ def sms_command(organisation, phone_hash, text, simulated, actor):
         organisation=organisation, phone_hash=phone_hash, expires_at__gt=timezone.now(),
     ).first()
     language = preference.language if preference else "en"
-    keyword, _, arguments = text.strip().partition(" ")
+    parts = text.strip().split(maxsplit=1)
+    keyword, arguments = (parts + ["", ""])[:2]
     index = next((words.index(ascii_text(keyword).upper()) for words in KEYWORDS.values()
                   if ascii_text(keyword).upper() in words), None)
     args = arguments.split(maxsplit=1)
@@ -92,7 +93,8 @@ def sms_command(organisation, phone_hash, text, simulated, actor):
         category, description = args
         first, _, remainder = description.partition(" ")
         area = {}
-        if AREA_CODE.fullmatch(first.upper()):
+        if AREA_CODE.fullmatch(first.upper()) and any(char.isdigit() for char in first):
+            # A token with digits is a ward or unit code. An unknown code is refused, not filed as text.
             area = place(first.upper())
             if area is None or not remainder.strip():
                 return help_text(language)
@@ -193,7 +195,7 @@ def walk_ussd(inputs, *, confirmed=False):
             description = "*".join(words).strip()
             prompt = MENUS[language]
             if not description or len(description) > 140:
-                return "CON " + prompt[6], None
+                return "CON " + prompt[6] + ":", None
             if confirmed:
                 if remaining[-1] == "2":
                     return "END " + prompt[10], None
@@ -203,7 +205,7 @@ def walk_ussd(inputs, *, confirmed=False):
                     "ward_code": None, "ward_name": None, "polling_unit_code": None, "polling_unit_name": None,
                 }
                 return None, (CATEGORIES[category], language, description, area, danger)
-            return f"CON {prompt[7]} {LABELS[language][category]} / {ascii_text(lga['name'])[:60]}\n1 {prompt[8]} 2 {prompt[9]}", None
+            return f"CON {prompt[7]} {LABELS[language][category]} {'in' if language == 'en' else '/'} {ascii_text(lga['name'])[:60]}\n1 {prompt[8]} 2 {prompt[9]}", None
 
     if stage == 0:
         return "CON ElectraGuard\n1 English 2 Naija 3 Hausa 4 Yoruba 5 Igbo", None
@@ -214,11 +216,11 @@ def walk_ussd(inputs, *, confirmed=False):
     if stage == 2:
         return f"CON {prompt[1]}\n1 {prompt[2]} 2 {prompt[3]}", None
     if stage == 3:
-        title = ("Call 112 if you can.\n" if danger else "") + prompt[4]
+        title = ("Call 112 if you can.\n" if danger else "") + prompt[4] + ":"
         return "CON " + menu(title, states, page), None
     if stage == 4:
-        return "CON " + menu(prompt[5], state["lgas"], page), None
-    return "CON " + prompt[6], None
+        return "CON " + menu(prompt[5] + ":", state["lgas"], page), None
+    return "CON " + prompt[6] + ":", None
 
 
 @transaction.atomic

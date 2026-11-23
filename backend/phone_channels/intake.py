@@ -46,5 +46,5 @@ def create_report(organisation, phone_hash, channel, simulated, category, langua
         organisation=organisation, report=report, version=0, action=ReviewEvent.Action.CREATE,
         change={"to_status": "received", "channel": channel, "simulated": simulated},
     )
-    Triage.objects.create(organisation=organisation, report=report, method_version="tfidf-lr-2026.12")
+    Triage.objects.create(organisation=organisation, report=report, method_version="tfidf-lr-2026.13")
     return report

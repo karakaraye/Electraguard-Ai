@@ -1,5 +1,7 @@
 import csv
 import json
+import re
+from collections import namedtuple
 from functools import lru_cache
 from pathlib import Path
 
@@ -40,33 +42,78 @@ def split(rows, key):
     return tuple([[rows[i] for i in part] for part in (development[train], development[calibration], test)])
 
 
-def text_model():
+def text_model(strength=1.0):
     return make_pipeline(
         TfidfVectorizer(analyzer="char", ngram_range=(3, 5), sublinear_tf=True),
-        LogisticRegression(random_state=SEED, max_iter=1000, class_weight="balanced"),
+        LogisticRegression(C=strength, random_state=SEED, max_iter=1000, class_weight="balanced"),
     )
 
 
 def category_label(row):
-    return CATEGORY_MAP[row["category"]]
+    return CATEGORY_MAP.get(row["category"], row["category"])
 
 
 def severe(row):
     return int(row["severity_0_4"]) >= 3
 
 
+PLACE = re.compile(r"\b[A-Z][a-z]+(?: [A-Z][a-z]+)? ?L\d-W\d\b")
+URGENCY_RECALL_TARGET = .90
+
+
+def normalise_description(text):
+    """Strip place mentions and case so template-identical descriptions compare equal."""
+    return " ".join(PLACE.sub("<place>", text).casefold().split())
+
+
+def deduplicate(rows):
+    seen, unique = set(), []
+    for row in rows:
+        key = normalise_description(row["description"])
+        if key not in seen:
+            seen.add(key)
+            unique.append(row)
+    return unique
+
+
+def authored_rows(part):
+    """Hand-written synthetic examples, separate from the hackathon pack."""
+    return [row for row in csv_rows("incident_paraphrases_authored.csv") if row["split"] == part]
+
+
+def choose_urgency_threshold(probabilities, actual):
+    """Highest cut-off whose recall on the validation split meets the target (best precision for that recall)."""
+    actual = np.asarray(actual, dtype=bool)
+    for cut in sorted(set(np.round(probabilities, 4)), reverse=True):
+        if (probabilities[actual] >= cut).mean() >= URGENCY_RECALL_TARGET:
+            return float(cut)
+    return float(min(probabilities))
+
+
+IncidentModels = namedtuple("IncidentModels", "category severity abstain test urgency_threshold train validation robustness")
+
+
 @lru_cache(maxsize=1)
 def incident_models():
     train, calibration, test = split(csv_rows("incident_reports_synthetic.csv"), "incident_id")
-    samples = [row["description"] for row in train]
-    category = text_model().fit(samples, [category_label(row) for row in train])
-    severity = text_model().fit(samples, [severe(row) for row in train])
-    scores = category.predict_proba([row["description"] for row in calibration])
-    correct = category.classes_[scores.argmax(axis=1)] == [category_label(row) for row in calibration]
-    eligible = [threshold for threshold in np.arange(.40, .96, .05)
+    # Category: the pack holds a handful of templates repeated with place names, so train on the
+    # de-duplicated templates plus hand-written paraphrases. Abstention is tuned on hand-written
+    # calibration examples, never on the held-out incidents or the robustness set.
+    category_rows = deduplicate(train) + authored_rows("train")
+    category = text_model(30).fit([row["description"] for row in category_rows], [category_label(row) for row in category_rows])
+    tune = authored_rows("calibration")
+    scores = category.predict_proba([row["description"] for row in tune])
+    correct = category.classes_[scores.argmax(axis=1)] == [category_label(row) for row in tune]
+    eligible = [threshold for threshold in np.arange(.20, .96, .05)
                 if (scores.max(axis=1) >= threshold).any()
                 and correct[scores.max(axis=1) >= threshold].mean() >= .90]
-    return category, severity, float(min(eligible, default=1.0)), test
+    # Severity: labels are per incident and noisy, so every training row counts.
+    samples = [row["description"] for row in train]
+    severity = text_model().fit(samples, [severe(row) for row in train])
+    risk = severity.predict_proba([row["description"] for row in calibration])[:, 1]
+    cut = choose_urgency_threshold(risk, [severe(row) for row in calibration])
+    return IncidentModels(category, severity, float(min(eligible, default=1.0)), test, cut,
+                          train, calibration, authored_rows("robustness"))
 
 
 def rumour_label(row):

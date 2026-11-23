@@ -49,7 +49,7 @@ class IntelligenceTests(TestCase):
         self.assertTrue(burst(7, 16)[0])
         self.assertFalse(burst(7, 64)[0])
         self.assertEqual(urgency({}, None, False, False, 0)["value"], "low")
-        self.assertEqual(len(incident_models()[3]), 80)
+        self.assertEqual(len(incident_models().test), 80)
         ranked = rank_claims(["A claim to check", "I heard something about a voting app."])
         self.assertEqual({score["rank"] for score in ranked}, {1, 2})
         self.assertTrue(all(0 <= value <= 1 for score in ranked
@@ -86,3 +86,54 @@ class IntelligenceTests(TestCase):
         rows = self.client.get(path + "?state_code=AA").json()["rows"]
         self.assertEqual([row["polling_unit_code"] for row in rows], ["U2", "U1"])
         self.assertEqual(self.client.get(path + "?limit=0").status_code, 422)
+
+
+class ModelEvaluationTests(TestCase):
+    """Guards for the leakage, urgency-recall and reproducibility fixes."""
+
+    def test_templates_collapse_once_place_names_are_removed(self):
+        from .learning import csv_rows, deduplicate, normalise_description
+        self.assertEqual(normalise_description("Materials arrived late at Imo L1-W2."),
+                         normalise_description("materials  arrived late at Cross River L3-W1."))
+        self.assertEqual(len(deduplicate(csv_rows("incident_reports_synthetic.csv"))), 7)
+
+    def test_robustness_set_is_disjoint_from_training_text(self):
+        from .learning import authored_rows
+        train = {row["description"].casefold() for row in authored_rows("train") + authored_rows("calibration")}
+        self.assertFalse(train & {row["description"].casefold() for row in authored_rows("robustness")})
+
+    def test_urgency_recall_on_held_out_incidents_and_threshold_from_validation(self):
+        from .learning import severe
+        models = incident_models()
+        self.assertGreater(models.urgency_threshold, 0)
+        rows = models.test
+        risks = models.severity.predict_proba([row["description"] for row in rows])[:, 1]
+        names = models.category.classes_[models.category.predict_proba([row["description"] for row in rows]).argmax(axis=1)]
+        flags = [urgency({}, name, False, False, risk, models.urgency_threshold)["value"] == "urgent"
+                 for name, risk in zip(names, risks)]
+        urgent = [flag for row, flag in zip(rows, flags) if severe(row)]
+        self.assertGreaterEqual(sum(urgent) / len(urgent), .85)
+
+    def test_rules_lift_urgency(self):
+        self.assertEqual(urgency({}, "intimidation_violence", False, False, 0)["value"], "urgent")
+        self.assertEqual(urgency({"danger_now": True}, None, False, False, 0)["value"], "urgent")
+        self.assertEqual(urgency({}, None, False, False, .9, .4)["value"], "urgent")
+        self.assertEqual(urgency({"firsthand": True}, None, True, False, 0)["value"], "high")
+        self.assertEqual(urgency({"firsthand": True}, None, True, True, 0)["value"], "urgent")
+        self.assertEqual(urgency({}, None, False, False, .1, .4)["value"], "low")
+
+    def test_robustness_macro_f1_is_reported_below_the_memorised_score(self):
+        from sklearn.metrics import f1_score
+        models = incident_models()
+        robust = models.robustness
+        guesses = models.category.predict([row["description"] for row in robust])
+        self.assertGreater(len(robust), 40)
+        self.assertGreater(f1_score([row["category"] for row in robust], guesses, average="macro"), .7)
+
+    def test_evaluation_report_is_deterministic(self):
+        from .management.commands.evaluate_models import evaluate
+        first = "\n\n".join(evaluate())
+        self.assertEqual(first, "\n\n".join(evaluate()))
+        for needle in ("Seed 42", "Leakage audit", "Robustness set", "Failure or abstention examples",
+                       "Per slice", "Held-out test-set descriptions"):
+            self.assertIn(needle, first)

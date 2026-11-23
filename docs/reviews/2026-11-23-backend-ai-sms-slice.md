@@ -42,3 +42,11 @@ python backend/manage.py send_channel_sms
 ```
 
 Set `PUBLIC_INTAKE_ORGANISATION_ID` and `SIMULATOR_ENABLED=true` for the local simulator. Configure `CHANNEL_WEBHOOK_SECRET`, `CHANNEL_SMS_SHORT_CODE` and `CHANNEL_SMS_API_KEY` for the sandbox. In production mode, also configure `CHANNEL_GATEWAY_NETWORKS` for trusted callback peers. Schedule the triage and outbound SMS commands as workers.
+
+## Review fixes · 23 November 2026
+
+- **Urgency (A2).** Recall on severity 3 or 4 was 3.2%. Rules now lift urgency (danger +5, violence +3, severity score +3, firsthand, evidence and cluster +1 each; 3 or more is urgent). The severity cut-off is chosen on the validation split for 90% recall. Held-out result: precision 0.818, recall 0.871, F1 0.844, false-urgent rate 0.122.
+- **Category leakage (A1).** The pack has 7 distinct descriptions once place names are removed, so the earlier macro-F1 of 1.00 measured template memorisation. The report now audits this, trains on de-duplicated templates plus hand-written paraphrases, tunes abstention on separate hand-written examples, and reports a 56-example synthetic robustness set (typos, paraphrase, Pidgin, code-switched): macro-F1 0.824. The memorisation check is still printed and labelled leaky.
+- **Evaluation.** `evaluate_models` is deterministic (seed 42, tested) and lists test-set descriptions, per-slice tables and failure examples.
+- **SMS.** Ward and unit codes such as `SYN-KN-01-01-001` never resolved (the pattern allowed three segments, the data has up to five). Keywords now tolerate any whitespace. A hyphenated first word without digits is description text.
+- **USSD.** Prompts now end in a colon and the confirmation reads `Send? <category> in <LGA>` as the contract says.

@@ -11,7 +11,7 @@ from reports.models import Report, Triage, TriageMatch
 from .learning import incident_models
 from .models import ClusterSuggestion
 
-VERSIONS = {"category": "tfidf-lr-2026.12", "urgency": "rules+lr-2026.12", "duplicates": "char-3gram-2026.12"}
+VERSIONS = {"category": "tfidf-lr-2026.13", "urgency": "rules+lr-2026.13", "duplicates": "char-3gram-2026.12"}
 WINDOW = timedelta(minutes=90)
 BASELINE_WINDOWS = 16
 DUPLICATE_THRESHOLD = .65
@@ -32,17 +32,19 @@ def burst(count, history, windows=BASELINE_WINDOWS):
     return count >= max(4, 3 * baseline), baseline
 
 
-def urgency(details, category, evidence, cluster, severity):
+def urgency(details, category, evidence, cluster, severity, threshold=.5):
+    """Score rules plus the text model's severity probability. Missing an urgent case costs most, so
+    each strong signal (danger, violence, a high severity score) is enough on its own."""
     factors = [
         (details.get("danger_now") is True, 5, "Immediate danger reported"),
-        (category == "intimidation_violence", 2, "Threats or violence reported"),
+        (category == "intimidation_violence", 3, "Threats or violence reported"),
+        (severity >= threshold, 3, "Text resembles higher-severity reports"),
         (details.get("firsthand") is True, 1, "Seen firsthand"),
         (evidence, 1, "Evidence attached"),
         (cluster, 1, "Local spike in similar reports"),
-        (severity >= .65, 2, "Text resembles higher-severity reports"),
     ]
     score = sum(weight for active, weight, _ in factors if active)
-    value = "urgent" if score >= 5 else "high" if score >= 3 else "normal" if score else "low"
+    value = "urgent" if score >= 3 else "high" if score == 2 else "normal" if score else "low"
     reasons = [reason for active, _, reason in factors if active]
     return {"value": value, "confidence": "medium", "reasons": reasons or ["No urgency signals detected"]}
 
@@ -117,7 +119,8 @@ def process_next():
 
 
 def write_suggestions(report, job):
-    category, severity, threshold, _ = incident_models()
+    models = incident_models()
+    category, severity, threshold = models.category, models.severity, models.abstain
     probabilities = category.predict_proba([report.description])[0]
     confidence = float(probabilities.max())
     value = str(category.classes_[probabilities.argmax()]) if confidence >= threshold else None
@@ -136,7 +139,7 @@ def write_suggestions(report, job):
         },
         "urgency": {"decision": None, "corrected_value": None, **urgency(details, value or details.get("category_observer"),
                            report.attachments.filter(organisation_id=report.organisation_id).exists(),
-                           cluster, risk)},
+                           cluster, risk, models.urgency_threshold)},
     }
     job.status = Triage.Status.READY
     job.method_version = VERSIONS["category"]
