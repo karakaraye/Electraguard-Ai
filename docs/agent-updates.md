@@ -39,6 +39,7 @@ The full plan is in [hackathon-plan.md](hackathon-plan.md).
 | C2 PIN follow-ups and place reference | Codex | `backend/v1-contracts` | `docs/agent-updates.md`, `backend/accounts/`, `backend/reference/`, `backend/config/settings.py`, `backend/config/urls.py`, `data/reference/` |
 | C3 observer reports and idempotency | Codex | `backend/v1-reports` | `docs/agent-updates.md`, `backend/reports/`, `backend/reference/models.py`, `backend/accounts/observer_auth.py`, `backend/config/urls.py` |
 | C4 private photo uploads and deployment | Codex | `backend/v1-media` | `docs/agent-updates.md`, `backend/reports/`, `backend/config/settings.py`, `deploy/compose.yaml`, `deploy/backend.Dockerfile`, `deploy/backup-encrypted.sh`, `docs/restore-verification.md`, `scripts/extract-recovery-bundle.py`, `scripts/verify-restored-data.py` |
+| C5 citizen reports and receipts | Codex | `backend/v1-citizen-reports` | `docs/agent-updates.md`, `backend/reports/`, `backend/accounts/organisations.py`, `backend/config/settings.py`, `scripts/verify-restored-data.py` |
 | Front-end design system, screens, API contracts | Claude | `design/frontend` | `frontend/app/(observer)/…`, `frontend/app/(staff)/…`, `frontend/app/(public)/…`, `frontend/ui/…`, `frontend/messages/…`, `docs/design/…` |
 | Product mark and lockups | Claude (brand agent) | `design/brand` | `docs/design/brand/…` |
 | Design tokens, components, icons, i18n library, dev gallery | Claude (UI agent) | `design/ui-foundation` | `frontend/ui/…`, `frontend/lib/i18n/…`, `frontend/public/fonts/…`, `frontend/app/(dev)/…` |
@@ -48,6 +49,14 @@ The full plan is in [hackathon-plan.md](hackathon-plan.md).
 | Backend, migrations, tests, deployment | Codex | `work` | `backend/…`, `deploy/…`, `.github/…` |
 
 ## Updates
+
+### 23 Nov 2026 · Codex · Slice C5 citizen reports
+
+- Implemented the backend citizen-report contracts REP-05 through REP-07 and citizen withdrawal under REP-04. Submissions use the configured public intake organisation, versioned place data and CSRF. Receipt secrets are stored as SHA-256 digests. Idempotency is scoped to the secret and organisation.
+- Public status returns only the receipt, status, outcome, open-question flag and WAT dates. The receipt secret is required for conversation, replies and withdrawal. Replies reuse the report lock and audit version, store the text separately from the audit event, and appear to the assigned Reviewer as Citizen, not accredited. Withdrawal reuses the report purge and stub replay.
+- Verified `manage.py migrate`, `manage.py test accounts reports config --noinput` (75 passed on PostgreSQL 17.12), clean migration and whitespace checks, and restore checker syntax. No frontend paths changed.
+- Public throttling and enumeration warnings are process-local. Configure `PUBLIC_INTAKE_ORGANISATION_ID` in the Django environment if public intake should use an organisation other than the initial one. The production intake gate still governs submissions. Browser integration, citizen media and a shared rate limiter and security monitor remain follow-on work.
+- Next, review this branch and wire receipt creation, status and proof handling into the citizen screens. Keep receipt secrets out of URLs and logs.
 
 ### 22 Nov 2026 · Codex · C4 deployment and recovery follow-up
 

@@ -133,7 +133,7 @@ def review_queue(request):
 @transaction.atomic
 def review_case(request, reference):
     report = get_object_or_404(with_attachment_metadata(request, assigned_reports(request).select_for_update()).prefetch_related(
-        Prefetch("review_events", queryset=org_scope(request, ReviewEvent).select_related("actor"))
+        Prefetch("review_events", queryset=org_scope(request, ReviewEvent).select_related("actor", "citizen_reply"))
     ), reference=reference)
     return Response(ReviewCaseSerializer(report, context={"reviewer": request.user, "request": request}).data)
 

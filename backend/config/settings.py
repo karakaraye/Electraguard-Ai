@@ -1,3 +1,4 @@
+from uuid import UUID
 import os
 from pathlib import Path
 
@@ -106,3 +107,6 @@ PRIVATE_MEDIA_ROOT = Path(
     os.getenv("PRIVATE_MEDIA_ROOT")
     or Path(__file__).resolve().parent.parent.parent.parent / ".electraguard-private-media"
 )
+
+if os.getenv("PUBLIC_INTAKE_ORGANISATION_ID"):
+    PUBLIC_INTAKE_ORGANISATION_ID = UUID(os.environ["PUBLIC_INTAKE_ORGANISATION_ID"])
