@@ -21,10 +21,10 @@ export const NAV = [
  * carries the credit line, the nonpartisan statement and the emergency number.
  * Follows the device's light or dark setting. The shell owns the landmarks.
  */
-export function PublicShell({ t, children }: { t: Translate; children: ReactNode }) {
+export function PublicShell({ t, children, theme = "system" }: { t: Translate; children: ReactNode; theme?: "system" | "light" | "dark" }) {
   const items = NAV.map((item) => ({ href: item.href, label: t(item.key) }));
   return (
-    <div className={`eg-public ${styles.shell}`} data-theme="system">
+    <div className={`eg-public ${styles.shell}`} data-theme={theme}>
       <a className={styles.skip} href="#eg-main">
         {t("ui.skipToContent")}
       </a>

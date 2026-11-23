@@ -83,7 +83,7 @@ export function ReceiptCheck({ initial = { kind: "idle" }, initialCode = "" }: {
         {state.kind === "found" ? (
           <div className={styles.found}>
             <p className={`${styles.code} eg-tnum`}>{state.data.receipt_code}</p>
-            <StatusBadge status={state.data.status} size="lg" />
+            <StatusBadge status={state.data.status === "in_review" ? "in-review" : state.data.status} size="lg" />
             <p className={styles.explain}>{t(STATUS_EXPLAIN_KEYS[state.data.status])}</p>
             {state.data.status === "closed" && state.data.outcome ? (
               <p className={styles.outcome}>{t("p02.check.outcome", { outcome: t(OUTCOME_KEYS[state.data.outcome]) })}</p>
