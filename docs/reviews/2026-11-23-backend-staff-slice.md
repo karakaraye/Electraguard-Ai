@@ -35,4 +35,10 @@ python backend/manage.py purge_retention --dry-run
 - Redaction clears stale translations. Translation regeneration and model-backed category, urgency, rumour ranking, and image forensics need their producers. The slice uses explicit urgency and harm rules and lexical retrieval. Retrieval requires an existing redacted English excerpt or a translation marked as redacted. Image checks are guidance with metadata-presence signals.
 - The approved rumour response workflow is available to coordinators. The contract defines no public route or response schema for approved rumour responses. PUB-02 serves the defined public snapshot schema.
 - Audit verification identifies historical case events that predate the chain. Retention and audit exports use the chain's digests. The anomaly-model detector and receipt enumeration need their data producers.
-- A staged commit could not be created because Git's linked worktree index is outside the writable workspace and Git denied its index lock. Changes remain local.
+- Refused roles get `404 not_found` on object routes and `403 forbidden` elsewhere, as the permissions matrix says. The check lives in `staff.audit.authorize`.
+- Complementary suppression hides the smallest visible cell until the hidden cells of a row, column or series add up to five or more. A line whose hidden cells are all zero is left alone.
+- Not run against a hosted database: the tests use a local PostgreSQL 18 cluster on port 55450.
+
+## Tests
+
+`staff.test_permissions` checks every staff route against the matrix for each role, unauthenticated and pre-TOTP sessions, CSRF and organisation separation. `staff.test_errors` covers the error codes of ADM-01 to ADM-04, ASG, SEC, OPS, PUB, RUM, AUTH-04 to AUTH-06 and AUD-01, including the 429 limits. `security.test_detectors` and `publicdata.test_suppression` cover the alert rules and the suppression rules.
