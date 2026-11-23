@@ -38,11 +38,6 @@ export function LanguageView({ selected, onChoose, offline, banner }: LanguageVi
   return (
     <AppShell title={<AppBarTitle />} hideBack offline={offline} banner={banner} data-testid="o01">
       <div className={styles.screen}>
-        <div className={styles.tight}>
-          <span className={styles.credit}>
-            <BrandMark variant="lockup" size="md" credit />
-          </span>
-        </div>
         <h1 className={styles.title} id="o01-title" lang="en">
           {t("o01.title")}
         </h1>
@@ -70,6 +65,9 @@ export function LanguageView({ selected, onChoose, offline, banner }: LanguageVi
             </button>
           ))}
         </div>
+        <p className={styles.credit}>
+          <BrandMark variant="lockup" size="md" credit />
+        </p>
       </div>
     </AppShell>
   );
@@ -118,7 +116,7 @@ export function NoticeView({ onBack, onContinue, readOnly, offline, banner }: No
             </li>
           ))}
         </ul>
-        <p className={styles.meta}>
+        <p className={styles.credit}>
           <BrandMark variant="lockup" size="md" credit />
         </p>
       </div>

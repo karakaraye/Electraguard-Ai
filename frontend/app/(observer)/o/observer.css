@@ -1,0 +1,29 @@
+/* Base for the observer route group: the root layout is html and body only, so each group sets its own base. */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--paper, #ffffff);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+  }
+}
+
+/* The screen question receives focus on every step change (R7); it is not a control, so no ring. */
+#eg-content h1[tabindex="-1"]:focus {
+  outline: none;
+}

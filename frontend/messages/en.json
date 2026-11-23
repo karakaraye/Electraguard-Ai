@@ -235,7 +235,7 @@
     "signIn": {
       "title": "Sign in",
       "codeLabel": "Observer code",
-      "codeHint": "It is on your card. Example: OBS-7K2P9D",
+      "codeHint": "It is on your card. Example: OBS-7K2P9X",
       "pinLabel": "PIN",
       "pinHint": "6 numbers. The first time, use the 8-number setup PIN on your card.",
       "showPin": "Show PIN",
@@ -244,7 +244,7 @@
       "submitting": "Signing in",
       "offline": "You need network to sign in. Move to a place with network, then try again.",
       "codeEmpty": "Enter your observer code.",
-      "codeFormat": "Observer codes look like OBS-7K2P9D. Check your card.",
+      "codeFormat": "Observer codes look like OBS-7K2P9X. Check your card.",
       "pinFormat": "Your PIN is 6 numbers, or 8 numbers the first time.",
       "wrong": "The code or PIN is not right. Check your card and try again.",
       "triesLeft": "{count, plural, one {# try left before a short wait.} other {# tries left before a short wait.}}",

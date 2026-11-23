@@ -535,7 +535,8 @@ export function EvidenceView({ items, recorder, onPick, onBlur, onRetake, onRemo
             const size = formatBytes(item.sizeBytes, locale);
             const seconds = estimate(item.sizeBytes);
             return (
-              <li key={item.id} className={styles.item} role="group" aria-label={`${item.name}, ${index + 1} / ${items.length}`} data-testid="o10-item">
+              <li key={item.id} data-testid="o10-item">
+                <div className={styles.item} role="group" aria-label={`${item.name}, ${index + 1} / ${items.length}`}>
                 <span className={styles.thumb} aria-hidden="true">
                   {item.previewUrl && item.kind === "photo" ? (
                     // eslint-disable-next-line @next/next/no-img-element -- a local blob: URL, never sent anywhere
@@ -576,6 +577,7 @@ export function EvidenceView({ items, recorder, onPick, onBlur, onRetake, onRemo
                       </div>
                     </>
                   ) : null}
+                </div>
                 </div>
               </li>
             );
@@ -670,7 +672,7 @@ export function CheckView({
   const finished = status === "savedOffline" || status === "intakePaused" || status === "server" || status === "withdrawn";
 
   const block = (id: CheckBlock, label: string, value: ReactNode) => (
-    <div className={styles.block} data-invalid={errors[id] ? "" : undefined} data-testid={`o11-${id}`}>
+    <div className={styles.block} data-invalid={errors[id] ? "" : undefined} data-wide={id === "describe" || undefined} data-testid={`o11-${id}`}>
       <dt>{label}</dt>
       <dd>
         {value}
@@ -682,9 +684,11 @@ export function CheckView({
         ) : null}
       </dd>
       {!busy && !finished ? (
-        <Button variant="quiet" className={styles.change} onClick={() => onEdit(id)} aria-label={`${t("common.edit")}: ${label}`} data-testid={`o11-edit-${id}`}>
-          {t("common.edit")}
-        </Button>
+        <dd className={styles.change}>
+          <Button variant="quiet" onClick={() => onEdit(id)} aria-label={`${t("common.edit")}: ${label}`} data-testid={`o11-edit-${id}`}>
+            {t("common.edit")}
+          </Button>
+        </dd>
       ) : null}
     </div>
   );

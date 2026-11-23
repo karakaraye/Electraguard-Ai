@@ -141,7 +141,9 @@
   font: var(--t-label);
   font-size: var(--t-base-size);
   line-height: 1.3;
-  overflow-wrap: anywhere;
+  /* Hyphenate long words ("Misinformation") instead of breaking them anywhere. */
+  overflow-wrap: break-word;
+  hyphens: auto;
 }
 
 .tileHint {

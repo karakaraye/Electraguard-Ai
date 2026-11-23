@@ -85,6 +85,7 @@
 
 .clock {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: var(--s-2);
   margin: 0;

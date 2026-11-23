@@ -236,7 +236,7 @@
     "signIn": {
       "title": "Wọlé",
       "codeLabel": "Kóòdù olùwòye",
-      "codeHint": "Ó wà lórí káàdì rẹ. Àpẹẹrẹ: OBS-7K2P9D",
+      "codeHint": "Ó wà lórí káàdì rẹ. Àpẹẹrẹ: OBS-7K2P9X",
       "pinLabel": "PIN",
       "pinHint": "Nọ́mbà mẹ́fà. Ní ìgbà àkọ́kọ́, lo PIN ìbẹ̀rẹ̀ oní-nọ́mbà mẹ́jọ tó wà lórí káàdì rẹ.",
       "showPin": "Fi PIN hàn",
@@ -245,7 +245,7 @@
       "submitting": "À ń wọlé",
       "offline": "O nílò nẹ́tíwọ̀ọ̀kì láti wọlé. Lọ sí ibi tí nẹ́tíwọ̀ọ̀kì wà, kí o sì tún gbìyànjú.",
       "codeEmpty": "Tẹ kóòdù olùwòye rẹ.",
-      "codeFormat": "Kóòdù olùwòye máa ń rí bí OBS-7K2P9D. Wo káàdì rẹ.",
+      "codeFormat": "Kóòdù olùwòye máa ń rí bí OBS-7K2P9X. Wo káàdì rẹ.",
       "pinFormat": "PIN rẹ jẹ́ nọ́mbà mẹ́fà, tàbí nọ́mbà mẹ́jọ ní ìgbà àkọ́kọ́.",
       "wrong": "Kóòdù tàbí PIN náà kò tọ̀nà. Wo káàdì rẹ, kí o sì tún gbìyànjú.",
       "triesLeft": "{count, plural, one {Ìgbìyànjú # ló kù kí o tó dúró díẹ̀.} other {Ìgbìyànjú # ló kù kí o tó dúró díẹ̀.}}",

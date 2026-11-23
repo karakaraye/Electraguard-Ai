@@ -236,7 +236,7 @@
     "signIn": {
       "title": "Banye",
       "codeLabel": "Koodu onye nlebanya",
-      "codeHint": "Ọ dị na kaadị gị. Ọmụmaatụ: OBS-7K2P9D",
+      "codeHint": "Ọ dị na kaadị gị. Ọmụmaatụ: OBS-7K2P9X",
       "pinLabel": "PIN",
       "pinHint": "Ọnụọgụ 6. Na nke mbụ, jiri PIN mmalite nwere ọnụọgụ 8 dị na kaadị gị.",
       "showPin": "Gosi PIN",
@@ -245,7 +245,7 @@
       "submitting": "A na-abanye",
       "offline": "Ị chọrọ netwọk iji banye. Gaa ebe netwọk dị, wee nwaa ọzọ.",
       "codeEmpty": "Tinye koodu onye nlebanya gị.",
-      "codeFormat": "Koodu onye nlebanya dị ka OBS-7K2P9D. Lelee kaadị gị.",
+      "codeFormat": "Koodu onye nlebanya dị ka OBS-7K2P9X. Lelee kaadị gị.",
       "pinFormat": "PIN gị bụ ọnụọgụ 6, ma ọ bụ ọnụọgụ 8 na nke mbụ.",
       "wrong": "Koodu ma ọ bụ PIN ahụ ezighị ezi. Lelee kaadị gị wee nwaa ọzọ.",
       "triesLeft": "{count, plural, one {Ohere # fọdụrụ tupu i chere obere oge.} other {Ohere # fọdụrụ tupu i chere obere oge.}}",

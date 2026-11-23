@@ -236,7 +236,7 @@
     "signIn": {
       "title": "Shiga",
       "codeLabel": "Lambar mai sa ido",
-      "codeHint": "Tana kan katinka. Misali: OBS-7K2P9D",
+      "codeHint": "Tana kan katinka. Misali: OBS-7K2P9X",
       "pinLabel": "PIN",
       "pinHint": "Lambobi 6. A karon farko, yi amfani da PIN na saitin mai lambobi 8 da ke kan katinka.",
       "showPin": "Nuna PIN",
@@ -245,7 +245,7 @@
       "submitting": "Ana shiga",
       "offline": "Kana buƙatar sabis don shiga. Ka matsa zuwa wurin da ake da sabis, sannan ka sake gwadawa.",
       "codeEmpty": "Shigar da lambar mai sa ido.",
-      "codeFormat": "Lambar mai sa ido tana kama da OBS-7K2P9D. Ka duba katinka.",
+      "codeFormat": "Lambar mai sa ido tana kama da OBS-7K2P9X. Ka duba katinka.",
       "pinFormat": "PIN ɗinka lambobi 6 ne, ko lambobi 8 a karon farko.",
       "wrong": "Lambar ko PIN ba daidai ba ne. Ka duba katinka sannan ka sake gwadawa.",
       "triesLeft": "{count, plural, one {Saura gwaji # kafin ɗan jira.} other {Saura gwaje-gwaje # kafin ɗan jira.}}",

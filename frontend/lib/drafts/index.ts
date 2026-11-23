@@ -5,7 +5,7 @@
  * - One draft per owner: the signed-in observer code, or "citizen".
  * - Created when a category is first chosen on O-05; its `id` (UUID v4) is made
  *   once and becomes the report's Idempotency-Key.
- * - Every change is written within 300 ms (debounced 250 ms), and flushed at once
+ * - Every change is written within 300 ms (at most 250 ms after the first unsaved change), and flushed at once
  *   when the page is hidden, so an app kill or reload never loses input.
  * - Deleted only by "Delete this report", by Send (moved to the outbox in the
  *   same transaction), or by "Sign out and clear this phone".
@@ -171,6 +171,7 @@ export function useDraft(owner: string | null, mode: IncidentDraft["mode"], lang
 
   const flush = useCallback(async () => {
     window.clearTimeout(timer.current);
+    timer.current = undefined;
     const value = pending.current;
     pending.current = null;
     if (value) await saveDraft(value);
@@ -216,14 +217,20 @@ export function useDraft(owner: string | null, mode: IncidentDraft["mode"], lang
       current.current = next;
       setDraft(next);
       pending.current = next;
-      window.clearTimeout(timer.current);
-      timer.current = window.setTimeout(() => void flush(), SAVE_DEBOUNCE_MS);
+      // Never push the write back: the latest value reaches the phone within 250 ms of the first change.
+      if (timer.current === undefined) {
+        timer.current = window.setTimeout(() => {
+          timer.current = undefined;
+          void flush();
+        }, SAVE_DEBOUNCE_MS);
+      }
     },
     [owner, mode, language, flush],
   );
 
   const discard = useCallback(async () => {
     window.clearTimeout(timer.current);
+    timer.current = undefined;
     pending.current = null;
     const value = current.current;
     current.current = null;
@@ -233,6 +240,7 @@ export function useDraft(owner: string | null, mode: IncidentDraft["mode"], lang
 
   const release = useCallback(() => {
     window.clearTimeout(timer.current);
+    timer.current = undefined;
     pending.current = null;
     current.current = null;
     setDraft(null);
