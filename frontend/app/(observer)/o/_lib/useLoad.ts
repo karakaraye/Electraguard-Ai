@@ -66,24 +66,21 @@ export function useLoad<T>(fetcher: () => Promise<ApiResult<T>>, key: string, { 
   }, [collection]);
 
   useEffect(() => {
-    if (!enabled) return;
-    if (offline) {
-      setState((current) => (current.data ? current : { ...current, status: "offline" }));
-      return;
-    }
-    void run();
-    const timers: number[] = [];
+    if (!enabled || offline) return;
+    const initial = window.setTimeout(() => void run(), 0);
+    const timers: number[] = [initial];
     if (pollMs) timers.push(window.setInterval(() => void run(), pollMs));
     const onVisible = () => {
       if (document.visibilityState === "visible" && Date.now() - last.current > 30_000) void run();
     };
     document.addEventListener("visibilitychange", onVisible);
     return () => {
-      for (const timer of timers) window.clearInterval(timer);
+      for (const timer of timers) window.clearTimeout(timer);
       document.removeEventListener("visibilitychange", onVisible);
     };
   }, [enabled, offline, key, pollMs, run]);
 
-  return { ...state, reload: () => void run() };
+  const effectiveStatus = offline && state.data === null ? "offline" : state.status;
+  return { ...state, status: effectiveStatus, reload: () => void run() };
 }
 

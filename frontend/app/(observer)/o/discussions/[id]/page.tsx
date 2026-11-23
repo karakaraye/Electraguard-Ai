@@ -5,6 +5,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { api, uuidv4 } from "../../../../../lib/api/client";
 import type { Discussion, Post } from "../../../../../lib/api/types";
 import { useT } from "../../../../../lib/i18n/client";
+import { useNow } from "../../../../../ui";
 import { openPinSheet } from "../../_components/ObserverRuntime";
 import { looksLikeName, textHash } from "../../_lib/name-check";
 import { useFocusTitle, useNetwork } from "../../_lib/network";
@@ -108,9 +109,10 @@ export default function ThreadPage() {
     [params.id, t, fetchPosts],
   );
 
+  const now = useNow();
   if (!session) return null;
   const mine = pending.filter((item): item is Extract<PendingItem, { kind: "post" }> => item.kind === "post" && item.discussion_id === params.id);
-  const closed = discussion ? discussion.status === "closed" || Date.parse(discussion.closes_at) < Date.now() : false;
+  const closed = discussion ? discussion.status === "closed" || (now !== null && Date.parse(discussion.closes_at) < now) : false;
   const queued: ThreadPost[] = mine
     .filter((item) => item.state !== "needs_attention")
     .map((item) => ({ id: item.key, author_label: session.code, is_me: true, body: item.body.body, state: "visible", created_at: new Date(item.created_at).toISOString(), queued: true }));

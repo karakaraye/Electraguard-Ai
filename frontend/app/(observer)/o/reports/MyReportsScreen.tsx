@@ -40,7 +40,7 @@ export function MyReportsScreen() {
   }, [list.status]);
 
   const fresh = extra.base !== null && extra.base === list.updatedAt;
-  const more = fresh ? extra.items : [];
+  const more = useMemo(() => (fresh ? extra.items : []), [fresh, extra.items]);
   const cursor = fresh ? extra.cursor : (list.data?.next_cursor ?? null);
 
   const code = session?.code;
