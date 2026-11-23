@@ -57,6 +57,23 @@ The full plan is in [hackathon-plan.md](hackathon-plan.md).
 
 ## Updates
 
+### 23 Nov 2026 · Kara's agents · Slice C14 Azure deployment scripts (not yet run on Azure)
+
+- `deploy/azure/` holds the Bicep template, the deploy script, the Azure gateway image and the database-role job. The stack:
+  - Container Apps for the gateway, frontend, backend, media worker and optional triage worker.
+  - PostgreSQL 17 Flexible Server in a private subnet.
+  - The private media share on Azure Files, reachable from the apps subnet only.
+  - Key Vault secrets mounted at `/run/secrets`, so the images run unchanged.
+  - Images built in Azure Container Registry from the committed tree.
+- Run `deploy/azure/deploy.sh all`, or the manual workflow `.github/workflows/deploy-azure.yml` (OIDC, `azure` environment with reviewers). Runbook: [azure-deployment.md](azure-deployment.md).
+- Tested locally:
+  - The gateway: routing, the 421 host check, the internal GET-only port, real client IP and a per-client sign-in limit.
+  - The database roles as a non-superuser admin: run twice, then migrate, then a runtime write, with `CREATE TABLE` refused.
+  - The full deploy flow against a stand-in `az`.
+  - shellcheck and actionlint.
+- **Not yet compiled or deployed.** The Bicep compiler could not be installed here, and Azure access is still pending. On first use, run `az bicep build --file deploy/azure/main.bicep`, then the checks listed in the runbook.
+- **Needs a team decision:** the Azure region. There is no Nigerian region; the default suggestion is `southafricanorth`. It decides where report data is stored.
+
 ### 23 Nov 2026 · Kara's agents · Slice C12 video, voice notes, face blur and transcripts
 
 - MED-01 to MED-04 now accept video (MP4/WebM, 25 MiB, 60 s) and voice notes (WebM/Ogg/M4A/MP3, 4 MiB, 120 s). Files are identified by content with ffprobe, then queued as `processing`. The new `media-worker` (`run_media`) re-encodes them with all metadata removed, adds a video poster, blurs faces, writes local Whisper transcripts and deletes the original.

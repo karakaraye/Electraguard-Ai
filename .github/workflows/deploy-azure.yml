@@ -1,0 +1,53 @@
+name: Deploy to Azure
+
+# Manual only. Set up the "azure" environment in the repository settings with required
+# reviewers, the variables below, and a federated credential for this repository and
+# environment on the Azure app registration. See docs/azure-deployment.md.
+on:
+  workflow_dispatch:
+    inputs:
+      stage:
+        description: What to deploy
+        type: choice
+        options: [all, images, apps, infra]
+        default: all
+      release:
+        description: Image tag (defaults to the commit being deployed)
+        required: false
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: azure-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-24.04
+    environment: azure
+    timeout-minutes: 90
+    env:
+      AZURE_RESOURCE_GROUP: ${{ vars.AZURE_RESOURCE_GROUP }}
+      AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
+      ELECTRAGUARD_HOST: ${{ vars.ELECTRAGUARD_HOST }}
+      ELECTRAGUARD_PREFIX: ${{ vars.ELECTRAGUARD_PREFIX }}
+      ELECTRAGUARD_DEPLOYER_OBJECT_ID: ${{ vars.AZURE_DEPLOYER_OBJECT_ID }}
+      OBSERVATION_INTAKE_ENABLED: ${{ vars.OBSERVATION_INTAKE_ENABLED }}
+      DEPLOY_TRIAGE_WORKER: ${{ vars.DEPLOY_TRIAGE_WORKER }}
+      MEDIA_WORKER_MODE: ${{ vars.MEDIA_WORKER_MODE }}
+      MEDIA_WORKER_CPU: ${{ vars.MEDIA_WORKER_CPU }}
+      STAGE: ${{ inputs.stage }}
+      RELEASE: ${{ inputs.release }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: azure/login@a641126d1b8aa4d1fa005f4f92df94a3a4c4c906 # v3.1.0
+        with:
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+      - name: Deploy
+        run: deploy/azure/deploy.sh "$STAGE" "$RELEASE"
