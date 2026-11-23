@@ -16,7 +16,8 @@ from accounts.organisations import org_scope
 
 from .idempotency import idempotent
 from .incident_input import KINDS, aware_datetime, field, incident_input
-from .models import Evidence, Report, ReportIdempotency, ReviewEvent, Triage, TriageMatch
+from .media_lifecycle import cancel_report_uploads, describe_photo, remove_photo
+from .models import Evidence, MediaItem, Report, ReportIdempotency, ReviewEvent, Triage, TriageMatch
 from .triage import METHOD_VERSION
 from .workflow import record_change
 
@@ -49,9 +50,13 @@ def identity(report):
 
 def withdrawn_stub(report):
     return {
-        **identity(report), "channel": "app", "withdrawn_at": wat(report.withdrawn_at),
+        **identity(report), "channel": "citizen" if report.observer_id is None else "app", "withdrawn_at": wat(report.withdrawn_at),
         "version": report.version,
     }
+
+
+def question_id(report, version):
+    return str(uuid5(NAMESPACE_URL, f"electraguard:question:{report}:{version}"))
 
 
 def missing():
@@ -83,14 +88,20 @@ def create_report(request, data):
         observer=request.user, pk=related,
     ).exclude(status=Status.WITHDRAWN).exists():
         return missing()
-    area = details["area"]
     code = org_scope(request, ObserverCode).filter(user=request.user).values_list("code", flat=True).first()
+    return persist_report(request.user, request.user.organisation_id, values, code=code or "")
+
+
+def persist_report(actor, organisation, values, *, code="", secret_digest=""):
+    details = values["incident_details"]
+    area = details["area"]
     while True:
         reference = receipt()
         try:
             with transaction.atomic():
-                report = org_scope(request, Report).create(
-                    observer=request.user, organisation_id=request.user.organisation_id, observer_code=code or "",
+                report = Report.objects.create(
+                    observer=actor, organisation_id=organisation, observer_code=code,
+                    receipt_secret_digest=secret_digest,
                     receipt_code=reference, submission_key=uuid4(),
                     location=(area["polling_unit_name"] or area["ward_name"])[:160],
                     polling_unit_code=(area["polling_unit_code"] or ""), **values,
@@ -100,15 +111,16 @@ def create_report(request, data):
             if getattr(getattr(exc.__cause__, "diag", None), "constraint_name", None) != "reports_report_receipt_code_key":
                 raise
 
-    org_scope(request, ReviewEvent).create(
-        report=report, organisation_id=report.organisation_id, actor=request.user,
+    ReviewEvent.objects.create(
+        report=report, organisation_id=report.organisation_id, actor=actor,
         version=0, action=ReviewEvent.Action.CREATE, change={"to_status": "received"},
     )
-    org_scope(request, Triage).create(
+    Triage.objects.create(
         report=report, organisation_id=report.organisation_id, method_version=METHOD_VERSION,
     )
     return 201, {
         **identity(report), "version": report.version,
+        **({"channel": "citizen"} if actor is None else {}),
         "media_upload": {"max_items": 6, "max_total_bytes": 62914560},
     }, report
 
@@ -128,7 +140,7 @@ def summary(report):
         "time_known": details.get("time_known"),
         "outcome": report.outcome, "has_open_question": report.status == Status.NEEDS_CLARIFICATION,
         "unread_messages": 0, "last_message_preview": None,
-        "last_activity_at": wat(report.activity), "media_count": report.media_count,
+        "last_activity_at": wat(report.activity), "media_count": report.media_count + report.photo_count,
     }
 
 
@@ -136,6 +148,7 @@ def read_reports(request):
     events = org_scope(request, ReviewEvent).filter(report_id=OuterRef("pk"))
     closure = events.filter(action=ReviewEvent.Action.CLOSE).order_by("-version")
     photos = org_scope(request, Evidence).filter(report_id=OuterRef("pk"))
+    photos_v1 = org_scope(request, MediaItem).filter(report_id=OuterRef("pk"), purpose="evidence")
     return owned(request).annotate(
         activity=Coalesce(
             Subquery(events.order_by("-version").values("created_at")[:1], output_field=DateTimeField()),
@@ -144,6 +157,9 @@ def read_reports(request):
         outcome=Subquery(closure.values("change__outcome")[:1]),
         media_count=Coalesce(Subquery(
             photos.order_by().values("report_id").annotate(count=Count("pk")).values("count")[:1]
+        ), 0),
+        photo_count=Coalesce(Subquery(
+            photos_v1.order_by().values("report_id").annotate(count=Count("pk")).values("count")[:1]
         ), 0),
         has_messages=Exists(events.filter(action__in=[
             ReviewEvent.Action.REQUEST_CLARIFICATION, ReviewEvent.Action.RESPOND,
@@ -229,13 +245,17 @@ def detail(request, reference):
     if report.status == Status.NEEDS_CLARIFICATION:
         event = events.filter(action=ReviewEvent.Action.REQUEST_CLARIFICATION).first()
         if event:
-            question = {"id": str(uuid5(NAMESPACE_URL, f"electraguard:question:{report.pk}:{event.version}")), "body": event.change["note"], "asked_at": wat(event.created_at)}
+            question = {"id": question_id(report.pk, event.version), "body": event.change["note"], "asked_at": wat(event.created_at)}
     media = [
         {"id": str(pk), "kind": "photo", "status": "ready", "size_bytes": size, "duration_ms": None,
          "blurred": False, "exif_removed": False, "created_at": wat(created) if created else None}
         for pk, size, created in org_scope(request, Evidence).filter(report=report)
         .annotate(size=Length("content")).values_list("pk", "size", "created_at")
     ]
+    media.extend(
+        describe_photo(photo) for photo in org_scope(request, MediaItem)
+        .filter(report=report, purpose="evidence").order_by("created_at", "pk")
+    )
     return JsonResponse({
         **identity(report), "channel": "app", "outcome": report.outcome,
         **details, "description": report.description, "checklist": None, "result_sheet": None,
@@ -251,6 +271,10 @@ def perform_withdrawal(request, reference, data):
     report = owned(request).select_for_update(no_key=True).filter(pk=reference).first()
     if report is None:
         return missing()
+    return withdraw_report(request, report, data)
+
+
+def withdraw_report(request, report, data, *, public=False):
     if report.status == Status.WITHDRAWN:
         return 200, withdrawn_stub(report), report
     if data.get("confirm") is not True:
@@ -258,9 +282,13 @@ def perform_withdrawal(request, reference, data):
     if report.status != Status.SUBMITTED:
         return error(409, "withdraw_unavailable", "A reviewer has started on this report, so it can no longer be withdrawn. You can send them a message.")
 
-    org_scope(request, Triage).filter(report=report).delete()
-    org_scope(request, TriageMatch).filter(Q(first=report) | Q(second=report)).delete()
-    org_scope(request, Evidence).filter(report=report).delete()
+    org_scope(request, Triage, public=public).filter(report=report).delete()
+    org_scope(request, TriageMatch, public=public).filter(Q(first=report) | Q(second=report)).delete()
+    org_scope(request, Evidence, public=public).filter(report=report).delete()
+    cancel_report_uploads(report)
+    report.media_uploads.filter(organisation_id=report.organisation_id).delete()
+    for photo in org_scope(request, MediaItem, public=public).filter(report=report):
+        remove_photo(photo)
     report.status = Status.WITHDRAWN
     report.withdrawn_at = timezone.now()
     report.assigned_reviewer = report.occurred_at = None
@@ -270,11 +298,11 @@ def perform_withdrawal(request, reference, data):
         "status", "withdrawn_at", "assigned_reviewer", "occurred_at", "description",
         "location", "polling_unit_code", "observer_code", "incident_details",
     ])
-    record_change(report, request.user, ReviewEvent.Action.WITHDRAW, {
+    record_change(report, None if public else request.user, ReviewEvent.Action.WITHDRAW, {
         "from_status": "received", "to_status": "withdrawn",
     })
     stub = withdrawn_stub(report)
-    org_scope(request, ReportIdempotency).filter(report=report).update(body=stub)
+    org_scope(request, ReportIdempotency, public=public).filter(report=report).update(body=stub)
     return 200, stub, report
 
 

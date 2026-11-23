@@ -38,6 +38,8 @@ The full plan is in [hackathon-plan.md](hackathon-plan.md).
 | C1 observer code and PIN sign-in, organisation scoping | Codex | `codex/observer-sign-in` | `docs/agent-updates.md`, `backend/accounts/`, `backend/config/settings.py`, `backend/config/urls.py`, `backend/reports/` (organisation fields and scoping only) |
 | C2 PIN follow-ups and place reference | Codex | `backend/v1-contracts` | `docs/agent-updates.md`, `backend/accounts/`, `backend/reference/`, `backend/config/settings.py`, `backend/config/urls.py`, `data/reference/` |
 | C3 observer reports and idempotency | Codex | `backend/v1-reports` | `docs/agent-updates.md`, `backend/reports/`, `backend/reference/models.py`, `backend/accounts/observer_auth.py`, `backend/config/urls.py` |
+| C4 private photo uploads and deployment | Codex | `backend/v1-media` | `docs/agent-updates.md`, `backend/reports/`, `backend/config/settings.py`, `deploy/compose.yaml`, `deploy/backend.Dockerfile`, `deploy/backup-encrypted.sh`, `docs/restore-verification.md`, `scripts/extract-recovery-bundle.py`, `scripts/verify-restored-data.py` |
+| C5 citizen reports and receipts | Codex | `backend/v1-citizen-reports` | `docs/agent-updates.md`, `backend/reports/`, `backend/accounts/organisations.py`, `backend/config/settings.py`, `scripts/verify-restored-data.py` |
 | Front-end design system, screens, API contracts | Claude | `design/frontend` | `frontend/app/(observer)/…`, `frontend/app/(staff)/…`, `frontend/app/(public)/…`, `frontend/ui/…`, `frontend/messages/…`, `docs/design/…` |
 | Product mark and lockups | Claude (brand agent) | `design/brand` | `docs/design/brand/…` |
 | Design tokens, components, icons, i18n library, dev gallery | Claude (UI agent) | `design/ui-foundation` | `frontend/ui/…`, `frontend/lib/i18n/…`, `frontend/public/fonts/…`, `frontend/app/(dev)/…` |
@@ -47,6 +49,32 @@ The full plan is in [hackathon-plan.md](hackathon-plan.md).
 | Backend, migrations, tests, deployment | Codex | `work` | `backend/…`, `deploy/…`, `.github/…` |
 
 ## Updates
+
+### 23 Nov 2026 · Codex · Slice C5 citizen reports
+
+- Implemented the backend citizen-report contracts REP-05 through REP-07 and citizen withdrawal under REP-04. Submissions use the configured public intake organisation, versioned place data and CSRF. Receipt secrets are stored as SHA-256 digests. Idempotency is scoped to the secret and organisation.
+- Public status returns only the receipt, status, outcome, open-question flag and WAT dates. The receipt secret is required for conversation, replies and withdrawal. Replies reuse the report lock and audit version, store the text separately from the audit event, and appear to the assigned Reviewer as Citizen, not accredited. Withdrawal reuses the report purge and stub replay.
+- Verified `manage.py migrate`, `manage.py test accounts reports config --noinput` (75 passed on PostgreSQL 17.12), clean migration and whitespace checks, and restore checker syntax. No frontend paths changed.
+- Public throttling and enumeration warnings are process-local. Configure `PUBLIC_INTAKE_ORGANISATION_ID` in the Django environment if public intake should use an organisation other than the initial one. The production intake gate still governs submissions. Browser integration, citizen media and a shared rate limiter and security monitor remain follow-on work.
+- Next, review this branch and wire receipt creation, status and proof handling into the citizen screens. Keep receipt secrets out of URLs and logs.
+
+### 22 Nov 2026 · Codex · C4 deployment and recovery follow-up
+
+- Backend and worker share the named `private-media` volume at `/var/lib/electraguard/media`. The image primes that path with UID/GID 10001 and mode 0700. Compose configuration and an isolated two-container named-volume test verified the mapping and write access.
+- The operator backup command can encrypt a quiesced PostgreSQL dump and the private media tree as one bundle. The restore runbook covers a safe extractor, checks restored photo byte counts and SHA-256 against `MediaItem`, and describes mounting a separate restored volume. The legacy database-only backup invocation remains available for existing rehearsals.
+- Verified a real encrypted round trip between two isolated PostgreSQL 17 databases with a generated photo. Source and restored counts matched. The checker reported a mismatch after deliberate file corruption. The legacy database-only archive still decrypted as a PostgreSQL custom dump.
+- Reran `manage.py test accounts reports config --noinput` (70 passed), `makemigrations --check --dry-run`, shell and Python syntax checks, Compose configuration, and `git diff --check`. The full backend image build hit a PyPI proxy certificate error. The volume permission test used an isolated image based on PostgreSQL 17.
+- PR #7 is still outside `origin/production-readiness`. Once it lands, merge the shared branch into `backend/v1-media` and verify startup with the packaged app and reference-data folders.
+
+### 22 Nov 2026 · Codex · Slice C4 private photo uploads
+
+- Added observer MED-01 through MED-05 for JPEG/PNG. Uploads advertise 256 KiB chunks, expose saved progress, and check offsets, optional chunk hashes, declared size and the whole-file SHA-256. Replay of an expired upload opens a new session for its original attachment identifier. Video and audio return `not_supported_yet`.
+- Completion decodes and re-encodes a fresh JPEG, strips metadata including GPS, and records the original and stored SHA-256. The bounded photo transform runs inline and returns `ready`. The staged original is queued for deletion in the completion transaction, with immediate post-commit cleanup and retry through maintenance.
+- Every download checks the observer owner or current Reviewer assignment. Responses are private and no-store, with optional thumbnails and single byte ranges. Staff access is logged. Removing a photo is permitted only before review and audits its hash. Case closure snapshots saved photos and pending upload metadata, and withdrawal removes the photos and staged files.
+- Set `PRIVATE_MEDIA_ROOT` to a persistent, private directory outside web roots for deployment. Use `python backend/manage.py prune_private_media` at least every 15 minutes to remove expired bytes and retry queued deletions. The local backend is in place. Azure Blob, the production maintenance schedule, asynchronous processing and unusual-download alerting remain follow-on work.
+- The face-blur hook reports `blurred: false` even when requested. Server-side face detection and blur must be implemented and verified before the UI promises it. Legacy evidence endpoints remain available with their existing behaviour.
+- Verified `manage.py test accounts reports config --noinput` (70 passed on PostgreSQL 17.12), `makemigrations --check --dry-run`, `migrate --check`, and `git diff --check`. Coverage includes dropped chunks, replay after expiry, size/hash checks, an exact 2 MiB photo with GPS EXIF, permission changes, closure, withdrawal and removal. No frontend paths changed.
+- Next, review C4 and wire the observer's photo flow. Verify the private storage mount and cleanup schedule before deployment.
 
 ### 22 Nov 2026 · Codex · Slice C3 observer reports
 

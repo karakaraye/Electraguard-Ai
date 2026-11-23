@@ -1,3 +1,4 @@
+from uuid import UUID
 import os
 from pathlib import Path
 
@@ -99,3 +100,13 @@ if not DEBUG:
             for name in ("django.request", "django.security", "django.server")
         },
     }
+
+# The fallback is evaluated only when the variable is unset. Path.parent stays valid
+# in the shallow container layout (/app/config), where parents[3] does not exist.
+PRIVATE_MEDIA_ROOT = Path(
+    os.getenv("PRIVATE_MEDIA_ROOT")
+    or Path(__file__).resolve().parent.parent.parent.parent / ".electraguard-private-media"
+)
+
+if os.getenv("PUBLIC_INTAKE_ORGANISATION_ID"):
+    PUBLIC_INTAKE_ORGANISATION_ID = UUID(os.environ["PUBLIC_INTAKE_ORGANISATION_ID"])

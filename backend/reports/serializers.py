@@ -74,10 +74,17 @@ class ObserverClarificationSerializer(serializers.ModelSerializer):
 
 
 class ReviewEventSerializer(serializers.ModelSerializer):
+    change = serializers.SerializerMethodField()
     actor = serializers.SerializerMethodField()
     action_label = serializers.CharField(source="get_action_display")
 
+    def get_change(self, event):
+        reply = getattr(event, "citizen_reply", None)
+        return {**event.change, "note": reply.body} if reply else event.change
+
     def get_actor(self, event):
+        if event.actor_id is None:
+            return "Citizen, not accredited"
         if event.action == ReviewEvent.Action.RESPOND:
             return "Observer"
         return event.actor.email

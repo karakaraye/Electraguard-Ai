@@ -11,6 +11,7 @@ from accounts.models import User
 from accounts.organisations import org_scope
 from accounts.permissions import require_role
 
+from .media_lifecycle import cancel_report_uploads
 from .models import Report, ReviewEvent
 from .serializers import (
     AssignmentSerializer,
@@ -68,6 +69,14 @@ def transition(report, actor, action, data):
         change["attachment_ids"] = [
             str(attachment_id) for attachment_id in report.attachments.filter(organisation_id=report.organisation_id).values_list("id", flat=True)
         ]
+        pending = cancel_report_uploads(report)
+        media = [
+            {"id": str(pk), "sha256": digest}
+            for pk, digest in report.media_items.filter(organisation_id=report.organisation_id)
+            .order_by("pk").values_list("pk", "sha256")
+        ]
+        if media or pending:
+            change.update(media_ids=media, pending_uploads=pending)
     report.status = after
     record_change(report, actor, action, change, "status")
     return Response({"version": report.version, "status": report.status})
@@ -124,7 +133,7 @@ def review_queue(request):
 @transaction.atomic
 def review_case(request, reference):
     report = get_object_or_404(with_attachment_metadata(request, assigned_reports(request).select_for_update()).prefetch_related(
-        Prefetch("review_events", queryset=org_scope(request, ReviewEvent).select_related("actor"))
+        Prefetch("review_events", queryset=org_scope(request, ReviewEvent).select_related("actor", "citizen_reply"))
     ), reference=reference)
     return Response(ReviewCaseSerializer(report, context={"reviewer": request.user, "request": request}).data)
 

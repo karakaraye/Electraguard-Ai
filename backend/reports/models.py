@@ -21,7 +21,8 @@ class Report(OrganisationOwned):
         OUT_OF_SCOPE = "out_of_scope", "Out of scope"
 
     reference = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    observer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
+    observer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, null=True)
+    receipt_secret_digest = models.CharField(max_length=64, blank=True, editable=False)
     assigned_reviewer = models.ForeignKey(
         settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.PROTECT,
         related_name="assigned_reports",
@@ -68,6 +69,7 @@ class ReviewEvent(OrganisationOwned):
     class Action(models.TextChoices):
         CREATE = "create", "Created report"
         WITHDRAW = "withdraw", "Withdrew report"
+        REMOVE_MEDIA = "remove_media", "Removed evidence"
         ASSIGN = "assign", "Assigned reviewer"
         START = "start", "Started review"
         REQUEST_CLARIFICATION = "request_clarification", "Requested clarification"
@@ -77,7 +79,7 @@ class ReviewEvent(OrganisationOwned):
         DECIDE_MATCH = "decide_match", "Reviewed possible match"
 
     report = models.ForeignKey(Report, related_name="review_events", on_delete=models.CASCADE)
-    actor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
+    actor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     version = models.PositiveIntegerField()
     action = models.CharField(max_length=24, choices=Action.choices)
@@ -130,7 +132,8 @@ class TriageMatch(OrganisationOwned):
 
 
 class ReportIdempotency(OrganisationOwned):
-    actor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
+    actor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, null=True)
+    citizen_digest = models.CharField(max_length=64, blank=True)
     operation = models.CharField(max_length=24)
     key = models.UUIDField()
     digest = models.CharField(max_length=64)
@@ -144,4 +147,82 @@ class ReportIdempotency(OrganisationOwned):
             models.UniqueConstraint(
                 fields=["organisation", "actor", "operation", "key"], name="reports_unique_request_key"
             ),
+            models.UniqueConstraint(
+                fields=["organisation", "citizen_digest", "operation", "key"],
+                condition=models.Q(actor__isnull=True), name="reports_unique_citizen_request",
+            ),
         ]
+
+
+class MediaItem(OrganisationOwned):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    report = models.ForeignKey(Report, related_name="media_items", on_delete=models.CASCADE)
+    purpose = models.CharField(max_length=12)
+    size_bytes = models.PositiveIntegerField()
+    original_sha256 = models.CharField(max_length=64)
+    sha256 = models.CharField(max_length=64)
+    blurred = models.BooleanField(default=False)
+    exif_removed = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=["report", "original_sha256"], name="report_unique_media_hash")
+        ]
+
+
+class UploadSession(OrganisationOwned):
+    class Status(models.TextChoices):
+        OPEN = "open", "Open"
+        EXPIRED = "expired", "Expired"
+        COMPLETED = "completed", "Completed"
+        CANCELLED = "cancelled", "Cancelled"
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    report = models.ForeignKey(Report, related_name="media_uploads", on_delete=models.CASCADE)
+    client_attachment_id = models.CharField(max_length=64)
+    content_type = models.CharField(max_length=32)
+    purpose = models.CharField(max_length=12)
+    size_bytes = models.PositiveIntegerField()
+    sha256 = models.CharField(max_length=64)
+    blur_faces = models.BooleanField(default=False)
+    received_bytes = models.PositiveIntegerField(default=0)
+    status = models.CharField(max_length=12, choices=Status.choices, default=Status.OPEN)
+    staging_id = models.UUIDField(default=uuid.uuid4)
+    expires_at = models.DateTimeField(db_index=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    media = models.ForeignKey(MediaItem, null=True, on_delete=models.SET_NULL)
+
+    class Meta:
+        ordering = ["-created_at"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["report", "client_attachment_id"], condition=models.Q(status="open"),
+                name="report_unique_open_attachment",
+            )
+        ]
+
+
+class MediaBlobDeletion(OrganisationOwned):
+    path = models.CharField(max_length=150, unique=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+class MediaAccess(OrganisationOwned):
+    media_id = models.UUIDField()
+    report = models.ForeignKey(Report, on_delete=models.CASCADE)
+    actor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
+    action = models.CharField(max_length=16)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        indexes = [models.Index(fields=["actor", "media_id", "action", "created_at"])]
+
+
+class CitizenReply(OrganisationOwned):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    report = models.ForeignKey(Report, on_delete=models.CASCADE)
+    event = models.OneToOneField(ReviewEvent, related_name="citizen_reply", on_delete=models.CASCADE)
+    question_id = models.UUIDField()
+    body = models.CharField(max_length=2000)
+    created_at = models.DateTimeField(auto_now_add=True)
