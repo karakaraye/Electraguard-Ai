@@ -42,7 +42,7 @@ The full plan is in [hackathon-plan.md](hackathon-plan.md).
 | C5 citizen reports and receipts | Codex | `backend/v1-citizen-reports` | `docs/agent-updates.md`, `backend/reports/`, `backend/accounts/organisations.py`, `backend/config/settings.py`, `scripts/verify-restored-data.py` |
 | C6 reviewer queue and case actions | Codex | `backend/v1-review` | `docs/agent-updates.md`, `backend/reports/`, `scripts/verify-restored-data.py` |
 | C7 coordinator assignment and overview | Codex | `backend/v1-operations` | `docs/agent-updates.md`, `backend/accounts/`, `backend/config/urls.py`, `backend/reports/`, `scripts/verify-restored-data.py` |
-| C8 staff authentication and account administration | Codex | `backend/v1-staff-auth` | `docs/agent-updates.md`, `backend/accounts/`, `backend/config/settings.py`, `backend/config/urls.py`, `backend/requirements.txt`, `backend/reports/` (staff permission checks only) |
+| C8 staff authentication and account administration | Codex | `backend/v1-staff-auth` | `docs/agent-updates.md`, `backend/accounts/`, `backend/config/settings.py`, `backend/config/urls.py`, `backend/requirements.txt`, `backend/reports/` (staff permission checks and shared idempotency helper) |
 | Front-end design system, screens, API contracts | Claude | `design/frontend` | `frontend/app/(observer)/…`, `frontend/app/(staff)/…`, `frontend/app/(public)/…`, `frontend/ui/…`, `frontend/messages/…`, `docs/design/…` |
 | Product mark and lockups | Claude (brand agent) | `design/brand` | `docs/design/brand/…` |
 | Design tokens, components, icons, i18n library, dev gallery | Claude (UI agent) | `design/ui-foundation` | `frontend/ui/…`, `frontend/lib/i18n/…`, `frontend/public/fonts/…`, `frontend/app/(dev)/…` |
