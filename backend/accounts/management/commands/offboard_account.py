@@ -33,6 +33,12 @@ class Command(BaseCommand):
         approver = administrators.get(approver_email)
         if approver is None:
             raise CommandError("Name an active application Administrator with a usable password as approver.")
+        if target.organisation_id != approver.organisation_id:
+            raise CommandError("No matching application account.")
+        administrators = {
+            email: account for email, account in administrators.items()
+            if account.organisation_id == approver.organisation_id
+        }
         if not target.is_active:
             self.stdout.write("Application account is already inactive.")
             return
@@ -43,6 +49,6 @@ class Command(BaseCommand):
         target.set_unusable_password()
         target.save(update_fields=["is_active", "password"])
         AccountOffboarding.objects.create(
-            account=target, authorized_by=approver, role=target.role, reason=options["reason"],
+            account=target, organisation_id=target.organisation_id, authorized_by=approver, role=target.role, reason=options["reason"],
         )
         self.stdout.write(self.style.SUCCESS("Application account offboarded. Existing sessions have been revoked."))

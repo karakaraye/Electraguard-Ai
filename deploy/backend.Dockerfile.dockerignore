@@ -8,6 +8,11 @@
 !backend/config/**
 !backend/reports/
 !backend/reports/**
+!backend/reference/
+!backend/reference/**
+!data/
+!data/reference/
+!data/reference/**
 !deploy/
 !deploy/django-entrypoint.sh
 **/__pycache__/

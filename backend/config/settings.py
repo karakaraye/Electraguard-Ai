@@ -33,6 +33,10 @@ CSRF_COOKIE_SECURE = not DEBUG
 SESSION_COOKIE_AGE = 8 * 60 * 60
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 CSRF_COOKIE_HTTPONLY = True
+CSRF_FAILURE_VIEW = "accounts.observer_auth.csrf_failure"
+AUTH_TRUSTED_PROXY_IPS = frozenset(
+    peer.strip() for peer in os.getenv("DJANGO_AUTH_TRUSTED_PROXY_IPS", "").split(",") if peer.strip()
+)
 
 INSTALLED_APPS = [
     "django.contrib.auth",
@@ -41,6 +45,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "accounts",
     "reports",
+    "reference",
 ]
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -48,6 +53,7 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "accounts.observer_sessions.ObserverSessionMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 ROOT_URLCONF = "config.urls"

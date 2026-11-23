@@ -10,7 +10,7 @@ from django.test import TestCase, TransactionTestCase
 from PIL import Image
 from rest_framework.test import APIClient
 
-from accounts.models import User
+from accounts.models import INITIAL_ORGANISATION, Organisation, User
 
 from .models import Report, ReviewEvent
 
@@ -218,6 +218,9 @@ class ReviewWorkflowTests(TestCase):
 
 
 class ConcurrentReviewTests(TransactionTestCase):
+    def setUp(self):
+        Organisation.objects.get_or_create(pk=INITIAL_ORGANISATION, defaults={"name": "Test organisation"})
+
     def test_concurrent_actions_with_same_version_record_one_change(self):
         observer = User.objects.create_user("observer@race.example", role=User.Role.OBSERVER)
         reviewer = User.objects.create_user("reviewer@race.example", role=User.Role.REVIEWER)

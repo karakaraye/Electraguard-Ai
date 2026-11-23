@@ -1,5 +1,7 @@
 from rest_framework import serializers
 
+from accounts.organisations import org_scope
+
 from . import capabilities
 from .models import Evidence, Report, ReviewEvent
 
@@ -11,6 +13,7 @@ class EvidenceSerializer(serializers.ModelSerializer):
 
 
 class ReportSerializer(serializers.ModelSerializer):
+    description = serializers.CharField(max_length=1000)
     polling_unit_code = serializers.CharField(max_length=32, allow_blank=True, default="")
 
     class Meta:
@@ -97,7 +100,7 @@ class ReviewCaseSerializer(ReportDetailSerializer):
             if event.action == ReviewEvent.Action.DECIDE_MATCH
         ]
         visible = {
-            str(reference) for reference in Report.objects.filter(
+            str(reference) for reference in org_scope(self.context["request"], Report).filter(
                 reference__in=references, assigned_reviewer=self.context["reviewer"]
             ).values_list("pk", flat=True)
         }

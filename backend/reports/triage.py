@@ -80,8 +80,8 @@ def shortlist(report):
     location = set(tokens(report.location))
     words = tokens(report.description)
     candidates = Report.objects.filter(
-        occurred_at__range=(report.occurred_at - WINDOW, report.occurred_at + WINDOW),
-    ).exclude(pk=report.pk).values_list("reference", "occurred_at", "location", "description")
+        organisation_id=report.organisation_id, occurred_at__range=(report.occurred_at - WINDOW, report.occurred_at + WINDOW),
+    ).exclude(pk=report.pk).exclude(status=Report.Status.WITHDRAWN).values_list("reference", "occurred_at", "location", "description")
     pairs = []
     for reference, occurred_at, label, description in candidates.iterator():
         score = duplicate_score(
@@ -105,11 +105,19 @@ def process_next():
     job.attempted_at = timezone.now()
     try:
         with transaction.atomic():
-            report = Report.objects.only("reference", "occurred_at", "location", "description").get(pk=job.report_id)
+            report = Report.objects.only("reference", "occurred_at", "location", "description", "organisation_id").get(pk=job.report_id, organisation_id=job.organisation_id)
             category = categorize(report.description)
             for first, second, score in shortlist(report):
+                # A withdrawal may have won after the shortlist read.
+                active = Report.objects.filter(
+                    organisation_id=job.organisation_id, pk__in=(first, second),
+                ).exclude(status=Report.Status.WITHDRAWN).order_by("pk").select_for_update(
+                    no_key=True, skip_locked=True,
+                )
+                if len(list(active.values_list("pk", flat=True))) != 2:
+                    continue
                 TriageMatch.objects.get_or_create(
-                    first_id=first, second_id=second, defaults={"score": score},
+                    first_id=first, second_id=second, defaults={"score": score, "organisation_id": job.organisation_id},
                 )
     except Exception:
         # Roll back any partial matches. The worker can retry this job explicitly.

@@ -13,6 +13,7 @@ from rest_framework.parsers import JSONParser, MultiPartParser
 from rest_framework.response import Response
 
 from accounts.models import User
+from accounts.organisations import org_scope
 from accounts.permissions import require_role
 
 from .models import Evidence, Report, ReviewEvent, Triage
@@ -23,7 +24,7 @@ from .uploads import read_evidence
 
 def own_reports(request):
     require_role(request.user, User.Role.OBSERVER)
-    return Report.objects.filter(observer=request.user)
+    return org_scope(request, Report).filter(observer=request.user).exclude(status=Report.Status.WITHDRAWN)
 
 
 @never_cache
@@ -41,9 +42,10 @@ def reports(request):
     serializer = ReportSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
     fields = serializer.validated_data
-    if settings.OBSERVATION_INTAKE_ENABLED:
+    if settings.OBSERVATION_INTAKE_ENABLED and not request.user.organisation.intake_paused:
         report, created = queryset.get_or_create(
-            observer=request.user, submission_key=key, defaults=fields
+            observer=request.user, submission_key=key,
+            defaults={**fields, "organisation_id": request.user.organisation_id}
         )
     else:
         report = queryset.filter(submission_key=key).first()
@@ -55,13 +57,15 @@ def reports(request):
         created = False
     if not created and any(getattr(report, field) != value for field, value in fields.items()):
         return Response({"detail": "This submission key belongs to a different report."}, status=409)
-    Triage.objects.get_or_create(report=report, defaults={"method_version": METHOD_VERSION})
+    org_scope(request, Triage).get_or_create(
+        report=report, defaults={"method_version": METHOD_VERSION, "organisation_id": report.organisation_id}
+    )
     return Response(ReportSerializer(report).data, status=201 if created else 200)
 
 
-def with_attachment_metadata(queryset):
+def with_attachment_metadata(request, queryset):
     return queryset.prefetch_related(
-        Prefetch("attachments", queryset=Evidence.objects.only("id", "report_id", "name"))
+        Prefetch("attachments", queryset=org_scope(request, Evidence).only("id", "report_id", "name"))
     )
 
 
@@ -69,11 +73,11 @@ def with_attachment_metadata(queryset):
 @api_view(["GET"])
 def report_detail(request, reference):
     report = get_object_or_404(
-        with_attachment_metadata(own_reports(request)),
+        with_attachment_metadata(request, own_reports(request)),
         reference=reference,
     )
-    report.observer_events = list(report.review_events.filter(
-        action__in=[
+    report.observer_events = list(org_scope(request, ReviewEvent).filter(
+        report=report, action__in=[
             ReviewEvent.Action.REQUEST_CLARIFICATION, ReviewEvent.Action.RESPOND,
             ReviewEvent.Action.CLOSE,
         ],
@@ -93,10 +97,13 @@ def upload_evidence(request, reference):
         return Response({"detail": "Evidence uploads are unavailable because this case is closed."}, status=409)
     upload = request.FILES.get("file")
     content, content_type = read_evidence(upload)
-    attachment, created = Evidence.objects.only("id", "name").get_or_create(
+    attachment, created = org_scope(request, Evidence).only("id", "name").get_or_create(
         report=report,
         sha256=sha256(content).hexdigest(),
-        defaults={"name": upload.name, "content_type": content_type, "content": content},
+        defaults={
+            "name": upload.name, "content_type": content_type,
+            "content": content, "organisation_id": report.organisation_id,
+        },
     )
     return Response(EvidenceSerializer(attachment).data, status=201 if created else 200)
 
@@ -105,11 +112,11 @@ def upload_evidence(request, reference):
 @api_view(["GET"])
 def download_evidence(request, reference, attachment_id):
     if request.user.role == User.Role.REVIEWER:
-        accessible = Report.objects.filter(assigned_reviewer=request.user)
+        accessible = org_scope(request, Report).filter(assigned_reviewer=request.user)
     else:
         accessible = own_reports(request)
     attachment = get_object_or_404(
-        Evidence, report__in=accessible.filter(reference=reference), id=attachment_id
+        org_scope(request, Evidence), report__in=accessible.filter(reference=reference), id=attachment_id
     )
     extension = "jpg" if attachment.content_type == "image/jpeg" else "png"
     return FileResponse(

@@ -23,7 +23,7 @@ The full plan is in [hackathon-plan.md](hackathon-plan.md).
 
 ## Rules for every agent
 
-0. **Commit and push everything to `github.com/karakaraye/Electraguard-Ai`.** Nothing stays only on one machine. Work on a named branch, push after every verified slice, and note the branch in the ownership table. Before starting, `git fetch` and read the latest version of this file on `origin/design/frontend` (the coordination branch until it is merged).
+0. **Commit and push everything to `github.com/karakaraye/Electraguard-Ai`.** Nothing stays only on one machine. Work on a named branch, push after every verified slice, and note the branch in the ownership table. Before starting, `git fetch` and read the latest version of this file on `origin/production-readiness` (the shared branch).
 1. Read this file and the plan before starting. Do not resume from memory.
 2. Claim your files in the ownership table below before editing. Never edit files someone else has claimed.
 3. Each slice lands complete: screen + API + tests + all five language strings. No half-wired screens, no fake data in the app.
@@ -34,6 +34,10 @@ The full plan is in [hackathon-plan.md](hackathon-plan.md).
 
 | Area | Owner | Branch / location | Files |
 |---|---|---|---|
+| Coordination log and licence (Slice A) | Codex | `codex/coordination-and-license` | `docs/agent-updates.md`, `docs/hackathon-plan.md`, `LICENSE` |
+| C1 observer code and PIN sign-in, organisation scoping | Codex | `codex/observer-sign-in` | `docs/agent-updates.md`, `backend/accounts/`, `backend/config/settings.py`, `backend/config/urls.py`, `backend/reports/` (organisation fields and scoping only) |
+| C2 PIN follow-ups and place reference | Codex | `backend/v1-contracts` | `docs/agent-updates.md`, `backend/accounts/`, `backend/reference/`, `backend/config/settings.py`, `backend/config/urls.py`, `data/reference/` |
+| C3 observer reports and idempotency | Codex | `backend/v1-reports` | `docs/agent-updates.md`, `backend/reports/`, `backend/reference/models.py`, `backend/accounts/observer_auth.py`, `backend/config/urls.py` |
 | Front-end design system, screens, API contracts | Claude | `design/frontend` | `frontend/app/(observer)/…`, `frontend/app/(staff)/…`, `frontend/app/(public)/…`, `frontend/ui/…`, `frontend/messages/…`, `docs/design/…` |
 | Product mark and lockups | Claude (brand agent) | `design/brand` | `docs/design/brand/…` |
 | Design tokens, components, icons, i18n library, dev gallery | Claude (UI agent) | `design/ui-foundation` | `frontend/ui/…`, `frontend/lib/i18n/…`, `frontend/public/fonts/…`, `frontend/app/(dev)/…` |
@@ -43,6 +47,50 @@ The full plan is in [hackathon-plan.md](hackathon-plan.md).
 | Backend, migrations, tests, deployment | Codex | `work` | `backend/…`, `deploy/…`, `.github/…` |
 
 ## Updates
+
+### 22 Nov 2026 · Codex · Slice C3 observer reports
+
+- Added REP-01 through REP-04 under `/api/v1/reports`. Incident submission validates language, category, timestamps, a historical REF-01 place, and optional metadata. Date-only observations use midnight WAT and carry `time_known: false`. Checklist and result-sheet creation return `not_supported_yet`.
+- REP-01 and REP-04 store successful answers atomically with the report, scope replay by organisation, actor and operation, and compare canonical JSON digests. A concurrent matching write waits up to five seconds, then gets `request_in_progress` if still blocked. The operator command `prune_report_idempotency` removes records after 30 days and preserves stored withdrawal stubs. Schedule it through the deployment's maintenance mechanism.
+- The signed cursor is bound to the actor and filters. Counts cover the observer's full v1 list. Open clarification questions drive `needs_attention` until message storage arrives. Unread messages are zero and `last_message_preview` is null in this slice. Detail includes `reviewer_assigned`.
+- Withdrawal locks the report, clears its content and assignment, deletes evidence and triage data, and replaces the create replay with the withdrawn stub. Older legacy reports remain on the legacy API. New reports can be reviewed through the existing workflow, and withdrawn v1 reports are excluded from legacy reads and dashboard totals.
+- Verified `manage.py migrate`, `manage.py test accounts reports config --noinput` (61 passed on PostgreSQL 17.12), `makemigrations --check --dry-run`, and `git diff --check`. Tests covered concurrent replay, replay while intake is paused, validation, old reference codes, paging and isolation, and withdrawal. No frontend paths changed.
+- Next, review this slice and wire the v1 observer screens. Checklist, result-sheet creation and the new media API remain follow-on work. The receipt includes the contract's media limits for that later API. Legacy attachment limits still govern the existing upload endpoint.
+
+### 22 Nov 2026 · Codex · Slice C2 PIN follow-ups and place reference
+
+- AUTH-03 now returns `pin_same_as_setup` for the setup-PIN prefix. AUTH-08 is `POST /api/v1/auth/observer/pin/change` with `current_pin` and `new_pin`. It uses the existing lockouts and keeps current sessions active. Revocation still ends them.
+- REF-01 serves the shared state index and per-state documents with ETags and public revalidation headers. `python backend/manage.py load_reference_areas` loads the two-state, 16-unit synthetic release. `--file` accepts later releases, and older unit codes remain valid.
+- REF-02 is `GET /api/v1/reference/settings`. It returns the signed-in observer's `coverage_area` (`state_codes`, `lga_codes`) and `party_labels` with private cache controls. This uses the field names in ADM-04 because the design records the gap decision without a finalized REF-02 response example.
+- Verified `manage.py test accounts reports config --noinput` (55 passed on PostgreSQL 17.12), `makemigrations --check --dry-run` and `git diff --check`. No frontend files changed.
+- Previously activated codes have no stored setup-prefix hash to compare against. Newly activated codes retain the prefix hash for PIN changes. The full setup PIN hash is erased after activation.
+- Next after review is C3, REP-01 through REP-04. C3 has not started.
+
+### 22 Nov 2026 · Claude · design foundation merged into production-readiness
+
+- Merged `design/frontend` into `production-readiness` on `integrate/design-foundation`: UI foundation, API contracts and types, screen specs, message files in five languages, brand mark and icons. The coordination log keeps `production-readiness` as the shared branch and keeps the Codex claims and entries from PRs #2 and #3.
+- C1 (PR #3) already implements AUTH-01/02/03/06/07. Still to apply from the gap decisions: G2 (`pin_same_as_setup`; C1 currently returns `pin_reused`) and G12 (AUTH-08 change PIN).
+
+### 22 Nov 2026 · Codex · Slice C1 observer code and PIN sign-in
+
+- Added organisation fields and backfilled the existing application records to the initial organisation. Report, evidence, reviewer, triage and dashboard access now starts with the actor's organisation.
+- Added AUTH-01/02/03/06/07 under `/api/v1/auth/`, checked Crockford observer codes, hashed setup and personal PINs, one-use ten-minute setup tokens, rolling lockouts, per-IP limits and security alert records. Observer sessions persist with a 24-hour idle limit and seven-day absolute limit. Legacy email sign-in and browser-session behaviour remain available.
+- Local operator commands are `issue_observer_codes --count N --label "…"`, `revoke_observer_code OBS-XXXXXX` and `reset_observer_pin OBS-XXXXXX`. Issuing and resetting print the setup PIN once. Use an authorised shell and hand the PIN over privately. The setup PIN expires in 14 days. Revocation ends all sessions and preserves the original account and reports.
+- Verified with `backend/.venv/bin/python backend/manage.py test accounts reports config --noinput` (50 passed, PostgreSQL 17.12), `makemigrations --check --dry-run` (clean), and `git diff --check` (clean). Frontend `npm run lint`, `npm run typecheck` and `npm run build` passed with no frontend diffs.
+- Next, reviewer checks the backend slice and wires O-03 in the separate frontend slice. PR #2 was not on the shared branch when C1 started; its coordination log was merged into this branch and the C1 claim and entry were added to it.
+
+#### Questions
+
+- The contract names the cookie `eg_session`. C1 keeps the shared Django cookie name so existing staff sessions, legacy clients and ingress checks remain compatible. Confirm the cookie rename with the coordinated frontend and deployment cutover.
+- AUTH-03 and O-03 differ on the setup-PIN prefix error. C1 uses O-03's specific `pin_reused` field code. The current application roles remain as issued, pending a mapping for coordinator and organisation-admin permissions.
+- C1 uses the immediate peer address unless the operator explicitly sets `DJANGO_AUTH_TRUSTED_PROXY_IPS` to trusted immediate peer IPs. Confirm the production ingress overwrites `X-Forwarded-For` with a single client IP before enabling that setting. Admin HTTP issuance and organisation-wide daily limits belong to the follow-on ADM slice.
+- Failed credentials take the same PBKDF2 work and share the invalid-credentials response. A deployed timing measurement and high-volume retention policy for throttle records remain open.
+
+### 22 Nov 2026 · Codex · Slice A coordination log and licence
+
+- Brought the coordination log and hackathon plan over from `design/frontend`, updated rule 0 to identify `production-readiness` as the shared branch, and added an MIT licence for the Cairn team (name confirmed by the owner).
+- Verified that the hackathon plan matches its source, Git's whitespace checks pass, and the slice contains only the three claimed paths.
+- Next, the reviewer checks the draft PR and its CI results before integrating the slice.
 
 ### 22 Nov 2026 · Claude · foundation merged; observer screens being built; backend may start
 
