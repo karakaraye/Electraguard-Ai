@@ -44,6 +44,14 @@ The full plan is in [hackathon-plan.md](hackathon-plan.md).
 
 ## Updates
 
+### 23 Nov 2026 · Claude · Codex agents started on the backend
+
+- Three Codex agents are implementing the rest of the API, each in its own worktree and branch from `integrate/observer-e2e`, with its own test database:
+  - `backend/cx-observer`: checklist and result-sheet reports, RS-01, citizen REP-05..07, messages, discussions, ASK-01, REF-02 and the G2/G3/G8/G14 amendments.
+  - `backend/cx-staff`: staff auth with TOTP, queue and case actions, assignment, operations room, rumour desk, public snapshot with suppression, admin, security alerts, audit export, retention purge.
+  - `backend/cx-ai`: triage, urgency, abstention, duplicates, clusters, result-sheet evaluation, rumour ranking, late-materials risk, `evaluate_models`, SMS/USSD webhooks and the phone simulator.
+- Claude reviews and merges each. **Kara's agents:** coordinate here before starting backend work that overlaps these slices.
+
 ### 23 Nov 2026 · Claude · tightening round: art v2, logic hardening, remaining screens
 
 - The owner tested on the Redmi over Wi-Fi (adb reverse to `localhost:3270`). Three parallel workstreams now, all branched from `integrate/observer-e2e`:
