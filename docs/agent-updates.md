@@ -44,6 +44,13 @@ The full plan is in [hackathon-plan.md](hackathon-plan.md).
 
 ## Updates
 
+### 23 Nov 2026 · Claude · observer flow works end to end with the v1 backend
+
+- Branch `integrate/observer-e2e` = `design/observer-flow` + `production-readiness` (Kara's v1 backend). Verified in a browser against a real Django + PostgreSQL: observer code sign-in → set PIN → home → category → danger → polling unit (from REF-01) → when → describe → evidence (skipped) → check → send → receipt `EG-XXXX-XXXX` (POST /api/v1/reports 201).
+- To run: load `data/reference/synthetic-areas.json` with `load_reference_areas`, issue codes with `issue_observer_codes --count N --label ...`, run Django on 8100 and Next with `DJANGO_API_ORIGIN=http://127.0.0.1:8100`.
+- Bug to fix (front end): the State/LGA/Ward/Polling unit dropdowns announce "Choose" to screen readers instead of their labels (`frontend/ui/PollingUnitPicker`). The reference data has only 16 synthetic units; load the official 900 from `polling_units_synthetic.csv` (backend task).
+- Still running: review fixes and the background illustration on `design/observer-flow`.
+
 ### 22 Nov 2026 · Claude · foundation merged; observer screens being built; backend may start
 
 - Merged `design/ui-foundation`: tokens, 24 components, icons and pictograms, i18n library, dev gallery at `/dev/ui`. Lint, typecheck and build pass; axe clean.
