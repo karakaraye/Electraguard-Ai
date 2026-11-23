@@ -45,7 +45,7 @@ The full plan is in [hackathon-plan.md](hackathon-plan.md).
 | C9 observer extras (checklist, result sheet, RS-01, messages, discussions, Ask, REF-02) | Claude | `backend/v1-observer-extras` | `backend/approved_answers/`, `backend/discussions/`, `backend/reports/conversation.py`, `backend/reports/result_checks.py`, `backend/reports/result_ocr.py`, `backend/reports/structured_input.py` |
 | C10 staff extras (rumours, public data, security, audit, code batches, org settings, retention, OPS-02..04) | Claude | `backend/v1-staff-extras` | `backend/rumours/`, `backend/publicdata/`, `backend/security/`, `backend/ops/`, `backend/staff/` (codes, audit, retention, organisation settings only) |
 | C11 intelligence and phone channels | Claude | `backend/v1-intelligence` | `backend/intelligence/`, `backend/phone_channels/`, `data/synthetic/`, `docs/eval/` |
-| C12 video, voice notes, face blur and transcripts (MED video/audio, server-side blur, transcription jobs) | Kara's agents | `claude/fervent-knuth-s7h3i1` | `backend/reports/media_lifecycle.py`, `backend/reports/media_storage.py`, `backend/reports/media_views.py`, `backend/reports/test_media.py`, new `backend/reports/media_av/`, related media migrations |
+| C12 video, voice notes, face blur and transcripts (MED video/audio, server-side blur, transcription jobs) | Kara's agents | `claude/fervent-knuth-s7h3i1` | `backend/reports/media_lifecycle.py`, `backend/reports/media_storage.py`, `backend/reports/media_views.py`, `backend/reports/test_media.py`, new `backend/reports/media_av/`, `backend/reports/test_media_av.py`, `backend/reports/test_data/`, `backend/reports/management/commands/run_media.py`, `backend/reports/photo_processing.py`, related media migrations; small shared edits to `backend/reports/reviewer_views.py` (media counts and transcripts), `backend/reports/workflow.py` (closure snapshot), `backend/config/settings.py`, `backend/requirements.txt`, `deploy/backend.Dockerfile`, `deploy/compose.yaml`, `deploy/README.md`, `.github/workflows/verify.yml` (ffmpeg step) |
 | C13 starter notebook, API reference, `CONTRIBUTING.md`, load test and cost estimate (local now, Azure later) | Claude | `docs/c13-submission-tooling` | `notebooks/`, `docs/submission/API_REFERENCE.md`, `CONTRIBUTING.md`, load-test scripts and report |
 | C14 Azure deployment scripts | Kara's agents | `claude/fervent-knuth-s7h3i1` (after C12) | `deploy/azure/`, `.github/workflows/deploy-azure.yml`, `docs/azure-deployment.md` |
 | Front end (all screens, art, offline logic) | Claude + Antigravity | `design/*`, `logic/*`, `integrate/observer-e2e` | `frontend/` |
@@ -56,6 +56,15 @@ The full plan is in [hackathon-plan.md](hackathon-plan.md).
 | Observer and citizen screen specs, message files in 5 languages | Claude (UX agent) | `design/observer-screens` | `docs/design/screens/…`, `frontend/messages/…` |
 
 ## Updates
+
+### 23 Nov 2026 · Kara's agents · Slice C12 video, voice notes, face blur and transcripts
+
+- MED-01 to MED-04 now accept video (MP4/WebM, 25 MiB, 60 s) and voice notes (WebM/Ogg/M4A/MP3, 4 MiB, 120 s). Files are identified by content with ffprobe, then queued as `processing`. The new `media-worker` (`run_media`) re-encodes them with all metadata removed, adds a video poster, blurs faces, writes local Whisper transcripts and deletes the original.
+- Face blur is real for photos and video, using the bundled YuNet detector. If the observer asks for blur, no unblurred copy is kept. Otherwise reviewers see a blurred copy by default, and the unblurred file needs a logged reason, as in C6. Transcripts are reviewer-only and machine-labelled. Igbo is reported as unsupported.
+- Verified: 97 backend tests on PostgreSQL, including 11 new ones on real ffmpeg output. The production image built, its media tests passed, and its Whisper model transcribed a spoken test sentence exactly. A 60 s 720p video takes 68–88 s on 4 cores.
+- The image sets `ORT_DISABLE_TELEMETRY=1`, because onnxruntime otherwise starts Microsoft telemetry.
+- Not measured yet: faces missed per 100 (A12) and word error rate per language (A11). Both need labelled data, and the team's voice clips for A11. [Slice report](reviews/2026-11-23-c12-video-voice-blur.md).
+- **For the front end:** video and audio players, the `poster` variant, the `processing` and `failed` states, `media_counts.video/audio`, and the reviewer transcript panel are ready to wire. Next on this branch: C14 Azure deployment scripts.
 
 ### 23 Nov 2026 · Kara's agents · Claims C12 and C14; agrees C13
 

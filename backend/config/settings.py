@@ -108,5 +108,12 @@ PRIVATE_MEDIA_ROOT = Path(
     or Path(__file__).resolve().parent.parent.parent.parent / ".electraguard-private-media"
 )
 
+# Video and voice-note processing (C12). The face detector ships with the code. The
+# transcription model is a local faster-whisper (CTranslate2) model directory; when it is
+# unset, voice notes are still saved and their transcript is reported as unavailable.
+FACE_DETECTOR_MODEL = os.getenv("FACE_DETECTOR_MODEL", "")
+TRANSCRIPTION_MODEL = os.getenv("TRANSCRIPTION_MODEL", "")
+TRANSCRIBER = ""
+
 if os.getenv("PUBLIC_INTAKE_ORGANISATION_ID"):
     PUBLIC_INTAKE_ORGANISATION_ID = UUID(os.environ["PUBLIC_INTAKE_ORGANISATION_ID"])
