@@ -131,7 +131,8 @@ Each component has: props table, all states (default, hover, focus, active, disa
 | `ReportRow` | For lists: category pictogram, place, time, status badge. |
 | `Sheet` | Bottom sheet on phone, dialog on desktop; Close button always visible; focus trapped and returned. |
 | `Banner` | Offline, intake paused, question waiting. Never auto-dismissed for critical states. |
-| `EmptyState` | Plain sentence + one action. No illustrations of people. |
+| `EmptyState` | Plain sentence + one action. |
+| `BackgroundArt` | The owner-approved polling-day line illustration (`frontend/public/art/polling-day.svg`), ink at 6–7%, fading upward, decorative and hidden from screen readers. Only on O-01, O-02, O-03 choose, O-04 when empty, O-12. Never behind form inputs. |
 | `Stepper` | "Step 3 of 7" text + thin progress rule (not dots). |
 | `SuggestionCard` (staff) | "Suggested" label, value, reasons, confidence word (High/Medium/Low), Accept / Correct. |
 | `Timeline` (staff) | Audit events with actor, time, change, hash-chain status. |
@@ -162,7 +163,7 @@ O-01 Language · O-02 What this app keeps · O-03 Sign in (code + PIN, first-tim
 
 ## 8. Anti-patterns (reject in review)
 
-Generic hero sections; stock illustrations of people; gradient buttons; glassmorphism; neon; more than one primary button; colour-only status; placeholder text as labels; toasts for important outcomes; spinners without text; "Sent!" before confirmation; dark patterns around withdraw or consent; icons without labels for observers; truncated user content without a way to see it all; English-only error messages.
+Generic hero sections; stock illustrations of people (the original polling-day art is the one approved exception); gradient buttons; glassmorphism; neon; more than one primary button; colour-only status; placeholder text as labels; toasts for important outcomes; spinners without text; "Sent!" before confirmation; dark patterns around withdraw or consent; icons without labels for observers; truncated user content without a way to see it all; English-only error messages.
 
 ## 9. Quality gate before any screen is shown to the owner
 
