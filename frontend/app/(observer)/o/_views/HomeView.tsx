@@ -1,4 +1,5 @@
 "use client";
+import { BackgroundArt } from "../../../../ui/BackgroundArt/BackgroundArt";
 
 /* O-04 Home */
 
@@ -98,7 +99,6 @@ export function HomeView(props: HomeViewProps) {
               <Button variant="secondary" disabled={offline} onClick={props.onSendNow} data-testid="o04-send-now">
                 {t("o04.sendNow")}
               </Button>
-              {offline ? <span className={styles.meta}>{t("ui.offline")}</span> : null}
             </div>
           }
           data-testid="o04-unsent"
@@ -132,6 +132,7 @@ export function HomeView(props: HomeViewProps) {
       banner={hasBanner ? banners : undefined}
       data-testid="o04"
     >
+      {rows.length === 0 ? <BackgroundArt clear="none" /> : null}
       <h1 className="eg-sr-only">{t("o04.title")}</h1>
       <div className={styles.home}>
         <div className={styles.stack}>
@@ -188,6 +189,11 @@ export function HomeView(props: HomeViewProps) {
               {t("o04.myReportsCount", { count: 0 })}
             </p>
           )}
+          {rows.length === 0 ? (
+            <p className={styles.purpose} data-testid="o04-purpose">
+              {t("o04.purpose")}
+            </p>
+          ) : null}
         </section>
       </div>
 

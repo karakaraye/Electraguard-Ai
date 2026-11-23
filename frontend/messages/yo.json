@@ -251,7 +251,8 @@
       "triesLeft": "{count, plural, one {Ìgbìyànjú # ló kù kí o tó dúró díẹ̀.} other {Ìgbìyànjú # ló kù kí o tó dúró díẹ̀.}}",
       "revoked": "Kóòdù yìí kò ṣiṣẹ́ mọ́. Béèrè tuntun lọ́wọ́ olùṣètò rẹ.",
       "forgot": "O gbàgbé PIN rẹ? Olùṣètò rẹ lè fún ọ ní kóòdù tuntun.",
-      "lockedAdmin": "A ti tì kóòdù yìí torí ìgbìyànjú tó pọ̀ jù. Bẹ olùṣètò rẹ kí ó tún PIN rẹ ṣe."
+      "lockedAdmin": "A ti tì kóòdù yìí torí ìgbìyànjú tó pọ̀ jù. Bẹ olùṣètò rẹ kí ó tún PIN rẹ ṣe.",
+      "lockedUntil": "Ìgbìyànjú ti pọ̀ jù. O lè tún gbìyànjú ní {time}."
     },
     "setPin": {
       "title": "Yan PIN tìrẹ",
@@ -309,7 +310,8 @@
     "sendWaiting": "Fi kóòdù mi ránṣẹ́",
     "deleteWaiting": "Pa wọ́n rẹ́",
     "needsAttention": "{count, plural, one {Ìròyìn # nílò àfiyèsí rẹ kí ó tó lè lọ.} other {Ìròyìn # nílò àfiyèsí rẹ kí ó tó lè lọ.}}",
-    "fix": "Tún un ṣe"
+    "fix": "Tún un ṣe",
+    "purpose": "Ròyìn ohun tí o rí ní ibùdó ìdìbò rẹ. Gbogbo ìròyìn ń ràn wá lọ́wọ́ láti kọ́ Nàìjíríà tó dára jù."
   },
   "incident": {
     "draftKept": "A ti fi ìròyìn rẹ pamọ́ sórí fóònù yìí.",
@@ -379,7 +381,9 @@
     "error": "Yan ibùdó ìdìbò kan, tàbí yan wọ́ọ̀dù kan kí o sì tẹ \"Mi ò mọ ibùdó ìdìbò náà\".",
     "noGps": "A kì í lo ibi tí fóònù rẹ wà láé.",
     "searchNeedsState": "Kọ́kọ́ yan ìpínlẹ̀ rẹ nísàlẹ̀. Lẹ́yìn náà o lè wá àwọn ibùdó ìdìbò rẹ̀.",
-    "listDownloadingNoPercent": "À ń gba àkójọ àwọn ibùdó ìdìbò sílẹ̀"
+    "listDownloadingNoPercent": "À ń gba àkójọ àwọn ibùdó ìdìbò sílẹ̀",
+    "listMissingKept": "A ti pa ohun tí o kọ mọ́. Padà wá nígbà tí o bá ní nẹ́tíwọ̀ọ̀kì.",
+    "unknownUnitNeedsList": "O lè lò ó lẹ́yìn tí àkójọ náà bá ti gbà sílẹ̀."
   },
   "o08": {
     "title": "Ìgbà wo ló ṣẹlẹ̀?",
@@ -473,7 +477,10 @@
     "intakePaused": "Àjọ rẹ ti dá gbígba ìròyìn tuntun dúró. A ti fi ìròyìn rẹ pamọ́ sórí fóònù yìí. Yóò lọ nígbà tí wọ́n bá tún bẹ̀rẹ̀.",
     "notConfirmed": "A ti fi ìròyìn rẹ ránṣẹ́, ṣùgbọ́n a kò tíì gbọ́ èsì. À ń ṣàyẹ̀wò. A kò ní fi ránṣẹ́ lẹ́ẹ̀mejì.",
     "withdrawn": "A ti fà ìròyìn yìí sẹ́yìn, nítorí náà kò sí ìjẹ́rìísí. Kò sí ohun míì tó máa ṣẹlẹ̀ sí i.",
-    "needsAttention": "A kò tíì lè gba ìròyìn yìí. Tún àwọn apá tí a fi àmì sí nísàlẹ̀ ṣe, kí o sì tún fi ránṣẹ́."
+    "needsAttention": "A kò tíì lè gba ìròyìn yìí. Tún àwọn apá tí a fi àmì sí nísàlẹ̀ ṣe, kí o sì tún fi ránṣẹ́.",
+    "savedTitle": "A ti fi pamọ́ sórí fóònù yìí",
+    "checkingTitle": "À ń ṣàyẹ̀wò ìròyìn rẹ",
+    "summaryTitle": "Ìròyìn rẹ"
   },
   "o12": {
     "title": "A ti gba ìròyìn náà",
@@ -505,6 +512,9 @@
     "home": "Padà sí Ilé",
     "citizen": {
       "keep": "Kọ kóòdù yìí sílẹ̀ tàbí fi àwòrán náà pamọ́. O nílò rẹ̀ láti ṣàyẹ̀wò ìròyìn rẹ."
+    },
+    "pending": {
+      "noCode": "Kò tíì sí kóòdù ìjẹ́rìísí. Wàá rí i nígbà tí a bá gba ìròyìn náà."
     }
   },
   "o13": {

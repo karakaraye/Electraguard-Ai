@@ -17,6 +17,8 @@ export type UploadItemProps = {
   name: string;
   sizeBytes: number;
   state: UploadState;
+  /** Why it failed, in the current language. Shown inside this row. */
+  reason?: string;
   /** Bytes confirmed by the server / total, 0 to 1. Only for "uploading". */
   progress?: number;
   /** Estimated seconds to send on the current network. */
@@ -46,6 +48,7 @@ export function UploadItem({
   name,
   sizeBytes,
   state,
+  reason,
   progress = 0,
   estimateSeconds,
   onRetry,
@@ -93,6 +96,11 @@ export function UploadItem({
           <StatusShape tone={stateTone[state]} />
           <span className="eg-tnum">{statusText}</span>
         </p>
+        {reason && state !== "saved" ? (
+          <p className={styles.reason} data-testid={`${testId}-reason`}>
+            {reason}
+          </p>
+        ) : null}
         {state === "uploading" ? (
           <div
             className={styles.track}

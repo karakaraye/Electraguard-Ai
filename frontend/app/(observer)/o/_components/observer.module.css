@@ -591,6 +591,9 @@
 }
 
 .block dt {
+  grid-column: 1;
+  grid-row: 1;
+  align-self: center;
   color: var(--ink-2);
   font: var(--t-label);
   font-size: 0.9375rem;
@@ -598,7 +601,8 @@
 }
 
 .block dd {
-  grid-column: 1;
+  grid-column: 1 / -1;
+  grid-row: 2;
   margin: 0;
   font: var(--t-base);
   overflow-wrap: anywhere;
@@ -608,11 +612,13 @@
   color: var(--danger);
 }
 
+/* "Change" sits on the label line so the value can use the full width; its 48 px target reaches into the block padding. */
 .block dd.change {
   grid-column: 2;
-  grid-row: 1 / span 2;
-  align-self: start;
-  margin-top: calc(var(--s-3) * -1);
+  grid-row: 1;
+  align-self: center;
+  justify-self: end;
+  margin-block: calc((var(--target-min) - 1.25rem) / -2);
 }
 
 @media (min-width: 720px) {
@@ -667,6 +673,11 @@
 
 /* ---------- Receipt (O-12) ---------- */
 
+.receipt {
+  display: grid;
+  gap: var(--s-5);
+}
+
 @media (min-width: 720px) {
   .receipt {
     display: grid;
@@ -679,4 +690,22 @@
 .receiptSide {
   display: grid;
   gap: var(--s-4);
+}
+
+/* ---------- Report not received yet (O-12 from Home) ---------- */
+
+.noCode {
+  margin: 0;
+  padding: var(--s-3) var(--s-4);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: var(--paper-2);
+}
+
+/* Home empty state: the purpose line sits apart from the list status, quiet and readable. */
+.purpose {
+  margin: var(--s-6) 0 0;
+  max-width: 30ch;
+  color: var(--ink-2);
+  font: var(--t-base);
 }

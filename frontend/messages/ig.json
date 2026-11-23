@@ -251,7 +251,8 @@
       "triesLeft": "{count, plural, one {Ohere # fọdụrụ tupu i chere obere oge.} other {Ohere # fọdụrụ tupu i chere obere oge.}}",
       "revoked": "Koodu a anaghị arụ ọrụ ọzọ. Rịọ onye nhazi gị ka o nye gị nke ọhụrụ.",
       "forgot": "I chefuru PIN gị? Onye nhazi gị nwere ike inye gị koodu ọhụrụ.",
-      "lockedAdmin": "E mechiri koodu a n'ihi na i nwara ọtụtụ ugboro. Rịọ onye nhazi gị ka o setịgharịa PIN gị."
+      "lockedAdmin": "E mechiri koodu a n'ihi na i nwara ọtụtụ ugboro. Rịọ onye nhazi gị ka o setịgharịa PIN gị.",
+      "lockedUntil": "Ị nwaala ọtụtụ ugboro. Ị nwere ike ịnwaghachi n'elekere {time}."
     },
     "setPin": {
       "title": "Họrọ PIN nke gị",
@@ -309,7 +310,8 @@
     "sendWaiting": "Ziga ya jiri koodu m",
     "deleteWaiting": "Hichapụ ha",
     "needsAttention": "{count, plural, one {Akụkọ # chọrọ nlebara anya gị tupu e zigaa ya.} other {Akụkọ # chọrọ nlebara anya gị tupu e zigaa ya.}}",
-    "fix": "Mezie ya"
+    "fix": "Mezie ya",
+    "purpose": "Kọọ ihe ị hụrụ n'ebe ntuli aka gị. Akụkọ ọ bụla na-enyere aka iwulite Naịjirịa ka mma."
   },
   "incident": {
     "draftKept": "Echekwara akụkọ gị na ekwentị a.",
@@ -379,7 +381,9 @@
     "error": "Họrọ ebe ntuli aka, ma ọ bụ họrọ wọọdụ wee pịa \"Amaghị m ebe ntuli aka ahụ\".",
     "noGps": "Anyị anaghị eji ozi ebe ekwentị gị nọ.",
     "searchNeedsState": "Buru ụzọ họrọ steeti gị n'okpuru. Mgbe ahụ ị nwere ike ịchọ ebe ntuli aka ya.",
-    "listDownloadingNoPercent": "A na-ebudata ndepụta ebe ntuli aka"
+    "listDownloadingNoPercent": "A na-ebudata ndepụta ebe ntuli aka",
+    "listMissingKept": "Echekwara ihe i dere. Laghachi mgbe i nwere netwọk.",
+    "unknownUnitNeedsList": "Ọ ga-adị mgbe ndepụta ahụ budatara."
   },
   "o08": {
     "title": "Olee mgbe o mere?",
@@ -473,7 +477,10 @@
     "intakePaused": "Otu gị akwụsịla nnata akụkọ ọhụrụ. Echekwara akụkọ gị na ekwentị a. Ọ ga-aga mgbe ha malitere ọzọ.",
     "notConfirmed": "Anyị zipụrụ akụkọ gị, mana anyị anụbeghị azịza. Anyị na-elele. A gaghị eziga ya ugboro abụọ.",
     "withdrawn": "E wepụla akụkọ a, ya mere enweghị nnata. Ọ dịghị ihe ọzọ ga-eme ya.",
-    "needsAttention": "Anyị enweghị ike ịnabata akụkọ a ugbu a. Mezie akụkụ ndị e depụtara n'okpuru, ziga ya ọzọ."
+    "needsAttention": "Anyị enweghị ike ịnabata akụkọ a ugbu a. Mezie akụkụ ndị e depụtara n'okpuru, ziga ya ọzọ.",
+    "savedTitle": "Echekwara ya na ekwentị a",
+    "checkingTitle": "Anyị na-elele akụkọ gị",
+    "summaryTitle": "Akụkọ gị"
   },
   "o12": {
     "title": "Anatala akụkọ",
@@ -505,6 +512,9 @@
     "home": "Laghachi na Mbido",
     "citizen": {
       "keep": "Dee koodu a ma ọ bụ chekwaa foto ahụ. Ị chọrọ ya iji lelee akụkọ gị."
+    },
+    "pending": {
+      "noCode": "Enwebeghị koodu nnata. I ga-enweta ya mgbe anatara akụkọ ahụ."
     }
   },
   "o13": {

@@ -291,10 +291,7 @@ export function WhereView({ picker, summary, error, useToday, onContinue, ...she
           {t("o07.useToday", { unit: useToday.label })}
         </Button>
       ) : null}
-      <PollingUnitPicker {...picker} error={error ? t("o07.error") : undefined} />
-      <p className={styles.strong} aria-live="polite" data-testid="o07-summary">
-        {summary ? t("o07.selected", { place: summary }) : ""}
-      </p>
+      <PollingUnitPicker {...picker} error={error ? t("o07.error") : undefined} selected={summary ? t("o07.selected", { place: summary }) : ""} />
       <p className={styles.note}>
         <PlaceIcon />
         <span>{t("o07.noGps")}</span>
@@ -670,6 +667,13 @@ export function CheckView({
   const long = description.split("\n").length > 6 || description.length > 360;
   const busy = status === "sending" || status === "notConfirmed";
   const finished = status === "savedOffline" || status === "intakePaused" || status === "server" || status === "withdrawn";
+  /* The outcome comes first: the title says what happened to the report, the card follows, the summary is secondary. */
+  const outcome =
+    status === "savedOffline" || status === "intakePaused" || status === "server"
+      ? "saved"
+      : status === "notConfirmed"
+        ? "checking"
+        : null;
 
   const block = (id: CheckBlock, label: string, value: ReactNode) => (
     <div className={styles.block} data-invalid={errors[id] ? "" : undefined} data-wide={id === "describe" || undefined} data-testid={`o11-${id}`}>
@@ -683,7 +687,7 @@ export function CheckView({
           </p>
         ) : null}
       </dd>
-      {!busy && !finished ? (
+      {!busy && !finished && !outcome ? (
         <dd className={styles.change}>
           <Button variant="quiet" onClick={() => onEdit(id)} aria-label={`${t("common.edit")}: ${label}`} data-testid={`o11-edit-${id}`}>
             {t("common.edit")}
@@ -704,10 +708,19 @@ export function CheckView({
     withdrawn: { tone: "wait", text: t("o11.withdrawn") },
   };
   const line = status && status !== "sending" ? statusLine[status] : null;
+  const statusArea = (
+    <div aria-live="polite" data-testid="o11-status">
+      {line ? (
+        <Banner tone={line.tone} title={line.text} data-testid={`o11-status-${status}`}>
+          {line.badge ? <StatusBadge status={line.badge} /> : null}
+        </Banner>
+      ) : null}
+    </div>
+  );
 
   return (
     <StepShell
-      step={7}
+      step={outcome ? 0 : 7}
       testId="o11"
       {...shell}
       actions={
@@ -729,9 +742,19 @@ export function CheckView({
         )
       }
     >
-      <h1 className={styles.title}>{t("o11.title")}</h1>
-      <p className={styles.lead}>{t("o11.hint")}</p>
-      <dl className={styles.summary}>
+      {outcome ? (
+        <>
+          <h1 className={styles.title}>{t(outcome === "saved" ? "o11.savedTitle" : "o11.checkingTitle")}</h1>
+          {statusArea}
+          <h2 className={styles.sectionTitle}>{t("o11.summaryTitle")}</h2>
+        </>
+      ) : (
+        <>
+          <h1 className={styles.title}>{t("o11.title")}</h1>
+          <p className={styles.lead}>{t("o11.hint")}</p>
+        </>
+      )}
+      <dl className={styles.summary} data-secondary={outcome ? "" : undefined}>
         {block(
           "what",
           t("o11.what"),
@@ -818,13 +841,7 @@ export function CheckView({
           ),
         )}
       </dl>
-      <div aria-live="polite" data-testid="o11-status">
-        {line ? (
-          <Banner tone={line.tone} title={line.text} data-testid={`o11-status-${status}`}>
-            {line.badge ? <StatusBadge status={line.badge} /> : null}
-          </Banner>
-        ) : null}
-      </div>
+      {outcome ? null : statusArea}
     </StepShell>
   );
 }

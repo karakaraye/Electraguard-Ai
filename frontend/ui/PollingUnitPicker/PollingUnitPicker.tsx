@@ -42,6 +42,8 @@ export type PollingUnitPickerProps = {
   onChange: (next: PlaceChange) => void;
   onRetry: () => void;
   error?: string;
+  /** "Selected: …" confirmation, shown directly under the search field. */
+  selected?: string;
   "data-testid"?: string;
 };
 
@@ -77,6 +79,7 @@ export function PollingUnitPicker({
   onChange,
   onRetry,
   error,
+  selected,
   "data-testid": testId = "polling-unit-picker",
 }: PollingUnitPickerProps) {
   const t = useT();
@@ -113,6 +116,63 @@ export function PollingUnitPicker({
   }
 
   const searchDisabled = unitOptions.length === 0;
+  /* The list is not on the phone: nothing can be searched or drilled, so say that first and hide what cannot work. */
+  const listMissing = (Boolean(value.state_code) && (status.kind === "missing" || status.kind === "error")) || !states;
+
+  const missingCard = listMissing ? (
+    <Banner
+      tone={status.kind === "error" ? "danger" : "wait"}
+      title={t("o07.listMissing")}
+      action={
+        <Button variant="secondary" icon={<RetryIcon />} onClick={onRetry} data-testid={`${testId}-retry`}>
+          {t("ui.retry")}
+        </Button>
+      }
+      data-testid={`${testId}-missing`}
+    >
+      {status.kind === "error" ? t("common.error.server") : null}
+      <span className={styles.missingNote}>{t("o07.listMissingKept")}</span>
+    </Banner>
+  ) : null;
+
+  const unknownRow = (
+    <label className={styles.unknown} data-checked={value.unknown_unit || undefined}>
+      <input
+        type="checkbox"
+        className={styles.checkbox}
+        checked={value.unknown_unit}
+        disabled={!ward}
+        onChange={(event) => emit({ ...value, unknown_unit: event.target.checked, polling_unit_code: null })}
+        data-testid={`${testId}-unknown`}
+      />
+      <span className={styles.unknownText}>
+        <span className={styles.unknownLabel}>{t("o07.unknownUnit")}</span>
+        <span className={styles.unknownNote}>{t(listMissing ? "o07.unknownUnitNeedsList" : "o07.unknownUnitNote")}</span>
+      </span>
+    </label>
+  );
+
+  if (listMissing) {
+    return (
+      <div className={styles.picker} data-testid={testId}>
+        {missingCard}
+        {states ? (
+          <Select
+            label={t("o07.state")}
+            placeholder={t("o07.choose")}
+            options={states.map((item) => ({ value: item.state_code, label: item.name }))}
+            value={value.state_code ?? ""}
+            onChange={(event) =>
+              emit({ state_code: event.target.value || null, lga_code: null, ward_code: null, polling_unit_code: null, unknown_unit: false })
+            }
+            data-testid={`${testId}-state`}
+          />
+        ) : null}
+        {error ? <p className={styles.missingError} role="alert">{error}</p> : null}
+        {unknownRow}
+      </div>
+    );
+  }
 
   return (
     <div className={styles.picker} data-testid={testId}>
@@ -140,6 +200,9 @@ export function PollingUnitPicker({
         }}
         data-testid={`${testId}-search`}
       />
+      <p className={styles.selected} aria-live="polite" data-testid="o07-summary">
+        {selected ?? ""}
+      </p>
 
       <p className={styles.divider}>
         <span>{t("o07.orChoose")}</span>
@@ -186,39 +249,12 @@ export function PollingUnitPicker({
         />
       </div>
 
-      <label className={styles.unknown} data-checked={value.unknown_unit || undefined}>
-        <input
-          type="checkbox"
-          className={styles.checkbox}
-          checked={value.unknown_unit}
-          disabled={!ward}
-          onChange={(event) => emit({ ...value, unknown_unit: event.target.checked, polling_unit_code: null })}
-          data-testid={`${testId}-unknown`}
-        />
-        <span className={styles.unknownText}>
-          <span className={styles.unknownLabel}>{t("o07.unknownUnit")}</span>
-          <span className={styles.unknownNote}>{t("o07.unknownUnitNote")}</span>
-        </span>
-      </label>
+      {unknownRow}
 
       {value.state_code && status.kind === "downloading" ? (
         <p className={styles.status} role="status" data-testid={`${testId}-downloading`}>
           {status.percent === null ? t("o07.listDownloadingNoPercent") : t("o07.listDownloading", { percent: status.percent })}
         </p>
-      ) : null}
-      {(value.state_code && (status.kind === "missing" || status.kind === "error")) || !states ? (
-        <Banner
-          tone={status.kind === "error" ? "danger" : "wait"}
-          title={t("o07.listMissing")}
-          action={
-            <Button variant="secondary" icon={<RetryIcon />} onClick={onRetry} data-testid={`${testId}-retry`}>
-              {t("ui.retry")}
-            </Button>
-          }
-          data-testid={`${testId}-missing`}
-        >
-          {status.kind === "error" ? t("common.error.server") : null}
-        </Banner>
       ) : null}
     </div>
   );

@@ -1,0 +1,121 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 480" fill="none" stroke="#000" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+<g transform="translate(0 450)">
+<!-- ground -->
+<path d="M0 0H1600"/>
+
+<!-- school block with louvred windows -->
+<g>
+<path d="M44 -186 250 -232 456 -186"/>
+<path d="M60 -190V0M440 -190V0M60 -190H440"/>
+<path d="M60 -44H440" stroke-width="2"/>
+<path d="M232 0V-112H272V0M252 -112V0" stroke-width="2.5"/>
+<path d="M88 -150h58v62h-58zM164 -150h44v62h-44zM296 -150h44v62h-44zM358 -150h58v62h-58z" stroke-width="2.5"/>
+<path d="M88 -138h58M88 -126h58M88 -114h58M88 -102h58M164 -138h44M164 -126h44M164 -114h44M164 -102h44M296 -138h44M296 -126h44M296 -114h44M296 -102h44M358 -138h58M358 -126h58M358 -114h58M358 -102h58" stroke-width="1.5"/>
+</g>
+
+<!-- neem tree beside the school -->
+<g>
+<path d="M30 0C34 -50 28 -96 34 -140M33 -96C20 -110 12 -124 10 -140M34 -120C46 -132 56 -142 60 -158"/>
+<path d="M-6 -150C-24 -160 -18 -196 6 -196C4 -222 40 -232 52 -212C70 -228 102 -206 88 -184C108 -172 96 -144 74 -148C66 -132 40 -134 34 -146C22 -132 -2 -136 -6 -150Z" stroke-width="2.5"/>
+</g>
+
+<!-- canopy polling point -->
+<g>
+<path d="M470 -246 586 -296 702 -246"/>
+<path d="M528 -271 586 -258 644 -271" stroke-width="1.5"/>
+<path d="M470 -246q11.6 14 23.2 0t23.2 0 23.2 0 23.2 0 23.2 0 23.2 0 23.2 0 23.2 0 23.2 0 23.2 0"/>
+<path d="M480 -240V0M692 -240V0"/>
+<path d="M498 -248 494 -40M674 -248 678 -40" stroke-width="1.5"/>
+<!-- table -->
+<path d="M506 -88H668M516 -88V0M658 -88V0M506 -82H668" stroke-width="2.5"/>
+<!-- seated poll official -->
+<circle cx="530" cy="-148" r="14"/>
+<path d="M516 -128C506 -116 506 -100 510 -88M544 -128C552 -114 554 -100 552 -88M552 -112 584 -96"/>
+<!-- privacy screen with a voter behind it, only the head showing -->
+<circle cx="628" cy="-168" r="14"/>
+<path d="M600 -88 606 -150 650 -154 656 -88M606 -150 628 -140 650 -154" stroke-width="2.5"/>
+</g>
+
+<!-- observer recording what they see -->
+<g transform="translate(792 0)">
+<circle cx="0" cy="-206" r="17"/>
+<path d="M-24 -176C-12 -184 12 -184 24 -176C28 -150 28 -122 22 -98H-22C-28 -122 -28 -150 -24 -176Z"/>
+<path d="M-14 -176V-108H14V-176" stroke-width="2"/>
+<path d="M-12 -98-20 0M10 -98 16 0M-28 0h10M14 0h10"/>
+<path d="M24 -170C34 -146 36 -122 30 -104"/>
+<path d="M-22 -172C-38 -158 -48 -142 -46 -128C-46 -150 -48 -178 -52 -200"/>
+<rect x="-66" y="-232" width="20" height="34" rx="4" transform="rotate(-8 -56 -215)"/>
+<path d="M-82 -222C-140 -230 -190 -220 -230 -200" stroke-width="1.5" stroke-dasharray="2 9"/>
+</g>
+
+<!-- elderly man with a walking stick and cap -->
+<g transform="translate(904 0) rotate(-4 0 0)">
+<circle cx="-8" cy="-196" r="16"/>
+<path d="M-24 -202C-24 -222 6 -226 9 -204Z" stroke-width="2.5"/>
+<path d="M-18 -178C-6 -186 8 -184 18 -176C24 -130 26 -70 22 -26H-28C-32 -70 -32 -130 -18 -178Z"/>
+<path d="M-16 -26-18 0M12 -26 14 0M-28 0h10M14 0h10"/>
+<path d="M-16 -168C-30 -146 -38 -124 -44 -110"/>
+<path d="M-44 -110-50 0M-44 -110C-44 -122 -32 -124 -32 -114"/>
+<path d="M18 -168C24 -140 22 -118 16 -100" stroke-width="2.5"/>
+</g>
+
+<!-- woman in a head tie and wrapper -->
+<g transform="translate(1010 0)">
+<circle cx="0" cy="-196" r="16"/>
+<path d="M-18 -200C-26 -224 -10 -244 10 -236C24 -248 40 -230 26 -214C20 -206 12 -214 2 -216C-6 -214 -14 -208 -18 -200Z" stroke-width="2.5"/>
+<path d="M-18 -176C-6 -184 6 -184 18 -176C24 -152 24 -128 20 -112H-20C-24 -128 -24 -152 -18 -176Z"/>
+<path d="M-22 -112-26 -4H24L20 -112M-4 -110 0 -4" stroke-width="2.5"/>
+<path d="M-18 -168C-28 -146 -30 -124 -26 -106"/>
+<path d="M-26 -4h12M10 -4h12" stroke-width="2.5"/>
+</g>
+
+<!-- wheelchair user -->
+<g transform="translate(1116 0)">
+<circle cx="8" cy="-40" r="40"/>
+<circle cx="8" cy="-40" r="4" stroke-width="2"/>
+<circle cx="-36" cy="-9" r="9"/>
+<path d="M-30 -74H26L32 -140H46M-30 -74-36 -32H-52M-36 -32-36 -18" stroke-width="2.5"/>
+<circle cx="2" cy="-188" r="16"/>
+<path d="M-12 -166C-2 -172 12 -172 20 -166C26 -136 28 -106 24 -78M-12 -166C-16 -136 -14 -104 -8 -82"/>
+<path d="M-8 -82H-42L-44 -40H-56"/>
+<path d="M-10 -158C-20 -132 -18 -104 -26 -88"/>
+</g>
+
+<!-- mother holding her child's hand -->
+<g transform="translate(1226 0)">
+<circle cx="0" cy="-200" r="16"/>
+<path d="M-16 -208C-14 -224 14 -226 18 -206C22 -198 18 -188 14 -184" stroke-width="2.5"/>
+<path d="M-18 -178C-6 -186 6 -186 18 -178C26 -120 28 -60 26 -6H-24C-28 -60 -26 -120 -18 -178Z"/>
+<path d="M-24 -6h14M12 -6h14" stroke-width="2.5"/>
+<path d="M-18 -170C-28 -148 -30 -126 -26 -108"/>
+<path d="M18 -170C30 -150 36 -128 40 -108"/>
+<circle cx="56" cy="-130" r="12"/>
+<path d="M44 -116C40 -98 40 -80 42 -64H66C68 -80 68 -98 62 -116C56 -120 50 -120 44 -116Z"/>
+<path d="M48 -64 46 0M60 -64 62 0M40 0h8M58 0h8" stroke-width="2.5"/>
+<path d="M46 -108 40 -108"/>
+</g>
+
+<!-- woman in a hijab -->
+<g transform="translate(1336 0)">
+<circle cx="0" cy="-198" r="15"/>
+<path d="M-20 -196C-22 -224 22 -224 20 -196C24 -184 26 -176 30 -168C8 -158 -14 -160 -28 -168C-24 -176 -22 -186 -20 -196Z" stroke-width="2.5"/>
+<path d="M-26 -166C-28 -110 -28 -56 -26 -4H26C28 -56 28 -110 26 -166"/>
+<path d="M-24 -150C-30 -128 -30 -112 -24 -96" stroke-width="2.5"/>
+<path d="M-26 -4h14M12 -4h14" stroke-width="2.5"/>
+</g>
+
+<!-- young man with hands at his sides -->
+<g transform="translate(1440 0)">
+<circle cx="0" cy="-206" r="17"/>
+<path d="M-22 -180C-10 -188 10 -188 22 -180C26 -150 26 -124 22 -100H-22C-26 -124 -26 -150 -22 -180Z"/>
+<path d="M-12 -100-14 0M12 -100 14 0M-24 0h10M14 0h10"/>
+<path d="M-22 -174C-30 -150 -32 -126 -28 -106M22 -174C30 -150 32 -126 28 -106"/>
+</g>
+
+<!-- tree at the end of the queue -->
+<g>
+<path d="M1548 0C1544 -60 1552 -110 1546 -158M1547 -110C1534 -124 1526 -136 1522 -152M1548 -132C1562 -144 1570 -156 1572 -172"/>
+<path d="M1508 -164C1490 -176 1498 -208 1520 -206C1520 -234 1556 -244 1568 -222C1588 -236 1616 -214 1602 -192C1620 -178 1606 -152 1586 -158C1576 -142 1550 -146 1546 -158C1534 -146 1510 -150 1508 -164Z" stroke-width="2.5"/>
+</g>
+</g>
+</svg>

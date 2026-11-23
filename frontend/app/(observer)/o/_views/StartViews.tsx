@@ -1,12 +1,14 @@
 "use client";
+import { BackgroundArt } from "../../../../ui/BackgroundArt/BackgroundArt";
 
 /* O-01 Language · O-02 What this app keeps · O-03 Who are you / Sign in / Choose your PIN / Code revoked */
 
 import { useRef, useState, type ReactNode } from "react";
 import { localeNames, locales, localeTags, type Locale } from "../../../../lib/i18n/config";
-import { useT } from "../../../../lib/i18n/client";
+import { useLocale, useT } from "../../../../lib/i18n/client";
 import { AppShell, Banner, Button, Field, Sheet } from "../../../../ui";
 import { BrandMark } from "../../../../ui/BrandMark/BrandMark";
+import { formatWatTime } from "../../../../ui/format";
 import {
   AlertIcon,
   ArrowLeftIcon,
@@ -37,6 +39,7 @@ export function LanguageView({ selected, onChoose, offline, banner }: LanguageVi
   const t = useT();
   return (
     <AppShell title={<AppBarTitle />} hideBack offline={offline} banner={banner} data-testid="o01">
+      <BackgroundArt clear="none" />
       <div className={styles.screen}>
         <h1 className={styles.title} id="o01-title" lang="en">
           {t("o01.title")}
@@ -106,6 +109,7 @@ export function NoticeView({ onBack, onContinue, readOnly, offline, banner }: No
       }
       data-testid="o02"
     >
+      <BackgroundArt />
       <div className={styles.screen}>
         <h1 className={styles.title}>{t("o02.title")}</h1>
         <ul className={styles.lines}>
@@ -137,6 +141,7 @@ export function ChooseView({ onBack, onObserver, onCitizen, onCheckStatus, offli
   const t = useT();
   return (
     <AppShell title={<AppBarTitle />} onBack={onBack} offline={offline} banner={banner} data-testid="o03-choose">
+      <BackgroundArt clear="none" />
       <div className={`${styles.screen} ${styles.wide}`}>
         <h1 className={styles.title}>{t("o03.title")}</h1>
         <div className={styles.choices}>
@@ -171,7 +176,7 @@ export type SignInError =
   | { field: "code"; key: "o03.signIn.codeEmpty" | "o03.signIn.codeFormat" | "o03.signIn.revoked" }
   | { field: "pin"; key: "o03.signIn.pinFormat" | "o03.signIn.wrong" }
   | { field: "form"; key: "o03.signIn.offline" | "common.error.server" | "common.error.sessionExpired" | "o03.signIn.lockedAdmin" }
-  | { field: "form"; key: "common.error.tooManyTries"; minutes: number };
+  | { field: "form"; key: "common.error.tooManyTries"; minutes: number; /** When the lock ends (epoch ms, from Retry-After). */ until?: number };
 
 export type SignInViewProps = Shell & {
   code: string;
@@ -189,10 +194,17 @@ export type SignInViewProps = Shell & {
 
 export function SignInView({ code, pin, onCode, onCodeBlur, onPin, onSubmit, onBack, sending, error, locked: lockedProp, offline, banner }: SignInViewProps) {
   const t = useT();
+  const { locale } = useLocale();
   const [show, setShow] = useState(false);
   const locked = Boolean(lockedProp) || error?.key === "o03.signIn.lockedAdmin";
   const formError =
-    error?.field === "form" ? (error.key === "common.error.tooManyTries" ? t(error.key, { minutes: error.minutes }) : t(error.key)) : null;
+    error?.field === "form"
+      ? error.key === "common.error.tooManyTries"
+        ? error.until
+          ? t("o03.signIn.lockedUntil", { time: formatWatTime(error.until, locale) })
+          : t(error.key, { minutes: error.minutes })
+        : t(error.key)
+      : null;
   return (
     <AppShell
       title={<AppBarTitle />}

@@ -1,13 +1,18 @@
 "use client";
+import { BackgroundArt } from "../../../../ui/BackgroundArt/BackgroundArt";
 
 /* O-12 Report received, and the honest state of a report that is still on the phone. */
 
 import type { ReactNode } from "react";
-import { useT } from "../../../../lib/i18n/client";
+import type { Category } from "../../../../lib/api/types";
+import { useLocale, useT } from "../../../../lib/i18n/client";
 import type { ReportViewState } from "../../../../lib/outbox";
 import { AppShell, Banner, Button, ButtonLink, ReceiptCard, StatusBadge, UploadItem, UploadList, type ReportStatus, type UploadState } from "../../../../ui";
+import { formatWatDateTime } from "../../../../ui/format";
+import { categoryPictograms, PlaceIcon, ClockIcon } from "../../../../ui/icons";
 import { AppBarTitle } from "../_components/AppBarTitle";
 import styles from "../_components/observer.module.css";
+import { categoryMeta } from "../_lib/categories";
 
 export type ReceiptItem = {
   id: string;
@@ -42,7 +47,6 @@ export type ReceiptViewProps = {
 export function ReceiptView({ code, receivedAt, justSent, citizen, items, removeBlocked, offline, onRetry, onRemove, onChooseAgain, onView, onAnother, onHome }: ReceiptViewProps) {
   const t = useT();
   const pending = items.some((item) => item.state !== "saved");
-  const reasons = items.filter((item) => item.reasonKey);
   return (
     <AppShell
       title={<AppBarTitle />}
@@ -71,6 +75,7 @@ export function ReceiptView({ code, receivedAt, justSent, citizen, items, remove
       }
       data-testid="o12"
     >
+      <BackgroundArt />
       <div className={`${styles.screen} ${styles.wide}`}>
         <h1 className={styles.title}>{t("o12.title")}</h1>
         <div className={styles.receipt}>
@@ -87,9 +92,6 @@ export function ReceiptView({ code, receivedAt, justSent, citizen, items, remove
               <h2 className={styles.sectionTitle} id="o12-attachments">
                 {t("o12.attachments")}
               </h2>
-              {reasons.map((item) => (
-                <Banner key={item.id} tone="attn" title={`${item.name}: ${t(item.reasonKey!, item.reasonVars)}`} />
-              ))}
               {removeBlocked ? <Banner tone="attn" title={t("o12.upload.cannotRemove")} /> : null}
               <UploadList label={t("o12.attachments")}>
                 {items.map((item) => (
@@ -99,6 +101,7 @@ export function ReceiptView({ code, receivedAt, justSent, citizen, items, remove
                     name={item.name}
                     sizeBytes={item.sizeBytes}
                     state={item.state}
+                    reason={item.reasonKey ? t(item.reasonKey, item.reasonVars) : undefined}
                     progress={item.progress}
                     onRetry={item.state === "failed" && !item.reasonKey ? () => onRetry(item.id) : undefined}
                     onChooseAgain={item.state === "missing" ? () => onChooseAgain(item.id) : undefined}
@@ -141,14 +144,22 @@ const STATE_HINT: Partial<Record<ReportViewState, string>> = {
 
 export type PendingViewProps = {
   state: ReportViewState;
+  /** What the report is about, so the screen says which report this is. */
+  category?: Category | null;
+  place?: string | null;
+  occurredAt?: string | null;
   offline: boolean;
   onHome: () => void;
   action?: ReactNode;
 };
 
-export function PendingView({ state, offline, onHome, action }: PendingViewProps) {
+export function PendingView({ state, category, place, occurredAt, offline, onHome, action }: PendingViewProps) {
   const t = useT();
+  const { locale } = useLocale();
   const badge = STATE_BADGE[state];
+  const statusKey = state === "not_confirmed" ? "notConfirmed" : state === "needs_attention" ? "needsAttention" : state === "waiting_code" ? "waitingCode" : state === "withdrawn" ? "withdrawn" : state === "sending" ? "sending" : "onPhone";
+  const meta = category ? categoryMeta(category) : null;
+  const Pictogram = meta ? categoryPictograms[meta.pictogram] : null;
   return (
     <AppShell
       title={<AppBarTitle />}
@@ -166,9 +177,37 @@ export function PendingView({ state, offline, onHome, action }: PendingViewProps
       <div className={styles.screen}>
         {badge ? (
           <>
-            <h1 className={styles.title}>{t(badge === "on-phone" ? "common.status.onPhone" : `common.status.${state === "not_confirmed" ? "notConfirmed" : state === "needs_attention" ? "needsAttention" : state === "waiting_code" ? "waitingCode" : state === "withdrawn" ? "withdrawn" : "sending"}`)}</h1>
-            <StatusBadge status={badge} size="lg" />
+            {meta && Pictogram ? (
+              <>
+                <h1 className={`${styles.title} ${styles.valueRow}`} data-testid="pending-title">
+                  <Pictogram size={32} aria-hidden="true" />
+                  <span>{t(`o05.tile.${meta.tile}`)}</span>
+                </h1>
+                <p className={styles.meta}>
+                  {place ? (
+                    <span className={styles.valueRow}>
+                      <PlaceIcon size={18} aria-hidden="true" />
+                      {place}
+                    </span>
+                  ) : null}
+                  {occurredAt ? (
+                    <span className={`${styles.valueRow} eg-tnum`}>
+                      <ClockIcon size={18} aria-hidden="true" />
+                      {formatWatDateTime(occurredAt, locale)}
+                    </span>
+                  ) : null}
+                </p>
+                <div>
+                  <StatusBadge status={badge} size="lg" />
+                </div>
+              </>
+            ) : (
+              <>
+                <h1 className={styles.title}>{t(`common.status.${statusKey}`)}</h1>
+              </>
+            )}
             <p className={styles.lead}>{t(STATE_HINT[state] ?? "common.status.onPhoneHint")}</p>
+            {state !== "withdrawn" ? <p className={`${styles.strong} ${styles.noCode}`} data-testid="pending-no-code">{t("o12.pending.noCode")}</p> : null}
           </>
         ) : (
           <>

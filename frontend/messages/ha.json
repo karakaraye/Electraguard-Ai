@@ -251,7 +251,8 @@
       "triesLeft": "{count, plural, one {Saura gwaji # kafin ɗan jira.} other {Saura gwaje-gwaje # kafin ɗan jira.}}",
       "revoked": "Wannan lambar ba ta aiki yanzu. Ka nemi sabuwa daga jagoranka.",
       "forgot": "Ka manta PIN ɗinka? Jagoranka zai iya ba ka sabuwar lamba.",
-      "lockedAdmin": "An kulle wannan lambar saboda an gwada sau da yawa. Ka roƙi jagoranka ya sake saita PIN ɗinka."
+      "lockedAdmin": "An kulle wannan lambar saboda an gwada sau da yawa. Ka roƙi jagoranka ya sake saita PIN ɗinka.",
+      "lockedUntil": "Ka gwada sau da yawa. Za ka iya sake gwadawa da ƙarfe {time}."
     },
     "setPin": {
       "title": "Zaɓi PIN naka",
@@ -309,7 +310,8 @@
     "sendWaiting": "Aika da lambata",
     "deleteWaiting": "Share su",
     "needsAttention": "{count, plural, one {Rahoto # yana buƙatar hankalinka kafin a iya aika shi.} other {Rahotanni # suna buƙatar hankalinka kafin a iya aika su.}}",
-    "fix": "Gyara shi"
+    "fix": "Gyara shi",
+    "purpose": "Ka ba da rahoton abin da ka gani a rumfar zaɓenka. Kowane rahoto yana taimakawa wajen gina Najeriya mafi kyau."
   },
   "incident": {
     "draftKept": "An ajiye rahotonka a kan wannan wayar.",
@@ -379,7 +381,9 @@
     "error": "Zaɓi rumfar zaɓe, ko ka zaɓi mazaɓa sannan ka taɓa \"Ban san rumfar zaɓen ba\".",
     "noGps": "Ba ma amfani da wurin da wayarka take, ko kaɗan.",
     "searchNeedsState": "Da farko ka zaɓi jiharka a ƙasa. Sai ka nemi rumfunan zaɓenta.",
-    "listDownloadingNoPercent": "Ana sauke jerin rumfunan zaɓe"
+    "listDownloadingNoPercent": "Ana sauke jerin rumfunan zaɓe",
+    "listMissingKept": "An ajiye abin da ka rubuta. Ka dawo idan ka samu sabis.",
+    "unknownUnitNeedsList": "Za a iya zaɓa bayan jerin ya sauka."
   },
   "o08": {
     "title": "Yaushe ya faru?",
@@ -473,7 +477,10 @@
     "intakePaused": "Ƙungiyarka ta dakatar da karɓar sababbin rahotanni. An ajiye rahotonka a kan wannan wayar. Za a aika idan sun sake farawa.",
     "notConfirmed": "Mun aika rahotonka, amma ba mu ji amsa ba tukuna. Muna bincikawa. Ba za a aika sau biyu ba.",
     "withdrawn": "An janye wannan rahoto, don haka babu rasiti. Babu abin da zai ƙara faruwa da shi.",
-    "needsAttention": "Ba mu iya karɓar wannan rahoto ba tukuna. Ka gyara sassan da aka yi wa alama a ƙasa, sannan ka sake aikawa."
+    "needsAttention": "Ba mu iya karɓar wannan rahoto ba tukuna. Ka gyara sassan da aka yi wa alama a ƙasa, sannan ka sake aikawa.",
+    "savedTitle": "An ajiye shi a kan wannan wayar",
+    "checkingTitle": "Muna duba rahotonka",
+    "summaryTitle": "Rahotonka"
   },
   "o12": {
     "title": "An karɓi rahoto",
@@ -505,6 +512,9 @@
     "home": "Koma gida",
     "citizen": {
       "keep": "Ka rubuta wannan lambar ko ka ajiye hoton. Za ka buƙace ta don duba rahotonka."
+    },
+    "pending": {
+      "noCode": "Ba ka da lambar rasiti tukuna. Za ka samu ta idan an karɓi rahoton."
     }
   },
   "o13": {
