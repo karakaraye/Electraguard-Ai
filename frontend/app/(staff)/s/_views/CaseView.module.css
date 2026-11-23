@@ -139,6 +139,73 @@
   border-radius: var(--radius);
 }
 
+.redactedMark {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--ink);
+  color: var(--on-ink);
+  padding: 2px 8px;
+  border-radius: var(--radius);
+  font-weight: 600;
+  font-size: 0.8125rem;
+  margin: 0 2px;
+  vertical-align: middle;
+}
+
+.undoRedactionBtn {
+  background: transparent;
+  border: none;
+  color: var(--on-ink);
+  cursor: pointer;
+  padding: 0 4px;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.undoRedactionBtn:hover {
+  opacity: 0.8;
+}
+
+.selectableText {
+  user-select: text;
+  cursor: text;
+  padding: var(--s-3);
+  background: var(--paper-2);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  font: var(--t-body);
+  line-height: 1.6;
+}
+
+.wordChecklist {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+  margin-top: var(--s-2);
+  padding: var(--s-3);
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+}
+
+.wordBtn {
+  padding: 4px 10px;
+  background: var(--paper-2);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  font-size: 0.8125rem;
+  cursor: pointer;
+  color: var(--ink);
+}
+
+.wordBtn[data-active="true"] {
+  background: var(--ink);
+  color: var(--on-ink);
+  border-color: var(--ink);
+}
+
 .actionsGroup {
   display: flex;
   flex-direction: column;

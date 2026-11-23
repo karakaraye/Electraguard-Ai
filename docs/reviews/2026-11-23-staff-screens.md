@@ -72,3 +72,45 @@ As backend endpoints for staff operations are being implemented on parallel deve
 1. **Backend Integration**: Once the backend team's staff branch is merged into staging, connect live sessions with cookie and CSRF handling across staff endpoints.
 2. **Audio/Video Playback**: Media items currently render thumbnails and download links; inline audio/video player widgets can be added as media streaming endpoints finalize.
 3. **Printable Code Cards**: S-09 code card print layout triggers native browser printing (`window.print()`); high-resolution print stylesheets can be further refined per physical card stock requirements.
+
+---
+
+## 6. Fixes (Review Feedback Resolution)
+
+In response to the review in `docs/reviews/2026-11-23-staff-screens-review.md`, the following fixes were implemented:
+
+1. **Light Theme Support**:
+   - Defined explicit light theme custom properties under `[data-theme="light"]` in `frontend/ui/tokens.css` ensuring true light background and dark ink regardless of operating system dark mode settings.
+   - Updated `frontend/app/(dev)/dev/staff/viewer.tsx` to read the `theme` query parameter (`light` | `dark`), set `data-theme` on the root dev wrapper, pass `theme` to `StaffShell`, and wrap the S-01 sign-in view in a themed container.
+   - Re-captured all 24 `*-light.png` and 24 `*-dark.png` screenshots; light and dark screenshots now correctly reflect their respective palettes.
+
+2. **Removal of Internal IDs in Titles**:
+   - Removed internal screen prefixes ("S-01", "S-03", etc.) from user-facing headings and page layouts across all screens and dev viewer headings. Headings now display clean localized titles ("Case review", "Operations room", etc.).
+
+3. **Interactive Text Selection Redaction (S-03)**:
+   - Replaced numerical character offset inputs with interactive mouse and touch selection in `CaseView.tsx`. When a user highlights text, a "Hide this name" prompt creates a redaction span.
+   - Added an accessible word selection toggle sheet for keyboard users.
+   - Redacted spans are rendered as black bars labeled "Hidden" with individual "Undo" (×) buttons prior to saving.
+
+4. **Machine Translation Label**:
+   - Updated translation header text in `CaseView.tsx` and across all five message catalogs (`en.json`, `ha.json`, `ig.json`, `pcm.json`, `yo.json`) to read: "Machine translation. Check the original." No model names appear in user-facing UI.
+
+5. **Distinct Navigation Icons**:
+   - Added hand-drawn SVG line icons (`KeyIcon` and `UsersIcon`) to `frontend/ui/icons/` matching the 24px/1.75px stroke design contract.
+   - Assigned distinct icons across `StaffLayout` and `StaffStateViewer`: Observer Codes (`KeyIcon`), Staff Accounts (`UsersIcon`), and Settings (`SlidersIcon`).
+
+6. **BrandMark Monogram Lockup**:
+   - Integrated `<BrandMark variant="lockup" size="md" />` at the top of the sidebar navigation in `StaffShell.tsx`.
+
+7. **Human-Readable Language Names**:
+   - Added language name mapping in `CaseView.tsx` so language codes display full names ("Hausa", "Yoruba", "Igbo", "Pidgin", "English").
+
+8. **S-05 Empty Cluster Panel Width**:
+   - Added `.emptyFullWidth` container styling in `OpsView.module.css` ensuring empty cluster states span the full width of the panel.
+
+9. **360px Viewport Table Responsiveness**:
+   - Ensured all tables in S-05 (coverage and late materials), S-07 (snapshots and excluded items), S-09 (code batches), and S-10 (staff accounts) have `overflow-x: auto; max-width: 100%; -webkit-overflow-scrolling: touch;` and a safe minimum width to prevent overflow on mobile.
+
+10. **Backend Contract Conformance**:
+    - Verified endpoints for S-01 through S-04 against Kara's slices C5 to C8 (`origin/production-readiness` and `origin/backend/v1-staff-auth`).
+    - Endpoints `/api/v1/auth/staff/sign-in`, `/api/v1/auth/staff/totp`, `/api/v1/review/queue`, `/api/v1/review/cases/<id>`, `/api/v1/review/cases/<id>/actions`, `/api/v1/review/cases/<id>/redaction`, and `/api/v1/assignments` fully conform to typed client schemas with 100% field alignment.

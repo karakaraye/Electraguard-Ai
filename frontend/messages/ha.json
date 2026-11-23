@@ -951,17 +951,21 @@
     },
     "originalText": "[HA draft] Original description",
     "language": "[HA draft] Language: {lang}",
-    "translation": "[HA draft] Machine translation (NLLB-200)",
-    "translationNotice": "[HA draft] Automated translation for review. Check original text if ambiguous.",
+    "translation": "[HA draft] Machine translation. Check the original.",
+    "translationNotice": "[HA draft] Machine translation. Check the original.",
     "redaction": {
       "title": "[HA draft] Redact personal names",
-      "hint": "[HA draft] Specify character offsets to redact personal names before publication or sharing.",
+      "hint": "[HA draft] Select text in the description to hide names before publication or sharing.",
+      "hideSelection": "[HA draft] Hide selection",
+      "hideThisName": "[HA draft] Hide this name",
+      "undo": "[HA draft] Undo",
+      "hidden": "[HA draft] Hidden",
       "start": "[HA draft] Start offset",
       "end": "[HA draft] End offset",
       "addSpan": "[HA draft] Add redaction span",
       "clearSpans": "[HA draft] Clear all redactions",
       "save": "[HA draft] Save redactions",
-      "preview": "[HA draft] Redacted preview: [name removed]"
+      "preview": "[HA draft] Redacted preview:"
     },
     "details": {
       "category": "[HA draft] Category: {category}",

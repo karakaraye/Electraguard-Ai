@@ -951,17 +951,21 @@
     },
     "originalText": "[PCM draft] Original description",
     "language": "[PCM draft] Language: {lang}",
-    "translation": "[PCM draft] Machine translation (NLLB-200)",
-    "translationNotice": "[PCM draft] Automated translation for review. Check original text if ambiguous.",
+    "translation": "[PCM draft] Machine translation. Check the original.",
+    "translationNotice": "[PCM draft] Machine translation. Check the original.",
     "redaction": {
       "title": "[PCM draft] Redact personal names",
-      "hint": "[PCM draft] Specify character offsets to redact personal names before publication or sharing.",
+      "hint": "[PCM draft] Select text in the description to hide names before publication or sharing.",
+      "hideSelection": "[PCM draft] Hide selection",
+      "hideThisName": "[PCM draft] Hide this name",
+      "undo": "[PCM draft] Undo",
+      "hidden": "[PCM draft] Hidden",
       "start": "[PCM draft] Start offset",
       "end": "[PCM draft] End offset",
       "addSpan": "[PCM draft] Add redaction span",
       "clearSpans": "[PCM draft] Clear all redactions",
       "save": "[PCM draft] Save redactions",
-      "preview": "[PCM draft] Redacted preview: [name removed]"
+      "preview": "[PCM draft] Redacted preview:"
     },
     "details": {
       "category": "[PCM draft] Category: {category}",

@@ -9,13 +9,14 @@ import { Button, StaffShell, ThemeSwitcher, type StaffNavItem } from "../../../u
 import {
   DiscussionIcon,
   InboxIcon,
-  LockIcon,
+  KeyIcon,
   SearchIcon,
   ShieldCheckIcon,
   SignalIcon,
   SignOutIcon,
   SlidersIcon,
   UploadIcon,
+  UsersIcon,
 } from "../../../ui/icons";
 
 export default function StaffLayout({ children }: { children: ReactNode }) {
@@ -119,13 +120,13 @@ export default function StaffLayout({ children }: { children: ReactNode }) {
     nav.push({
       href: "/s/admin/codes",
       label: t("staff.nav.codes"),
-      icon: LockIcon,
+      icon: KeyIcon,
       current: pathname === "/s/admin/codes",
     });
     nav.push({
       href: "/s/admin/staff",
       label: t("staff.nav.staff"),
-      icon: SlidersIcon,
+      icon: UsersIcon,
       current: pathname === "/s/admin/staff",
     });
     nav.push({

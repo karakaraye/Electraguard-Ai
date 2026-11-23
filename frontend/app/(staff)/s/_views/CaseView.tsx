@@ -1,11 +1,19 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import type { CaseDetail, Category, Outcome, Urgency } from "../../../../lib/api/types";
 import { useT } from "../../../../lib/i18n/client";
-import { Banner, Button, Field, SuggestionCard, TextArea, Timeline } from "../../../../ui";
+import { Banner, Button, SuggestionCard, TextArea, Timeline } from "../../../../ui";
 import { CheckIcon, InfoIcon, ShieldCheckIcon } from "../../../../ui/icons";
 import styles from "./CaseView.module.css";
+
+const LANGUAGE_NAMES: Record<string, string> = {
+  ha: "Hausa",
+  yo: "Yoruba",
+  ig: "Igbo",
+  pcm: "Pidgin",
+  en: "English",
+};
 
 export interface CaseViewProps {
   caseData: CaseDetail | null;
@@ -46,11 +54,12 @@ export function CaseView({
   const [showCorrectUrgency, setShowCorrectUrgency] = useState(false);
 
   // Redaction state
-  const [redactStart, setRedactStart] = useState<number>(0);
-  const [redactEnd, setRedactEnd] = useState<number>(0);
   const [spans, setSpans] = useState<Array<{ start: number; end: number }>>(
     () => caseData?.original.redactions || []
   );
+  const [selectedText, setSelectedText] = useState("");
+  const [selectionRange, setSelectionRange] = useState<{ start: number; end: number } | null>(null);
+  const [showWordList, setShowWordList] = useState(false);
 
   if (error) {
     return (
@@ -75,19 +84,117 @@ export function CaseView({
   const canAsk = allowed.includes("ask") || caseData.status === "in_review";
   const canClose = allowed.includes("close") || caseData.status === "in_review" || caseData.status === "question";
 
-  // Redaction preview
+  // Redaction helper methods & words
   const originalText = caseData.original?.description || "";
-  let previewRedacted = originalText;
-  if (spans.length > 0 && previewRedacted) {
-    // Sort spans descending by start
-    const sorted = [...spans].sort((a, b) => b.start - a.start);
-    for (const span of sorted) {
-      if (span.start >= 0 && span.end <= previewRedacted.length && span.start < span.end) {
-        previewRedacted =
-          previewRedacted.slice(0, span.start) + "[name removed]" + previewRedacted.slice(span.end);
+  const langName = caseData.language ? (LANGUAGE_NAMES[caseData.language] || caseData.language) : "English";
+
+  const originalWords = Array.from(
+    new Set(
+      originalText
+        .split(/\s+/)
+        .map((w) => w.replace(/^[^\w]+|[^\w]+$/g, ""))
+        .filter((w) => w.length >= 3)
+    )
+  );
+
+  const isWordRedacted = (word: string) => {
+    return spans.some((s) => {
+      const slice = originalText.slice(s.start, s.end).toLowerCase();
+      return slice === word.toLowerCase();
+    });
+  };
+
+  const handleToggleWord = (word: string) => {
+    const regex = new RegExp(`\\b${word}\\b`, "gi");
+    let match;
+    const newSpans = [...spans];
+    let matched = false;
+    while ((match = regex.exec(originalText)) !== null) {
+      matched = true;
+      const start = match.index;
+      const end = start + word.length;
+      const already = spans.some((s) => s.start === start && s.end === end);
+      if (already) {
+        setSpans(spans.filter((s) => !(s.start === start && s.end === end)));
+        return;
+      } else {
+        newSpans.push({ start, end });
       }
     }
-  }
+    if (matched) {
+      setSpans(newSpans);
+    }
+  };
+
+  const handleTextSelection = () => {
+    if (typeof window === "undefined") return;
+    const sel = window.getSelection();
+    if (!sel || sel.isCollapsed) return;
+    const txt = sel.toString().trim();
+    if (!txt || txt.length < 2) return;
+    const idx = originalText.indexOf(txt);
+    if (idx !== -1) {
+      setSelectedText(txt);
+      setSelectionRange({ start: idx, end: idx + txt.length });
+    }
+  };
+
+  const handleAddSelectionSpan = () => {
+    if (selectionRange) {
+      const already = spans.some((s) => s.start === selectionRange.start && s.end === selectionRange.end);
+      if (!already) {
+        setSpans([...spans, selectionRange]);
+      }
+      setSelectedText("");
+      setSelectionRange(null);
+      if (typeof window !== "undefined") {
+        window.getSelection()?.removeAllRanges();
+      }
+    }
+  };
+
+  const renderRedactedDescription = () => {
+    if (!originalText) return null;
+    if (spans.length === 0) return <span>{originalText}</span>;
+
+    const sorted = [...spans].sort((a, b) => a.start - b.start);
+    const segments: ReactNode[] = [];
+    let lastIdx = 0;
+
+    sorted.forEach((span, idx) => {
+      if (span.start > lastIdx) {
+        segments.push(
+          <span key={`text-${lastIdx}`}>{originalText.slice(lastIdx, span.start)}</span>
+        );
+      }
+      segments.push(
+        <mark key={`redact-${idx}`} className={styles.redactedMark}>
+          <span>{t("s03.redaction.hidden")}</span>
+          <button
+            type="button"
+            className={styles.undoRedactionBtn}
+            onClick={(e) => {
+              e.stopPropagation();
+              setSpans(spans.filter((_, i) => i !== idx));
+            }}
+            title={t("s03.redaction.undo")}
+            aria-label={`${t("s03.redaction.undo")} ${originalText.slice(span.start, span.end)}`}
+          >
+            ×
+          </button>
+        </mark>
+      );
+      lastIdx = Math.max(lastIdx, span.end);
+    });
+
+    if (lastIdx < originalText.length) {
+      segments.push(
+        <span key={`text-${lastIdx}`}>{originalText.slice(lastIdx)}</span>
+      );
+    }
+
+    return segments;
+  };
 
   const timelineEvents = (caseData.history?.events || []).map((ev) => ({
     id: ev.id,
@@ -128,7 +235,7 @@ export function CaseView({
         </p>
         <span className={styles.translationLabel}>
           <InfoIcon size={14} />
-          <span>{t("s03.language", { lang: caseData.language })}</span>
+          <span>{t("s03.language", { lang: langName })}</span>
         </span>
 
         {caseData.translation?.text && (
@@ -143,57 +250,66 @@ export function CaseView({
 
       {/* Redaction Tool */}
       <section className={styles.section}>
-        <h3 className={styles.sectionTitle}>{t("s03.redaction.title")}</h3>
-        <p style={{ color: "var(--ink-2)", fontSize: "0.875rem" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "var(--s-2)" }}>
+          <h3 className={styles.sectionTitle}>{t("s03.redaction.title")}</h3>
+          <Button
+            type="button"
+            variant="quiet"
+            onClick={() => setShowWordList(!showWordList)}
+          >
+            {showWordList ? "Hide word list" : "Choose words to hide"}
+          </Button>
+        </div>
+        <p style={{ color: "var(--ink-2)", fontSize: "0.875rem", margin: 0 }}>
           {t("s03.redaction.hint")}
         </p>
 
-        <div className={styles.redactBox}>
-          <div style={{ display: "flex", gap: "var(--s-3)", flexWrap: "wrap" }}>
-            <Field
-              id="redact-start"
-              label={t("s03.redaction.start")}
-              type="number"
-              value={redactStart}
-              onChange={(e) => setRedactStart(parseInt(e.target.value) || 0)}
-            />
-            <Field
-              id="redact-end"
-              label={t("s03.redaction.end")}
-              type="number"
-              value={redactEnd}
-              onChange={(e) => setRedactEnd(parseInt(e.target.value) || 0)}
-            />
-            <div style={{ display: "flex", alignItems: "flex-end", gap: "var(--s-2)" }}>
-              <Button
-                type="button"
-                variant="secondary"
-                onClick={() => {
-                  if (redactEnd > redactStart) {
-                    setSpans([...spans, { start: redactStart, end: redactEnd }]);
-                  }
-                }}
-              >
-                {t("s03.redaction.addSpan")}
-              </Button>
-              {spans.length > 0 && (
-                <Button
+        {showWordList && (
+          <div className={styles.wordChecklist}>
+            {originalWords.map((word) => {
+              const active = isWordRedacted(word);
+              return (
+                <button
+                  key={word}
                   type="button"
-                  variant="quiet"
-                  onClick={() => setSpans([])}
+                  className={styles.wordBtn}
+                  data-active={active}
+                  onClick={() => handleToggleWord(word)}
                 >
-                  {t("s03.redaction.clearSpans")}
-                </Button>
-              )}
+                  {active ? `✓ ${word} (Hidden)` : word}
+                </button>
+              );
+            })}
+          </div>
+        )}
+
+        <div className={styles.redactBox}>
+          <div>
+            <span style={{ fontSize: "0.8125rem", color: "var(--ink-2)", display: "block", marginBottom: "4px" }}>
+              Select text below to redact personal names:
+            </span>
+            <div
+              className={styles.selectableText}
+              onMouseUp={handleTextSelection}
+              onTouchEnd={handleTextSelection}
+            >
+              {renderRedactedDescription()}
             </div>
           </div>
 
-          <div>
-            <strong>Preview:</strong>
-            <p className={styles.textBlock}>{previewRedacted}</p>
-          </div>
+          {selectedText && selectionRange && (
+            <div style={{ display: "flex", alignItems: "center", gap: "var(--s-3)", background: "var(--paper)", padding: "var(--s-3)", borderRadius: "var(--radius)", border: "1px solid var(--rule)" }}>
+              <span>Selection: <strong>&ldquo;{selectedText}&rdquo;</strong></span>
+              <Button type="button" variant="primary" onClick={handleAddSelectionSpan}>
+                {t("s03.redaction.hideThisName")}
+              </Button>
+              <Button type="button" variant="quiet" onClick={() => { setSelectedText(""); setSelectionRange(null); }}>
+                Cancel
+              </Button>
+            </div>
+          )}
 
-          <div>
+          <div style={{ display: "flex", gap: "var(--s-2)", alignItems: "center", flexWrap: "wrap" }}>
             <Button
               type="button"
               variant="primary"
@@ -201,6 +317,15 @@ export function CaseView({
             >
               {t("s03.redaction.save")}
             </Button>
+            {spans.length > 0 && (
+              <Button
+                type="button"
+                variant="quiet"
+                onClick={() => setSpans([])}
+              >
+                {t("s03.redaction.clearSpans")} ({spans.length})
+              </Button>
+            )}
           </div>
         </div>
       </section>

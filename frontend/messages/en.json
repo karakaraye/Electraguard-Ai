@@ -950,17 +950,21 @@
     },
     "originalText": "Original description",
     "language": "Language: {lang}",
-    "translation": "Machine translation (NLLB-200)",
-    "translationNotice": "Automated translation for review. Check original text if ambiguous.",
+    "translation": "Machine translation. Check the original.",
+    "translationNotice": "Machine translation. Check the original.",
     "redaction": {
       "title": "Redact personal names",
-      "hint": "Specify character offsets to redact personal names before publication or sharing.",
+      "hint": "Select text in the description to hide names before publication or sharing.",
+      "hideSelection": "Hide selection",
+      "hideThisName": "Hide this name",
+      "undo": "Undo",
+      "hidden": "Hidden",
       "start": "Start offset",
       "end": "End offset",
       "addSpan": "Add redaction span",
       "clearSpans": "Clear all redactions",
       "save": "Save redactions",
-      "preview": "Redacted preview: [name removed]"
+      "preview": "Redacted preview:"
     },
     "details": {
       "category": "Category: {category}",

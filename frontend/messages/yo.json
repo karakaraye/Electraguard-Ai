@@ -951,17 +951,21 @@
     },
     "originalText": "[YO draft] Original description",
     "language": "[YO draft] Language: {lang}",
-    "translation": "[YO draft] Machine translation (NLLB-200)",
-    "translationNotice": "[YO draft] Automated translation for review. Check original text if ambiguous.",
+    "translation": "[YO draft] Machine translation. Check the original.",
+    "translationNotice": "[YO draft] Machine translation. Check the original.",
     "redaction": {
       "title": "[YO draft] Redact personal names",
-      "hint": "[YO draft] Specify character offsets to redact personal names before publication or sharing.",
+      "hint": "[YO draft] Select text in the description to hide names before publication or sharing.",
+      "hideSelection": "[YO draft] Hide selection",
+      "hideThisName": "[YO draft] Hide this name",
+      "undo": "[YO draft] Undo",
+      "hidden": "[YO draft] Hidden",
       "start": "[YO draft] Start offset",
       "end": "[YO draft] End offset",
       "addSpan": "[YO draft] Add redaction span",
       "clearSpans": "[YO draft] Clear all redactions",
       "save": "[YO draft] Save redactions",
-      "preview": "[YO draft] Redacted preview: [name removed]"
+      "preview": "[YO draft] Redacted preview:"
     },
     "details": {
       "category": "[YO draft] Category: {category}",

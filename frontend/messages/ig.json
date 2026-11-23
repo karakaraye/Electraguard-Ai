@@ -951,17 +951,21 @@
     },
     "originalText": "[IG draft] Original description",
     "language": "[IG draft] Language: {lang}",
-    "translation": "[IG draft] Machine translation (NLLB-200)",
-    "translationNotice": "[IG draft] Automated translation for review. Check original text if ambiguous.",
+    "translation": "[IG draft] Machine translation. Check the original.",
+    "translationNotice": "[IG draft] Machine translation. Check the original.",
     "redaction": {
       "title": "[IG draft] Redact personal names",
-      "hint": "[IG draft] Specify character offsets to redact personal names before publication or sharing.",
+      "hint": "[IG draft] Select text in the description to hide names before publication or sharing.",
+      "hideSelection": "[IG draft] Hide selection",
+      "hideThisName": "[IG draft] Hide this name",
+      "undo": "[IG draft] Undo",
+      "hidden": "[IG draft] Hidden",
       "start": "[IG draft] Start offset",
       "end": "[IG draft] End offset",
       "addSpan": "[IG draft] Add redaction span",
       "clearSpans": "[IG draft] Clear all redactions",
       "save": "[IG draft] Save redactions",
-      "preview": "[IG draft] Redacted preview: [name removed]"
+      "preview": "[IG draft] Redacted preview:"
     },
     "details": {
       "category": "[IG draft] Category: {category}",

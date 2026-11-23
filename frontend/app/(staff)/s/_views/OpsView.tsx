@@ -99,7 +99,9 @@ export function OpsView({
         </div>
 
         {clusters.length === 0 ? (
-          <EmptyState title="No active cluster warnings" />
+          <div className={styles.emptyFullWidth}>
+            <EmptyState title="No active cluster warnings" />
+          </div>
         ) : (
           <div className={styles.clusterList}>
             {clusters.map((cluster) => {

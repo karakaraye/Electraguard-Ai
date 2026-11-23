@@ -7,12 +7,14 @@ import { StaffShell, type StaffNavItem } from "../../../../ui";
 import {
   DiscussionIcon,
   InboxIcon,
+  KeyIcon,
   LockIcon,
   SearchIcon,
   ShieldCheckIcon,
   SignalIcon,
   SlidersIcon,
   UploadIcon,
+  UsersIcon,
 } from "../../../../ui/icons";
 import { SignInView } from "../../../(staff)/s/_views/SignInView";
 import { QueueView } from "../../../(staff)/s/_views/QueueView";
@@ -44,36 +46,38 @@ import {
 } from "./fixtures";
 
 const SCREENS = [
-  { id: "s01", name: "S-01 Staff Sign-In" },
-  { id: "s02", name: "S-02 Reviewer Queue" },
-  { id: "s03", name: "S-03 Case Review" },
-  { id: "s04", name: "S-04 Assignments" },
-  { id: "s05", name: "S-05 Operations Room" },
-  { id: "s06", name: "S-06 Rumour Desk" },
-  { id: "s07", name: "S-07 Public Snapshot" },
-  { id: "s08", name: "S-08 Discussions Moderation" },
-  { id: "s09", name: "S-09 Observer Code Batches" },
-  { id: "s10", name: "S-10 Staff Accounts" },
-  { id: "s11", name: "S-11 Organisation Settings" },
-  { id: "s12", name: "S-12 Security Alerts & Audit" },
+  { id: "s01", name: "Staff sign-in" },
+  { id: "s02", name: "Review queue" },
+  { id: "s03", name: "Case review" },
+  { id: "s04", name: "Case assignments" },
+  { id: "s05", name: "Operations room" },
+  { id: "s06", name: "Rumour desk" },
+  { id: "s07", name: "Publish snapshots" },
+  { id: "s08", name: "Discussion moderation" },
+  { id: "s09", name: "Observer code batches" },
+  { id: "s10", name: "Staff accounts" },
+  { id: "s11", name: "Organisation settings" },
+  { id: "s12", name: "Security & audit monitoring" },
 ] as const;
 
 export function StaffStateViewer(): ReactElement {
   const searchParams = useSearchParams();
   const screen = searchParams?.get("screen") ?? "s01";
   const state = searchParams?.get("state") ?? "default";
+  const themeParam = searchParams?.get("theme");
+  const theme = themeParam === "dark" ? "dark" : "light";
 
   const nav: StaffNavItem[] = [
-    { href: "/dev/staff?screen=s02", label: "Queue", icon: InboxIcon, current: screen === "s02" || screen === "s03", count: 2 },
-    { href: "/dev/staff?screen=s04", label: "Assign", icon: SearchIcon, current: screen === "s04" },
-    { href: "/dev/staff?screen=s05", label: "Ops", icon: SignalIcon, current: screen === "s05" },
-    { href: "/dev/staff?screen=s06", label: "Rumours", icon: DiscussionIcon, current: screen === "s06" },
-    { href: "/dev/staff?screen=s07", label: "Publish", icon: UploadIcon, current: screen === "s07" },
-    { href: "/dev/staff?screen=s08", label: "Mod", icon: LockIcon, current: screen === "s08" },
-    { href: "/dev/staff?screen=s09", label: "Codes", icon: SlidersIcon, current: screen === "s09" },
-    { href: "/dev/staff?screen=s10", label: "Staff", icon: SlidersIcon, current: screen === "s10" },
-    { href: "/dev/staff?screen=s11", label: "Settings", icon: SlidersIcon, current: screen === "s11" },
-    { href: "/dev/staff?screen=s12", label: "Security", icon: ShieldCheckIcon, current: screen === "s12" },
+    { href: `/dev/staff?screen=s02&state=${state}&theme=${theme}`, label: "Queue", icon: InboxIcon, current: screen === "s02" || screen === "s03", count: 2 },
+    { href: `/dev/staff?screen=s04&state=${state}&theme=${theme}`, label: "Assign", icon: SearchIcon, current: screen === "s04" },
+    { href: `/dev/staff?screen=s05&state=${state}&theme=${theme}`, label: "Ops", icon: SignalIcon, current: screen === "s05" },
+    { href: `/dev/staff?screen=s06&state=${state}&theme=${theme}`, label: "Rumours", icon: DiscussionIcon, current: screen === "s06" },
+    { href: `/dev/staff?screen=s07&state=${state}&theme=${theme}`, label: "Publish", icon: UploadIcon, current: screen === "s07" },
+    { href: `/dev/staff?screen=s08&state=${state}&theme=${theme}`, label: "Mod", icon: LockIcon, current: screen === "s08" },
+    { href: `/dev/staff?screen=s09&state=${state}&theme=${theme}`, label: "Codes", icon: KeyIcon, current: screen === "s09" },
+    { href: `/dev/staff?screen=s10&state=${state}&theme=${theme}`, label: "Staff", icon: UsersIcon, current: screen === "s10" },
+    { href: `/dev/staff?screen=s11&state=${state}&theme=${theme}`, label: "Settings", icon: SlidersIcon, current: screen === "s11" },
+    { href: `/dev/staff?screen=s12&state=${state}&theme=${theme}`, label: "Security", icon: ShieldCheckIcon, current: screen === "s12" },
   ];
 
   const currentScreenObj = SCREENS.find((s) => s.id === screen) ?? SCREENS[0];
@@ -262,14 +266,24 @@ export function StaffStateViewer(): ReactElement {
   };
 
   return (
-    <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
+    <div
+      style={{
+        minHeight: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        background: "var(--paper-2)",
+        color: "var(--ink)",
+      }}
+      data-theme={theme}
+      data-density="staff"
+    >
       {/* Dev Navigation Bar */}
       <div
         style={{
-          background: "var(--c-surface-raised, #222)",
-          color: "var(--c-text, #fff)",
+          background: "var(--paper)",
+          color: "var(--ink)",
           padding: "8px 16px",
-          borderBottom: "1px solid var(--c-border, #444)",
+          borderBottom: "1px solid var(--rule)",
           display: "flex",
           gap: "12px",
           flexWrap: "wrap",
@@ -281,9 +295,9 @@ export function StaffStateViewer(): ReactElement {
         {SCREENS.map((s) => (
           <Link
             key={s.id}
-            href={`/dev/staff?screen=${s.id}&state=${state}`}
+            href={`/dev/staff?screen=${s.id}&state=${state}&theme=${theme}`}
             style={{
-              color: screen === s.id ? "#fff" : "#aaa",
+              color: screen === s.id ? "var(--ink)" : "var(--ink-2)",
               fontWeight: screen === s.id ? "bold" : "normal",
               textDecoration: screen === s.id ? "underline" : "none",
             }}
@@ -292,29 +306,48 @@ export function StaffStateViewer(): ReactElement {
           </Link>
         ))}
 
-        <div style={{ marginLeft: "auto", display: "flex", gap: "8px" }}>
-          <span>State:</span>
-          {(["default", "loading", "empty", "error", "totp"] as const).map((st) => (
-            <Link
-              key={st}
-              href={`/dev/staff?screen=${screen}&state=${st}`}
-              style={{
-                color: state === st ? "#fff" : "#aaa",
-                fontWeight: state === st ? "bold" : "normal",
-                textDecoration: state === st ? "underline" : "none",
-              }}
-            >
-              {st}
-            </Link>
-          ))}
+        <div style={{ marginLeft: "auto", display: "flex", gap: "12px", alignItems: "center" }}>
+          <div style={{ display: "flex", gap: "6px", alignItems: "center" }}>
+            <span style={{ color: "var(--ink-2)" }}>State:</span>
+            {(["default", "loading", "empty", "error", "totp"] as const).map((st) => (
+              <Link
+                key={st}
+                href={`/dev/staff?screen=${screen}&state=${st}&theme=${theme}`}
+                style={{
+                  color: state === st ? "var(--ink)" : "var(--ink-2)",
+                  fontWeight: state === st ? "bold" : "normal",
+                  textDecoration: state === st ? "underline" : "none",
+                }}
+              >
+                {st}
+              </Link>
+            ))}
+          </div>
+
+          <div style={{ display: "flex", gap: "6px", alignItems: "center", borderLeft: "1px solid var(--rule)", paddingLeft: "12px" }}>
+            <span style={{ color: "var(--ink-2)" }}>Theme:</span>
+            {(["light", "dark"] as const).map((th) => (
+              <Link
+                key={th}
+                href={`/dev/staff?screen=${screen}&state=${state}&theme=${th}`}
+                style={{
+                  color: theme === th ? "var(--ink)" : "var(--ink-2)",
+                  fontWeight: theme === th ? "bold" : "normal",
+                  textDecoration: theme === th ? "underline" : "none",
+                }}
+              >
+                {th}
+              </Link>
+            ))}
+          </div>
         </div>
       </div>
 
       {/* Screen Content wrapped in StaffShell if not sign-in */}
       {screen === "s01" ? (
-        <main>{renderContent()}</main>
+        <main data-theme={theme} data-density="staff">{renderContent()}</main>
       ) : (
-        <StaffShell nav={nav} title={currentScreenObj.name}>
+        <StaffShell nav={nav} title={currentScreenObj.name} theme={theme}>
           {renderContent()}
         </StaffShell>
       )}
