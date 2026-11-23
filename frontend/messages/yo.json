@@ -822,5 +822,321 @@
       "withdrawn": "A ti fà ìròyìn yìí sẹ́yìn."
     },
     "sms": "O kò ní fóònù olóye? Fi STATUS àti kóòdù rẹ ránṣẹ́ sí {shortCode}."
+  },
+  "pub": {
+    "homeLink": "Ojú-ìwé àkọ́kọ́ ElectraGuard AI",
+    "menu": "Àkójọ",
+    "nav": {
+      "label": "Àkọ́kọ́",
+      "home": "Ilé",
+      "results": "Àbájáde",
+      "ask": "Béèrè",
+      "guide": "Ìtọ́sọ́nà",
+      "phone": "Gbìyànjú SMS àti USSD",
+      "privacy": "Àṣírí"
+    },
+    "footer": {
+      "label": "Síwájú sí i",
+      "nonpartisan": "A kò ṣe ẹgbẹ́ òṣèlú tàbí olùdíje kankan. A kò sí lábẹ́ INEC.",
+      "emergency": "Bí ẹnìkan bá wà nínú ewu, pe 112. ElectraGuard ń kọ ìròyìn sílẹ̀. Kò ń rán ìrànlọ́wọ́.",
+      "observer": "Áàpù olùwòye",
+      "staff": "Wọlé fún òṣìṣẹ́"
+    }
+  },
+  "p02": {
+    "heading": "Ṣé o rí ìṣòro ní ibùdó ìdìbò? Fi ìròyìn ránṣẹ́.",
+    "lead": "ElectraGuard ń kọ ohun tí àwọn olùdìbò àti àwọn olùwòye tí a fọwọ́ sí rí ní ọjọ́ ìdìbò sílẹ̀. Àwọn olùyẹ̀wò tí a kọ́ ń yẹ ìròyìn kọ̀ọ̀kan wò, a sì ń gbé àpapọ̀ tí a ti yẹ̀wò jáde níbí.",
+    "report": "Fi ohun tí o rí ránṣẹ́",
+    "reportHint": "Kò sí àkọọ́lẹ̀, kò sí orúkọ. Wàá gba kóòdù ìjẹ́rìísí láti ṣàyẹ̀wò rẹ̀ lẹ́yìn náà.",
+    "basicPhone": "Kò ní fóònù ìgbàlódé? Tẹ {ussd} tàbí fi SMS ránṣẹ́ sí {shortCode}.",
+    "testNumber": "(nọ́ńbà ìdánwò)",
+    "tryPhone": "Gbìyànjú rẹ̀ lórí fóònù tó wà lójú ìbojú",
+    "check": {
+      "title": "Ṣàyẹ̀wò ìròyìn",
+      "lead": "Tẹ kóòdù ìjẹ́rìísí tí o gbà nígbà tí o fi ìròyìn ránṣẹ́.",
+      "outcome": "Àbájáde: {outcome}",
+      "question": "Olùyẹ̀wò ní ìbéèrè fún ọ. Ṣí ìròyìn náà lórí fóònù tí o fi ránṣẹ́.",
+      "receivedLabel": "A ti gbà á",
+      "updatedLabel": "Àyípadà tó kẹ́yìn",
+      "tooMany": "Àyẹ̀wò ti pọ̀ jù láti nẹ́tíwọ̀ọ̀kì yìí. Dúró ìṣẹ́jú kan kí o tún gbìyànjú.",
+      "unavailable": "A kò lè ṣàyẹ̀wò báyìí. Tún gbìyànjú lẹ́yìn ìṣẹ́jú díẹ̀."
+    },
+    "results": {
+      "title": "Àbájáde tí a ti yẹ̀wò",
+      "unit": "{count, plural, one {ìròyìn tí a ti yẹ̀wò} other {ìròyìn tí a ti yẹ̀wò}}",
+      "suppressed": "Ìròyìn tí a ti yẹ̀wò kò tíì tó 5",
+      "published": "A gbé e jáde {time}.",
+      "cutoff": "Ó ní ìròyìn tí a rí ṣáájú {time}.",
+      "empty": "A kò tíì gbé nǹkan kan jáde.",
+      "emptyHint": "Àpapọ̀ yóò hàn níbí lẹ́yìn tí àwọn olùyẹ̀wò bá parí ìròyìn, ó kéré tán ìṣẹ́jú 60 lẹ́yìn náà.",
+      "how": "Bí a ṣe ń gbé àbájáde jáde",
+      "unavailable": "A kò lè ṣí àbájáde báyìí.",
+      "open": "Wo àbájáde ní ìpínlẹ̀ kọ̀ọ̀kan"
+    },
+    "how": {
+      "title": "Bí ó ṣe ń ṣiṣẹ́",
+      "1": "O fi ohun tí o rí ránṣẹ́, ní èdè rẹ. Ó ń ṣiṣẹ́ kódà bí nẹ́tíwọ̀ọ̀kì kò bá lágbára.",
+      "2": "Wàá gba kóòdù ìjẹ́rìísí. Pa á mọ́ láti ṣàyẹ̀wò ìròyìn rẹ.",
+      "3": "Olùyẹ̀wò tí a kọ́ yóò yẹ ìròyìn náà wò. AI ń ṣèrànwọ́ láti to ìròyìn; ènìyàn ló ń pinnu.",
+      "4": "A ń gbé àpapọ̀ tí a ti yẹ̀wò jáde níbí ní ìpínlẹ̀ kọ̀ọ̀kan. Kì í ṣe orúkọ, ọ̀rọ̀ tàbí fọ́tò láé."
+    },
+    "help": {
+      "title": "Ìbéèrè",
+      "ask": "Béèrè lọ́wọ́ ElectraGuard",
+      "askHint": "Ìdáhùn ń wá láti inú ìtọ́sọ́nà tí a fọwọ́ sí nìkan, pẹ̀lú orísun rẹ̀.",
+      "guide": "Ìtọ́sọ́nà tí a fọwọ́ sí",
+      "guides": "Ìtọ́sọ́nà",
+      "guidesHint": "Ìtọ́sọ́nà kúkúrú tí a fọwọ́ sí fún olùdìbò àti olùwòye.",
+      "privacy": "Ìkéde àṣírí",
+      "privacyHint": "Ohun tí a ń tọ́jú, àti ohun tí a kì í gbà láé."
+    }
+  },
+  "results": {
+    "notice": "Àkíyèsí tí a ti yẹ̀wò nìkan. Kì í ṣe àbájáde ìjọba. A kò sí lábẹ́ INEC."
+  },
+  "p03": {
+    "title": "Àkíyèsí tí a ti yẹ̀wò",
+    "lead": "Àpapọ̀ ìròyìn ọjọ́ ìdìbò tí àwọn olùyẹ̀wò tí a kọ́ ti parí. A ń fi àwọn nọ́ńbà kékeré pamọ́ láti dáàbò bo àwọn tó fi ìròyìn ránṣẹ́.",
+    "view": {
+      "label": "Fi àbájáde hàn láti",
+      "combined": "Gbogbo àjọ papọ̀"
+    },
+    "totalUnit": "{count, plural, one {ìròyìn tí a ti yẹ̀wò} other {ìròyìn tí a ti yẹ̀wò}}",
+    "totalSuppressed": "Ìròyìn tí a ti yẹ̀wò kò tó 5",
+    "source": "Láti",
+    "publishedLabel": "A gbé e jáde",
+    "cutoffLabel": "Ìròyìn tí a rí ṣáájú",
+    "delay": "A gbé e jáde ó kéré tán {minutes, plural, one {ìṣẹ́jú #} other {ìṣẹ́jú #}} lẹ́yìn ìròyìn náà, kí ẹnikẹ́ni má baà tọpasẹ̀ ẹnìkan.",
+    "combinedNote": "A ń fi nọ́ńbà àpapọ̀ hàn kìkì tí nọ́ńbà àjọ kọ̀ọ̀kan bá hàn.",
+    "byState": {
+      "title": "Ìròyìn ní ìpínlẹ̀ kọ̀ọ̀kan",
+      "caption": "Ìròyìn tí a ti yẹ̀wò ní ìpínlẹ̀ kọ̀ọ̀kan"
+    },
+    "categories": {
+      "title": "Ohun tó ṣẹlẹ̀, ní ìpínlẹ̀ kọ̀ọ̀kan",
+      "hint": "Ṣí ìpínlẹ̀ kan láti rí ìròyìn rẹ̀ ní irú kọ̀ọ̀kan.",
+      "caption": "Ìròyìn tí a ti yẹ̀wò ní {state}, ní irú kọ̀ọ̀kan"
+    },
+    "outcomes": {
+      "title": "Àbájáde",
+      "hint": "Bí àwọn olùyẹ̀wò ṣe parí ìròyìn náà.",
+      "caption": "Ìròyìn tí a ti yẹ̀wò ní àbájáde kọ̀ọ̀kan"
+    },
+    "timeline": {
+      "title": "Ìròyìn ní wákàtí kọ̀ọ̀kan",
+      "hint": "Ní wákàtí tí a rí i, àkókò Ìwọ̀-oòrùn Áfíríkà.",
+      "caption": "Ìròyìn tí a ti yẹ̀wò ní wákàtí kọ̀ọ̀kan"
+    },
+    "col": {
+      "state": "Ìpínlẹ̀",
+      "reports": "Ìròyìn",
+      "category": "Ohun tó ṣẹlẹ̀",
+      "outcome": "Àbájáde",
+      "share": "Ìpín",
+      "hour": "Wákàtí"
+    },
+    "percent": "{value}%",
+    "fewerThan": "kò tó 5",
+    "noRows": "Kò sí ìpínlẹ̀ láti fi hàn báyìí.",
+    "audit": {
+      "title": "Àkọsílẹ̀ àyẹ̀wò",
+      "body": "{count, plural, one {ìṣẹ̀lẹ̀ # tí a kọ sílẹ̀} other {ìṣẹ̀lẹ̀ # tí a kọ sílẹ̀}} títí di {time}. Àmì ìdánimọ̀:",
+      "explain": "Gbogbo ìgbésẹ̀ àyẹ̀wò ni a so mọ́ àkọsílẹ̀ yìí. Bí a bá yí ohunkóhun àtijọ́ padà, àmì ìdánimọ̀ yìí kò ní bá a mu mọ́."
+    },
+    "empty": {
+      "title": "A kò tíì gbé nǹkan kan jáde.",
+      "body": "Àpapọ̀ yóò hàn lẹ́yìn tí àwọn olùyẹ̀wò bá parí ìròyìn, ó kéré tán ìṣẹ́jú 60 lẹ́yìn tí a fi ìròyìn náà ránṣẹ́."
+    },
+    "error": {
+      "title": "A kò lè ṣí àbájáde.",
+      "body": "Ìṣòro náà wà ní ọ̀dọ̀ wa tàbí ní nẹ́tíwọ̀ọ̀kì. Tún gbìyànjú lẹ́yìn ìṣẹ́jú kan."
+    },
+    "retry": "Tún gbìyànjú"
+  },
+  "p04": {
+    "title": "Béèrè lọ́wọ́ ElectraGuard",
+    "heading": "Kí ni o fẹ́ mọ̀?",
+    "lead": "A ń fa ìdáhùn yọ ní ọ̀rọ̀ sí ọ̀rọ̀ láti inú ìtọ́sọ́nà tí a fọwọ́ sí, pẹ̀lú orísun rẹ̀. Bí kò bá sí ìdáhùn tí a fọwọ́ sí, ElectraGuard yóò sọ bẹ́ẹ̀.",
+    "label": "Ìbéèrè rẹ",
+    "hint": "Àpẹẹrẹ: Báwo ni mo ṣe lè ṣàyẹ̀wò ìròyìn mi?",
+    "ask": "Béèrè",
+    "asking": "À ń wá ìdáhùn",
+    "tooShort": "Kọ lẹ́tà 3 ó kéré tán.",
+    "tooLong": "Má ṣe kọjá lẹ́tà 500.",
+    "answered": "Láti inú ìtọ́sọ́nà tí a fọwọ́ sí",
+    "source": "Orísun: {title}, {section}",
+    "version": "Ẹ̀dà tí a fọwọ́ sí {version}",
+    "openSource": "Ka èyí nínú ìtọ́sọ́nà",
+    "fallback": "Èdè Gẹ̀ẹ́sì nìkan ni a fọwọ́ sí ìdáhùn yìí, nítorí náà ó hàn ní Gẹ̀ẹ́sì.",
+    "abstain": {
+      "title": "Mi ò ní ìdáhùn tí a fọwọ́ sí fún ìyẹn.",
+      "body": "Kò sí ohun tó dáhùn ìbéèrè yìí nínú ìtọ́sọ́nà tí a fọwọ́ sí, nítorí náà ElectraGuard kò ní ṣe àmòdi. Gbìyànjú ọ̀rọ̀ mìíràn, tàbí ka ìtọ́sọ́nà náà."
+    },
+    "again": "Béèrè ìbéèrè mìíràn",
+    "guides": "Ka ìtọ́sọ́nà",
+    "error": "A kò rí ìdáhùn. Tún gbìyànjú.",
+    "offline": "O nílò nẹ́tíwọ̀ọ̀kì láti béèrè ìbéèrè.",
+    "tooMany": "Ìbéèrè ti pọ̀ jù láti nẹ́tíwọ̀ọ̀kì yìí. Dúró ìṣẹ́jú kan kí o tún gbìyànjú.",
+    "unavailable": "A kò tíì tan Béèrè lọ́wọ́ ElectraGuard. Ka ìtọ́sọ́nà dípò rẹ̀.",
+    "note": "Kì í ṣe ìmọ̀ràn òfin. A kì í tọ́jú ìbéèrè rẹ."
+  },
+  "p05": {
+    "title": "Ìtọ́sọ́nà",
+    "lead": "Ìtọ́sọ́nà kúkúrú tí a fọwọ́ sí fún olùdìbò àti olùwòye.",
+    "version": "Ẹ̀dà {version}",
+    "englishOnly": "(Gẹ̀ẹ́sì nìkan)",
+    "approved": "A fọwọ́ sí i {date}. Ẹ̀dà {version}.",
+    "fallback": "A kò tíì fọwọ́ sí ìtọ́sọ́nà yìí ní èdè rẹ, nítorí náà ó hàn ní Gẹ̀ẹ́sì.",
+    "contents": "Lórí ojú-ìwé yìí",
+    "allGuides": "Gbogbo ìtọ́sọ́nà",
+    "ask": "Béèrè ìbéèrè nípa ìtọ́sọ́nà",
+    "askInstead": "Béèrè ìbéèrè dípò rẹ̀",
+    "empty": {
+      "title": "A kò tíì gbé ìtọ́sọ́nà kankan sí i.",
+      "body": "Ìtọ́sọ́nà tí a fọwọ́ sí yóò hàn níbí nígbà tí àjọ olùwòye bá gbé wọn sí i."
+    },
+    "notFound": {
+      "title": "Ìtọ́sọ́nà yìí kò sí.",
+      "body": "Bóyá a kò tíì gbé e sí i, tàbí ìtọ́ka náà kò tọ̀nà."
+    },
+    "error": {
+      "title": "A kò lè ṣí ìtọ́sọ́nà.",
+      "body": "Tún gbìyànjú lẹ́yìn ìṣẹ́jú kan."
+    }
+  },
+  "p06": {
+    "title": "Ìkéde àṣírí",
+    "lead": "Ohun tí ElectraGuard ń tọ́jú, ohun tí kì í gbà láé, àti ohun tí o lè ṣe. Ní ọ̀rọ̀ tó rọrùn.",
+    "updated": "Ìmúdójúìwọ̀n tó kẹ́yìn {date}.",
+    "who": {
+      "h": "Ta ló ń ṣiṣẹ́ ElectraGuard",
+      "p": "ElectraGuard AI jẹ́ sọ́fítíwọ̀ tí Cairn ṣe. Àwọn àjọ olùwòye ń lò ó láti gba àti yẹ ìròyìn nípa ìdìbò wò. Àjọ tó gba ìròyìn rẹ ló ní ojúṣe rẹ̀. ElectraGuard kò ṣe ẹgbẹ́ kankan, kò sì sí lábẹ́ INEC."
+    },
+    "never": {
+      "h": "Ohun tí a kì í gbà láé",
+      "1": "Orúkọ rẹ. Àwọn ọmọ ìlú àti olùwòye kì í fún wa ní orúkọ.",
+      "2": "Ibi tí o wà láti GPS. Áàpù náà kì í kà á láé.",
+      "3": "Nọ́ńbà fóònù rẹ bí ó ṣe rí. Fún SMS àti USSD, a ń tọ́jú nọ́ńbà náà gẹ́gẹ́ bí kóòdù tí a dàrú nìkan, a sì ń pa nọ́ńbà gidi rẹ́ ní kété tí a bá fi èsì wa ránṣẹ́."
+    },
+    "keep": {
+      "h": "Ohun tí a ń tọ́jú",
+      "1": "Ohun tí o fi ránṣẹ́: ohun tó ṣẹlẹ̀, ibi (kò sún mọ́ ju ibùdó ìdìbò tí o yàn lọ), ìgbà, àti ohun tí o kọ.",
+      "2": "Fọ́tò, fídíò àti ohùn tí o fi kún un. A ń yọ ìsọfúnni ibi kúrò nínú fọ́tò lórí fóònù rẹ àti lórí sáfà wa pẹ̀lú. A ń bo ojú tí a lè rí.",
+      "3": "Fún olùwòye: kóòdù olùwòye àti PIN tí a dàrú. Àjọ nìkan ló mọ ẹni tó ní kóòdù, ó sì ń pa àkójọ yẹn mọ́ lóde ElectraGuard.",
+      "4": "Àkọsílẹ̀ ààbò díẹ̀, bí ìgbìyànjú ìwọlé tí kò yọrí sí rere, láìsí ohun tó wà nínú ìròyìn kankan."
+    },
+    "see": {
+      "h": "Ta ló lè rí ìròyìn rẹ",
+      "p": "Àwọn olùyẹ̀wò àjọ tó gbà á nìkan, àti kìkì nígbà tí a bá fún wọn ní ìròyìn náà. Àwọn àjọ kò lè rí ìròyìn ara wọn. Ìgbàkígbà tí ẹnìkan bá ṣí fọ́tò tàbí fídíò, a ń kọ ọ́ sílẹ̀."
+    },
+    "public": {
+      "h": "Ohun tí a ń gbé jáde fún gbogbo ènìyàn",
+      "p": "Àpapọ̀ ìròyìn tí a ti yẹ̀wò nìkan, ní ìpínlẹ̀, irú àti wákàtí, ó kéré tán ìṣẹ́jú 60 lẹ́yìn náà. Nọ́ńbà èyíkéyìí tí kò tó 5 yóò hàn gẹ́gẹ́ bí \"kò tó 5\". Kì í ṣe ọ̀rọ̀ rẹ, fọ́tò, ibùdó ìdìbò, wọ́ọ̀dù, kóòdù ìjẹ́rìísí tàbí kóòdù olùwòye láé."
+    },
+    "ai": {
+      "h": "Bí a ṣe ń lo AI",
+      "p": "AI ń dábàá irú ìròyìn àti bí ó ṣe yára tó, láti ran àwọn olùyẹ̀wò lọ́wọ́ láti to ìròyìn. A máa ń sàmì sí i gẹ́gẹ́ bí àbá nígbà gbogbo, ènìyàn ló sì ń ṣe ìpinnu kọ̀ọ̀kan. Béèrè lọ́wọ́ ElectraGuard ń fa ọ̀rọ̀ yọ láti inú ìtọ́sọ́nà tí a fọwọ́ sí nìkan, a kì í sì í tọ́jú ìbéèrè rẹ."
+    },
+    "speech": {
+      "h": "Sísọ̀rọ̀ dípò títẹ̀",
+      "p": "Bí o bá lo Sọ̀rọ̀, iṣẹ́ ohùn fóònù rẹ lè ṣiṣẹ́ lórí ohùn rẹ láti sọ ọ́ di ọ̀rọ̀. O lè lo títẹ̀ pẹ̀lú ohùn lórí bọ́tìnnì rẹ, tàbí kí o tẹ̀ ẹ́, dípò rẹ̀."
+    },
+    "rights": {
+      "h": "Ohun tí o lè ṣe",
+      "1": "Fa ìròyìn sẹ́yìn kí àyẹ̀wò tó bẹ̀rẹ̀. A ó pa ọ̀rọ̀ àti fáìlì rẹ̀ rẹ́.",
+      "2": "Ṣàyẹ̀wò ìròyìn rẹ nígbàkígbà pẹ̀lú kóòdù ìjẹ́rìísí rẹ̀.",
+      "3": "Pa fóònù tí a ń pín lò mọ́: àwọn olùwòye lè jáde kí wọ́n sì yọ gbogbo nǹkan kúrò lórí fóònù ní ìgbésẹ̀ kan.",
+      "4": "Lábẹ́ Òfin Ààbò Ìsọfúnni Nàìjíríà ti 2023, o lè béèrè lọ́wọ́ àjọ tó gba ìròyìn rẹ pé kí wọ́n fi hàn, ṣàtúnṣe tàbí pa ìsọfúnni nípa rẹ rẹ́."
+    },
+    "keepFor": {
+      "h": "Bí a ṣe ń pa ìròyìn mọ́ pẹ́ tó",
+      "p": "Àjọ kọ̀ọ̀kan ń yan àkókò láàrin ọjọ́ 30 àti ọdún 2. Lẹ́yìn náà, a ó pa ìròyìn, fáìlì àti ìfiránṣẹ́ rẹ́, ẹ̀dà ìpamọ́ yóò sì parí ní àkókò kan náà."
+    },
+    "security": {
+      "h": "Bí a ṣe ń dáàbò bò ó",
+      "p": "Ìròyìn ń rìn lójú ọ̀nà tí a tì pa, a sì ń tọ́jú wọn ní títì pa. Àwọn òṣìṣẹ́ ń lo àkọọ́lẹ̀ tó ní orúkọ pẹ̀lú ìwọlé onígbésẹ̀ méjì. Àyípadà kọ̀ọ̀kan sí ìròyìn wà nínú àkọsílẹ̀ tó ń fi hàn bí a bá yí nǹkan padà."
+    },
+    "danger": {
+      "h": "Bí ẹnìkan bá wà nínú ewu",
+      "p": "Pe 112. ElectraGuard ń kọ ìròyìn sílẹ̀. Kò ń rán ìrànlọ́wọ́."
+    },
+    "contact": {
+      "h": "Ìbéèrè",
+      "p": "Fún ìbéèrè nípa ìròyìn rẹ, béèrè lọ́wọ́ àjọ tó fún ọ ní kóòdù olùwòye rẹ, tàbí kọ̀wé sí olùyẹ̀wò nínú ìfiránṣẹ́ ìròyìn rẹ."
+    },
+    "languages": "Ìkéde yìí wà ní Gẹ̀ẹ́sì, Naijá, Hausa, Yorùbá àti Igbo. Yan èdè ní òkè ojú-ìwé."
+  },
+  "p07": {
+    "title": "Gbìyànjú fífi ìròyìn ránṣẹ́ pẹ̀lú SMS àti USSD",
+    "lead": "Lo fóònù tó wà lójú ìbojú yìí láti gbìyànjú ElectraGuard bí fóònù kékeré ṣe ń ṣe é. Ó ń lo ètò kan náà pẹ̀lú SMS àti USSD gidi.",
+    "deviceLabel": "Fóònù kékeré ìdánwò",
+    "screenLabel": "Ojú fóònù",
+    "keypadLabel": "Bọ́tìnnì fóònù",
+    "screen": {
+      "starting": "Fóònù ń tàn",
+      "wait": "Jọ̀wọ́ dúró"
+    },
+    "home": {
+      "title": "Fóònù ìdánwò",
+      "label": "Nọ́ńbà láti pè",
+      "hint": "Tẹ {code} kí o sì tẹ Pè."
+    },
+    "ussd": {
+      "reply": "Ìdáhùn rẹ",
+      "wrongCode": "Nọ́ńbà yẹn kò dáhùn. Tẹ {code}.",
+      "ended": "Ìpàdé ti parí."
+    },
+    "sms": {
+      "title": "Ìfiránṣẹ́ tuntun",
+      "to": "Sí: {shortCode}",
+      "label": "Ìfiránṣẹ́",
+      "count": "{count} nínú {max}",
+      "empty": "Kọ ìfiránṣẹ́ kọ́kọ́."
+    },
+    "inbox": {
+      "title": "Ìfiránṣẹ́",
+      "empty": "Kò sí ìfiránṣẹ́ kankan báyìí.",
+      "you": "Ìwọ"
+    },
+    "key": {
+      "call": "Pè",
+      "end": "Parí",
+      "send": "Fi ránṣẹ́",
+      "messages": "Ìfiránṣẹ́",
+      "messagesCount": "Ìfiránṣẹ́ ({count})",
+      "clear": "Pa á rẹ́",
+      "back": "Padà",
+      "write": "Kọ",
+      "ok": "Ó dáa",
+      "star": "Ìràwọ̀",
+      "hash": "Hash"
+    },
+    "how": {
+      "title": "Gbìyànjú rẹ̀",
+      "ussd": "Tẹ {code} kí o sì tẹ Pè. Dáhùn àkójọ kọ̀ọ̀kan pẹ̀lú bọ́tìnnì, lẹ́yìn náà tẹ Fi ránṣẹ́.",
+      "report": "Tàbí kọ ìfiránṣẹ́: REPORT, nọ́ńbà irú, kóòdù ibùdó ìdìbò bí o bá mọ̀ ọ́, lẹ́yìn náà ohun tó ṣẹlẹ̀.",
+      "reportExample": "REPORT 3 Ìlà gígùn, òṣìṣẹ́ kan ṣoṣo ló ń ṣàyẹ̀wò orúkọ",
+      "status": "Ṣàyẹ̀wò ìròyìn: STATUS àti kóòdù ìjẹ́rìísí.",
+      "reply": "Dáhùn ìbéèrè olùyẹ̀wò: REPLY, kóòdù ìjẹ́rìísí, lẹ́yìn náà ìdáhùn rẹ.",
+      "lang": "Yí èdè èsì padà: LANG EN, PCM, HA, YO tàbí IG."
+    },
+    "example": "Lo àpẹẹrẹ yìí",
+    "startMessage": "Bẹ̀rẹ̀ ìfiránṣẹ́ yìí",
+    "categories": {
+      "title": "Nọ́ńbà irú"
+    },
+    "simulated": "Nọ́ńbà ìdánwò {number}. Ìròyìn tí a fi ránṣẹ́ láti ibí ní àmì Ìdánwò, wọn kò sì ní hàn nínú àbájáde gbogbo ènìyàn láé.",
+    "reset": "Nọ́ńbà ìdánwò tuntun",
+    "resetHint": "Ó tún bẹ̀rẹ̀ pẹ̀lú nọ́ńbà mìíràn ó sì pa ojú ìbojú yìí mọ́.",
+    "error": {
+      "network": "Kò sí nẹ́tíwọ̀ọ̀kì. Ṣàyẹ̀wò ìsopọ̀ rẹ kí o tún gbìyànjú.",
+      "server": "Iṣẹ́ fóònù kò dáhùn. Tún gbìyànjú lẹ́yìn ìṣẹ́jú kan.",
+      "tooMany": "Ìfiránṣẹ́ ti pọ̀ jù láti fóònù yìí. Dúró ìṣẹ́jú díẹ̀.",
+      "invalid": "Nẹ́tíwọ̀ọ̀kì kọ ìfiránṣẹ́ yẹn. Ṣàyẹ̀wò rẹ̀ kí o tún gbìyànjú."
+    },
+    "disabled": {
+      "title": "A ti pa fóònù ìdánwò.",
+      "body": "Àjọ olùwòye ti pa á fún ìgbà díẹ̀. O ṣì lè fi ìròyìn ránṣẹ́ lórí ojú-òpó yìí."
+    }
   }
 }

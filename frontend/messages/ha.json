@@ -822,5 +822,321 @@
       "withdrawn": "An janye wannan rahoton."
     },
     "sms": "Ba ka da wayar zamani? Aika STATUS da lambarka zuwa {shortCode}."
+  },
+  "pub": {
+    "homeLink": "Shafin farko na ElectraGuard AI",
+    "menu": "Menu",
+    "nav": {
+      "label": "Babba",
+      "home": "Gida",
+      "results": "Sakamako",
+      "ask": "Tambaya",
+      "guide": "Jagorori",
+      "phone": "Gwada SMS da USSD",
+      "privacy": "Sirri"
+    },
+    "footer": {
+      "label": "Ƙari",
+      "nonpartisan": "Ba mu da alaƙa da wata jam'iyya ko ɗan takara. Mu ba INEC ba ne.",
+      "emergency": "Idan wani yana cikin haɗari, kira 112. ElectraGuard tana rubuta rahotanni ne. Ba ta aika taimako.",
+      "observer": "Manhajar mai sa ido",
+      "staff": "Shiga na ma'aikata"
+    }
+  },
+  "p02": {
+    "heading": "Ka ga matsala a rumfar zaɓe? Ka kai rahoto.",
+    "lead": "ElectraGuard tana adana abin da masu zaɓe da masu sa ido da aka amince da su suka gani a ranar zaɓe. Masu dubawa da aka horar suna duba kowane rahoto, kuma ana wallafa jimillar da aka duba a nan.",
+    "report": "Kai rahoton abin da ka gani",
+    "reportHint": "Babu asusu, babu suna. Za ka sami lambar rasiti don ka duba shi daga baya.",
+    "basicPhone": "Ba ka da wayar zamani? Danna {ussd} ko aika SMS zuwa {shortCode}.",
+    "testNumber": "(lambar gwaji)",
+    "tryPhone": "Gwada shi a wayar da ke kan allo",
+    "check": {
+      "title": "Duba rahoto",
+      "lead": "Shigar da lambar rasiti da ka samu lokacin da ka kai rahoto.",
+      "outcome": "Sakamako: {outcome}",
+      "question": "Mai dubawa yana da tambaya gare ka. Buɗe rahoton a wayar da ka aika shi da ita.",
+      "receivedLabel": "An karɓa",
+      "updatedLabel": "Canji na ƙarshe",
+      "tooMany": "Dubawa sun yi yawa daga wannan sabis. Jira minti ɗaya ka sake gwadawa.",
+      "unavailable": "Ba a iya dubawa yanzu. Sake gwadawa bayan 'yan mintuna."
+    },
+    "results": {
+      "title": "Sakamakon da aka duba",
+      "unit": "{count, plural, one {rahoton da aka duba} other {rahotannin da aka duba}}",
+      "suppressed": "Rahotannin da aka duba ba su kai 5 ba tukuna",
+      "published": "An wallafa {time}.",
+      "cutoff": "Ya ƙunshi rahotannin da aka gani kafin {time}.",
+      "empty": "Ba a wallafa komai ba tukuna.",
+      "emptyHint": "Jimilla za ta bayyana a nan bayan masu dubawa sun gama rahotanni, aƙalla minti 60 bayan haka.",
+      "how": "Yadda ake wallafa sakamako",
+      "unavailable": "Ba a iya buɗe sakamako yanzu.",
+      "open": "Duba sakamako bisa jiha"
+    },
+    "how": {
+      "title": "Yadda yake aiki",
+      "1": "Ka kai rahoton abin da ka gani, da harshenka. Yana aiki ko da sabis ba ƙarfi.",
+      "2": "Za ka sami lambar rasiti. Ka ajiye ta don duba rahotonka.",
+      "3": "Mai dubawa da aka horar zai duba rahoton. AI tana taimakawa wajen tsara rahotanni; mutum ne ke yanke shawara.",
+      "4": "Ana wallafa jimillar da aka duba bisa jiha a nan. Ba suna, ba kalmomi, ba hotuna."
+    },
+    "help": {
+      "title": "Tambayoyi",
+      "ask": "Tambayi ElectraGuard",
+      "askHint": "Amsoshi suna fitowa ne daga jagororin da aka amince da su kawai, tare da tushensu.",
+      "guide": "Jagorar da aka amince da ita",
+      "guides": "Jagorori",
+      "guidesHint": "Gajerun jagorori da aka amince da su don masu zaɓe da masu sa ido.",
+      "privacy": "Sanarwar sirri",
+      "privacyHint": "Abin da muke adanawa, da abin da ba mu taɓa tattarawa."
+    }
+  },
+  "results": {
+    "notice": "Abubuwan da aka lura aka duba ne kawai. Ba sakamakon hukuma ba ne. Mu ba INEC ba ne."
+  },
+  "p03": {
+    "title": "Abubuwan da aka lura aka duba",
+    "lead": "Jimillar rahotannin ranar zaɓe da masu dubawa da aka horar suka gama. Ana ɓoye ƙananan lambobi don kare mutanen da suka kai rahoto.",
+    "view": {
+      "label": "Nuna sakamako daga",
+      "combined": "Duk ƙungiyoyi a haɗe"
+    },
+    "totalUnit": "{count, plural, one {rahoton da aka duba} other {rahotannin da aka duba}}",
+    "totalSuppressed": "Rahotannin da aka duba ba su kai 5 ba",
+    "source": "Daga",
+    "publishedLabel": "An wallafa",
+    "cutoffLabel": "Rahotannin da aka gani kafin",
+    "delay": "An wallafa aƙalla {minutes, plural, one {minti #} other {mintuna #}} bayan rahotannin, don kada a gano kowa daga cikinsu.",
+    "combinedNote": "Ana nuna lambar haɗin gwiwa ne kawai idan lambar kowace ƙungiya tana bayyane.",
+    "byState": {
+      "title": "Rahotanni bisa jiha",
+      "caption": "Rahotannin da aka duba a kowace jiha"
+    },
+    "categories": {
+      "title": "Abin da ya faru, bisa jiha",
+      "hint": "Buɗe jiha don ganin rahotanninta bisa iri.",
+      "caption": "Rahotannin da aka duba a {state}, bisa iri"
+    },
+    "outcomes": {
+      "title": "Sakamako",
+      "hint": "Yadda masu dubawa suka rufe rahotannin.",
+      "caption": "Rahotannin da aka duba bisa sakamako"
+    },
+    "timeline": {
+      "title": "Rahotanni bisa awa",
+      "hint": "Bisa awar da aka ga abin, lokacin Afirka ta Yamma.",
+      "caption": "Rahotannin da aka duba bisa awa"
+    },
+    "col": {
+      "state": "Jiha",
+      "reports": "Rahotanni",
+      "category": "Abin da ya faru",
+      "outcome": "Sakamako",
+      "share": "Kaso",
+      "hour": "Awa"
+    },
+    "percent": "{value}%",
+    "fewerThan": "ƙasa da 5",
+    "noRows": "Babu jihar da za a nuna tukuna.",
+    "audit": {
+      "title": "Rikodin bincike",
+      "body": "{count, plural, one {abu # da aka rubuta} other {abubuwa # da aka rubuta}} zuwa {time}. Hoton yatsa:",
+      "explain": "Kowane aikin dubawa yana haɗe da wannan rikodin. Idan aka canza wani tsohon abu, wannan hoton yatsa ba zai dace ba kuma."
+    },
+    "empty": {
+      "title": "Ba a wallafa komai ba tukuna.",
+      "body": "Jimilla tana bayyana bayan masu dubawa sun gama rahotanni, kuma aƙalla minti 60 bayan an kai rahotannin."
+    },
+    "error": {
+      "title": "Ba a iya buɗe sakamako ba.",
+      "body": "Matsalar tana wajenmu ko a sabis. Sake gwadawa bayan minti ɗaya."
+    },
+    "retry": "Sake gwadawa"
+  },
+  "p04": {
+    "title": "Tambayi ElectraGuard",
+    "heading": "Me kake son sani?",
+    "lead": "Ana kawo amsoshi kalma da kalma daga jagororin da aka amince da su, tare da tushensu. Idan babu amsar da aka amince da ita, ElectraGuard za ta faɗa.",
+    "label": "Tambayarka",
+    "hint": "Misali: Ta yaya zan duba rahotona?",
+    "ask": "Tambaya",
+    "asking": "Ana neman amsa",
+    "tooShort": "Rubuta aƙalla haruffa 3.",
+    "tooLong": "Kada ka wuce haruffa 500.",
+    "answered": "Daga jagororin da aka amince da su",
+    "source": "Tushe: {title}, {section}",
+    "version": "Sigar da aka amince da ita {version}",
+    "openSource": "Karanta wannan a jagorar",
+    "fallback": "An amince da wannan amsar da Turanci kawai, don haka an nuna ta da Turanci.",
+    "abstain": {
+      "title": "Ba ni da amsar da aka amince da ita kan wannan.",
+      "body": "Babu wani abu a jagororin da aka amince da su da ya amsa wannan tambayar, don haka ElectraGuard ba za ta yi hasashe ba. Gwada wasu kalmomi, ko karanta jagororin."
+    },
+    "again": "Yi wata tambaya",
+    "guides": "Karanta jagororin",
+    "error": "Ba mu sami amsa ba. Sake gwadawa.",
+    "offline": "Kana buƙatar sabis don yin tambaya.",
+    "tooMany": "Tambayoyi sun yi yawa daga wannan sabis. Jira minti ɗaya ka sake gwadawa.",
+    "unavailable": "Ba a kunna Tambayi ElectraGuard ba tukuna. Karanta jagororin maimakon haka.",
+    "note": "Ba shawarar shari'a ba ce. Ba a adana tambayoyinka."
+  },
+  "p05": {
+    "title": "Jagorori",
+    "lead": "Gajerun jagorori da aka amince da su don masu zaɓe da masu sa ido.",
+    "version": "Siga {version}",
+    "englishOnly": "(Turanci kawai)",
+    "approved": "An amince {date}. Siga {version}.",
+    "fallback": "Ba a amince da wannan jagorar da harshenka ba tukuna, don haka an nuna ta da Turanci.",
+    "contents": "A wannan shafi",
+    "allGuides": "Duk jagorori",
+    "ask": "Yi tambaya game da jagororin",
+    "askInstead": "Yi tambaya maimakon haka",
+    "empty": {
+      "title": "Babu jagorar da aka saka tukuna.",
+      "body": "Jagororin da aka amince da su za su bayyana a nan da zarar ƙungiyar sa ido ta saka su."
+    },
+    "notFound": {
+      "title": "Wannan jagorar ba ta samuwa.",
+      "body": "Wataƙila ba a saka ta ba tukuna, ko mahaɗin ba daidai ba ne."
+    },
+    "error": {
+      "title": "Ba a iya buɗe jagorori ba.",
+      "body": "Sake gwadawa bayan minti ɗaya."
+    }
+  },
+  "p06": {
+    "title": "Sanarwar sirri",
+    "lead": "Abin da ElectraGuard take adanawa, abin da ba ta taɓa tattarawa, da abin da za ka iya yi. Cikin kalmomi masu sauƙi.",
+    "updated": "An sabunta na ƙarshe {date}.",
+    "who": {
+      "h": "Wa ke gudanar da ElectraGuard",
+      "p": "ElectraGuard AI manhaja ce da Cairn ta yi. Ƙungiyoyin sa ido suna amfani da ita don tattarawa da duba rahotanni game da zaɓe. Ƙungiyar da ta karɓi rahotonka ce ke da alhakinsa. ElectraGuard ba ta goyon bayan kowa, kuma ba ta da alaƙa da INEC."
+    },
+    "never": {
+      "h": "Abin da ba mu taɓa tattarawa",
+      "1": "Sunanka. 'Yan ƙasa da masu sa ido ba sa ba da suna.",
+      "2": "Wurinka daga GPS. Manhajar ba ta taɓa karanta shi.",
+      "3": "Lambar wayarka a fili. Don SMS da USSD ana adana lambar ne kawai a matsayin lamba da aka gauraya, kuma ana goge ainihin lambar da zarar an aika amsarmu."
+    },
+    "keep": {
+      "h": "Abin da muke adanawa",
+      "1": "Abin da ka kai rahoto: abin da ya faru, inda (ba fiye da rumfar zaɓen da ka zaɓa ba), lokaci, da abin da ka rubuta.",
+      "2": "Hotuna, bidiyo da saƙonnin murya da ka ƙara. Ana cire bayanin wuri daga hotuna a wayarka da kuma a sabarmu. Ana ɓoye fuskokin da za mu iya gani.",
+      "3": "Ga masu sa ido: lambar mai sa ido da PIN da aka gauraya. Ƙungiya ce kawai ta san wanda ke riƙe da lamba, kuma tana ajiye wannan jerin a wajen ElectraGuard.",
+      "4": "Bayanan tsaro na asali, kamar ƙoƙarin shiga da bai yi nasara ba, ba tare da abin da ke cikin kowane rahoto ba."
+    },
+    "see": {
+      "h": "Wa zai iya ganin rahotonka",
+      "p": "Masu dubawa na ƙungiyar da ta karɓe shi kawai, kuma sai an ba su rahoton. Ƙungiyoyi ba sa iya ganin rahotannin juna. Duk lokacin da wani ya buɗe hoto ko bidiyo, ana rubutawa."
+    },
+    "public": {
+      "h": "Abin da ake bayyanawa jama'a",
+      "p": "Jimillar rahotannin da aka duba kawai, bisa jiha, iri da awa, aƙalla minti 60 daga baya. Duk lambar da ke ƙasa da 5 ana nuna ta a matsayin \"ƙasa da 5\". Ba kalmominka, hotuna, rumfar zaɓe, mazaɓa, lambar rasiti ko lambar mai sa ido ba."
+    },
+    "ai": {
+      "h": "Yadda ake amfani da AI",
+      "p": "AI tana ba da shawarar irin rahoto da yadda yake da gaggawa, don taimaka wa masu dubawa tsara rahotanni. Ana yi mata alama a matsayin shawara koyaushe, kuma mutum ne ke yanke kowace shawara. Tambayi ElectraGuard tana kawo jagororin da aka amince da su kawai, kuma ba a adana tambayoyinka."
+    },
+    "speech": {
+      "h": "Magana maimakon rubutu",
+      "p": "Idan ka yi amfani da Magana, sabis ɗin magana na wayarka zai iya sarrafa muryarka don mayar da ita kalmomi. Za ka iya amfani da rubutun murya na madannai, ko ka rubuta, maimakon haka."
+    },
+    "rights": {
+      "h": "Abin da za ka iya yi",
+      "1": "Janye rahoto kafin a fara dubawa. Ana goge kalmominsa da fayilolinsa.",
+      "2": "Duba rahotonka a kowane lokaci da lambar rasitinsa.",
+      "3": "Share wayar da ake rabawa: masu sa ido za su iya fita su cire komai daga wayar a mataki ɗaya.",
+      "4": "A ƙarƙashin Dokar Kare Bayanai ta Najeriya ta 2023, za ka iya tambayar ƙungiyar da ta karɓi rahotonka ta nuna, gyara ko goge bayanai game da kai."
+    },
+    "keepFor": {
+      "h": "Har yaushe ake ajiye rahotanni",
+      "p": "Kowace ƙungiya tana saita lokaci tsakanin kwanaki 30 da shekaru 2. Bayan haka, ana goge rahotanni, fayiloli da saƙonni, kuma ajiyar madadi tana ƙarewa a lokaci ɗaya."
+    },
+    "security": {
+      "h": "Yadda ake kare shi",
+      "p": "Rahotanni suna tafiya ta hanyoyin da aka ɓoye kuma ana adana su a ɓoye. Ma'aikata suna amfani da asusu masu suna tare da shiga mataki biyu. Kowane canji a rahoto ana ajiye shi a rikodin da ke nuna ko an canza wani abu."
+    },
+    "danger": {
+      "h": "Idan wani yana cikin haɗari",
+      "p": "Kira 112. ElectraGuard tana rubuta rahotanni ne. Ba ta aika taimako."
+    },
+    "contact": {
+      "h": "Tambayoyi",
+      "p": "Don tambayoyi game da rahotonka, tambayi ƙungiyar da ta ba ka lambar mai sa ido, ko ka rubuta wa mai dubawa a saƙonnin rahotonka."
+    },
+    "languages": "Wannan sanarwa tana da Turanci, Naijá, Hausa, Yorùbá da Igbo. Zaɓi harshe a saman shafin."
+  },
+  "p07": {
+    "title": "Gwada kai rahoto ta SMS da USSD",
+    "lead": "Yi amfani da wannan wayar da ke kan allo don gwada ElectraGuard kamar yadda ƙaramar waya ke yi. Tana aiki a tsarin da ainihin SMS da USSD ke amfani da shi.",
+    "deviceLabel": "Ƙaramar waya ta gwaji",
+    "screenLabel": "Allon waya",
+    "keypadLabel": "Maɓallan waya",
+    "screen": {
+      "starting": "Ana kunna wayar",
+      "wait": "Don Allah jira"
+    },
+    "home": {
+      "title": "Wayar gwaji",
+      "label": "Lambar da za a kira",
+      "hint": "Danna {code} sannan ka danna Kira."
+    },
+    "ussd": {
+      "reply": "Amsarka",
+      "wrongCode": "Wannan lambar ba ta amsawa. Danna {code}.",
+      "ended": "Zama ya ƙare."
+    },
+    "sms": {
+      "title": "Sabon saƙo",
+      "to": "Zuwa: {shortCode}",
+      "label": "Saƙo",
+      "count": "{count} cikin {max}",
+      "empty": "Rubuta saƙo tukuna."
+    },
+    "inbox": {
+      "title": "Saƙonni",
+      "empty": "Babu saƙo tukuna.",
+      "you": "Kai"
+    },
+    "key": {
+      "call": "Kira",
+      "end": "Ƙare",
+      "send": "Aika",
+      "messages": "Saƙonni",
+      "messagesCount": "Saƙonni ({count})",
+      "clear": "Goge",
+      "back": "Baya",
+      "write": "Rubuta",
+      "ok": "To",
+      "star": "Tauraro",
+      "hash": "Hash"
+    },
+    "how": {
+      "title": "Gwada shi",
+      "ussd": "Danna {code} sannan ka danna Kira. Amsa kowane menu da maɓallan, sannan ka danna Aika.",
+      "report": "Ko ka rubuta saƙo: REPORT, lambar iri, lambar rumfar zaɓe idan ka sani, sannan abin da ya faru.",
+      "reportExample": "REPORT 3 Layi mai tsawo kuma jami'i ɗaya ne kawai ke duba sunaye",
+      "status": "Duba rahoto: STATUS da lambar rasiti.",
+      "reply": "Amsa tambayar mai dubawa: REPLY, lambar rasiti, sannan amsarka.",
+      "lang": "Canja harshen amsoshi: LANG EN, PCM, HA, YO ko IG."
+    },
+    "example": "Yi amfani da wannan misalin",
+    "startMessage": "Fara wannan saƙon",
+    "categories": {
+      "title": "Lambobin iri"
+    },
+    "simulated": "Lambar gwaji {number}. Rahotannin da aka aika daga nan suna da alamar Gwaji kuma ba za su taɓa bayyana a sakamakon jama'a ba.",
+    "reset": "Sabuwar lambar gwaji",
+    "resetHint": "Yana farawa da wata lamba daban kuma yana share wannan allon.",
+    "error": {
+      "network": "Babu sabis. Duba haɗinka ka sake gwadawa.",
+      "server": "Sabis ɗin waya bai amsa ba. Sake gwadawa bayan minti ɗaya.",
+      "tooMany": "Saƙonni sun yi yawa daga wannan waya. Jira 'yan mintuna.",
+      "invalid": "Sabis ya ƙi wannan saƙon. Duba shi ka sake gwadawa."
+    },
+    "disabled": {
+      "title": "An kashe wayar gwaji.",
+      "body": "Ƙungiyar sa ido ta kashe ta a yanzu. Har yanzu za ka iya kai rahoto a wannan shafin."
+    }
   }
 }
