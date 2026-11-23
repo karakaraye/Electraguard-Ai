@@ -2,7 +2,7 @@
 
 import argparse
 from collections import Counter
-from hashlib import sha256
+from hashlib import file_digest, sha256
 import json
 from pathlib import Path
 import sys
@@ -19,8 +19,11 @@ GROUPS = {
     "offboarding_reasons": ("accounts_accountoffboarding", "reason"),
 }
 ALLOWED = {
-    "report_statuses": ("submitted", "in_review", "needs_clarification", "closed"),
-    "review_actions": ("assign", "start", "request_clarification", "respond", "close", "correct_category", "decide_match"),
+    "report_statuses": ("submitted", "in_review", "needs_clarification", "closed", "withdrawn"),
+    "review_actions": (
+        "assign", "start", "request_clarification", "respond", "close",
+        "correct_category", "decide_match", "create", "withdraw", "remove_media",
+    ),
     "evidence_types": ("image/jpeg", "image/png"),
     "triage_statuses": ("pending", "ready", "failed"),
     "match_decisions": ("pending", "confirmed", "dismissed"),
@@ -82,7 +85,42 @@ def check_closures(connection, counts, errors):
     counts["legacy_closures_without_snapshot"] = legacy
 
 
-def verify(connection):
+def check_private_photos(connection, root, counts, errors):
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT to_regclass('reports_mediaitem')")
+        if cursor.fetchone()[0] is None:
+            return
+
+    root = root.resolve() if root else None
+    counts["private_photos"] = 0
+    with connection.cursor(name="verify_private_photos") as cursor:
+        cursor.execute("""
+            SELECT photo.id, photo.organisation_id, photo.size_bytes, photo.sha256, report.organisation_id
+            FROM reports_mediaitem photo
+            JOIN reports_report report ON report.reference = photo.report_id
+        """)
+        for media_id, organisation, size, expected, report_organisation in cursor:
+            counts["private_photos"] += 1
+            if organisation != report_organisation:
+                errors["private_photo_organisation_mismatches"] += 1
+            if root is None:
+                errors["private_media_root_required"] += 1
+                continue
+            path = root / str(organisation) / "photos" / f"{media_id}.jpg"
+            try:
+                if path.resolve() != path or not path.is_file():
+                    raise OSError
+                with path.open("rb") as photo:
+                    digest = file_digest(photo, "sha256").hexdigest()
+                    actual_size = photo.tell()
+            except OSError:
+                errors["private_photo_missing_or_unreadable"] += 1
+                continue
+            if actual_size != size or digest != expected:
+                errors["private_photo_integrity_mismatches"] += 1
+
+
+def verify(connection, private_media_root=None):
     counts = {}
     errors = Counter()
     with connection.cursor() as cursor:
@@ -128,11 +166,14 @@ def verify(connection):
             LEFT JOIN (
                 SELECT report_id, count(*) AS total, min(version) AS first,
                        max(version) AS last, count(DISTINCT version) AS unique_versions,
-                       count(*) FILTER (WHERE action = 'close') AS closures
+                       count(*) FILTER (WHERE action = 'close') AS closures,
+                       min(version) FILTER (WHERE action = 'create') AS creation
                 FROM reports_reviewevent GROUP BY report_id
             ) events ON events.report_id = report.reference
-            WHERE report.version <> coalesce(events.total, 0)
-               OR events.first <> 1 OR events.last <> events.unique_versions
+            WHERE report.version <> coalesce(events.last, 0)
+               OR events.first IS DISTINCT FROM CASE
+                   WHEN events.total IS NULL THEN NULL WHEN events.creation = 0 THEN 0 ELSE 1 END
+               OR events.last - events.first + 1 <> events.unique_versions
                OR coalesce(events.closures, 0) <> CASE WHEN report.status = 'closed' THEN 1 ELSE 0 END
         """)
         errors["invalid_audit_versions_or_closure_count"] = cursor.fetchone()[0]
@@ -142,8 +183,10 @@ def verify(connection):
             JOIN accounts_user actor ON actor.id = event.actor_id
             JOIN reports_report report ON report.reference = event.report_id
             WHERE (event.action = 'assign' AND actor.role <> 'administrator')
-               OR (event.action = 'respond' AND actor.id <> report.observer_id)
-               OR (event.action NOT IN ('assign', 'respond') AND actor.role <> 'reviewer')
+               OR (event.action IN ('respond', 'create', 'withdraw', 'remove_media')
+                   AND actor.id <> report.observer_id)
+               OR (event.action NOT IN ('assign', 'respond', 'create', 'withdraw', 'remove_media')
+                   AND actor.role <> 'reviewer')
                OR (event.action = 'close' AND actor.id IS DISTINCT FROM report.assigned_reviewer_id)
         """)
         errors["invalid_audit_actors"] = cursor.fetchone()[0]
@@ -156,6 +199,7 @@ def verify(connection):
                 errors["evidence_hash_mismatches"] += 1
 
     check_closures(connection, counts, errors)
+    check_private_photos(connection, private_media_root, counts, errors)
     return {"counts": counts, "integrity_errors": {key: value for key, value in errors.items() if value}}
 
 
@@ -163,11 +207,12 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--database", required=True, help="Explicit PostgreSQL database name.")
     parser.add_argument("--compare", type=Path, help="Compare counts with an earlier aggregate verification JSON.")
+    parser.add_argument("--private-media-root", type=Path, help="Restored private media directory.")
     args = parser.parse_args()
     try:
         with psycopg.connect(dbname=args.database, connect_timeout=5) as connection:
             connection.execute("SET TRANSACTION ISOLATION LEVEL REPEATABLE READ READ ONLY")
-            result = verify(connection)
+            result = verify(connection, args.private_media_root)
     except psycopg.Error as error:
         print(f"Restore verification could not read the expected database schema ({type(error).__name__}).", file=sys.stderr)
         return 2

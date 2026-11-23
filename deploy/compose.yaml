@@ -10,6 +10,7 @@ x-django-environment: &django-environment
   POSTGRES_HOST: postgres
   POSTGRES_PORT: "5432"
   POSTGRES_USER: electraguard_runtime
+  PRIVATE_MEDIA_ROOT: /var/lib/electraguard/media
 
 x-django: &django
   image: electraguard-backend:${ELECTRAGUARD_RELEASE:?Set ELECTRAGUARD_RELEASE}
@@ -62,6 +63,8 @@ services:
   backend:
     <<: *django
     environment: *django-environment
+    volumes:
+      - private-media:/var/lib/electraguard/media
     networks: [api, database]
     restart: unless-stopped
     command:
@@ -90,6 +93,8 @@ services:
     <<: *django
     profiles: [triage]
     environment: *django-environment
+    volumes:
+      - private-media:/var/lib/electraguard/media
     restart: unless-stopped
     command:
       - /bin/sh
@@ -135,6 +140,7 @@ networks:
 
 volumes:
   postgres-data:
+  private-media:
 
 secrets:
   django_secret:

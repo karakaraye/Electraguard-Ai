@@ -5,7 +5,8 @@ WORKDIR /app
 COPY backend/requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt gunicorn==27.0.1 packaging==26.2 \
     && groupadd -g 10001 app \
-    && useradd -u 10001 -g app -M app
+    && useradd -u 10001 -g app -M app \
+    && install -d -m 0700 -o 10001 -g 10001 /var/lib/electraguard/media
 COPY backend/manage.py ./
 COPY backend/accounts ./accounts
 COPY backend/config ./config
