@@ -10,6 +10,7 @@ from reports.models import CitizenReply, Report, ReviewEvent, Triage
 from reports.workflow import record_change
 
 from .handlers import LIMIT, menu
+from .intake import public_organisation
 from .models import Callback, OutboundSMS, PhoneLanguage
 
 PHONE = "+2348012345678"
@@ -24,6 +25,14 @@ class PhoneTests(TestCase):
     @classmethod
     def setUpTestData(cls):
         call_command("load_reference_areas", verbosity=0)
+        cls.configure_organisation_simulator(True)
+
+    @staticmethod
+    def configure_organisation_simulator(enabled):
+        organisation = public_organisation()
+        if hasattr(organisation, "simulator_enabled"):
+            organisation.simulator_enabled = enabled
+            organisation.save(update_fields=["simulator_enabled"])
 
     def form(self, path, data):
         return self.client.post(path, urlencode(data), content_type="application/x-www-form-urlencoded")
@@ -184,8 +193,10 @@ class PhoneTests(TestCase):
         client.get("/api/v1/auth/csrf")
         token = client.cookies["csrftoken"].value
         self.assertEqual(self.sim("sms", {"text": "HELP"}, client=client, HTTP_X_CSRFTOKEN=token).status_code, 200)
+        self.configure_organisation_simulator(False)
         with self.settings(SIMULATOR_ENABLED=False):
             self.assertEqual(self.client.get(SIM + "inbox").status_code, 404)
+        self.configure_organisation_simulator(True)
         for _ in range(60):
             self.assertEqual(self.client.get(SIM + "inbox").status_code, 200)
         self.assertEqual(self.client.get(SIM + "inbox").status_code, 429)
