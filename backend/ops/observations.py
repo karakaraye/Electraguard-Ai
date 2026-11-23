@@ -15,7 +15,8 @@ from staff.fields import invalid
 
 
 LAGOS = ZoneInfo("Africa/Lagos")
-STAGES = {"arrival", "opening", "voting", "closing", "counting"}
+STAGES = {"arrival", "opening", "accreditation", "voting", "closing_counting", "results_posted"}
+STRUCTURED = any(item.name == "structured_details" for item in Report._meta.get_fields())
 
 
 def date_value(value):
@@ -67,18 +68,21 @@ def coverage(request):
     units = {code: name for _, group in lgas.values() for code, name in group.items()}
     if lga:
         units = lgas[lga][1]
-    rows = Report.objects.filter(
-        organisation=organisation, occurred_at__gte=start_at, occurred_at__lt=end_at,
-        polling_unit_code__in=units, incident_details__kind="checklist",
-    ).exclude(status=Report.Status.WITHDRAWN)
     seen = set()
     no_answers = defaultdict(list)
-    for unit, details in rows.values_list("polling_unit_code", "incident_details").iterator():
-        checklist = details.get("checklist", {})
-        if checklist.get("stage") != stage:
-            continue
-        seen.add(unit)
-        no_answers[unit].extend(key for key, value in checklist.get("answers", {}).items() if value in (False, "no"))
+    if STRUCTURED:
+        rows = list(Report.objects.filter(
+            organisation=organisation, occurred_at__gte=start_at, occurred_at__lt=end_at,
+            polling_unit_code__in=units, kind="checklist",
+        ).exclude(status=Report.Status.WITHDRAWN).values_list("pk", "polling_unit_code", "structured_details"))
+        replaced = {str(details.get("supersedes")) for _, _, details in rows if details.get("supersedes")}
+        for pk, unit, details in rows:
+            if str(pk) in replaced or details.get("stage") != stage:
+                continue
+            seen.add(unit)
+            no_answers[unit].extend(
+                item["question"] for item in details.get("answers", []) if item.get("answer") == "no"
+            )
     if lga:
         results = [{
             "polling_unit_code": unit, "polling_unit_name": name,

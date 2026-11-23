@@ -7,7 +7,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("accounts", "0008_staffmutation"),
+        ("accounts", "0009_organisation_election_day"),
     ]
 
     operations = [
@@ -24,11 +24,6 @@ class Migration(migrations.Migration):
                 on_delete=django.db.models.deletion.PROTECT,
                 to="accounts.observercode",
             ),
-        ),
-        migrations.AddField(
-            model_name="organisation",
-            name="election_day",
-            field=models.DateField(null=True),
         ),
         migrations.AddField(
             model_name="organisation",

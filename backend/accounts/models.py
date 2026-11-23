@@ -20,7 +20,7 @@ class Organisation(models.Model):
     coverage_lga_codes = models.JSONField(default=list)
     party_labels = models.JSONField(default=default_party_labels)
 
-    election_day = models.DateField(null=True)
+    election_day = models.DateField(null=True, blank=True)
     public_delay_minutes = models.PositiveSmallIntegerField(default=60)
     retention_days = models.PositiveSmallIntegerField(default=180)
     settings_updated_at = models.DateTimeField(null=True)

@@ -7,7 +7,7 @@ from accounts.observer_auth import wat
 from reports.incident_input import CATEGORIES
 from reports.models import Report, ReviewEvent
 from staff.audit import head
-from staff.fields import observed_category
+from staff.fields import has_kind_field, is_incident, observed_category
 from staff.models import AuditEvent
 
 
@@ -62,13 +62,14 @@ def build(snapshot):
     excluded = dict.fromkeys(("not_closed", "withdrawn", "after_cutoff", "other_kinds"), 0)
     states = {}
     counts, state_totals, outcomes, timeline = Counter(), Counter(), Counter(), Counter()
-    for row in reports.values("status", "incident_details", "occurred_at", "closed_outcome").iterator():
+    columns = ["status", "incident_details", "occurred_at", "closed_outcome", *(["kind"] if has_kind_field() else [])]
+    for row in reports.values(*columns).iterator():
         details = row["incident_details"]
         area = details.get("area", {})
         category = observed_category(details)
         if row["status"] == Report.Status.WITHDRAWN:
             excluded["withdrawn"] += 1
-        elif details.get("kind", "incident") != "incident" or category not in CATEGORIES or not area.get("state_code"):
+        elif not is_incident(details, row.get("kind", "incident")) or category not in CATEGORIES or not area.get("state_code"):
             excluded["other_kinds"] += 1
         elif row["status"] != Report.Status.CLOSED:
             excluded["not_closed"] += 1

@@ -4,7 +4,7 @@ from django.db.models import OuterRef, Subquery
 
 from accounts.observer_auth import wat
 from reports.models import Report, ReviewEvent
-from staff.fields import category
+from staff.fields import category, is_incident
 
 from .models import Claim
 
@@ -30,7 +30,7 @@ def observations_for(claim, query):
     matched = []
     for report in reports.iterator():
         details = report.incident_details
-        if details.get("kind", "incident") != "incident" or report.outcome_value not in Report.Outcome.values:
+        if not is_incident(details, getattr(report, "kind", "incident")) or report.outcome_value not in Report.Outcome.values:
             continue
         translation = details.get("translation") or {}
         if translation.get("status") == "ready" and translation.get("redacted") is True:

@@ -12,7 +12,7 @@ from reports.incident_input import CATEGORIES
 from reports.models import Report
 from staff.access import COORDINATORS
 from staff.audit import authorize, record
-from staff.fields import category, invalid, text_field
+from staff.fields import category, invalid, is_incident, text_field
 
 from .models import ClusterSettings, ClusterWarning
 
@@ -43,7 +43,7 @@ def detect(org_id, now):
         details = report.incident_details
         area = details.get("area") or {}
         name = category(report)["value"]
-        if details.get("kind", "incident") != "incident" or name not in categories or not area.get("lga_code"):
+        if not is_incident(details, getattr(report, "kind", "incident")) or name not in categories or not area.get("lga_code"):
             continue
         key = (area["lga_code"], name)
         if report.occurred_at >= start:

@@ -27,3 +27,14 @@ def category(report):
 
 def observed_category(details):
     return details.get("category_observer") or details.get("category")
+
+
+def has_kind_field():
+    from reports.models import Report
+
+    return any(item.name == "kind" for item in Report._meta.get_fields())
+
+
+def is_incident(details, kind="incident"):
+    """Only incident reports feed public figures, clusters and rumour matching."""
+    return kind == "incident" and details.get("kind", "incident") == "incident"
