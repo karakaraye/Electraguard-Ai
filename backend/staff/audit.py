@@ -19,6 +19,9 @@ from .models import AuditEvent
 
 GENESIS = "0" * 64
 LAGOS = ZoneInfo("Africa/Lagos")
+OBJECT_KEYS = frozenset({
+    "reference", "snapshot_id", "claim_id", "warning_id", "alert_id", "staff_id", "batch_id", "observer_code",
+})
 
 
 def digest(data):
@@ -73,6 +76,9 @@ def authorize(request, *, export=False, roles=None):
     if roles is None:
         roles = {"org_admin"} if export else {"org_admin", "coordinator", "administrator"}
     if not roles.intersection(request.user.effective_roles):
+        match = request.resolver_match
+        if match and OBJECT_KEYS.intersection(match.kwargs):
+            return error(404, "not_found", "We could not find that.")
         return error(403, "forbidden", "You do not have access to this operation.")
     if not request.session.get(VERIFIED):
         return totp_required()

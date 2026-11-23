@@ -20,10 +20,18 @@ def cell(count, suppressed=False):
 
 
 def complementary(counts, hidden):
-    if sum(key in hidden for key in counts) == 1:
+    """Hide the smallest visible cell until the hidden cells of a line sum to K or more.
+
+    A line whose hidden cells hold only zeros reveals nothing and is left alone.
+    """
+    while True:
+        secret = [counts[key] for key in hidden if key in counts]
+        if not any(secret) or sum(secret) >= K:
+            return
         visible = sorted((value, key) for key, value in counts.items() if key not in hidden)
-        if visible:
-            hidden.add(visible[0][1])
+        if not visible:
+            return
+        hidden.add(visible[0][1])
 
 
 def series(counts):
