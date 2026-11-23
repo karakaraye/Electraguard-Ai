@@ -1,14 +1,79 @@
 /*
- * Polling-day background art. The SVG is used as a mask over a block of --ink, so it takes the
- * theme's ink colour in light and dark without a second file. The outer layer carries the
- * vertical fade, the inner layer carries the drawing; nested masks multiply.
+ * Polling-day illustration (design contract, section 5, BackgroundArt).
+ *
+ * hero: a band across the top of the screen, in the page flow. The text sits below it on plain
+ *       paper, so text contrast is the normal ink-on-paper value; the art never sits under text.
+ * soft: the same scene at low strength, fixed to the bottom of the viewport and faded toward
+ *       the top. Its strength is capped so body text over it keeps at least 7:1.
+ *
+ * The light and dark scenes are separate files; only the one for the current theme loads.
  */
 
 .art {
-  /* Ink strength: about 7% on white paper, slightly less on dark paper where light lines glow */
-  --art-strength: 0.07;
-  /* Height of the scene band. On phones the figures stay small and quiet (about 110 px tall)
-     and the bottom-anchored cover crop keeps the canopy, the observer and four people in the queue */
+  --art-light: url("/art/polling-day-light.svg");
+  --art-dark: url("/art/polling-day-dark.svg");
+  --art-image: var(--art-light);
+  pointer-events: none;
+  user-select: none;
+}
+
+.scene {
+  background-image: var(--art-image);
+  background-repeat: no-repeat;
+  /* "cover", anchored to the ground line: narrow screens keep the queue, the canopy and the observer */
+  background-size: cover;
+  background-position: 46% 100%;
+}
+
+[data-theme="dark"] .art {
+  --art-image: var(--art-dark);
+}
+
+@media (prefers-color-scheme: dark) {
+  [data-theme="system"] .art {
+    --art-image: var(--art-dark);
+  }
+}
+
+/* ---------- Hero band ---------- */
+
+.art[data-variant="hero"] {
+  --hero-h: clamp(184px, 28vh, 248px);
+  /* The wrapper holds the space in the flow; it cancels the content's top padding so the band
+     meets the top bar, and leaves a little air before the heading. */
+  height: var(--hero-h);
+  margin: calc(-1 * var(--s-5)) 0 var(--s-3);
+}
+
+.art[data-variant="hero"] .scene {
+  /* Full window width, whatever the reading column: the band is positioned against the window
+     (no positioned ancestor in AppShell) and stays at its place in the flow (top: auto). */
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: var(--hero-h);
+  /* The ground dissolves into the paper so the band has no hard lower edge */
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 84%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 0%, #000 84%, transparent 100%);
+}
+
+@media (min-width: 600px) {
+  .art[data-variant="hero"] {
+    --hero-h: clamp(220px, 34vh, 320px);
+  }
+}
+
+@media (min-width: 1024px) {
+  .art[data-variant="hero"] {
+    --hero-h: clamp(240px, 38vh, 340px);
+  }
+}
+
+/* ---------- Soft background ---------- */
+
+.art[data-variant="soft"] {
+  /* Strength on paper. Measured: body text over the darkest part of the art stays at 7:1 or more */
+  --art-strength: 0.26;
   --art-height: clamp(170px, 30vh, 300px);
   /* Space kept free under the ground line for the pinned action area (one primary button) */
   --art-clear: calc(var(--control-h, 52px) + 2 * var(--s-3, 12px) + 1px + env(safe-area-inset-bottom, 0px));
@@ -18,64 +83,72 @@
   bottom: var(--art-clear);
   z-index: 0;
   height: var(--art-height);
-  pointer-events: none;
-  user-select: none;
   opacity: var(--art-strength);
-  -webkit-mask-image: linear-gradient(to top, #000 0%, #000 22%, rgb(0 0 0 / 0.6) 48%, rgb(0 0 0 / 0.2) 70%, transparent 88%);
-  mask-image: linear-gradient(to top, #000 0%, #000 22%, rgb(0 0 0 / 0.6) 48%, rgb(0 0 0 / 0.2) 70%, transparent 88%);
+  -webkit-mask-image: linear-gradient(to top, #000 0%, #000 30%, rgb(0 0 0 / 0.55) 56%, rgb(0 0 0 / 0.15) 78%, transparent 94%);
+  mask-image: linear-gradient(to top, #000 0%, #000 30%, rgb(0 0 0 / 0.55) 56%, rgb(0 0 0 / 0.15) 78%, transparent 94%);
 }
 
-.art[data-clear="none"] {
+.art[data-variant="soft"][data-clear="none"] {
   --art-clear: env(safe-area-inset-bottom, 0px);
 }
 
-.scene {
+.art[data-variant="soft"] .scene {
   width: 100%;
   height: 100%;
-  background: var(--ink);
-  /* Bottom-anchored "cover": phones keep the centre of the scene (canopy, observer, queue) */
-  -webkit-mask: url("/art/polling-day.svg") center bottom / cover no-repeat;
-  mask: url("/art/polling-day.svg") center bottom / cover no-repeat;
 }
 
-/* Content after the art paints above it. :where keeps specificity at zero, so any component
+/* Content after the soft art paints above it. :where keeps specificity at zero, so any component
    that sets its own position (sticky bars, sheets) wins. */
-:where(.art) ~ :where(*) {
+:where(.art[data-variant="soft"]) ~ :where(*) {
   position: relative;
 }
 
-/* Dark paper: light strokes read stronger than dark ones, so pull the strength down a little */
-[data-theme="dark"] .art {
-  --art-strength: 0.06;
+[data-theme="dark"] .art[data-variant="soft"] {
+  --art-strength: 0.24;
 }
 
 @media (prefers-color-scheme: dark) {
-  [data-theme="system"] .art {
-    --art-strength: 0.06;
+  [data-theme="system"] .art[data-variant="soft"] {
+    --art-strength: 0.24;
   }
 }
 
-/* Wide screens: the scene spans the window; keep it a little quieter beside the reading column */
 @media (min-width: 600px) {
-  .art {
+  .art[data-variant="soft"] {
     --art-height: clamp(220px, 36vh, 380px);
   }
 }
 
 @media (min-width: 1024px) {
-  .art {
-    --art-height: clamp(260px, 40vh, 440px);
+  .art[data-variant="soft"] {
+    --art-height: clamp(260px, 42vh, 460px);
   }
 }
 
-/* Short screens (landscape phones, large text): the art would crowd the content, so drop it */
+/* ---------- Arrival: one quiet fade, once ---------- */
+
+@media (prefers-reduced-motion: no-preference) {
+  .scene {
+    animation: art-in 700ms var(--ease-out, ease-out) both;
+  }
+}
+
+@keyframes art-in {
+  from {
+    opacity: 0;
+  }
+}
+
+/* ---------- When the art stays out ---------- */
+
+/* Short screens (landscape phones, very large text): the task comes first */
 @media (max-height: 520px) {
   .art {
     display: none;
   }
 }
 
-/* The device asked for less data: skip the image entirely (display: none means it is never fetched) */
+/* The device asked for less data: display: none means the image is never fetched */
 @media (prefers-reduced-data: reduce) {
   .art {
     display: none;

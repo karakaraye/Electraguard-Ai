@@ -39,7 +39,7 @@ export function LanguageView({ selected, onChoose, offline, banner }: LanguageVi
   const t = useT();
   return (
     <AppShell title={<AppBarTitle />} hideBack offline={offline} banner={banner} data-testid="o01">
-      <BackgroundArt clear="none" />
+      <BackgroundArt variant="hero" />
       <div className={styles.screen}>
         <h1 className={styles.title} id="o01-title" lang="en">
           {t("o01.title")}
@@ -109,7 +109,7 @@ export function NoticeView({ onBack, onContinue, readOnly, offline, banner }: No
       }
       data-testid="o02"
     >
-      <BackgroundArt />
+      <BackgroundArt variant="hero" />
       <div className={styles.screen}>
         <h1 className={styles.title}>{t("o02.title")}</h1>
         <ul className={styles.lines}>
@@ -141,7 +141,7 @@ export function ChooseView({ onBack, onObserver, onCitizen, onCheckStatus, offli
   const t = useT();
   return (
     <AppShell title={<AppBarTitle />} onBack={onBack} offline={offline} banner={banner} data-testid="o03-choose">
-      <BackgroundArt clear="none" />
+      <BackgroundArt variant="hero" />
       <div className={`${styles.screen} ${styles.wide}`}>
         <h1 className={styles.title}>{t("o03.title")}</h1>
         <div className={styles.choices}>
