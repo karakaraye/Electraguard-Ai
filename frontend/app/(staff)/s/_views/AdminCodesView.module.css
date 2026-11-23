@@ -1,0 +1,128 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-5);
+  width: 100%;
+}
+
+.topSection {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--s-3);
+}
+
+.batchesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--s-3);
+}
+
+.batchCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+  padding: var(--s-4);
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+}
+
+.batchTitle {
+  margin: 0;
+  font: var(--t-heading);
+  font-size: 1rem;
+}
+
+.batchMeta {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  font-size: 0.8125rem;
+  color: var(--ink-2);
+}
+
+.batchStats {
+  display: flex;
+  gap: var(--s-3);
+  font-size: 0.875rem;
+}
+
+.printSheet {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-4);
+  padding: var(--s-5);
+  background: var(--paper);
+  border: 2px dashed var(--ink);
+  border-radius: var(--radius);
+}
+
+.cardsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: var(--s-3);
+}
+
+.codeCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+  padding: var(--s-3);
+  background: var(--paper-2);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+}
+
+.codeCardVal {
+  font-family: monospace;
+  font-size: 1.125rem;
+  font-weight: 700;
+}
+
+.tableWrapper {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+  text-align: left;
+}
+
+.table th,
+.table td {
+  padding: var(--s-2) var(--s-3);
+  border-bottom: 1px solid var(--rule);
+}
+
+.table th {
+  font-weight: 600;
+  color: var(--ink-2);
+}
+
+@media print {
+  .topSection,
+  .batchCard,
+  .tableWrapper,
+  .hidePrint {
+    display: none !important;
+  }
+
+  .printSheet {
+    border: none;
+    padding: 0;
+  }
+
+  .cardsGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .codeCard {
+    border: 1px solid #000;
+    page-break-inside: avoid;
+  }
+}
