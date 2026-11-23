@@ -52,6 +52,15 @@ The full plan is in [hackathon-plan.md](hackathon-plan.md).
 
 ## Updates
 
+### 23 Nov 2026 · Codex · Slice C7 coordinator assignments and overview
+
+- Existing Administrator accounts migrate to Coordinator without changes to their Django privilege flags. The legacy sign-in and administrator workspace still use the old wire role. The v1 APIs require Coordinator. The Organisation administrator role is separate, with no new v1 permissions in this slice.
+- ASG-01 returns org-scoped summaries to ward level and active Reviewer workloads. It includes same-LGA suggestions, filters and a signed cursor. It omits case text, messages, photos and polling-unit details. Active-now reflects a tracked unexpired session.
+- ASG-02 supports one or up to 100 assignments. It checks report version, state, and Reviewer organisation and activity. Every item commits with its audit and replay result. A retry can resume an interrupted batch from the first uncommitted item. Reassignment removes the former Reviewer's case and photo access on their next request. Assignment batch replay records use the existing 30-day maintenance command.
+- OPS-01 filters by inclusive observed dates in WAT. It includes observer and citizen totals and status, outcome, category, channel, urgency and LGA breakdowns. Withdrawals are counted separately by withdrawal date because the observed time is purged. Grouping remains gated. `reconcile_observations --organisation <uuid>` compares report and status counts for the same scope and dates. Its legacy category labels remain available.
+- Verified `manage.py migrate`, `manage.py test accounts reports config --noinput` (86 passed on PostgreSQL 17.12), `makemigrations --check --dry-run`, `migrate --check`, restore checker syntax and `git diff --check`. Tests covered role migration and compatibility, org isolation, partial and interrupted batches, reassignment and photos, and WAT reconciliation. No frontend paths changed.
+- Next, review this slice and wire the coordinator screens. Queue urgency sorting and overview aggregation currently operate on filtered rows in memory. Benchmark before using them on a large dataset.
+
 ### 23 Nov 2026 · Codex · Slice C6 reviewer queue and case actions
 
 - Added Q-01 and CASE-01/02/03/05 under `/api/v1/review`. Queue results are organisation-scoped and assigned to the current Reviewer, with urgency ordering, repeatable filters and a signed cursor. Assigned case detail combines evidence, triage, conversation and audit events, including citizen replies. Coordinators receive no case content.

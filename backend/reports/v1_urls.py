@@ -3,6 +3,7 @@ from django.views.decorators.cache import never_cache
 
 from . import citizen_views as public
 from . import media_views as media
+from . import operations_views as operations
 from . import reviewer_views as review
 from . import v1_views as views
 
@@ -22,6 +23,8 @@ def invalid_reference(request, reference):
 
 
 urlpatterns = [
+    path("assignments", operations.assignments),
+    path("ops/overview", operations.overview),
     path("review/queue", review.queue),
     path("review/cases/<uuid:reference>", review.case),
     path("review/cases/<uuid:reference>/actions", review.actions),

@@ -18,7 +18,8 @@ class Command(BaseCommand):
         email = User.objects.normalize_email(options["email"].strip())
         approver_email = User.objects.normalize_email(options["authorized_by"].strip())
         eligible = Q(is_staff=False, is_superuser=False)
-        admin = Q(role=User.Role.ADMINISTRATOR, is_active=True)
+        legacy_admin_roles = (User.Role.ADMINISTRATOR, User.Role.COORDINATOR)
+        admin = Q(role__in=legacy_admin_roles, is_active=True)
         targets = Q(email=email)
         # Lock all active administrator rows in a common order before checking the last-admin rule.
         accounts = list(User.objects.select_for_update().filter(eligible & (admin | targets)).order_by("pk"))
@@ -28,7 +29,7 @@ class Command(BaseCommand):
             raise CommandError("No matching application account.")
         administrators = {
             user.email: user for user in accounts
-            if user.role == User.Role.ADMINISTRATOR and user.is_active and user.has_usable_password()
+            if user.role in legacy_admin_roles and user.is_active and user.has_usable_password()
         }
         approver = administrators.get(approver_email)
         if approver is None:
@@ -42,7 +43,7 @@ class Command(BaseCommand):
         if not target.is_active:
             self.stdout.write("Application account is already inactive.")
             return
-        if target.role == User.Role.ADMINISTRATOR and not administrators.keys() - {email}:
+        if target.role in legacy_admin_roles and not administrators.keys() - {email}:
             raise CommandError("Cannot offboard the last active application Administrator.")
 
         target.is_active = False
