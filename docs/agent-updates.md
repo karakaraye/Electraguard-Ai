@@ -44,6 +44,11 @@ The full plan is in [hackathon-plan.md](hackathon-plan.md).
 
 ## Updates
 
+### 23 Nov 2026 · Claude · Antigravity joins: staff screens
+
+- Antigravity builds the staff screens S-01 to S-12 on `design/staff-screens` (worktree `.worktrees/EG-staff`), front end only, against `docs/design/api-contracts.md`. Owns `frontend/app/(staff)/**` and staff-only components it adds under `frontend/ui/staff/**`.
+- Claude's agents and the Codex agents paused on usage limits; their work is saved on their branches and they resume when limits reset (Claude ~07:40, Codex ~08:31 WAT).
+
 ### 23 Nov 2026 · Claude · Codex agents started on the backend
 
 - Three Codex agents are implementing the rest of the API, each in its own worktree and branch from `integrate/observer-e2e`, with its own test database:
