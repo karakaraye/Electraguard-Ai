@@ -10,7 +10,7 @@
  * - Offline fallback: a small page in the five languages.
  */
 
-const VERSION = "v1";
+const VERSION = "v2";
 const SHELL = `eg-shell-${VERSION}`;
 const STATIC = `eg-static-${VERSION}`;
 const REFERENCE = `eg-reference-${VERSION}`;
@@ -48,7 +48,27 @@ li{padding-bottom:16px;border-bottom:1px solid #d8d8d4}a{display:flex;align-item
   return new Response(html, { status: 503, headers: { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "no-store" } });
 }
 
-/** Cache a page and every /_next/static file it references. */
+/** Put one /_next/static file in the cache (if missing) and return its text when it is a script. */
+async function cacheStatic(statics, asset) {
+  try {
+    let file = await statics.match(asset);
+    if (!file) {
+      file = await fetch(asset);
+      if (!file.ok) return "";
+      await statics.put(asset, file.clone());
+    }
+    return asset.endsWith(".js") ? await file.text() : "";
+  } catch {
+    return ""; // Cached later on first use.
+  }
+}
+
+/**
+ * Cache a page, every /_next/static file it references, and the chunks those
+ * scripts load on demand ("static/chunks/….js" in the bundle): the message
+ * files of the other four languages are such chunks, and a phone that has
+ * never been online in Hausa must still be able to switch to Hausa offline.
+ */
 async function cachePage(path) {
   const response = await fetch(path, { credentials: "same-origin", cache: "no-cache" });
   if (!response.ok) return;
@@ -57,17 +77,14 @@ async function cachePage(path) {
   await shell.put(path, response);
   const assets = new Set(html.match(/\/_next\/static\/[^"'\s)\\]+/g) || []);
   const statics = await caches.open(STATIC);
+  const lazy = new Set();
   await Promise.all(
     [...assets].map(async (asset) => {
-      if (await statics.match(asset)) return;
-      try {
-        const file = await fetch(asset);
-        if (file.ok) await statics.put(asset, file);
-      } catch {
-        // Cached later on first use.
-      }
+      const text = await cacheStatic(statics, asset);
+      for (const chunk of text.match(/static\/chunks\/[\w.~-]+\.js/g) || []) lazy.add(`/_next/${chunk}`);
     }),
   );
+  await Promise.all([...lazy].filter((asset) => !assets.has(asset)).map((asset) => cacheStatic(statics, asset)));
 }
 
 self.addEventListener("install", (event) => {

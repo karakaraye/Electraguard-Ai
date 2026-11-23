@@ -93,6 +93,21 @@ export async function sendNow() {
   kick();
 }
 
+/**
+ * AUTH-07 says intake is open again (R5): reports waiting out a pause try now
+ * instead of sitting out the rest of the 600 s Retry-After.
+ */
+export async function resumeAfterIntakePause() {
+  let changed = false;
+  for (const item of getSnapshot().items) {
+    if (item.state === "queued" && item.wait_reason === "intake_paused" && item.next_at > Date.now()) {
+      await saveItem({ ...item, next_at: 0 });
+      changed = true;
+    }
+  }
+  if (changed) kick();
+}
+
 function currentItem(id: string): OutboxItem | undefined {
   return getSnapshot().items.find((item) => item.id === id);
 }
