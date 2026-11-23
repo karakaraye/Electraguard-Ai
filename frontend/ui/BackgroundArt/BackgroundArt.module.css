@@ -45,6 +45,15 @@
   margin: calc(-1 * var(--s-5)) 0 var(--s-3);
 }
 
+/* Phones: draw the scene a quarter larger than "cover" so the people read clearly; the empty
+   top of the sky is what gets cropped, and the view centres on the queue and the canopy. */
+@media (max-width: 599px) {
+  .art[data-variant="hero"] .scene {
+    background-size: auto 125%;
+    background-position: 37% 100%;
+  }
+}
+
 .art[data-variant="hero"] .scene {
   /* Full window width, whatever the reading column: the band is positioned against the window
      (no positioned ancestor in AppShell) and stays at its place in the flow (top: auto). */
@@ -72,8 +81,10 @@
 /* ---------- Soft background ---------- */
 
 .art[data-variant="soft"] {
-  /* Strength on paper. Measured: body text over the darkest part of the art stays at 7:1 or more */
-  --art-strength: 0.26;
+  /* Strength on paper, the same in both themes. Measured on the rendered page: over the darkest
+     (light) or lightest (dark) pixel of the art, --ink-2 keeps 7:1 or more and --ink-3 keeps
+     4.5:1 or more, so no text loses contrast even where it crosses the art. */
+  --art-strength: 0.17;
   --art-height: clamp(170px, 30vh, 300px);
   /* Space kept free under the ground line for the pinned action area (one primary button) */
   --art-clear: calc(var(--control-h, 52px) + 2 * var(--s-3, 12px) + 1px + env(safe-area-inset-bottom, 0px));
@@ -101,16 +112,6 @@
    that sets its own position (sticky bars, sheets) wins. */
 :where(.art[data-variant="soft"]) ~ :where(*) {
   position: relative;
-}
-
-[data-theme="dark"] .art[data-variant="soft"] {
-  --art-strength: 0.24;
-}
-
-@media (prefers-color-scheme: dark) {
-  [data-theme="system"] .art[data-variant="soft"] {
-    --art-strength: 0.24;
-  }
 }
 
 @media (min-width: 600px) {

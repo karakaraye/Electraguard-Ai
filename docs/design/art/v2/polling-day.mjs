@@ -25,7 +25,7 @@ const ROLES = {
   f2: ["#e4e2dd", "#1d1d1f"], // distant roofs and trees
   t1: ["#cfcdc7", "#2c2c2f"], // neem canopy
   t2: ["#bdbbb5", "#252528"], // neem canopy, shade
-  t3: ["#dbd9d3", "#333337"], // neem canopy, sunlit
+  t3: ["#d8d6d0", "#323236"], // neem canopy, sunlit
   t4: ["#adaba5", "#1f1f22"], // neem canopy, deepest shade
   tk: ["#8f8d88", "#3d3d41"], // trunks
   pf: ["#a9a7a1", "#2f2f33"], // palm fronds
@@ -353,7 +353,7 @@ function sun(theme) {
     const y = 300;
     return e("h1", sx, y, 300, 130) + e("h0", sx, y, 190, 92) + e("h2", sx, y, 100, 64) + c("sn", sx, y, 38);
   }
-  const y = 252;
+  const y = 266;
   return c("h1", x, y, 150) + c("h0", x, y, 112) + c("h2", x, y, 78) + c("sn", x, y, 44);
 }
 
@@ -416,7 +416,7 @@ function neem(x, y, s) {
   const crown = leafy(0, -22, 158, 98, 48, 0.13);
   const shade = leafy(30, 18, 128, 58, 30, 0.12);
   const deep = leafy(46, 46, 90, 26, 18, 0.1);
-  const lit = leafy(-58, -64, 70, 40, 20, 0.15);
+  const lit = leafy(-46, -52, 62, 30, 20, 0.12);
   const trunk = p(
     "tk",
     "M-14,150 Q-8,104 -15,70 L-58,30 L-50,24 L-11,56 Q-7,36 -18,10 L-9,7 Q2,34 2,50 L44,18 L50,25 Q14,52 10,76 Q7,108 15,150 Z"
@@ -506,7 +506,7 @@ function canopy() {
   // shade on the ground, officials and table (behind the front poles)
   s += p("sh", "M716,452 L960,452 Q1000,462 980,470 L740,470 Q700,462 716,452 Z");
   s += g(792, 474, 0.72, official("c2")) + g(848, 474, 0.72, official("c3"));
-  s += r("c5", 764, 416, 148, 8, 1.5);
+  s += r("c4", 764, 416, 148, 8, 1.5);
   s += r("pl", 770, 424, 3, 32) + r("pl", 903, 424, 3, 32);
   // voting screen on a stand (plain panel, no markings)
   s += p("c4", "M926,384 L956,380 L958,418 L928,420 Z") + r("pl", 940, 419, 3, 38);
@@ -569,7 +569,7 @@ function scene(theme) {
     [1236, 452, 0.62, kaftanMan, true],
     [1262, 453, 0.62, hijabWoman, true],
   ];
-  const obs = [1022, 492, 1.06, observer, true];
+  const obs = [992, 494, 1.06, observer, true];
 
   const all = [...people, ...walkers, ...distant, obs];
   const shadows = all.map(([x, y, s]) => shadowOf(x, y, s)).join("");
@@ -585,7 +585,7 @@ function scene(theme) {
     school(),
     ground(),
     p("sh", "M300,452 Q470,440 640,452 Q700,462 620,470 Q460,474 300,464 Z"),
-    neem(420, 302, 1),
+    neem(420, 314, 1),
     shadows,
     canopy(),
     drawFigures(distant),
