@@ -1,0 +1,5166 @@
+{
+ "dataset_version": "2026-11-23.1",
+ "source": "official",
+ "states": [
+  {
+   "state_code": "AD",
+   "name": "Adamawa",
+   "lgas": [
+    {
+     "lga_code": "AD-01",
+     "name": "Adamawa LGA-1",
+     "wards": [
+      {
+       "ward_code": "AD-01-01",
+       "name": "Adamawa L1-W1",
+       "units": [
+        [
+         "SIM-00271",
+         "Polling unit 1, urban"
+        ],
+        [
+         "SIM-00272",
+         "Polling unit 2, urban"
+        ],
+        [
+         "SIM-00273",
+         "Polling unit 3, urban"
+        ],
+        [
+         "SIM-00274",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00275",
+         "Polling unit 5, urban"
+        ]
+       ]
+      },
+      {
+       "ward_code": "AD-01-02",
+       "name": "Adamawa L1-W2",
+       "units": [
+        [
+         "SIM-00276",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00277",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00278",
+         "Polling unit 3, rural"
+        ],
+        [
+         "SIM-00279",
+         "Polling unit 4, rural"
+        ],
+        [
+         "SIM-00280",
+         "Polling unit 5, rural"
+        ]
+       ]
+      },
+      {
+       "ward_code": "AD-01-03",
+       "name": "Adamawa L1-W3",
+       "units": [
+        [
+         "SIM-00281",
+         "Polling unit 1, urban"
+        ],
+        [
+         "SIM-00282",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00283",
+         "Polling unit 3, urban"
+        ],
+        [
+         "SIM-00284",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00285",
+         "Polling unit 5, urban"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "lga_code": "AD-02",
+     "name": "Adamawa LGA-2",
+     "wards": [
+      {
+       "ward_code": "AD-02-01",
+       "name": "Adamawa L2-W1",
+       "units": [
+        [
+         "SIM-00286",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00287",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00288",
+         "Polling unit 3, rural"
+        ],
+        [
+         "SIM-00289",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00290",
+         "Polling unit 5, urban"
+        ]
+       ]
+      },
+      {
+       "ward_code": "AD-02-02",
+       "name": "Adamawa L2-W2",
+       "units": [
+        [
+         "SIM-00291",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00292",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00293",
+         "Polling unit 3, urban"
+        ],
+        [
+         "SIM-00294",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00295",
+         "Polling unit 5, urban"
+        ]
+       ]
+      },
+      {
+       "ward_code": "AD-02-03",
+       "name": "Adamawa L2-W3",
+       "units": [
+        [
+         "SIM-00296",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00297",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00298",
+         "Polling unit 3, urban"
+        ],
+        [
+         "SIM-00299",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00300",
+         "Polling unit 5, urban"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "lga_code": "AD-03",
+     "name": "Adamawa LGA-3",
+     "wards": [
+      {
+       "ward_code": "AD-03-01",
+       "name": "Adamawa L3-W1",
+       "units": [
+        [
+         "SIM-00301",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00302",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00303",
+         "Polling unit 3, rural"
+        ],
+        [
+         "SIM-00304",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00305",
+         "Polling unit 5, rural"
+        ]
+       ]
+      },
+      {
+       "ward_code": "AD-03-02",
+       "name": "Adamawa L3-W2",
+       "units": [
+        [
+         "SIM-00306",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00307",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00308",
+         "Polling unit 3, urban"
+        ],
+        [
+         "SIM-00309",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00310",
+         "Polling unit 5, rural"
+        ]
+       ]
+      },
+      {
+       "ward_code": "AD-03-03",
+       "name": "Adamawa L3-W3",
+       "units": [
+        [
+         "SIM-00311",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00312",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00313",
+         "Polling unit 3, rural"
+        ],
+        [
+         "SIM-00314",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00315",
+         "Polling unit 5, rural"
+        ]
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "state_code": "AN",
+   "name": "Anambra",
+   "lgas": [
+    {
+     "lga_code": "AN-01",
+     "name": "Anambra LGA-1",
+     "wards": [
+      {
+       "ward_code": "AN-01-01",
+       "name": "Anambra L1-W1",
+       "units": [
+        [
+         "SIM-00496",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00497",
+         "Polling unit 2, urban"
+        ],
+        [
+         "SIM-00498",
+         "Polling unit 3, urban"
+        ],
+        [
+         "SIM-00499",
+         "Polling unit 4, rural"
+        ],
+        [
+         "SIM-00500",
+         "Polling unit 5, rural"
+        ]
+       ]
+      },
+      {
+       "ward_code": "AN-01-02",
+       "name": "Anambra L1-W2",
+       "units": [
+        [
+         "SIM-00501",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00502",
+         "Polling unit 2, urban"
+        ],
+        [
+         "SIM-00503",
+         "Polling unit 3, urban"
+        ],
+        [
+         "SIM-00504",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00505",
+         "Polling unit 5, rural"
+        ]
+       ]
+      },
+      {
+       "ward_code": "AN-01-03",
+       "name": "Anambra L1-W3",
+       "units": [
+        [
+         "SIM-00506",
+         "Polling unit 1, urban"
+        ],
+        [
+         "SIM-00507",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00508",
+         "Polling unit 3, rural"
+        ],
+        [
+         "SIM-00509",
+         "Polling unit 4, rural"
+        ],
+        [
+         "SIM-00510",
+         "Polling unit 5, urban"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "lga_code": "AN-02",
+     "name": "Anambra LGA-2",
+     "wards": [
+      {
+       "ward_code": "AN-02-01",
+       "name": "Anambra L2-W1",
+       "units": [
+        [
+         "SIM-00511",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00512",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00513",
+         "Polling unit 3, urban"
+        ],
+        [
+         "SIM-00514",
+         "Polling unit 4, rural"
+        ],
+        [
+         "SIM-00515",
+         "Polling unit 5, rural"
+        ]
+       ]
+      },
+      {
+       "ward_code": "AN-02-02",
+       "name": "Anambra L2-W2",
+       "units": [
+        [
+         "SIM-00516",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00517",
+         "Polling unit 2, urban"
+        ],
+        [
+         "SIM-00518",
+         "Polling unit 3, rural"
+        ],
+        [
+         "SIM-00519",
+         "Polling unit 4, rural"
+        ],
+        [
+         "SIM-00520",
+         "Polling unit 5, urban"
+        ]
+       ]
+      },
+      {
+       "ward_code": "AN-02-03",
+       "name": "Anambra L2-W3",
+       "units": [
+        [
+         "SIM-00521",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00522",
+         "Polling unit 2, urban"
+        ],
+        [
+         "SIM-00523",
+         "Polling unit 3, urban"
+        ],
+        [
+         "SIM-00524",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00525",
+         "Polling unit 5, urban"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "lga_code": "AN-03",
+     "name": "Anambra LGA-3",
+     "wards": [
+      {
+       "ward_code": "AN-03-01",
+       "name": "Anambra L3-W1",
+       "units": [
+        [
+         "SIM-00526",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00527",
+         "Polling unit 2, urban"
+        ],
+        [
+         "SIM-00528",
+         "Polling unit 3, urban"
+        ],
+        [
+         "SIM-00529",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00530",
+         "Polling unit 5, rural"
+        ]
+       ]
+      },
+      {
+       "ward_code": "AN-03-02",
+       "name": "Anambra L3-W2",
+       "units": [
+        [
+         "SIM-00531",
+         "Polling unit 1, urban"
+        ],
+        [
+         "SIM-00532",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00533",
+         "Polling unit 3, rural"
+        ],
+        [
+         "SIM-00534",
+         "Polling unit 4, rural"
+        ],
+        [
+         "SIM-00535",
+         "Polling unit 5, rural"
+        ]
+       ]
+      },
+      {
+       "ward_code": "AN-03-03",
+       "name": "Anambra L3-W3",
+       "units": [
+        [
+         "SIM-00536",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00537",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00538",
+         "Polling unit 3, urban"
+        ],
+        [
+         "SIM-00539",
+         "Polling unit 4, rural"
+        ],
+        [
+         "SIM-00540",
+         "Polling unit 5, urban"
+        ]
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "state_code": "BA",
+   "name": "Bauchi",
+   "lgas": [
+    {
+     "lga_code": "BA-01",
+     "name": "Bauchi LGA-1",
+     "wards": [
+      {
+       "ward_code": "BA-01-01",
+       "name": "Bauchi L1-W1",
+       "units": [
+        [
+         "SIM-00181",
+         "Polling unit 1, urban"
+        ],
+        [
+         "SIM-00182",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00183",
+         "Polling unit 3, urban"
+        ],
+        [
+         "SIM-00184",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00185",
+         "Polling unit 5, urban"
+        ]
+       ]
+      },
+      {
+       "ward_code": "BA-01-02",
+       "name": "Bauchi L1-W2",
+       "units": [
+        [
+         "SIM-00186",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00187",
+         "Polling unit 2, urban"
+        ],
+        [
+         "SIM-00188",
+         "Polling unit 3, urban"
+        ],
+        [
+         "SIM-00189",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00190",
+         "Polling unit 5, urban"
+        ]
+       ]
+      },
+      {
+       "ward_code": "BA-01-03",
+       "name": "Bauchi L1-W3",
+       "units": [
+        [
+         "SIM-00191",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00192",
+         "Polling unit 2, urban"
+        ],
+        [
+         "SIM-00193",
+         "Polling unit 3, urban"
+        ],
+        [
+         "SIM-00194",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00195",
+         "Polling unit 5, urban"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "lga_code": "BA-02",
+     "name": "Bauchi LGA-2",
+     "wards": [
+      {
+       "ward_code": "BA-02-01",
+       "name": "Bauchi L2-W1",
+       "units": [
+        [
+         "SIM-00196",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00197",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00198",
+         "Polling unit 3, rural"
+        ],
+        [
+         "SIM-00199",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00200",
+         "Polling unit 5, urban"
+        ]
+       ]
+      },
+      {
+       "ward_code": "BA-02-02",
+       "name": "Bauchi L2-W2",
+       "units": [
+        [
+         "SIM-00201",
+         "Polling unit 1, urban"
+        ],
+        [
+         "SIM-00202",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00203",
+         "Polling unit 3, rural"
+        ],
+        [
+         "SIM-00204",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00205",
+         "Polling unit 5, urban"
+        ]
+       ]
+      },
+      {
+       "ward_code": "BA-02-03",
+       "name": "Bauchi L2-W3",
+       "units": [
+        [
+         "SIM-00206",
+         "Polling unit 1, urban"
+        ],
+        [
+         "SIM-00207",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00208",
+         "Polling unit 3, rural"
+        ],
+        [
+         "SIM-00209",
+         "Polling unit 4, rural"
+        ],
+        [
+         "SIM-00210",
+         "Polling unit 5, rural"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "lga_code": "BA-03",
+     "name": "Bauchi LGA-3",
+     "wards": [
+      {
+       "ward_code": "BA-03-01",
+       "name": "Bauchi L3-W1",
+       "units": [
+        [
+         "SIM-00211",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00212",
+         "Polling unit 2, urban"
+        ],
+        [
+         "SIM-00213",
+         "Polling unit 3, urban"
+        ],
+        [
+         "SIM-00214",
+         "Polling unit 4, rural"
+        ],
+        [
+         "SIM-00215",
+         "Polling unit 5, rural"
+        ]
+       ]
+      },
+      {
+       "ward_code": "BA-03-02",
+       "name": "Bauchi L3-W2",
+       "units": [
+        [
+         "SIM-00216",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00217",
+         "Polling unit 2, urban"
+        ],
+        [
+         "SIM-00218",
+         "Polling unit 3, urban"
+        ],
+        [
+         "SIM-00219",
+         "Polling unit 4, rural"
+        ],
+        [
+         "SIM-00220",
+         "Polling unit 5, urban"
+        ]
+       ]
+      },
+      {
+       "ward_code": "BA-03-03",
+       "name": "Bauchi L3-W3",
+       "units": [
+        [
+         "SIM-00221",
+         "Polling unit 1, urban"
+        ],
+        [
+         "SIM-00222",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00223",
+         "Polling unit 3, rural"
+        ],
+        [
+         "SIM-00224",
+         "Polling unit 4, rural"
+        ],
+        [
+         "SIM-00225",
+         "Polling unit 5, urban"
+        ]
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "state_code": "BE",
+   "name": "Benue",
+   "lgas": [
+    {
+     "lga_code": "BE-01",
+     "name": "Benue LGA-1",
+     "wards": [
+      {
+       "ward_code": "BE-01-01",
+       "name": "Benue L1-W1",
+       "units": [
+        [
+         "SIM-00001",
+         "Polling unit 1, urban"
+        ],
+        [
+         "SIM-00002",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00003",
+         "Polling unit 3, rural"
+        ],
+        [
+         "SIM-00004",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00005",
+         "Polling unit 5, urban"
+        ]
+       ]
+      },
+      {
+       "ward_code": "BE-01-02",
+       "name": "Benue L1-W2",
+       "units": [
+        [
+         "SIM-00006",
+         "Polling unit 1, urban"
+        ],
+        [
+         "SIM-00007",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00008",
+         "Polling unit 3, urban"
+        ],
+        [
+         "SIM-00009",
+         "Polling unit 4, rural"
+        ],
+        [
+         "SIM-00010",
+         "Polling unit 5, rural"
+        ]
+       ]
+      },
+      {
+       "ward_code": "BE-01-03",
+       "name": "Benue L1-W3",
+       "units": [
+        [
+         "SIM-00011",
+         "Polling unit 1, urban"
+        ],
+        [
+         "SIM-00012",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00013",
+         "Polling unit 3, rural"
+        ],
+        [
+         "SIM-00014",
+         "Polling unit 4, rural"
+        ],
+        [
+         "SIM-00015",
+         "Polling unit 5, urban"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "lga_code": "BE-02",
+     "name": "Benue LGA-2",
+     "wards": [
+      {
+       "ward_code": "BE-02-01",
+       "name": "Benue L2-W1",
+       "units": [
+        [
+         "SIM-00016",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00017",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00018",
+         "Polling unit 3, rural"
+        ],
+        [
+         "SIM-00019",
+         "Polling unit 4, rural"
+        ],
+        [
+         "SIM-00020",
+         "Polling unit 5, rural"
+        ]
+       ]
+      },
+      {
+       "ward_code": "BE-02-02",
+       "name": "Benue L2-W2",
+       "units": [
+        [
+         "SIM-00021",
+         "Polling unit 1, urban"
+        ],
+        [
+         "SIM-00022",
+         "Polling unit 2, urban"
+        ],
+        [
+         "SIM-00023",
+         "Polling unit 3, urban"
+        ],
+        [
+         "SIM-00024",
+         "Polling unit 4, rural"
+        ],
+        [
+         "SIM-00025",
+         "Polling unit 5, rural"
+        ]
+       ]
+      },
+      {
+       "ward_code": "BE-02-03",
+       "name": "Benue L2-W3",
+       "units": [
+        [
+         "SIM-00026",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00027",
+         "Polling unit 2, urban"
+        ],
+        [
+         "SIM-00028",
+         "Polling unit 3, rural"
+        ],
+        [
+         "SIM-00029",
+         "Polling unit 4, rural"
+        ],
+        [
+         "SIM-00030",
+         "Polling unit 5, rural"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "lga_code": "BE-03",
+     "name": "Benue LGA-3",
+     "wards": [
+      {
+       "ward_code": "BE-03-01",
+       "name": "Benue L3-W1",
+       "units": [
+        [
+         "SIM-00031",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00032",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00033",
+         "Polling unit 3, urban"
+        ],
+        [
+         "SIM-00034",
+         "Polling unit 4, rural"
+        ],
+        [
+         "SIM-00035",
+         "Polling unit 5, urban"
+        ]
+       ]
+      },
+      {
+       "ward_code": "BE-03-02",
+       "name": "Benue L3-W2",
+       "units": [
+        [
+         "SIM-00036",
+         "Polling unit 1, urban"
+        ],
+        [
+         "SIM-00037",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00038",
+         "Polling unit 3, rural"
+        ],
+        [
+         "SIM-00039",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00040",
+         "Polling unit 5, rural"
+        ]
+       ]
+      },
+      {
+       "ward_code": "BE-03-03",
+       "name": "Benue L3-W3",
+       "units": [
+        [
+         "SIM-00041",
+         "Polling unit 1, urban"
+        ],
+        [
+         "SIM-00042",
+         "Polling unit 2, urban"
+        ],
+        [
+         "SIM-00043",
+         "Polling unit 3, rural"
+        ],
+        [
+         "SIM-00044",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00045",
+         "Polling unit 5, urban"
+        ]
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "state_code": "BO",
+   "name": "Borno",
+   "lgas": [
+    {
+     "lga_code": "BO-01",
+     "name": "Borno LGA-1",
+     "wards": [
+      {
+       "ward_code": "BO-01-01",
+       "name": "Borno L1-W1",
+       "units": [
+        [
+         "SIM-00226",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00227",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00228",
+         "Polling unit 3, urban"
+        ],
+        [
+         "SIM-00229",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00230",
+         "Polling unit 5, rural"
+        ]
+       ]
+      },
+      {
+       "ward_code": "BO-01-02",
+       "name": "Borno L1-W2",
+       "units": [
+        [
+         "SIM-00231",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00232",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00233",
+         "Polling unit 3, rural"
+        ],
+        [
+         "SIM-00234",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00235",
+         "Polling unit 5, urban"
+        ]
+       ]
+      },
+      {
+       "ward_code": "BO-01-03",
+       "name": "Borno L1-W3",
+       "units": [
+        [
+         "SIM-00236",
+         "Polling unit 1, urban"
+        ],
+        [
+         "SIM-00237",
+         "Polling unit 2, urban"
+        ],
+        [
+         "SIM-00238",
+         "Polling unit 3, rural"
+        ],
+        [
+         "SIM-00239",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00240",
+         "Polling unit 5, rural"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "lga_code": "BO-02",
+     "name": "Borno LGA-2",
+     "wards": [
+      {
+       "ward_code": "BO-02-01",
+       "name": "Borno L2-W1",
+       "units": [
+        [
+         "SIM-00241",
+         "Polling unit 1, urban"
+        ],
+        [
+         "SIM-00242",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00243",
+         "Polling unit 3, urban"
+        ],
+        [
+         "SIM-00244",
+         "Polling unit 4, rural"
+        ],
+        [
+         "SIM-00245",
+         "Polling unit 5, urban"
+        ]
+       ]
+      },
+      {
+       "ward_code": "BO-02-02",
+       "name": "Borno L2-W2",
+       "units": [
+        [
+         "SIM-00246",
+         "Polling unit 1, urban"
+        ],
+        [
+         "SIM-00247",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00248",
+         "Polling unit 3, rural"
+        ],
+        [
+         "SIM-00249",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00250",
+         "Polling unit 5, rural"
+        ]
+       ]
+      },
+      {
+       "ward_code": "BO-02-03",
+       "name": "Borno L2-W3",
+       "units": [
+        [
+         "SIM-00251",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00252",
+         "Polling unit 2, urban"
+        ],
+        [
+         "SIM-00253",
+         "Polling unit 3, urban"
+        ],
+        [
+         "SIM-00254",
+         "Polling unit 4, rural"
+        ],
+        [
+         "SIM-00255",
+         "Polling unit 5, urban"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "lga_code": "BO-03",
+     "name": "Borno LGA-3",
+     "wards": [
+      {
+       "ward_code": "BO-03-01",
+       "name": "Borno L3-W1",
+       "units": [
+        [
+         "SIM-00256",
+         "Polling unit 1, urban"
+        ],
+        [
+         "SIM-00257",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00258",
+         "Polling unit 3, urban"
+        ],
+        [
+         "SIM-00259",
+         "Polling unit 4, rural"
+        ],
+        [
+         "SIM-00260",
+         "Polling unit 5, urban"
+        ]
+       ]
+      },
+      {
+       "ward_code": "BO-03-02",
+       "name": "Borno L3-W2",
+       "units": [
+        [
+         "SIM-00261",
+         "Polling unit 1, urban"
+        ],
+        [
+         "SIM-00262",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00263",
+         "Polling unit 3, urban"
+        ],
+        [
+         "SIM-00264",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00265",
+         "Polling unit 5, rural"
+        ]
+       ]
+      },
+      {
+       "ward_code": "BO-03-03",
+       "name": "Borno L3-W3",
+       "units": [
+        [
+         "SIM-00266",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00267",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00268",
+         "Polling unit 3, urban"
+        ],
+        [
+         "SIM-00269",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00270",
+         "Polling unit 5, urban"
+        ]
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "state_code": "CR",
+   "name": "Cross River",
+   "lgas": [
+    {
+     "lga_code": "CR-01",
+     "name": "Cross River LGA-1",
+     "wards": [
+      {
+       "ward_code": "CR-01-01",
+       "name": "Cross River L1-W1",
+       "units": [
+        [
+         "SIM-00676",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00677",
+         "Polling unit 2, urban"
+        ],
+        [
+         "SIM-00678",
+         "Polling unit 3, urban"
+        ],
+        [
+         "SIM-00679",
+         "Polling unit 4, rural"
+        ],
+        [
+         "SIM-00680",
+         "Polling unit 5, urban"
+        ]
+       ]
+      },
+      {
+       "ward_code": "CR-01-02",
+       "name": "Cross River L1-W2",
+       "units": [
+        [
+         "SIM-00681",
+         "Polling unit 1, urban"
+        ],
+        [
+         "SIM-00682",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00683",
+         "Polling unit 3, rural"
+        ],
+        [
+         "SIM-00684",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00685",
+         "Polling unit 5, urban"
+        ]
+       ]
+      },
+      {
+       "ward_code": "CR-01-03",
+       "name": "Cross River L1-W3",
+       "units": [
+        [
+         "SIM-00686",
+         "Polling unit 1, urban"
+        ],
+        [
+         "SIM-00687",
+         "Polling unit 2, urban"
+        ],
+        [
+         "SIM-00688",
+         "Polling unit 3, urban"
+        ],
+        [
+         "SIM-00689",
+         "Polling unit 4, rural"
+        ],
+        [
+         "SIM-00690",
+         "Polling unit 5, rural"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "lga_code": "CR-02",
+     "name": "Cross River LGA-2",
+     "wards": [
+      {
+       "ward_code": "CR-02-01",
+       "name": "Cross River L2-W1",
+       "units": [
+        [
+         "SIM-00691",
+         "Polling unit 1, urban"
+        ],
+        [
+         "SIM-00692",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00693",
+         "Polling unit 3, urban"
+        ],
+        [
+         "SIM-00694",
+         "Polling unit 4, rural"
+        ],
+        [
+         "SIM-00695",
+         "Polling unit 5, rural"
+        ]
+       ]
+      },
+      {
+       "ward_code": "CR-02-02",
+       "name": "Cross River L2-W2",
+       "units": [
+        [
+         "SIM-00696",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00697",
+         "Polling unit 2, urban"
+        ],
+        [
+         "SIM-00698",
+         "Polling unit 3, urban"
+        ],
+        [
+         "SIM-00699",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00700",
+         "Polling unit 5, urban"
+        ]
+       ]
+      },
+      {
+       "ward_code": "CR-02-03",
+       "name": "Cross River L2-W3",
+       "units": [
+        [
+         "SIM-00701",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00702",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00703",
+         "Polling unit 3, urban"
+        ],
+        [
+         "SIM-00704",
+         "Polling unit 4, rural"
+        ],
+        [
+         "SIM-00705",
+         "Polling unit 5, urban"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "lga_code": "CR-03",
+     "name": "Cross River LGA-3",
+     "wards": [
+      {
+       "ward_code": "CR-03-01",
+       "name": "Cross River L3-W1",
+       "units": [
+        [
+         "SIM-00706",
+         "Polling unit 1, urban"
+        ],
+        [
+         "SIM-00707",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00708",
+         "Polling unit 3, rural"
+        ],
+        [
+         "SIM-00709",
+         "Polling unit 4, rural"
+        ],
+        [
+         "SIM-00710",
+         "Polling unit 5, urban"
+        ]
+       ]
+      },
+      {
+       "ward_code": "CR-03-02",
+       "name": "Cross River L3-W2",
+       "units": [
+        [
+         "SIM-00711",
+         "Polling unit 1, urban"
+        ],
+        [
+         "SIM-00712",
+         "Polling unit 2, urban"
+        ],
+        [
+         "SIM-00713",
+         "Polling unit 3, urban"
+        ],
+        [
+         "SIM-00714",
+         "Polling unit 4, rural"
+        ],
+        [
+         "SIM-00715",
+         "Polling unit 5, rural"
+        ]
+       ]
+      },
+      {
+       "ward_code": "CR-03-03",
+       "name": "Cross River L3-W3",
+       "units": [
+        [
+         "SIM-00716",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00717",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00718",
+         "Polling unit 3, rural"
+        ],
+        [
+         "SIM-00719",
+         "Polling unit 4, rural"
+        ],
+        [
+         "SIM-00720",
+         "Polling unit 5, urban"
+        ]
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "state_code": "DE",
+   "name": "Delta",
+   "lgas": [
+    {
+     "lga_code": "DE-01",
+     "name": "Delta LGA-1",
+     "wards": [
+      {
+       "ward_code": "DE-01-01",
+       "name": "Delta L1-W1",
+       "units": [
+        [
+         "SIM-00631",
+         "Polling unit 1, urban"
+        ],
+        [
+         "SIM-00632",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00633",
+         "Polling unit 3, rural"
+        ],
+        [
+         "SIM-00634",
+         "Polling unit 4, rural"
+        ],
+        [
+         "SIM-00635",
+         "Polling unit 5, urban"
+        ]
+       ]
+      },
+      {
+       "ward_code": "DE-01-02",
+       "name": "Delta L1-W2",
+       "units": [
+        [
+         "SIM-00636",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00637",
+         "Polling unit 2, urban"
+        ],
+        [
+         "SIM-00638",
+         "Polling unit 3, rural"
+        ],
+        [
+         "SIM-00639",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00640",
+         "Polling unit 5, rural"
+        ]
+       ]
+      },
+      {
+       "ward_code": "DE-01-03",
+       "name": "Delta L1-W3",
+       "units": [
+        [
+         "SIM-00641",
+         "Polling unit 1, urban"
+        ],
+        [
+         "SIM-00642",
+         "Polling unit 2, urban"
+        ],
+        [
+         "SIM-00643",
+         "Polling unit 3, rural"
+        ],
+        [
+         "SIM-00644",
+         "Polling unit 4, rural"
+        ],
+        [
+         "SIM-00645",
+         "Polling unit 5, urban"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "lga_code": "DE-02",
+     "name": "Delta LGA-2",
+     "wards": [
+      {
+       "ward_code": "DE-02-01",
+       "name": "Delta L2-W1",
+       "units": [
+        [
+         "SIM-00646",
+         "Polling unit 1, urban"
+        ],
+        [
+         "SIM-00647",
+         "Polling unit 2, urban"
+        ],
+        [
+         "SIM-00648",
+         "Polling unit 3, rural"
+        ],
+        [
+         "SIM-00649",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00650",
+         "Polling unit 5, rural"
+        ]
+       ]
+      },
+      {
+       "ward_code": "DE-02-02",
+       "name": "Delta L2-W2",
+       "units": [
+        [
+         "SIM-00651",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00652",
+         "Polling unit 2, urban"
+        ],
+        [
+         "SIM-00653",
+         "Polling unit 3, urban"
+        ],
+        [
+         "SIM-00654",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00655",
+         "Polling unit 5, urban"
+        ]
+       ]
+      },
+      {
+       "ward_code": "DE-02-03",
+       "name": "Delta L2-W3",
+       "units": [
+        [
+         "SIM-00656",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00657",
+         "Polling unit 2, urban"
+        ],
+        [
+         "SIM-00658",
+         "Polling unit 3, rural"
+        ],
+        [
+         "SIM-00659",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00660",
+         "Polling unit 5, rural"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "lga_code": "DE-03",
+     "name": "Delta LGA-3",
+     "wards": [
+      {
+       "ward_code": "DE-03-01",
+       "name": "Delta L3-W1",
+       "units": [
+        [
+         "SIM-00661",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00662",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00663",
+         "Polling unit 3, rural"
+        ],
+        [
+         "SIM-00664",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00665",
+         "Polling unit 5, urban"
+        ]
+       ]
+      },
+      {
+       "ward_code": "DE-03-02",
+       "name": "Delta L3-W2",
+       "units": [
+        [
+         "SIM-00666",
+         "Polling unit 1, urban"
+        ],
+        [
+         "SIM-00667",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00668",
+         "Polling unit 3, urban"
+        ],
+        [
+         "SIM-00669",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00670",
+         "Polling unit 5, rural"
+        ]
+       ]
+      },
+      {
+       "ward_code": "DE-03-03",
+       "name": "Delta L3-W3",
+       "units": [
+        [
+         "SIM-00671",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00672",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00673",
+         "Polling unit 3, urban"
+        ],
+        [
+         "SIM-00674",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00675",
+         "Polling unit 5, rural"
+        ]
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "state_code": "EN",
+   "name": "Enugu",
+   "lgas": [
+    {
+     "lga_code": "EN-01",
+     "name": "Enugu LGA-1",
+     "wards": [
+      {
+       "ward_code": "EN-01-01",
+       "name": "Enugu L1-W1",
+       "units": [
+        [
+         "SIM-00451",
+         "Polling unit 1, urban"
+        ],
+        [
+         "SIM-00452",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00453",
+         "Polling unit 3, urban"
+        ],
+        [
+         "SIM-00454",
+         "Polling unit 4, rural"
+        ],
+        [
+         "SIM-00455",
+         "Polling unit 5, rural"
+        ]
+       ]
+      },
+      {
+       "ward_code": "EN-01-02",
+       "name": "Enugu L1-W2",
+       "units": [
+        [
+         "SIM-00456",
+         "Polling unit 1, urban"
+        ],
+        [
+         "SIM-00457",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00458",
+         "Polling unit 3, rural"
+        ],
+        [
+         "SIM-00459",
+         "Polling unit 4, rural"
+        ],
+        [
+         "SIM-00460",
+         "Polling unit 5, urban"
+        ]
+       ]
+      },
+      {
+       "ward_code": "EN-01-03",
+       "name": "Enugu L1-W3",
+       "units": [
+        [
+         "SIM-00461",
+         "Polling unit 1, urban"
+        ],
+        [
+         "SIM-00462",
+         "Polling unit 2, urban"
+        ],
+        [
+         "SIM-00463",
+         "Polling unit 3, rural"
+        ],
+        [
+         "SIM-00464",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00465",
+         "Polling unit 5, urban"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "lga_code": "EN-02",
+     "name": "Enugu LGA-2",
+     "wards": [
+      {
+       "ward_code": "EN-02-01",
+       "name": "Enugu L2-W1",
+       "units": [
+        [
+         "SIM-00466",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00467",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00468",
+         "Polling unit 3, rural"
+        ],
+        [
+         "SIM-00469",
+         "Polling unit 4, rural"
+        ],
+        [
+         "SIM-00470",
+         "Polling unit 5, rural"
+        ]
+       ]
+      },
+      {
+       "ward_code": "EN-02-02",
+       "name": "Enugu L2-W2",
+       "units": [
+        [
+         "SIM-00471",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00472",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00473",
+         "Polling unit 3, urban"
+        ],
+        [
+         "SIM-00474",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00475",
+         "Polling unit 5, urban"
+        ]
+       ]
+      },
+      {
+       "ward_code": "EN-02-03",
+       "name": "Enugu L2-W3",
+       "units": [
+        [
+         "SIM-00476",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00477",
+         "Polling unit 2, urban"
+        ],
+        [
+         "SIM-00478",
+         "Polling unit 3, rural"
+        ],
+        [
+         "SIM-00479",
+         "Polling unit 4, rural"
+        ],
+        [
+         "SIM-00480",
+         "Polling unit 5, rural"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "lga_code": "EN-03",
+     "name": "Enugu LGA-3",
+     "wards": [
+      {
+       "ward_code": "EN-03-01",
+       "name": "Enugu L3-W1",
+       "units": [
+        [
+         "SIM-00481",
+         "Polling unit 1, urban"
+        ],
+        [
+         "SIM-00482",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00483",
+         "Polling unit 3, urban"
+        ],
+        [
+         "SIM-00484",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00485",
+         "Polling unit 5, rural"
+        ]
+       ]
+      },
+      {
+       "ward_code": "EN-03-02",
+       "name": "Enugu L3-W2",
+       "units": [
+        [
+         "SIM-00486",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00487",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00488",
+         "Polling unit 3, rural"
+        ],
+        [
+         "SIM-00489",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00490",
+         "Polling unit 5, urban"
+        ]
+       ]
+      },
+      {
+       "ward_code": "EN-03-03",
+       "name": "Enugu L3-W3",
+       "units": [
+        [
+         "SIM-00491",
+         "Polling unit 1, urban"
+        ],
+        [
+         "SIM-00492",
+         "Polling unit 2, urban"
+        ],
+        [
+         "SIM-00493",
+         "Polling unit 3, urban"
+        ],
+        [
+         "SIM-00494",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00495",
+         "Polling unit 5, rural"
+        ]
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "state_code": "IM",
+   "name": "Imo",
+   "lgas": [
+    {
+     "lga_code": "IM-01",
+     "name": "Imo LGA-1",
+     "wards": [
+      {
+       "ward_code": "IM-01-01",
+       "name": "Imo L1-W1",
+       "units": [
+        [
+         "SIM-00541",
+         "Polling unit 1, urban"
+        ],
+        [
+         "SIM-00542",
+         "Polling unit 2, urban"
+        ],
+        [
+         "SIM-00543",
+         "Polling unit 3, urban"
+        ],
+        [
+         "SIM-00544",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00545",
+         "Polling unit 5, urban"
+        ]
+       ]
+      },
+      {
+       "ward_code": "IM-01-02",
+       "name": "Imo L1-W2",
+       "units": [
+        [
+         "SIM-00546",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00547",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00548",
+         "Polling unit 3, rural"
+        ],
+        [
+         "SIM-00549",
+         "Polling unit 4, rural"
+        ],
+        [
+         "SIM-00550",
+         "Polling unit 5, rural"
+        ]
+       ]
+      },
+      {
+       "ward_code": "IM-01-03",
+       "name": "Imo L1-W3",
+       "units": [
+        [
+         "SIM-00551",
+         "Polling unit 1, urban"
+        ],
+        [
+         "SIM-00552",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00553",
+         "Polling unit 3, urban"
+        ],
+        [
+         "SIM-00554",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00555",
+         "Polling unit 5, urban"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "lga_code": "IM-02",
+     "name": "Imo LGA-2",
+     "wards": [
+      {
+       "ward_code": "IM-02-01",
+       "name": "Imo L2-W1",
+       "units": [
+        [
+         "SIM-00556",
+         "Polling unit 1, urban"
+        ],
+        [
+         "SIM-00557",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00558",
+         "Polling unit 3, rural"
+        ],
+        [
+         "SIM-00559",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00560",
+         "Polling unit 5, urban"
+        ]
+       ]
+      },
+      {
+       "ward_code": "IM-02-02",
+       "name": "Imo L2-W2",
+       "units": [
+        [
+         "SIM-00561",
+         "Polling unit 1, urban"
+        ],
+        [
+         "SIM-00562",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00563",
+         "Polling unit 3, rural"
+        ],
+        [
+         "SIM-00564",
+         "Polling unit 4, rural"
+        ],
+        [
+         "SIM-00565",
+         "Polling unit 5, rural"
+        ]
+       ]
+      },
+      {
+       "ward_code": "IM-02-03",
+       "name": "Imo L2-W3",
+       "units": [
+        [
+         "SIM-00566",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00567",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00568",
+         "Polling unit 3, urban"
+        ],
+        [
+         "SIM-00569",
+         "Polling unit 4, rural"
+        ],
+        [
+         "SIM-00570",
+         "Polling unit 5, urban"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "lga_code": "IM-03",
+     "name": "Imo LGA-3",
+     "wards": [
+      {
+       "ward_code": "IM-03-01",
+       "name": "Imo L3-W1",
+       "units": [
+        [
+         "SIM-00571",
+         "Polling unit 1, urban"
+        ],
+        [
+         "SIM-00572",
+         "Polling unit 2, urban"
+        ],
+        [
+         "SIM-00573",
+         "Polling unit 3, urban"
+        ],
+        [
+         "SIM-00574",
+         "Polling unit 4, rural"
+        ],
+        [
+         "SIM-00575",
+         "Polling unit 5, urban"
+        ]
+       ]
+      },
+      {
+       "ward_code": "IM-03-02",
+       "name": "Imo L3-W2",
+       "units": [
+        [
+         "SIM-00576",
+         "Polling unit 1, urban"
+        ],
+        [
+         "SIM-00577",
+         "Polling unit 2, urban"
+        ],
+        [
+         "SIM-00578",
+         "Polling unit 3, urban"
+        ],
+        [
+         "SIM-00579",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00580",
+         "Polling unit 5, urban"
+        ]
+       ]
+      },
+      {
+       "ward_code": "IM-03-03",
+       "name": "Imo L3-W3",
+       "units": [
+        [
+         "SIM-00581",
+         "Polling unit 1, urban"
+        ],
+        [
+         "SIM-00582",
+         "Polling unit 2, urban"
+        ],
+        [
+         "SIM-00583",
+         "Polling unit 3, urban"
+        ],
+        [
+         "SIM-00584",
+         "Polling unit 4, rural"
+        ],
+        [
+         "SIM-00585",
+         "Polling unit 5, rural"
+        ]
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "state_code": "KD",
+   "name": "Kaduna",
+   "lgas": [
+    {
+     "lga_code": "KD-01",
+     "name": "Kaduna LGA-1",
+     "wards": [
+      {
+       "ward_code": "KD-01-01",
+       "name": "Kaduna L1-W1",
+       "units": [
+        [
+         "SIM-00361",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00362",
+         "Polling unit 2, urban"
+        ],
+        [
+         "SIM-00363",
+         "Polling unit 3, rural"
+        ],
+        [
+         "SIM-00364",
+         "Polling unit 4, rural"
+        ],
+        [
+         "SIM-00365",
+         "Polling unit 5, rural"
+        ]
+       ]
+      },
+      {
+       "ward_code": "KD-01-02",
+       "name": "Kaduna L1-W2",
+       "units": [
+        [
+         "SIM-00366",
+         "Polling unit 1, urban"
+        ],
+        [
+         "SIM-00367",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00368",
+         "Polling unit 3, rural"
+        ],
+        [
+         "SIM-00369",
+         "Polling unit 4, rural"
+        ],
+        [
+         "SIM-00370",
+         "Polling unit 5, rural"
+        ]
+       ]
+      },
+      {
+       "ward_code": "KD-01-03",
+       "name": "Kaduna L1-W3",
+       "units": [
+        [
+         "SIM-00371",
+         "Polling unit 1, urban"
+        ],
+        [
+         "SIM-00372",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00373",
+         "Polling unit 3, urban"
+        ],
+        [
+         "SIM-00374",
+         "Polling unit 4, rural"
+        ],
+        [
+         "SIM-00375",
+         "Polling unit 5, rural"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "lga_code": "KD-02",
+     "name": "Kaduna LGA-2",
+     "wards": [
+      {
+       "ward_code": "KD-02-01",
+       "name": "Kaduna L2-W1",
+       "units": [
+        [
+         "SIM-00376",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00377",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00378",
+         "Polling unit 3, urban"
+        ],
+        [
+         "SIM-00379",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00380",
+         "Polling unit 5, urban"
+        ]
+       ]
+      },
+      {
+       "ward_code": "KD-02-02",
+       "name": "Kaduna L2-W2",
+       "units": [
+        [
+         "SIM-00381",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00382",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00383",
+         "Polling unit 3, urban"
+        ],
+        [
+         "SIM-00384",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00385",
+         "Polling unit 5, rural"
+        ]
+       ]
+      },
+      {
+       "ward_code": "KD-02-03",
+       "name": "Kaduna L2-W3",
+       "units": [
+        [
+         "SIM-00386",
+         "Polling unit 1, urban"
+        ],
+        [
+         "SIM-00387",
+         "Polling unit 2, urban"
+        ],
+        [
+         "SIM-00388",
+         "Polling unit 3, urban"
+        ],
+        [
+         "SIM-00389",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00390",
+         "Polling unit 5, urban"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "lga_code": "KD-03",
+     "name": "Kaduna LGA-3",
+     "wards": [
+      {
+       "ward_code": "KD-03-01",
+       "name": "Kaduna L3-W1",
+       "units": [
+        [
+         "SIM-00391",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00392",
+         "Polling unit 2, urban"
+        ],
+        [
+         "SIM-00393",
+         "Polling unit 3, urban"
+        ],
+        [
+         "SIM-00394",
+         "Polling unit 4, rural"
+        ],
+        [
+         "SIM-00395",
+         "Polling unit 5, rural"
+        ]
+       ]
+      },
+      {
+       "ward_code": "KD-03-02",
+       "name": "Kaduna L3-W2",
+       "units": [
+        [
+         "SIM-00396",
+         "Polling unit 1, urban"
+        ],
+        [
+         "SIM-00397",
+         "Polling unit 2, urban"
+        ],
+        [
+         "SIM-00398",
+         "Polling unit 3, urban"
+        ],
+        [
+         "SIM-00399",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00400",
+         "Polling unit 5, rural"
+        ]
+       ]
+      },
+      {
+       "ward_code": "KD-03-03",
+       "name": "Kaduna L3-W3",
+       "units": [
+        [
+         "SIM-00401",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00402",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00403",
+         "Polling unit 3, urban"
+        ],
+        [
+         "SIM-00404",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00405",
+         "Polling unit 5, rural"
+        ]
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "state_code": "KN",
+   "name": "Kano",
+   "lgas": [
+    {
+     "lga_code": "KN-01",
+     "name": "Kano LGA-1",
+     "wards": [
+      {
+       "ward_code": "KN-01-01",
+       "name": "Kano L1-W1",
+       "units": [
+        [
+         "SIM-00316",
+         "Polling unit 1, urban"
+        ],
+        [
+         "SIM-00317",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00318",
+         "Polling unit 3, urban"
+        ],
+        [
+         "SIM-00319",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00320",
+         "Polling unit 5, rural"
+        ]
+       ]
+      },
+      {
+       "ward_code": "KN-01-02",
+       "name": "Kano L1-W2",
+       "units": [
+        [
+         "SIM-00321",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00322",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00323",
+         "Polling unit 3, urban"
+        ],
+        [
+         "SIM-00324",
+         "Polling unit 4, rural"
+        ],
+        [
+         "SIM-00325",
+         "Polling unit 5, rural"
+        ]
+       ]
+      },
+      {
+       "ward_code": "KN-01-03",
+       "name": "Kano L1-W3",
+       "units": [
+        [
+         "SIM-00326",
+         "Polling unit 1, urban"
+        ],
+        [
+         "SIM-00327",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00328",
+         "Polling unit 3, urban"
+        ],
+        [
+         "SIM-00329",
+         "Polling unit 4, rural"
+        ],
+        [
+         "SIM-00330",
+         "Polling unit 5, rural"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "lga_code": "KN-02",
+     "name": "Kano LGA-2",
+     "wards": [
+      {
+       "ward_code": "KN-02-01",
+       "name": "Kano L2-W1",
+       "units": [
+        [
+         "SIM-00331",
+         "Polling unit 1, urban"
+        ],
+        [
+         "SIM-00332",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00333",
+         "Polling unit 3, rural"
+        ],
+        [
+         "SIM-00334",
+         "Polling unit 4, rural"
+        ],
+        [
+         "SIM-00335",
+         "Polling unit 5, urban"
+        ]
+       ]
+      },
+      {
+       "ward_code": "KN-02-02",
+       "name": "Kano L2-W2",
+       "units": [
+        [
+         "SIM-00336",
+         "Polling unit 1, urban"
+        ],
+        [
+         "SIM-00337",
+         "Polling unit 2, urban"
+        ],
+        [
+         "SIM-00338",
+         "Polling unit 3, rural"
+        ],
+        [
+         "SIM-00339",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00340",
+         "Polling unit 5, urban"
+        ]
+       ]
+      },
+      {
+       "ward_code": "KN-02-03",
+       "name": "Kano L2-W3",
+       "units": [
+        [
+         "SIM-00341",
+         "Polling unit 1, urban"
+        ],
+        [
+         "SIM-00342",
+         "Polling unit 2, urban"
+        ],
+        [
+         "SIM-00343",
+         "Polling unit 3, rural"
+        ],
+        [
+         "SIM-00344",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00345",
+         "Polling unit 5, rural"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "lga_code": "KN-03",
+     "name": "Kano LGA-3",
+     "wards": [
+      {
+       "ward_code": "KN-03-01",
+       "name": "Kano L3-W1",
+       "units": [
+        [
+         "SIM-00346",
+         "Polling unit 1, urban"
+        ],
+        [
+         "SIM-00347",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00348",
+         "Polling unit 3, urban"
+        ],
+        [
+         "SIM-00349",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00350",
+         "Polling unit 5, urban"
+        ]
+       ]
+      },
+      {
+       "ward_code": "KN-03-02",
+       "name": "Kano L3-W2",
+       "units": [
+        [
+         "SIM-00351",
+         "Polling unit 1, urban"
+        ],
+        [
+         "SIM-00352",
+         "Polling unit 2, urban"
+        ],
+        [
+         "SIM-00353",
+         "Polling unit 3, urban"
+        ],
+        [
+         "SIM-00354",
+         "Polling unit 4, rural"
+        ],
+        [
+         "SIM-00355",
+         "Polling unit 5, urban"
+        ]
+       ]
+      },
+      {
+       "ward_code": "KN-03-03",
+       "name": "Kano L3-W3",
+       "units": [
+        [
+         "SIM-00356",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00357",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00358",
+         "Polling unit 3, rural"
+        ],
+        [
+         "SIM-00359",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00360",
+         "Polling unit 5, rural"
+        ]
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "state_code": "KW",
+   "name": "Kwara",
+   "lgas": [
+    {
+     "lga_code": "KW-01",
+     "name": "Kwara LGA-1",
+     "wards": [
+      {
+       "ward_code": "KW-01-01",
+       "name": "Kwara L1-W1",
+       "units": [
+        [
+         "SIM-00046",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00047",
+         "Polling unit 2, urban"
+        ],
+        [
+         "SIM-00048",
+         "Polling unit 3, rural"
+        ],
+        [
+         "SIM-00049",
+         "Polling unit 4, rural"
+        ],
+        [
+         "SIM-00050",
+         "Polling unit 5, urban"
+        ]
+       ]
+      },
+      {
+       "ward_code": "KW-01-02",
+       "name": "Kwara L1-W2",
+       "units": [
+        [
+         "SIM-00051",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00052",
+         "Polling unit 2, urban"
+        ],
+        [
+         "SIM-00053",
+         "Polling unit 3, urban"
+        ],
+        [
+         "SIM-00054",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00055",
+         "Polling unit 5, rural"
+        ]
+       ]
+      },
+      {
+       "ward_code": "KW-01-03",
+       "name": "Kwara L1-W3",
+       "units": [
+        [
+         "SIM-00056",
+         "Polling unit 1, urban"
+        ],
+        [
+         "SIM-00057",
+         "Polling unit 2, urban"
+        ],
+        [
+         "SIM-00058",
+         "Polling unit 3, urban"
+        ],
+        [
+         "SIM-00059",
+         "Polling unit 4, rural"
+        ],
+        [
+         "SIM-00060",
+         "Polling unit 5, rural"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "lga_code": "KW-02",
+     "name": "Kwara LGA-2",
+     "wards": [
+      {
+       "ward_code": "KW-02-01",
+       "name": "Kwara L2-W1",
+       "units": [
+        [
+         "SIM-00061",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00062",
+         "Polling unit 2, urban"
+        ],
+        [
+         "SIM-00063",
+         "Polling unit 3, rural"
+        ],
+        [
+         "SIM-00064",
+         "Polling unit 4, rural"
+        ],
+        [
+         "SIM-00065",
+         "Polling unit 5, rural"
+        ]
+       ]
+      },
+      {
+       "ward_code": "KW-02-02",
+       "name": "Kwara L2-W2",
+       "units": [
+        [
+         "SIM-00066",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00067",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00068",
+         "Polling unit 3, urban"
+        ],
+        [
+         "SIM-00069",
+         "Polling unit 4, rural"
+        ],
+        [
+         "SIM-00070",
+         "Polling unit 5, rural"
+        ]
+       ]
+      },
+      {
+       "ward_code": "KW-02-03",
+       "name": "Kwara L2-W3",
+       "units": [
+        [
+         "SIM-00071",
+         "Polling unit 1, urban"
+        ],
+        [
+         "SIM-00072",
+         "Polling unit 2, urban"
+        ],
+        [
+         "SIM-00073",
+         "Polling unit 3, urban"
+        ],
+        [
+         "SIM-00074",
+         "Polling unit 4, rural"
+        ],
+        [
+         "SIM-00075",
+         "Polling unit 5, rural"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "lga_code": "KW-03",
+     "name": "Kwara LGA-3",
+     "wards": [
+      {
+       "ward_code": "KW-03-01",
+       "name": "Kwara L3-W1",
+       "units": [
+        [
+         "SIM-00076",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00077",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00078",
+         "Polling unit 3, urban"
+        ],
+        [
+         "SIM-00079",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00080",
+         "Polling unit 5, urban"
+        ]
+       ]
+      },
+      {
+       "ward_code": "KW-03-02",
+       "name": "Kwara L3-W2",
+       "units": [
+        [
+         "SIM-00081",
+         "Polling unit 1, urban"
+        ],
+        [
+         "SIM-00082",
+         "Polling unit 2, urban"
+        ],
+        [
+         "SIM-00083",
+         "Polling unit 3, urban"
+        ],
+        [
+         "SIM-00084",
+         "Polling unit 4, rural"
+        ],
+        [
+         "SIM-00085",
+         "Polling unit 5, urban"
+        ]
+       ]
+      },
+      {
+       "ward_code": "KW-03-03",
+       "name": "Kwara L3-W3",
+       "units": [
+        [
+         "SIM-00086",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00087",
+         "Polling unit 2, urban"
+        ],
+        [
+         "SIM-00088",
+         "Polling unit 3, rural"
+        ],
+        [
+         "SIM-00089",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00090",
+         "Polling unit 5, urban"
+        ]
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "state_code": "LA",
+   "name": "Lagos",
+   "lgas": [
+    {
+     "lga_code": "LA-01",
+     "name": "Lagos LGA-1",
+     "wards": [
+      {
+       "ward_code": "LA-01-01",
+       "name": "Lagos L1-W1",
+       "units": [
+        [
+         "SIM-00721",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00722",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00723",
+         "Polling unit 3, rural"
+        ],
+        [
+         "SIM-00724",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00725",
+         "Polling unit 5, rural"
+        ]
+       ]
+      },
+      {
+       "ward_code": "LA-01-02",
+       "name": "Lagos L1-W2",
+       "units": [
+        [
+         "SIM-00726",
+         "Polling unit 1, urban"
+        ],
+        [
+         "SIM-00727",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00728",
+         "Polling unit 3, rural"
+        ],
+        [
+         "SIM-00729",
+         "Polling unit 4, rural"
+        ],
+        [
+         "SIM-00730",
+         "Polling unit 5, urban"
+        ]
+       ]
+      },
+      {
+       "ward_code": "LA-01-03",
+       "name": "Lagos L1-W3",
+       "units": [
+        [
+         "SIM-00731",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00732",
+         "Polling unit 2, urban"
+        ],
+        [
+         "SIM-00733",
+         "Polling unit 3, urban"
+        ],
+        [
+         "SIM-00734",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00735",
+         "Polling unit 5, rural"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "lga_code": "LA-02",
+     "name": "Lagos LGA-2",
+     "wards": [
+      {
+       "ward_code": "LA-02-01",
+       "name": "Lagos L2-W1",
+       "units": [
+        [
+         "SIM-00736",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00737",
+         "Polling unit 2, urban"
+        ],
+        [
+         "SIM-00738",
+         "Polling unit 3, urban"
+        ],
+        [
+         "SIM-00739",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00740",
+         "Polling unit 5, rural"
+        ]
+       ]
+      },
+      {
+       "ward_code": "LA-02-02",
+       "name": "Lagos L2-W2",
+       "units": [
+        [
+         "SIM-00741",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00742",
+         "Polling unit 2, urban"
+        ],
+        [
+         "SIM-00743",
+         "Polling unit 3, urban"
+        ],
+        [
+         "SIM-00744",
+         "Polling unit 4, rural"
+        ],
+        [
+         "SIM-00745",
+         "Polling unit 5, rural"
+        ]
+       ]
+      },
+      {
+       "ward_code": "LA-02-03",
+       "name": "Lagos L2-W3",
+       "units": [
+        [
+         "SIM-00746",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00747",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00748",
+         "Polling unit 3, rural"
+        ],
+        [
+         "SIM-00749",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00750",
+         "Polling unit 5, urban"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "lga_code": "LA-03",
+     "name": "Lagos LGA-3",
+     "wards": [
+      {
+       "ward_code": "LA-03-01",
+       "name": "Lagos L3-W1",
+       "units": [
+        [
+         "SIM-00751",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00752",
+         "Polling unit 2, urban"
+        ],
+        [
+         "SIM-00753",
+         "Polling unit 3, rural"
+        ],
+        [
+         "SIM-00754",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00755",
+         "Polling unit 5, urban"
+        ]
+       ]
+      },
+      {
+       "ward_code": "LA-03-02",
+       "name": "Lagos L3-W2",
+       "units": [
+        [
+         "SIM-00756",
+         "Polling unit 1, urban"
+        ],
+        [
+         "SIM-00757",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00758",
+         "Polling unit 3, rural"
+        ],
+        [
+         "SIM-00759",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00760",
+         "Polling unit 5, rural"
+        ]
+       ]
+      },
+      {
+       "ward_code": "LA-03-03",
+       "name": "Lagos L3-W3",
+       "units": [
+        [
+         "SIM-00761",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00762",
+         "Polling unit 2, urban"
+        ],
+        [
+         "SIM-00763",
+         "Polling unit 3, urban"
+        ],
+        [
+         "SIM-00764",
+         "Polling unit 4, rural"
+        ],
+        [
+         "SIM-00765",
+         "Polling unit 5, rural"
+        ]
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "state_code": "NI",
+   "name": "Niger",
+   "lgas": [
+    {
+     "lga_code": "NI-01",
+     "name": "Niger LGA-1",
+     "wards": [
+      {
+       "ward_code": "NI-01-01",
+       "name": "Niger L1-W1",
+       "units": [
+        [
+         "SIM-00136",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00137",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00138",
+         "Polling unit 3, rural"
+        ],
+        [
+         "SIM-00139",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00140",
+         "Polling unit 5, rural"
+        ]
+       ]
+      },
+      {
+       "ward_code": "NI-01-02",
+       "name": "Niger L1-W2",
+       "units": [
+        [
+         "SIM-00141",
+         "Polling unit 1, urban"
+        ],
+        [
+         "SIM-00142",
+         "Polling unit 2, urban"
+        ],
+        [
+         "SIM-00143",
+         "Polling unit 3, urban"
+        ],
+        [
+         "SIM-00144",
+         "Polling unit 4, rural"
+        ],
+        [
+         "SIM-00145",
+         "Polling unit 5, rural"
+        ]
+       ]
+      },
+      {
+       "ward_code": "NI-01-03",
+       "name": "Niger L1-W3",
+       "units": [
+        [
+         "SIM-00146",
+         "Polling unit 1, urban"
+        ],
+        [
+         "SIM-00147",
+         "Polling unit 2, urban"
+        ],
+        [
+         "SIM-00148",
+         "Polling unit 3, rural"
+        ],
+        [
+         "SIM-00149",
+         "Polling unit 4, rural"
+        ],
+        [
+         "SIM-00150",
+         "Polling unit 5, urban"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "lga_code": "NI-02",
+     "name": "Niger LGA-2",
+     "wards": [
+      {
+       "ward_code": "NI-02-01",
+       "name": "Niger L2-W1",
+       "units": [
+        [
+         "SIM-00151",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00152",
+         "Polling unit 2, urban"
+        ],
+        [
+         "SIM-00153",
+         "Polling unit 3, urban"
+        ],
+        [
+         "SIM-00154",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00155",
+         "Polling unit 5, urban"
+        ]
+       ]
+      },
+      {
+       "ward_code": "NI-02-02",
+       "name": "Niger L2-W2",
+       "units": [
+        [
+         "SIM-00156",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00157",
+         "Polling unit 2, urban"
+        ],
+        [
+         "SIM-00158",
+         "Polling unit 3, rural"
+        ],
+        [
+         "SIM-00159",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00160",
+         "Polling unit 5, urban"
+        ]
+       ]
+      },
+      {
+       "ward_code": "NI-02-03",
+       "name": "Niger L2-W3",
+       "units": [
+        [
+         "SIM-00161",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00162",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00163",
+         "Polling unit 3, rural"
+        ],
+        [
+         "SIM-00164",
+         "Polling unit 4, rural"
+        ],
+        [
+         "SIM-00165",
+         "Polling unit 5, urban"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "lga_code": "NI-03",
+     "name": "Niger LGA-3",
+     "wards": [
+      {
+       "ward_code": "NI-03-01",
+       "name": "Niger L3-W1",
+       "units": [
+        [
+         "SIM-00166",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00167",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00168",
+         "Polling unit 3, urban"
+        ],
+        [
+         "SIM-00169",
+         "Polling unit 4, rural"
+        ],
+        [
+         "SIM-00170",
+         "Polling unit 5, urban"
+        ]
+       ]
+      },
+      {
+       "ward_code": "NI-03-02",
+       "name": "Niger L3-W2",
+       "units": [
+        [
+         "SIM-00171",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00172",
+         "Polling unit 2, urban"
+        ],
+        [
+         "SIM-00173",
+         "Polling unit 3, rural"
+        ],
+        [
+         "SIM-00174",
+         "Polling unit 4, rural"
+        ],
+        [
+         "SIM-00175",
+         "Polling unit 5, urban"
+        ]
+       ]
+      },
+      {
+       "ward_code": "NI-03-03",
+       "name": "Niger L3-W3",
+       "units": [
+        [
+         "SIM-00176",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00177",
+         "Polling unit 2, urban"
+        ],
+        [
+         "SIM-00178",
+         "Polling unit 3, rural"
+        ],
+        [
+         "SIM-00179",
+         "Polling unit 4, rural"
+        ],
+        [
+         "SIM-00180",
+         "Polling unit 5, rural"
+        ]
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "state_code": "OG",
+   "name": "Ogun",
+   "lgas": [
+    {
+     "lga_code": "OG-01",
+     "name": "Ogun LGA-1",
+     "wards": [
+      {
+       "ward_code": "OG-01-01",
+       "name": "Ogun L1-W1",
+       "units": [
+        [
+         "SIM-00811",
+         "Polling unit 1, urban"
+        ],
+        [
+         "SIM-00812",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00813",
+         "Polling unit 3, rural"
+        ],
+        [
+         "SIM-00814",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00815",
+         "Polling unit 5, rural"
+        ]
+       ]
+      },
+      {
+       "ward_code": "OG-01-02",
+       "name": "Ogun L1-W2",
+       "units": [
+        [
+         "SIM-00816",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00817",
+         "Polling unit 2, urban"
+        ],
+        [
+         "SIM-00818",
+         "Polling unit 3, rural"
+        ],
+        [
+         "SIM-00819",
+         "Polling unit 4, rural"
+        ],
+        [
+         "SIM-00820",
+         "Polling unit 5, urban"
+        ]
+       ]
+      },
+      {
+       "ward_code": "OG-01-03",
+       "name": "Ogun L1-W3",
+       "units": [
+        [
+         "SIM-00821",
+         "Polling unit 1, urban"
+        ],
+        [
+         "SIM-00822",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00823",
+         "Polling unit 3, urban"
+        ],
+        [
+         "SIM-00824",
+         "Polling unit 4, rural"
+        ],
+        [
+         "SIM-00825",
+         "Polling unit 5, rural"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "lga_code": "OG-02",
+     "name": "Ogun LGA-2",
+     "wards": [
+      {
+       "ward_code": "OG-02-01",
+       "name": "Ogun L2-W1",
+       "units": [
+        [
+         "SIM-00826",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00827",
+         "Polling unit 2, urban"
+        ],
+        [
+         "SIM-00828",
+         "Polling unit 3, urban"
+        ],
+        [
+         "SIM-00829",
+         "Polling unit 4, rural"
+        ],
+        [
+         "SIM-00830",
+         "Polling unit 5, rural"
+        ]
+       ]
+      },
+      {
+       "ward_code": "OG-02-02",
+       "name": "Ogun L2-W2",
+       "units": [
+        [
+         "SIM-00831",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00832",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00833",
+         "Polling unit 3, rural"
+        ],
+        [
+         "SIM-00834",
+         "Polling unit 4, rural"
+        ],
+        [
+         "SIM-00835",
+         "Polling unit 5, urban"
+        ]
+       ]
+      },
+      {
+       "ward_code": "OG-02-03",
+       "name": "Ogun L2-W3",
+       "units": [
+        [
+         "SIM-00836",
+         "Polling unit 1, urban"
+        ],
+        [
+         "SIM-00837",
+         "Polling unit 2, urban"
+        ],
+        [
+         "SIM-00838",
+         "Polling unit 3, rural"
+        ],
+        [
+         "SIM-00839",
+         "Polling unit 4, rural"
+        ],
+        [
+         "SIM-00840",
+         "Polling unit 5, urban"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "lga_code": "OG-03",
+     "name": "Ogun LGA-3",
+     "wards": [
+      {
+       "ward_code": "OG-03-01",
+       "name": "Ogun L3-W1",
+       "units": [
+        [
+         "SIM-00841",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00842",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00843",
+         "Polling unit 3, rural"
+        ],
+        [
+         "SIM-00844",
+         "Polling unit 4, rural"
+        ],
+        [
+         "SIM-00845",
+         "Polling unit 5, rural"
+        ]
+       ]
+      },
+      {
+       "ward_code": "OG-03-02",
+       "name": "Ogun L3-W2",
+       "units": [
+        [
+         "SIM-00846",
+         "Polling unit 1, urban"
+        ],
+        [
+         "SIM-00847",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00848",
+         "Polling unit 3, rural"
+        ],
+        [
+         "SIM-00849",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00850",
+         "Polling unit 5, rural"
+        ]
+       ]
+      },
+      {
+       "ward_code": "OG-03-03",
+       "name": "Ogun L3-W3",
+       "units": [
+        [
+         "SIM-00851",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00852",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00853",
+         "Polling unit 3, rural"
+        ],
+        [
+         "SIM-00854",
+         "Polling unit 4, rural"
+        ],
+        [
+         "SIM-00855",
+         "Polling unit 5, rural"
+        ]
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "state_code": "OS",
+   "name": "Osun",
+   "lgas": [
+    {
+     "lga_code": "OS-01",
+     "name": "Osun LGA-1",
+     "wards": [
+      {
+       "ward_code": "OS-01-01",
+       "name": "Osun L1-W1",
+       "units": [
+        [
+         "SIM-00856",
+         "Polling unit 1, urban"
+        ],
+        [
+         "SIM-00857",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00858",
+         "Polling unit 3, urban"
+        ],
+        [
+         "SIM-00859",
+         "Polling unit 4, rural"
+        ],
+        [
+         "SIM-00860",
+         "Polling unit 5, urban"
+        ]
+       ]
+      },
+      {
+       "ward_code": "OS-01-02",
+       "name": "Osun L1-W2",
+       "units": [
+        [
+         "SIM-00861",
+         "Polling unit 1, urban"
+        ],
+        [
+         "SIM-00862",
+         "Polling unit 2, urban"
+        ],
+        [
+         "SIM-00863",
+         "Polling unit 3, rural"
+        ],
+        [
+         "SIM-00864",
+         "Polling unit 4, rural"
+        ],
+        [
+         "SIM-00865",
+         "Polling unit 5, rural"
+        ]
+       ]
+      },
+      {
+       "ward_code": "OS-01-03",
+       "name": "Osun L1-W3",
+       "units": [
+        [
+         "SIM-00866",
+         "Polling unit 1, urban"
+        ],
+        [
+         "SIM-00867",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00868",
+         "Polling unit 3, urban"
+        ],
+        [
+         "SIM-00869",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00870",
+         "Polling unit 5, urban"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "lga_code": "OS-02",
+     "name": "Osun LGA-2",
+     "wards": [
+      {
+       "ward_code": "OS-02-01",
+       "name": "Osun L2-W1",
+       "units": [
+        [
+         "SIM-00871",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00872",
+         "Polling unit 2, urban"
+        ],
+        [
+         "SIM-00873",
+         "Polling unit 3, rural"
+        ],
+        [
+         "SIM-00874",
+         "Polling unit 4, rural"
+        ],
+        [
+         "SIM-00875",
+         "Polling unit 5, urban"
+        ]
+       ]
+      },
+      {
+       "ward_code": "OS-02-02",
+       "name": "Osun L2-W2",
+       "units": [
+        [
+         "SIM-00876",
+         "Polling unit 1, urban"
+        ],
+        [
+         "SIM-00877",
+         "Polling unit 2, urban"
+        ],
+        [
+         "SIM-00878",
+         "Polling unit 3, urban"
+        ],
+        [
+         "SIM-00879",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00880",
+         "Polling unit 5, rural"
+        ]
+       ]
+      },
+      {
+       "ward_code": "OS-02-03",
+       "name": "Osun L2-W3",
+       "units": [
+        [
+         "SIM-00881",
+         "Polling unit 1, urban"
+        ],
+        [
+         "SIM-00882",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00883",
+         "Polling unit 3, rural"
+        ],
+        [
+         "SIM-00884",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00885",
+         "Polling unit 5, urban"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "lga_code": "OS-03",
+     "name": "Osun LGA-3",
+     "wards": [
+      {
+       "ward_code": "OS-03-01",
+       "name": "Osun L3-W1",
+       "units": [
+        [
+         "SIM-00886",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00887",
+         "Polling unit 2, urban"
+        ],
+        [
+         "SIM-00888",
+         "Polling unit 3, rural"
+        ],
+        [
+         "SIM-00889",
+         "Polling unit 4, rural"
+        ],
+        [
+         "SIM-00890",
+         "Polling unit 5, urban"
+        ]
+       ]
+      },
+      {
+       "ward_code": "OS-03-02",
+       "name": "Osun L3-W2",
+       "units": [
+        [
+         "SIM-00891",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00892",
+         "Polling unit 2, urban"
+        ],
+        [
+         "SIM-00893",
+         "Polling unit 3, rural"
+        ],
+        [
+         "SIM-00894",
+         "Polling unit 4, rural"
+        ],
+        [
+         "SIM-00895",
+         "Polling unit 5, urban"
+        ]
+       ]
+      },
+      {
+       "ward_code": "OS-03-03",
+       "name": "Osun L3-W3",
+       "units": [
+        [
+         "SIM-00896",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00897",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00898",
+         "Polling unit 3, urban"
+        ],
+        [
+         "SIM-00899",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00900",
+         "Polling unit 5, urban"
+        ]
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "state_code": "OY",
+   "name": "Oyo",
+   "lgas": [
+    {
+     "lga_code": "OY-01",
+     "name": "Oyo LGA-1",
+     "wards": [
+      {
+       "ward_code": "OY-01-01",
+       "name": "Oyo L1-W1",
+       "units": [
+        [
+         "SIM-00766",
+         "Polling unit 1, urban"
+        ],
+        [
+         "SIM-00767",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00768",
+         "Polling unit 3, urban"
+        ],
+        [
+         "SIM-00769",
+         "Polling unit 4, rural"
+        ],
+        [
+         "SIM-00770",
+         "Polling unit 5, rural"
+        ]
+       ]
+      },
+      {
+       "ward_code": "OY-01-02",
+       "name": "Oyo L1-W2",
+       "units": [
+        [
+         "SIM-00771",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00772",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00773",
+         "Polling unit 3, rural"
+        ],
+        [
+         "SIM-00774",
+         "Polling unit 4, rural"
+        ],
+        [
+         "SIM-00775",
+         "Polling unit 5, rural"
+        ]
+       ]
+      },
+      {
+       "ward_code": "OY-01-03",
+       "name": "Oyo L1-W3",
+       "units": [
+        [
+         "SIM-00776",
+         "Polling unit 1, urban"
+        ],
+        [
+         "SIM-00777",
+         "Polling unit 2, urban"
+        ],
+        [
+         "SIM-00778",
+         "Polling unit 3, urban"
+        ],
+        [
+         "SIM-00779",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00780",
+         "Polling unit 5, rural"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "lga_code": "OY-02",
+     "name": "Oyo LGA-2",
+     "wards": [
+      {
+       "ward_code": "OY-02-01",
+       "name": "Oyo L2-W1",
+       "units": [
+        [
+         "SIM-00781",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00782",
+         "Polling unit 2, urban"
+        ],
+        [
+         "SIM-00783",
+         "Polling unit 3, urban"
+        ],
+        [
+         "SIM-00784",
+         "Polling unit 4, rural"
+        ],
+        [
+         "SIM-00785",
+         "Polling unit 5, urban"
+        ]
+       ]
+      },
+      {
+       "ward_code": "OY-02-02",
+       "name": "Oyo L2-W2",
+       "units": [
+        [
+         "SIM-00786",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00787",
+         "Polling unit 2, urban"
+        ],
+        [
+         "SIM-00788",
+         "Polling unit 3, urban"
+        ],
+        [
+         "SIM-00789",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00790",
+         "Polling unit 5, urban"
+        ]
+       ]
+      },
+      {
+       "ward_code": "OY-02-03",
+       "name": "Oyo L2-W3",
+       "units": [
+        [
+         "SIM-00791",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00792",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00793",
+         "Polling unit 3, rural"
+        ],
+        [
+         "SIM-00794",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00795",
+         "Polling unit 5, urban"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "lga_code": "OY-03",
+     "name": "Oyo LGA-3",
+     "wards": [
+      {
+       "ward_code": "OY-03-01",
+       "name": "Oyo L3-W1",
+       "units": [
+        [
+         "SIM-00796",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00797",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00798",
+         "Polling unit 3, rural"
+        ],
+        [
+         "SIM-00799",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00800",
+         "Polling unit 5, rural"
+        ]
+       ]
+      },
+      {
+       "ward_code": "OY-03-02",
+       "name": "Oyo L3-W2",
+       "units": [
+        [
+         "SIM-00801",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00802",
+         "Polling unit 2, urban"
+        ],
+        [
+         "SIM-00803",
+         "Polling unit 3, rural"
+        ],
+        [
+         "SIM-00804",
+         "Polling unit 4, rural"
+        ],
+        [
+         "SIM-00805",
+         "Polling unit 5, rural"
+        ]
+       ]
+      },
+      {
+       "ward_code": "OY-03-03",
+       "name": "Oyo L3-W3",
+       "units": [
+        [
+         "SIM-00806",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00807",
+         "Polling unit 2, urban"
+        ],
+        [
+         "SIM-00808",
+         "Polling unit 3, urban"
+        ],
+        [
+         "SIM-00809",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00810",
+         "Polling unit 5, rural"
+        ]
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "state_code": "PL",
+   "name": "Plateau",
+   "lgas": [
+    {
+     "lga_code": "PL-01",
+     "name": "Plateau LGA-1",
+     "wards": [
+      {
+       "ward_code": "PL-01-01",
+       "name": "Plateau L1-W1",
+       "units": [
+        [
+         "SIM-00091",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00092",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00093",
+         "Polling unit 3, urban"
+        ],
+        [
+         "SIM-00094",
+         "Polling unit 4, rural"
+        ],
+        [
+         "SIM-00095",
+         "Polling unit 5, urban"
+        ]
+       ]
+      },
+      {
+       "ward_code": "PL-01-02",
+       "name": "Plateau L1-W2",
+       "units": [
+        [
+         "SIM-00096",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00097",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00098",
+         "Polling unit 3, rural"
+        ],
+        [
+         "SIM-00099",
+         "Polling unit 4, rural"
+        ],
+        [
+         "SIM-00100",
+         "Polling unit 5, urban"
+        ]
+       ]
+      },
+      {
+       "ward_code": "PL-01-03",
+       "name": "Plateau L1-W3",
+       "units": [
+        [
+         "SIM-00101",
+         "Polling unit 1, urban"
+        ],
+        [
+         "SIM-00102",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00103",
+         "Polling unit 3, urban"
+        ],
+        [
+         "SIM-00104",
+         "Polling unit 4, rural"
+        ],
+        [
+         "SIM-00105",
+         "Polling unit 5, rural"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "lga_code": "PL-02",
+     "name": "Plateau LGA-2",
+     "wards": [
+      {
+       "ward_code": "PL-02-01",
+       "name": "Plateau L2-W1",
+       "units": [
+        [
+         "SIM-00106",
+         "Polling unit 1, urban"
+        ],
+        [
+         "SIM-00107",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00108",
+         "Polling unit 3, rural"
+        ],
+        [
+         "SIM-00109",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00110",
+         "Polling unit 5, urban"
+        ]
+       ]
+      },
+      {
+       "ward_code": "PL-02-02",
+       "name": "Plateau L2-W2",
+       "units": [
+        [
+         "SIM-00111",
+         "Polling unit 1, urban"
+        ],
+        [
+         "SIM-00112",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00113",
+         "Polling unit 3, urban"
+        ],
+        [
+         "SIM-00114",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00115",
+         "Polling unit 5, urban"
+        ]
+       ]
+      },
+      {
+       "ward_code": "PL-02-03",
+       "name": "Plateau L2-W3",
+       "units": [
+        [
+         "SIM-00116",
+         "Polling unit 1, urban"
+        ],
+        [
+         "SIM-00117",
+         "Polling unit 2, urban"
+        ],
+        [
+         "SIM-00118",
+         "Polling unit 3, urban"
+        ],
+        [
+         "SIM-00119",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00120",
+         "Polling unit 5, rural"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "lga_code": "PL-03",
+     "name": "Plateau LGA-3",
+     "wards": [
+      {
+       "ward_code": "PL-03-01",
+       "name": "Plateau L3-W1",
+       "units": [
+        [
+         "SIM-00121",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00122",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00123",
+         "Polling unit 3, rural"
+        ],
+        [
+         "SIM-00124",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00125",
+         "Polling unit 5, urban"
+        ]
+       ]
+      },
+      {
+       "ward_code": "PL-03-02",
+       "name": "Plateau L3-W2",
+       "units": [
+        [
+         "SIM-00126",
+         "Polling unit 1, urban"
+        ],
+        [
+         "SIM-00127",
+         "Polling unit 2, urban"
+        ],
+        [
+         "SIM-00128",
+         "Polling unit 3, rural"
+        ],
+        [
+         "SIM-00129",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00130",
+         "Polling unit 5, urban"
+        ]
+       ]
+      },
+      {
+       "ward_code": "PL-03-03",
+       "name": "Plateau L3-W3",
+       "units": [
+        [
+         "SIM-00131",
+         "Polling unit 1, urban"
+        ],
+        [
+         "SIM-00132",
+         "Polling unit 2, urban"
+        ],
+        [
+         "SIM-00133",
+         "Polling unit 3, rural"
+        ],
+        [
+         "SIM-00134",
+         "Polling unit 4, rural"
+        ],
+        [
+         "SIM-00135",
+         "Polling unit 5, rural"
+        ]
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "state_code": "RI",
+   "name": "Rivers",
+   "lgas": [
+    {
+     "lga_code": "RI-01",
+     "name": "Rivers LGA-1",
+     "wards": [
+      {
+       "ward_code": "RI-01-01",
+       "name": "Rivers L1-W1",
+       "units": [
+        [
+         "SIM-00586",
+         "Polling unit 1, urban"
+        ],
+        [
+         "SIM-00587",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00588",
+         "Polling unit 3, rural"
+        ],
+        [
+         "SIM-00589",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00590",
+         "Polling unit 5, rural"
+        ]
+       ]
+      },
+      {
+       "ward_code": "RI-01-02",
+       "name": "Rivers L1-W2",
+       "units": [
+        [
+         "SIM-00591",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00592",
+         "Polling unit 2, urban"
+        ],
+        [
+         "SIM-00593",
+         "Polling unit 3, rural"
+        ],
+        [
+         "SIM-00594",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00595",
+         "Polling unit 5, rural"
+        ]
+       ]
+      },
+      {
+       "ward_code": "RI-01-03",
+       "name": "Rivers L1-W3",
+       "units": [
+        [
+         "SIM-00596",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00597",
+         "Polling unit 2, urban"
+        ],
+        [
+         "SIM-00598",
+         "Polling unit 3, rural"
+        ],
+        [
+         "SIM-00599",
+         "Polling unit 4, rural"
+        ],
+        [
+         "SIM-00600",
+         "Polling unit 5, urban"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "lga_code": "RI-02",
+     "name": "Rivers LGA-2",
+     "wards": [
+      {
+       "ward_code": "RI-02-01",
+       "name": "Rivers L2-W1",
+       "units": [
+        [
+         "SIM-00601",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00602",
+         "Polling unit 2, urban"
+        ],
+        [
+         "SIM-00603",
+         "Polling unit 3, rural"
+        ],
+        [
+         "SIM-00604",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00605",
+         "Polling unit 5, rural"
+        ]
+       ]
+      },
+      {
+       "ward_code": "RI-02-02",
+       "name": "Rivers L2-W2",
+       "units": [
+        [
+         "SIM-00606",
+         "Polling unit 1, urban"
+        ],
+        [
+         "SIM-00607",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00608",
+         "Polling unit 3, urban"
+        ],
+        [
+         "SIM-00609",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00610",
+         "Polling unit 5, rural"
+        ]
+       ]
+      },
+      {
+       "ward_code": "RI-02-03",
+       "name": "Rivers L2-W3",
+       "units": [
+        [
+         "SIM-00611",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00612",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00613",
+         "Polling unit 3, urban"
+        ],
+        [
+         "SIM-00614",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00615",
+         "Polling unit 5, rural"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "lga_code": "RI-03",
+     "name": "Rivers LGA-3",
+     "wards": [
+      {
+       "ward_code": "RI-03-01",
+       "name": "Rivers L3-W1",
+       "units": [
+        [
+         "SIM-00616",
+         "Polling unit 1, urban"
+        ],
+        [
+         "SIM-00617",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00618",
+         "Polling unit 3, rural"
+        ],
+        [
+         "SIM-00619",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00620",
+         "Polling unit 5, urban"
+        ]
+       ]
+      },
+      {
+       "ward_code": "RI-03-02",
+       "name": "Rivers L3-W2",
+       "units": [
+        [
+         "SIM-00621",
+         "Polling unit 1, urban"
+        ],
+        [
+         "SIM-00622",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00623",
+         "Polling unit 3, urban"
+        ],
+        [
+         "SIM-00624",
+         "Polling unit 4, rural"
+        ],
+        [
+         "SIM-00625",
+         "Polling unit 5, rural"
+        ]
+       ]
+      },
+      {
+       "ward_code": "RI-03-03",
+       "name": "Rivers L3-W3",
+       "units": [
+        [
+         "SIM-00626",
+         "Polling unit 1, urban"
+        ],
+        [
+         "SIM-00627",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00628",
+         "Polling unit 3, rural"
+        ],
+        [
+         "SIM-00629",
+         "Polling unit 4, rural"
+        ],
+        [
+         "SIM-00630",
+         "Polling unit 5, urban"
+        ]
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "state_code": "SO",
+   "name": "Sokoto",
+   "lgas": [
+    {
+     "lga_code": "SO-01",
+     "name": "Sokoto LGA-1",
+     "wards": [
+      {
+       "ward_code": "SO-01-01",
+       "name": "Sokoto L1-W1",
+       "units": [
+        [
+         "SIM-00406",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00407",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00408",
+         "Polling unit 3, rural"
+        ],
+        [
+         "SIM-00409",
+         "Polling unit 4, rural"
+        ],
+        [
+         "SIM-00410",
+         "Polling unit 5, urban"
+        ]
+       ]
+      },
+      {
+       "ward_code": "SO-01-02",
+       "name": "Sokoto L1-W2",
+       "units": [
+        [
+         "SIM-00411",
+         "Polling unit 1, urban"
+        ],
+        [
+         "SIM-00412",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00413",
+         "Polling unit 3, rural"
+        ],
+        [
+         "SIM-00414",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00415",
+         "Polling unit 5, urban"
+        ]
+       ]
+      },
+      {
+       "ward_code": "SO-01-03",
+       "name": "Sokoto L1-W3",
+       "units": [
+        [
+         "SIM-00416",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00417",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00418",
+         "Polling unit 3, rural"
+        ],
+        [
+         "SIM-00419",
+         "Polling unit 4, rural"
+        ],
+        [
+         "SIM-00420",
+         "Polling unit 5, rural"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "lga_code": "SO-02",
+     "name": "Sokoto LGA-2",
+     "wards": [
+      {
+       "ward_code": "SO-02-01",
+       "name": "Sokoto L2-W1",
+       "units": [
+        [
+         "SIM-00421",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00422",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00423",
+         "Polling unit 3, urban"
+        ],
+        [
+         "SIM-00424",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00425",
+         "Polling unit 5, urban"
+        ]
+       ]
+      },
+      {
+       "ward_code": "SO-02-02",
+       "name": "Sokoto L2-W2",
+       "units": [
+        [
+         "SIM-00426",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00427",
+         "Polling unit 2, urban"
+        ],
+        [
+         "SIM-00428",
+         "Polling unit 3, rural"
+        ],
+        [
+         "SIM-00429",
+         "Polling unit 4, rural"
+        ],
+        [
+         "SIM-00430",
+         "Polling unit 5, rural"
+        ]
+       ]
+      },
+      {
+       "ward_code": "SO-02-03",
+       "name": "Sokoto L2-W3",
+       "units": [
+        [
+         "SIM-00431",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00432",
+         "Polling unit 2, urban"
+        ],
+        [
+         "SIM-00433",
+         "Polling unit 3, urban"
+        ],
+        [
+         "SIM-00434",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00435",
+         "Polling unit 5, urban"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "lga_code": "SO-03",
+     "name": "Sokoto LGA-3",
+     "wards": [
+      {
+       "ward_code": "SO-03-01",
+       "name": "Sokoto L3-W1",
+       "units": [
+        [
+         "SIM-00436",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00437",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00438",
+         "Polling unit 3, urban"
+        ],
+        [
+         "SIM-00439",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00440",
+         "Polling unit 5, rural"
+        ]
+       ]
+      },
+      {
+       "ward_code": "SO-03-02",
+       "name": "Sokoto L3-W2",
+       "units": [
+        [
+         "SIM-00441",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00442",
+         "Polling unit 2, rural"
+        ],
+        [
+         "SIM-00443",
+         "Polling unit 3, rural"
+        ],
+        [
+         "SIM-00444",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00445",
+         "Polling unit 5, urban"
+        ]
+       ]
+      },
+      {
+       "ward_code": "SO-03-03",
+       "name": "Sokoto L3-W3",
+       "units": [
+        [
+         "SIM-00446",
+         "Polling unit 1, rural"
+        ],
+        [
+         "SIM-00447",
+         "Polling unit 2, urban"
+        ],
+        [
+         "SIM-00448",
+         "Polling unit 3, rural"
+        ],
+        [
+         "SIM-00449",
+         "Polling unit 4, urban"
+        ],
+        [
+         "SIM-00450",
+         "Polling unit 5, urban"
+        ]
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}
