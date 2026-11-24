@@ -49,6 +49,7 @@ The full plan is in [hackathon-plan.md](hackathon-plan.md).
 | C12 video, voice notes, face blur and transcripts (MED video/audio, server-side blur, transcription jobs) | Kara's agents | `claude/fervent-knuth-s7h3i1` | `backend/reports/media_lifecycle.py`, `backend/reports/media_storage.py`, `backend/reports/media_views.py`, `backend/reports/test_media.py`, new `backend/reports/media_av/`, `backend/reports/test_media_av.py`, `backend/reports/test_data/`, `backend/reports/management/commands/run_media.py`, `backend/reports/photo_processing.py`, related media migrations; small shared edits to `backend/reports/reviewer_views.py` (media counts and transcripts), `backend/reports/workflow.py` (closure snapshot), `backend/config/settings.py`, `backend/requirements.txt`, `deploy/backend.Dockerfile`, `deploy/compose.yaml`, `deploy/README.md`, `.github/workflows/verify.yml` (ffmpeg step) |
 | C13 starter notebook, API reference, `CONTRIBUTING.md`, load test and cost estimate (local now, Azure later) | Claude | docs/c13-submission-tooling | `notebooks/`, `docs/submission/API_REFERENCE.md`, `CONTRIBUTING.md`, load-test scripts and report |
 | C14 Azure deployment scripts | Kara's agents | `deploy/azure` | `deploy/azure/`, `.github/workflows/deploy-azure.yml`, `docs/azure-deployment.md` |
+| C15 submission documents and approved observer guide | Antigravity | `docs/c15-submission-docs` | `docs/submission/`, `README.md`, `docs/approved-guide/` |
 | Front end (all screens, art, offline logic) | Claude + Antigravity | `design/*`, `logic/*`, `integrate/observer-e2e` | `frontend/` |
 | Front-end design system, screens, API contracts | Claude | `design/frontend` | `frontend/app/(observer)/…`, `frontend/app/(staff)/…`, `frontend/app/(public)/…`, `frontend/ui/…`, `frontend/messages/…`, `docs/design/…` |
 | Product mark and lockups | Claude (brand agent) | `design/brand` | `docs/design/brand/…` |
@@ -89,6 +90,12 @@ The full plan is in [hackathon-plan.md](hackathon-plan.md).
 - The image sets `ORT_DISABLE_TELEMETRY=1`, because onnxruntime otherwise starts Microsoft telemetry.
 - Not measured yet: faces missed per 100 (A12) and word error rate per language (A11). Both need labelled data, and the team's voice clips for A11. [Slice report](reviews/2026-11-23-c12-video-voice-blur.md).
 - **For the front end:** video and audio players, the `poster` variant, the `processing` and `failed` states, `media_counts.video/audio`, and the reviewer transcript panel are ready to wire. Next on this branch: C14 Azure deployment scripts.
+
+### 24 Nov 2026 · Antigravity · Claims C15 submission documents and approved observer guide
+
+- Claimed C15: hackathon submission documentation package and approved observer guide for Ask ElectraGuard.
+- Working on branch `docs/c15-submission-docs`.
+- Producing all 9 submission documents under `docs/submission/` (PROBLEM, METHODOLOGY, MODEL_CARD, SAFETY_AND_LIMITATIONS, DATASHEET, EVALUATION, ARCHITECTURE, THREAT_MODEL, VIDEO_SCRIPT), rewriting `README.md` to official template with mandated AI-assistance disclosure, and authoring the 5-page approved observer guide across 5 languages (`docs/approved-guide/{en,pcm,ha,yo,ig}`).
 
 ### 24 Nov 2026 · Claude (supervisor) · Status: what is merged, what is running, who owns what
 
