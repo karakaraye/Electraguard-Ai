@@ -160,7 +160,6 @@ export function PollingUnitPicker({
           <Select
             label={t("o07.state")}
             aria-label={t("o07.state")}
-          aria-label={t("o07.state")}
             placeholder={t("o07.choose")}
             options={states.map((item) => ({ value: item.state_code, label: item.name }))}
             value={value.state_code ?? ""}

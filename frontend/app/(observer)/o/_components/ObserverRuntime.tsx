@@ -7,7 +7,7 @@
  * working.
  */
 
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useEffect, useState, useSyncExternalStore, type ReactNode } from "react";
 import { api, onApiEvent } from "../../../../lib/api/client";
 import { useT } from "../../../../lib/i18n/client";
@@ -47,7 +47,6 @@ function registerServiceWorker() {
 }
 
 export function ObserverRuntime({ children }: { children: ReactNode }) {
-  const router = useRouter();
   const pathname = usePathname();
   const { session } = useObserverSession();
   const outbox = useOutbox();
@@ -104,9 +103,12 @@ export function ObserverRuntime({ children }: { children: ReactNode }) {
       if (code) await markWaitingCode(code);
       clearSession();
       setPaused(null);
-      if (!pathname.startsWith("/o/start")) router.replace("/o/start?view=revoked");
+      // A full navigation: Home reacts to the cleared session with its own redirect, which would otherwise win the race.
+      if (!pathname.startsWith("/o/start") || !window.location.search.includes("view=revoked")) {
+        window.location.replace("/o/start?view=revoked");
+      }
     })();
-  }, [outbox.paused, pathname, router]);
+  }, [outbox.paused, pathname]);
 
   return (
     <>

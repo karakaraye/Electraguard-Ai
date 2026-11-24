@@ -10,7 +10,7 @@
  * - Offline fallback: a small page in the five languages.
  */
 
-const VERSION = "v2";
+const VERSION = "v3";
 const SHELL = `eg-shell-${VERSION}`;
 const STATIC = `eg-static-${VERSION}`;
 const REFERENCE = `eg-reference-${VERSION}`;
@@ -69,22 +69,22 @@ async function cacheStatic(statics, asset) {
  * files of the other four languages are such chunks, and a phone that has
  * never been online in Hausa must still be able to switch to Hausa offline.
  */
-async function cachePage(path) {
+async function cachePage(path, seen) {
   const response = await fetch(path, { credentials: "same-origin", cache: "no-cache" });
   if (!response.ok) return;
   const html = await response.clone().text();
   const shell = await caches.open(SHELL);
   await shell.put(path, response);
-  const assets = new Set(html.match(/\/_next\/static\/[^"'\s)\\]+/g) || []);
   const statics = await caches.open(STATIC);
-  const lazy = new Set();
-  await Promise.all(
-    [...assets].map(async (asset) => {
-      const text = await cacheStatic(statics, asset);
-      for (const chunk of text.match(/static\/chunks\/[\w.~-]+\.js/g) || []) lazy.add(`/_next/${chunk}`);
-    }),
-  );
-  await Promise.all([...lazy].filter((asset) => !assets.has(asset)).map((asset) => cacheStatic(statics, asset)));
+  async function visit(asset) {
+    if (seen.has(asset)) return;
+    seen.add(asset);
+    const source = await cacheStatic(statics, asset);
+    const chunks = source.match(/static\/chunks\/[^"'\s\\,:;]+\.(?:js|css)/g) || [];
+    await Promise.all(chunks.map((chunk) => visit(`/_next/${chunk}`)));
+  }
+  const assets = html.match(/\/_next\/static\/[^"'\s)\\]+/g) || [];
+  await Promise.all(assets.map(visit));
 }
 
 self.addEventListener("install", (event) => {
@@ -92,7 +92,8 @@ self.addEventListener("install", (event) => {
     (async () => {
       const shell = await caches.open(SHELL);
       await Promise.all(SHELL_FILES.map((file) => shell.add(file).catch(() => undefined)));
-      await Promise.all(SHELL_PAGES.map((page) => cachePage(page).catch(() => undefined)));
+      const seen = new Set();
+      await Promise.all(SHELL_PAGES.map((page) => cachePage(page, seen).catch(() => undefined)));
       await self.skipWaiting();
     })(),
   );

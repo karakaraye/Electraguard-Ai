@@ -58,11 +58,9 @@ test("app killed at about 40 % of a photo upload: reopened, it resumes from the 
   // Never restarted from zero, never a second session: the first chunk sent is at or after the server's offset.
   const patches = secondRun.filter((r) => r.method === "PATCH").map((r) => Number(r.offset));
   expect(patches.length).toBeGreaterThan(0);
-  expect(Math.min(...patches)).toBeGreaterThanOrEqual(serverOffset - 262_144);
-  expect(patches).not.toContain(0);
+  expect(patches[0]).toBe(serverOffset);
+  expect(secondRun[0].method).toBe("GET");
   expect(secondRun.filter((r) => r.method === "POST" && r.path.endsWith("/uploads"))).toHaveLength(0);
-  // The chunk the server already had was not counted twice: the client re-read the server's offset.
-  expect(patches[patches.length - 1]).toBeGreaterThanOrEqual(serverOffset);
 
   const reports = storedReports(observer.code);
   expect(reports).toHaveLength(1);

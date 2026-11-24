@@ -66,10 +66,23 @@ export function useNetwork(): { offline: boolean; back: boolean } {
 /** Move focus to the screen question (h1) on every route and step change (R7). */
 export function useFocusTitle(key: string) {
   useLayoutEffect(() => {
-    const heading = document.querySelector<HTMLElement>("#eg-content h1");
-    if (!heading) return;
-    heading.tabIndex = -1;
-    heading.focus({ preventScroll: false });
+    function focusHeading() {
+      const active = document.activeElement;
+      if (active && active.closest("#eg-content") && /^(INPUT|TEXTAREA|SELECT)$/.test(active.tagName)) return true;
+      const heading = document.querySelector<HTMLElement>("#eg-content h1");
+      if (!heading) return false;
+      heading.tabIndex = -1;
+      if (document.activeElement !== heading) heading.focus({ preventScroll: false });
+      return true;
+    }
+    if (!focusHeading()) return;
     window.scrollTo({ top: 0 });
+    // After a client-side navigation the router moves focus itself once the page has committed; take it back.
+    const frame = window.requestAnimationFrame(() => window.requestAnimationFrame(focusHeading));
+    const timer = window.setTimeout(focusHeading, 150);
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.clearTimeout(timer);
+    };
   }, [key]);
 }

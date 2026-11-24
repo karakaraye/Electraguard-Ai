@@ -23,6 +23,7 @@ test("after the first load, the app shell, every language and the polling-unit l
   await choosePlace(page);
   const place = (await page.getByTestId("o07-summary").textContent())!.trim();
   const stateName = (await page.getByTestId("polling-unit-picker-state").locator("option:checked").textContent())!.trim();
+  const unitCode = await page.getByTestId("polling-unit-picker-unit").inputValue();
   await page.waitForTimeout(1_000);
 
   await context.setOffline(true);
@@ -39,8 +40,8 @@ test("after the first load, the app shell, every language and the polling-unit l
   await expect(offline.getByTestId("polling-unit-picker-state").locator("option:checked")).toHaveText(stateName);
   await expect(offline.getByTestId("polling-unit-picker-lga")).toBeEnabled();
   // Search works offline on the stored list.
-  await offline.getByTestId("polling-unit-picker-search").locator("input").fill(place.split(",")[0]);
-  await expect(offline.getByRole("option").first()).toBeVisible();
+  await offline.getByTestId("polling-unit-picker-search").getByRole("combobox").fill(unitCode);
+  await expect(offline.getByRole("listbox").getByRole("option").filter({ hasText: unitCode })).toBeVisible();
 
   // Every language's messages are on the phone: switch to each with no network.
   await offline.goto("/o");

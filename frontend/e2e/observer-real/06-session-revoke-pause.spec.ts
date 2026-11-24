@@ -19,8 +19,13 @@ test("session expired: the report waits, the PIN sheet signs in again, then it s
   await page.goto("/o");
   await expect(page.getByTestId("o04-unsent")).toBeVisible();
   let [item] = await outboxItems(page);
-  expect(["queued", "unconfirmed"]).toContain(item.state);
+  expect(["queued", "unconfirmed", "sending"]).toContain(item.state);
   expect(storedReports(observer.code)).toHaveLength(0);
+
+  // Opening the app tries to send again, gets 401 again and asks again; "Not now" once more leaves it queued.
+  await expect(page.getByTestId("pin-sheet")).toBeVisible({ timeout: 30_000 });
+  await page.getByTestId("pin-sheet-later").click();
+  await expect(page.getByTestId("pin-sheet")).toBeHidden();
 
   // "Send now" opens the sheet again; the PIN signs in and the outbox resumes with the same key.
   await page.getByTestId("o04-send-now").click();

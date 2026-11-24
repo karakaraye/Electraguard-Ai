@@ -168,7 +168,7 @@ export function IncidentFlow() {
     if (draft && nav.step !== draft.last_step && !nav.edit && !nav.help) handle.update({ last_step: nav.step });
   }, [nav.step, nav.edit, nav.help, draft, handle]);
 
-  useFocusTitle(`${nav.step}:${nav.help}`);
+  useFocusTitle(`${nav.step}:${nav.help}:${draft?.id ?? (sentId ? "sent" : "none")}`);
 
   if (!handle.ready && !sentId) return null;
 

@@ -51,8 +51,8 @@ test("the phone blocks a future time and missing answers before anything is sent
 
   // O-08: tomorrow is refused on the phone.
   await page.getByTestId("o08-when-day").click();
-  await page.getByTestId("o08-when-date").locator("input").fill(watTomorrow());
-  await page.getByTestId("o08-when-time").locator("input").fill("10:00");
+  await page.getByTestId("o08-when-date").fill(watTomorrow());
+  await page.getByTestId("o08-when-time").fill("10:00");
   await page.getByTestId("continue").click();
   expect(new URL(page.url()).pathname).toBe("/o/new/when");
   await expect(page.getByTestId("o08-when").locator('[aria-invalid="true"]').first()).toBeVisible();
@@ -63,7 +63,7 @@ test("the phone blocks a future time and missing answers before anything is sent
   // O-09: empty text and no source are both marked; more than 2000 characters is refused.
   await page.getByTestId("continue").click();
   expect(new URL(page.url()).pathname).toBe("/o/new/describe");
-  await expect(page.getByTestId("o09-text").locator('[aria-invalid="true"], textarea[aria-invalid="true"]').first()).toBeVisible();
+  await expect(page.getByTestId("o09-text")).toHaveAttribute("aria-invalid", "true");
   await expect(page.getByTestId("o09-source")).toHaveAttribute("aria-invalid", "true").catch(async () => {
     await expect(page.getByTestId("o09-source").locator('[aria-invalid="true"], [role="alert"]').first()).toBeAttached();
   });
