@@ -1,0 +1,47 @@
+.wrap,
+.listening {
+  display: grid;
+  gap: var(--s-3);
+}
+
+.listening :global(button) {
+  min-height: 56px;
+}
+
+.live {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  margin: 0;
+  font: var(--t-label);
+  font-size: var(--t-base-size);
+  color: var(--ink);
+}
+
+/* A still marker, not a looping pulse (design contract 4.5). */
+.dot {
+  flex: none;
+  width: 12px;
+  height: 12px;
+  border-radius: var(--radius-pill);
+  background: var(--danger);
+}
+
+.info,
+.note p {
+  margin: 0;
+  color: var(--ink-2);
+  font: var(--t-base);
+  font-size: max(0.875rem, calc(var(--t-base-size) - 0.125rem));
+  line-height: 1.45;
+}
+
+.note {
+  display: grid;
+  justify-items: start;
+  gap: var(--s-3);
+  padding: var(--s-4);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: var(--paper-2);
+}
