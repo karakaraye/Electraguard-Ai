@@ -401,8 +401,13 @@ export function SignInView({ code, pin, onCode, onCodeBlur, onPin, onSubmit, onB
       banner={banner}
       actions={
         <>
-          <p className={styles.status} role="alert" aria-live="assertive" data-testid="o03-form-error">
-            {formError ? <span className={styles.strong}>{formError}</span> : null}
+          <p className={styles.formError} role="alert" aria-live="assertive" data-testid="o03-form-error">
+            {formError ? (
+              <>
+                <AlertIcon aria-hidden="true" />
+                <span>{formError}</span>
+              </>
+            ) : null}
           </p>
           <Button
             block
@@ -429,7 +434,9 @@ export function SignInView({ code, pin, onCode, onCodeBlur, onPin, onSubmit, onB
         }}
       >
         <h1 className={styles.title}>{t("o03.signIn.title")}</h1>
+        <ObserverCardArt />
         <Field
+          className={styles.codeField}
           label={t("o03.signIn.codeLabel")}
           hint={t("o03.signIn.codeHint")}
           error={error?.field === "code" ? t(error.key) : undefined}
@@ -464,12 +471,41 @@ export function SignInView({ code, pin, onCode, onCodeBlur, onPin, onSubmit, onB
             {show ? t("o03.signIn.hidePin") : t("o03.signIn.showPin")}
           </Button>
         </div>
-        <p className={styles.note}>
+        <p className={styles.noteCard}>
           <LockIcon />
           <span>{t("o03.signIn.forgot")}</span>
         </p>
       </form>
     </AppShell>
+  );
+}
+
+/**
+ * The observer card, drawn so people see where the code (top) and PIN (bottom) are
+ * printed. Only the sample code and dots appear in it, so it needs no translation.
+ */
+function ObserverCardArt() {
+  return (
+    <svg className={styles.cardArt} viewBox="0 0 320 120" aria-hidden="true" focusable="false">
+      <rect x="40" y="8" width="240" height="104" rx="12" fill="var(--paper-raised)" stroke="var(--rule-control)" />
+      <rect x="40" y="8" width="240" height="22" rx="12" fill="var(--sun-tint)" />
+      <rect x="40" y="20" width="240" height="10" fill="var(--sun-tint)" />
+      <path
+        fill="var(--ink)"
+        transform="translate(52 12) scale(0.29)"
+        d="M38 6A4 4 0 0 1 42 10V14H20A6 6 0 0 0 14 20H29V28H14A6 6 0 0 0 20 34H34V24H42V38A4 4 0 0 1 38 42H20A14 14 0 0 1 6 28V20A14 14 0 0 1 20 6Z"
+      />
+      <rect x="56" y="42" width="160" height="28" rx="6" fill="var(--sun-wash)" stroke="var(--sun-strong)" strokeDasharray="4 3" />
+      <text x="66" y="62" fontFamily="var(--font-display)" fontWeight="800" fontSize="16" letterSpacing="1.5" fill="var(--ink)">
+        OBS-7K2P9X
+      </text>
+      <rect x="56" y="78" width="120" height="24" rx="6" fill="var(--sun-wash)" stroke="var(--sun-strong)" strokeDasharray="4 3" />
+      <text x="66" y="95" fontFamily="var(--font)" fontWeight="700" fontSize="14" letterSpacing="3" fill="var(--ink-2)">
+        ••••••••
+      </text>
+      <circle cx="248" cy="78" r="18" fill="var(--paper-2)" stroke="var(--rule)" />
+      <path d="M241 88 Q248 79 255 88 M248 76 a4 4 0 1 0 0.01 0" fill="none" stroke="var(--art-line)" strokeWidth="1.6" />
+    </svg>
   );
 }
 

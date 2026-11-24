@@ -935,3 +935,69 @@
   max-width: 360px;
   margin-bottom: var(--s-3);
 }
+
+/* ---------- Sign in (spec screen 7/8) ---------- */
+.cardArt {
+  display: block;
+  width: 100%;
+  max-width: 300px;
+  height: auto;
+  margin: calc(var(--s-2) * -1) auto 0;
+}
+
+/* The code reads like the card: heading type, wide tracking, always capitals. */
+.codeField input {
+  font: 800 1.375rem/1.2 var(--font-display);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.codeField input::placeholder {
+  letter-spacing: normal;
+  text-transform: none;
+}
+
+.formError {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--s-2);
+  margin: 0 0 var(--s-1);
+  padding: var(--s-3);
+  border-radius: var(--radius);
+  background: var(--danger-bg);
+  color: var(--danger);
+  font: var(--t-body);
+  font-weight: 600;
+}
+
+.formError:empty {
+  display: none;
+}
+
+.formError svg {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  margin-top: 2px;
+}
+
+.noteCard {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--s-3);
+  margin: 0;
+  padding: var(--s-3) var(--s-4);
+  border-radius: var(--radius);
+  background: var(--sun-wash);
+  color: var(--ink);
+  font: var(--t-body);
+  line-height: 1.45;
+}
+
+.noteCard svg {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  margin-top: 2px;
+  color: var(--sun-ink);
+}
