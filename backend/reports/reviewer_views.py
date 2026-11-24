@@ -84,6 +84,11 @@ def urgency_rules(report, photo_count):
 def suggestions(report, photo_count):
     triage = current_triage(report)
     ready = triage and triage.status == Triage.Status.READY
+    if ready and triage.suggestions:
+        result = {**triage.suggestions}
+        for name in ("category", "urgency"):
+            result[name] = {**result[name], **report.review_suggestions.get(name, {})}
+        return result
     category = LEGACY_CATEGORY.get(triage.category) if ready else None
     level, reasons = urgency_rules(report, photo_count)
     values = {}
@@ -291,12 +296,17 @@ def case(request, reference):
         report=report, status=UploadSession.Status.OPEN, expires_at__gt=timezone.now(),
     )
     actions = [action for action, (states, _, _) in TRANSITIONS.items() if report.status in states]
+    reporter_label = report.observer_code or "Observer" if report.observer_id else {
+        "sms": "SMS reporter", "ussd": "USSD reporter",
+    }.get(row["channel"], "Citizen, not accredited")
+    if details.get("simulated"):
+        reporter_label += " (Simulated)"
     return JsonResponse({
         "id": row["id"], "receipt_code": row["receipt_code"], "kind": row["kind"], "channel": row["channel"],
         "status": row["status"], "outcome": row["outcome"], "version": report.version,
         "reporter": {
             "type": "observer" if report.observer_id else "citizen", "accredited": bool(report.observer_id),
-            "label": (report.observer_code or "Observer") if report.observer_id else "Citizen, not accredited",
+            "label": reporter_label,
         },
         "language": details.get("language"),
         "original": {
@@ -441,7 +451,8 @@ def decide_suggestion(request, report, kind, data):
         return validation({"decision": field("invalid_choice", "Choose accept or correct.")})
     triage = current_triage(report)
     original = (
-        (LEGACY_CATEGORY.get(triage.category) if kind == "category" else urgency_rules(report, 0)[0])
+        (triage.suggestions[kind]["value"] if triage.suggestions else
+         LEGACY_CATEGORY.get(triage.category) if kind == "category" else urgency_rules(report, 0)[0])
         if triage and triage.status == Triage.Status.READY else None
     )
     if decision == "accept" and original is None:

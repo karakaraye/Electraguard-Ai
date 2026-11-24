@@ -6,6 +6,8 @@ from approved_answers.views import ask
 from reports import conversation
 from reports.result_ocr import read_photo
 
+from intelligence.views import materials_risk
+
 from . import health
 
 from ops import clusters, observations
@@ -44,6 +46,8 @@ urlpatterns = [
     path("api/v1/rumours/claims/<uuid:claim_id>/response/approve", rumour_views.action, {"operation": "approve"}),
     path("api/v1/rumours/claims/<uuid:claim_id>/response/reject", rumour_views.action, {"operation": "reject"}),
     path("api/v1/rumours/claims/<uuid:claim_id>/dismiss", rumour_views.action, {"operation": "dismiss"}),
+    path("api/v1/ops/late-materials-risk", materials_risk),
+    path("api/v1/", include("phone_channels.urls")),
     path("api/v1/", include("discussions.urls")),
     path("api/v1/reports/<uuid:reference>/messages", conversation.collection),
     path("api/v1/reports/<uuid:reference>/messages/read", conversation.mark_read),
