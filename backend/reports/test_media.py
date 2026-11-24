@@ -17,6 +17,10 @@ from .media_views import CHUNK, MAX_PHOTO
 from .models import MediaAccess, MediaItem, Report, ReviewEvent, UploadSession
 
 
+def body(response):
+    return b"".join(response.streaming_content) if response.streaming else response.content
+
+
 def sample_photo():
     exif = Image.Exif()
     exif[270] = "private-camera-note"
@@ -119,8 +123,8 @@ class PhotoUploadTests(TestCase):
         self.assertEqual(self.client.get(url).json()["error"]["code"], "upload_expired")
 
     def test_hash_and_size_mismatches_and_unsupported_kinds(self):
-        self.assertEqual(self.start(kind="video").json()["error"]["fields"]["kind"]["code"], "not_supported_yet")
-        self.assertEqual(self.start(kind="audio").json()["error"]["fields"]["kind"]["code"], "not_supported_yet")
+        self.assertEqual(self.start(kind="document").json()["error"]["fields"]["kind"]["code"], "invalid_choice")
+        self.assertEqual(self.start(kind="video").status_code, 415)
         self.assertEqual(self.start(size_bytes=MAX_PHOTO + 1).status_code, 413)
         url = self.upload_url()
         self.assertEqual(self.upload(url, self.raw + b"x").status_code, 413)
@@ -151,7 +155,7 @@ class PhotoUploadTests(TestCase):
         photo = MediaItem.objects.get()
         info = response.json()["media"]
         self.assertTrue(info["exif_removed"])
-        self.assertFalse(info["blurred"])
+        self.assertTrue(info["blurred"])
         self.assertEqual(photo.original_sha256, sha256(incoming).hexdigest())
         self.assertTrue(photo_key(photo.organisation_id, photo.pk).startswith(str(self.report.organisation_id)))
         content_url = f"/api/v1/media/{photo.pk}/content"
@@ -160,9 +164,10 @@ class PhotoUploadTests(TestCase):
         self.assertIn("private", download["Cache-Control"])
         self.assertIn("no-store", download["Cache-Control"])
         self.assertEqual(download["X-Content-Type-Options"], "nosniff")
-        self.assertEqual(photo.sha256, sha256(download.content).hexdigest())
-        self.assertNotIn(b"private-camera-note", download.content)
-        with Image.open(BytesIO(download.content)) as image:
+        content = body(download)
+        self.assertEqual(photo.sha256, sha256(content).hexdigest())
+        self.assertNotIn(b"private-camera-note", content)
+        with Image.open(BytesIO(content)) as image:
             self.assertEqual(image.format, "JPEG")
             self.assertFalse(image.getexif())
         detail = self.client.get(self.report_path).json()
@@ -182,7 +187,7 @@ class PhotoUploadTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIsNone(response.json()["upload"])
         self.assertEqual(response.json()["media"], result.json()["media"])
-        content = self.client.get(f"/api/v1/media/{result.json()['media']['id']}/content").content
+        content = body(self.client.get(f"/api/v1/media/{result.json()['media']['id']}/content"))
         self.assertNotIn(b"private-location", content)
 
     def test_access_scope_review_and_removal(self):
@@ -200,15 +205,14 @@ class PhotoUploadTests(TestCase):
         self.client.force_login(self.reviewer)
         self.assertEqual(self.client.get(content_url).status_code, 404)
         Report.objects.filter(pk=self.report.pk).update(assigned_reviewer=self.reviewer, status=Report.Status.IN_REVIEW)
-        self.assertEqual(self.client.get(content_url).status_code, 409)
+        # The observer asked for blur, so the stored photo is the blurred one and no unblurred copy exists.
+        part = self.client.get(content_url, HTTP_RANGE="bytes=0-7")
+        self.assertEqual((part.status_code, len(body(part))), (206, 8))
+        self.assertEqual(MediaAccess.objects.get().action, "view_media")
         original = content_url + "?variant=original"
-        self.assertEqual(self.client.get(original).status_code, 422)
-        part = self.client.get(original, HTTP_RANGE="bytes=0-7", HTTP_X_MEDIA_ACCESS_REASON="Check synthetic evidence")
-        self.assertEqual((part.status_code, len(part.content)), (206, 8))
-        self.assertEqual(MediaAccess.objects.get().reason, "Check synthetic evidence")
-        self.assertEqual(MediaAccess.objects.get().action, "download_original")
-        Report.objects.filter(pk=self.report.pk).update(assigned_reviewer=None)
         self.assertEqual(self.client.get(original, HTTP_X_MEDIA_ACCESS_REASON="Check synthetic evidence").status_code, 404)
+        Report.objects.filter(pk=self.report.pk).update(assigned_reviewer=None)
+        self.assertEqual(self.client.get(content_url).status_code, 404)
 
         self.client.force_login(self.observer)
         self.assertEqual(self.client.delete(remove_url, HTTP_X_CSRFTOKEN=self.csrf()).status_code, 409)

@@ -1,0 +1,352 @@
+"""C12: video and voice notes, face blur and transcripts, against real ffmpeg output."""
+
+import json
+import os
+import shutil
+import subprocess
+from hashlib import sha256
+from io import StringIO
+from pathlib import Path
+from tempfile import TemporaryDirectory
+from unittest import mock, skipUnless
+from uuid import uuid4
+
+import cv2
+import numpy as np
+from django.core.management import call_command
+from django.test import Client, TestCase, override_settings
+from django.utils import timezone
+
+from accounts.models import User
+
+from .media_av import faces, transcode
+from .media_av.transcribe import Transcript
+from .media_storage import original_key, storage
+from .models import MediaAccess, MediaItem, Report, ReviewEvent, UploadSession
+
+FACE = Path(__file__).with_name("test_data") / "astronaut.jpg"
+CALLS = []
+
+
+def fake_transcriber(path, language):
+    CALLS.append(language)
+    return Transcript(status="ready", text="Synthetic transcript of the voice note.", language="en", method="test-double")
+
+
+def ffmpeg(*arguments):
+    subprocess.run(["ffmpeg", "-nostdin", "-v", "error", "-y", *arguments], check=True, capture_output=True)
+
+
+def body(response):
+    return b"".join(response.streaming_content) if response.streaming else response.content
+
+
+def faces_in(jpeg):
+    frame = cv2.imdecode(np.frombuffer(jpeg, np.uint8), cv2.IMREAD_COLOR)
+    return len(faces.detect(frame))
+
+
+def ffprobe(raw):
+    with TemporaryDirectory() as directory:
+        path = Path(directory) / "probe"
+        path.write_bytes(raw)
+        result = subprocess.run(
+            ["ffprobe", "-v", "error", "-print_format", "json", "-show_format", "-show_streams", str(path)],
+            capture_output=True, check=True,
+        )
+    return json.loads(result.stdout)
+
+
+@override_settings(TRANSCRIBER="reports.test_media_av.fake_transcriber")
+class RecordingTests(TestCase):
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.fixtures = TemporaryDirectory()
+        folder = Path(cls.fixtures.name)
+        tags = ["-metadata", "comment=private-camera-note", "-metadata", "location=+04.5000+007.0000/"]
+        ffmpeg(
+            "-loop", "1", "-i", str(FACE), "-f", "lavfi", "-i", "sine=frequency=440:duration=2", "-t", "2",
+            "-vf", "scale=480:480,format=yuv420p", "-r", "15", "-c:v", "libx264", "-c:a", "aac", *tags,
+            "-shortest", str(folder / "face.mp4"),
+        )
+        ffmpeg("-loop", "1", "-i", str(FACE), "-t", "1", "-vf", "scale=320:320", "-r", "10", "-c:v", "libvpx",
+               str(folder / "face.webm"))
+        ffmpeg("-f", "lavfi", "-i", "sine=frequency=300:duration=2", "-c:a", "libopus", "-b:a", "32k",
+               "-metadata", "title=private-voice-title", str(folder / "voice.ogg"))
+        cls.video = (folder / "face.mp4").read_bytes()
+        cls.webm = (folder / "face.webm").read_bytes()
+        cls.voice = (folder / "voice.ogg").read_bytes()
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.fixtures.cleanup()
+        super().tearDownClass()
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.observer = User.objects.create_user("owner@av-test.example", role=User.Role.OBSERVER)
+        cls.reviewer = User.objects.create_user("reviewer@av-test.example", role=User.Role.REVIEWER)
+        cls.report = Report.objects.create(
+            observer=cls.observer, submission_key=uuid4(), occurred_at=timezone.now(),
+            location="Fictional venue", description="Synthetic recording test.", receipt_code="EG-0000-0001",
+            incident_details={"language": "ha"},
+        )
+
+    def setUp(self):
+        directory = TemporaryDirectory()
+        self.addCleanup(directory.cleanup)
+        setting = override_settings(PRIVATE_MEDIA_ROOT=Path(directory.name))
+        setting.enable()
+        self.addCleanup(setting.disable)
+        self.root = Path(directory.name)
+        self.client = Client(enforce_csrf_checks=True)
+        self.client.force_login(self.observer)
+        CALLS.clear()
+
+    def csrf(self):
+        return self.client.get("/api/v1/auth/csrf").json()["csrf_token"]
+
+    def start(self, raw, **options):
+        body_ = {
+            "kind": "video", "purpose": "evidence", "content_type": "video/mp4", "size_bytes": len(raw),
+            "sha256": sha256(raw).hexdigest(), "client_media_id": f"local-{uuid4().hex[:8]}",
+            "blur_faces": False, "duration_ms": 2000, **options,
+        }
+        with self.captureOnCommitCallbacks(execute=True):
+            return self.client.post(
+                f"/api/v1/reports/{self.report.pk}/uploads", body_, content_type="application/json",
+                HTTP_IDEMPOTENCY_KEY=str(uuid4()), HTTP_X_CSRFTOKEN=self.csrf(),
+            )
+
+    def send(self, raw, **options):
+        """Start, upload in 256 KiB chunks and complete. Returns the completion response."""
+        started = self.start(raw, **options)
+        self.assertEqual(started.status_code, 201, started.content)
+        upload = started.json()["upload"]
+        self.assertEqual(upload["kind"], options.get("kind", "video"))
+        url = f"/api/v1/uploads/{upload['id']}"
+        for offset in range(0, len(raw), upload["chunk_bytes"]):
+            chunk = raw[offset:offset + upload["chunk_bytes"]]
+            sent = self.client.patch(url, chunk, content_type="application/offset+octet-stream",
+                                     HTTP_UPLOAD_OFFSET=str(offset), HTTP_X_CSRFTOKEN=self.csrf())
+            self.assertEqual(sent.status_code, 200, sent.content)
+        with self.captureOnCommitCallbacks(execute=True):
+            return self.client.post(url + "/complete", {}, content_type="application/json",
+                                    HTTP_IDEMPOTENCY_KEY=str(uuid4()), HTTP_X_CSRFTOKEN=self.csrf())
+
+    def work(self):
+        with self.captureOnCommitCallbacks(execute=True):
+            call_command("run_media", "--once", stdout=StringIO(), stderr=StringIO())
+
+    def assign(self):
+        Report.objects.filter(pk=self.report.pk).update(assigned_reviewer=self.reviewer, status=Report.Status.IN_REVIEW)
+        self.client.force_login(self.reviewer)
+
+    def stored_files(self):
+        return sorted(str(path.relative_to(self.root)) for path in self.root.rglob("*") if path.is_file())
+
+    def test_video_is_cleaned_streamed_and_blurred_for_reviewers(self):
+        completed = self.send(self.video)
+        self.assertEqual(completed.status_code, 201, completed.content)
+        media = completed.json()["media"]
+        self.assertEqual((media["kind"], media["status"], media["blurred"], media["exif_removed"]),
+                         ("video", "processing", False, False))
+        url = f"/api/v1/media/{media['id']}/content"
+        self.assertEqual(self.client.get(url).json()["error"]["code"], "invalid_transition")
+
+        # While processing, only the assigned reviewer may open the verified original, with a reason.
+        self.assign()
+        original = url + "?variant=original"
+        self.assertEqual(self.client.get(original).status_code, 422)
+        early = self.client.get(original, HTTP_X_MEDIA_ACCESS_REASON="Urgent synthetic case")
+        self.assertEqual((early.status_code, early["Content-Type"]), (200, "video/mp4"))
+        self.assertEqual(body(early), self.video)
+        self.assertEqual(MediaAccess.objects.get().action, "download_original")
+
+        self.work()
+        item = MediaItem.objects.get()
+        self.assertEqual((item.status, item.blurred, item.review_copy), ("ready", False, True))
+        self.assertFalse(storage().path(original_key(item.organisation_id, item.pk)).exists())
+
+        self.client.force_login(self.observer)
+        own = body(self.client.get(url))
+        self.assertEqual(sha256(own).hexdigest(), item.sha256)
+        self.assertNotIn(b"private-camera-note", own)
+        self.assertNotIn(b"+04.5000", own)
+        probed = ffprobe(own)
+        self.assertNotIn("comment", probed["format"].get("tags", {}))
+        self.assertNotIn("location", probed["format"].get("tags", {}))
+        self.assertEqual([s["codec_name"] for s in probed["streams"]], ["h264", "aac"])
+        own_poster = self.client.get(url + "?variant=poster")
+        self.assertEqual(own_poster["Content-Type"], "image/jpeg")
+        self.assertGreater(faces_in(body(own_poster)), 0)
+        detail = self.client.get(f"/api/v1/reports/{self.report.pk}").json()["media"][0]
+        self.assertEqual((detail["kind"], detail["status"], detail["exif_removed"]), ("video", "ready", True))
+
+        self.client.force_login(self.reviewer)
+        reviewed = self.client.get(url)
+        self.assertNotEqual(body(reviewed), own)
+        self.assertEqual(faces_in(body(self.client.get(url + "?variant=poster"))), 0)
+        part = self.client.get(url, HTTP_RANGE="bytes=10-109")
+        self.assertEqual((part.status_code, len(body(part)), part["Content-Range"].split("/")[0]), (206, 100, "bytes 10-109"))
+        self.assertEqual(self.client.get(url, HTTP_RANGE="bytes=999999999-").status_code, 416)
+        unblurred = self.client.get(original, HTTP_X_MEDIA_ACCESS_REASON="Compare with the observer's account")
+        self.assertEqual(sha256(body(unblurred)).hexdigest(), item.sha256)
+        queue = self.client.get("/api/v1/review/queue").json()["items"][0]
+        self.assertEqual(queue["media_counts"], {"photo": 0, "video": 1, "audio": 0})
+        self.assertIn("video", queue["urgency"]["reasons"])
+
+    def test_blur_on_request_keeps_no_unblurred_copy(self):
+        media = self.send(self.webm, content_type="video/webm", blur_faces=True, duration_ms=1000).json()["media"]
+        url = f"/api/v1/media/{media['id']}/content"
+        self.assign()
+        reason = {"HTTP_X_MEDIA_ACCESS_REASON": "Synthetic check"}
+        self.assertEqual(self.client.get(url + "?variant=original", **reason).status_code, 409)
+        self.work()
+        item = MediaItem.objects.get()
+        self.assertEqual((item.status, item.blurred, item.review_copy), ("ready", True, False))
+        self.assertEqual(self.client.get(url + "?variant=original", **reason).status_code, 404)
+        self.assertEqual(faces_in(body(self.client.get(url + "?variant=poster"))), 0)
+        self.client.force_login(self.observer)
+        self.assertEqual(faces_in(body(self.client.get(url + "?variant=poster"))), 0)
+        self.assertTrue(self.client.get(f"/api/v1/reports/{self.report.pk}").json()["media"][0]["blurred"])
+
+    def test_voice_note_is_reencoded_and_transcribed_for_the_reviewer_only(self):
+        media = self.send(self.voice, kind="audio", content_type="audio/ogg", duration_ms=2000).json()["media"]
+        self.assertEqual((media["kind"], media["status"]), ("audio", "processing"))
+        self.work()
+        self.assertEqual(CALLS, ["ha"])
+        url = f"/api/v1/media/{media['id']}/content"
+        own = self.client.get(url)
+        self.assertEqual(own["Content-Type"], "audio/ogg")
+        voice = body(own)
+        self.assertNotIn(b"private-voice-title", voice)
+        self.assertEqual(ffprobe(voice)["streams"][0]["codec_name"], "opus")
+        self.assertNotIn("transcript", self.client.get(f"/api/v1/reports/{self.report.pk}").json()["media"][0])
+
+        self.assign()
+        self.assertEqual(self.client.get(url).status_code, 200)
+        self.assertEqual(self.client.get(url + "?variant=original", HTTP_X_MEDIA_ACCESS_REASON="x").status_code, 404)
+        case = self.client.get(f"/api/v1/review/cases/{self.report.pk}").json()
+        self.assertEqual(case["media"][0]["transcript"], {
+            "status": "ready", "text": "Synthetic transcript of the voice note.", "language": "en",
+            "method": "test-double", "machine_generated": True,
+        })
+
+    def test_transcription_failure_never_blocks_the_voice_note(self):
+        with mock.patch("reports.media_av.worker.transcribe", side_effect=RuntimeError("model crashed")):
+            media = self.send(self.voice, kind="audio", content_type="audio/ogg", duration_ms=2000).json()["media"]
+            self.work()
+        item = MediaItem.objects.get(pk=media["id"])
+        self.assertEqual((item.status, item.transcript_status, item.transcript), ("ready", "failed", None))
+
+    def test_declared_type_length_and_options_are_checked(self):
+        self.assertEqual(self.start(self.video, duration_ms=None).json()["error"]["fields"]["duration_ms"]["code"], "required")
+        too_long = self.start(self.video, duration_ms=60_001).json()["error"]["fields"]["duration_ms"]
+        self.assertEqual((too_long["code"], too_long["limit"]), ("max_value", 60_000))
+        self.assertEqual(self.start(self.voice, kind="audio", content_type="audio/ogg", blur_faces=True)
+                         .json()["error"]["fields"]["blur_faces"]["code"], "not_allowed_for_kind")
+        self.assertEqual(self.start(self.video, content_type="video/quicktime").status_code, 415)
+        self.assertEqual(self.start(self.video, size_bytes=25 * 1024 * 1024 + 1).status_code, 413)
+        self.assertEqual(self.start(self.voice, kind="audio", content_type="audio/ogg", size_bytes=4 * 1024 * 1024 + 1).status_code, 413)
+
+        mismatch = self.send(self.video, content_type="video/webm")
+        self.assertEqual((mismatch.status_code, mismatch.json()["error"]["code"]), (415, "unsupported_media_type"))
+        disguised = self.send(FACE.read_bytes())
+        self.assertEqual(disguised.status_code, 415)
+        self.assertFalse(MediaItem.objects.exists())
+        self.assertEqual(set(UploadSession.objects.values_list("status", flat=True)), {"cancelled"})
+
+    def test_withdrawal_while_processing_leaves_no_files(self):
+        media = self.send(self.video).json()["media"]
+        with self.captureOnCommitCallbacks(execute=True):
+            withdrawn = self.client.post(
+                f"/api/v1/reports/{self.report.pk}/withdraw", {"confirm": True}, content_type="application/json",
+                HTTP_IDEMPOTENCY_KEY=str(uuid4()), HTTP_X_CSRFTOKEN=self.csrf(),
+            )
+        self.assertEqual(withdrawn.status_code, 200, withdrawn.content)
+        self.work()
+        self.assertFalse(MediaItem.objects.filter(pk=media["id"]).exists())
+        self.assertEqual(self.stored_files(), [])
+
+    def test_removed_during_processing_discards_the_output(self):
+        media = self.send(self.video).json()["media"]
+        real = transcode.process_video
+
+        def remove_mid_way(*args, **kwargs):
+            result = real(*args, **kwargs)
+            with self.captureOnCommitCallbacks(execute=True):
+                self.client.delete(f"/api/v1/reports/{self.report.pk}/media/{media['id']}", HTTP_X_CSRFTOKEN=self.csrf())
+            return result
+
+        with mock.patch("reports.media_av.worker.transcode.process_video", side_effect=remove_mid_way):
+            self.work()
+        self.assertFalse(MediaItem.objects.exists())
+        self.assertEqual(self.stored_files(), [])
+
+    def test_failures_retry_then_fail_and_unreadable_fails_at_once(self):
+        media = self.send(self.video).json()["media"]
+        with mock.patch("reports.media_av.worker.transcode.process_video", side_effect=transcode.ProcessingFailed("boom")):
+            self.work()
+        item = MediaItem.objects.get()
+        self.assertEqual((item.status, item.attempts, item.failure_code), ("failed", 3, "processing_failed"))
+        self.assertEqual(self.stored_files(), [])
+        self.assign()
+        self.assertEqual(self.client.get(f"/api/v1/media/{media['id']}/content").json()["error"]["code"], "invalid_transition")
+
+        MediaItem.objects.all().delete()
+        self.client.force_login(self.observer)
+        Report.objects.filter(pk=self.report.pk).update(status=Report.Status.SUBMITTED)
+        self.send(self.webm, content_type="video/webm", duration_ms=1000)
+        item = MediaItem.objects.get()
+        storage().write(original_key(item.organisation_id, item.pk), b"not a video any more")
+        self.work()
+        item.refresh_from_db()
+        self.assertEqual((item.status, item.attempts, item.failure_code), ("failed", 1, "media_unreadable"))
+
+    def test_closing_while_processing_records_the_verified_upload(self):
+        media = self.send(self.video).json()["media"]
+        self.assign()
+        with self.captureOnCommitCallbacks(execute=True):
+            closed = self.client.post(
+                f"/api/review/{self.report.pk}/actions",
+                {"action": "close", "version": 0, "outcome": "corroborated", "note": "Synthetic evidence reviewed."},
+                content_type="application/json", HTTP_X_CSRFTOKEN=self.csrf(),
+            )
+        self.assertEqual(closed.status_code, 200, closed.content)
+        snapshot = ReviewEvent.objects.get(report=self.report, action="close").change
+        self.assertEqual(snapshot["media_ids"], [
+            {"id": media["id"], "original_sha256": sha256(self.video).hexdigest(), "status": "processing"},
+        ])
+        self.work()
+        self.assertEqual(MediaItem.objects.get().status, "ready")
+
+    def test_photo_without_requested_blur_gets_a_blurred_review_copy(self):
+        raw = FACE.read_bytes()
+        media = self.send(raw, kind="photo", content_type="image/jpeg", duration_ms=None).json()["media"]
+        self.assertEqual((media["status"], media["blurred"]), ("ready", False))
+        url = f"/api/v1/media/{media['id']}/content"
+        self.assertEqual(faces_in(body(self.client.get(url))), 1)
+        self.assign()
+        self.assertEqual(faces_in(body(self.client.get(url))), 0)
+        self.assertEqual(faces_in(body(self.client.get(url + "?variant=thumb"))), 0)
+        self.assertEqual(self.client.get(url + "?variant=original").status_code, 422)
+        unblurred = self.client.get(url + "?variant=original", HTTP_X_MEDIA_ACCESS_REASON="Identify the uniform")
+        self.assertEqual(faces_in(body(unblurred)), 1)
+        self.assertEqual(MediaAccess.objects.filter(action="download_original").count(), 1)
+
+
+@skipUnless(os.getenv("TRANSCRIPTION_MODEL") and shutil.which("espeak-ng"), "needs a local Whisper model and espeak-ng")
+class WhisperTranscriptionTests(TestCase):
+    def test_spoken_english_sentence_is_transcribed(self):
+        from .media_av.transcribe import whisper_transcribe
+
+        with TemporaryDirectory() as directory, override_settings(TRANSCRIPTION_MODEL=os.environ["TRANSCRIPTION_MODEL"]):
+            wav, ogg = Path(directory) / "speech.wav", Path(directory) / "speech.ogg"
+            subprocess.run(["espeak-ng", "-w", str(wav), "The ballot box was taken away before counting."], check=True)
+            ffmpeg("-i", str(wav), "-c:a", "libopus", "-b:a", "32k", str(ogg))
+            result = whisper_transcribe(ogg, "pcm")
+            self.assertEqual((result["status"], result["language"]), ("ready", "en"))
+            self.assertIn("ballot box", result["text"].lower())
+            self.assertEqual(whisper_transcribe(ogg, "ig")["status"], "unsupported_language")
