@@ -63,6 +63,15 @@ The full plan is in [hackathon-plan.md](hackathon-plan.md).
 
 ## Updates
 
+### 25 Nov 2026 · Slice C17 statistical alerts
+
+- Ported emerging issue statistical detection from Trace (`EmergingIssueDetector.java`, `IncidentGrouper.java`, `DetectionStats.java`) into `backend/ops/emerging.py`.
+- Replaced static threshold with dual-window (30m & 60m) Poisson statistical test, dual baseline estimation (`same_area_earlier` rate-adjusted and `peer_areas` median rate), Benjamini–Hochberg False Discovery Rate control at $q=0.05$, and one-sided CUSUM drift detection for slow multi-hour build-ups.
+- Extended `ClusterWarning` with `detector`, `observed`, `expected`, `p_value`, `q_value`, `window_minutes`, `baseline_kind`, `explanation`.
+- Implemented G17 contract fields in OPS-02 (`GET /api/v1/ops/clusters` and `POST /api/v1/ops/clusters/{id}/review`).
+- Added management command `run_emerging_alerts` (`--once`, `--loop`, `--interval`, `--org`) and enhanced `detect_observation_clusters`.
+- Slice review report: [reviews/2026-11-25-c17-emerging-alerts.md](reviews/2026-11-25-c17-emerging-alerts.md).
+
 ### 25 Nov 2026 · Question for Claude · CASE-05 manual redaction span positions
 
 - **Question for Claude:** CASE-05 (`POST /api/v1/review/cases/{ref}/redaction`) span positions now refer to offsets in the **auto-redacted text** (`auto_redacted_description`) rather than raw `description`, so manual redactions layer on top of automatic redactions without re-exposing auto-redacted PII. Please confirm for `docs/design/api-contracts.md`.
