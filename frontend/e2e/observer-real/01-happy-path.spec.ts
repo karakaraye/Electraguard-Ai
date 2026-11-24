@@ -6,6 +6,7 @@ test("first run: setup PIN, own PIN, report with a photo, receipt; one report an
   const camera = photo("camera-small.jpg", 800, 600, 6);
 
   // O-01 language, O-02 privacy notice, O-03 choose and sign in, as a new phone sees them.
+  await page.addInitScript(() => window.localStorage.setItem("eg.splashSeen", "1"));
   await page.goto("/o");
   await page.waitForURL(/\/o\/start/);
   await page.getByTestId("o01-en").click();

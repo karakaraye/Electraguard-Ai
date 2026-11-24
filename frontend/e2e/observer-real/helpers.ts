@@ -56,6 +56,7 @@ export async function knownPhone(context: BrowserContext) {
     window.localStorage.setItem("eg.test.ready", "1");
     window.localStorage.setItem("eg.locale", "en");
     window.localStorage.setItem("eg.noticeSeen", "2026-11-22");
+    window.localStorage.setItem("eg.splashSeen", "1");
   });
 }
 

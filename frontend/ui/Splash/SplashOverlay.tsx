@@ -1,31 +1,43 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
+import { useCallback, useEffect, useState } from "react";
 import { BrandMark } from "../BrandMark/BrandMark";
 import styles from "./SplashOverlay.module.css";
 
 export function SplashOverlay() {
+  const pathname = usePathname();
   const [visible, setVisible] = useState(false);
   const [fading, setFading] = useState(false);
 
+  const dismiss = useCallback(() => {
+    try {
+      window.localStorage?.setItem("eg.splashSeen", "1");
+    } catch {}
+
+    const prefersReducedMotion = typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (prefersReducedMotion) {
+      setVisible(false);
+      return;
+    }
+
+    setFading(true);
+    window.setTimeout(() => {
+      setVisible(false);
+    }, 200);
+  }, []);
+
   useEffect(() => {
-    // Only show on first visit in the session
     try {
       const forceSplash = typeof window !== "undefined" && window.location.search.includes("splash=1");
-      if (forceSplash) {
-        const timer = window.setTimeout(() => setVisible(true), 0);
-        return () => window.clearTimeout(timer);
-      }
-      const isTest = typeof window !== "undefined" && window.localStorage?.getItem("eg.test.ready");
-      const isAutomation = typeof navigator !== "undefined" && navigator.webdriver;
-      const seen = typeof window !== "undefined" && window.sessionStorage?.getItem("eg.splashSeen");
-      const isSubRoute = typeof window !== "undefined" && (window.location.pathname.startsWith("/o/new") || window.location.pathname.startsWith("/o/reports") || window.location.pathname.startsWith("/o/checklist"));
-      if (isTest || isAutomation || seen || isSubRoute) {
+      const isAllowedRoute = pathname === "/" || pathname === "/o/start";
+
+      if (!isAllowedRoute && !forceSplash) {
         return;
       }
-      const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      if (prefersReducedMotion) {
-        window.sessionStorage?.setItem("eg.splashSeen", "1");
+
+      const seen = typeof window !== "undefined" && window.localStorage?.getItem("eg.splashSeen");
+      if (seen && !forceSplash) {
         return;
       }
 
@@ -34,11 +46,7 @@ export function SplashOverlay() {
       }, 0);
 
       const timer = window.setTimeout(() => {
-        setFading(true);
-        window.setTimeout(() => {
-          setVisible(false);
-          window.sessionStorage?.setItem("eg.splashSeen", "1");
-        }, 300);
+        dismiss();
       }, 1200);
 
       return () => {
@@ -48,17 +56,20 @@ export function SplashOverlay() {
     } catch {
       // fallback
     }
-  }, []);
+  }, [pathname, dismiss]);
 
-  const dismiss = () => {
-    setFading(true);
-    window.setTimeout(() => {
-      setVisible(false);
-      try {
-        window.sessionStorage?.setItem("eg.splashSeen", "1");
-      } catch {}
-    }, 200);
-  };
+  useEffect(() => {
+    if (!visible) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        dismiss();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [visible, dismiss]);
 
   if (!visible) return null;
 
@@ -66,10 +77,12 @@ export function SplashOverlay() {
     <div
       className={`${styles.overlay} ${fading ? styles.fading : ""}`}
       onClick={dismiss}
-      role="dialog"
-      aria-modal="true"
-      aria-label="ElectraGuard AI"
+      role="presentation"
+      data-testid="splash-overlay"
     >
+      <span className="eg-sr-only" aria-live="polite">
+        ElectraGuard AI
+      </span>
       <div className={styles.center}>
         <div className={styles.sunRings}>
           <div className={styles.ringOuter}>
@@ -82,7 +95,7 @@ export function SplashOverlay() {
             </div>
           </div>
         </div>
-        <h1 className={styles.title}>ElectraGuard AI</h1>
+        <p className={styles.title}>ElectraGuard AI</p>
         <p className={styles.credit}>by Cairn</p>
       </div>
 
