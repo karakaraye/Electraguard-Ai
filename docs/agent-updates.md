@@ -47,8 +47,8 @@ The full plan is in [hackathon-plan.md](hackathon-plan.md).
 | C10 staff extras (rumours, public data, security, audit, code batches, org settings, retention, OPS-02..04) | Claude | `backend/v1-staff-extras` | `backend/rumours/`, `backend/publicdata/`, `backend/security/`, `backend/ops/`, `backend/staff/` (codes, audit, retention, organisation settings only) |
 | C11 intelligence and phone channels | Claude | `backend/v1-intelligence` | `backend/intelligence/`, `backend/phone_channels/`, `data/synthetic/`, `docs/eval/` |
 | C12 video, voice notes, face blur and transcripts (MED video/audio, server-side blur, transcription jobs) | Kara's agents | `backend/v1-media-av` | `backend/reports/media_lifecycle.py`, `backend/reports/media_storage.py`, `backend/reports/media_views.py`, `backend/reports/test_media.py`, new `backend/reports/media_av/`, related media migrations |
-| C13 starter notebook, API reference, `CONTRIBUTING.md`, load test and cost estimate (local now, Azure later) | Claude | to be named in its claim | `notebooks/`, `docs/submission/API_REFERENCE.md`, `CONTRIBUTING.md`, load-test scripts and report |
-| C14 Azure deployment scripts | Kara's agents | `deploy/azure` | `deploy/azure/`, `.github/workflows/deploy-azure.yml`, `docs/azure-deployment.md`, `deploy/README.md` (pointer), `docs/submission/SAFETY_AND_LIMITATIONS.md` (data location section only) |
+| C13 starter notebook, API reference, `CONTRIBUTING.md`, load test and cost estimate (local now, Azure later) | Claude | docs/c13-submission-tooling | `notebooks/`, `docs/submission/API_REFERENCE.md`, `CONTRIBUTING.md`, load-test scripts and report |
+| C14 Azure deployment scripts | Kara's agents | `deploy/azure` | `deploy/azure/`, `.github/workflows/deploy-azure.yml`, `docs/azure-deployment.md` |
 | Front end (all screens, art, offline logic) | Claude + Antigravity | `design/*`, `logic/*`, `integrate/observer-e2e` | `frontend/` |
 | Front-end design system, screens, API contracts | Claude | `design/frontend` | `frontend/app/(observer)/…`, `frontend/app/(staff)/…`, `frontend/app/(public)/…`, `frontend/ui/…`, `frontend/messages/…`, `docs/design/…` |
 | Product mark and lockups | Claude (brand agent) | `design/brand` | `docs/design/brand/…` |
@@ -68,19 +68,46 @@ The full plan is in [hackathon-plan.md](hackathon-plan.md).
   - Key Vault secrets mounted at `/run/secrets`, so the images run unchanged.
   - Images built in Azure Container Registry from the committed tree.
 - Run `deploy/azure/deploy.sh all`, or the manual workflow `.github/workflows/deploy-azure.yml` (OIDC, `azure` environment with reviewers). Runbook: [azure-deployment.md](azure-deployment.md).
-- **Region (Kara's decision):** `southafricanorth`, the closest region to Nigeria. Report data is processed outside Nigeria. The Nigeria Data Protection Act's cross-border transfer rules are noted in [SAFETY_AND_LIMITATIONS.md](submission/SAFETY_AND_LIMITATIONS.md). Only that section is written so far; the rest of that document is still for the documentation owner.
+- **Region (Kara's decision):** `southafricanorth`, the closest region to Nigeria. Report data is processed outside Nigeria. **For the C15 owner:** please add the data location and NDPA cross-border text from [azure-deployment.md](azure-deployment.md#data-location-and-cross-border-transfer) to section 3 of `docs/submission/SAFETY_AND_LIMITATIONS.md`. **For the copy owner:** the privacy notice (O-02) needs one line in all five languages saying data is stored in South Africa.
 - Not yet run on Azure; Azure access is still pending.
+
+### 24 Nov 2026 · Claude (supervisor) · Status: what is merged, what is running, who owns what
+
+**Merged into `production-readiness`:** C5–C7, C1–C4, #13 (duplicates settled), #17 (C12–C14 claims), **#16 C9 observer extras, #14 C11 intelligence and phone channels, #15 C10 staff extras**, and this pull request (Docker image now copies the seven new backend apps; the private deployment check failed with `No module named 'staff'` until this fix).
+
+**Open, with owner and next step. Do not start any of these elsewhere:**
+
+| Work | Owner | Branch / PR | Next step |
+|---|---|---|---|
+| C8 staff sign-in, TOTP, staff admin | Kara's agents | #12 `backend/v1-staff-auth` | Resolve conflicts with `production-readiness`, then merge |
+| C12 video, voice notes, face blur, transcripts | Kara's agents | #18 | Apply the review, rebase on `production-readiness`, renumber migrations |
+| C14 Azure deployment scripts | Kara's agents | `deploy/azure` (own PR) | Compile Bicep; region South Africa North; deploy when the Azure login arrives |
+| C13 starter notebook, API reference, CONTRIBUTING, load test and cost | Claude's side (Codex) | #19 `docs/c13-submission-tooling` | Merge when checks pass |
+| C15 submission documents and approved observer guide | Claude's side (Antigravity) | `docs/c15-submission-docs` | In progress; PR to follow |
+| Full-system test branch (everything merged for end-to-end and phone testing) | Claude's side (Codex) | `integrate/full-system` | Test only; never merged. Rebuild from `production-readiness` once the open PRs land |
+| Front end: observer, citizen, staff and public screens, art, offline logic | Claude's side | `integrate/observer-e2e`, `design/*`, `logic/observer-hardening` | Merge into `production-readiness` by one front-end PR after the full-system test passes |
+
+**Rules that stop collisions:** claim before starting (pull request to this file); one owner per row; stay inside your row's paths; rebase on `production-readiness` before opening a PR; merge order for anything touching `backend/reports/migrations` is the order PRs are listed above.
+
+
+### 24 Nov 2026 · C13 submission tooling
+
+- Added the synthetic starter notebook, API reference with pending-merge markers, contribution guide, and local observer load profile with an Azure budget.
+- The notebook executed with 900 reference units and 19 correct triage classifications of 22 held-out reports. The local profile recorded successful incident reports and photo uploads along with PIN setup timeouts. See the submission load report for settings and counts.
+- Repeat the benchmark and verify the billed rates once the Azure login arrives.
 
 ### 23 Nov 2026 · C10 staff operations and administration
 
 - Added rumour review, delayed public snapshots with complementary suppression, security alerts, organisation audit export and verification, observer code batches, settings, and retention cleanup.
 - Added cluster warnings and coverage gaps over the existing reports. The late-materials endpoint and risk rows ship together in C11.
 - Applied the backend migrations to a fresh PostgreSQL database. The 118-test backend suite passed, along with six access-boundary tests. Run the backend test suite from `backend/` with `python manage.py test --noinput`.
+
 ### 23 Nov 2026 · C11 intelligence and phone channels
 
 - SMS and USSD share the citizen report and reply persistence paths. The simulator exercises the same handlers and marks its reports for reviewer display and exclusion from public counts.
 - The triage worker writes advisory suggestions to the existing reviewer model. Late-materials risk rows are organisation-scoped and served by OPS-04. Duplicate suggestions remain subject to the existing grouping release gate.
 - An empty PostgreSQL database migrated successfully. Regenerating the evaluation reproduced the checked-in report byte-for-byte, with 87.1% held-out urgency recall and the category leakage audit intact.
+
 ### 23 Nov 2026 · C9 observer backend extras
 
 - Added structured observer reports, private result-sheet photo reading, report conversations, ward discussions, and cited approved-document retrieval. Result-sheet consistency flags and benign explanations are visible to the assigned reviewer. Checks use individual sheets and publish no tallies.

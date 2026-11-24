@@ -4,7 +4,7 @@ These scripts put the same stack that runs under Docker Compose onto Azure Conta
 
 **Status:** the templates compile and lint clean, and the scripts are tested locally. **Nothing has been deployed to Azure yet**: we are still waiting for the hackathon's Azure access. The "What has been tested" section says exactly what was checked.
 
-**Region: South Africa North** (`southafricanorth`), decided by Kara on 24 Nov 2026 as the closest Azure region to Nigeria. Report data is therefore stored and processed outside Nigeria. The cross-border basis under the Nigeria Data Protection Act is recorded in [SAFETY_AND_LIMITATIONS.md](submission/SAFETY_AND_LIMITATIONS.md#data-location-and-cross-border-transfer).
+**Region: South Africa North** (`southafricanorth`), decided by Kara on 24 Nov 2026 as the closest Azure region to Nigeria. Report data is therefore stored and processed outside Nigeria. The cross-border basis under the Nigeria Data Protection Act is in [Data location and cross-border transfer](#data-location-and-cross-border-transfer) below. The same text is offered for section 3 of the Safety document, which C15 owns.
 
 ## What gets created
 
@@ -31,7 +31,7 @@ The frontend image reads the API through `gateway:8081`. The gateway therefore a
 
 1. **Azure CLI** 2.60 or later, signed in with `az login`, with the target subscription selected.
 2. **Permissions.** The account needs **Owner**, or **Contributor plus User Access Administrator**, on the resource group or subscription. The template creates role assignments: the registry pull, Key Vault read for the apps, and Key Vault write for the person deploying.
-3. **Region.** `southafricanorth` is the default (see Status above). Azure has no region in Nigeria. Changing `AZURE_LOCATION` changes where report data is stored, so update the Safety document first.
+3. **Region.** `southafricanorth` is the default (see Status above). Azure has no region in Nigeria. Changing `AZURE_LOCATION` changes where report data is stored, so update the data location section below and the Safety document first.
 4. **Host name.** Decide the public host, for example `electraguard.example.org`. You need control of its DNS.
 
 ## Deploy
@@ -158,3 +158,53 @@ These were tested locally, in this repository's cloud workspace:
 - `DJANGO_AUTH_TRUSTED_PROXY_IPS` is not set, the same as in Compose. Django therefore sees the gateway, not the client, as the peer. Per-client limits happen in the gateway.
 - Key Vault and the registry keep their public endpoints, protected by Microsoft Entra ID and RBAC, so the deploy runner can reach them. Private endpoints can be added later.
 - The backend image with the Whisper model is about 2.7 GB. The first pull on a new replica takes a while.
+
+## Data location and cross-border transfer
+
+**Decision (Kara, 24 Nov 2026):** the hosted system runs in Microsoft Azure's **South Africa North** region (Johannesburg). Azure has no region in Nigeria, and South Africa North is the closest one. Everything ElectraGuard stores is therefore held and processed outside Nigeria:
+- reports
+- observer codes
+- photos, videos and voice notes
+- transcripts
+- the audit log
+- backups
+
+This applies to the Azure deployment only. The offline laptop stack (`docker compose up`) keeps everything on that machine.
+
+### What stays in the region
+
+These all live in South Africa North:
+- the PostgreSQL database and its backups (geo-redundant backup is turned off)
+- the private media share (zone-redundant storage, which replicates within the region only)
+- Key Vault
+- the container registry
+- the log workspace
+
+Speech transcription and face blurring run inside our own containers. No report data is sent to any other AI provider (plan section 6.1). Logs hold container output only; the application does not log report content.
+
+### Basis under the Nigeria Data Protection Act 2023
+
+Part VIII of the Act covers cross-border transfers (sections 41 to 43). Personal data may leave Nigeria only where:
+- the recipient is bound by a law, binding corporate rules, contractual clauses, a code of conduct or a certification that gives an adequate level of protection, or
+- another basis listed in section 43 applies, for example informed consent.
+
+The controller must record the basis and its assessment of adequacy.
+
+Our position, **to be confirmed with the legal and data-protection mentor clinic before any real data is used**:
+
+1. **During the hackathon only synthetic data is processed.** No real person's data is transferred, so the transfer rules are not yet engaged. Every screen and document says the data is synthetic.
+2. **For any later use with real observers**, the intended basis is adequacy under section 41(1):
+   - South Africa's Protection of Personal Information Act 2013 (POPIA) is a comprehensive data protection law with an independent regulator.
+   - Microsoft's Products and Services Data Protection Addendum includes contractual commitments on processing, security and sub-processors.
+   - The transfer, its basis and the adequacy assessment must be recorded before go-live, and any guidance from the Nigeria Data Protection Commission must be checked.
+3. **Data minimisation reduces what crosses the border:**
+   - no names or GPS for observers
+   - observer codes instead of identities
+   - metadata stripped from all media
+   - faces blurred on request, and blurred for reviewers by default
+   - withdrawal deletes the report's content and media
+4. **The privacy notice must say where data is held.** Observers and citizens must be told that their reports are stored in South Africa, at screen O-02 (privacy notice) and on the public pages. This needs the copy owner to add one line in all five languages.
+
+### Changing the region
+
+Changing `AZURE_LOCATION` in `deploy/azure/deploy.sh` changes where data is stored. Update this section and the Safety document first.
