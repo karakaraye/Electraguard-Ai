@@ -26,6 +26,9 @@ def serialize(organisation):
             "state_codes": organisation.coverage_state_codes,
             "lga_codes": organisation.coverage_lga_codes,
         },
+        "review_targets": organisation.review_targets or {
+            "urgent": 15, "high": 60, "normal": 240, "low": 480, "question_reply": 120,
+        },
         "simulator_enabled": organisation.simulator_enabled,
         "updated_by": organisation.settings_updated_by or None,
         "updated_at": wat(organisation.settings_updated_at) if organisation.settings_updated_at else None,
@@ -75,6 +78,9 @@ def validate_settings(data):
                      len(set(value)) == len(value))
         elif field == "coverage_area":
             valid = coverage_values(value) is not None
+        elif field == "review_targets":
+            if isinstance(value, dict) and set(value) == {"urgent", "high", "normal", "low", "question_reply"}:
+                valid = all(isinstance(v, int) and 5 <= v <= 1440 for v in value.values())
         if valid:
             changes[field] = value
         else:

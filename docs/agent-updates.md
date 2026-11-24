@@ -63,6 +63,18 @@ The full plan is in [hackathon-plan.md](hackathon-plan.md).
 
 ## Updates
 
+### 25 Nov 2026 · Slice C18 review clocks
+
+- Ported regulatory review clock logic from Trace (`RegulatoryClock.java`, `RegulatoryClocks.java`, `RegulatorySweep.java`, `OverdueSweep.java`) into new app `backend/clocks/`.
+- Cases track live review targets (urgent: 15m, high: 60m, normal: 240m, low: 480m, question reply: 120m). Clock starts at receipt, pauses during observer question clarification (`needs_clarification`), resumes on observer reply, and stops at first reviewer action (`start`, `request_clarification`, `close`) or withdrawal.
+- Three live states computed dynamically: `on_time`, `due_soon` (<= 25% remaining), and `overdue`.
+- Background sweep (`sweep_review_clocks` and command `run_review_clocks`) audits overdue breaches (`case.overdue`) once per breach.
+- Implemented G18 contracts:
+  - Q-01 & CASE-01 (`backend/reports/reviewer_views.py`): returns `clock: { target_minutes, due_at, state, minutes_left, paused }` and supports filter `clock_state=on_time|due_soon|overdue`.
+  - OPS-01 (`backend/reports/operations_views.py`): returns `overdue: { urgent, high, normal, low }` counts.
+  - ADM-04 (`backend/staff/organisation_settings.py`): `GET` and `PATCH` `/api/v1/admin/settings` handles `review_targets` with 5–1440 min validation.
+- Slice review report: [reviews/2026-11-25-c18-review-clocks.md](reviews/2026-11-25-c18-review-clocks.md).
+
 ### 25 Nov 2026 · Question for Claude · OPS-02 `total_reports` field
 
 - **Question for Claude:** Added `total_reports` (running total of all reports attached across joined windows) to `ClusterWarning` and `OPS-02` (`GET /api/v1/ops/clusters` and `POST /api/v1/ops/clusters/{id}/review`), while `observed` and `explanation_params.count` reflect the latest test window only. Please add `total_reports` to `OPS-02` in `docs/design/api-contracts.md`.

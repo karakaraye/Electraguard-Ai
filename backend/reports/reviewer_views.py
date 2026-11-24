@@ -118,6 +118,11 @@ def queue_item(report, photo_count, events, video_count=0, audio_count=0):
     legacy_correction = LEGACY_CATEGORY.get(triage.corrected_category) if triage else None
     corrected = category["corrected_value"] or legacy_correction
     closing = next((event for event in reversed(events) if event.action == Action.CLOSE), None)
+    try:
+        from clocks.calculator import clock_json
+        c_info = clock_json(report)
+    except Exception:
+        c_info = None
     return {
         **identity(report), "channel": channel(report),
         "category": {
@@ -136,6 +141,7 @@ def queue_item(report, photo_count, events, video_count=0, audio_count=0):
         "flags": {"possible_duplicate": False, "result_sheet_flags": 0, "possible_names": False},
         "last_activity_at": wat(events[-1].created_at if events else report.created_at),
         "outcome": closing.change.get("outcome") if closing else None,
+        "clock": c_info,
     }
 
 
@@ -144,7 +150,7 @@ def queue_parameters(query):
     choices = {
         "status": set(STATES.values()), "category": CATEGORIES, "urgency": set(URGENCIES),
         "channel": {"app", "citizen", "sms", "ussd"}, "kind": KINDS, "has_evidence": {"true", "false"},
-        "state_code": None, "lga_code": None,
+        "state_code": None, "lga_code": None, "clock_state": {"on_time", "due_soon", "overdue"},
     }
     for name, allowed in choices.items():
         values = sorted(set(query.getlist(name)))
@@ -166,6 +172,7 @@ def matches(item, filters):
     values = {
         **item, **(item["area"] or {}), "category": item["category"]["value"],
         "urgency": item["urgency"]["level"], "has_evidence": "true" if any(item["media_counts"].values()) else "false",
+        "clock_state": (item.get("clock") or {}).get("state"),
     }
     return all(values.get(name) in choices for name, choices in filters.items())
 
