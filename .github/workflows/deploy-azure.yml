@@ -38,6 +38,7 @@ jobs:
       DEPLOY_TRIAGE_WORKER: ${{ vars.DEPLOY_TRIAGE_WORKER }}
       MEDIA_WORKER_MODE: ${{ vars.MEDIA_WORKER_MODE }}
       MEDIA_WORKER_CPU: ${{ vars.MEDIA_WORKER_CPU }}
+      MEDIA_WORKER_REPLICAS: ${{ vars.MEDIA_WORKER_REPLICAS }}
       STAGE: ${{ inputs.stage }}
       RELEASE: ${{ inputs.release }}
     steps:

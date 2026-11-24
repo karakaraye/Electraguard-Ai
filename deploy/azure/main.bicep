@@ -20,7 +20,8 @@ param stage string = 'infra'
 @maxLength(12)
 param prefix string = 'electraguard'
 
-param location string = resourceGroup().location
+@description('Azure region. South Africa North is the closest region to Nigeria (Kara, 24 Nov).')
+param location string = 'southafricanorth'
 
 @description('Public host name people use, e.g. electraguard.example.org. Must match the custom domain bound to the gateway, or the gateway default host name.')
 param host string
@@ -28,16 +29,8 @@ param host string
 @description('Image tag built by deploy.sh images, e.g. a commit hash.')
 param release string = ''
 
-@description('Object id of the person or workload identity that runs deploy.sh; it is allowed to write the generated secrets.')
-param deployerObjectId string
-
-@description('PrincipalType of deployerObjectId.')
-@allowed(['User', 'ServicePrincipal'])
-param deployerPrincipalType string = 'User'
-
-@secure()
-@description('PostgreSQL administrator password (stored in Key Vault as postgres-bootstrap by deploy.sh).')
-param postgresAdminPassword string
+@description('Name of the Key Vault created by vault.bicep (deploy.sh passes it).')
+param vaultName string
 
 param postgresSku string = 'Standard_B1ms'
 param postgresTier string = 'Burstable'
@@ -50,6 +43,11 @@ param deployTriageWorker bool = false
 @description('app: an always-on media worker (fastest). scheduled: a job started every minute, billed only while it runs.')
 @allowed(['app', 'scheduled'])
 param mediaWorkerMode string = 'app'
+
+@description('Media worker replicas in app mode. Claims use row locks with SKIP LOCKED, so several replicas share the queue safely.')
+@minValue(1)
+@maxValue(4)
+param mediaWorkerReplicas int = 1
 
 @description('vCPU for the media worker. A 60 s 720p video took about 70 to 90 s on 4 cores in testing.')
 @allowed(['1.0', '2.0', '4.0'])
@@ -67,7 +65,6 @@ var withApps = stage == 'apps'
 // Built-in role definition ids.
 var acrPull = '7f951dda-4ed3-4680-a7ca-43fe172d538d'
 var keyVaultSecretsUser = '4633458b-17de-408a-b874-0445c86b69e6'
-var keyVaultSecretsOfficer = 'b86a8fe4-44ce-4948-aee5-eccb2c155cd7'
 
 // ---------------------------------------------------------------- network and logs
 
@@ -146,17 +143,8 @@ resource registryPull 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   }
 }
 
-resource vault 'Microsoft.KeyVault/vaults@2023-07-01' = {
-  name: '${name}-${take(unique, 8)}'
-  location: location
-  properties: {
-    tenantId: subscription().tenantId
-    sku: { family: 'A', name: 'standard' }
-    enableRbacAuthorization: true
-    enableSoftDelete: true
-    softDeleteRetentionInDays: 30
-    enablePurgeProtection: true
-  }
+resource vault 'Microsoft.KeyVault/vaults@2023-07-01' existing = {
+  name: vaultName
 }
 
 resource vaultRead 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
@@ -166,16 +154,6 @@ resource vaultRead 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', keyVaultSecretsUser)
     principalId: identity.properties.principalId
     principalType: 'ServicePrincipal'
-  }
-}
-
-resource vaultWrite 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  scope: vault
-  name: guid(vault.id, deployerObjectId, keyVaultSecretsOfficer)
-  properties: {
-    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', keyVaultSecretsOfficer)
-    principalId: deployerObjectId
-    principalType: deployerPrincipalType
   }
 }
 
@@ -219,31 +197,21 @@ resource mediaShare 'Microsoft.Storage/storageAccounts/fileServices/shares@2023-
 
 // ---------------------------------------------------------------- PostgreSQL
 
-resource postgres 'Microsoft.DBforPostgreSQL/flexibleServers@2024-08-01' = {
-  name: '${name}-db-${take(unique, 6)}'
-  location: location
-  sku: { name: postgresSku, tier: postgresTier }
-  properties: {
-    version: '17'
-    administratorLogin: 'electraguard_bootstrap'
-    administratorLoginPassword: postgresAdminPassword
-    storage: { storageSizeGB: postgresStorageGb, autoGrow: 'Enabled' }
-    backup: { backupRetentionDays: postgresBackupDays, geoRedundantBackup: 'Disabled' }
-    highAvailability: { mode: 'Disabled' }
-    network: {
-      delegatedSubnetResourceId: vnet.properties.subnets[1].id
-      privateDnsZoneArmResourceId: postgresDns.id
-      publicNetworkAccess: 'Disabled'
-    }
-    authConfig: { activeDirectoryAuth: 'Disabled', passwordAuth: 'Enabled' }
+module postgres 'postgres.bicep' = {
+  name: 'electraguard-postgres'
+  params: {
+    name: '${name}-db-${take(unique, 6)}'
+    location: location
+    subnetId: vnet.properties.subnets[1].id
+    privateDnsZoneId: postgresDns.id
+    sku: postgresSku
+    tier: postgresTier
+    storageGb: postgresStorageGb
+    backupDays: postgresBackupDays
+    // Resolved by Azure Resource Manager from Key Vault; never seen by deploy.sh.
+    administratorPassword: vault.getSecret('postgres-bootstrap')
   }
   dependsOn: [postgresDnsLink]
-}
-
-resource database 'Microsoft.DBforPostgreSQL/flexibleServers/databases@2024-08-01' = {
-  parent: postgres
-  name: 'electraguard'
-  properties: { charset: 'UTF8', collation: 'en_US.utf8' }
 }
 
 // ---------------------------------------------------------------- Container Apps environment
@@ -296,7 +264,7 @@ var djangoEnv = [
   { name: 'FRONTEND_ORIGIN', value: 'https://${host}' }
   { name: 'OBSERVATION_INTAKE_ENABLED', value: observationIntakeEnabled ? 'true' : 'false' }
   { name: 'POSTGRES_DB', value: 'electraguard' }
-  { name: 'POSTGRES_HOST', value: postgres.properties.fullyQualifiedDomainName }
+  { name: 'POSTGRES_HOST', value: postgres.outputs.fqdn }
   { name: 'POSTGRES_PORT', value: '5432' }
   { name: 'PGSSLMODE', value: 'require' }
   { name: 'PRIVATE_MEDIA_ROOT', value: mediaMount }
@@ -348,7 +316,7 @@ resource dbInit 'Microsoft.App/jobs@2024-03-01' = if (withJobs) {
         image: '${registryServer}/electraguard-db-init:${release}'
         resources: { cpu: json('0.25'), memory: '0.5Gi' }
         env: [
-          { name: 'PGHOST', value: postgres.properties.fullyQualifiedDomainName }
+          { name: 'PGHOST', value: postgres.outputs.fqdn }
           { name: 'PGUSER', value: 'electraguard_bootstrap' }
           { name: 'PGDATABASE', value: 'electraguard' }
           { name: 'PGSSLMODE', value: 'require' }
@@ -366,7 +334,7 @@ resource dbInit 'Microsoft.App/jobs@2024-03-01' = if (withJobs) {
       }]
     }
   }
-  dependsOn: [registryPull, vaultRead, database]
+  dependsOn: [registryPull, vaultRead]
 }
 
 resource migrate 'Microsoft.App/jobs@2024-03-01' = if (withJobs) {
@@ -403,7 +371,7 @@ resource migrate 'Microsoft.App/jobs@2024-03-01' = if (withJobs) {
       }]
     }
   }
-  dependsOn: [registryPull, vaultRead, database]
+  dependsOn: [registryPull, vaultRead]
 }
 
 // ---------------------------------------------------------------- apps
@@ -475,7 +443,10 @@ resource mediaWorker 'Microsoft.App/containerApps@2024-03-01' = if (withApps && 
         volumeMounts: djangoMounts
       }]
       volumes: [runtimeSecretFiles, mediaVolume]
-      scale: { minReplicas: 1, maxReplicas: 1 }
+      // No HTTP or TCP port to probe. A crash exits the process and Container Apps restarts
+      // it; a stuck item is bounded by the per-item timeout and CPU limit, and its claim
+      // expires after 20 minutes so another replica or restart picks it up.
+      scale: { minReplicas: mediaWorkerReplicas, maxReplicas: mediaWorkerReplicas }
     }
   }
   dependsOn: [registryPull, vaultRead]
@@ -601,9 +572,8 @@ resource gateway 'Microsoft.App/containerApps@2024-03-01' = if (withApps) {
 
 output registryName string = registry.name
 output registryServer string = registryServer
-output vaultName string = vault.name
 output environmentName string = appsEnvironment.name
-output postgresHost string = postgres.properties.fullyQualifiedDomainName
-output dbInitJob string = withJobs ? dbInit.name : ''
-output migrateJob string = withJobs ? migrate.name : ''
-output gatewayDefaultHost string = withApps ? gateway.properties.configuration.ingress.fqdn : ''
+output postgresHost string = postgres.outputs.fqdn
+output dbInitJob string = withJobs ? '${name}-db-init' : ''
+output migrateJob string = withJobs ? '${name}-migrate' : ''
+output gatewayDefaultHost string = gateway.?properties.configuration.ingress.fqdn ?? ''

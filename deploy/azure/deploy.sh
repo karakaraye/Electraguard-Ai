@@ -1,35 +1,38 @@
 #!/usr/bin/env bash
 # Deploy ElectraGuard AI to Azure Container Apps. See docs/azure-deployment.md.
 #
-#   deploy/azure/deploy.sh infra            network, PostgreSQL, Key Vault, registry, media share
+#   deploy/azure/deploy.sh infra            Key Vault and secrets, then network, PostgreSQL, registry, media share
 #   deploy/azure/deploy.sh images [RELEASE] build images in Azure Container Registry
 #   deploy/azure/deploy.sh apps [RELEASE]   database roles, migrations, then the apps
 #   deploy/azure/deploy.sh all [RELEASE]    all three, in order
 #
 # Needs the Azure CLI, signed in (az login, or azure/login in GitHub Actions), and:
 #   AZURE_RESOURCE_GROUP   resource group to create or reuse
-#   AZURE_LOCATION         Azure region, e.g. southafricanorth
 #   ELECTRAGUARD_HOST      public host name, e.g. electraguard.example.org
-# Optional: ELECTRAGUARD_PREFIX (default electraguard), OBSERVATION_INTAKE_ENABLED
-# (default false), DEPLOY_TRIAGE_WORKER (default false), ELECTRAGUARD_DEPLOYER_OBJECT_ID
-# (the deploying service principal's object id, when it cannot read the directory),
-# MEDIA_WORKER_MODE (app or scheduled, default app), MEDIA_WORKER_CPU (1.0, 2.0 or 4.0).
+# Optional: AZURE_LOCATION (default southafricanorth, the closest region to Nigeria),
+# ELECTRAGUARD_PREFIX (default electraguard), OBSERVATION_INTAKE_ENABLED (default false),
+# DEPLOY_TRIAGE_WORKER (default false), ELECTRAGUARD_DEPLOYER_OBJECT_ID (the deploying
+# service principal's object id, when it cannot read the directory), MEDIA_WORKER_MODE
+# (app or scheduled, default app), MEDIA_WORKER_CPU (1.0, 2.0 or 4.0), MEDIA_WORKER_REPLICAS.
 # RELEASE defaults to the current commit. Images are built from the committed tree only.
+#
+# Secrets are generated straight into Key Vault and never written to disk or passed on a
+# command line. The deployer can write them only while `infra` runs.
 set -euo pipefail
 
 here=$(cd "$(dirname "$0")" && pwd)
 repo=$(cd "$here/../.." && pwd)
 : "${AZURE_RESOURCE_GROUP:?Set AZURE_RESOURCE_GROUP}"
-: "${AZURE_LOCATION:?Set AZURE_LOCATION}"
 : "${ELECTRAGUARD_HOST:?Set ELECTRAGUARD_HOST}"
+location=${AZURE_LOCATION:-southafricanorth}
 prefix=${ELECTRAGUARD_PREFIX:-electraguard}
 intake=${OBSERVATION_INTAKE_ENABLED:-false}
 triage=${DEPLOY_TRIAGE_WORKER:-false}
 media_mode=${MEDIA_WORKER_MODE:-app}
 media_cpu=${MEDIA_WORKER_CPU:-2.0}
+media_replicas=${MEDIA_WORKER_REPLICAS:-1}
 rg=$AZURE_RESOURCE_GROUP
-# A generated administrator password waits here until Key Vault holds it.
-state="${XDG_STATE_HOME:-$HOME/.local/state}/electraguard-azure/$rg"
+secrets_officer=b86a8fe4-44ce-4948-aee5-eccb2c155cd7
 
 az config set extension.use_dynamic_install=yes_without_prompt --only-show-errors >/dev/null
 
@@ -66,18 +69,17 @@ deployer() {
   fi
 }
 
-secret_get() {
-  az keyvault secret show --vault-name "$1" -n "$2" --query value -o tsv 2>/dev/null || true
-}
-
-# Writes a secret if it does not exist yet. Role assignments take a few minutes to apply.
+# Creates a random secret in Key Vault unless it already exists. The value goes from
+# openssl to the Azure CLI through a pipe: no file, no command-line argument.
 secret_ensure() {
-  local vault=$1 name=$2 value=$3 attempt
+  local vault=$1 name=$2 bytes=$3 attempt
   for attempt in $(seq 1 20); do
     if az keyvault secret show --vault-name "$vault" -n "$name" --query id -o tsv >/dev/null 2>&1; then
       return 0
     fi
-    if az keyvault secret set --vault-name "$vault" -n "$name" --value "$value" --only-show-errors >/dev/null 2>&1; then
+    if openssl rand -hex "$bytes" | tr -d '\n' \
+        | az keyvault secret set --vault-name "$vault" -n "$name" --file /dev/stdin --encoding utf-8 \
+          --only-show-errors -o none 2>/dev/null; then
       return 0
     fi
     echo "Waiting for Key Vault access ($attempt/20)..." >&2
@@ -87,53 +89,44 @@ secret_ensure() {
   return 1
 }
 
-admin_password() {
-  local vault password
-  vault=$(output infra vaultName)
-  password=""
-  [ -n "$vault" ] && password=$(secret_get "$vault" postgres-bootstrap)
-  if [ -z "$password" ] && [ -f "$state/postgres-bootstrap" ]; then
-    password=$(cat "$state/postgres-bootstrap")
-  fi
-  if [ -z "$password" ]; then
-    mkdir -p "$state" && chmod 700 "$state"
-    (umask 077 && openssl rand -hex 32 > "$state/postgres-bootstrap")
-    password=$(cat "$state/postgres-bootstrap")
-  fi
-  printf '%s' "$password"
+revoke_write() {
+  local vault_id=$1 object=$2
+  az role assignment delete --assignee-object-id "$object" --role "$secrets_officer" --scope "$vault_id" \
+    --only-show-errors -o none 2>/dev/null || echo "Could not remove Key Vault write access; remove it by hand." >&2
 }
 
 deploy_stage() {
-  local stage=$1 release=$2 password=$3 who object type secrets
-  who=$(deployer); object=${who% *}; type=${who#* }
-  # The password goes in a private file, not on the command line where other processes can see it.
-  secrets=$(mktemp)
-  chmod 600 "$secrets"
-  printf '{"parameters": {"postgresAdminPassword": {"value": "%s"}}}' "$password" > "$secrets"
+  local stage=$1 release=$2 vault=$3
   log "Deploying stage $stage"
   az deployment group create -g "$rg" -n "electraguard-$stage" --only-show-errors -o none \
     --template-file "$here/main.bicep" \
-    --parameters stage="$stage" prefix="$prefix" location="$AZURE_LOCATION" host="$ELECTRAGUARD_HOST" \
-      release="$release" deployerObjectId="$object" deployerPrincipalType="$type" \
+    --parameters stage="$stage" prefix="$prefix" location="$location" host="$ELECTRAGUARD_HOST" \
+      release="$release" vaultName="$vault" \
       observationIntakeEnabled="$intake" deployTriageWorker="$triage" \
-      mediaWorkerMode="$media_mode" mediaWorkerCpu="$media_cpu" \
-    --parameters "@$secrets" || { rm -f "$secrets"; return 1; }
-  rm -f "$secrets"
+      mediaWorkerMode="$media_mode" mediaWorkerCpu="$media_cpu" mediaWorkerReplicas="$media_replicas"
 }
 
 infra() {
-  local password vault
-  log "Resource group $rg in $AZURE_LOCATION"
-  az group create -n "$rg" -l "$AZURE_LOCATION" --only-show-errors -o none
-  password=$(admin_password)
-  deploy_stage infra "${1:-}" "$password"
-  vault=$(output infra vaultName)
-  log "Storing secrets in Key Vault $vault"
-  secret_ensure "$vault" postgres-bootstrap "$password"
-  secret_ensure "$vault" postgres-migrator "$(openssl rand -hex 32)"
-  secret_ensure "$vault" postgres-runtime "$(openssl rand -hex 32)"
-  secret_ensure "$vault" django-secret "$(openssl rand -hex 48)"
-  rm -f "$state/postgres-bootstrap"
+  local who object type vault vault_id
+  who=$(deployer); object=${who% *}; type=${who#* }
+  log "Resource group $rg in $location"
+  az group create -n "$rg" -l "$location" --only-show-errors -o none
+  log "Key Vault (write access for this run only)"
+  az deployment group create -g "$rg" -n electraguard-vault --only-show-errors -o none \
+    --template-file "$here/vault.bicep" \
+    --parameters prefix="$prefix" location="$location" deployerObjectId="$object" deployerPrincipalType="$type"
+  vault=$(output vault vaultName)
+  vault_id=$(output vault vaultId)
+  # Remove the write access however this run ends, including on failure.
+  revoke_target="$vault_id $object"
+  trap 'revoke_write ${revoke_target}' EXIT
+  secret_ensure "$vault" postgres-bootstrap 32
+  secret_ensure "$vault" postgres-migrator 32
+  secret_ensure "$vault" postgres-runtime 32
+  secret_ensure "$vault" django-secret 48
+  deploy_stage infra "" "$vault"
+  revoke_write "$vault_id" "$object"
+  trap - EXIT
 }
 
 images() {
@@ -172,15 +165,14 @@ run_job() {
 }
 
 apps() {
-  local release password vault
+  local release vault
   release=$(release_tag "${1:-}")
-  vault=$(output infra vaultName)
+  vault=$(output vault vaultName)
   [ -n "$vault" ] || { echo "Run '$0 infra' first." >&2; exit 1; }
-  password=$(secret_get "$vault" postgres-bootstrap)
-  deploy_stage jobs "$release" "$password"
+  deploy_stage jobs "$release" "$vault"
   run_job "$(output jobs dbInitJob)" db-init
   run_job "$(output jobs migrateJob)" migrate
-  deploy_stage apps "$release" "$password"
+  deploy_stage apps "$release" "$vault"
   log "Deployed $release. Gateway: https://$(output apps gatewayDefaultHost) (bind $ELECTRAGUARD_HOST to it; see the runbook)."
 }
 
@@ -189,5 +181,5 @@ case "${1:-}" in
   images) images "${2:-}" ;;
   apps) apps "${2:-}" ;;
   all) infra; images "${2:-}"; apps "${2:-}" ;;
-  *) sed -n '2,19p' "$0"; exit 2 ;;
+  *) sed -n '2,21p' "$0"; exit 2 ;;
 esac
