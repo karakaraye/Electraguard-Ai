@@ -55,6 +55,8 @@ INSTALLED_APPS = [
     "accounts",
     "reports",
     "reference",
+    "approved_answers",
+    "discussions",
 ]
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",

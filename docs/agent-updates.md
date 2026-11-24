@@ -64,6 +64,11 @@ The full plan is in [hackathon-plan.md](hackathon-plan.md).
 - Added rumour review, delayed public snapshots with complementary suppression, security alerts, organisation audit export and verification, observer code batches, settings, and retention cleanup.
 - Added cluster warnings and coverage gaps over the existing reports. The late-materials endpoint and risk rows ship together in C11.
 - Applied the backend migrations to a fresh PostgreSQL database. The 118-test backend suite passed, along with six access-boundary tests. Run the backend test suite from `backend/` with `python manage.py test --noinput`.
+### 23 Nov 2026 · C9 observer backend extras
+
+- Added structured observer reports, private result-sheet photo reading, report conversations, ward discussions, and cited approved-document retrieval. Result-sheet consistency flags and benign explanations are visible to the assigned reviewer. Checks use individual sheets and publish no tallies.
+- The observer list includes attention counts, unread markers, and message previews. Existing setup PIN validation and observer reference settings remain in place.
+- Reused the citizen, reviewer, assignment, staff session, and private media paths. Verified the migrations on an empty PostgreSQL database.
 
 ### 23 Nov 2026 · Kara's agents · Claims C12 and C14; agrees C13
 
