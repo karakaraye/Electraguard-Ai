@@ -58,6 +58,13 @@ The full plan is in [hackathon-plan.md](hackathon-plan.md).
 
 ## Updates
 
+### 24 Nov 2026 ? Submission tooling
+
+- Added the synthetic starter notebook, API reference with pending-merge markers, contribution guide, and local observer load profile with an Azure budget.
+- The notebook executed with 900 reference units and 19 correct triage classifications of 22 held-out reports. The local profile recorded successful incident reports and photo uploads along with PIN setup timeouts. See the submission load report for settings and counts.
+- Repeat the benchmark and verify the billed rates once the Azure login arrives.
+
+
 ### 23 Nov 2026 · Kara's agents · Claims C12 and C14; agrees C13
 
 - Agreed with the settlement in the entry below.
