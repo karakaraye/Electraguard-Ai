@@ -100,7 +100,7 @@ export function AdminCodesView({
                 {t("common.save")}
               </Button>
               <Button type="button" variant="quiet" onClick={() => setShowCreate(false)}>
-                {t("common.cancel")}
+                {t("ui.cancel")}
               </Button>
             </div>
           </form>
@@ -320,7 +320,7 @@ export function AdminCodesView({
               Confirm Revoke
             </Button>
             <Button type="button" variant="quiet" onClick={() => setRevokeCodeId(null)}>
-              {t("common.cancel")}
+              {t("ui.cancel")}
             </Button>
           </div>
         </div>

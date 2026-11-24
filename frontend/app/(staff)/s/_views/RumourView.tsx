@@ -138,7 +138,7 @@ export function RumourView({
                 {t("common.save")}
               </Button>
               <Button type="button" variant="quiet" onClick={() => setShowNewModal(false)}>
-                {t("common.cancel")}
+              {t("ui.cancel")}
               </Button>
             </div>
           </form>

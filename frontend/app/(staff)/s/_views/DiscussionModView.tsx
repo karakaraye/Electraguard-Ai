@@ -96,7 +96,7 @@ export function DiscussionModView({
                 {t("common.save")}
               </Button>
               <Button type="button" variant="quiet" onClick={() => setShowCreate(false)}>
-                {t("common.cancel")}
+                {t("ui.cancel")}
               </Button>
             </div>
           </form>
@@ -176,7 +176,7 @@ export function DiscussionModView({
                         variant="quiet"
                         onClick={() => setActiveHidePostId(null)}
                       >
-                        {t("common.cancel")}
+                        {t("ui.cancel")}
                       </Button>
                     </div>
                   ) : (

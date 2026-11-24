@@ -5,8 +5,8 @@ import styles from "./Illustrations.module.css";
 
 export function OfflineIllustration() {
   const t = useT();
-  const onPhoneLabel = t("status.onPhone");
-  const receivedLabel = t("status.received");
+  const onPhoneLabel = t("ui.status.onPhone");
+  const receivedLabel = t("ui.status.received");
 
   return (
     <div className={styles.illustrationWrapper} aria-hidden="true">

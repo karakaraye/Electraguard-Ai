@@ -161,7 +161,7 @@ export function AdminStaffView({
                 {t("common.save")}
               </Button>
               <Button type="button" variant="quiet" onClick={() => setShowCreate(false)}>
-                {t("common.cancel")}
+                {t("ui.cancel")}
               </Button>
             </div>
           </form>
@@ -290,7 +290,7 @@ export function AdminStaffView({
               Confirm Offboard
             </Button>
             <Button type="button" variant="quiet" onClick={() => setOffboardTarget(null)}>
-              {t("common.cancel")}
+              {t("ui.cancel")}
             </Button>
           </div>
         </div>
