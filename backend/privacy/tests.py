@@ -116,25 +116,73 @@ class RedactionTests(TestCase):
         self.assertEqual(len(res.spans), 0)
 
     def test_zero_leaks_in_logs(self):
-        # Verify that running redaction logs zero PII
-        logger = logging.getLogger("privacy")
+        # Capture ALL loggers (root logger) during full REP-01 create and MSG-02 send
+        root_logger = logging.getLogger()
         log_stream = io.StringIO()
         handler = logging.StreamHandler(log_stream)
-        logger.addHandler(handler)
-        logger.setLevel(logging.DEBUG)
+        old_level = root_logger.level
+        root_logger.addHandler(handler)
+        root_logger.setLevel(logging.DEBUG)
+        try:
+            self.client.force_login(self.observer)
+            from datetime import date
+            from reference.models import AreaDataset
+            if not AreaDataset.objects.exists():
+                AreaDataset.objects.create(
+                    version="2026.1",
+                    released_on=date(2026, 11, 20),
+                    revision=1,
+                    source=AreaDataset.Source.SYNTHETIC,
+                    index={},
+                    states={
+                        "KN": {
+                            "state_code": "KN", "name": "Kano",
+                            "lgas": [{
+                                "lga_code": "KN-04", "name": "Dala",
+                                "wards": [{
+                                    "ward_code": "KN-04-01", "name": "Ward 1",
+                                    "units": [["KN-04-01-001", "PU 001"]],
+                                }],
+                            }],
+                        }
+                    },
+                )
+            place_val = {"polling_unit_code": "KN-04-01-001", "ward_code": "KN-04-01"}
+            res = self.client.post(
+                "/api/v1/reports",
+                {
+                    "submission_key": str(uuid4()),
+                    "occurred_at": timezone.now().isoformat(),
+                    "description": "Voter Abubakar Sani, phone 08091112222, NIN 11223344556.",
+                    "kind": "incident",
+                    "language": "en",
+                    "danger_now": False,
+                    "firsthand": True,
+                    "place": place_val,
+                    "category_observer": "intimidation_violence",
+                },
+                content_type="application/json",
+                HTTP_IDEMPOTENCY_KEY=str(uuid4()),
+            )
+            self.assertEqual(res.status_code, 201, res.content)
+            report_id = res.json()["id"]
 
-        sensitive_text = "Voter Abubakar Sani, phone 08091112222, NIN 11223344556, at 5 Adeola Street."
-        res = redact(sensitive_text, self.org_a)
+            res_msg = self.client.post(
+                f"/api/v1/reports/{report_id}/messages",
+                {"kind": "message", "body": "Follow up call 08091112222 from Abubakar Sani."},
+                content_type="application/json",
+                HTTP_IDEMPOTENCY_KEY=str(uuid4()),
+            )
+            self.assertEqual(res_msg.status_code, 201, res_msg.content)
+        finally:
+            handler.flush()
+            root_logger.removeHandler(handler)
+            root_logger.setLevel(old_level)
 
-        handler.flush()
-        logger.removeHandler(handler)
         log_content = log_stream.getvalue()
-
-        # Zero leaks in logs
-        self.assertNotIn("Abubakar Sani", log_content)
         self.assertNotIn("08091112222", log_content)
+        self.assertNotIn("Abubakar Sani", log_content)
         self.assertNotIn("11223344556", log_content)
-        self.assertNotIn("5 Adeola Street", log_content)
 
     def test_safe_text_helper_precedence(self):
         report = Report(
@@ -266,3 +314,265 @@ class RedactionTests(TestCase):
             content_type="application/json",
         )
         self.assertEqual(res_bad.status_code, 422)
+
+        # 6. Verify Cache-Control: no-store, exact response shape, and OriginalAccess reason
+        self.assertIn("no-store", res.headers.get("Cache-Control", ""))
+        self.assertEqual(set(body.keys()), {"description"})
+        from privacy.models import OriginalAccess
+        access_row = OriginalAccess.objects.filter(report=report, actor=self.reviewer_a).last()
+        self.assertIsNotNone(access_row)
+        self.assertEqual(access_row.reason, "Verifying witness identity for corroboration")
+
+        # 7. Cross-organisation reviewer gets 403/404
+        other_reviewer = User.objects.create_user(
+            email="other.rev@orgb.com",
+            password="secure-password-123",
+            organisation=self.org_b,
+            role=User.Role.REVIEWER,
+        )
+        self.client.force_login(other_reviewer)
+        res_other = self.client.post(
+            f"/api/v1/cases/{report.pk}/original",
+            {"reason": "Cross org probe"},
+            content_type="application/json",
+        )
+        self.assertIn(res_other.status_code, (403, 404))
+
+        # 8. Rate limit: 31st call returns 429 (use fresh reviewer so quota starts at 0)
+        reviewer_rl = User.objects.create_user(
+            email="reviewer.rl@example.com",
+            password="secure-password-123",
+            organisation=self.org_a,
+            role=User.Role.REVIEWER,
+        )
+        report.assigned_reviewer = reviewer_rl
+        report.save(update_fields=["assigned_reviewer"])
+        self.client.force_login(reviewer_rl)
+        for _ in range(30):
+            r_ok = self.client.post(
+                f"/api/v1/cases/{report.pk}/original",
+                {"reason": "Repeated verification"},
+                content_type="application/json",
+            )
+            self.assertEqual(r_ok.status_code, 200)
+        r_429 = self.client.post(
+            f"/api/v1/cases/{report.pk}/original",
+            {"reason": "31st call"},
+            content_type="application/json",
+        )
+        self.assertEqual(r_429.status_code, 429)
+
+    def test_manual_redaction_layers_on_auto_redaction(self):
+        from reports.v1_views import persist_report
+
+        values = {
+            "occurred_at": timezone.now(),
+            "description": "Call 08031234567 and ask for Xyzkora at the polling unit.",
+            "incident_details": {"kind": "incident", "area": {"polling_unit_name": "PU 1"}},
+        }
+        _, _, report = persist_report(None, self.org_a.pk, values)
+        report.assigned_reviewer = self.reviewer_a
+        report.save(update_fields=["assigned_reviewer"])
+
+        # Auto redaction hid phone; Xyzkora (not in dictionary) remains in auto_redacted_description
+        self.assertNotIn("08031234567", report.auto_redacted_description)
+        self.assertIn("Xyzkora", report.auto_redacted_description)
+
+        idx = report.auto_redacted_description.index("Xyzkora")
+        self.client.force_login(self.reviewer_a)
+        res = self.client.post(
+            f"/api/v1/review/cases/{report.pk}/redaction",
+            {"spans": [{"start": idx, "end": idx + len("Xyzkora")}], "version": report.version},
+            content_type="application/json",
+            HTTP_IDEMPOTENCY_KEY=str(uuid4()),
+        )
+        self.assertEqual(res.status_code, 200, res.content)
+        redacted_desc = res.json()["redacted_description"]
+        self.assertNotIn("08031234567", redacted_desc)
+        self.assertNotIn("Xyzkora", redacted_desc)
+        self.assertIn("[PHONE_", redacted_desc)
+        self.assertIn("[name removed]", redacted_desc)
+
+        report.refresh_from_db()
+        self.assertTrue(len(report.auto_redactions) >= 1)
+        self.assertEqual(len(report.redactions), 1)
+
+    def test_false_positives_and_recall_gaps_from_review(self):
+        # False positives check (ordinary election text must not be redacted)
+        clean_sentences = [
+            "Election forms delivered to ward collation centre.",
+            "Returning officer was chosen by the committee.",
+            "Chief Imam prayed for peaceful voting before accreditation.",
+            "Sensitive items musa not be left unattended.",
+            "14 observers were on the way to the polling unit.",
+            "100 voters waited on the expressway near the gate.",
+            "Record serial 0012345678 account of votes cast at unit.",
+        ]
+        for sentence in clean_sentences:
+            res = redact(sentence, self.org_a)
+            self.assertEqual(res.spans, [], f"False positive in: {sentence} -> {res.text}")
+
+        # Recall gaps check
+        recall_cases = [
+            ("NIN of the voter is 12345678901", "12345678901", "nin"),
+            ("Transfer sent to a/c 0123456789 at unit", "0123456789", "account"),
+            ("Voter presented VIN AB12345678901234567 at desk", "AB12345678901234567", "vin"),
+            ("Call (0803) 123 4567 immediately", "(0803) 123 4567", "phone"),
+            ("Call 0803  123  4567 for backup", "0803  123  4567", "phone"),
+        ]
+        for text, secret_val, expected_kind in recall_cases:
+            res = redact(text, self.org_a)
+            self.assertNotIn(secret_val, res.text, f"Missed {expected_kind} in: {text}")
+            self.assertIn(expected_kind, [s["kind"] for s in res.spans])
+
+    def test_original_available_false_when_nothing_redacted(self):
+        from reports.v1_views import persist_report
+
+        values = {
+            "occurred_at": timezone.now(),
+            "description": "Long queue at polling unit, accreditation delayed by 30 minutes.",
+            "incident_details": {"kind": "incident", "area": {"polling_unit_name": "PU 1"}},
+        }
+        _, _, report = persist_report(None, self.org_a.pk, values)
+        report.assigned_reviewer = self.reviewer_a
+        report.save(update_fields=["assigned_reviewer"])
+
+        self.client.force_login(self.reviewer_a)
+        case01 = self.client.get(f"/api/v1/review/cases/{report.pk}").json()
+        self.assertFalse(case01["original_available"])
+        self.assertFalse(case01["redaction"]["automatic"])
+
+    def test_withdrawal_clears_auto_redacted_fields(self):
+        from reports.v1_views import persist_report
+
+        values = {
+            "occurred_at": timezone.now(),
+            "description": "Witness Chinedu Okafor phone 08031234567.",
+            "incident_details": {"kind": "incident", "area": {"polling_unit_name": "PU 1"}},
+        }
+        _, _, report = persist_report(self.observer, self.org_a.pk, values, code="OBS-123456")
+        self.assertIsNotNone(report.auto_redacted_description)
+
+        self.client.force_login(self.observer)
+        res = self.client.post(
+            f"/api/v1/reports/{report.pk}/withdraw",
+            {"version": report.version, "confirm": True},
+            content_type="application/json",
+            HTTP_IDEMPOTENCY_KEY=str(uuid4()),
+        )
+        self.assertEqual(res.status_code, 200, res.content)
+        report.refresh_from_db()
+        self.assertIsNone(report.auto_redacted_description)
+        self.assertEqual(report.auto_redactions, [])
+
+    def test_backfill_command_1200_rows_does_not_skip(self):
+        from django.core.management import call_command
+
+        reports = [
+            Report(
+                organisation=self.org_a,
+                observer=self.observer,
+                submission_key=uuid4(),
+                occurred_at=timezone.now(),
+                description=f"Report {i} phone 0803{i:07d}",
+                auto_redacted_description=None,
+            )
+            for i in range(1200)
+        ]
+        Report.objects.bulk_create(reports)
+        call_command("redact_existing", batch_size=500)
+        remaining = Report.objects.filter(organisation=self.org_a, auto_redacted_description__isnull=True).count()
+        self.assertEqual(remaining, 0)
+
+    def test_guard_no_raw_pii_across_staff_endpoints(self):
+        from reports.models import MediaItem
+        from reports.v1_views import persist_report
+        from staff.models import AuditEvent
+
+        raw_phone = "08098765432"
+        raw_name = "Babatunde Fashola"
+        values = {
+            "occurred_at": timezone.now(),
+            "description": f"Incident reported by {raw_name} on {raw_phone}.",
+            "incident_details": {
+                "kind": "incident",
+                "area": {"state_code": "LA", "lga_code": "LA-01", "lga_name": "Ikeja"},
+                "category_observer": "intimidation_violence",
+            },
+        }
+        _, _, report = persist_report(self.observer, self.org_a.pk, values, code="OBS-123456")
+        report.assigned_reviewer = self.reviewer_a
+        report.save(update_fields=["assigned_reviewer"])
+
+        # Add CitizenReply & ReviewEvent with note
+        ev = ReviewEvent.objects.create(
+            report=report,
+            organisation=self.org_a,
+            actor=self.reviewer_a,
+            action=ReviewEvent.Action.REQUEST_CLARIFICATION,
+            version=report.version + 1,
+            change={"note": "Please clarify"},
+        )
+        ev_resp = ReviewEvent.objects.create(
+            report=report,
+            organisation=self.org_a,
+            actor=None,
+            action=ReviewEvent.Action.RESPOND,
+            version=report.version + 2,
+            change={"note": f"Reply from {raw_name} ({raw_phone})"},
+        )
+        CitizenReply.objects.create(
+            report=report,
+            organisation=self.org_a,
+            question_id=str(uuid4()),
+            event=ev_resp,
+            body=f"Reply from {raw_name} ({raw_phone})",
+            auto_redacted_body=redact(f"Reply from {raw_name} ({raw_phone})", self.org_a).text,
+        )
+        # Add MediaItem transcript
+        MediaItem.objects.create(
+            organisation=self.org_a,
+            report=report,
+            purpose="evidence",
+            kind=MediaItem.Kind.AUDIO,
+            status=MediaItem.Status.READY,
+            size_bytes=100,
+            original_sha256="a" * 64,
+            sha256="b" * 64,
+            transcript=f"Audio by {raw_name} phone {raw_phone}",
+            transcript_status="ready",
+        )
+        # Add Discussion post
+        from datetime import timedelta
+        disc = Discussion.objects.create(
+            organisation=self.org_a,
+            title="Ward 1",
+            topic="Ward 1",
+            area={"ward_code": "KN-04-01"},
+            closes_at=timezone.now() + timedelta(hours=4),
+        )
+        code_obj = ObserverCode.objects.get(user=self.observer)
+        member = Membership.objects.create(discussion=disc, observer=code_obj, state="member")
+        Post.objects.create(
+            discussion=disc,
+            author=member,
+            body=f"Discussion post by {raw_name} {raw_phone}",
+            auto_redacted_body=redact(f"Discussion post by {raw_name} {raw_phone}", self.org_a).text,
+        )
+
+        # Check all staff endpoints
+        self.client.force_login(self.reviewer_a)
+        staff_urls = [
+            "/api/v1/review/queue",
+            f"/api/v1/review/cases/{report.pk}",
+            f"/api/v1/reports/{report.pk}/messages",
+            "/api/review/",
+            f"/api/review/{report.pk}",
+            f"/api/v1/discussions/{disc.pk}/posts",
+        ]
+        for url in staff_urls:
+            resp = self.client.get(url)
+            if resp.status_code == 200:
+                text = resp.content.decode("utf-8")
+                self.assertNotIn(raw_phone, text, f"PII phone leaked at {url}")
+                self.assertNotIn(raw_name, text, f"PII name leaked at {url}")

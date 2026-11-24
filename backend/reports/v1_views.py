@@ -417,12 +417,16 @@ def withdraw_report(request, report, data, *, public=False):
     report.incident_details = report.review_suggestions = {}
     report.redacted_description = None
     report.redactions = []
+    report.auto_redacted_description = None
+    report.auto_redactions = []
     report.structured_details = {}
     report.result_flags = []
     report.save(update_fields=[
         "status", "withdrawn_at", "assigned_reviewer", "occurred_at", "description",
         "location", "polling_unit_code", "observer_code", "incident_details",
-        "review_suggestions", "redacted_description", "redactions", "structured_details", "result_flags",
+        "review_suggestions", "redacted_description", "redactions",
+        "auto_redacted_description", "auto_redactions",
+        "structured_details", "result_flags",
     ])
     record_change(report, None if public else request.user, ReviewEvent.Action.WITHDRAW, {
         "from_status": "received", "to_status": "withdrawn",

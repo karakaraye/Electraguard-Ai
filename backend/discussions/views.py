@@ -16,7 +16,7 @@ from reports.idempotency import idempotent
 from reports.incident_input import WAT, aware_datetime, field
 from reports.structured_input import clean_text
 from reports.v1_views import missing
-from privacy.redactor import redact
+from privacy.redactor import redact, safe_text
 
 from .models import Discussion, Flag, Membership, ModerationAction, Post, RequestRecord
 
@@ -80,11 +80,13 @@ def display(request, discussion, member=None, *, summary=False):
 
 def post_display(request, post):
     hidden = bool(post.hidden_reason)
+    is_me = post.author.observer.user_id == request.user.pk
+    visible_body = post.body if is_me else safe_text(post)
     result = dict(id=str(post.public_id), author_label="Moderator" if hidden else post.author.observer.code,
-                  is_me=post.author.observer.user_id == request.user.pk, body=None if hidden else post.body,
+                  is_me=is_me, body=None if hidden else visible_body,
                   state="hidden" if hidden else "visible", created_at=wat(post.created_at))
     if moderator(request):
-        result.update(hidden_body=post.body if hidden else None, hidden_reason=post.hidden_reason or None,
+        result.update(hidden_body=safe_text(post) if hidden else None, hidden_reason=post.hidden_reason or None,
                       flag_count=post.flags.count())
     return result
 

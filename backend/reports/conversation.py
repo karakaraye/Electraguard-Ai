@@ -15,7 +15,7 @@ from .models import Report, ReviewEvent
 from .structured_input import clean_text
 from .v1_views import STATES, Status, missing
 from .workflow import record_change
-from privacy.redactor import redact
+from privacy.redactor import redact, safe_text
 
 Action = ReviewEvent.Action
 VISIBLE = (Action.REQUEST_CLARIFICATION, Action.RESPOND, Action.MESSAGE)
@@ -62,7 +62,7 @@ def messages(report, viewer):
             label = event.actor.get_full_name() or "Reviewer"
         read_version = report.reviewer_read_version if viewer == "reviewer" else report.observer_read_version
         note_body = event.change.get("note", "")
-        display_body = (event.change.get("auto_redacted_body") or note_body) if viewer == "reviewer" else note_body
+        display_body = (event.change.get("auto_redacted_body") or safe_text(event, report.organisation_id)) if viewer == "reviewer" else note_body
         item = dict(id=identifier, kind=kind, author=author, author_label=label,
                     body=display_body, attachment=attachments.get(event.change.get("attachment_media_id")),
                     question_state=state, reply_to=reply,

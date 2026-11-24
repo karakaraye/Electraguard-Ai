@@ -131,7 +131,7 @@ def assign(request, reference):
 @never_cache
 @api_view(["GET"])
 def review_queue(request):
-    return Response(ReportSerializer(assigned_reports(request), many=True).data)
+    return Response(ReportSerializer(assigned_reports(request), many=True, context={"staff": True}).data)
 
 
 @never_cache

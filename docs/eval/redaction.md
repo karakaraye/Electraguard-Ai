@@ -1,41 +1,44 @@
-# Evaluation Report: C16 Automatic Redaction of Personal Details
+# Redaction Evaluation (C16)
 
-## Summary
+Evaluated on 310 unique synthetic items across 5 languages (`en`, `pcm`, `ha`, `yo`, `ig`), including 50 negative (clean election text) items and edge-case formats, using **strict exact span matching**.
 
-This evaluation benchmarks the deterministic redaction system on a labeled synthetic evaluation dataset
-comprising **310 items** across all five supported languages:
-English (`en`), Naijá / Nigerian Pidgin (`pcm`), Hausa (`ha`), Yorùbá (`yo`), and Igbo (`ig`).
+## Overall Results
 
-### Target Benchmarks vs Measured Results
-- **Phone & ID numbers recall target:** ≥ 95.0 %
-- **Personal name recall target:** ≥ 85.0 %
-- **Overall precision target:** ≥ 90.0 %
+- **Overall Recall:** 99.1% (649/655)
+- **Overall Precision:** 100.0% (649/649)
 
-| Entity Kind | Ground Truth | Detected | True Positives (TP) | False Positives (FP) | False Negatives (FN) | Recall | Precision |
-|---|---|---|---|---|---|---|---|
-| `phone` | 115 | 115 | 115 | 0 | 0 | **100.0 %** | **100.0 %** |
-| `email` | 11 | 11 | 11 | 0 | 0 | **100.0 %** | **100.0 %** |
-| `nin` | 50 | 50 | 50 | 0 | 0 | **100.0 %** | **100.0 %** |
-| `bvn` | 50 | 50 | 50 | 0 | 0 | **100.0 %** | **100.0 %** |
-| `vin` | 55 | 55 | 55 | 0 | 0 | **100.0 %** | **100.0 %** |
-| `account` | 50 | 50 | 50 | 0 | 0 | **100.0 %** | **100.0 %** |
-| `name` | 156 | 158 | 156 | 2 | 0 | **100.0 %** | **98.7 %** |
-| `address` | 105 | 105 | 105 | 0 | 0 | **100.0 %** | **100.0 %** |
-| **Overall** | **592** | **594** | **592** | **2** | **0** | **100.0 %** | **99.7 %** |
+## Per-Kind Breakdown
+
+| Kind | TP | FP | FN | Recall | Precision | Target Recall |
+|---|---|---|---|---|---|---|
+| account | 50 | 0 | 0 | 100.0% | 100.0% | ≥ 95% |
+| address | 110 | 0 | 0 | 100.0% | 100.0% | — |
+| bvn | 50 | 0 | 0 | 100.0% | 100.0% | ≥ 95% |
+| email | 70 | 0 | 0 | 100.0% | 100.0% | ≥ 95% |
+| name | 144 | 0 | 6 | 96.0% | 100.0% | ≥ 85% |
+| nin | 55 | 0 | 0 | 100.0% | 100.0% | ≥ 95% |
+| phone | 115 | 0 | 0 | 100.0% | 100.0% | ≥ 95% |
+| vin | 55 | 0 | 0 | 100.0% | 100.0% | ≥ 95% |
 
 ## Per-Language Breakdown
 
-| Language | Total Samples | TP | FP | FN | Recall | Precision |
-|---|---|---|---|---|---|---|
-| English (`en`) | 62 | 136 | 0 | 0 | **100.0 %** | **100.0 %** |
-| Naijá / Pidgin (`pcm`) | 62 | 114 | 0 | 0 | **100.0 %** | **100.0 %** |
-| Hausa (`ha`) | 62 | 114 | 0 | 0 | **100.0 %** | **100.0 %** |
-| Yorùbá (`yo`) | 62 | 114 | 0 | 0 | **100.0 %** | **100.0 %** |
-| Igbo (`ig`) | 62 | 114 | 2 | 0 | **100.0 %** | **98.3 %** |
+| Language | TP | FP | FN | Recall | Precision |
+|---|---|---|---|---|---|
+| en | 139 | 0 | 1 | 99.3% | 100.0% |
+| pcm | 124 | 0 | 1 | 99.2% | 100.0% |
+| ha | 128 | 0 | 2 | 98.5% | 100.0% |
+| yo | 130 | 0 | 0 | 100.0% | 100.0% |
+| ig | 128 | 0 | 2 | 98.5% | 100.0% |
 
-## Key Findings & Verification
+## Misses (False Negatives: 6)
 
-1. **ID Numbers and Phones:** Phone numbers, emails, NIN, BVN, VIN, and account numbers achieved **100.0 % recall**, well exceeding the ≥ 95.0 % target.
-2. **Personal Names:** Names across all language naming conventions (Hausa/Fulani, Yoruba, Igbo, Edo, Niger Delta) achieved **≥ 96.0 % recall**, exceeding the ≥ 85.0 % target.
-3. **Precision & Negative Controls:** Non-personal geographic identifiers (states, LGAs such as Dala, Ikeja, Kano, Lagos, Enugu, Oyo) and institutional acronyms (INEC, BVAS, APC, PDP, LP) were correctly excluded from name matching, resulting in **zero false positive leaks** on negative control items.
-4. **Stability & Tenant Isolation:** Token suffixes verified to be HMAC-derived with per-organisation secret keys. The same value generates identical tokens within an organisation and distinct tokens across organisations.
+- `RED-045` (en, name): `Samuel Ogunleye` in "Witness Samuel Ogunleye stayed at 88 Aba Road; reached on 0818.222.1100."
+- `RED-121` (pcm, name): `Samuel Ogunleye` in "My guy Samuel Ogunleye phone na +234 803 987 6543, e dey 88 Aba Road."
+- `RED-143` (ha, name): `Samuel Ogunleye` in "Shaida Samuel Ogunleye ya ba da BVN 33445566778 da waya 0818.222.1100."
+- `RED-170` (ha, name): `Samuel Ogunleye` in "Mai jefa kuri'a Samuel Ogunleye ya nuna VIN XY98765432109876543 a rumfar zabe."
+- `RED-277` (ig, name): `Samuel Ogunleye` in "Onye aka ebe Samuel Ogunleye nwere BVN 22334455667 na ekwenti 0818.222.1100."
+- `RED-304` (ig, name): `Samuel Ogunleye` in "Onye ntuli aka Samuel Ogunleye gosiri VIN XY98765432109876543 n'ebe a."
+
+## False Positives (0)
+
+- None.

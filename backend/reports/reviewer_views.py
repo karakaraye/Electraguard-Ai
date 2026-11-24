@@ -263,7 +263,7 @@ def conversation(report, events):
                 identifier = messages[-1]["id"]
                 replies[identifier] = {
                     "id": question_id(report.pk, event.version), "kind": "reply", "author": "observer",
-                    "author_label": "Observer", "body": event.change["note"], "attachment": None,
+                    "author_label": "Observer", "body": safe_text(event, report.organisation_id), "attachment": None,
                     "question_state": None, "reply_to": identifier, "created_at": wat(event.created_at), "read": True,
                 }
         elif event.action == Action.REQUEST_CLARIFICATION:
@@ -306,11 +306,18 @@ def case(request, reference):
     }.get(row["channel"], "Citizen, not accredited")
     if details.get("simulated"):
         reporter_label += " (Simulated)"
+    safe_desc = safe_text(report)
+    original_available = bool(
+        report.redacted_description
+        or report.redactions
+        or report.auto_redactions
+        or (report.auto_redacted_description and report.auto_redacted_description != report.description)
+    )
     return JsonResponse({
         "id": row["id"], "receipt_code": row["receipt_code"], "kind": row["kind"], "channel": row["channel"],
         "status": row["status"], "outcome": row["outcome"], "version": report.version,
-        "description": safe_text(report),
-        "original_available": True,
+        "description": safe_desc,
+        "original_available": original_available,
         "redaction": {
             "automatic": bool(report.auto_redactions),
             "count": len(report.auto_redactions or []),
@@ -322,8 +329,8 @@ def case(request, reference):
         },
         "language": details.get("language"),
         "original": {
-            "description": report.description, "redacted_description": report.redacted_description or report.auto_redacted_description,
-            "redactions": report.redactions or report.auto_redactions, "original_available": True,
+            "description": safe_desc, "redacted_description": report.redacted_description or report.auto_redacted_description,
+            "redactions": report.redactions or report.auto_redactions, "original_available": original_available,
         },
         "translation": {"status": "unavailable", "text": None},
         "category_observer": details.get("category_observer"), "access_barrier_details": details.get("access_barrier_details", []),
@@ -347,7 +354,11 @@ def case(request, reference):
                 "id": str(event.pk), "version": event.version, "action": event.action,
                 "actor_label": ("Citizen" if not event.actor_id else (
                     "Observer" if event.actor_id == report.observer_id else event.actor.get_full_name() or event.actor.role.title()
-                )), "created_at": wat(event.created_at), "change": event.change,
+                )), "created_at": wat(event.created_at), "change": (
+                    {**event.change, "note": safe_text(event, report.organisation_id)}
+                    if isinstance(event.change, dict) and "note" in event.change and event.action in (Action.RESPOND, Action.MESSAGE)
+                    else event.change
+                ),
             } for event in events
         ]},
     })
@@ -494,7 +505,8 @@ def apply_redaction(request, report, data):
     spans = data.get("spans")
     if not isinstance(spans, list):
         return validation({"spans": field("invalid", "Provide a list of redaction spans.")})
-    length = len(report.description)
+    base_text = report.auto_redacted_description or report.description
+    length = len(base_text)
     intervals = []
     problems = {}
     for index, span in enumerate(spans):
@@ -507,7 +519,7 @@ def apply_redaction(request, report, data):
         elif type(end) is not int or end <= start:
             problems[f"spans.{index}.end"] = field("min_value", "End must be after start.", limit=start + 1)
         elif end > length:
-            problems[f"spans.{index}.end"] = field("max_value", "End exceeds the original text.", limit=length)
+            problems[f"spans.{index}.end"] = field("max_value", "End exceeds the redacted text.", limit=length)
         else:
             intervals.append((start, end, index))
     intervals.sort()
@@ -515,17 +527,17 @@ def apply_redaction(request, report, data):
     for start, end, index in intervals:
         if start < previous:
             problems[f"spans.{index}.start"] = field("invalid", "Redaction spans must not overlap.")
-        chunks.extend((report.description[previous:start], "[name removed]"))
+        chunks.extend((base_text[previous:start], "[name removed]"))
         previous = max(previous, end)
     if problems:
         return validation(problems)
 
     report.redactions = [{"start": start, "end": end} for start, end, _ in intervals]
-    report.redacted_description = "".join([*chunks, report.description[previous:]]) if intervals else None
+    report.redacted_description = "".join([*chunks, base_text[previous:]]) if intervals else None
     report.save(update_fields=["redactions", "redacted_description"])
     record_change(report, request.user, Action.REDACT, {
         "spans": report.redactions,
-        "sha256": sha256((report.redacted_description or report.description).encode()).hexdigest(),
+        "sha256": sha256((report.redacted_description or base_text).encode()).hexdigest(),
     })
     return 200, {
         "version": report.version, "redacted_description": report.redacted_description, "redactions": report.redactions,
@@ -557,6 +569,13 @@ def original(request, data, reference):
     if not (1 <= len(reason) <= 500):
         return validation({"reason": field("invalid", "Provide a reason between 1 and 500 characters.")})
 
+    from privacy.models import OriginalAccess
+    OriginalAccess.objects.create(
+        organisation_id=report.organisation_id,
+        report=report,
+        actor=request.user,
+        reason=reason,
+    )
     record(
         report.organisation_id,
         "case.original_viewed",
@@ -565,9 +584,7 @@ def original(request, data, reference):
         actor=request.user,
         content={"reason": reason},
     )
-    return JsonResponse({
-        "id": str(report.pk),
-        "description": report.description,
-        "original_description": report.description,
-    })
+    response = JsonResponse({"description": report.description})
+    response["Cache-Control"] = "no-store"
+    return response
 

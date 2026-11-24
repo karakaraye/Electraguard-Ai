@@ -11,9 +11,9 @@ from django.conf import settings
 # Pattern for already-redacted tokens so they are never re-redacted
 EXISTING_TOKEN_PATTERN = re.compile(r"\[[A-Z0-9]+_[0-9a-f]{4,6}\]")
 
-# Nigerian phone regex: +234 or 0, then 7/8/9, then 0/1, then 8 digits (spaces/dashes allowed)
+# Nigerian phone regex: +234 or 0, then 7/8/9, then 0/1, then 8 digits (spaces/dashes/parens allowed)
 PHONE_PATTERN = re.compile(
-    r"(?<!\d)(?:\+?234|0)[ -.]?[789][01](?:[ -.]?\d){8}(?!\d)"
+    r"(?<!\d)(?:\(\s*(?:\+?234|0)[789][01]\d\s*\)(?:[ -.]*\d){7}|\(\s*\+?234\s*\)[ -.]*[789][01](?:[ -.]*\d){8}|(?:\+?234|0)[ -.]*[789][01](?:[ -.]*\d){8})(?!\d)"
 )
 
 # Email regex
@@ -21,58 +21,55 @@ EMAIL_PATTERN = re.compile(
     r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b"
 )
 
-# NIN: 11 digits near NIN or NIMC
+# NIN: 11 digits anywhere within 30 chars of NIN or NIMC
 NIN_PREFIX_PATTERN = re.compile(
-    r"(?i)\b(?:nin|nimc)\b[^\w\d\n]{0,25}(?:is|no|number|na)?\s*(\d{11})(?!\d)"
+    r"(?i)\b(?:nin|nimc)\b[^\n]{0,30}?(?<!\d)(\d{11})(?!\d)"
 )
 NIN_SUFFIX_PATTERN = re.compile(
-    r"(?i)(?<!\d)(\d{11})\s*(?:is|as)?\s*(?:my|the|our|a)?\s*\b(?:nin|nimc)\b"
+    r"(?i)(?<!\d)(\d{11})(?!\d)[^\n]{0,30}?\b(?:nin|nimc)\b"
 )
 
-# BVN: 11 digits near BVN
+# BVN: 11 digits anywhere within 30 chars of BVN
 BVN_PREFIX_PATTERN = re.compile(
-    r"(?i)\b(?:bvn)\b[^\w\d\n]{0,25}(?:is|no|number|na)?\s*(\d{11})(?!\d)"
+    r"(?i)\bbvn\b[^\n]{0,30}?(?<!\d)(\d{11})(?!\d)"
 )
 BVN_SUFFIX_PATTERN = re.compile(
-    r"(?i)(?<!\d)(\d{11})\s*(?:is|as)?\s*(?:my|the|our|a)?\s*\b(?:bvn)\b"
+    r"(?i)(?<!\d)(\d{11})(?!\d)[^\n]{0,30}?\bbvn\b"
 )
 
-# VIN / Voter card number: 19 alphanumeric characters near VIN or PVC, or starting with 90F5
+# VIN / Voter card number: 19 alphanumeric characters (with at least 1 digit) within 30 chars of VIN or PVC, or starting with 90F5
 VIN_PREFIX_PATTERN = re.compile(
-    r"(?i)\b(?:vin|pvc)\b[^\w\d\n]{0,25}(?:is|no|number|na)?\s*([A-Za-z0-9]{19})(?![A-Za-z0-9])"
+    r"(?i)\b(?:vin|pvc)\b[^\n]{0,30}?(?<![A-Za-z0-9])(?=[A-Za-z0-9]*\d)([A-Za-z0-9]{19})(?![A-Za-z0-9])"
 )
 VIN_SUFFIX_PATTERN = re.compile(
-    r"(?i)(?<![A-Za-z0-9])([A-Za-z0-9]{19})\s*(?:is|as)?\s*(?:my|the|our|a)?\s*\b(?:vin|pvc)\b"
+    r"(?i)(?<![A-Za-z0-9])(?=[A-Za-z0-9]*\d)([A-Za-z0-9]{19})(?![A-Za-z0-9])[^\n]{0,30}?\b(?:vin|pvc)\b"
 )
 VIN_STANDARD_PATTERN = re.compile(
     r"(?i)\b(90F5[A-Za-z0-9]{15})\b"
 )
 
-# Account number: 10 digits near account or acct or nuban
+# Account number: 10 digits after account, acct, a/c, or nuban
 ACCOUNT_PREFIX_PATTERN = re.compile(
-    r"(?i)\b(?:account|acct|nuban)\b[^\w\d\n]{0,25}(?:is|no|number|na)?\s*(\d{10})(?!\d)"
-)
-ACCOUNT_SUFFIX_PATTERN = re.compile(
-    r"(?i)(?<!\d)(\d{10})\s*(?:is|as)?\s*(?:my|the|our|a)?\s*\b(?:account|acct|nuban)\b"
+    r"(?i)(?:\ba/c\b|\b(?:account|acct|nuban)\b)[^\n\d]{0,25}(?<!\d)(\d{10})(?!\d)"
 )
 
-# House Address: Numbered address or residence cue
+# House Address: Numbered address with capitalised street name + street word, or PO Box
 STREET_WORDS = (
     r"street|st\.?|road|rd\.?|avenue|ave\.?|close|cl\.?|crescent|cres\.?|"
     r"way|lane|lne|drive|dr\.?|estate|layout|boulevard|blvd|expressway|"
     r"highway|quarters|qtrs|terrace"
 )
 ADDRESS_NUMBERED_PATTERN = re.compile(
-    rf"(?i)\b(?:(?:no\.?|house|plot|flat|block|blk|apt)\s*)?\d{{1,4}}[a-z]?(?:[/-]\d{{1,4}})?\s+(?:[A-Za-z0-9.'-]+\s+){{1,4}}(?:{STREET_WORDS})\b"
+    rf"\b(?:(?:[Nn]o\.?|[Hh]ouse|[Pp]lot|[Ff]lat|[Bb]lock|[Bb]lk|[Aa]pt)\s*)?\d{{1,4}}[a-zA-Z]?(?:[/-]\d{{1,4}})?\s+(?:[A-Z][a-zA-Z0-9.'-]*\s+){{1,4}}(?:(?i:{STREET_WORDS}))\b"
 )
 ADDRESS_PO_BOX_PATTERN = re.compile(
     r"(?i)\b(?:p\.?\s*o\.?\s*box)\s+\d+\b"
 )
 RESIDENCE_CUE_PATTERN = re.compile(
-    rf"(?i)\b(?:live\s+at|lives\s+at|living\s+at|stay\s+at|reside\s+at|house\s+is\s+at|address\s+is|dey\s+stay\s+for)\s+([A-Za-z0-9\s,.'-]{{4,50}}?(?:{STREET_WORDS}))\b"
+    rf"\b(?:[Ll]ives?\s+at|[Ll]iving\s+at|[Ss]tay\s+at|[Rr]eside\s+at|[Hh]ouse\s+is\s+at|[Aa]ddress\s+is|[Dd]ey\s+stay\s+for)\s+(\d{{1,4}}[a-zA-Z]?(?:[/-]\d{{1,4}})?\s+(?:[A-Z][a-zA-Z0-9.'-]*\s+){{1,4}}(?:(?i:{STREET_WORDS})))\b"
 )
 
-# Personal names: Titles followed by name
+# Personal names: Titles followed by capitalised name
 TITLE_WORDS = (
     r"Mr|Mrs|Ms|Miss|Mister|Dr|Chief|Alhaji|Alh|Alhaja|Hajia|Hajiya|Mallam|Malam|"
     r"Pastor|Pst|Rev|Revd|Reverend|Engr|Barr|Barrister|Prof|Professor|Prince|Princess|"
@@ -82,7 +79,7 @@ TITLE_WORDS = (
     r"Mazi|Nwanyi|Ichie|Igwe|Eze|Dọkịta|Dokita|Arakunrin|Iyaafin|Omidan|Oloye|Sarki|Waziri|Magaji"
 )
 TITLE_NAME_PATTERN = re.compile(
-    rf"\b({TITLE_WORDS})\.?\s+([A-ZÀ-ÿ][a-zA-ZÀ-ÿ]*(?:\s+[A-ZÀ-ÿ][a-zA-ZÀ-ÿ]*){{0,2}})\b"
+    rf"\b(?:(?:{TITLE_WORDS})\.?\s+){{1,2}}([A-ZÀ-ÿ][a-zA-ZÀ-ÿ]*(?:\s+[A-ZÀ-ÿ][a-zA-ZÀ-ÿ]*){{0,2}})\b"
 )
 TITLES_SET: Set[str] = set(TITLE_WORDS.lower().split("|"))
 
@@ -226,40 +223,32 @@ def find_candidate_spans(text: str, secret: bytes) -> List[Tuple[int, int, str, 
         val = m.group()
         candidates.append((m.start(), m.end(), "phone", val, token_for("phone", val, secret)))
 
-    # 4. NIN
+    # 4. IDs and Accounts: run all PREFIX patterns before SUFFIX patterns so closer/preceding keywords win ties
     for m in NIN_PREFIX_PATTERN.finditer(text):
         val = m.group(1)
         candidates.append((m.start(1), m.end(1), "nin", val, token_for("nin", val, secret)))
-    for m in NIN_SUFFIX_PATTERN.finditer(text):
-        val = m.group(1)
-        candidates.append((m.start(1), m.end(1), "nin", val, token_for("nin", val, secret)))
-
-    # 5. BVN
     for m in BVN_PREFIX_PATTERN.finditer(text):
         val = m.group(1)
         candidates.append((m.start(1), m.end(1), "bvn", val, token_for("bvn", val, secret)))
-    for m in BVN_SUFFIX_PATTERN.finditer(text):
-        val = m.group(1)
-        candidates.append((m.start(1), m.end(1), "bvn", val, token_for("bvn", val, secret)))
-
-    # 6. VIN
     for m in VIN_PREFIX_PATTERN.finditer(text):
-        val = m.group(1)
-        candidates.append((m.start(1), m.end(1), "vin", val, token_for("vin", val, secret)))
-    for m in VIN_SUFFIX_PATTERN.finditer(text):
         val = m.group(1)
         candidates.append((m.start(1), m.end(1), "vin", val, token_for("vin", val, secret)))
     for m in VIN_STANDARD_PATTERN.finditer(text):
         val = m.group(1)
         candidates.append((m.start(1), m.end(1), "vin", val, token_for("vin", val, secret)))
-
-    # 7. Account number
     for m in ACCOUNT_PREFIX_PATTERN.finditer(text):
         val = m.group(1)
         candidates.append((m.start(1), m.end(1), "account", val, token_for("account", val, secret)))
-    for m in ACCOUNT_SUFFIX_PATTERN.finditer(text):
+
+    for m in NIN_SUFFIX_PATTERN.finditer(text):
         val = m.group(1)
-        candidates.append((m.start(1), m.end(1), "account", val, token_for("account", val, secret)))
+        candidates.append((m.start(1), m.end(1), "nin", val, token_for("nin", val, secret)))
+    for m in BVN_SUFFIX_PATTERN.finditer(text):
+        val = m.group(1)
+        candidates.append((m.start(1), m.end(1), "bvn", val, token_for("bvn", val, secret)))
+    for m in VIN_SUFFIX_PATTERN.finditer(text):
+        val = m.group(1)
+        candidates.append((m.start(1), m.end(1), "vin", val, token_for("vin", val, secret)))
 
     # 8. Address
     for m in ADDRESS_NUMBERED_PATTERN.finditer(text):
@@ -277,29 +266,34 @@ def find_candidate_spans(text: str, secret: bytes) -> List[Tuple[int, int, str, 
     for m in NAME_CUE_PATTERN.finditer(text):
         val = m.group(1).strip()
         words = val.split()
-        if not any(w.lower() in EXCLUDED_WORDS for w in words):
+        if not any(w.lower() in EXCLUDED_WORDS or w.lower() in TITLES_SET for w in words):
             candidates.append((m.start(1), m.end(1), "name", val, token_for("name", val, secret)))
 
     # 9b. Titled names (e.g. Mr. Babatunde, Alhaji Musa Bello)
     for m in TITLE_NAME_PATTERN.finditer(text):
-        val = m.group(2).strip()
+        val = m.group(1).strip()
         words = val.split()
-        if not any(w.lower() in EXCLUDED_WORDS for w in words):
-            candidates.append((m.start(2), m.end(2), "name", val, token_for("name", val, secret)))
+        if not any(w.lower() in EXCLUDED_WORDS or w.lower() in TITLES_SET for w in words):
+            candidates.append((m.start(1), m.end(1), "name", val, token_for("name", val, secret)))
 
-    # 9c. Listed dictionary names
+    # 9c. Listed dictionary names (must be capitalised) & whole-word preceding title
     word_tokens = [(m.start(), m.end(), m.group()) for m in re.finditer(r"\b[A-Za-zÀ-ÿ'-]+\b", text)]
     n_tokens = len(word_tokens)
     i = 0
     while i < n_tokens:
         start_i, end_i, w_i = word_tokens[i]
         w_i_lower = w_i.lower()
-        if w_i_lower in TITLES_SET or w_i_lower in EXCLUDED_WORDS or len(w_i) < 2:
+        if w_i_lower in TITLES_SET or w_i_lower in EXCLUDED_WORDS or len(w_i) < 2 or not w_i[0].isupper():
             i += 1
             continue
 
-        prefix = text[:start_i].strip()
-        is_titled = any(prefix.lower().endswith(t.lower()) for t in TITLES_SET)
+        is_titled = False
+        if i > 0:
+            _, prev_end, prev_w = word_tokens[i - 1]
+            gap_prev = text[prev_end:start_i]
+            if prev_w.lower() in TITLES_SET and "\n" not in gap_prev and re.fullmatch(r"\.?\s+", gap_prev):
+                is_titled = True
+
         if w_i_lower in known_names or is_titled:
             cur_end = end_i
             j = i + 1
@@ -309,9 +303,9 @@ def find_candidate_spans(text: str, secret: bytes) -> List[Tuple[int, int, str, 
                 if not gap.isspace() or "\n" in gap:
                     break
                 w_j_lower = w_j.lower()
-                if w_j_lower in EXCLUDED_WORDS or w_j_lower in TITLES_SET:
+                if w_j_lower in EXCLUDED_WORDS or w_j_lower in TITLES_SET or not w_j[0].isupper():
                     break
-                if w_j_lower in known_names or (w_j[0].isupper() and len(w_j) >= 3):
+                if w_j_lower in known_names or len(w_j) >= 3:
                     cur_end = end_j
                     j += 1
                 else:
@@ -419,33 +413,50 @@ def redact(text: Optional[str], organisation: Any = None) -> RedactionResult:
     return RedactionResult(text=redacted_text, spans=output_spans)
 
 
-def safe_text(obj: Any) -> str:
+def safe_text(obj: Any, organisation: Any = None) -> str:
     """
     Safe accessor returning redacted text for triage, duplicates, clusters,
     snapshots, audit export, and staff serializers.
-    Checks:
-    1. obj.redacted_description (manual redaction)
-    2. obj.auto_redacted_description (automatic redaction)
-    3. obj.description (fallback)
+    Handles Report, CitizenReply, Post, MediaItem (transcript), ReviewEvent, dict, and str.
     """
     if obj is None:
         return ""
     if isinstance(obj, str):
-        return obj
+        return redact(obj, organisation).text
 
-    if hasattr(obj, "redacted_description") and obj.redacted_description:
-        return obj.redacted_description
-    if hasattr(obj, "auto_redacted_description") and obj.auto_redacted_description:
-        return obj.auto_redacted_description
-    if hasattr(obj, "description") and obj.description:
-        return obj.description
+    org = getattr(obj, "organisation_id", None) or getattr(obj, "organisation", None) or organisation
+
+    # Report or report-like object
+    if hasattr(obj, "description"):
+        if getattr(obj, "redacted_description", None):
+            return obj.redacted_description
+        if getattr(obj, "auto_redacted_description", None):
+            return obj.auto_redacted_description
+        return redact(obj.description, org).text if obj.description else ""
+
+    # CitizenReply, Post, or message-like object
+    if hasattr(obj, "body"):
+        if getattr(obj, "auto_redacted_body", None):
+            return obj.auto_redacted_body
+        return redact(obj.body, org).text if obj.body else ""
+
+    # MediaItem transcript
+    if hasattr(obj, "transcript"):
+        return redact(obj.transcript, org).text if obj.transcript else ""
+
+    # ReviewEvent (note in change)
+    if hasattr(obj, "change") and isinstance(obj.change, dict):
+        note = obj.change.get("note")
+        return redact(str(note), org).text if note else ""
 
     if isinstance(obj, dict):
-        return (
-            obj.get("redacted_description")
-            or obj.get("auto_redacted_description")
-            or obj.get("description")
-            or ""
-        )
+        if obj.get("redacted_description"):
+            return obj["redacted_description"]
+        if obj.get("auto_redacted_description"):
+            return obj["auto_redacted_description"]
+        if obj.get("auto_redacted_body"):
+            return obj["auto_redacted_body"]
+        raw = obj.get("description") or obj.get("body") or obj.get("transcript") or obj.get("note") or ""
+        return redact(str(raw), org).text if raw else ""
 
-    return str(obj)
+    raise TypeError(f"Unsupported object type for safe_text: {type(obj).__name__}")

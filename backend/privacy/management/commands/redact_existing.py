@@ -28,19 +28,20 @@ class Command(BaseCommand):
 
         self.stdout.write(f"Starting redaction of existing records (batch size: {batch_size}, dry_run: {dry_run})...")
 
-        # 1. Reports
+        # 1. Reports (keyset pagination on pk)
         report_count = 0
-        report_qs = (
+        report_base = (
             Report.objects.filter(auto_redacted_description__isnull=True)
             .exclude(description="")
             .order_by("pk")
         )
-        total_reports = report_qs.count()
+        total_reports = report_base.count()
         self.stdout.write(f"Found {total_reports} unredacted reports.")
 
-        offset = 0
+        last_pk = None
         while True:
-            batch = list(report_qs[offset : offset + batch_size])
+            qs = report_base.filter(pk__gt=last_pk) if last_pk is not None else report_base
+            batch = list(qs[:batch_size])
             if not batch:
                 break
 
@@ -50,6 +51,7 @@ class Command(BaseCommand):
                 report.auto_redacted_description = res.text
                 report.auto_redactions = res.spans
                 to_update.append(report)
+                last_pk = report.pk
 
             if not dry_run:
                 with transaction.atomic():
@@ -57,22 +59,22 @@ class Command(BaseCommand):
                         to_update, ["auto_redacted_description", "auto_redactions"]
                     )
             report_count += len(to_update)
-            offset += len(batch)
             self.stdout.write(f"  Processed {report_count}/{total_reports} reports.")
 
-        # 2. Citizen Replies
+        # 2. Citizen Replies (keyset pagination on pk)
         reply_count = 0
-        reply_qs = (
+        reply_base = (
             CitizenReply.objects.filter(auto_redacted_body="")
             .exclude(body="")
             .order_by("pk")
         )
-        total_replies = reply_qs.count()
+        total_replies = reply_base.count()
         if total_replies:
             self.stdout.write(f"Found {total_replies} unredacted citizen replies.")
-            offset = 0
+            last_pk = None
             while True:
-                batch = list(reply_qs[offset : offset + batch_size])
+                qs = reply_base.filter(pk__gt=last_pk) if last_pk is not None else reply_base
+                batch = list(qs[:batch_size])
                 if not batch:
                     break
 
@@ -82,6 +84,7 @@ class Command(BaseCommand):
                     reply.auto_redacted_body = res.text
                     reply.auto_redactions = res.spans
                     to_update.append(reply)
+                    last_pk = reply.pk
 
                 if not dry_run:
                     with transaction.atomic():
@@ -89,23 +92,23 @@ class Command(BaseCommand):
                             to_update, ["auto_redacted_body", "auto_redactions"]
                         )
                 reply_count += len(to_update)
-                offset += len(batch)
                 self.stdout.write(f"  Processed {reply_count}/{total_replies} citizen replies.")
 
-        # 3. Discussion Posts
+        # 3. Discussion Posts (keyset pagination on pk)
         post_count = 0
-        post_qs = (
+        post_base = (
             Post.objects.filter(auto_redacted_body="")
             .exclude(body="")
             .select_related("discussion")
             .order_by("pk")
         )
-        total_posts = post_qs.count()
+        total_posts = post_base.count()
         if total_posts:
             self.stdout.write(f"Found {total_posts} unredacted discussion posts.")
-            offset = 0
+            last_pk = None
             while True:
-                batch = list(post_qs[offset : offset + batch_size])
+                qs = post_base.filter(pk__gt=last_pk) if last_pk is not None else post_base
+                batch = list(qs[:batch_size])
                 if not batch:
                     break
 
@@ -115,6 +118,7 @@ class Command(BaseCommand):
                     post.auto_redacted_body = res.text
                     post.auto_redactions = res.spans
                     to_update.append(post)
+                    last_pk = post.pk
 
                 if not dry_run:
                     with transaction.atomic():
@@ -122,7 +126,6 @@ class Command(BaseCommand):
                             to_update, ["auto_redacted_body", "auto_redactions"]
                         )
                 post_count += len(to_update)
-                offset += len(batch)
                 self.stdout.write(f"  Processed {post_count}/{total_posts} discussion posts.")
 
         self.stdout.write(

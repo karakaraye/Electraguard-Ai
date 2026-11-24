@@ -1,396 +1,326 @@
 import json
 import os
-import sys
-
-# Ensure backend root is on sys.path
-backend_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-if backend_dir not in sys.path:
-    sys.path.insert(0, backend_dir)
+import random
+from collections import defaultdict
+from pathlib import Path
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
-os.environ.setdefault("DJANGO_SECRET_KEY", "test-secret-key-for-local-runs-32chars")
-os.environ.setdefault("DJANGO_DEBUG", "true")
-
 import django
 django.setup()
 
-from privacy.redactor import redact, get_known_names
+from privacy.redactor import redact
 
-# Target dataset path
-root_dir = os.path.dirname(backend_dir)
-dataset_dir = os.path.join(root_dir, "docs", "eval", "data")
-os.makedirs(dataset_dir, exist_ok=True)
-dataset_path = os.path.join(dataset_dir, "redaction-set.jsonl")
-report_path = os.path.join(root_dir, "docs", "eval", "redaction.md")
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
+DATA_OUT = BASE_DIR / "docs" / "eval" / "data" / "redaction-set.jsonl"
+REPORT_OUT = BASE_DIR / "docs" / "eval" / "redaction.md"
 
 
-def build_synthetic_samples():
-    """
-    Generates 60+ realistic synthetic items for each of the 5 languages:
-    English (en), Naijá / Pidgin (pcm), Hausa (ha), Yoruba (yo), Igbo (ig).
-    Total: 310 samples.
-    """
-    samples = []
+def make_item(item_id: str, lang: str, text: str, entities: list):
+    """Creates an item with exact character-offset gold spans."""
+    spans = []
+    for val, kind in entities:
+        idx = text.find(val)
+        assert idx != -1, f"Entity {val!r} not found in {text!r}"
+        spans.append({"start": idx, "end": idx + len(val), "kind": kind, "value": val})
+    return {"id": item_id, "lang": lang, "text": text, "spans": spans}
 
-    # Common synthetic values
+
+def build_independent_dataset():
+    random.seed(2026)
+    items = []
+
+    # Pools of varied realistic entities (including non-90F5 VINs, spaced/paren phones, untitled names, etc.)
     phones = [
-        "08031234567", "+234 803 987 6543", "07012345678", "09087654321",
-        "08123456789", "+234 812 345 6789", "08055554444", "07033332222",
-        "09011112222", "08066667777", "08022223333", "08144445555"
+        "08031234567", "+234 803 987 6543", "(0803) 123 4567", "0803  123  4567",
+        "0701-555-0192", "0909 444 3322", "+2348123456789", "0818.222.1100",
+        "0805 678 9012", "07089991122", "(0813) 456 7890", "0902  333  4455",
     ]
     emails = [
-        "observer.lead@electioncare.org", "agent.tunde@partywatch.ng",
-        "monitor.kano@cairnassure.org", "citizen.voice@lagoswatch.com",
-        "info.pu01@inec-watchers.org", "help@electraguard.org"
+        "observer.kano@watch.ng", "chidi.okafor@gmail.com", "aisha.bello22@yahoo.com",
+        "ward4.lead@civics.org.ng", "tunde.ade@outlook.com", "ngozi.eze@mail.ng",
     ]
-    nins = [
-        "12345678901", "98765432109", "11223344556", "55667788990",
-        "99887766554", "44332211009", "77889900112", "33221144556"
-    ]
-    bvns = [
-        "22334455667", "99881122334", "11002299338", "77665544332",
-        "88776655441", "33445566778", "55443322110", "66778899001"
-    ]
+    nins = ["12345678901", "98765432109", "45678901234", "11223344556", "77889900112"]
+    bvns = ["22334455667", "33445566778", "55667788990", "66778899001", "88990011223"]
     vins = [
-        "90F5B01234567890123", "90F5A98765432109876", "90F5C11223344556677",
-        "90F5D55667788990011", "90F5E99887766554433", "90F5F44332211009988"
+        "AB12345678901234567", "XY98765432109876543", "KN04A11223344556677",
+        "90F5B12345678901234", "LG19C99887766554433", "RV02D44556677889900",
     ]
-    accounts = [
-        "0123456789", "2034567890", "1102938475", "0098765432",
-        "3049586712", "0192837465", "2211334455", "1029384756"
-    ]
+    accounts = ["0123456789", "2098765432", "3011223344", "0055667788", "1099887766"]
     addresses = [
-        "14 Adeola Odeku Street", "Plot 12 Ahmadu Bello Way", "No. 5 Herbert Macaulay Way",
-        "8 Commercial Avenue", "24 Nnamdi Azikiwe Road", "Plot 40 Marina Street",
-        "Block 3 Flat 4 Unity Estate", "17 Awolowo Road", "50 Old Market Road",
-        "P.O. Box 450", "2 Kudirat Abiola Way", "19 Zoo Road"
+        "14 Broad Street", "No. 22 Ahmadu Bello Way", "Plot 8 Allen Avenue",
+        "7B Herbert Macaulay Road", "19 Zik Avenue", "32 Yakubu Gowon Crescent",
+        "5 Zoo Road", "11 Independence Layout", "44 Awolowo Way", "88 Aba Road",
+    ]
+    # Mix of titled names, common Nigerian names, and harder untitled/uncommon names
+    names_pool = [
+        ("Mr. ", "Babatunde Fashola"),
+        ("Alhaji ", "Musa Bello"),
+        ("Dr. ", "Chinedu Okafor"),
+        ("Mrs. ", "Funke Adebayo"),
+        ("Hajiya ", "Fatima Usman"),
+        ("Chief ", "Emeka Nwosu"),
+        ("Barr. ", "Sadiq Abubakar"),
+        ("Pastor ", "Samuel Ogunleye"),
+        ("", "Amina Danjuma"),
+        ("", "Oluwaseun Adeyemi"),
+        ("", "Ngozi Eze"),
+        ("", "Ibrahim Garba"),
+        ("", "Kelechi Iheanacho"),
+        ("", "Yusuf Abdullahi"),
+        ("", "Zikora Nnamdi"),      # uncommon first name (honest miss test)
+        ("", "Dantata Kure"),       # uncommon surname/first name (honest miss test)
+        ("", "Bamidele Ogundipe"),
+        ("", "Chukwuma Soludo"),
     ]
 
-    # --- 1. ENGLISH (en) ---
-    en_names = [
-        "Mr. Babatunde Adebayo", "Dr. Chinedu Okafor", "Mrs. Fatima Musa",
-        "Alhaji Abubakar Sani", "Pastor Emmanuel Eze", "Chief Folake Adeleke",
-        "Engr. Danladi Umar", "Barrister Ngozi Nwosu", "Hon. Segun Oladele",
-        "Prof. Ibrahim Yakubu", "Comrade Kelechi Obinna", "Mama Bisi Alabi",
-        "Usman Garba", "Aisha Bello", "Emeka Nwankwo", "Yetunde Bakare",
-        "Okey Okereke", "Halima Idris", "Terna Audu", "Efe Oghenekaro"
-    ]
-    for i in range(62):
-        name = en_names[i % len(en_names)]
-        phone = phones[i % len(phones)]
-        addr = addresses[i % len(addresses)]
-        pvc = vins[i % len(vins)]
-        nin = nins[i % len(nins)]
-        bvn = bvns[i % len(bvns)]
-        acct = accounts[i % len(accounts)]
-        email = emails[i % len(emails)]
+    # Negative election sentences (0 PII entities) per language
+    negatives = {
+        "en": [
+            "Election forms delivered to ward collation centre at 08:30.",
+            "Returning officer was chosen by the accreditation committee.",
+            "Chief Imam prayed for peaceful voting before polls opened.",
+            "14 observers were on the way to the polling unit.",
+            "100 voters waited on the expressway near the main gate.",
+            "Record serial 0012345678 account of votes cast at the unit.",
+            "Sensitive items musa not be left unattended during counting.",
+            "BVAS machine 456789012 failed to scan thumbprints twice.",
+            "Queues were long at Ward 3 but accreditation proceeded calmly.",
+            "Ballot boxes arrived 45 minutes late due to transport delay.",
+        ],
+        "pcm": [
+            "Election forms don reach collation centre since morning.",
+            "Dem don choose returning officer for the ward already.",
+            "Chief Imam pray make voting go well without wahala.",
+            "14 observers dey on the way go the polling unit.",
+            "100 voters stand for expressway dey wait for INEC.",
+            "Write serial 0012345678 account of votes wey dem count.",
+            "All sensitive materials musa stay inside the box.",
+            "BVAS machine freeze two times before afternoon.",
+            "Queue long well well for PU 004 but people calm.",
+            "Result sheet don paste for wall make everybody see.",
+        ],
+        "ha": [
+            "An kawo takardun zabe zuwa cibiyar tattara sakamako.",
+            "Kwamitin ya zabi jami'in zabe domin kula da akwati.",
+            "Babban Liman ya yi addu'a domin zaman lafiya kafin zabe.",
+            "Masu sa ido 14 suna kan hanya zuwa rumfar zabe.",
+            "Masu jefa kuri'a 100 sun jira a kan babbar hanya.",
+            "Rubuta lambar 0012345678 na yawan kuri'un da aka kada.",
+            "Na'urar BVAS ta tsaya sau biyu da rana.",
+            "Layin masu zabe yana da tsawo amma komai na tafiya lafiya.",
+            "An fara tantance masu zabe da karfe takwas na safe.",
+            "Jami'an tsaro suna nan suna kula da rumfar zabe.",
+        ],
+        "yo": [
+            "Awon iwe idibo ti de ibudo ikojopo ni aaro.",
+            "Igbimo yan oludari idibo fun gbogbo awon ibudo.",
+            "Imam agba gbadura fun alafia ki idibo to bere.",
+            "Awon oluwoye 14 wa lori ona si ibudo idibo.",
+            "Awon oludibo 100 duro ni opopona nla ti o wa nitosi.",
+            "Ko nomba 0012345678 ti ibo ti a ka ni ibudo naa.",
+            "Ero BVAS dawo duro leemeji ni osan.",
+            "Ila awon oludibo gun sugbon eto naa n lo ni irorun.",
+            "Awon olopa wa nibe lati daabo bo awon oludibo.",
+            "A ti le esi idibo si ogiri fun gbogbo eniyan lati ri.",
+        ],
+        "ig": [
+            "Ewetala akwukwo ntuli aka n'ebe nchikota nke ubochi taa.",
+            "Kọmitii ahoputala onye isi ntuli aka maka mpaghara a.",
+            "Onye isi Imam kpere ekpere maka udo tupu e bido.",
+            "Ndi nleba anya 14 no n'uzo na-aga ebe ntuli aka.",
+            "Ndi ntuli aka 100 kwuru n'okporo uzo ukwu na-eche.",
+            "Dee nomba 0012345678 nke votu a guru n'ebe a.",
+            "Igwe BVAS kwusiri ugboro abuo n'ehihie.",
+            "Ahiri ndi mmadu di ogologo mana ihe niile na-aga nke oma.",
+            "Ndi uwe ojii no ebe ahu iji hụ na udo dị.",
+            "E biputala nsonaazụ ntuli aka n'ahụ aja.",
+        ],
+    }
 
-        variant = i % 6
-        if variant == 0:
-            text = f"At PU 012 Ward 4, {name} arrived with phone {phone} and complained about BVAS delay at {addr}."
-            entities = [("name", name), ("phone", phone), ("address", addr)]
-        elif variant == 1:
-            text = f"Party agent {name} presented voter card VIN {pvc} and contacted headquarters via {email}."
-            entities = [("name", name), ("vin", pvc), ("email", email)]
-        elif variant == 2:
-            text = f"Observer noted money sharing: voter verified NIN {nin} and funds were transferred to account {acct}."
-            entities = [("nin", nin), ("account", acct)]
-        elif variant == 3:
-            text = f"Collation in progress at {addr}. Returning officer {name} can be reached on {phone}."
-            entities = [("address", addr), ("name", name), ("phone", phone)]
-        elif variant == 4:
-            text = f"Dispute over accreditation. Complainant confirmed BVN {bvn} and registered phone {phone}."
-            entities = [("bvn", bvn), ("phone", phone)]
-        else:
-            text = f"Calm voting in Dala LGA, Kano State. 450 voters on queue, 3 ballot boxes sealed properly by INEC officials."
-            entities = []  # Negative example: no personal entities
+    # Diverse positive templates per language (each produces varied phrasing)
+    pos_templates = {
+        "en": [
+            lambda p, e, n, b, v, a, addr, t, nm: (f"Observer {t}{nm} reported voter intimidation; call {p} for details.", [(nm, "name"), (p, "phone")]),
+            lambda p, e, n, b, v, a, addr, t, nm: (f"NIN of the voter is {n} and PVC {v} was seized at {addr}.", [(n, "nin"), (v, "vin"), (addr, "address")]),
+            lambda p, e, n, b, v, a, addr, t, nm: (f"Agent {t}{nm} distributed cash via a/c {a}; email {e}.", [(nm, "name"), (a, "account"), (e, "email")]),
+            lambda p, e, n, b, v, a, addr, t, nm: (f"BVN {b} and phone {p} were collected near {addr}.", [(b, "bvn"), (p, "phone"), (addr, "address")]),
+            lambda p, e, n, b, v, a, addr, t, nm: (f"Witness {nm} stayed at {addr}; reached on {p}.", [(nm, "name"), (addr, "address"), (p, "phone")]),
+            lambda p, e, n, b, v, a, addr, t, nm: (f"Send evidence to {e} or call {p} before collation.", [(e, "email"), (p, "phone")]),
+            lambda p, e, n, b, v, a, addr, t, nm: (f"Thugs led by {t}{nm} blocked {addr} with VIN {v}.", [(nm, "name"), (addr, "address"), (v, "vin")]),
+            lambda p, e, n, b, v, a, addr, t, nm: (f"Bribery sent to account {a}; BVN of the agent is {b}.", [(a, "account"), (b, "bvn")]),
+            lambda p, e, n, b, v, a, addr, t, nm: (f"Voter {nm} could not vote; NIN {n} failed verification.", [(nm, "name"), (n, "nin")]),
+            lambda p, e, n, b, v, a, addr, t, nm: (f"Emergency at {addr}: contact {t}{nm} on {p} or {e}.", [(addr, "address"), (nm, "name"), (p, "phone"), (e, "email")]),
+        ],
+        "pcm": [
+            lambda p, e, n, b, v, a, addr, t, nm: (f"Abeg call {t}{nm} for {p}, wahala dey happen for unit.", [(nm, "name"), (p, "phone")]),
+            lambda p, e, n, b, v, a, addr, t, nm: (f"Dem collect voter NIN {n} and PVC {v} near {addr}.", [(n, "nin"), (v, "vin"), (addr, "address")]),
+            lambda p, e, n, b, v, a, addr, t, nm: (f"One boy send money enter a/c {a} wey {t}{nm} get.", [(a, "account"), (nm, "name")]),
+            lambda p, e, n, b, v, a, addr, t, nm: (f"Send mail go {e} or dial {p} sharp sharp.", [(e, "email"), (p, "phone")]),
+            lambda p, e, n, b, v, a, addr, t, nm: (f"Agent {nm} dey stay for {addr}; BVN na {b}.", [(nm, "name"), (addr, "address"), (b, "bvn")]),
+            lambda p, e, n, b, v, a, addr, t, nm: (f"VIN {v} no gree scan, call {p} make dem help.", [(v, "vin"), (p, "phone")]),
+            lambda p, e, n, b, v, a, addr, t, nm: (f"{t}{nm} scatter queue for {addr}, reach {e}.", [(nm, "name"), (addr, "address"), (e, "email")]),
+            lambda p, e, n, b, v, a, addr, t, nm: (f"Dem pay voters using account {a} and NIN {n}.", [(a, "account"), (n, "nin")]),
+            lambda p, e, n, b, v, a, addr, t, nm: (f"My guy {nm} phone na {p}, e dey {addr}.", [(nm, "name"), (p, "phone"), (addr, "address")]),
+            lambda p, e, n, b, v, a, addr, t, nm: (f"BVN {b} and phone {p} dey inside the complaint.", [(b, "bvn"), (p, "phone")]),
+        ],
+        "ha": [
+            lambda p, e, n, b, v, a, addr, t, nm: (f"Wakili {t}{nm} ya kawo rahoto; lambar waya {p}.", [(nm, "name"), (p, "phone")]),
+            lambda p, e, n, b, v, a, addr, t, nm: (f"An karbi NIN {n} da katin PVC {v} a {addr}.", [(n, "nin"), (v, "vin"), (addr, "address")]),
+            lambda p, e, n, b, v, a, addr, t, nm: (f"An tura kudi zuwa a/c {a}; imel {e}.", [(a, "account"), (e, "email")]),
+            lambda p, e, n, b, v, a, addr, t, nm: (f"{t}{nm} yana zaune a {addr}, lambar BVN {b}.", [(nm, "name"), (addr, "address"), (b, "bvn")]),
+            lambda p, e, n, b, v, a, addr, t, nm: (f"A kira {p} ko a aika sako zuwa {e} nan take.", [(p, "phone"), (e, "email")]),
+            lambda p, e, n, b, v, a, addr, t, nm: (f"Mai jefa kuri'a {nm} ya nuna VIN {v} a rumfar zabe.", [(nm, "name"), (v, "vin")]),
+            lambda p, e, n, b, v, a, addr, t, nm: (f"An samu matsala a {addr}; kira {t}{nm} ta {p}.", [(addr, "address"), (nm, "name"), (p, "phone")]),
+            lambda p, e, n, b, v, a, addr, t, nm: (f"Asusun banki account {a} da NIN {n} suna cikin takardar.", [(a, "account"), (n, "nin")]),
+            lambda p, e, n, b, v, a, addr, t, nm: (f"Shaida {nm} ya ba da BVN {b} da waya {p}.", [(nm, "name"), (b, "bvn"), (p, "phone")]),
+            lambda p, e, n, b, v, a, addr, t, nm: (f"Imel din {t}{nm} shine {e} a {addr}.", [(nm, "name"), (e, "email"), (addr, "address")]),
+        ],
+        "yo": [
+            lambda p, e, n, b, v, a, addr, t, nm: (f"Oluwoye {t}{nm} pe nomba {p} lati jabo wahala.", [(nm, "name"), (p, "phone")]),
+            lambda p, e, n, b, v, a, addr, t, nm: (f"Won gba NIN {n} ati kaadi PVC {v} ni {addr}.", [(n, "nin"), (v, "vin"), (addr, "address")]),
+            lambda p, e, n, b, v, a, addr, t, nm: (f"Won fi owo ranse si a/c {a}; imeeli {e}.", [(a, "account"), (e, "email")]),
+            lambda p, e, n, b, v, a, addr, t, nm: (f"{t}{nm} n gbe ni {addr}, nomba BVN re ni {b}.", [(nm, "name"), (addr, "address"), (b, "bvn")]),
+            lambda p, e, n, b, v, a, addr, t, nm: (f"Pe {p} tabi fi imeeli ranse si {e} ni kiakia.", [(p, "phone"), (e, "email")]),
+            lambda p, e, n, b, v, a, addr, t, nm: (f"Oludibo {nm} fi VIN {v} han ni ibudo idibo.", [(nm, "name"), (v, "vin")]),
+            lambda p, e, n, b, v, a, addr, t, nm: (f"Wahala sele ni {addr}; kan si {t}{nm} lori {p}.", [(addr, "address"), (nm, "name"), (p, "phone")]),
+            lambda p, e, n, b, v, a, addr, t, nm: (f"Account {a} ati NIN {n} wa ninu iwe iroyin.", [(a, "account"), (n, "nin")]),
+            lambda p, e, n, b, v, a, addr, t, nm: (f"Eleri {nm} ni BVN {b} ati foonu {p}.", [(nm, "name"), (b, "bvn"), (p, "phone")]),
+            lambda p, e, n, b, v, a, addr, t, nm: (f"Imeeli {t}{nm} ni {e} ni agbegbe {addr}.", [(nm, "name"), (e, "email"), (addr, "address")]),
+        ],
+        "ig": [
+            lambda p, e, n, b, v, a, addr, t, nm: (f"Onye nleba anya {t}{nm} kporo {p} maka nsogbu.", [(nm, "name"), (p, "phone")]),
+            lambda p, e, n, b, v, a, addr, t, nm: (f"Ha napuru NIN {n} na kaadi PVC {v} n'ebe {addr}.", [(n, "nin"), (v, "vin"), (addr, "address")]),
+            lambda p, e, n, b, v, a, addr, t, nm: (f"E zigara ego na a/c {a}; ozi {e}.", [(a, "account"), (e, "email")]),
+            lambda p, e, n, b, v, a, addr, t, nm: (f"{t}{nm} bi na {addr}, nomba BVN ya bu {b}.", [(nm, "name"), (addr, "address"), (b, "bvn")]),
+            lambda p, e, n, b, v, a, addr, t, nm: (f"Kpoo {p} ma o bu zigara ozi na {e} ugbu a.", [(p, "phone"), (e, "email")]),
+            lambda p, e, n, b, v, a, addr, t, nm: (f"Onye ntuli aka {nm} gosiri VIN {v} n'ebe a.", [(nm, "name"), (v, "vin")]),
+            lambda p, e, n, b, v, a, addr, t, nm: (f"Nsogbu mere na {addr}; kpoo {t}{nm} na {p}.", [(addr, "address"), (nm, "name"), (p, "phone")]),
+            lambda p, e, n, b, v, a, addr, t, nm: (f"Account {a} na NIN {n} di n'akwukwo mkpesa.", [(a, "account"), (n, "nin")]),
+            lambda p, e, n, b, v, a, addr, t, nm: (f"Onye aka ebe {nm} nwere BVN {b} na ekwenti {p}.", [(nm, "name"), (b, "bvn"), (p, "phone")]),
+            lambda p, e, n, b, v, a, addr, t, nm: (f"Imel nke {t}{nm} bu {e} n'akuku {addr}.", [(nm, "name"), (e, "email"), (addr, "address")]),
+        ],
+    }
 
-        samples.append({"language": "en", "text": text, "expected": entities})
+    idx = 1
+    for lang in ["en", "pcm", "ha", "yo", "ig"]:
+        # 10 negative items per language (50 total)
+        for neg_text in negatives[lang]:
+            items.append(make_item(f"RED-{idx:03d}", lang, neg_text, []))
+            idx += 1
+        # 52 positive items per language (260 total -> 310 total)
+        for k in range(52):
+            tmpl = pos_templates[lang][k % len(pos_templates[lang])]
+            p = phones[(idx + k) % len(phones)]
+            e = emails[(idx + k) % len(emails)]
+            n = nins[(idx + k) % len(nins)]
+            b = bvns[(idx + k) % len(bvns)]
+            v = vins[(idx + k) % len(vins)]
+            a = accounts[(idx + k) % len(accounts)]
+            addr = addresses[(idx + k) % len(addresses)]
+            t, nm = names_pool[(idx + k) % len(names_pool)]
+            text, ents = tmpl(p, e, n, b, v, a, addr, t, nm)
+            items.append(make_item(f"RED-{idx:03d}", lang, text, ents))
+            idx += 1
 
-    # --- 2. NAIJÁ / PIDGIN (pcm) ---
-    pcm_names = [
-        "Oga Tunde Balogun", "Brother Emeka Obi", "Sister Amaka Eze",
-        "Mama Chinyere", "Alhaji Haruna Sani", "Mr. Osas Omoruyi",
-        "Chief Preye Tamara", "Papa Bassey Edet", "Doctor Femi Adeleke",
-        "Madam Blessing Okon", "Chidi Nwosu", "Boluwatife Adeleke",
-        "Aminu Danlami", "Ngozi Chukwu", "Tega Akpevwe", "Maryam Usman"
-    ]
-    for i in range(62):
-        name = pcm_names[i % len(pcm_names)]
-        phone = phones[(i + 1) % len(phones)]
-        addr = addresses[(i + 1) % len(addresses)]
-        pvc = vins[(i + 1) % len(vins)]
-        nin = nins[(i + 1) % len(nins)]
-        bvn = bvns[(i + 1) % len(bvns)]
-        acct = accounts[(i + 1) % len(accounts)]
-
-        variant = i % 6
-        if variant == 0:
-            text = f"For our polling unit, {name} dey call party agent with phone number {phone} say make dem bring more ink."
-            entities = [("name", name), ("phone", phone)]
-        elif variant == 1:
-            text = f"One man show him PVC with VIN {pvc} but machine no gree scan am for {addr}."
-            entities = [("vin", pvc), ("address", addr)]
-        elif variant == 2:
-            text = f"Dem say make voters write their NIN {nin} and account number {acct} before dem give dem money."
-            entities = [("nin", nin), ("account", acct)]
-        elif variant == 3:
-            text = f"I live at {addr} and I see say youth dem dey cause katakata, make una call {name} on {phone}."
-            entities = [("address", addr), ("name", name), ("phone", phone)]
-        elif variant == 4:
-            text = f"Wahala burst for line, {name} say somebody collect him BVN {bvn} and run commot."
-            entities = [("name", name), ("bvn", bvn)]
-        else:
-            text = f"Everything dey peaceful for Ikeja Lagos. Voters dey line up gently and INEC security dey ground."
-            entities = []  # Negative example
-
-        samples.append({"language": "pcm", "text": text, "expected": entities})
-
-    # --- 3. HAUSA (ha) ---
-    ha_names = [
-        "Malam Abubakar Sani", "Alhaji Musa Bello", "Hajiya Fatima Umaru",
-        "Malam Garba Danladi", "Dr. Usman Kabir", "Hon. Aminu Yahaya",
-        "Mairo Halima", "Aisha Mustapha", "Ibrahim Yakubu", "Kabiru Lawal",
-        "Zainab Farouk", "Nasiru Jibril", "Bilkisu Adamu", "Farouk Dauda"
-    ]
-    for i in range(62):
-        name = ha_names[i % len(ha_names)]
-        phone = phones[(i + 2) % len(phones)]
-        addr = addresses[(i + 2) % len(addresses)]
-        pvc = vins[(i + 2) % len(vins)]
-        nin = nins[(i + 2) % len(nins)]
-        bvn = bvns[(i + 2) % len(bvns)]
-        acct = accounts[(i + 2) % len(accounts)]
-
-        variant = i % 6
-        if variant == 0:
-            text = f"A rumfar zabe ta Dala, {name} ya kira jami'an tsaro ta waya {phone} saboda an samu tsaiko."
-            entities = [("name", name), ("phone", phone)]
-        elif variant == 1:
-            text = f"Wani mai zabe ya nuna katin zabe VIN {pvc} a layin zabe dake {addr}."
-            entities = [("vin", pvc), ("address", addr)]
-        elif variant == 2:
-            text = f"An nemi mutane su bayar da lambar NIN {nin} da kuma account {acct} kafin a biya su."
-            entities = [("nin", nin), ("account", acct)]
-        elif variant == 3:
-            text = f"Gidan da lamarin ya faru yana {addr}. Ana iya samun {name} a lambar {phone}."
-            entities = [("address", addr), ("name", name), ("phone", phone)]
-        elif variant == 4:
-            text = f"Masu kada kuri'a sun koka cewa an karbi BVN {bvn} na {name} ba tare da izini ba."
-            entities = [("bvn", bvn), ("name", name)]
-        else:
-            text = f"An fara kada kuri'a lafiya a jihar Kano. Akwatinan zabe uku sun cika kuma jama'a na bin doka."
-            entities = []  # Negative example
-
-        samples.append({"language": "ha", "text": text, "expected": entities})
-
-    # --- 4. YORUBA (yo) ---
-    yo_names = [
-        "Arakunrin Babatunde Adebayo", "Dokita Olumide Bakare", "Iyaafin Folashade Adeleke",
-        "Alhaji Kehinde Fashola", "Oloye Segun Olawale", "Pastor Damilola Ojo",
-        "Yetunde Abiodun", "Kunle Afolabi", "Funke Olamide", "Gbenga Akintola",
-        "Bimbo Oladimeji", "Taiwo Adewale", "Ayomide Olasunkanmi", "Yemi Alabi"
-    ]
-    for i in range(62):
-        name = yo_names[i % len(yo_names)]
-        phone = phones[(i + 3) % len(phones)]
-        addr = addresses[(i + 3) % len(addresses)]
-        pvc = vins[(i + 3) % len(vins)]
-        nin = nins[(i + 3) % len(nins)]
-        bvn = bvns[(i + 3) % len(bvns)]
-        acct = accounts[(i + 3) % len(accounts)]
-
-        variant = i % 6
-        if variant == 0:
-            text = f"Ni ibudo idibo, {name} pe awon oluso alaafia lori ero ibanisoro {phone} nitori rudurudu."
-            entities = [("name", name), ("phone", phone)]
-        elif variant == 1:
-            text = f"Oludibo kan mu kaadi idibo PVC pelu VIN {pvc} wa si {addr} sugbon ero ko ka."
-            entities = [("vin", pvc), ("address", addr)]
-        elif variant == 2:
-            text = f"Awon kan n gba nomba NIN {nin} ati account {acct} lowo awon eniyan lati fun won lowo."
-            entities = [("nin", nin), ("account", acct)]
-        elif variant == 3:
-            text = f"Ibi ti isele na ti sele wa ni {addr}. E le kan si {name} lori {phone}."
-            entities = [("address", addr), ("name", name), ("phone", phone)]
-        elif variant == 4:
-            text = f"Won ni ki oludibo mu BVN {bvn} wa ki won to fun {name} ni iwe idibo."
-            entities = [("bvn", bvn), ("name", name)]
-        else:
-            text = f"Idibo n lo ni alaafia ni ipinle Oyo ati Ibadan. Awon oludibo wa ni tito lori ila lai si ija."
-            entities = []  # Negative example
-
-        samples.append({"language": "yo", "text": text, "expected": entities})
-
-    # --- 5. IGBO (ig) ---
-    ig_names = [
-        "Mazi Chinedu Okafor", "Dọkịta Emeka Nwankwo", "Nwanyi Ngozi Eze",
-        "Chief Obinna Chukwuma", "Pastọ Ifeanyi Okeke", "Barrister Amaka Nwosu",
-        "Kelechi Obiora", "Chiamaka Uchendu", "Ikenna Maduka", "Chinonso Chidubem",
-        "Nneka Onyekachi", "Somto Chukwudi", "Tochukwu Uzoma", "Eberechi Fechi"
-    ]
-    for i in range(62):
-        name = ig_names[i % len(ig_names)]
-        phone = phones[(i + 4) % len(phones)]
-        addr = addresses[(i + 4) % len(addresses)]
-        pvc = vins[(i + 4) % len(vins)]
-        nin = nins[(i + 4) % len(nins)]
-        bvn = bvns[(i + 4) % len(bvns)]
-        acct = accounts[(i + 4) % len(accounts)]
-
-        variant = i % 6
-        if variant == 0:
-            text = f"N'ebe a na-eme ntuli aka, {name} kpọrọ ndị nche na nọmba ekwentị {phone} maka nsogbu."
-            entities = [("name", name), ("phone", phone)]
-        elif variant == 1:
-            text = f"Otu onye wetara kaadị ntuli aka VIN {pvc} na {addr} mana igwe BVAS anabataghị ya."
-            entities = [("vin", pvc), ("address", addr)]
-        elif variant == 2:
-            text = f"A gwara ndị mmadụ ka ha nye nọmba NIN {nin} na account {acct} tupu e nye ha ego."
-            entities = [("nin", nin), ("account", acct)]
-        elif variant == 3:
-            text = f"Ebe ihe a mere dị na {addr}. Enwere ike ịkpọtụrụ {name} na {phone}."
-            entities = [("address", addr), ("name", name), ("phone", phone)]
-        elif variant == 4:
-            text = f"Onye nnọchiteanya chọrọ BVN {bvn} tupu enyere {name} ohere ịme ntuli aka."
-            entities = [("bvn", bvn), ("name", name)]
-        else:
-            text = f"Ntuli aka na-aga nke ọma na Enugu na Owerri. Ndị mmadụ kwụ n'ahịrị n'udo n'enweghị nsogbu."
-            entities = []  # Negative example
-
-        samples.append({"language": "ig", "text": text, "expected": entities})
-
-    return samples
+    DATA_OUT.parent.mkdir(parents=True, exist_ok=True)
+    with open(DATA_OUT, "w", encoding="utf-8") as f:
+        for item in items:
+            f.write(json.dumps(item, ensure_ascii=False) + "\n")
+    return items
 
 
-def main():
-    samples = build_synthetic_samples()
-    print(f"Generated {len(samples)} synthetic evaluation samples across 5 languages.")
+def evaluate_exact_spans(items):
+    """Evaluates redactor using strict exact span matching (original_start, original_end, kind)."""
+    tp_by_kind = defaultdict(int)
+    fp_by_kind = defaultdict(int)
+    fn_by_kind = defaultdict(int)
+    by_lang = defaultdict(lambda: {"tp": 0, "fp": 0, "fn": 0})
+    misses = []
+    false_positives = []
 
-    # Write out JSONL file
-    with open(dataset_path, "w", encoding="utf-8") as f:
-        for s in samples:
-            f.write(json.dumps(s, ensure_ascii=False) + "\n")
-    print(f"Wrote evaluation dataset to {dataset_path}")
-
-    # Evaluation counters
-    kinds = ["phone", "email", "nin", "bvn", "vin", "account", "name", "address"]
-    lang_codes = ["en", "pcm", "ha", "yo", "ig"]
-
-    stats = {k: {"tp": 0, "fp": 0, "fn": 0} for k in kinds}
-    lang_stats = {l: {"tp": 0, "fp": 0, "fn": 0} for l in lang_codes}
-
-    for item in samples:
-        lang = item["language"]
+    for item in items:
+        lang = item["lang"]
         text = item["text"]
-        expected = item["expected"]
+        gold_set = {(s["start"], s["end"], s["kind"]) for s in item["spans"]}
+        gold_vals = {(s["start"], s["end"], s["kind"]): s["value"] for s in item["spans"]}
 
         res = redact(text, "eval-org")
-        predicted = [(s["kind"], text[s["original_start"]:s["original_end"]]) for s in res.spans]
+        pred_set = {(s["original_start"], s["original_end"], s["kind"]) for s in res.spans}
 
-        # Match expected with predicted
-        matched_pred = set()
-        for exp_kind, exp_val in expected:
-            found = False
-            for p_idx, (pred_kind, pred_val) in enumerate(predicted):
-                if p_idx in matched_pred:
-                    continue
-                # Match kind and substring/normalized overlap
-                if pred_kind == exp_kind and (exp_val in pred_val or pred_val in exp_val):
-                    matched_pred.add(p_idx)
-                    stats[exp_kind]["tp"] += 1
-                    lang_stats[lang]["tp"] += 1
-                    found = True
-                    break
-            if not found:
-                stats[exp_kind]["fn"] += 1
-                lang_stats[lang]["fn"] += 1
+        for g in gold_set:
+            if g in pred_set:
+                tp_by_kind[g[2]] += 1
+                by_lang[lang]["tp"] += 1
+            else:
+                fn_by_kind[g[2]] += 1
+                by_lang[lang]["fn"] += 1
+                misses.append({"id": item["id"], "lang": lang, "kind": g[2], "value": gold_vals[g], "text": text})
 
-        for p_idx, (pred_kind, pred_val) in enumerate(predicted):
-            if p_idx not in matched_pred:
-                stats[pred_kind]["fp"] += 1
-                lang_stats[lang]["fp"] += 1
+        for p in pred_set:
+            if p not in gold_set:
+                fp_by_kind[p[2]] += 1
+                by_lang[lang]["fp"] += 1
+                false_positives.append({"id": item["id"], "lang": lang, "kind": p[2], "value": text[p[0]:p[1]], "text": text})
 
-    # Generate Markdown Report
+    all_kinds = sorted(set(tp_by_kind) | set(fp_by_kind) | set(fn_by_kind))
+    total_tp = sum(tp_by_kind.values())
+    total_fp = sum(fp_by_kind.values())
+    total_fn = sum(fn_by_kind.values())
+    overall_rec = total_tp / max(1, total_tp + total_fn) * 100
+    overall_prec = total_tp / max(1, total_tp + total_fp) * 100
+
     lines = [
-        "# Evaluation Report: C16 Automatic Redaction of Personal Details",
+        "# Redaction Evaluation (C16)",
         "",
-        "## Summary",
+        f"Evaluated on {len(items)} unique synthetic items across 5 languages (`en`, `pcm`, `ha`, `yo`, `ig`), including 50 negative (clean election text) items and edge-case formats, using **strict exact span matching**.",
         "",
-        "This evaluation benchmarks the deterministic redaction system on a labeled synthetic evaluation dataset",
-        f"comprising **{len(samples)} items** across all five supported languages:",
-        "English (`en`), Naijá / Nigerian Pidgin (`pcm`), Hausa (`ha`), Yorùbá (`yo`), and Igbo (`ig`).",
+        "## Overall Results",
         "",
-        "### Target Benchmarks vs Measured Results",
-        "- **Phone & ID numbers recall target:** ≥ 95.0 %",
-        "- **Personal name recall target:** ≥ 85.0 %",
-        "- **Overall precision target:** ≥ 90.0 %",
+        f"- **Overall Recall:** {overall_rec:.1f}% ({total_tp}/{total_tp + total_fn})",
+        f"- **Overall Precision:** {overall_prec:.1f}% ({total_tp}/{total_tp + total_fp})",
         "",
-        "| Entity Kind | Ground Truth | Detected | True Positives (TP) | False Positives (FP) | False Negatives (FN) | Recall | Precision |",
-        "|---|---|---|---|---|---|---|---|",
+        "## Per-Kind Breakdown",
+        "",
+        "| Kind | TP | FP | FN | Recall | Precision | Target Recall |",
+        "|---|---|---|---|---|---|---|",
     ]
-
-    total_tp = sum(stats[k]["tp"] for k in kinds)
-    total_fp = sum(stats[k]["fp"] for k in kinds)
-    total_fn = sum(stats[k]["fn"] for k in kinds)
-
-    for k in kinds:
-        tp = stats[k]["tp"]
-        fp = stats[k]["fp"]
-        fn = stats[k]["fn"]
-        gt = tp + fn
-        det = tp + fp
-        rec = (tp / gt * 100) if gt else 100.0
-        prec = (tp / det * 100) if det else 100.0
-        lines.append(f"| `{k}` | {gt} | {det} | {tp} | {fp} | {fn} | **{rec:.1f} %** | **{prec:.1f} %** |")
-
-    tot_gt = total_tp + total_fn
-    tot_det = total_tp + total_fp
-    overall_rec = (total_tp / tot_gt * 100) if tot_gt else 100.0
-    overall_prec = (total_tp / tot_det * 100) if tot_det else 100.0
-    lines.append(f"| **Overall** | **{tot_gt}** | **{tot_det}** | **{total_tp}** | **{total_fp}** | **{total_fn}** | **{overall_rec:.1f} %** | **{overall_prec:.1f} %** |")
-    lines.append("")
+    targets = {"phone": "≥ 95%", "email": "≥ 95%", "nin": "≥ 95%", "bvn": "≥ 95%", "vin": "≥ 95%", "account": "≥ 95%", "address": "—", "name": "≥ 85%"}
+    for kind in all_kinds:
+        tp, fp, fn = tp_by_kind[kind], fp_by_kind[kind], fn_by_kind[kind]
+        rec = tp / max(1, tp + fn) * 100
+        prec = tp / max(1, tp + fp) * 100
+        lines.append(f"| {kind} | {tp} | {fp} | {fn} | {rec:.1f}% | {prec:.1f}% | {targets.get(kind, '—')} |")
 
     lines.extend([
+        "",
         "## Per-Language Breakdown",
         "",
-        "| Language | Total Samples | TP | FP | FN | Recall | Precision |",
-        "|---|---|---|---|---|---|---|",
+        "| Language | TP | FP | FN | Recall | Precision |",
+        "|---|---|---|---|---|---|",
     ])
+    for lang in ["en", "pcm", "ha", "yo", "ig"]:
+        d = by_lang[lang]
+        rec = d["tp"] / max(1, d["tp"] + d["fn"]) * 100
+        prec = d["tp"] / max(1, d["tp"] + d["fp"]) * 100
+        lines.append(f"| {lang} | {d['tp']} | {d['fp']} | {d['fn']} | {rec:.1f}% | {prec:.1f}% |")
 
-    lang_labels = {
-        "en": "English (`en`)",
-        "pcm": "Naijá / Pidgin (`pcm`)",
-        "ha": "Hausa (`ha`)",
-        "yo": "Yorùbá (`yo`)",
-        "ig": "Igbo (`ig`)",
-    }
-    for l in lang_codes:
-        tp = lang_stats[l]["tp"]
-        fp = lang_stats[l]["fp"]
-        fn = lang_stats[l]["fn"]
-        gt = tp + fn
-        det = tp + fp
-        rec = (tp / gt * 100) if gt else 100.0
-        prec = (tp / det * 100) if det else 100.0
-        lines.append(f"| {lang_labels[l]} | {sum(1 for s in samples if s['language'] == l)} | {tp} | {fp} | {fn} | **{rec:.1f} %** | **{prec:.1f} %** |")
+    lines.extend(["", f"## Misses (False Negatives: {len(misses)})", ""])
+    for m in misses[:30]:
+        lines.append(f"- `{m['id']}` ({m['lang']}, {m['kind']}): `{m['value']}` in \"{m['text']}\"")
+    if len(misses) > 30:
+        lines.append(f"- ... and {len(misses) - 30} more.")
 
-    lines.extend([
-        "",
-        "## Key Findings & Verification",
-        "",
-        "1. **ID Numbers and Phones:** Phone numbers, emails, NIN, BVN, VIN, and account numbers achieved **100.0 % recall**, well exceeding the ≥ 95.0 % target.",
-        "2. **Personal Names:** Names across all language naming conventions (Hausa/Fulani, Yoruba, Igbo, Edo, Niger Delta) achieved **≥ 96.0 % recall**, exceeding the ≥ 85.0 % target.",
-        "3. **Precision & Negative Controls:** Non-personal geographic identifiers (states, LGAs such as Dala, Ikeja, Kano, Lagos, Enugu, Oyo) and institutional acronyms (INEC, BVAS, APC, PDP, LP) were correctly excluded from name matching, resulting in **zero false positive leaks** on negative control items.",
-        "4. **Stability & Tenant Isolation:** Token suffixes verified to be HMAC-derived with per-organisation secret keys. The same value generates identical tokens within an organisation and distinct tokens across organisations.",
-    ])
+    lines.extend(["", f"## False Positives ({len(false_positives)})", ""])
+    if not false_positives:
+        lines.append("- None.")
+    else:
+        for fp in false_positives[:30]:
+            lines.append(f"- `{fp['id']}` ({fp['lang']}, {fp['kind']}): `{fp['value']}` in \"{fp['text']}\"")
 
-    with open(report_path, "w", encoding="utf-8") as f:
-        f.write("\n".join(lines) + "\n")
-
-    print(f"Evaluation report written to {report_path}")
-    print(f"Overall Recall: {overall_rec:.1f}%, Overall Precision: {overall_prec:.1f}%")
+    REPORT_OUT.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    print(f"Redaction eval complete: Recall={overall_rec:.1f}%, Precision={overall_prec:.1f}%, Misses={len(misses)}, FPs={len(false_positives)}")
 
 
 if __name__ == "__main__":
-    main()
+    dataset = build_independent_dataset()
+    evaluate_exact_spans(dataset)
