@@ -1,3 +1,4 @@
+import os
 import re
 from datetime import timedelta
 from functools import wraps
@@ -10,7 +11,7 @@ from django.core.exceptions import RequestDataTooBig
 from django.db import OperationalError, transaction
 from django.db.models import Q, Sum
 from django.db.models.functions import Length
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, StreamingHttpResponse
 from django.utils import timezone
 from django.views.decorators.cache import never_cache
 from PIL import Image
@@ -22,16 +23,31 @@ from accounts.organisations import org_scope
 
 from .idempotency import idempotent, lock_key
 from .incident_input import field
-from .media_lifecycle import describe_photo, remove_photo, retire_upload
-from .media_storage import photo_key, schedule_delete, staging_key, storage
+from .media_av.probe import CONTAINERS, DURATION_TOLERANCE_MS, UnreadableMedia, UnsupportedMedia, limit_ms, probe
+from .media_lifecycle import describe_media, remove_media, retire_upload
+from .media_storage import (
+    media_key, original_key, photo_key, poster_key, review_key, schedule_delete, staging_key, storage,
+)
 from .models import Evidence, MediaAccess, MediaItem, Report, ReviewEvent, UploadSession
-from .photo_processing import UnsupportedPhoto, clean_photo
+from .photo_processing import UnsupportedPhoto, clean_photo, review_copy
 from .v1_views import missing, owned, observer_required
 from .workflow import record_change
 
 CHUNK = 256 * 1024
 MAX_CHUNK = 1024 * 1024
 MAX_PHOTO = 2 * 1024 * 1024
+MAX_SIZE = {"photo": MAX_PHOTO, "video": 25 * 1024 * 1024, "audio": 4 * 1024 * 1024}
+TYPES = {
+    "photo": ("image/jpeg", "image/png"),
+    "video": tuple(t for t in CONTAINERS if t.startswith("video/")),
+    "audio": tuple(t for t in CONTAINERS if t.startswith("audio/")),
+}
+TYPE_MESSAGES = {
+    "photo": "Choose a JPEG or PNG photo.",
+    "video": "Choose an MP4 or WebM video.",
+    "audio": "Choose a WebM, Ogg, M4A or MP3 voice note.",
+}
+SIZE_MESSAGES = {"photo": "Photos can be up to 2 MiB.", "video": "Videos can be up to 25 MiB.", "audio": "Voice notes can be up to 4 MiB."}
 UPLOAD_LIFE = timedelta(hours=24)
 Status = UploadSession.Status
 
@@ -49,7 +65,7 @@ def storage_errors(view):
 def describe_upload(upload):
     return {
         "id": str(upload.pk), "report_id": str(upload.report_id),
-        "client_media_id": upload.client_attachment_id, "kind": "photo",
+        "client_media_id": upload.client_attachment_id, "kind": upload.kind,
         "size_bytes": upload.size_bytes, "received_bytes": upload.received_bytes,
         "chunk_bytes": CHUNK, "status": upload.status, "expires_at": wat(upload.expires_at),
     }
@@ -81,16 +97,14 @@ def upload_state_error(upload, now):
 
 def start_fields(data):
     kind = data.get("kind")
-    if kind in ("video", "audio"):
-        return validation({"kind": field("not_supported_yet", "Only photos are available.")})
-    if kind != "photo":
-        return validation({"kind": field("invalid_choice", "Choose photo.")})
+    if kind not in MAX_SIZE:
+        return validation({"kind": field("invalid_choice", "Choose photo, video or audio.")})
     mime = data.get("content_type")
-    if mime not in ("image/jpeg", "image/png"):
-        return error(415, "unsupported_media_type", "Choose a JPEG or PNG photo.")
+    if mime not in TYPES[kind]:
+        return error(415, "unsupported_media_type", TYPE_MESSAGES[kind])
     size = data.get("size_bytes")
-    if type(size) is int and size > MAX_PHOTO:
-        return error(413, "payload_too_large", "Photos can be up to 2 MiB.")
+    if type(size) is int and size > MAX_SIZE[kind]:
+        return error(413, "payload_too_large", SIZE_MESSAGES[kind])
 
     client_id = data.get("client_attachment_id", data.get("client_media_id"))
     digest = data.get("sha256")
@@ -109,13 +123,20 @@ def start_fields(data):
         errors["blur_faces"] = field("invalid", "Choose true or false.")
     if purpose not in ("evidence", "message"):
         errors["purpose"] = field("invalid_choice", "Choose an upload purpose.")
-    if data.get("duration_ms") is not None:
+    duration = data.get("duration_ms")
+    if kind == "photo" and duration is not None:
         errors["duration_ms"] = field("not_allowed_for_kind", "Photos do not have a duration.")
+    elif kind != "photo" and (type(duration) is not int or duration < 1):
+        errors["duration_ms"] = field("required", "Enter the length in milliseconds.")
+    elif kind != "photo" and duration > limit_ms(kind):
+        errors["duration_ms"] = field("max_value", "This recording is too long.", limit=limit_ms(kind))
+    if kind == "audio" and blur is True:
+        errors["blur_faces"] = field("not_allowed_for_kind", "Voice notes cannot be blurred.")
     if errors:
         return validation(errors)
     return {
-        "client_attachment_id": client_id, "content_type": mime, "purpose": purpose,
-        "size_bytes": size, "sha256": digest, "blur_faces": blur,
+        "client_attachment_id": client_id, "kind": kind, "content_type": mime, "purpose": purpose,
+        "size_bytes": size, "sha256": digest, "blur_faces": blur, "duration_ms": duration,
     }
 
 
@@ -160,7 +181,7 @@ def start_upload(request, reference, data):
 
     existing = org_scope(request, MediaItem).filter(report=report, original_sha256=fields["sha256"]).first()
     if existing:
-        return 200, {"upload": None, "media": describe_photo(existing)}, report
+        return 200, {"upload": None, "media": describe_media(existing)}, report
     problem = capacity(request, report, fields["size_bytes"])
     if problem is not None:
         return problem
@@ -263,7 +284,7 @@ def completed(upload, report, photo, status):
     upload.status = Status.COMPLETED
     upload.media = photo
     upload.save(update_fields=["status", "media"])
-    return status, {"media": describe_photo(photo), "client_media_id": upload.client_attachment_id}, report
+    return status, {"media": describe_media(photo), "client_media_id": upload.client_attachment_id}, report
 
 
 def finish_upload(request, reference):
@@ -275,26 +296,45 @@ def finish_upload(request, reference):
         return problem
     if upload.status == Status.COMPLETED and upload.media_id:
         photo = org_scope(request, MediaItem).get(pk=upload.media_id)
-        return 200, {"media": describe_photo(photo), "client_media_id": upload.client_attachment_id}, report
+        return 200, {"media": describe_media(photo), "client_media_id": upload.client_attachment_id}, report
     problem = upload_state_error(upload, timezone.now())
     if problem is not None:
         return problem
     if upload.received_bytes != upload.size_bytes:
         return error(409, "offset_mismatch", "Some of the file has not arrived yet.")
 
-    try:
-        with storage().read(staging_key(upload)) as staged:
-            raw = staged.read(MAX_PHOTO + 1)
-    except FileNotFoundError:
-        raw = b""
-    if len(raw) != upload.size_bytes or sha256(raw).hexdigest() != upload.sha256:
+    if staged_digest(upload) != (upload.size_bytes, upload.sha256):
         schedule_delete(upload.organisation_id, staging_key(upload))
         upload.staging_id = uuid4()
         upload.received_bytes = 0
         upload.save(update_fields=["staging_id", "received_bytes"])
         return error(422, "hash_mismatch", "The file did not arrive intact. Sending it again.")
+    if upload.kind == "photo":
+        return finish_photo(request, upload, report)
+    return finish_recording(request, upload, report)
+
+
+def staged_digest(upload):
+    digest, size = sha256(), 0
+    try:
+        with storage().read(staging_key(upload)) as staged:
+            for block in iter(lambda: staged.read(1024 * 1024), b""):
+                size += len(block)
+                if size > upload.size_bytes:
+                    break
+                digest.update(block)
+    except FileNotFoundError:
+        return 0, ""
+    return size, digest.hexdigest()
+
+
+def finish_photo(request, upload, report):
+    with storage().read(staging_key(upload)) as staged:
+        raw = staged.read(MAX_PHOTO + 1)
     try:
         cleaned, blurred = clean_photo(raw, upload.content_type, upload.blur_faces)
+        # Reviewers see faces blurred by default; the unblurred photo needs a recorded reason.
+        reviewer_copy = None if blurred else review_copy(cleaned)
     except UnsupportedPhoto:
         retire_upload(upload, Status.CANCELLED)
         return error(415, "unsupported_media_type", "The photo must match its declared JPEG or PNG format.")
@@ -311,11 +351,47 @@ def finish_upload(request, reference):
         return problem
 
     storage().write(photo_key(upload.organisation_id, upload.pk), cleaned)
+    if reviewer_copy is not None:
+        storage().write(review_key(upload.organisation_id, upload.pk, "photo"), reviewer_copy)
     photo = queryset.create(
         id=upload.pk, report=report, organisation_id=upload.organisation_id, purpose=upload.purpose,
-        size_bytes=len(cleaned), original_sha256=upload.sha256, sha256=sha256(cleaned).hexdigest(), blurred=blurred,
+        size_bytes=len(cleaned), original_sha256=upload.sha256, sha256=sha256(cleaned).hexdigest(),
+        blur_requested=upload.blur_faces, blurred=blurred, review_copy=reviewer_copy is not None,
     )
     return completed(upload, report, photo, 201)
+
+
+def finish_recording(request, upload, report):
+    """Verify a video or voice note and queue it. The worker cleans it and sets it ready."""
+    staged = storage().path(staging_key(upload))
+    try:
+        info = probe(staged, upload.kind, upload.content_type)
+    except UnsupportedMedia:
+        retire_upload(upload, Status.CANCELLED)
+        return error(415, "unsupported_media_type", TYPE_MESSAGES[upload.kind])
+    except UnreadableMedia:
+        retire_upload(upload, Status.CANCELLED)
+        return error(422, "media_unreadable", "The recording could not be decoded.")
+    if info.duration_ms > limit_ms(upload.kind) + DURATION_TOLERANCE_MS:
+        retire_upload(upload, Status.CANCELLED)
+        return validation({"duration_ms": field("max_value", "This recording is too long.", limit=limit_ms(upload.kind))})
+
+    queryset = org_scope(request, MediaItem).filter(report=report)
+    existing = queryset.filter(original_sha256=upload.sha256).first()
+    if existing:
+        return completed(upload, report, existing, 200)
+    problem = capacity(request, report, upload.size_bytes, reserve=upload.pk)
+    if problem is not None:
+        return problem
+
+    storage().write_file(original_key(upload.organisation_id, upload.pk), staged)
+    item = queryset.create(
+        id=upload.pk, report=report, organisation_id=upload.organisation_id, purpose=upload.purpose,
+        kind=upload.kind, status=MediaItem.Status.PROCESSING, content_type=upload.content_type,
+        size_bytes=upload.size_bytes, duration_ms=min(info.duration_ms, limit_ms(upload.kind)),
+        original_sha256=upload.sha256, sha256="", blur_requested=upload.blur_faces, exif_removed=False,
+    )
+    return completed(upload, report, item, 201)
 
 
 @endpoint("POST", max_body_bytes=65536)
@@ -332,7 +408,7 @@ def complete(request, data, reference):
         photo = org_scope(request, MediaItem).filter(pk=upload.media_id, report=report).first()
         if photo is None:
             return missing()
-        return 200, {"media": describe_photo(photo), "client_media_id": upload.client_attachment_id}, report
+        return 200, {"media": describe_media(photo), "client_media_id": upload.client_attachment_id}, report
 
     return idempotent(request, "MED-03", data, lambda: finish_upload(request, reference), replay=replay)
 
@@ -376,43 +452,132 @@ def remove(request, reference, media_id):
     if problem is not None:
         return problem
     digest = photo.sha256
-    remove_photo(photo)
+    remove_media(photo)
     record_change(report, request.user, ReviewEvent.Action.REMOVE_MEDIA, {"sha256": digest})
     return HttpResponse(status=204)
 
 
-def partial_response(raw, header):
+RANGE = re.compile(r"bytes=([0-9]{0,12})-([0-9]{0,12})")
+TYPES_OUT = {"photo": "image/jpeg", "video": "video/mp4", "audio": "audio/ogg"}
+NAMES = {"photo": "photo.jpg", "video": "video.mp4", "audio": "voice-note.ogg", "poster": "poster.jpg"}
+
+
+def byte_range(header, size):
+    """Return (first, last) for a satisfiable single range, None for no range, or False."""
     if not header:
-        return HttpResponse(raw, content_type="image/jpeg")
-    match = re.fullmatch(r"bytes=([0-9]{0,12})-([0-9]{0,12})", header)
-    size = len(raw)
+        return None
+    match = RANGE.fullmatch(header)
     if match:
         left, right = match.groups()
         if left or right:
             first = int(left) if left else max(0, size - int(right))
             last = min(size - 1, int(right)) if left and right else size - 1
             if 0 <= first <= last < size:
-                response = HttpResponse(raw[first:last + 1], status=206, content_type="image/jpeg")
-                response["Content-Range"] = f"bytes {first}-{last}/{size}"
-                return response
+                return first, last
+    return False
+
+
+def unsatisfiable(size):
     response = error(416, "invalid_range", "The requested byte range is unavailable.")
     response["Content-Range"] = f"bytes */{size}"
     return response
 
 
+def partial_response(raw, header, content_type="image/jpeg"):
+    span = byte_range(header, len(raw))
+    if span is None:
+        return HttpResponse(raw, content_type=content_type)
+    if span is False:
+        return unsatisfiable(len(raw))
+    first, last = span
+    response = HttpResponse(raw[first:last + 1], status=206, content_type=content_type)
+    response["Content-Range"] = f"bytes {first}-{last}/{len(raw)}"
+    return response
+
+
+def file_response(key, header, content_type):
+    """Stream a stored file, or one byte range of it, without loading it into memory."""
+    try:
+        handle = storage().read(key)
+    except FileNotFoundError:
+        return error(503, "service_unavailable", "Private media is temporarily unavailable.")
+    size = os.fstat(handle.fileno()).st_size
+    span = byte_range(header, size)
+    if span is False:
+        handle.close()
+        return unsatisfiable(size)
+    first, last = span or (0, size - 1)
+    handle.seek(first)
+
+    def chunks(remaining=last - first + 1):
+        with handle:
+            while remaining > 0:
+                block = handle.read(min(256 * 1024, remaining))
+                if not block:
+                    return
+                remaining -= len(block)
+                yield block
+
+    response = StreamingHttpResponse(chunks(), status=206 if span else 200, content_type=content_type)
+    response["Content-Length"] = last - first + 1
+    if span:
+        response["Content-Range"] = f"bytes {first}-{last}/{size}"
+    return response
+
 
 def log_download(request, photo, download, reason=""):
     action = "download_original" if reason else ("download_media" if download else "view_media")
     access = org_scope(request, MediaAccess).filter(actor=request.user, media_id=photo.pk, action=action)
+    # MED-04: at most one event per user, item and action every 10 minutes, so a video
+    # player's many range requests do not flood the audit log. A new reason is always logged.
+    recent = access.filter(created_at__gt=timezone.now() - timedelta(minutes=10))
+    if reason:
+        recent = recent.filter(reason=reason)
     with transaction.atomic():
         if not lock_key(f"media-access:{request.user.pk}:{photo.pk}:{action}"):
             return False
-        if reason or not access.filter(created_at__gt=timezone.now() - timedelta(minutes=10)).exists():
+        if not recent.exists():
             access.create(
                 organisation_id=photo.organisation_id, report=photo.report,
                 actor=request.user, media_id=photo.pk, action=action, reason=reason,
             )
     return True
+
+
+VARIANTS = {"photo": ("display", "thumb", "original"), "video": ("display", "poster", "original"), "audio": ("display", "original")}
+
+
+def access_reason(request):
+    reason = request.headers.get("X-Media-Access-Reason", "").strip()
+    if not reason or len(reason) > 500 or any(category(char) in {"Cc", "Cs"} for char in reason):
+        return None
+    return reason
+
+
+def stored_source(item, variant, reviewer):
+    """Choose (storage key, content type, file name) for a ready item, or an error response."""
+    org, kind = item.organisation_id, item.kind
+    if variant == "original":
+        # MED-04: the original is available only while the item is processing. Afterwards
+        # reviewers see the blurred copy; unblurred access would need a separate approval.
+        return missing()
+    # Reviewers see faces blurred: the stored file when blurred, else the review copy.
+    face_safe = kind == "audio" or item.blurred
+    if reviewer and not face_safe and not item.review_copy:
+        return error(409, "invalid_transition", "A blurred copy of this file is unavailable.")
+    use_review = reviewer and not face_safe
+    if variant == "poster":
+        return poster_key(org, item.pk, review=use_review), "image/jpeg", NAMES["poster"]
+    key = review_key(org, item.pk, kind) if use_review else media_key(org, item.pk, kind)
+    return key, TYPES_OUT[kind], NAMES[kind]
+
+
+def thumbnail(raw):
+    with Image.open(BytesIO(raw)) as image:
+        image.thumbnail((320, 320))
+        output = BytesIO()
+        image.save(output, format="JPEG", quality=85)
+        return output.getvalue()
 
 
 @endpoint("GET")
@@ -422,69 +587,82 @@ def download(request, reference):
     if not request.user.is_authenticated:
         return missing()
     actor = request.user
-    photos = org_scope(request, MediaItem).filter(
+    items = org_scope(request, MediaItem).filter(
         pk=reference, report__organisation_id=actor.organisation_id,
     ).exclude(report__status=Report.Status.WITHDRAWN)
     if actor.role == User.Role.OBSERVER:
-        photos = photos.filter(report__observer=actor)
+        items = items.filter(report__observer=actor)
     elif actor.has_role(User.Role.REVIEWER):
-        photos = photos.filter(report__assigned_reviewer=actor)
+        items = items.filter(report__assigned_reviewer=actor)
     else:
         return missing()
-    photo = photos.first()
+    item = items.first()
     variant = request.GET.get("variant", "display")
     reviewer = actor.has_role(User.Role.REVIEWER)
     legacy = None
-    if photo is None and reviewer and variant == "original":
+    if item is None and reviewer and variant in ("display", "thumb"):
+        # Pre-v1 photos have no stored blurred copy; reviewers get one blurred on the fly.
         legacy = org_scope(request, Evidence).filter(
             pk=reference, report__organisation_id=actor.organisation_id,
             report__assigned_reviewer=actor,
         ).exclude(report__status=Report.Status.WITHDRAWN).defer("content").first()
-    item = photo or legacy
-    if item is None or variant not in ("display", "thumb", "original"):
+    if legacy is None and (item is None or variant not in VARIANTS[item.kind]):
+        return missing()
+    # MED-04: `original` only while processing, only for the assigned reviewer.
+    if variant == "original" and (not reviewer or item.status != MediaItem.Status.PROCESSING):
         return missing()
     if reviewer:
         assigned = org_scope(request, Report).select_for_update(no_key=True).filter(
-            pk=item.report_id, assigned_reviewer=actor,
+            pk=(item or legacy).report_id, assigned_reviewer=actor,
         ).exclude(status=Report.Status.WITHDRAWN).first()
         if assigned is None:
             return missing()
     reason = ""
     if variant == "original":
-        # C4 discarded the raw upload. This is the metadata-cleaned unblurred photo.
-        if not reviewer or (photo and photo.blurred):
-            return missing()
-        reason = request.headers.get("X-Media-Access-Reason", "").strip()
-        if not reason or len(reason) > 500 or any(category(char) in {"Cc", "Cs"} for char in reason):
+        reason = access_reason(request)
+        if reason is None:
             return validation({"reason": field("invalid", "Provide a reason of 1 to 500 printable characters.")})
-    elif reviewer and not photo.blurred:
-        return error(409, "invalid_transition", "A blurred copy of this photo is unavailable.")
+    as_attachment = request.GET.get("download") == "1"
+    header = request.headers.get("Range")
 
     if legacy:
         try:
-            raw, _ = clean_photo(bytes(legacy.content), legacy.content_type, False)
+            raw, _ = clean_photo(bytes(legacy.content), legacy.content_type, True)
         except ValueError:
             return error(422, "media_unreadable", "The photo could not be decoded.")
+        response, name = partial_response(thumbnail(raw) if variant == "thumb" else raw, header), NAMES["photo"]
+    elif item.status == MediaItem.Status.FAILED:
+        return error(409, "invalid_transition", "This file could not be prepared.")
+    elif item.status == MediaItem.Status.PROCESSING:
+        # The contract allows the assigned reviewer the verified original while processing,
+        # so an urgent case is not held up by the worker. Every such access is logged.
+        # Media the observer asked to blur is never shown unblurred, even while waiting.
+        if variant != "original" or item.blur_requested:
+            return error(409, "invalid_transition", "This file is still being prepared.")
+        response = file_response(original_key(item.organisation_id, item.pk), header, item.content_type)
+        # The unprocessed upload still carries camera metadata; never render it inline.
+        name, as_attachment = "original", True
     else:
-        try:
-            with storage().read(photo_key(photo.organisation_id, photo.pk)) as file:
-                raw = file.read()
-        except FileNotFoundError:
-            return error(503, "service_unavailable", "Private media is temporarily unavailable.")
+        source = stored_source(item, variant, reviewer)
+        if not isinstance(source, tuple):
+            return source
+        key, content_type, name = source
+        if variant == "thumb":
+            try:
+                with storage().read(key) as file:
+                    raw = file.read()
+            except FileNotFoundError:
+                return error(503, "service_unavailable", "Private media is temporarily unavailable.")
+            response = partial_response(thumbnail(raw), header)
+        else:
+            response = file_response(key, header, content_type)
 
-    if variant == "thumb":
-        with Image.open(BytesIO(raw)) as image:
-            image.thumbnail((320, 320))
-            output = BytesIO()
-            image.save(output, format="JPEG", quality=85)
-            raw = output.getvalue()
-    response = partial_response(raw, request.headers.get("Range"))
-    as_attachment = request.GET.get("download") == "1"
     if response.status_code in (200, 206):
-        if reviewer and not log_download(request, item, as_attachment, reason):
+        if reviewer and not log_download(request, item or legacy, as_attachment, reason):
             return error(503, "service_unavailable", "Private media is temporarily unavailable.")
-        response["Content-Disposition"] = f'{"attachment" if as_attachment else "inline"}; filename="photo.jpg"'
-        response["Content-Length"] = len(response.content)
+        response["Content-Disposition"] = f'{"attachment" if as_attachment else "inline"}; filename="{name}"'
+        if not response.streaming:
+            response["Content-Length"] = len(response.content)
         response["Accept-Ranges"] = "bytes"
     response["Cache-Control"] = "private, no-store, max-age=0"
     response["X-Content-Type-Options"] = "nosniff"

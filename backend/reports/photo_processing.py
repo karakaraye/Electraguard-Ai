@@ -10,8 +10,30 @@ class UnsupportedPhoto(ValueError):
 
 
 def face_blur(pixels, requested):
-    """Integration point for a future verified server-side face detector."""
-    return pixels, False
+    """Blur detected faces when requested. Returns (image, whether blur was applied)."""
+    if not requested:
+        return pixels, False
+    return blurred_pixels(pixels), True
+
+
+def blurred_pixels(pixels):
+    import cv2
+    import numpy as np
+
+    from .media_av.faces import blur_faces
+
+    frame = cv2.cvtColor(np.asarray(pixels), cv2.COLOR_RGB2BGR)
+    blurred, _ = blur_faces(frame)
+    return Image.fromarray(cv2.cvtColor(blurred, cv2.COLOR_BGR2RGB))
+
+
+def review_copy(cleaned):
+    """A face-blurred JPEG of an already cleaned photo, for reviewers."""
+    with Image.open(BytesIO(cleaned), formats=["JPEG"]) as image:
+        pixels = blurred_pixels(image.convert("RGB"))
+    output = BytesIO()
+    pixels.save(output, format="JPEG", quality=85)
+    return output.getvalue()
 
 
 def clean_photo(raw, content_type, blur_requested):

@@ -1,9 +1,10 @@
 from datetime import date, timedelta
-from io import BytesIO
+from io import BytesIO, StringIO
 from unittest.mock import patch
 from uuid import uuid4
 
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.core.management import call_command
 from django.test import Client, TestCase
 from django.utils import timezone
 from PIL import Image
@@ -649,7 +650,7 @@ class OperationsErrorTests(TwoOrganisations):
 
 from unittest import skipUnless  # noqa: E402
 
-from ops.observations import STRUCTURED  # noqa: E402
+from ops.observations import LAGOS, STRUCTURED  # noqa: E402
 from reports.models import Report  # noqa: E402
 
 
@@ -660,6 +661,7 @@ class CoverageChecklistTests(TwoOrganisations):
         if supersedes:
             details["supersedes"] = str(supersedes)
         return Report.objects.create(
+            organisation=self.user.organisation,
             observer=self.user, submission_key=uuid4(), description="", kind="checklist",
             polling_unit_code=unit, occurred_at=timezone.now(), structured_details=details,
         )
@@ -667,10 +669,7 @@ class CoverageChecklistTests(TwoOrganisations):
     def test_counts_use_latest_checklist_and_no_answers(self):
         from reference.models import AreaDataset
 
-        from io import StringIO
-
-        from django.core.management import call_command
-
+        AreaDataset.objects.all().delete()
         call_command("load_reference_areas", stdout=StringIO())
         release = AreaDataset.objects.first()
         state_code, state = next(iter(release.states.items()))
@@ -681,7 +680,8 @@ class CoverageChecklistTests(TwoOrganisations):
         organisation.save()
         first = self.checklist(unit, [{"question": "opened_on_time", "answer": "no"}])
         self.checklist(unit, [{"question": "opened_on_time", "answer": "yes"}], supersedes=first.pk)
-        today = timezone.now().astimezone().date().isoformat()
+        today = timezone.now().astimezone(LAGOS).date().isoformat()
         body = self.client.get("/api/v1/ops/coverage", {"date": today, "stage": "opening"}).json()
         row = next(item for item in body["rows"] if item["lga_code"] == lga["lga_code"])
+        self.assertEqual(row["lga_name"], lga["name"])
         self.assertEqual((row["units_with_checklist"], row["no_answers"]), (1, 0))
