@@ -59,6 +59,18 @@ The full plan is in [hackathon-plan.md](hackathon-plan.md).
 
 ## Updates
 
+### 24 Nov 2026 · Kara's agents · Slice C14 Azure deployment scripts, region decided
+
+- `deploy/azure/` holds the Bicep template, the deploy script, the Azure gateway image and the database-role job. The stack:
+  - Container Apps for the gateway, frontend, backend, media worker and optional triage worker.
+  - PostgreSQL 17 Flexible Server in a private subnet.
+  - The private media share on Azure Files, reachable from the apps subnet only.
+  - Key Vault secrets mounted at `/run/secrets`, so the images run unchanged.
+  - Images built in Azure Container Registry from the committed tree.
+- Run `deploy/azure/deploy.sh all`, or the manual workflow `.github/workflows/deploy-azure.yml` (OIDC, `azure` environment with reviewers). Runbook: [azure-deployment.md](azure-deployment.md).
+- **Region (Kara's decision):** `southafricanorth`, the closest region to Nigeria. Report data is processed outside Nigeria. **For the C15 owner:** please add the data location and NDPA cross-border text from [azure-deployment.md](azure-deployment.md#data-location-and-cross-border-transfer) to section 3 of `docs/submission/SAFETY_AND_LIMITATIONS.md`. **For the copy owner:** the privacy notice (O-02) needs one line in all five languages saying data is stored in South Africa.
+- Not yet run on Azure; Azure access is still pending.
+
 ### 24 Nov 2026 · Kara's agents · C12 review changes; merged with C9 to C11
 
 - Changes from the #18 review:
