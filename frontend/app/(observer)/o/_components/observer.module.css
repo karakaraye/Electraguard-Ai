@@ -301,16 +301,18 @@
   }
 }
 
+/* Choice cards (spec screen 6, ListCard look): raised paper, warm rule, a 56 px sun-tint
+   disc with the pictogram, title and hint, chevron. */
 .choice {
   display: grid;
-  grid-template-columns: 40px minmax(0, 1fr) 24px;
+  grid-template-columns: 56px minmax(0, 1fr) 24px;
   align-items: center;
   gap: var(--s-4);
   min-height: 96px;
   padding: var(--s-4);
-  border: var(--border-w) solid var(--ink);
-  border-radius: var(--radius);
-  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  background: var(--paper-raised);
   color: var(--ink);
   text-align: start;
   text-decoration: none;
@@ -318,7 +320,7 @@
   -webkit-tap-highlight-color: transparent;
   transition:
     transform var(--dur-press) var(--ease-out),
-    background-color var(--dur-fade) ease;
+    border-color var(--dur-fade) ease;
 }
 
 .choice:active {
@@ -333,8 +335,22 @@
 
 @media (hover: hover) and (pointer: fine) {
   .choice:hover {
-    background: var(--paper-2);
+    border-color: var(--rule-control);
   }
+}
+
+.choiceDisc {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--sun-tint);
+  color: var(--ink);
+}
+
+.choice > svg:last-child {
+  color: var(--ink-2);
 }
 
 .choiceText {
@@ -345,14 +361,31 @@
 
 .choiceLabel {
   font: var(--t-heading);
-  font-weight: 700;
   overflow-wrap: anywhere;
 }
 
 .choiceHint {
   color: var(--ink-2);
   font: var(--t-small);
-  font-size: max(0.875rem, calc(var(--t-base-size) - 0.125rem));
+  font-size: max(0.9375rem, calc(var(--t-base-size) - 0.125rem));
+  line-height: 1.4;
+}
+
+.chooseFooter {
+  display: grid;
+  justify-items: center;
+  gap: var(--s-2);
+  margin-top: var(--s-4);
+  padding-top: var(--s-5);
+  border-top: 1px solid var(--rule);
+  color: var(--ink-2);
+  text-align: center;
+}
+
+.chooseFooter p {
+  margin: 0;
+  max-width: 28rem;
+  font: var(--t-small);
 }
 
 .choicePrimary {

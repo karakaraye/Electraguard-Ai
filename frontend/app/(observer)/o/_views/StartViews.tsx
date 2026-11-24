@@ -326,7 +326,9 @@ export function ChooseView({ onBack, onObserver, onCitizen, onCheckStatus, offli
         <h1 className={styles.title}>{t("o03.title")}</h1>
         <div className={styles.choices}>
           <button type="button" className={styles.choice} onClick={onObserver} data-testid="o03-observer">
-            <BadgePictogram size={40} aria-hidden="true" />
+            <span className={styles.choiceDisc} aria-hidden="true">
+              <BadgePictogram size={32} />
+            </span>
             <span className={styles.choiceText}>
               <span className={styles.choiceLabel}>{t("o03.observer")}</span>
               <span className={styles.choiceHint}>{t("o03.observerHint")}</span>
@@ -334,7 +336,9 @@ export function ChooseView({ onBack, onObserver, onCitizen, onCheckStatus, offli
             <ChevronRightIcon aria-hidden="true" />
           </button>
           <button type="button" className={styles.choice} onClick={onCitizen} data-testid="o03-citizen">
-            <PersonPictogram size={40} aria-hidden="true" />
+            <span className={styles.choiceDisc} aria-hidden="true">
+              <PersonPictogram size={32} />
+            </span>
             <span className={styles.choiceText}>
               <span className={styles.choiceLabel}>{t("o03.citizen")}</span>
               <span className={styles.choiceHint}>{t("o03.citizenHint")}</span>
@@ -345,6 +349,10 @@ export function ChooseView({ onBack, onObserver, onCitizen, onCheckStatus, offli
         <Button variant="quiet" className={styles.link} onClick={onCheckStatus} data-testid="o03-check-status">
           {t("o03.checkStatus")}
         </Button>
+        <footer className={styles.chooseFooter}>
+          <BrandMark variant="lockup" size="md" credit />
+          <p>{t("pub.footer.nonpartisan")}</p>
+        </footer>
       </div>
     </AppShell>
   );
