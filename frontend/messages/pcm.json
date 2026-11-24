@@ -15,7 +15,123 @@
     "optional": "E no compulsory",
     "charCount": "{count} out of {max} letters",
     "listen": "Listen",
-    "stopListening": "Stop"
+    "stopListening": "Stop",
+    "productName": "ElectraGuard",
+    "skipToContent": "Skip go the main part",
+    "pleaseWait": "Wait small",
+    "errorPrefix": "Wahala:",
+    "yes": "Yes",
+    "no": "No",
+    "selected": "Dem don choose am",
+    "network": {
+      "offline": "No network. Reports go send when network come.",
+      "offlineQueued": "{count, plural, one {No network. # report dey this phone and e go send when network come.} other {No network. # reports dey this phone and dem go send when network come.}}",
+      "online": "Network don come back."
+    },
+    "stepper": {
+      "progress": "Step {current} out of {total}"
+    },
+    "textarea": {
+      "count": "{count} out of {max} letters",
+      "remaining": "{remaining, plural, =0 {No letter remain.} one {# letter remain.} other {# letters remain.}}"
+    },
+    "select": {
+      "choose": "Choose one"
+    },
+    "search": {
+      "clear": "Clear am",
+      "noMatches": "Nothing match. Try fewer letters.",
+      "results": "{count, plural, =0 {No result} one {# result} other {# results}}",
+      "instructions": "Type to search. Use the up and down arrow to choose."
+    },
+    "when": {
+      "legend": "Wen e happen?",
+      "justNow": "Just now",
+      "earlierToday": "Earlier today",
+      "anotherDay": "Another day",
+      "time": "Time",
+      "date": "Date",
+      "timeOptional": "Time, if you sabi am",
+      "zone": "West Africa Time (WAT)",
+      "future": "That time never reach yet. Choose time wey don pass.",
+      "required": "Put the time wey e happen.",
+      "dateRequired": "Put the date wey e happen.",
+      "olderThanWeek": "This pass 7 days ago. Check say the date correct."
+    },
+    "status": {
+      "onPhone": "E dey this phone",
+      "notConfirmed": "We never confirm am yet",
+      "received": "Dem don receive am",
+      "inReview": "Dem dey review am",
+      "question": "Question dey for you",
+      "closed": "E don close",
+      "withdrawn": "You don withdraw am",
+      "saved": "E don save",
+      "failed": "E fail",
+      "urgent": "E urgent"
+    },
+    "receipt": {
+      "label": "Your receipt code",
+      "copy": "Copy the code",
+      "copied": "E don copy",
+      "copyFailed": "We no fit copy am. Write the code down.",
+      "save": "Save am as picture",
+      "receivedAt": "Dem receive am {time}",
+      "next": "Wetin go happen next",
+      "imageTitle": "ElectraGuard receipt"
+    },
+    "upload": {
+      "waiting": "E dey wait for network",
+      "uploading": "E dey send {percent}%",
+      "saved": "E don save",
+      "failed": "E never send",
+      "missing": "File no dey this phone again",
+      "retry": "Try again",
+      "remove": "Remove",
+      "chooseAgain": "Choose file again",
+      "estimate": "{size} · about {time} to send",
+      "kind": "{kind, select, photo {Photo} video {Video} voice {Voice note} other {File}}"
+    },
+    "time": {
+      "seconds": "{count, plural, one {# second} other {# seconds}}",
+      "minutes": "{count, plural, one {# minute} other {# minutes}}"
+    },
+    "language": {
+      "label": "Language",
+      "choose": "Choose your language"
+    },
+    "theme": {
+      "label": "How the app dey look",
+      "system": "Same as your phone",
+      "light": "Light",
+      "dark": "Dark"
+    },
+    "table": {
+      "sortAscending": "Dem arrange am from small go big",
+      "sortDescending": "Dem arrange am from big go small",
+      "sortBy": "Arrange by {column}",
+      "empty": "Nothing dey to show."
+    },
+    "metric": {
+      "fewerThan": "less than {threshold}"
+    },
+    "suggestion": {
+      "label": "We suggest am",
+      "accept": "Accept am",
+      "correct": "Correct am",
+      "accepted": "Dem don accept am",
+      "corrected": "Dem don correct am",
+      "confidence": "How sure: {level, select, high {High} medium {Medium} other {Low}}",
+      "reasons": "Why we suggest am"
+    },
+    "timeline": {
+      "intact": "Record chain no break",
+      "broken": "Record chain don break: dem change one entry",
+      "unknown": "We never check the record chain yet"
+    },
+    "nav": {
+      "main": "Main"
+    }
   },
   "common": {
     "appName": "ElectraGuard",
@@ -46,7 +162,9 @@
       "question": "Question dey for you",
       "closed": "E don close",
       "withdrawn": "You don withdraw am",
-      "waitingCode": "E dey wait for new code"
+      "waitingCode": "E dey wait for new code",
+      "needsAttention": "E need your attention",
+      "needsAttentionHint": "We no fit accept am yet. Open am, fix wetin dem mark, then send am again."
     },
     "outcome": {
       "confirmed": "Evidence confirm am",
@@ -71,7 +189,8 @@
       "intakePaused": "Your organisation don stop new reports for now. Your report dey saved for this phone. E go send when dem start again.",
       "tooManyTries": "You don try too many times. Wait {minutes, plural, one {# minute} other {# minutes}}, then try again.",
       "notFound": "We no fit find am. Check am well, then try again.",
-      "storageFull": "This phone don full. Send wetin dey wait, or remove some photos and videos."
+      "storageFull": "This phone don full. Send wetin dey wait, or remove some photos and videos.",
+      "unavailable": "E never ready yet. Try again later."
     },
     "discard": {
       "title": "You wan delete this report?",
@@ -105,7 +224,8 @@
     "line4": "If person fit dey for danger, call 112. This app no dey send help.",
     "listen": "Listen to am",
     "privacyLink": "Read the full privacy notice",
-    "continue": "I don understand"
+    "continue": "I don understand",
+    "line5": "If you use Talk am, your phone speech service fit process your voice to turn am to words."
   },
   "o03": {
     "title": "Who you be?",
@@ -117,21 +237,23 @@
     "signIn": {
       "title": "Sign in",
       "codeLabel": "Observer code",
-      "codeHint": "E dey your card. Example: OBS-7K2P",
+      "codeHint": "E dey your card. Example: OBS-7K2P9X",
       "pinLabel": "PIN",
-      "pinHint": "6 numbers. For the first time, use the PIN wey dey your card.",
+      "pinHint": "6 numbers. For the first time, use the 8-number setup PIN wey dey your card.",
       "showPin": "Show PIN",
       "hidePin": "Hide PIN",
       "submit": "Sign in",
       "submitting": "E dey sign in",
       "offline": "You need network to sign in. Move go where network dey, then try again.",
       "codeEmpty": "Put your observer code.",
-      "codeFormat": "Observer code dey look like OBS-7K2P. Check your card.",
-      "pinFormat": "Your PIN na 6 numbers.",
+      "codeFormat": "Observer code dey look like OBS-7K2P9X. Check your card.",
+      "pinFormat": "Your PIN na 6 numbers, or 8 numbers the first time.",
       "wrong": "The code or PIN no correct. Check your card and try again.",
       "triesLeft": "{count, plural, one {# try remain before you go wait small.} other {# tries remain before you go wait small.}}",
       "revoked": "This code no dey work again. Ask your coordinator for new one.",
-      "forgot": "You forget your PIN? Your coordinator fit give you new code."
+      "forgot": "You forget your PIN? Your coordinator fit give you new code.",
+      "lockedAdmin": "This code don lock because you try too many times. Ask your coordinator to reset your PIN.",
+      "lockedUntil": "You don try too many times. You fit try again by {time}."
     },
     "setPin": {
       "title": "Choose your own PIN",
@@ -184,7 +306,15 @@
       "body": "Then e go open even without network.",
       "add": "Add am to home screen",
       "notNow": "No be now"
-    }
+    },
+    "waitingCode": "{count, plural, one {# report from code wey no dey work again dey this phone.} other {# reports from code wey no dey work again dey this phone.}}",
+    "sendWaiting": "Send am with my code",
+    "deleteWaiting": "Delete dem",
+    "needsAttention": "{count, plural, one {# report need your attention before e fit send.} other {# reports need your attention before dem fit send.}}",
+    "fix": "Fix am",
+    "purpose": "Report wetin you see for your polling unit. Every report dey help build better Naija.",
+    "tasks": "Wetin you fit do",
+    "allReports": "See all my reports"
   },
   "incident": {
     "draftKept": "Your report dey saved for this phone.",
@@ -252,7 +382,11 @@
     "listMissing": "The polling-unit list never dey this phone. Connect to network one time to download am.",
     "listDownloading": "E dey download the polling-unit list ({percent}%)",
     "error": "Choose polling unit, or choose ward and tap \"I no know the polling unit\".",
-    "noGps": "We no dey use your phone location at all."
+    "noGps": "We no dey use your phone location at all.",
+    "searchNeedsState": "Choose your state below first. Then you fit search im polling units.",
+    "listDownloadingNoPercent": "E dey download the polling-unit list",
+    "listMissingKept": "We keep wetin you don write. Come back when network dey.",
+    "unknownUnitNeedsList": "You fit use am after the list don download."
   },
   "o08": {
     "title": "When e happen?",
@@ -289,7 +423,9 @@
     "nameKeep": "E no be name, keep am",
     "tooShort": "Write small more so reviewer go understand. At least {min} letters.",
     "tooLong": "E too long. Make e no pass {max} letters.",
-    "sourceError": "Choose how you take know."
+    "sourceError": "Choose how you take know.",
+    "speakNote": "Talk am dey use your phone speech service. E fit send your voice go the company wey run am so e turn am to words. You fit tap the microphone for your keyboard instead.",
+    "speakNoteOk": "Start to talk"
   },
   "o10": {
     "title": "You wan add photo, video or voice?",
@@ -301,7 +437,7 @@
     "voiceLimit": "No pass 2 minutes",
     "file": "Choose file",
     "blur": "Hide faces (blur)",
-    "blurHint": "E go hide faces before e comot this phone.",
+    "blurHint": "We blur the faces wey we fit see. Check before you send.",
     "locationRemoved": "We don remove location",
     "size": "{size} · e go take about {time} to send now",
     "sizeOffline": "{size} · e go send when network come",
@@ -318,7 +454,11 @@
     "recording": "E dey record {time}",
     "stopRecording": "Stop recording",
     "skip": "Continue without am",
-    "spaceLow": "This phone don almost full. Big videos fit no enter."
+    "spaceLow": "This phone don almost full. Big videos fit no enter.",
+    "videoTooLong": "Choose video wey no pass 60 seconds.",
+    "voiceTooLong": "Choose voice note wey no pass 2 minutes.",
+    "unreadable": "We no fit open this file. Try another one.",
+    "itemName": "{kind, select, photo {Photo} video {Video} other {Voice note}} {n}"
   },
   "o11": {
     "title": "Check am and send",
@@ -338,7 +478,12 @@
     "savedOffline": "We save am for this phone. E never send. E go send when network come.",
     "queueFull": "{max} reports don already dey wait for this phone. Send dem first, or delete one.",
     "intakePaused": "Your organisation don stop new reports for now. Your report dey saved for this phone. E go send when dem start again.",
-    "notConfirmed": "We don send your report but we never hear back. We dey check. E no go send two times."
+    "notConfirmed": "We don send your report but we never hear back. We dey check. E no go send two times.",
+    "withdrawn": "You don withdraw this report, so no receipt dey. Nothing go happen with am again.",
+    "needsAttention": "We no fit accept this report yet. Fix the parts wey dem mark below, then send am again.",
+    "savedTitle": "We save am for this phone",
+    "checkingTitle": "We dey check your report",
+    "summaryTitle": "Your report"
   },
   "o12": {
     "title": "Dem don receive your report",
@@ -360,12 +505,20 @@
       "failed": "E never send",
       "retry": "Try again",
       "missing": "This file no dey this phone again. Choose the file again.",
-      "chooseAgain": "Choose file again"
+      "chooseAgain": "Choose file again",
+      "closed": "The report don close, so you no fit add this file.",
+      "cannotRemove": "Reviewer don start, so you no fit remove this file again."
     },
     "keepOpen": "Leave the app open until everything show \"E don save\".",
     "viewReport": "See this report",
     "another": "Report another thing",
-    "home": "Go back home"
+    "home": "Go back home",
+    "citizen": {
+      "keep": "Write this code down or save the image. You need am to check your report."
+    },
+    "pending": {
+      "noCode": "Receipt code never dey yet. You go get am when dem receive the report."
+    }
   },
   "o13": {
     "title": "My reports",
@@ -382,7 +535,10 @@
     "loadError": "We no fit bring your reports. Try again.",
     "checklistStage": "Checklist: {stage}",
     "resultSheet": "Result-sheet check",
-    "unknownPlace": "Na only ward"
+    "unknownPlace": "Na only ward",
+    "filterLabel": "Show",
+    "more": "Show more reports",
+    "resultCount": "{count, plural, =0 {No report dey show} one {# report dey show} other {# reports dey show}}"
   },
   "o14": {
     "title": "Report {ref}",
@@ -395,7 +551,11 @@
       "send": "Send answer",
       "sending": "E dey send",
       "queued": "We save your answer for this phone. E never send. E go send when network come.",
-      "sent": "Answer don send. The reviewer fit see am."
+      "sent": "Answer don send. The reviewer fit see am.",
+      "asked": "Dem ask {time}",
+      "empty": "Write your answer first.",
+      "alreadyAnswered": "Dem don answer this question or close am. You fit send your text as message instead.",
+      "sendAsMessage": "Send am as message"
     },
     "conversation": {
       "title": "Messages with your reviewer",
@@ -407,7 +567,16 @@
       "send": "Send message",
       "attach": "Add photo or voice",
       "queued": "E dey this phone",
-      "notAssigned": "Dem never give am to any reviewer yet. You fit still write. The reviewer go see am."
+      "notAssigned": "Dem never give am to any reviewer yet. You fit still write. The reviewer go see am.",
+      "loading": "We dey get messages",
+      "loadError": "We no fit get the messages. Dem go show when we fit reach the server.",
+      "offline": "No network. Messages go show when network come. You fit still write; e go send later.",
+      "write": "Write message, or add photo or voice note.",
+      "attached": "Added: {name}",
+      "openAttachment": "Open the file",
+      "unsent": "Your message wey no send",
+      "answered": "dem answer am",
+      "closedUnanswered": "dem close am without answer"
     },
     "attachments": "Photo, video, voice",
     "details": "Wetin you report",
@@ -428,7 +597,26 @@
     },
     "closedNote": "This report don close. Thank you say you report.",
     "loadError": "We no fit open this report. Try again.",
-    "loading": "E dey open report"
+    "loading": "E dey open report",
+    "description": "Wetin you write",
+    "receivedLabel": "Dem receive am",
+    "withdrawnLabel": "You don withdraw am",
+    "view": "Open {kind, select, photo {photo} video {video} other {voice note}} {n}",
+    "add": "Add photo, video or voice",
+    "addOffline": "You need network to add file to report wey don send.",
+    "tooLong": "Make e no pass 2000 letters.",
+    "writesRefused": "This report no dey take message again. We keep your text below so you fit copy am.",
+    "hint": {
+      "inReview": "Reviewer dey look am. You fit send am message.",
+      "question": "Reviewer need more information. Answer the question wey dey up."
+    },
+    "media": {
+      "tooBig": "This file too big. Photo reach 2 MB, video reach 25 MB, voice reach 4 MB.",
+      "tooLong": "Video reach 60 seconds and voice reach 2 minutes.",
+      "limit": "One report fit get 6 files at most.",
+      "failed": "The file no send. Check your network and try again.",
+      "processing": "Dem dey prepare am. E go open in few minutes."
+    }
   },
   "o15": {
     "title": "Polling-day checklist",
@@ -474,7 +662,9 @@
       "booths": "Voting booths",
       "ink": "Ink",
       "device": "Accreditation machine",
-      "register": "Voter register"
+      "register": "Voter register",
+      "stamps": "Stamps and seals",
+      "other": "Another thing"
     },
     "queue": {
       "none": "No line",
@@ -493,7 +683,13 @@
     "unanswered": "{count, plural, one {# question no get answer. You still wan send?} other {# questions no get answer. You still wan send?}}",
     "sendAnyway": "Send am like that",
     "goBack": "Make I answer dem",
-    "draftExists": "You get one report wey you never finish. We don open am. Finish am or delete am first, then report this one."
+    "draftExists": "You get one report wey you never finish. We don open am. Finish am or delete am first, then report this one.",
+    "answer": {
+      "notSeen": "I no see am"
+    },
+    "answerInvalid": "Choose one of the answers.",
+    "unitRequired": "Choose the polling unit wey you dey. Ward alone no reach here.",
+    "unansweredHint": "You fit send now and fill the rest later, or go back and answer dem."
   },
   "o16": {
     "title": "Check the result sheet",
@@ -508,7 +704,12 @@
       "reading": "We dey read the numbers from the photo",
       "readFailed": "We no fit read the numbers. Abeg type dem from the sheet.",
       "offline": "Network no dey, so we no fit read the photo now. Abeg type the numbers from the sheet.",
-      "skip": "Type the numbers instead"
+      "skip": "Type the numbers instead",
+      "alt": "Photo of the result sheet wey dem paste",
+      "view": "See the photo",
+      "tooBig": "This photo too big. Snap am again small far.",
+      "tooMany": "Dem don read too many photos for the last one hour. Type the numbers from the sheet.",
+      "unavailable": "To read photo never ready yet. Type the numbers from the sheet."
     },
     "numbers": {
       "title": "Type exactly wetin dey the sheet",
@@ -520,7 +721,9 @@
       "rejected": "Rejected ballots",
       "blank": "Leave am empty if the sheet no show am",
       "notNumber": "Use only numbers, like 245.",
-      "tooBig": "That number too big for one polling unit. Check am again."
+      "tooBig": "That number too big for one polling unit. Check am again.",
+      "checkThis": "Check this number",
+      "required": "Type the number wey dey the sheet. Type 0 if the sheet show 0."
     },
     "confirm": "I don check every number with the sheet wey dem paste",
     "confirmError": "Tick the box after you check every number.",
@@ -572,8 +775,24 @@
       "leaveConfirm": "Leave",
       "removed": "You no dey this discussion again.",
       "tooLong": "Make your post no pass {max} letters.",
-      "earlier": "Show the posts wey dey before"
-    }
+      "earlier": "Show the posts wey dey before",
+      "more": "Show newer posts",
+      "emptyPost": "Write something first.",
+      "noUnitCode": "Name the ward, no name the polling unit.",
+      "flag": "Report this post",
+      "flagTitle": "Wetin dey wrong with this post?",
+      "flagBody": "Moderator go look am. Dem no go tell the person wey write am who report am.",
+      "flagged": "Thank you. Moderator go look the post.",
+      "flagReason": {
+        "names_a_person": "E name person",
+        "too_specific_location": "E give exact place",
+        "abusive": "E dey abuse people",
+        "other": "Another thing"
+      }
+    },
+    "offline": "No network. Discussions go show when network come.",
+    "needNetwork": "You need network to join or leave discussion.",
+    "unread": "{count, plural, one {# new} other {# new}}"
   },
   "o19": {
     "title": "Wetin you wan know?",
@@ -589,7 +808,12 @@
     "note": "Answers dey come only from guides wey dem approve. Dem no be legal advice.",
     "error": "We no fit get answer. Try again.",
     "empty": "Type question to ask.",
-    "otherLanguage": "Dem approve this guide for {language} only."
+    "otherLanguage": "Dem approve this guide for {language} only.",
+    "appTitle": "Ask ElectraGuard",
+    "ready": "Answer don ready.",
+    "version": "version {version}",
+    "openSourceNamed": "Open {title}",
+    "noGuides": "No guide dey saved for this phone yet. Dem go save when you open dem with network."
   },
   "o20": {
     "title": "Settings",
@@ -601,7 +825,9 @@
       "confirmLabel": "Type the new PIN again",
       "save": "Save new PIN",
       "saved": "We don save your new PIN.",
-      "wrongCurrent": "Your current PIN no correct."
+      "wrongCurrent": "Your current PIN no correct.",
+      "format": "Your PIN na 6 numbers.",
+      "reused": "Choose PIN wey you never use before, and no be the one wey dey your card."
     },
     "privacy": "Privacy notice",
     "storage": "For this phone: {reports, plural, =0 {no report dey wait} one {# report dey wait} other {# reports dey wait}}, {size} of media",
@@ -614,7 +840,9 @@
       "unsentWarning": "{count, plural, one {# report never send. E go lost.} other {# reports never send. Dem go lost.}}",
       "sendFirst": "Send dem first",
       "confirm": "Clear and sign out",
-      "signedOut": "You don sign out."
+      "signedOut": "You don sign out.",
+      "everywhere": "Sign out for every phone",
+      "unsentKept": "{count, plural, one {# report never send. E go stay for this phone and send when you sign in again with this code.} other {# reports never send. Dem go stay for this phone and send when you sign in again with this code.}}"
     },
     "version": "Version {version}"
   },
@@ -638,7 +866,9 @@
     "sms": "By SMS: send STATUS {code} go {shortCode}",
     "checkStatus": "Check status",
     "another": "Report another thing",
-    "citizenLabel": "Citizen report. E no come from accredited observer."
+    "citizenLabel": "Citizen report. E no come from accredited observer.",
+    "testNumber": "test number",
+    "secretMissing": "You no fit add this file from this phone."
   },
   "p01": {
     "title": "Check report",
@@ -662,7 +892,8 @@
       "title": "Reviewer get question",
       "replyLabel": "Your answer",
       "send": "Send answer",
-      "sent": "Answer don send. Thank you."
+      "sent": "Answer don send. Thank you.",
+      "needSecret": "Question dey wait. You fit answer am only for the phone wey send the report."
     },
     "explain": {
       "received": "Your report dey wait for reviewer.",
@@ -671,6 +902,762 @@
       "closed": "Review don finish.",
       "withdrawn": "This report don withdraw."
     },
-    "sms": "You no get smartphone? Send STATUS and your code go {shortCode}."
+    "sms": "You no get smartphone? Send STATUS and your code go {shortCode}.",
+    "checkCode": "Check {code}"
+  },
+  "staff": {
+    "nav": {
+      "queue": "[PCM draft] Review Queue",
+      "cases": "[PCM draft] Cases",
+      "assign": "[PCM draft] Assign",
+      "ops": "[PCM draft] Operations",
+      "rumours": "[PCM draft] Rumour Desk",
+      "publish": "[PCM draft] Publish",
+      "discussions": "[PCM draft] Discussions",
+      "codes": "[PCM draft] Observer Codes",
+      "staff": "[PCM draft] Staff Accounts",
+      "settings": "[PCM draft] Settings",
+      "security": "[PCM draft] Security"
+    },
+    "roles": {
+      "reviewer": "[PCM draft] Reviewer",
+      "moderator": "[PCM draft] Moderator",
+      "coordinator": "[PCM draft] Coordinator",
+      "org_admin": "[PCM draft] Admin"
+    },
+    "signOut": "[PCM draft] Sign out",
+    "signedInAs": "[PCM draft] Signed in as {name}",
+    "forbidden": "[PCM draft] You do not have permission to view this section.",
+    "networkError": "[PCM draft] Could not connect to the server. Check your network connection.",
+    "endpointNotReady": "[PCM draft] This endpoint is not available yet (HTTP 404).",
+    "loading": "[PCM draft] Loading staff data...",
+    "retry": "[PCM draft] Try again",
+    "save": "[PCM draft] Save changes",
+    "cancel": "[PCM draft] Cancel",
+    "confirm": "[PCM draft] Confirm",
+    "backToQueue": "[PCM draft] Back to queue"
+  },
+  "s01": {
+    "title": "[PCM draft] Staff sign-in",
+    "subtitle": "[PCM draft] Official election observation review portal",
+    "emailLabel": "[PCM draft] Email address",
+    "emailHint": "[PCM draft] Your registered staff email",
+    "passwordLabel": "[PCM draft] Password",
+    "signInButton": "[PCM draft] Sign in",
+    "signingIn": "[PCM draft] Signing in...",
+    "totpTitle": "[PCM draft] Two-factor authentication",
+    "totpHint": "[PCM draft] Enter the 6-digit verification code from your authenticator app.",
+    "totpLabel": "[PCM draft] Authenticator code",
+    "totpVerify": "[PCM draft] Verify code",
+    "totpVerifying": "[PCM draft] Verifying...",
+    "enrolTitle": "[PCM draft] Set up two-factor authentication",
+    "enrolSubtitle": "[PCM draft] Scan the code or enter the secret key into your authenticator app.",
+    "enrolSecretLabel": "[PCM draft] Secret key",
+    "enrolSecretCopy": "[PCM draft] Copy key",
+    "enrolSecretCopied": "[PCM draft] Copied",
+    "enrolUriLabel": "[PCM draft] Authenticator link",
+    "enrolCodeLabel": "[PCM draft] Enter the 6-digit code to confirm",
+    "enrolConfirm": "[PCM draft] Confirm and sign in",
+    "inviteTitle": "[PCM draft] Accept staff invitation",
+    "inviteSubtitle": "[PCM draft] Choose a secure password for your account.",
+    "newPasswordLabel": "[PCM draft] New password",
+    "newPasswordHint": "[PCM draft] At least 12 characters. Use a mix of letters, numbers, and symbols.",
+    "acceptInviteButton": "[PCM draft] Set password and continue",
+    "errors": {
+      "invalidCredentials": "[PCM draft] Email or password is wrong.",
+      "accountLocked": "[PCM draft] Too many failed tries. Try again in 15 minutes.",
+      "totpInvalid": "[PCM draft] That code did not work. Check the time on your phone and try again.",
+      "totpRequired": "[PCM draft] Two-factor verification required.",
+      "inviteInvalid": "[PCM draft] This invitation link is invalid or has expired.",
+      "rateLimited": "[PCM draft] Too many attempts. Please wait a moment."
+    }
+  },
+  "s02": {
+    "title": "[PCM draft] Review queue",
+    "subtitle": "[PCM draft] Cases ordered by urgency and danger",
+    "counts": {
+      "received": "[PCM draft] {count} received",
+      "inReview": "[PCM draft] {count} in review",
+      "question": "[PCM draft] {count} waiting on answer"
+    },
+    "filters": {
+      "all": "[PCM draft] All",
+      "status": "[PCM draft] Status",
+      "urgency": "[PCM draft] Urgency",
+      "category": "[PCM draft] Category",
+      "channel": "[PCM draft] Channel",
+      "hasEvidence": "[PCM draft] Has media",
+      "clear": "[PCM draft] Reset filters"
+    },
+    "columns": {
+      "urgency": "[PCM draft] Urgency",
+      "reference": "[PCM draft] Reference",
+      "category": "[PCM draft] Category",
+      "location": "[PCM draft] Location",
+      "occurred": "[PCM draft] Occurred",
+      "evidence": "[PCM draft] Evidence",
+      "status": "[PCM draft] Status"
+    },
+    "urgency": {
+      "urgent": "[PCM draft] Urgent",
+      "high": "[PCM draft] High",
+      "normal": "[PCM draft] Normal",
+      "low": "[PCM draft] Low"
+    },
+    "reasons": {
+      "danger_reported": "[PCM draft] Danger reported",
+      "intimidation": "[PCM draft] Intimidation",
+      "vote_buying": "[PCM draft] Vote buying",
+      "seen_firsthand": "[PCM draft] Firsthand",
+      "told_by_someone": "[PCM draft] Hearsay",
+      "video": "[PCM draft] Video",
+      "photo": "[PCM draft] Photo",
+      "audio": "[PCM draft] Audio",
+      "cluster": "[PCM draft] Area cluster",
+      "result_sheet_flag": "[PCM draft] Result sheet flag",
+      "citizen_report": "[PCM draft] Citizen report",
+      "sms_report": "[PCM draft] SMS report"
+    },
+    "empty": "[PCM draft] No cases matching the current filters.",
+    "emptySubtitle": "[PCM draft] New reports assigned to you will appear here.",
+    "loadMore": "[PCM draft] Load more cases"
+  },
+  "s03": {
+    "title": "[PCM draft] Case review",
+    "caseRef": "[PCM draft] Case {ref}",
+    "reporter": {
+      "observer": "[PCM draft] Accredited observer ({code})",
+      "citizen": "[PCM draft] Citizen report ({code})",
+      "sms": "[PCM draft] SMS report",
+      "ussd": "[PCM draft] USSD report"
+    },
+    "originalText": "[PCM draft] Original description",
+    "language": "[PCM draft] Language: {lang}",
+    "translation": "[PCM draft] Machine translation. Check the original.",
+    "translationNotice": "[PCM draft] Machine translation. Check the original.",
+    "redaction": {
+      "title": "[PCM draft] Redact personal names",
+      "hint": "[PCM draft] Select text in the description to hide names before publication or sharing.",
+      "hideSelection": "[PCM draft] Hide selection",
+      "hideThisName": "[PCM draft] Hide this name",
+      "undo": "[PCM draft] Undo",
+      "hidden": "[PCM draft] Hidden",
+      "start": "[PCM draft] Start offset",
+      "end": "[PCM draft] End offset",
+      "addSpan": "[PCM draft] Add redaction span",
+      "clearSpans": "[PCM draft] Clear all redactions",
+      "save": "[PCM draft] Save redactions",
+      "preview": "[PCM draft] Redacted preview:"
+    },
+    "details": {
+      "category": "[PCM draft] Category: {category}",
+      "danger": "[PCM draft] Danger reported: Yes",
+      "firsthand": "[PCM draft] Observed firsthand: Yes",
+      "location": "[PCM draft] Location",
+      "occurredAt": "[PCM draft] Occurred: {time}",
+      "receivedAt": "[PCM draft] Received: {time}",
+      "skew": "[PCM draft] Phone clock skew: {seconds}s"
+    },
+    "evidence": {
+      "title": "[PCM draft] Evidence & integrity",
+      "sha256": "[PCM draft] SHA-256 verified",
+      "exifRemoved": "[PCM draft] EXIF stripped",
+      "blurred": "[PCM draft] Faces blurred",
+      "unblur": "[PCM draft] View unblurred (recorded in audit)",
+      "transcript": "[PCM draft] Audio transcript",
+      "pendingUpload": "[PCM draft] Pending upload: {received} of {total} bytes received",
+      "noEvidence": "[PCM draft] No media attachments submitted."
+    },
+    "suggestions": {
+      "title": "[PCM draft] AI suggestions",
+      "notice": "[PCM draft] All suggestions are machine generated and require reviewer decision.",
+      "categorySuggested": "[PCM draft] Suggested category: {category}",
+      "urgencySuggested": "[PCM draft] Suggested urgency: {urgency}",
+      "accept": "[PCM draft] Accept suggestion",
+      "correct": "[PCM draft] Correct suggestion",
+      "correctLabel": "[PCM draft] Choose correction",
+      "saveCorrection": "[PCM draft] Apply correction"
+    },
+    "duplicates": {
+      "title": "[PCM draft] Duplicate candidates",
+      "sideBySide": "[PCM draft] Side-by-side comparison",
+      "similarity": "[PCM draft] {percent}% match",
+      "link": "[PCM draft] Link as duplicate",
+      "keepSeparate": "[PCM draft] Keep separate",
+      "linked": "[PCM draft] Linked",
+      "inaccessible": "[PCM draft] Report from another organisation (metadata only)"
+    },
+    "resultSheet": {
+      "title": "[PCM draft] Result sheet consistency check",
+      "disclaimer": "[PCM draft] Consistency check for review. This is not a result.",
+      "entryMethod": "[PCM draft] Entry method: {method}",
+      "flags": "[PCM draft] Flags detected",
+      "accreditedExceeds": "[PCM draft] Accredited voters exceed registered voters",
+      "sumDiffers": "[PCM draft] Party votes plus rejected votes differs from accredited count",
+      "roundNumbers": "[PCM draft] Unusually round numbers",
+      "benignCauses": "[PCM draft] Possible benign causes: copy error, unreadable digit"
+    },
+    "conversation": {
+      "title": "[PCM draft] Observer conversation",
+      "send": "[PCM draft] Send message",
+      "placeholder": "[PCM draft] Type a message to the observer...",
+      "markRead": "[PCM draft] Mark messages read",
+      "noMessages": "[PCM draft] No messages yet."
+    },
+    "actions": {
+      "title": "[PCM draft] Case actions",
+      "startReview": "[PCM draft] Start review",
+      "askQuestion": "[PCM draft] Ask formal question",
+      "questionLabel": "[PCM draft] Question for reporter",
+      "questionHint": "[PCM draft] The observer or citizen will see this question and can respond.",
+      "submitQuestion": "[PCM draft] Send question",
+      "closeCase": "[PCM draft] Close case",
+      "outcomeLabel": "[PCM draft] Outcome",
+      "outcome": {
+        "corroborated": "[PCM draft] Corroborated",
+        "insufficient_evidence": "[PCM draft] Insufficient evidence",
+        "out_of_scope": "[PCM draft] Out of scope"
+      },
+      "rationaleLabel": "[PCM draft] Internal rationale",
+      "rationaleHint": "[PCM draft] Explain why this case was corroborated, closed or dismissed. Never shown to reporters.",
+      "expectedMediaLabel": "[PCM draft] Confirm evidence considered in this closure",
+      "submitClose": "[PCM draft] Confirm closure"
+    },
+    "history": {
+      "title": "[PCM draft] Audit trail",
+      "chainIntact": "[PCM draft] Hash chain intact",
+      "chainBroken": "[PCM draft] Hash chain broken!"
+    }
+  },
+  "s04": {
+    "title": "[PCM draft] Case assignments",
+    "subtitle": "[PCM draft] Workload distribution and reviewer assignment",
+    "unassignedCount": "[PCM draft] {count} unassigned cases",
+    "reviewers": "[PCM draft] Active reviewers ({count})",
+    "openCases": "[PCM draft] {count} open cases ({urgent} urgent)",
+    "activeNow": "[PCM draft] Active now",
+    "suggestedBadge": "[PCM draft] Suggested: {name}",
+    "reasonFewest": "[PCM draft] Fewest open cases",
+    "reasonArea": "[PCM draft] Same LGA today",
+    "reasonFewestInArea": "[PCM draft] Fewest open cases in LGA",
+    "bulkAssign": "[PCM draft] Assign selected ({count})",
+    "takeSuggested": "[PCM draft] Take suggested reviewer",
+    "assignTo": "[PCM draft] Assign to...",
+    "selectAll": "[PCM draft] Select all",
+    "assignedSuccess": "[PCM draft] Assigned {count} cases successfully.",
+    "assignedError": "[PCM draft] Could not assign some cases: {error}"
+  },
+  "s05": {
+    "title": "[PCM draft] Operations room",
+    "subtitle": "[PCM draft] Aggregates, cluster warnings, and coverage monitoring",
+    "filterRange": "[PCM draft] Date range",
+    "today": "[PCM draft] Today",
+    "totals": {
+      "totalReports": "[PCM draft] Total reports",
+      "incidents": "[PCM draft] Incidents after links",
+      "urgentOpen": "[PCM draft] Urgent open",
+      "openQuestions": "[PCM draft] Questions open",
+      "resultFlags": "[PCM draft] Result sheet flags",
+      "withdrawn": "[PCM draft] Withdrawn"
+    },
+    "clusters": {
+      "title": "[PCM draft] Cluster warnings",
+      "badge": "[PCM draft] {count} reports in {window}m",
+      "baseline": "[PCM draft] Baseline: {baseline}",
+      "reviewButton": "[PCM draft] Mark reviewed",
+      "reviewNote": "[PCM draft] Review note (optional)",
+      "reviewedBadge": "[PCM draft] Reviewed",
+      "settings": "[PCM draft] Cluster thresholds",
+      "windowMinutes": "[PCM draft] Window (minutes)",
+      "minReports": "[PCM draft] Minimum reports",
+      "saveSettings": "[PCM draft] Update thresholds"
+    },
+    "coverage": {
+      "title": "[PCM draft] Coverage gaps",
+      "expected": "[PCM draft] {expected} expected polling units",
+      "withChecklist": "[PCM draft] {count} reported ({percent}%)",
+      "withoutChecklist": "[PCM draft] {count} missing",
+      "noAnswers": "[PCM draft] Units with most 'No' answers"
+    },
+    "lateMaterials": {
+      "title": "[PCM draft] Late materials risk",
+      "subtitle": "[PCM draft] Logistical prediction model",
+      "hours": "[PCM draft] {hours}h predicted transit",
+      "riskHigh": "[PCM draft] High risk",
+      "riskMedium": "[PCM draft] Medium risk",
+      "riskLow": "[PCM draft] Low risk"
+    },
+    "resultSheetFlags": {
+      "title": "[PCM draft] Result sheet flags",
+      "disclaimer": "[PCM draft] Consistency check for review. This is not a result.",
+      "openFlags": "[PCM draft] {count} sheets flagged for review"
+    },
+    "lgaBreakdown": {
+      "title": "[PCM draft] Reports by LGA",
+      "count": "[PCM draft] {count} reports ({urgent} urgent)",
+      "viewMap": "[PCM draft] Map view (LGA level)",
+      "viewTable": "[PCM draft] Table view"
+    }
+  },
+  "s06": {
+    "title": "[PCM draft] Rumour desk",
+    "subtitle": "[PCM draft] Track online claims, match with field observations, draft responses",
+    "newClaim": "[PCM draft] Log new claim",
+    "claimText": "[PCM draft] Claim text",
+    "source": "[PCM draft] Seen on",
+    "image": "[PCM draft] Upload screenshot/image",
+    "claimsList": "[PCM draft] Active claims",
+    "harmLevel": "[PCM draft] Harm risk: {level}",
+    "checkWorthiness": "[PCM draft] Check-worthiness: {level}",
+    "imageGuide": {
+      "title": "[PCM draft] Image verification guide",
+      "notice": "[PCM draft] Guidance only. Always verify with human judgment.",
+      "reverseSearch": "[PCM draft] Run reverse image search",
+      "checkDate": "[PCM draft] Verify date against claim timestamp",
+      "lookEdits": "[PCM draft] Inspect for image manipulations",
+      "compression": "[PCM draft] Compression artifact hint: {hint}"
+    },
+    "matches": {
+      "title": "[PCM draft] Matched field observations",
+      "corroboratedOnly": "[PCM draft] Only closed corroborated reports shown",
+      "pastClaims": "[PCM draft] Past verified claims"
+    },
+    "response": {
+      "title": "[PCM draft] Public response draft",
+      "textLabel": "[PCM draft] Response text",
+      "saveDraft": "[PCM draft] Save draft",
+      "approve": "[PCM draft] Approve response",
+      "reject": "[PCM draft] Reject draft",
+      "dismiss": "[PCM draft] Dismiss claim",
+      "draftedBy": "[PCM draft] Drafted by {name} at {time}",
+      "approvedBy": "[PCM draft] Approved by {name} at {time}",
+      "secondPersonNotice": "[PCM draft] Another coordinator must approve a response you drafted.",
+      "rejectNote": "[PCM draft] Rejection note"
+    }
+  },
+  "s07": {
+    "title": "[PCM draft] Publish snapshots",
+    "subtitle": "[PCM draft] Public aggregated releases with statistical privacy suppression",
+    "createTitle": "[PCM draft] Create new snapshot",
+    "cutoffLabel": "[PCM draft] Cutoff time",
+    "cutoffHint": "[PCM draft] Must be at least 60 minutes in the past.",
+    "createButton": "[PCM draft] Generate preview",
+    "scheduleTitle": "[PCM draft] Automatic hourly release",
+    "scheduleHint": "[PCM draft] Builds and publishes a snapshot every hour if checks pass.",
+    "scheduleOn": "[PCM draft] Hourly publishing is active",
+    "scheduleOff": "[PCM draft] Hourly publishing is paused",
+    "snapshotsList": "[PCM draft] Snapshot history",
+    "previewTitle": "[PCM draft] Snapshot preview (exact public data)",
+    "suppressionNotice": "[PCM draft] Counts below 5 are suppressed with 'fewer than 5'. Primary and secondary suppression applied.",
+    "excludedTitle": "[PCM draft] Excluded from snapshot",
+    "excludedNotClosed": "[PCM draft] {count} not yet closed",
+    "excludedWithdrawn": "[PCM draft] {count} withdrawn",
+    "excludedAfterCutoff": "[PCM draft] {count} after cutoff",
+    "approvePublish": "[PCM draft] Approve and publish",
+    "discard": "[PCM draft] Discard draft"
+  },
+  "s08": {
+    "title": "[PCM draft] Discussion moderation",
+    "subtitle": "[PCM draft] Community oversight and safety for observer forums",
+    "flagsInbox": "[PCM draft] Reported posts ({count})",
+    "flaggedBy": "[PCM draft] Flagged {count} times",
+    "reasons": "[PCM draft] Reasons: {reasons}",
+    "nameCheckAlert": "[PCM draft] Possible personal name detected",
+    "hidePost": "[PCM draft] Hide post",
+    "unhidePost": "[PCM draft] Unhide post",
+    "hideReason": "[PCM draft] Reason for hiding",
+    "removeMember": "[PCM draft] Remove member from forum",
+    "closeDiscussion": "[PCM draft] Close discussion",
+    "createDiscussion": "[PCM draft] Create new discussion",
+    "topic": "[PCM draft] Discussion topic",
+    "wardLga": "[PCM draft] Ward or LGA scope",
+    "inviteCodes": "[PCM draft] Invite observer codes"
+  },
+  "s09": {
+    "title": "[PCM draft] Observer code batches",
+    "subtitle": "[PCM draft] Batch generation, printable cards, and credential management",
+    "batches": "[PCM draft] Batches",
+    "createBatch": "[PCM draft] Create code batch",
+    "label": "[PCM draft] Batch label",
+    "count": "[PCM draft] Number of codes",
+    "printCards": "[PCM draft] Print code cards",
+    "printConfirm": "[PCM draft] Issue setup PINs and prepare printable cards",
+    "printNotice": "[PCM draft] Setup PINs are shown only once. Print or distribute immediately.",
+    "codesTable": "[PCM draft] Observer codes",
+    "searchCodes": "[PCM draft] Search codes",
+    "status": {
+      "unclaimed": "[PCM draft] Unclaimed",
+      "active": "[PCM draft] Active",
+      "locked": "[PCM draft] Locked",
+      "revoked": "[PCM draft] Revoked"
+    },
+    "actions": {
+      "revoke": "[PCM draft] Revoke code",
+      "reissue": "[PCM draft] Reissue code",
+      "resetPin": "[PCM draft] Reset PIN",
+      "reason": "[PCM draft] Reason"
+    }
+  },
+  "s10": {
+    "title": "[PCM draft] Staff accounts",
+    "subtitle": "[PCM draft] Manage staff access, roles, and two-factor credentials",
+    "staffList": "[PCM draft] Staff members ({count})",
+    "createStaff": "[PCM draft] Add staff member",
+    "displayName": "[PCM draft] Display name",
+    "email": "[PCM draft] Email address",
+    "roles": "[PCM draft] Assigned roles",
+    "roleAdminAlone": "[PCM draft] Admin role cannot be combined with reviewer, coordinator, or moderator.",
+    "inviteUrl": "[PCM draft] One-time invitation link",
+    "copyInvite": "[PCM draft] Copy link",
+    "reset2fa": "[PCM draft] Reset 2FA",
+    "offboard": "[PCM draft] Offboard staff",
+    "offboardReason": "[PCM draft] Offboarding reason",
+    "offboardWarning": "[PCM draft] Any open cases assigned to this user will be returned to the unassigned queue."
+  },
+  "s11": {
+    "title": "[PCM draft] Organisation settings",
+    "subtitle": "[PCM draft] Intake control, data retention, and election parameters",
+    "intakePause": "[PCM draft] Pause report intake",
+    "intakePauseHint": "[PCM draft] Temporarily stop accepting new reports from observers and citizens.",
+    "retention": "[PCM draft] Data retention period",
+    "retentionDays": "[PCM draft] {days} days",
+    "retentionConfirm": "[PCM draft] Shortening retention will delete older records at next purge.",
+    "electionDay": "[PCM draft] Election day",
+    "publicDelay": "[PCM draft] Public snapshot delay",
+    "delayMinutes": "[PCM draft] {minutes} minutes",
+    "partyLabels": "[PCM draft] Party labels on result sheets",
+    "saveSettings": "[PCM draft] Save organisation settings",
+    "auditExport": "[PCM draft] Export audit log"
+  },
+  "s12": {
+    "title": "[PCM draft] Security & audit monitoring",
+    "subtitle": "[PCM draft] Security rule alerts and cryptographic audit chain verification",
+    "alerts": "[PCM draft] Security alerts",
+    "severity": "[PCM draft] Severity",
+    "detector": "[PCM draft] Detector",
+    "updateStatus": "[PCM draft] Update status",
+    "auditVerify": "[PCM draft] Audit hash chain verification",
+    "chainStatus": "[PCM draft] Chain integrity",
+    "eventsChecked": "[PCM draft] {count} events verified",
+    "headHash": "[PCM draft] Chain head hash: {hash}",
+    "brokenEvent": "[PCM draft] First broken event: {id}",
+    "verifyNow": "[PCM draft] Run verification check",
+    "exportLog": "[PCM draft] Export audit log (JSONL/CSV)"
+  },
+  "pub": {
+    "homeLink": "ElectraGuard AI home",
+    "menu": "Menu",
+    "nav": {
+      "label": "Main",
+      "home": "Home",
+      "results": "Results",
+      "ask": "Ask question",
+      "guide": "Guides",
+      "phone": "Try SMS and USSD",
+      "privacy": "Privacy"
+    },
+    "footer": {
+      "label": "More",
+      "nonpartisan": "We no dey for any party or candidate. We no be INEC.",
+      "emergency": "If person dey for danger, call 112. ElectraGuard dey write report down. E no dey send help.",
+      "observer": "Observer app",
+      "staff": "Staff sign in"
+    }
+  },
+  "p02": {
+    "heading": "You see wahala for polling unit? Report am.",
+    "lead": "ElectraGuard dey keep wetin voters and accredited observers see for election day. Reviewers wey don train dey check every report, and dem dey put the reviewed total here.",
+    "report": "Report wetin you see",
+    "reportHint": "No account, no name. You go get receipt code to check am later.",
+    "basicPhone": "No smartphone? Dial {ussd} or send SMS go {shortCode}.",
+    "testNumber": "(test number)",
+    "tryPhone": "Try am for the phone wey dey this screen",
+    "check": {
+      "title": "Check report",
+      "lead": "Put the receipt code wey you get when you report.",
+      "outcome": "Wetin dem find: {outcome}",
+      "question": "Reviewer get question for you. Open the report for the phone wey you take send am.",
+      "receivedLabel": "Dem receive am",
+      "updatedLabel": "Last change",
+      "tooMany": "Too many check from this network. Wait one minute, try again.",
+      "unavailable": "Check no dey work now. Try again after some minutes."
+    },
+    "results": {
+      "title": "Reviewed results",
+      "unit": "{count, plural, one {reviewed report} other {reviewed reports}}",
+      "suppressed": "Reviewed report never reach 5 yet",
+      "published": "Dem publish am {time}.",
+      "cutoff": "E cover reports wey people see before {time}.",
+      "empty": "Nothing don publish yet.",
+      "emptyHint": "Total go show here after reviewers finish reports, at least 60 minutes after.",
+      "how": "How dem dey publish results",
+      "unavailable": "Results no fit load now.",
+      "open": "See results by state"
+    },
+    "how": {
+      "title": "How e dey work",
+      "1": "You report wetin you see, for your own language. E dey work even when network weak.",
+      "2": "You go get receipt code. Keep am to check your report.",
+      "3": "Reviewer wey don train go check the report. AI dey help arrange reports; na person dey decide.",
+      "4": "Reviewed total by state go show here. Never name, wetin you write, or photo."
+    },
+    "help": {
+      "title": "Questions",
+      "ask": "Ask ElectraGuard",
+      "askHint": "Answer dey come only from approved guides, and e go show where e come from.",
+      "guide": "Approved guide",
+      "guides": "Guides",
+      "guidesHint": "Short approved guides for voters and observers.",
+      "privacy": "Privacy notice",
+      "privacyHint": "Wetin we dey keep, and wetin we no dey ever collect."
+    }
+  },
+  "results": {
+    "notice": "Na only reviewed observations. No be official results. We no be INEC."
+  },
+  "p03": {
+    "title": "Reviewed observations",
+    "lead": "Total of election-day reports wey trained reviewers don finish. We dey hide small numbers to protect the people wey report.",
+    "view": {
+      "label": "Show results from",
+      "combined": "All organisations together"
+    },
+    "totalUnit": "{count, plural, one {reviewed report} other {reviewed reports}}",
+    "totalSuppressed": "Reviewed report never reach 5",
+    "source": "From",
+    "publishedLabel": "Dem publish am",
+    "cutoffLabel": "Reports wey people see before",
+    "delay": "Dem publish am at least {minutes, plural, one {# minute} other {# minutes}} after the reports, so nobody fit trace person from am.",
+    "combinedNote": "Combined number go show only when every organisation number dey show.",
+    "byState": {
+      "title": "Reports by state",
+      "caption": "Reviewed reports for each state"
+    },
+    "categories": {
+      "title": "Wetin happen, by state",
+      "hint": "Open one state to see im reports by type.",
+      "caption": "Reviewed reports for {state}, by type"
+    },
+    "outcomes": {
+      "title": "Wetin dem find",
+      "hint": "How reviewers close the reports.",
+      "caption": "Reviewed reports by wetin dem find"
+    },
+    "timeline": {
+      "title": "Reports by hour",
+      "hint": "By the hour wey people see am, West Africa Time.",
+      "caption": "Reviewed reports by the hour"
+    },
+    "col": {
+      "state": "State",
+      "reports": "Reports",
+      "category": "Wetin happen",
+      "outcome": "Wetin dem find",
+      "share": "Share",
+      "hour": "Hour"
+    },
+    "percent": "{value}%",
+    "fewerThan": "e no reach 5",
+    "noRows": "No state to show yet.",
+    "audit": {
+      "title": "Audit record",
+      "body": "{count, plural, one {# event wey dem record} other {# events wey dem record}} reach {time}. Fingerprint:",
+      "explain": "Every review action dey join this record. If anybody change old entry, this fingerprint no go match again."
+    },
+    "empty": {
+      "title": "Nothing don publish yet.",
+      "body": "Total go show after reviewers finish reports, and at least 60 minutes after people make the reports."
+    },
+    "error": {
+      "title": "Results no fit load.",
+      "body": "The problem dey our side or for network. Try again after one minute."
+    },
+    "retry": "Try again"
+  },
+  "p04": {
+    "title": "Ask ElectraGuard",
+    "heading": "Wetin you wan know?",
+    "lead": "Answer dey come word for word from approved guides, with where e come from. If no approved answer dey, ElectraGuard go tell you.",
+    "label": "Your question",
+    "hint": "Example: How I go take check my report?",
+    "ask": "Ask",
+    "asking": "E dey find answer",
+    "tooShort": "Write at least 3 letters.",
+    "tooLong": "No pass 500 letters.",
+    "answered": "From the approved guides",
+    "source": "Where e come from: {title}, {section}",
+    "version": "Approved version {version}",
+    "openSource": "Read am for the guide",
+    "fallback": "Dem only approve this answer for English, so na English e dey.",
+    "abstain": {
+      "title": "I no get approved answer for that one.",
+      "body": "Nothing for the approved guides answer this question, so ElectraGuard no go guess. Try use another word, or read the guides."
+    },
+    "again": "Ask another question",
+    "guides": "Read the guides",
+    "error": "We no fit get answer. Try again.",
+    "offline": "You need network to ask question.",
+    "tooMany": "Too many questions from this network. Wait one minute, try again.",
+    "unavailable": "Ask ElectraGuard never on yet. Read the guides instead.",
+    "note": "No be legal advice. We no dey keep your questions."
+  },
+  "p05": {
+    "title": "Guides",
+    "lead": "Short approved guides for voters and observers.",
+    "version": "Version {version}",
+    "englishOnly": "(English only)",
+    "approved": "Dem approve am {date}. Version {version}.",
+    "fallback": "Dem never approve this guide for your language, so na English e dey.",
+    "contents": "For this page",
+    "allGuides": "All guides",
+    "ask": "Ask question about the guides",
+    "askInstead": "Ask question instead",
+    "empty": {
+      "title": "No guide dey yet.",
+      "body": "Approved guides go show here when the observation organisation load dem."
+    },
+    "notFound": {
+      "title": "This guide no dey.",
+      "body": "Maybe dem never load am, or the link no correct."
+    },
+    "error": {
+      "title": "Guides no fit load.",
+      "body": "Try again after one minute."
+    }
+  },
+  "p06": {
+    "title": "Privacy notice",
+    "lead": "Wetin ElectraGuard dey keep, wetin e no dey ever collect, and wetin you fit do. For simple words.",
+    "updated": "Last update {date}.",
+    "who": {
+      "h": "Who dey run ElectraGuard",
+      "p": "ElectraGuard AI na software wey Cairn make. Observation organisations dey use am collect and review reports about election. The organisation wey receive your report na im dey responsible for am. ElectraGuard no dey for any party and e no be INEC."
+    },
+    "never": {
+      "h": "Wetin we no dey ever collect",
+      "1": "Your name. Citizens and observers no dey give name.",
+      "2": "Your location from GPS. The app no dey ever read am.",
+      "3": "Your phone number as e be. For SMS and USSD, we dey keep the number only as scattered code, and we go delete the real number once our reply don go."
+    },
+    "keep": {
+      "h": "Wetin we dey keep",
+      "1": "Wetin you report: wetin happen, where (no closer pass the polling unit wey you choose), when, and wetin you write.",
+      "2": "Photos, videos and voice notes wey you add. We dey remove location from photos for your phone and again for our server. Faces wey we fit see, we go blur dem.",
+      "3": "For observers: the observer code and scattered form of the PIN. Na only the organisation know who get code, and dem dey keep that list outside ElectraGuard.",
+      "4": "Small security records, like sign-in wey fail, without wetin dey inside any report."
+    },
+    "see": {
+      "h": "Who fit see your report",
+      "p": "Na only reviewers for the organisation wey receive am, and only when dem give dem the report. Organisations no fit see each other reports. Every time person open photo or video, we dey record am."
+    },
+    "public": {
+      "h": "Wetin we dey show public",
+      "p": "Na only total of reviewed reports, by state, type and hour, at least 60 minutes after. Any number wey no reach 5 go show as \"e no reach 5\". Never your words, photos, polling unit, ward, receipt code or observer code."
+    },
+    "ai": {
+      "h": "How we dey use AI",
+      "p": "AI dey suggest type and how urgent report be, to help reviewers arrange reports. We dey always mark am as suggestion, and na person dey make every decision. Ask ElectraGuard dey quote only approved guides, and we no dey keep your questions."
+    },
+    "speech": {
+      "h": "To talk instead of to type",
+      "p": "If you use Speak, your phone speech service fit process your voice to turn am to words. You fit use your keyboard voice typing, or type, instead."
+    },
+    "rights": {
+      "h": "Wetin you fit do",
+      "1": "Withdraw (comot) report before review start. We go delete the words and files.",
+      "2": "Check your report any time with im receipt code.",
+      "3": "Clear phone wey people share: observers fit sign out and remove everything from the phone one time.",
+      "4": "Under the Nigeria Data Protection Act 2023, you fit ask the organisation wey receive your report make dem show, correct or delete information about you."
+    },
+    "keepFor": {
+      "h": "How long we dey keep reports",
+      "p": "Each organisation dey set time between 30 days and 2 years. After that, we go delete reports, files and messages, and backups go expire on the same time."
+    },
+    "security": {
+      "h": "How we dey protect am",
+      "p": "Reports dey travel through locked (encrypted) connection and we dey store dem locked. Staff dey use named accounts with two-step sign-in. Every change for report dey inside record wey go show if person change anything."
+    },
+    "danger": {
+      "h": "If person dey for danger",
+      "p": "Call 112. ElectraGuard dey write report down. E no dey send help."
+    },
+    "contact": {
+      "h": "Questions",
+      "p": "If you get question about your report, ask the organisation wey give you your observer code, or write to the reviewer for your report messages."
+    },
+    "languages": "This notice dey for English, Naijá, Hausa, Yorùbá and Igbo. Choose language for the top of the page."
+  },
+  "p07": {
+    "title": "Try report by SMS and USSD",
+    "lead": "Use this phone wey dey screen to try ElectraGuard the way small phone dey do am. Na the same system with real SMS and USSD.",
+    "deviceLabel": "Small phone for practice",
+    "screenLabel": "Phone screen",
+    "keypadLabel": "Phone buttons",
+    "screen": {
+      "starting": "Phone dey start",
+      "wait": "Abeg wait"
+    },
+    "home": {
+      "title": "Practice phone",
+      "label": "Number to dial",
+      "hint": "Dial {code} and press Call."
+    },
+    "ussd": {
+      "reply": "Your answer",
+      "wrongCode": "That number no dey answer. Dial {code}.",
+      "ended": "Session don end."
+    },
+    "sms": {
+      "title": "New message",
+      "to": "To: {shortCode}",
+      "label": "Message",
+      "count": "{count} of {max}",
+      "empty": "Write message first."
+    },
+    "inbox": {
+      "title": "Messages",
+      "empty": "No message yet.",
+      "you": "You"
+    },
+    "key": {
+      "call": "Call",
+      "end": "End",
+      "send": "Send",
+      "messages": "Messages",
+      "messagesCount": "Messages ({count})",
+      "clear": "Clear",
+      "back": "Back",
+      "write": "Write",
+      "ok": "OK",
+      "star": "Star",
+      "hash": "Hash"
+    },
+    "how": {
+      "title": "Try am",
+      "ussd": "Dial {code} and press Call. Answer each menu with the buttons, then press Send.",
+      "report": "Or write message: REPORT, category number, polling unit code if you know am, then wetin happen.",
+      "reportExample": "REPORT 3 Long queue and only one official checking names",
+      "status": "Check report: STATUS and the receipt code.",
+      "reply": "Answer reviewer question: REPLY, the receipt code, then your answer.",
+      "lang": "Change reply language: LANG EN, PCM, HA, YO or IG."
+    },
+    "example": "Use this example",
+    "startMessage": "Start this message",
+    "categories": {
+      "title": "Category numbers"
+    },
+    "simulated": "Practice number {number}. Reports wey you send from here get Simulated mark and dem no go ever show for public results.",
+    "reset": "New practice number",
+    "resetHint": "E go start again with another number and clear this screen.",
+    "error": {
+      "network": "No network. Check your connection and try again.",
+      "server": "Phone service no answer. Try again after one minute.",
+      "tooMany": "Too many messages from this phone. Wait some minutes.",
+      "invalid": "Network no accept that message. Check am and try again."
+    },
+    "disabled": {
+      "title": "Practice phone don off.",
+      "body": "The observation organisation don off am for now. You fit still report for this website."
+    }
   }
 }

@@ -38,7 +38,7 @@ export function WorkflowForm({ path, version, action, label, children }: {
       }
       if ([401, 403, 404].includes(response.status)) {
         window.dispatchEvent(new Event("workspace-access-lost"));
-        window.location.replace("/?access=changed");
+        window.location.replace("/access-changed");
         return;
       }
       if (response.status === 409) {

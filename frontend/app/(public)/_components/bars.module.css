@@ -1,0 +1,44 @@
+.row {
+  display: grid;
+  grid-template-columns: minmax(5.5rem, auto) minmax(0, 1fr);
+  align-items: center;
+  gap: var(--s-3);
+  min-width: 0;
+}
+
+.value {
+  font: var(--t-label);
+  font-size: 1rem;
+  text-align: end;
+  white-space: nowrap;
+}
+
+.row[data-suppressed="true"] .value {
+  font-weight: 400;
+  color: var(--ink-2);
+}
+
+.track {
+  display: block;
+  height: 12px;
+  border-radius: 2px;
+  background: var(--paper-2);
+  overflow: hidden;
+}
+
+.hidden {
+  background: transparent;
+  border: 1px dashed var(--rule-control);
+}
+
+.fill {
+  display: block;
+  height: 100%;
+  background: var(--ink);
+}
+
+@media (forced-colors: active) {
+  .fill {
+    background: CanvasText;
+  }
+}

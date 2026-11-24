@@ -94,3 +94,11 @@
   gap: var(--s-2);
   margin-top: var(--s-2);
 }
+
+.reason {
+  margin: var(--s-1) 0 0;
+  color: var(--ink);
+  font: var(--t-small);
+  font-size: max(0.875rem, calc(var(--t-base-size) - 0.125rem));
+  line-height: 1.45;
+}

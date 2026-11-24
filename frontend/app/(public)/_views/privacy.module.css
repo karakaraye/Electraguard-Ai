@@ -1,0 +1,72 @@
+.toc {
+  max-width: 44rem;
+  padding: var(--s-4) 0;
+  border-block: 1px solid var(--rule);
+}
+
+.tocTitle {
+  margin: 0 0 var(--s-2);
+  font: var(--t-label);
+  color: var(--ink-2);
+}
+
+.toc ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 var(--s-5);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.toc a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--ink);
+  font: var(--t-body);
+  text-underline-offset: 0.2em;
+}
+
+.toc a:focus-visible {
+  outline: var(--focus-outline);
+  outline-offset: var(--focus-offset);
+  box-shadow: var(--focus-halo);
+  border-radius: 4px;
+}
+
+.body {
+  display: grid;
+  gap: var(--s-6);
+  max-width: var(--measure);
+}
+
+.section {
+  display: grid;
+  gap: var(--s-2);
+}
+
+.section h2 {
+  margin: 0;
+  font: var(--t-heading);
+}
+
+.section p,
+.section ul {
+  margin: 0;
+  font: var(--t-body-lg);
+  line-height: 1.6;
+}
+
+.section ul {
+  display: grid;
+  gap: var(--s-2);
+  padding-inline-start: 1.5rem;
+}
+
+.section[data-tone="danger"] {
+  padding: var(--s-4);
+  border: var(--border-w) solid var(--danger);
+  border-radius: var(--radius);
+  background: var(--danger-bg);
+}

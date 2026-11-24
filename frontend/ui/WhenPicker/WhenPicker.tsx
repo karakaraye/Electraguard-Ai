@@ -19,6 +19,12 @@ export type WhenPickerProps = Omit<ChoiceGroupChrome, "legend" | "error"> & {
   onChange: (value: WhenValue) => void;
   /** Show "required" errors (after the person presses Continue). Future times always show. */
   showErrors?: boolean;
+  /** "Another day" needs a time too (REP-01 occurred_at is a full date and time). */
+  requireDayTime?: boolean;
+  /** Earliest date allowed (YYYY-MM-DD, WAT). */
+  minDate?: string;
+  /** Current time used for the future check (corrected by the server clock). Defaults to the phone clock. */
+  now?: number | null;
   "data-testid"?: string;
 };
 
@@ -40,9 +46,10 @@ export function whenToInstant(value: WhenValue, now: number = Date.now()): numbe
 
 export type WhenProblem = "future" | "timeRequired" | "dateRequired" | null;
 
-export function whenProblem(value: WhenValue, now: number = Date.now()): WhenProblem {
+export function whenProblem(value: WhenValue, now: number = Date.now(), requireDayTime = false): WhenProblem {
   if (value.mode === "today" && !value.time) return "timeRequired";
   if (value.mode === "day" && !value.date) return "dateRequired";
+  if (value.mode === "day" && requireDayTime && !value.time) return "timeRequired";
   const instant = whenToInstant(value, now);
   if (instant !== null && instant > now + 60_000) return "future";
   return null;
@@ -61,13 +68,17 @@ export function WhenPicker({
   value,
   onChange,
   showErrors,
+  requireDayTime,
+  minDate,
+  now: nowOverride,
   "data-testid": testId = "when-picker",
 }: WhenPickerProps) {
   const t = useT();
   const id = useId();
-  const now = useNow();
+  const phoneNow = useNow();
+  const now = nowOverride === undefined ? phoneNow : nowOverride;
   const today = now !== null ? watParts(now) : null;
-  const problem = now !== null ? whenProblem(value, now) : null;
+  const problem = now !== null ? whenProblem(value, now, requireDayTime) : null;
   const visibleProblem = problem === "future" || showErrors ? problem : null;
   const olderThanWeek =
     value.mode === "day" && value.date && now !== null && now - fromWat(value.date, value.time || "12:00") > 7 * DAY_MS;
@@ -124,6 +135,7 @@ export function WhenPicker({
               type="date"
               numeric
               max={today?.date}
+              min={minDate}
               value={value.date ?? ""}
               onChange={(event) => onChange({ ...value, date: event.target.value })}
               aria-invalid={visibleProblem === "dateRequired" || visibleProblem === "future" || undefined}
@@ -131,7 +143,7 @@ export function WhenPicker({
             />
           ) : null}
           <Field
-            label={value.mode === "day" ? t("ui.when.timeOptional") : t("ui.when.time")}
+            label={value.mode === "day" && !requireDayTime ? t("ui.when.timeOptional") : t("ui.when.time")}
             type="time"
             numeric
             max={value.mode === "today" || value.date === today?.date ? today?.time : undefined}
