@@ -6,6 +6,10 @@ from reports.models import Report
 
 
 class ReviewClock(OrganisationOwned):
+    class Kind(models.TextChoices):
+        FIRST_ACTION = "first_action", "First reviewer action"
+        QUESTION_REPLY = "question_reply", "Question reply"
+
     class State(models.TextChoices):
         ON_TIME = "on_time", "On time"
         DUE_SOON = "due_soon", "Due soon"
@@ -13,7 +17,8 @@ class ReviewClock(OrganisationOwned):
         STOPPED = "stopped", "Stopped"
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    report = models.OneToOneField(Report, on_delete=models.CASCADE, related_name="clock")
+    report = models.ForeignKey(Report, on_delete=models.CASCADE, related_name="clocks")
+    kind = models.CharField(max_length=20, default=Kind.FIRST_ACTION, choices=Kind.choices)
     urgency = models.CharField(max_length=20, default="normal")
     target_minutes = models.PositiveIntegerField(default=240)
     started_at = models.DateTimeField()
@@ -29,7 +34,15 @@ class ReviewClock(OrganisationOwned):
         indexes = [
             models.Index(fields=["organisation", "state"]),
             models.Index(fields=["organisation", "due_at"]),
+            models.Index(fields=["report", "stopped_at"]),
+        ]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["report", "kind"],
+                condition=models.Q(stopped_at__isnull=True),
+                name="unique_open_clock_per_kind",
+            ),
         ]
 
     def __str__(self):
-        return f"ReviewClock({self.report_id}, state={self.state}, target={self.target_minutes}m)"
+        return f"ReviewClock({self.report_id}, kind={self.kind}, state={self.state}, target={self.target_minutes}m)"

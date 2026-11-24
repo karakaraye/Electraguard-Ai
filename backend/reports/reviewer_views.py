@@ -118,11 +118,8 @@ def queue_item(report, photo_count, events, video_count=0, audio_count=0):
     legacy_correction = LEGACY_CATEGORY.get(triage.corrected_category) if triage else None
     corrected = category["corrected_value"] or legacy_correction
     closing = next((event for event in reversed(events) if event.action == Action.CLOSE), None)
-    try:
-        from clocks.calculator import clock_json
-        c_info = clock_json(report)
-    except Exception:
-        c_info = None
+    from clocks.calculator import clock_json
+    c_info = clock_json(report)
     return {
         **identity(report), "channel": channel(report),
         "category": {
@@ -217,20 +214,28 @@ def queue(request):
     reports = reports.select_related("triage").annotate(
         photo_count=photo_count(MediaItem, kind="photo") + photo_count(Evidence),
         video_count=photo_count(MediaItem, kind="video"), audio_count=photo_count(MediaItem, kind="audio"),
-    ).defer("description", "redacted_description", "redactions").prefetch_related(Prefetch("review_events", queryset=report_events(request), to_attr="case_events"))
+    ).defer("description", "redacted_description", "redactions").prefetch_related(
+        "clocks", Prefetch("review_events", queryset=report_events(request), to_attr="case_events")
+    )
+    sort_by_due = "clock_state" in filters
     ordered = []
     for report in reports:
         item = queue_item(report, report.photo_count, report.case_events, report.video_count, report.audio_count)
         if not matches(item, filters):
             continue
-        key = (-URGENCIES.index(item["urgency"]["level"]), not report.incident_details.get("danger_now", False),
-               report.created_at, str(report.pk))
-        if boundary is None or key > boundary:
+        if sort_by_due:
+            due = (item.get("clock") or {}).get("due_at") or "9999-12-31T23:59:59+01:00"
+            key = (due, str(report.pk))
             ordered.append((key, item))
+        else:
+            key = (-URGENCIES.index(item["urgency"]["level"]), not report.incident_details.get("danger_now", False),
+                   report.created_at, str(report.pk))
+            if boundary is None or key > boundary:
+                ordered.append((key, item))
     ordered.sort(key=lambda row: row[0])
     page = ordered[:limit]
     next_cursor = None
-    if len(ordered) > limit:
+    if len(ordered) > limit and not sort_by_due:
         rank, danger, received, pk = page[-1][0]
         next_cursor = signing.dumps([owner, filters, rank, danger, received.isoformat(), pk], salt=CURSOR)
     return JsonResponse({"items": [item for _, item in page], "counts": counts, "next_cursor": next_cursor})
@@ -328,6 +333,7 @@ def case(request, reference):
     return JsonResponse({
         "id": row["id"], "receipt_code": row["receipt_code"], "kind": row["kind"], "channel": row["channel"],
         "status": row["status"], "outcome": row["outcome"], "version": report.version,
+        "clock": row["clock"],
         "description": safe_desc,
         "original_available": original_available,
         "redaction": {
@@ -517,6 +523,9 @@ def decide_suggestion(request, report, kind, data):
     output = {"value": original, "decision": "accepted" if decision == "accept" else "corrected",
               "corrected_value": value if decision == "correct" else None}
     report.review_suggestions = {**report.review_suggestions, kind: output}
+    if kind == "urgency":
+        from clocks.calculator import update_clock_urgency
+        update_clock_urgency(report, output["corrected_value"] or output["value"])
     record_change(
         report, request.user,
         Action.ACCEPT_SUGGESTION if decision == "accept" else Action.CORRECT_SUGGESTION,
