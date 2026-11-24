@@ -1,9 +1,10 @@
 from datetime import date, timedelta
-from io import BytesIO
+from io import BytesIO, StringIO
 from unittest.mock import patch
 from uuid import uuid4
 
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.core.management import call_command
 from django.test import Client, TestCase
 from django.utils import timezone
 from PIL import Image
@@ -656,9 +657,8 @@ class CoverageChecklistTests(TwoOrganisations):
     def test_counts_use_latest_checklist_and_no_answers(self):
         from reference.models import AreaDataset
 
+        call_command("load_reference_areas", stdout=StringIO())
         release = AreaDataset.objects.first()
-        if release is None:
-            self.skipTest("no reference areas loaded")
         state_code, state = next(iter(release.states.items()))
         lga = state["lgas"][0]
         unit = lga["wards"][0]["units"][0][0]
@@ -670,4 +670,5 @@ class CoverageChecklistTests(TwoOrganisations):
         today = timezone.now().astimezone().date().isoformat()
         body = self.client.get("/api/v1/ops/coverage", {"date": today, "stage": "opening"}).json()
         row = next(item for item in body["rows"] if item["lga_code"] == lga["lga_code"])
+        self.assertEqual(row["lga_name"], lga["name"])
         self.assertEqual((row["units_with_checklist"], row["no_answers"]), (1, 0))
