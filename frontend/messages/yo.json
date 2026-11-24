@@ -217,6 +217,13 @@
     "yo": "Yorùbá",
     "ig": "Igbo"
   },
+  "ob": {
+    "title1": "Ròyìn ohun tí o rí ní ibùdó ìdìbò.",
+    "body1": "Olùyẹ̀wò tí a ti kọ́ ń ka gbogbo ìròyìn. Wàá gba kóòdù ìjẹ́rìísí láti tẹ̀lé e.",
+    "next": "Èyí tó kàn",
+    "skip": "Fò ó",
+    "progress": "Ojú-ìwé {current} nínú {total}"
+  },
   "o02": {
     "title": "Ohun tí áàpù yìí ń tọ́jú",
     "line1": "A kì í béèrè orúkọ rẹ.",

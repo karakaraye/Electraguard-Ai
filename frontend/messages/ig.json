@@ -217,6 +217,13 @@
     "yo": "Yorùbá",
     "ig": "Igbo"
   },
+  "ob": {
+    "title1": "Kọọ ihe ị hụrụ n'ebe ntuli aka.",
+    "body1": "Onye nyocha a zụrụ azụ na-agụ akụkọ ọ bụla. Ị ga-enweta koodu nnata iji soro ya.",
+    "next": "Ọzọ",
+    "skip": "Wufee",
+    "progress": "Peeji {current} n'ime {total}"
+  },
   "o02": {
     "title": "Ihe ngwa a na-edebe",
     "line1": "Anyị anaghị ajụ aha gị.",

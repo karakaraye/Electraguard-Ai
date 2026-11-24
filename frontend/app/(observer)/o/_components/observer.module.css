@@ -776,3 +776,55 @@
   color: var(--ink-2);
   font: var(--t-base);
 }
+
+/* ---------- Welcome pages (spec screens 3 to 5) ---------- */
+.welcome {
+  touch-action: pan-y;
+}
+
+.welcomeTitle {
+  margin: 0;
+  font: var(--t-title);
+  letter-spacing: var(--display-tracking);
+  overflow-wrap: anywhere;
+}
+
+.welcomeBar {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+}
+
+.welcomeBar > :last-child {
+  margin-inline-start: auto;
+  min-width: 132px;
+}
+
+.welcomeDots {
+  display: flex;
+  gap: 6px;
+}
+
+.welcomeDots i {
+  display: block;
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-pill);
+  background: var(--rule-control);
+  transition: width var(--dur-step) var(--ease-out);
+}
+
+.welcomeDots i[data-on] {
+  width: 24px;
+  background: var(--ink);
+}
+
+/* Welcome pages carry the scene large (the reference's onboarding): it fills the top of the
+   screen instead of a thin band, so the page is never a short text in an empty column. */
+.welcome div[data-variant="hero"] {
+  --hero-h: clamp(240px, 46vh, 420px);
+}
+
+.welcome .screen {
+  padding-top: var(--s-2);
+}

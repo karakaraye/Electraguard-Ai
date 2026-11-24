@@ -99,6 +99,77 @@ export function LanguageView({ selected, onChoose, offline, banner }: LanguageVi
 /** Short codes for the language discs, written as speakers abbreviate them. */
 const LANGUAGE_SHORT: Record<Locale, string> = { en: "EN", pcm: "NJ", ha: "HA", yo: "YO", ig: "IG" };
 
+/* ---------- Welcome (spec screens 3 to 5) ---------- */
+
+export type WelcomeViewProps = Shell & {
+  onBack: () => void;
+  onNext: () => void;
+  /** Skip goes to the privacy page, never past it (spec D1). */
+  onSkip: () => void;
+};
+
+/**
+ * Welcome page 1 of 3: what the app is for, in one sentence. Page 2 is "What this app
+ * keeps" (O-02) and page 3 is "Works without network". Swipe left or tap Next.
+ */
+export function WelcomeView({ onBack, onNext, onSkip, offline, banner }: WelcomeViewProps) {
+  const t = useT();
+  const start = useRef<{ x: number; y: number } | null>(null);
+  return (
+    <AppShell
+      title={<AppBarTitle />}
+      onBack={onBack}
+      offline={offline}
+      banner={banner}
+      actions={<WelcomeBar page={1} onNext={onNext} onSkip={onSkip} />}
+      data-testid="ob1"
+    >
+      <div
+        className={styles.welcome}
+        onPointerDown={(event) => {
+          start.current = { x: event.clientX, y: event.clientY };
+        }}
+        onPointerUp={(event) => {
+          const from = start.current;
+          start.current = null;
+          if (!from) return;
+          const dx = event.clientX - from.x;
+          // A deliberate left swipe (and not a vertical scroll) turns the page (spec I-2).
+          if (dx < -60 && Math.abs(dx) > Math.abs(event.clientY - from.y)) onNext();
+        }}
+      >
+        <BackgroundArt variant="hero" />
+        <div className={styles.screen}>
+          <h1 className={styles.welcomeTitle}>{t("ob.title1")}</h1>
+          <p className={styles.lead}>{t("ob.body1")}</p>
+        </div>
+      </div>
+    </AppShell>
+  );
+}
+
+/** Page dots, Skip and Next: the welcome pages' action bar. */
+export function WelcomeBar({ page, onNext, onSkip, nextLabel }: { page: 1 | 2 | 3; onNext: () => void; onSkip?: () => void; nextLabel?: string }) {
+  const t = useT();
+  return (
+    <div className={styles.welcomeBar}>
+      <span className={styles.welcomeDots} role="img" aria-label={t("ob.progress", { current: page, total: 3 })}>
+        {[1, 2, 3].map((n) => (
+          <i key={n} data-on={n === page || undefined} />
+        ))}
+      </span>
+      {onSkip ? (
+        <Button variant="quiet" onClick={onSkip} data-testid={`ob${page}-skip`}>
+          {t("ob.skip")}
+        </Button>
+      ) : null}
+      <Button onClick={onNext} data-testid={`ob${page}-next`}>
+        {nextLabel ?? t("ob.next")}
+      </Button>
+    </div>
+  );
+}
+
 /* ---------- O-02 ---------- */
 
 export type NoticeViewProps = Shell & {

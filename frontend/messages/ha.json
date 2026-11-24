@@ -217,6 +217,13 @@
     "yo": "Yorùbá",
     "ig": "Igbo"
   },
+  "ob": {
+    "title1": "Ka ba da rahoton abin da ka gani a rumfar zaɓe.",
+    "body1": "Ƙwararren mai dubawa yana karanta kowane rahoto. Za ka sami lambar rasiti don bin diddiginsa.",
+    "next": "Na gaba",
+    "skip": "Tsallake",
+    "progress": "Shafi {current} cikin {total}"
+  },
   "o02": {
     "title": "Abin da wannan manhaja take ajiyewa",
     "line1": "Ba ma tambayar sunanka.",

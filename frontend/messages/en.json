@@ -216,6 +216,13 @@
     "yo": "Yorùbá",
     "ig": "Igbo"
   },
+  "ob": {
+    "title1": "Report what you see at the polling unit.",
+    "body1": "A trained reviewer reads every report. You get a receipt code to follow it.",
+    "next": "Next",
+    "skip": "Skip",
+    "progress": "Page {current} of {total}"
+  },
   "o02": {
     "title": "What this app keeps",
     "line1": "We do not ask your name.",
