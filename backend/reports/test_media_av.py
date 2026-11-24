@@ -24,7 +24,7 @@ from accounts.models import Organisation, User
 from .media_av import faces, transcode
 from .media_av.transcribe import Transcript
 from .media_storage import original_key, storage
-from .models import MediaAccess, MediaItem, Report, ReviewEvent, UploadSession
+from .models import Evidence, MediaAccess, MediaItem, Report, ReviewEvent, UploadSession
 
 FACE = Path(__file__).with_name("test_data") / "astronaut.jpg"
 CALLS = []
@@ -201,8 +201,8 @@ class RecordingTests(TestCase):
         part = self.client.get(url, HTTP_RANGE="bytes=10-109")
         self.assertEqual((part.status_code, len(body(part)), part["Content-Range"].split("/")[0]), (206, 100, "bytes 10-109"))
         self.assertEqual(self.client.get(url, HTTP_RANGE="bytes=999999999-").status_code, 416)
-        unblurred = self.client.get(original, HTTP_X_MEDIA_ACCESS_REASON="Compare with the observer's account")
-        self.assertEqual(sha256(body(unblurred)).hexdigest(), item.sha256)
+        # MED-04: once processing has finished, the unblurred file is not served to reviewers.
+        self.assertEqual(self.client.get(original, HTTP_X_MEDIA_ACCESS_REASON="Compare with the account").status_code, 404)
         queue = self.client.get("/api/v1/review/queue").json()["items"][0]
         self.assertEqual(queue["media_counts"], {"photo": 0, "video": 1, "audio": 0})
         self.assertIn("video", queue["urgency"]["reasons"])
@@ -342,10 +342,23 @@ class RecordingTests(TestCase):
         self.assign()
         self.assertEqual(faces_in(body(self.client.get(url))), 0)
         self.assertEqual(faces_in(body(self.client.get(url + "?variant=thumb"))), 0)
-        self.assertEqual(self.client.get(url + "?variant=original").status_code, 422)
-        unblurred = self.client.get(url + "?variant=original", HTTP_X_MEDIA_ACCESS_REASON="Identify the uniform")
-        self.assertEqual(faces_in(body(unblurred)), 1)
-        self.assertEqual(MediaAccess.objects.filter(action="download_original").count(), 1)
+        # MED-04: photos are ready at once, so there is never an unblurred original for reviewers.
+        self.assertEqual(self.client.get(url + "?variant=original").status_code, 404)
+        self.assertEqual(self.client.get(url + "?variant=original", HTTP_X_MEDIA_ACCESS_REASON="Identify the uniform").status_code, 404)
+        self.assertFalse(MediaAccess.objects.filter(action="download_original").exists())
+
+    def test_pre_v1_photos_are_shown_to_reviewers_blurred_only(self):
+        raw = FACE.read_bytes()
+        evidence = Evidence.objects.create(
+            report=self.report, organisation_id=self.report.organisation_id, name="face.jpg",
+            content_type="image/jpeg", sha256=sha256(raw).hexdigest(), content=raw,
+        )
+        url = f"/api/v1/media/{evidence.pk}/content"
+        self.assign()
+        self.assertEqual(faces_in(body(self.client.get(url))), 0)
+        self.assertEqual(faces_in(body(self.client.get(url + "?variant=thumb"))), 0)
+        self.assertEqual(self.client.get(url + "?variant=original", HTTP_X_MEDIA_ACCESS_REASON="Identify").status_code, 404)
+        self.assertEqual(MediaAccess.objects.get().action, "view_media")
 
 
     # ---- hardening (review of #18) ------------------------------------------------
@@ -469,18 +482,21 @@ class RecordingTests(TestCase):
 
     def test_range_requests_write_one_audit_event_per_reason(self):
         media = self.send(self.video).json()["media"]
-        self.work()
         self.assign()
         url = f"/api/v1/media/{media['id']}/content"
-        for first in (0, 100, 200):
-            self.assertEqual(self.client.get(url, HTTP_RANGE=f"bytes={first}-{first + 99}").status_code, 206)
-        self.assertEqual(MediaAccess.objects.filter(action="view_media").count(), 1)
+        # While processing: the original, logged once per reason.
         for reason in ("Check the uniform", "Check the uniform", "Compare the timing"):
-            self.client.get(url + "?variant=original", HTTP_RANGE="bytes=0-99", HTTP_X_MEDIA_ACCESS_REASON=reason)
+            part = self.client.get(url + "?variant=original", HTTP_RANGE="bytes=0-99", HTTP_X_MEDIA_ACCESS_REASON=reason)
+            self.assertEqual(part.status_code, 206)
         self.assertEqual(
             list(MediaAccess.objects.filter(action="download_original").order_by("created_at").values_list("reason", flat=True)),
             ["Check the uniform", "Compare the timing"],
         )
+        # When ready: the blurred copy, logged once for many range requests.
+        self.work()
+        for first in (0, 100, 200):
+            self.assertEqual(self.client.get(url, HTTP_RANGE=f"bytes={first}-{first + 99}").status_code, 206)
+        self.assertEqual(MediaAccess.objects.filter(action="view_media").count(), 1)
 
 
 @skipUnless(os.getenv("TRANSCRIPTION_MODEL") and shutil.which("espeak-ng"), "needs a local Whisper model and espeak-ng")

@@ -558,11 +558,9 @@ def stored_source(item, variant, reviewer):
     """Choose (storage key, content type, file name) for a ready item, or an error response."""
     org, kind = item.organisation_id, item.kind
     if variant == "original":
-        # Reviewers reach the unblurred cleaned file only with a recorded reason. Media blurred
-        # at the observer's request keeps no unblurred copy.
-        if item.blurred or kind == "audio":
-            return missing()
-        return media_key(org, item.pk, kind), TYPES_OUT[kind], NAMES[kind]
+        # MED-04: the original is available only while the item is processing. Afterwards
+        # reviewers see the blurred copy; unblurred access would need a separate approval.
+        return missing()
     # Reviewers see faces blurred: the stored file when blurred, else the review copy.
     face_safe = kind == "audio" or item.blurred
     if reviewer and not face_safe and not item.review_copy:
@@ -602,12 +600,16 @@ def download(request, reference):
     variant = request.GET.get("variant", "display")
     reviewer = actor.has_role(User.Role.REVIEWER)
     legacy = None
-    if item is None and reviewer and variant == "original":
+    if item is None and reviewer and variant in ("display", "thumb"):
+        # Pre-v1 photos have no stored blurred copy; reviewers get one blurred on the fly.
         legacy = org_scope(request, Evidence).filter(
             pk=reference, report__organisation_id=actor.organisation_id,
             report__assigned_reviewer=actor,
         ).exclude(report__status=Report.Status.WITHDRAWN).defer("content").first()
     if legacy is None and (item is None or variant not in VARIANTS[item.kind]):
+        return missing()
+    # MED-04: `original` only while processing, only for the assigned reviewer.
+    if variant == "original" and (not reviewer or item.status != MediaItem.Status.PROCESSING):
         return missing()
     if reviewer:
         assigned = org_scope(request, Report).select_for_update(no_key=True).filter(
@@ -615,9 +617,6 @@ def download(request, reference):
         ).exclude(status=Report.Status.WITHDRAWN).first()
         if assigned is None:
             return missing()
-    if variant == "original" and not reviewer:
-        return missing()
-
     reason = ""
     if variant == "original":
         reason = access_reason(request)
@@ -628,10 +627,10 @@ def download(request, reference):
 
     if legacy:
         try:
-            raw, _ = clean_photo(bytes(legacy.content), legacy.content_type, False)
+            raw, _ = clean_photo(bytes(legacy.content), legacy.content_type, True)
         except ValueError:
             return error(422, "media_unreadable", "The photo could not be decoded.")
-        response, name = partial_response(raw, header), NAMES["photo"]
+        response, name = partial_response(thumbnail(raw) if variant == "thumb" else raw, header), NAMES["photo"]
     elif item.status == MediaItem.Status.FAILED:
         return error(409, "invalid_transition", "This file could not be prepared.")
     elif item.status == MediaItem.Status.PROCESSING:

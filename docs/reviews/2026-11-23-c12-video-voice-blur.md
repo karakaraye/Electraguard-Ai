@@ -27,12 +27,12 @@ Branch `claude/fervent-knuth-s7h3i1`, on top of `production-readiness`. Backend 
 - In video, faces from the last three frames stay blurred, so one missed frame does not expose a face.
 - Photos now get real blur too. The previous `face_blur` was a stub.
 
-**Who sees what.** This follows the C6 rule that reviewers see faces blurred by default.
+**Who sees what.** Reviewers see faces blurred. Unblurred access follows MED-04 (see review item 4 below).
 
 | Observer asked for blur | Stored file | Reviewer's default view | Unblurred for reviewer |
 |---|---|---|---|
 | Yes | Blurred; no unblurred copy kept | Blurred file | Never (`404`) |
-| No | Unblurred (observer's own view) | Separate blurred copy (`review_copy`) | `variant=original` with `X-Media-Access-Reason`, logged as `download_original` |
+| No | Unblurred (observer's own view) | Separate blurred copy (`review_copy`) | Only the verified original while processing, with `X-Media-Access-Reason`, logged as `download_original`. Never after processing (`404`). |
 
 While an item is processing, only the assigned reviewer can open the verified original, with a reason and a log entry. This is the contract's urgent-case rule. It is refused when the observer asked for blur. Audio needs no blur, so reviewers play it directly.
 
@@ -114,4 +114,8 @@ Review on #18 from the other team (changes requested):
   - Audit throttling.
 - **Verified:** 106 backend tests pass. A 60 s 1280 x 720 video still processes within the limits: 1,800 frames, 72 s on 4 cores, with the reviewer copy.
 
-**Deliberate deviation from MED-04, kept pending a decision (review item 4).** For a ready photo or video that the observer did not ask to blur, the assigned reviewer can open the unblurred cleaned file. They must give a reason, and the access is logged. C6 introduced this for photos, so a reviewer can check details the blur hides, such as a uniform or a sign. The contract allows `original` only while processing. Either the contract is amended to match, or this access is removed. Media the observer asked to blur never has an unblurred copy.
+**Review item 4, decided by the supervisor on 24 Nov: follow MED-04.**
+- `variant=original` is served only while an item is processing, only to the assigned reviewer, with a logged reason. It is refused when the observer asked for blur.
+- Once processing finishes, reviewers get the blurred copy only. This ends the reason-logged unblurred access that C6 introduced for ready photos.
+- Pre-v1 photos have no stored blurred copy, so reviewers now get one blurred on the fly.
+- If an investigation needs the unblurred file, that is a separate audited request approved by a supervisor, outside this slice.
