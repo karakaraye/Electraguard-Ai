@@ -1,4 +1,5 @@
 from django.contrib.auth import authenticate, login, logout
+from django.db import transaction
 from django.http import JsonResponse
 from django.middleware.csrf import get_token
 from django.views.decorators.cache import never_cache
@@ -7,7 +8,7 @@ from django.views.decorators.http import require_GET, require_POST
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from .models import User
+from .models import StaffCredential, User
 from .observer_sessions import track_session
 from .permissions import require_role
 
@@ -25,12 +26,18 @@ def legacy_role(user):
 @never_cache
 @require_POST
 @csrf_protect
+@transaction.atomic
 def sign_in(request):
     # Django's CSRF decorator also covers unauthenticated login requests.
     user = authenticate(
         request, email=request.POST.get("email", ""), password=request.POST.get("password", "")
     )
     if user is None or user.role not in User.Role.values:
+        return JsonResponse({"detail": "Invalid email or password."}, status=401)
+    authorized = User.objects.select_for_update().filter(
+        pk=user.pk, is_active=True, password=user.password,
+    ).exists()
+    if not authorized or StaffCredential.objects.filter(user=user, enforce_totp=True).exists():
         return JsonResponse({"detail": "Invalid email or password."}, status=401)
     login(request, user)
     track_session(request, user)

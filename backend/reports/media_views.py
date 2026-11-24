@@ -427,13 +427,13 @@ def download(request, reference):
     ).exclude(report__status=Report.Status.WITHDRAWN)
     if actor.role == User.Role.OBSERVER:
         photos = photos.filter(report__observer=actor)
-    elif actor.role == User.Role.REVIEWER:
+    elif actor.has_role(User.Role.REVIEWER):
         photos = photos.filter(report__assigned_reviewer=actor)
     else:
         return missing()
     photo = photos.first()
     variant = request.GET.get("variant", "display")
-    reviewer = actor.role == User.Role.REVIEWER
+    reviewer = actor.has_role(User.Role.REVIEWER)
     legacy = None
     if photo is None and reviewer and variant == "original":
         legacy = org_scope(request, Evidence).filter(

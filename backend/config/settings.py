@@ -12,6 +12,9 @@ load_dotenv(Path(__file__).resolve().parents[2] / ".env")
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "")
 if not SECRET_KEY:
     raise ImproperlyConfigured("Set DJANGO_SECRET_KEY.")
+SECRET_KEY_FALLBACKS = [
+    key for key in os.getenv("DJANGO_SECRET_KEY_FALLBACKS", "").split(",") if key
+]
 DEBUG = os.getenv("DJANGO_DEBUG", "").lower() == "true"
 OBSERVATION_INTAKE_ENABLED = os.getenv(
     "OBSERVATION_INTAKE_ENABLED", "true" if DEBUG else "false"
@@ -47,6 +50,8 @@ INSTALLED_APPS = [
     "accounts",
     "reports",
     "reference",
+    "approved_answers",
+    "discussions",
 ]
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -55,6 +60,7 @@ MIDDLEWARE = [
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "accounts.observer_sessions.ObserverSessionMiddleware",
+    "accounts.staff_sessions.StaffSessionMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 ROOT_URLCONF = "config.urls"
