@@ -1001,3 +1001,48 @@
   margin-top: 2px;
   color: var(--sun-ink);
 }
+
+/* ---------- Choose your PIN: live rules (spec screen 8) ---------- */
+.pinRules {
+  display: grid;
+  gap: var(--s-2);
+  margin: 0;
+  padding: var(--s-4);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  background: var(--paper-raised);
+  list-style: none;
+}
+
+.pinRules li {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr);
+  gap: var(--s-3);
+  align-items: center;
+  color: var(--ink-2);
+  font: var(--t-body);
+}
+
+.pinRules li[data-ok] {
+  color: var(--ink);
+}
+
+.pinRuleMark {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border: 2px solid var(--rule-control);
+  border-radius: 50%;
+  color: var(--fixed-paper);
+  transition: background-color var(--dur-fade) var(--ease-out), border-color var(--dur-fade) var(--ease-out);
+}
+
+.pinRules li[data-ok] .pinRuleMark {
+  border-color: var(--ok-solid);
+  background: var(--ok-solid);
+}
+
+.pinRules li[data-ok] .pinRuleMark svg {
+  animation: languageTick var(--dur-fade) var(--ease-pop) both;
+}

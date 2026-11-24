@@ -270,6 +270,11 @@
       "body": "Họrọ ọnụọgụ 6 ị ga-echeta. Ejila ụbọchị ọmụmụ gị ma ọ bụ 123456. Agwala onye ọ bụla ya.",
       "newLabel": "PIN ọhụrụ",
       "confirmLabel": "Pịnye PIN ọhụrụ ahụ ọzọ",
+      "rules": {
+        "six": "Ọnụọgụ 6",
+        "notSimple": "Ọ dịghị mfe ịkọ, dịka 123456 ma ọ bụ afọ ọmụmụ",
+        "match": "PIN abụọ ahụ bụ otu"
+      },
       "submit": "Chekwaa PIN m",
       "submitting": "A na-echekwa",
       "tooSimple": "PIN ahụ dị mfe ịkọ. Nwaa ọnụọgụ ndị ọzọ.",

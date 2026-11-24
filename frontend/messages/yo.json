@@ -270,6 +270,11 @@
       "body": "Mú nọ́mbà mẹ́fà tí o máa rántí. Má ṣe lo ọjọ́ìbí rẹ tàbí 123456. Má ṣe fi han ẹnikẹ́ni.",
       "newLabel": "PIN tuntun",
       "confirmLabel": "Tún PIN tuntun náà tẹ",
+      "rules": {
+        "six": "Nọ́mbà mẹ́fà",
+        "notSimple": "Kò rọrùn láti mọ̀, bíi 123456 tàbí ọdún ìbí",
+        "match": "PIN méjèèjì bára mu"
+      },
       "submit": "Fi PIN mi pamọ́",
       "submitting": "À ń fi pamọ́",
       "tooSimple": "PIN yẹn rọrùn jù láti mọ̀. Gbìyànjú àwọn nọ́mbà míì.",

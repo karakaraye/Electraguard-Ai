@@ -270,6 +270,11 @@
       "body": "Zaɓi lambobi 6 da za ka tuna. Kada ka yi amfani da ranar haihuwarka ko 123456. Kada ka gaya wa kowa.",
       "newLabel": "Sabon PIN",
       "confirmLabel": "Sake rubuta sabon PIN",
+      "rules": {
+        "six": "Lambobi 6",
+        "notSimple": "Ba mai sauƙin ganewa ba, kamar 123456 ko shekarar haihuwa",
+        "match": "PIN guda biyun iri ɗaya ne"
+      },
       "submit": "Ajiye PIN ɗina",
       "submitting": "Ana ajiyewa",
       "tooSimple": "Wannan PIN yana da sauƙin ganewa. Gwada wasu lambobi daban.",

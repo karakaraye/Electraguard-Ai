@@ -22,6 +22,7 @@ import {
   PlaceIcon,
   ShieldCheckIcon,
 } from "../../../../ui/icons";
+import { pinTooSimple } from "../_lib/codes";
 import { AppBarTitle } from "../_components/AppBarTitle";
 import { BadgePictogram, PersonPictogram } from "../_components/pictograms";
 import styles from "../_components/observer.module.css";
@@ -526,6 +527,13 @@ export function SetPinView({ first, second, onFirst, onSecond, onSubmit, onBack,
   const t = useT();
   const [show, setShow] = useState(false);
   const digits = (value: string) => value.replace(/\D/g, "").slice(0, 6);
+  // Live rules (spec screen 8): each ticks as it is met, before Save is tapped.
+  const six = /^\d{6}$/.test(first);
+  const rules = [
+    { key: "o03.setPin.rules.six", ok: six },
+    { key: "o03.setPin.rules.notSimple", ok: six && !pinTooSimple(first) },
+    { key: "o03.setPin.rules.match", ok: six && second === first },
+  ];
   return (
     <AppShell
       title={<AppBarTitle />}
@@ -534,8 +542,13 @@ export function SetPinView({ first, second, onFirst, onSecond, onSubmit, onBack,
       banner={banner}
       actions={
         <>
-          <p className={styles.status} role="alert" data-testid="o03-setpin-error">
-            {error?.field === "form" ? <span className={styles.strong}>{t(error.key)}</span> : null}
+          <p className={styles.formError} role="alert" data-testid="o03-setpin-error">
+            {error?.field === "form" ? (
+              <>
+                <AlertIcon aria-hidden="true" />
+                <span>{t(error.key)}</span>
+              </>
+            ) : null}
           </p>
           <Button block type="submit" form="o03-set-pin" loading={sending} loadingLabel={t("o03.setPin.submitting")} data-testid="o03-setpin-submit">
             {t("o03.setPin.submit")}
@@ -588,6 +601,17 @@ export function SetPinView({ first, second, onFirst, onSecond, onSubmit, onBack,
             {show ? t("o03.signIn.hidePin") : t("o03.signIn.showPin")}
           </Button>
         </div>
+        <ul className={styles.pinRules} data-testid="o03-pin-rules">
+          {rules.map((rule) => (
+            <li key={rule.key} data-ok={rule.ok || undefined}>
+              <span className={styles.pinRuleMark} aria-hidden="true">
+                {rule.ok ? <CheckIcon size={14} strokeWidth={3} /> : null}
+              </span>
+              <span>{t(rule.key)}</span>
+              <span className="eg-sr-only">{rule.ok ? t("common.done") : ""}</span>
+            </li>
+          ))}
+        </ul>
       </form>
     </AppShell>
   );

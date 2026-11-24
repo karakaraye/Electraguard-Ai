@@ -270,6 +270,11 @@
       "body": "Pick 6 numbers wey you go remember. No use your birthday or 123456. No share am with anybody.",
       "newLabel": "New PIN",
       "confirmLabel": "Type the new PIN again",
+      "rules": {
+        "six": "6 numbers",
+        "notSimple": "No easy to guess, like 123456 or year wey you born",
+        "match": "The two PIN dey the same"
+      },
       "submit": "Save my PIN",
       "submitting": "E dey save",
       "tooSimple": "That PIN too easy to guess. Try different numbers.",

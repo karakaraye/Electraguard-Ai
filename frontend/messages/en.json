@@ -269,6 +269,11 @@
       "body": "Pick 6 numbers you will remember. Do not use your birthday or 123456. Do not share it.",
       "newLabel": "New PIN",
       "confirmLabel": "Type the new PIN again",
+      "rules": {
+        "six": "6 numbers",
+        "notSimple": "Not easy to guess, like 123456 or a birth year",
+        "match": "Both PINs are the same"
+      },
       "submit": "Save my PIN",
       "submitting": "Saving",
       "tooSimple": "That PIN is too easy to guess. Try different numbers.",
