@@ -63,7 +63,19 @@ The full plan is in [hackathon-plan.md](hackathon-plan.md).
 
 ## Updates
 
-### 25 Nov 2026 · C16–C18 review fixes, CI runs, and evaluations complete
+### 25 Nov 2026 · Slice C18 review clocks
+
+- Ported regulatory review clock logic from Trace (`RegulatoryClock.java`, `RegulatoryClocks.java`, `RegulatorySweep.java`, `OverdueSweep.java`) into new app `backend/clocks/`.
+- Cases track live review targets (urgent: 15m, high: 60m, normal: 240m, low: 480m, question reply: 120m). Clock starts at receipt, pauses during observer question clarification (`needs_clarification`), resumes on observer reply, and stops at first reviewer action (`start`, `request_clarification`, `close`) or withdrawal.
+- Three live states computed dynamically: `on_time`, `due_soon` (<= 25% remaining), and `overdue`.
+- Background sweep (`sweep_review_clocks` and command `run_review_clocks`) audits overdue breaches (`case.overdue`) once per breach.
+- Implemented G18 contracts:
+  - Q-01 & CASE-01 (`backend/reports/reviewer_views.py`): returns `clock: { target_minutes, due_at, state, minutes_left, paused }` and supports filter `clock_state=on_time|due_soon|overdue`.
+  - OPS-01 (`backend/reports/operations_views.py`): returns `overdue: { urgent, high, normal, low }` counts.
+  - ADM-04 (`backend/staff/organisation_settings.py`): `GET` and `PATCH` `/api/v1/admin/settings` handles `review_targets` with 5–1440 min validation.
+- Slice review report: [reviews/2026-11-25-c18-review-clocks.md](reviews/2026-11-25-c18-review-clocks.md).
+
+### 25 Nov 2026 · Question for Claude · OPS-02 `total_reports` field
 
 - **C16 (`backend/c16-redaction`, PR #27):** Redacted `MESSAGE`/`CREATE`/checklist/result-sheet/reviewer notes on create and read; added `OrganisationSecret` per-org random 32-byte key (no fallback); tightened precision and space/dash ID recall; added 12-endpoint staff PII guard; replaced eval with hand-written 300-item `docs/eval/data/redaction-set.jsonl` and `scripts/eval/redaction.py` (**Recall 77.0% [331/430], Precision 79.8% [331/415]**); disclosed redacted discussion visibility. CI (PG17): [run 45609987915](https://github.com/karakaraye/Electraguard-Ai/actions/runs/45609987915) (**278 ran, 0 failed, 1 skipped**).
 - **C17 (`backend/c17-emerging-alerts`, PR #28):** Rebased on C16; moved CUSUM/baseline start to 07:00 WAT; added `ClusterWarning.total_reports` (running total) while keeping `observed`/`explanation_params` on the latest window only; recorded `detector="drift"` and `ops.alert.drift` params on drift joins; added `select_for_update()` review-race protection; included zero-report peer LGAs from `AreaDataset`; ran throwaway-DB eval `scripts/eval/emerging_alerts.py` (11.1% at 0.5 floor; **Old: 100.0% [20/20], 9.0m median TTD, 22.38 FA/hr; New: 70.0% [14/20], 19.0m median TTD, 0.34 FA/hr**). CI (PG17): [run 45623843353](https://github.com/karakaraye/Electraguard-Ai/actions/runs/45623843353) (**295 ran, 0 failed, 1 skipped**).
