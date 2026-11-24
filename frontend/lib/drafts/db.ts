@@ -11,14 +11,12 @@ export const DB_VERSION = 1;
 export type StoreName = "drafts" | "blobs" | "outbox" | "received" | "refdata";
 
 let dbPromise: Promise<IDBDatabase> | null = null;
-let cachedDb: IDBDatabase | null = null;
 
 export function idbAvailable(): boolean {
   return typeof indexedDB !== "undefined";
 }
 
 export function openDb(): Promise<IDBDatabase> {
-  if (cachedDb) return Promise.resolve(cachedDb);
   if (dbPromise) return dbPromise;
   dbPromise = new Promise<IDBDatabase>((resolve, reject) => {
     const request = indexedDB.open(DB_NAME, DB_VERSION);
@@ -40,17 +38,14 @@ export function openDb(): Promise<IDBDatabase> {
     };
     request.onsuccess = () => {
       const db = request.result;
-      cachedDb = db;
       db.onversionchange = () => {
         db.close();
         dbPromise = null;
-        cachedDb = null;
       };
       resolve(db);
     };
     request.onerror = () => {
       dbPromise = null;
-      cachedDb = null;
       reject(request.error);
     };
     request.onblocked = () => reject(new Error("IndexedDB upgrade blocked by another tab"));
@@ -74,29 +69,29 @@ function complete(tx: IDBTransaction): Promise<void> {
 }
 
 export async function get<T>(store: StoreName, key: IDBValidKey): Promise<T | undefined> {
-  const db = cachedDb ?? (await openDb());
+  const db = await openDb();
   return done(db.transaction(store, "readonly").objectStore(store).get(key)) as Promise<T | undefined>;
 }
 
 export async function getAll<T>(store: StoreName): Promise<T[]> {
-  const db = cachedDb ?? (await openDb());
+  const db = await openDb();
   return done(db.transaction(store, "readonly").objectStore(store).getAll()) as Promise<T[]>;
 }
 
 export async function getAllByOwner<T>(store: "outbox" | "received", owner: string): Promise<T[]> {
-  const db = cachedDb ?? (await openDb());
+  const db = await openDb();
   return done(db.transaction(store, "readonly").objectStore(store).index("owner").getAll(owner)) as Promise<T[]>;
 }
 
 export async function put<T>(store: StoreName, value: T): Promise<void> {
-  const db = cachedDb ?? (await openDb());
+  const db = await openDb();
   const tx = db.transaction(store, "readwrite");
   tx.objectStore(store).put(value);
   await complete(tx);
 }
 
 export async function del(store: StoreName, key: IDBValidKey): Promise<void> {
-  const db = cachedDb ?? (await openDb());
+  const db = await openDb();
   const tx = db.transaction(store, "readwrite");
   tx.objectStore(store).delete(key);
   await complete(tx);
@@ -104,7 +99,7 @@ export async function del(store: StoreName, key: IDBValidKey): Promise<void> {
 
 /** Several writes in one transaction: all happen, or none do. */
 export async function atomically(stores: StoreName[], work: (tx: IDBTransaction) => void): Promise<void> {
-  const db = cachedDb ?? (await openDb());
+  const db = await openDb();
   const tx = db.transaction(stores, "readwrite");
   work(tx);
   await complete(tx);

@@ -108,6 +108,23 @@ All screenshot captures were taken at mobile resolution (390x844 viewport, 2x DP
 
 ## 5. Verification Results
 
+### Proposed Separate Fix: Draft Flush Timing
+
+During initial end-to-end testing of `05-drafts.spec.ts`, a race condition was identified between discrete user interactions (e.g. category tile selection or location picker dropdown change) and immediate programmatic page reload or navigation within automated test runs (occurring in <10ms). The production draft management implementation in `frontend/lib/drafts/index.ts` debounces all draft writes by 250ms and relies on `pagehide` calling `flush()`. However, because `openDb()` in `db.ts` returns a new promise that yields to the microtask queue, an immediate page destruction in Chromium can terminate the execution context before IndexedDB commits the pending un-debounced discrete mutation.
+
+The proposed separate fix was:
+1. Cache the `IDBDatabase` connection instance in `db.ts` so `openDb()` is synchronous once established.
+2. Distinguish discrete choices (`category`, `danger`, `location`, `step`) from rapid text typing (`description`), triggering an immediate `flush()` on discrete selections while keeping the 250ms debounce for text entry.
+
+As instructed, this logic change has been reverted on `design/visual-refresh` so `frontend/lib/drafts/` remains identical to `origin/production-readiness`, preserving the baseline behavior for isolated review.
+
+Three consecutive runs of `05-drafts.spec.ts` were executed against the reverted baseline code:
+- **Run 1:** 1 passed, 1 failed (Test 1 failed at line 21: `expect(locator).toHaveValue('vote_buying')` timeout waiting for checked category input after immediate `reloadAt`).
+- **Run 2:** 1 passed, 1 failed (Test 1 failed at line 21 with identical timeout).
+- **Run 3:** 1 passed, 1 failed (Test 1 failed at line 21 with identical timeout).
+
+In all three runs, Test 2 (`draft: another code on the same phone does not see the first code's draft`) passed consistently. This proves that the race condition is inherent to the baseline `production-readiness` draft debounce and asynchronous `pagehide` handling during instant reloads.
+
 ### 5.1 Static Analysis & Build
 - `npm run lint`: **0 errors, 1 pre-existing warning**
 - `npm run typecheck`: **0 errors**
