@@ -904,5 +904,444 @@
     },
     "sms": "Ba ka da wayar zamani? Aika STATUS da lambarka zuwa {shortCode}.",
     "checkCode": "Duba {code}"
+  },
+  "staff": {
+    "nav": {
+      "queue": "[HA draft] Review Queue",
+      "cases": "[HA draft] Cases",
+      "assign": "[HA draft] Assign",
+      "ops": "[HA draft] Operations",
+      "rumours": "[HA draft] Rumour Desk",
+      "publish": "[HA draft] Publish",
+      "discussions": "[HA draft] Discussions",
+      "codes": "[HA draft] Observer Codes",
+      "staff": "[HA draft] Staff Accounts",
+      "settings": "[HA draft] Settings",
+      "security": "[HA draft] Security"
+    },
+    "roles": {
+      "reviewer": "[HA draft] Reviewer",
+      "moderator": "[HA draft] Moderator",
+      "coordinator": "[HA draft] Coordinator",
+      "org_admin": "[HA draft] Admin"
+    },
+    "signOut": "[HA draft] Sign out",
+    "signedInAs": "[HA draft] Signed in as {name}",
+    "forbidden": "[HA draft] You do not have permission to view this section.",
+    "networkError": "[HA draft] Could not connect to the server. Check your network connection.",
+    "endpointNotReady": "[HA draft] This endpoint is not available yet (HTTP 404).",
+    "loading": "[HA draft] Loading staff data...",
+    "retry": "[HA draft] Try again",
+    "save": "[HA draft] Save changes",
+    "cancel": "[HA draft] Cancel",
+    "confirm": "[HA draft] Confirm",
+    "backToQueue": "[HA draft] Back to queue"
+  },
+  "s01": {
+    "title": "[HA draft] Staff sign-in",
+    "subtitle": "[HA draft] Official election observation review portal",
+    "emailLabel": "[HA draft] Email address",
+    "emailHint": "[HA draft] Your registered staff email",
+    "passwordLabel": "[HA draft] Password",
+    "signInButton": "[HA draft] Sign in",
+    "signingIn": "[HA draft] Signing in...",
+    "totpTitle": "[HA draft] Two-factor authentication",
+    "totpHint": "[HA draft] Enter the 6-digit verification code from your authenticator app.",
+    "totpLabel": "[HA draft] Authenticator code",
+    "totpVerify": "[HA draft] Verify code",
+    "totpVerifying": "[HA draft] Verifying...",
+    "enrolTitle": "[HA draft] Set up two-factor authentication",
+    "enrolSubtitle": "[HA draft] Scan the code or enter the secret key into your authenticator app.",
+    "enrolSecretLabel": "[HA draft] Secret key",
+    "enrolSecretCopy": "[HA draft] Copy key",
+    "enrolSecretCopied": "[HA draft] Copied",
+    "enrolUriLabel": "[HA draft] Authenticator link",
+    "enrolCodeLabel": "[HA draft] Enter the 6-digit code to confirm",
+    "enrolConfirm": "[HA draft] Confirm and sign in",
+    "inviteTitle": "[HA draft] Accept staff invitation",
+    "inviteSubtitle": "[HA draft] Choose a secure password for your account.",
+    "newPasswordLabel": "[HA draft] New password",
+    "newPasswordHint": "[HA draft] At least 12 characters. Use a mix of letters, numbers, and symbols.",
+    "acceptInviteButton": "[HA draft] Set password and continue",
+    "errors": {
+      "invalidCredentials": "[HA draft] Email or password is wrong.",
+      "accountLocked": "[HA draft] Too many failed tries. Try again in 15 minutes.",
+      "totpInvalid": "[HA draft] That code did not work. Check the time on your phone and try again.",
+      "totpRequired": "[HA draft] Two-factor verification required.",
+      "inviteInvalid": "[HA draft] This invitation link is invalid or has expired.",
+      "rateLimited": "[HA draft] Too many attempts. Please wait a moment."
+    }
+  },
+  "s02": {
+    "title": "[HA draft] Review queue",
+    "subtitle": "[HA draft] Cases ordered by urgency and danger",
+    "counts": {
+      "received": "[HA draft] {count} received",
+      "inReview": "[HA draft] {count} in review",
+      "question": "[HA draft] {count} waiting on answer"
+    },
+    "filters": {
+      "all": "[HA draft] All",
+      "status": "[HA draft] Status",
+      "urgency": "[HA draft] Urgency",
+      "category": "[HA draft] Category",
+      "channel": "[HA draft] Channel",
+      "hasEvidence": "[HA draft] Has media",
+      "clear": "[HA draft] Reset filters"
+    },
+    "columns": {
+      "urgency": "[HA draft] Urgency",
+      "reference": "[HA draft] Reference",
+      "category": "[HA draft] Category",
+      "location": "[HA draft] Location",
+      "occurred": "[HA draft] Occurred",
+      "evidence": "[HA draft] Evidence",
+      "status": "[HA draft] Status"
+    },
+    "urgency": {
+      "urgent": "[HA draft] Urgent",
+      "high": "[HA draft] High",
+      "normal": "[HA draft] Normal",
+      "low": "[HA draft] Low"
+    },
+    "reasons": {
+      "danger_reported": "[HA draft] Danger reported",
+      "intimidation": "[HA draft] Intimidation",
+      "vote_buying": "[HA draft] Vote buying",
+      "seen_firsthand": "[HA draft] Firsthand",
+      "told_by_someone": "[HA draft] Hearsay",
+      "video": "[HA draft] Video",
+      "photo": "[HA draft] Photo",
+      "audio": "[HA draft] Audio",
+      "cluster": "[HA draft] Area cluster",
+      "result_sheet_flag": "[HA draft] Result sheet flag",
+      "citizen_report": "[HA draft] Citizen report",
+      "sms_report": "[HA draft] SMS report"
+    },
+    "empty": "[HA draft] No cases matching the current filters.",
+    "emptySubtitle": "[HA draft] New reports assigned to you will appear here.",
+    "loadMore": "[HA draft] Load more cases"
+  },
+  "s03": {
+    "title": "[HA draft] Case review",
+    "caseRef": "[HA draft] Case {ref}",
+    "reporter": {
+      "observer": "[HA draft] Accredited observer ({code})",
+      "citizen": "[HA draft] Citizen report ({code})",
+      "sms": "[HA draft] SMS report",
+      "ussd": "[HA draft] USSD report"
+    },
+    "originalText": "[HA draft] Original description",
+    "language": "[HA draft] Language: {lang}",
+    "translation": "[HA draft] Machine translation. Check the original.",
+    "translationNotice": "[HA draft] Machine translation. Check the original.",
+    "redaction": {
+      "title": "[HA draft] Redact personal names",
+      "hint": "[HA draft] Select text in the description to hide names before publication or sharing.",
+      "hideSelection": "[HA draft] Hide selection",
+      "hideThisName": "[HA draft] Hide this name",
+      "undo": "[HA draft] Undo",
+      "hidden": "[HA draft] Hidden",
+      "start": "[HA draft] Start offset",
+      "end": "[HA draft] End offset",
+      "addSpan": "[HA draft] Add redaction span",
+      "clearSpans": "[HA draft] Clear all redactions",
+      "save": "[HA draft] Save redactions",
+      "preview": "[HA draft] Redacted preview:"
+    },
+    "details": {
+      "category": "[HA draft] Category: {category}",
+      "danger": "[HA draft] Danger reported: Yes",
+      "firsthand": "[HA draft] Observed firsthand: Yes",
+      "location": "[HA draft] Location",
+      "occurredAt": "[HA draft] Occurred: {time}",
+      "receivedAt": "[HA draft] Received: {time}",
+      "skew": "[HA draft] Phone clock skew: {seconds}s"
+    },
+    "evidence": {
+      "title": "[HA draft] Evidence & integrity",
+      "sha256": "[HA draft] SHA-256 verified",
+      "exifRemoved": "[HA draft] EXIF stripped",
+      "blurred": "[HA draft] Faces blurred",
+      "unblur": "[HA draft] View unblurred (recorded in audit)",
+      "transcript": "[HA draft] Audio transcript",
+      "pendingUpload": "[HA draft] Pending upload: {received} of {total} bytes received",
+      "noEvidence": "[HA draft] No media attachments submitted."
+    },
+    "suggestions": {
+      "title": "[HA draft] AI suggestions",
+      "notice": "[HA draft] All suggestions are machine generated and require reviewer decision.",
+      "categorySuggested": "[HA draft] Suggested category: {category}",
+      "urgencySuggested": "[HA draft] Suggested urgency: {urgency}",
+      "accept": "[HA draft] Accept suggestion",
+      "correct": "[HA draft] Correct suggestion",
+      "correctLabel": "[HA draft] Choose correction",
+      "saveCorrection": "[HA draft] Apply correction"
+    },
+    "duplicates": {
+      "title": "[HA draft] Duplicate candidates",
+      "sideBySide": "[HA draft] Side-by-side comparison",
+      "similarity": "[HA draft] {percent}% match",
+      "link": "[HA draft] Link as duplicate",
+      "keepSeparate": "[HA draft] Keep separate",
+      "linked": "[HA draft] Linked",
+      "inaccessible": "[HA draft] Report from another organisation (metadata only)"
+    },
+    "resultSheet": {
+      "title": "[HA draft] Result sheet consistency check",
+      "disclaimer": "[HA draft] Consistency check for review. This is not a result.",
+      "entryMethod": "[HA draft] Entry method: {method}",
+      "flags": "[HA draft] Flags detected",
+      "accreditedExceeds": "[HA draft] Accredited voters exceed registered voters",
+      "sumDiffers": "[HA draft] Party votes plus rejected votes differs from accredited count",
+      "roundNumbers": "[HA draft] Unusually round numbers",
+      "benignCauses": "[HA draft] Possible benign causes: copy error, unreadable digit"
+    },
+    "conversation": {
+      "title": "[HA draft] Observer conversation",
+      "send": "[HA draft] Send message",
+      "placeholder": "[HA draft] Type a message to the observer...",
+      "markRead": "[HA draft] Mark messages read",
+      "noMessages": "[HA draft] No messages yet."
+    },
+    "actions": {
+      "title": "[HA draft] Case actions",
+      "startReview": "[HA draft] Start review",
+      "askQuestion": "[HA draft] Ask formal question",
+      "questionLabel": "[HA draft] Question for reporter",
+      "questionHint": "[HA draft] The observer or citizen will see this question and can respond.",
+      "submitQuestion": "[HA draft] Send question",
+      "closeCase": "[HA draft] Close case",
+      "outcomeLabel": "[HA draft] Outcome",
+      "outcome": {
+        "corroborated": "[HA draft] Corroborated",
+        "insufficient_evidence": "[HA draft] Insufficient evidence",
+        "out_of_scope": "[HA draft] Out of scope"
+      },
+      "rationaleLabel": "[HA draft] Internal rationale",
+      "rationaleHint": "[HA draft] Explain why this case was corroborated, closed or dismissed. Never shown to reporters.",
+      "expectedMediaLabel": "[HA draft] Confirm evidence considered in this closure",
+      "submitClose": "[HA draft] Confirm closure"
+    },
+    "history": {
+      "title": "[HA draft] Audit trail",
+      "chainIntact": "[HA draft] Hash chain intact",
+      "chainBroken": "[HA draft] Hash chain broken!"
+    }
+  },
+  "s04": {
+    "title": "[HA draft] Case assignments",
+    "subtitle": "[HA draft] Workload distribution and reviewer assignment",
+    "unassignedCount": "[HA draft] {count} unassigned cases",
+    "reviewers": "[HA draft] Active reviewers ({count})",
+    "openCases": "[HA draft] {count} open cases ({urgent} urgent)",
+    "activeNow": "[HA draft] Active now",
+    "suggestedBadge": "[HA draft] Suggested: {name}",
+    "reasonFewest": "[HA draft] Fewest open cases",
+    "reasonArea": "[HA draft] Same LGA today",
+    "reasonFewestInArea": "[HA draft] Fewest open cases in LGA",
+    "bulkAssign": "[HA draft] Assign selected ({count})",
+    "takeSuggested": "[HA draft] Take suggested reviewer",
+    "assignTo": "[HA draft] Assign to...",
+    "selectAll": "[HA draft] Select all",
+    "assignedSuccess": "[HA draft] Assigned {count} cases successfully.",
+    "assignedError": "[HA draft] Could not assign some cases: {error}"
+  },
+  "s05": {
+    "title": "[HA draft] Operations room",
+    "subtitle": "[HA draft] Aggregates, cluster warnings, and coverage monitoring",
+    "filterRange": "[HA draft] Date range",
+    "today": "[HA draft] Today",
+    "totals": {
+      "totalReports": "[HA draft] Total reports",
+      "incidents": "[HA draft] Incidents after links",
+      "urgentOpen": "[HA draft] Urgent open",
+      "openQuestions": "[HA draft] Questions open",
+      "resultFlags": "[HA draft] Result sheet flags",
+      "withdrawn": "[HA draft] Withdrawn"
+    },
+    "clusters": {
+      "title": "[HA draft] Cluster warnings",
+      "badge": "[HA draft] {count} reports in {window}m",
+      "baseline": "[HA draft] Baseline: {baseline}",
+      "reviewButton": "[HA draft] Mark reviewed",
+      "reviewNote": "[HA draft] Review note (optional)",
+      "reviewedBadge": "[HA draft] Reviewed",
+      "settings": "[HA draft] Cluster thresholds",
+      "windowMinutes": "[HA draft] Window (minutes)",
+      "minReports": "[HA draft] Minimum reports",
+      "saveSettings": "[HA draft] Update thresholds"
+    },
+    "coverage": {
+      "title": "[HA draft] Coverage gaps",
+      "expected": "[HA draft] {expected} expected polling units",
+      "withChecklist": "[HA draft] {count} reported ({percent}%)",
+      "withoutChecklist": "[HA draft] {count} missing",
+      "noAnswers": "[HA draft] Units with most 'No' answers"
+    },
+    "lateMaterials": {
+      "title": "[HA draft] Late materials risk",
+      "subtitle": "[HA draft] Logistical prediction model",
+      "hours": "[HA draft] {hours}h predicted transit",
+      "riskHigh": "[HA draft] High risk",
+      "riskMedium": "[HA draft] Medium risk",
+      "riskLow": "[HA draft] Low risk"
+    },
+    "resultSheetFlags": {
+      "title": "[HA draft] Result sheet flags",
+      "disclaimer": "[HA draft] Consistency check for review. This is not a result.",
+      "openFlags": "[HA draft] {count} sheets flagged for review"
+    },
+    "lgaBreakdown": {
+      "title": "[HA draft] Reports by LGA",
+      "count": "[HA draft] {count} reports ({urgent} urgent)",
+      "viewMap": "[HA draft] Map view (LGA level)",
+      "viewTable": "[HA draft] Table view"
+    }
+  },
+  "s06": {
+    "title": "[HA draft] Rumour desk",
+    "subtitle": "[HA draft] Track online claims, match with field observations, draft responses",
+    "newClaim": "[HA draft] Log new claim",
+    "claimText": "[HA draft] Claim text",
+    "source": "[HA draft] Seen on",
+    "image": "[HA draft] Upload screenshot/image",
+    "claimsList": "[HA draft] Active claims",
+    "harmLevel": "[HA draft] Harm risk: {level}",
+    "checkWorthiness": "[HA draft] Check-worthiness: {level}",
+    "imageGuide": {
+      "title": "[HA draft] Image verification guide",
+      "notice": "[HA draft] Guidance only. Always verify with human judgment.",
+      "reverseSearch": "[HA draft] Run reverse image search",
+      "checkDate": "[HA draft] Verify date against claim timestamp",
+      "lookEdits": "[HA draft] Inspect for image manipulations",
+      "compression": "[HA draft] Compression artifact hint: {hint}"
+    },
+    "matches": {
+      "title": "[HA draft] Matched field observations",
+      "corroboratedOnly": "[HA draft] Only closed corroborated reports shown",
+      "pastClaims": "[HA draft] Past verified claims"
+    },
+    "response": {
+      "title": "[HA draft] Public response draft",
+      "textLabel": "[HA draft] Response text",
+      "saveDraft": "[HA draft] Save draft",
+      "approve": "[HA draft] Approve response",
+      "reject": "[HA draft] Reject draft",
+      "dismiss": "[HA draft] Dismiss claim",
+      "draftedBy": "[HA draft] Drafted by {name} at {time}",
+      "approvedBy": "[HA draft] Approved by {name} at {time}",
+      "secondPersonNotice": "[HA draft] Another coordinator must approve a response you drafted.",
+      "rejectNote": "[HA draft] Rejection note"
+    }
+  },
+  "s07": {
+    "title": "[HA draft] Publish snapshots",
+    "subtitle": "[HA draft] Public aggregated releases with statistical privacy suppression",
+    "createTitle": "[HA draft] Create new snapshot",
+    "cutoffLabel": "[HA draft] Cutoff time",
+    "cutoffHint": "[HA draft] Must be at least 60 minutes in the past.",
+    "createButton": "[HA draft] Generate preview",
+    "scheduleTitle": "[HA draft] Automatic hourly release",
+    "scheduleHint": "[HA draft] Builds and publishes a snapshot every hour if checks pass.",
+    "scheduleOn": "[HA draft] Hourly publishing is active",
+    "scheduleOff": "[HA draft] Hourly publishing is paused",
+    "snapshotsList": "[HA draft] Snapshot history",
+    "previewTitle": "[HA draft] Snapshot preview (exact public data)",
+    "suppressionNotice": "[HA draft] Counts below 5 are suppressed with 'fewer than 5'. Primary and secondary suppression applied.",
+    "excludedTitle": "[HA draft] Excluded from snapshot",
+    "excludedNotClosed": "[HA draft] {count} not yet closed",
+    "excludedWithdrawn": "[HA draft] {count} withdrawn",
+    "excludedAfterCutoff": "[HA draft] {count} after cutoff",
+    "approvePublish": "[HA draft] Approve and publish",
+    "discard": "[HA draft] Discard draft"
+  },
+  "s08": {
+    "title": "[HA draft] Discussion moderation",
+    "subtitle": "[HA draft] Community oversight and safety for observer forums",
+    "flagsInbox": "[HA draft] Reported posts ({count})",
+    "flaggedBy": "[HA draft] Flagged {count} times",
+    "reasons": "[HA draft] Reasons: {reasons}",
+    "nameCheckAlert": "[HA draft] Possible personal name detected",
+    "hidePost": "[HA draft] Hide post",
+    "unhidePost": "[HA draft] Unhide post",
+    "hideReason": "[HA draft] Reason for hiding",
+    "removeMember": "[HA draft] Remove member from forum",
+    "closeDiscussion": "[HA draft] Close discussion",
+    "createDiscussion": "[HA draft] Create new discussion",
+    "topic": "[HA draft] Discussion topic",
+    "wardLga": "[HA draft] Ward or LGA scope",
+    "inviteCodes": "[HA draft] Invite observer codes"
+  },
+  "s09": {
+    "title": "[HA draft] Observer code batches",
+    "subtitle": "[HA draft] Batch generation, printable cards, and credential management",
+    "batches": "[HA draft] Batches",
+    "createBatch": "[HA draft] Create code batch",
+    "label": "[HA draft] Batch label",
+    "count": "[HA draft] Number of codes",
+    "printCards": "[HA draft] Print code cards",
+    "printConfirm": "[HA draft] Issue setup PINs and prepare printable cards",
+    "printNotice": "[HA draft] Setup PINs are shown only once. Print or distribute immediately.",
+    "codesTable": "[HA draft] Observer codes",
+    "searchCodes": "[HA draft] Search codes",
+    "status": {
+      "unclaimed": "[HA draft] Unclaimed",
+      "active": "[HA draft] Active",
+      "locked": "[HA draft] Locked",
+      "revoked": "[HA draft] Revoked"
+    },
+    "actions": {
+      "revoke": "[HA draft] Revoke code",
+      "reissue": "[HA draft] Reissue code",
+      "resetPin": "[HA draft] Reset PIN",
+      "reason": "[HA draft] Reason"
+    }
+  },
+  "s10": {
+    "title": "[HA draft] Staff accounts",
+    "subtitle": "[HA draft] Manage staff access, roles, and two-factor credentials",
+    "staffList": "[HA draft] Staff members ({count})",
+    "createStaff": "[HA draft] Add staff member",
+    "displayName": "[HA draft] Display name",
+    "email": "[HA draft] Email address",
+    "roles": "[HA draft] Assigned roles",
+    "roleAdminAlone": "[HA draft] Admin role cannot be combined with reviewer, coordinator, or moderator.",
+    "inviteUrl": "[HA draft] One-time invitation link",
+    "copyInvite": "[HA draft] Copy link",
+    "reset2fa": "[HA draft] Reset 2FA",
+    "offboard": "[HA draft] Offboard staff",
+    "offboardReason": "[HA draft] Offboarding reason",
+    "offboardWarning": "[HA draft] Any open cases assigned to this user will be returned to the unassigned queue."
+  },
+  "s11": {
+    "title": "[HA draft] Organisation settings",
+    "subtitle": "[HA draft] Intake control, data retention, and election parameters",
+    "intakePause": "[HA draft] Pause report intake",
+    "intakePauseHint": "[HA draft] Temporarily stop accepting new reports from observers and citizens.",
+    "retention": "[HA draft] Data retention period",
+    "retentionDays": "[HA draft] {days} days",
+    "retentionConfirm": "[HA draft] Shortening retention will delete older records at next purge.",
+    "electionDay": "[HA draft] Election day",
+    "publicDelay": "[HA draft] Public snapshot delay",
+    "delayMinutes": "[HA draft] {minutes} minutes",
+    "partyLabels": "[HA draft] Party labels on result sheets",
+    "saveSettings": "[HA draft] Save organisation settings",
+    "auditExport": "[HA draft] Export audit log"
+  },
+  "s12": {
+    "title": "[HA draft] Security & audit monitoring",
+    "subtitle": "[HA draft] Security rule alerts and cryptographic audit chain verification",
+    "alerts": "[HA draft] Security alerts",
+    "severity": "[HA draft] Severity",
+    "detector": "[HA draft] Detector",
+    "updateStatus": "[HA draft] Update status",
+    "auditVerify": "[HA draft] Audit hash chain verification",
+    "chainStatus": "[HA draft] Chain integrity",
+    "eventsChecked": "[HA draft] {count} events verified",
+    "headHash": "[HA draft] Chain head hash: {hash}",
+    "brokenEvent": "[HA draft] First broken event: {id}",
+    "verifyNow": "[HA draft] Run verification check",
+    "exportLog": "[HA draft] Export audit log (JSONL/CSV)"
   }
 }

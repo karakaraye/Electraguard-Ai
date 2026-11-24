@@ -1,0 +1,140 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-5);
+  width: 100%;
+}
+
+.totalsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: var(--s-3);
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+  padding: var(--s-4);
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+}
+
+.sectionTitle {
+  margin: 0;
+  font: var(--t-heading);
+  font-size: 1.125rem;
+}
+
+.emptyFullWidth {
+  width: 100%;
+}
+
+.emptyFullWidth :global([data-testid="empty-state"]) {
+  max-width: 100%;
+  width: 100%;
+}
+
+.clusterList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+}
+
+.clusterCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+  padding: var(--s-3);
+  background: var(--paper-2);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+}
+
+.clusterTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+}
+
+.badgeAttn {
+  padding: 2px 8px;
+  background: var(--attn-bg);
+  border: 1px solid var(--attn-border);
+  color: var(--attn-ink);
+  border-radius: var(--radius-pill);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.badgeOk {
+  padding: 2px 8px;
+  background: var(--paper);
+  border: 1px solid var(--ok);
+  color: var(--ok);
+  border-radius: var(--radius-pill);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.tableWrapper {
+  overflow-x: auto;
+  max-width: 100%;
+  -webkit-overflow-scrolling: touch;
+}
+
+.table {
+  width: 100%;
+  min-width: 480px;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+  text-align: left;
+}
+
+.table th,
+.table td {
+  padding: var(--s-2) var(--s-3);
+  border-bottom: 1px solid var(--rule);
+}
+
+.table th {
+  font-weight: 600;
+  color: var(--ink-2);
+}
+
+.resultSheetBanner {
+  padding: var(--s-3);
+  background: var(--attn-bg);
+  border: 1px solid var(--attn-border);
+  color: var(--attn-ink);
+  border-radius: var(--radius);
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.lgaGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: var(--s-3);
+}
+
+.lgaTile {
+  padding: var(--s-3);
+  background: var(--paper-2);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}

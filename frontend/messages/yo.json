@@ -904,5 +904,444 @@
     },
     "sms": "O kò ní fóònù olóye? Fi STATUS àti kóòdù rẹ ránṣẹ́ sí {shortCode}.",
     "checkCode": "Ṣàyẹ̀wò {code}"
+  },
+  "staff": {
+    "nav": {
+      "queue": "[YO draft] Review Queue",
+      "cases": "[YO draft] Cases",
+      "assign": "[YO draft] Assign",
+      "ops": "[YO draft] Operations",
+      "rumours": "[YO draft] Rumour Desk",
+      "publish": "[YO draft] Publish",
+      "discussions": "[YO draft] Discussions",
+      "codes": "[YO draft] Observer Codes",
+      "staff": "[YO draft] Staff Accounts",
+      "settings": "[YO draft] Settings",
+      "security": "[YO draft] Security"
+    },
+    "roles": {
+      "reviewer": "[YO draft] Reviewer",
+      "moderator": "[YO draft] Moderator",
+      "coordinator": "[YO draft] Coordinator",
+      "org_admin": "[YO draft] Admin"
+    },
+    "signOut": "[YO draft] Sign out",
+    "signedInAs": "[YO draft] Signed in as {name}",
+    "forbidden": "[YO draft] You do not have permission to view this section.",
+    "networkError": "[YO draft] Could not connect to the server. Check your network connection.",
+    "endpointNotReady": "[YO draft] This endpoint is not available yet (HTTP 404).",
+    "loading": "[YO draft] Loading staff data...",
+    "retry": "[YO draft] Try again",
+    "save": "[YO draft] Save changes",
+    "cancel": "[YO draft] Cancel",
+    "confirm": "[YO draft] Confirm",
+    "backToQueue": "[YO draft] Back to queue"
+  },
+  "s01": {
+    "title": "[YO draft] Staff sign-in",
+    "subtitle": "[YO draft] Official election observation review portal",
+    "emailLabel": "[YO draft] Email address",
+    "emailHint": "[YO draft] Your registered staff email",
+    "passwordLabel": "[YO draft] Password",
+    "signInButton": "[YO draft] Sign in",
+    "signingIn": "[YO draft] Signing in...",
+    "totpTitle": "[YO draft] Two-factor authentication",
+    "totpHint": "[YO draft] Enter the 6-digit verification code from your authenticator app.",
+    "totpLabel": "[YO draft] Authenticator code",
+    "totpVerify": "[YO draft] Verify code",
+    "totpVerifying": "[YO draft] Verifying...",
+    "enrolTitle": "[YO draft] Set up two-factor authentication",
+    "enrolSubtitle": "[YO draft] Scan the code or enter the secret key into your authenticator app.",
+    "enrolSecretLabel": "[YO draft] Secret key",
+    "enrolSecretCopy": "[YO draft] Copy key",
+    "enrolSecretCopied": "[YO draft] Copied",
+    "enrolUriLabel": "[YO draft] Authenticator link",
+    "enrolCodeLabel": "[YO draft] Enter the 6-digit code to confirm",
+    "enrolConfirm": "[YO draft] Confirm and sign in",
+    "inviteTitle": "[YO draft] Accept staff invitation",
+    "inviteSubtitle": "[YO draft] Choose a secure password for your account.",
+    "newPasswordLabel": "[YO draft] New password",
+    "newPasswordHint": "[YO draft] At least 12 characters. Use a mix of letters, numbers, and symbols.",
+    "acceptInviteButton": "[YO draft] Set password and continue",
+    "errors": {
+      "invalidCredentials": "[YO draft] Email or password is wrong.",
+      "accountLocked": "[YO draft] Too many failed tries. Try again in 15 minutes.",
+      "totpInvalid": "[YO draft] That code did not work. Check the time on your phone and try again.",
+      "totpRequired": "[YO draft] Two-factor verification required.",
+      "inviteInvalid": "[YO draft] This invitation link is invalid or has expired.",
+      "rateLimited": "[YO draft] Too many attempts. Please wait a moment."
+    }
+  },
+  "s02": {
+    "title": "[YO draft] Review queue",
+    "subtitle": "[YO draft] Cases ordered by urgency and danger",
+    "counts": {
+      "received": "[YO draft] {count} received",
+      "inReview": "[YO draft] {count} in review",
+      "question": "[YO draft] {count} waiting on answer"
+    },
+    "filters": {
+      "all": "[YO draft] All",
+      "status": "[YO draft] Status",
+      "urgency": "[YO draft] Urgency",
+      "category": "[YO draft] Category",
+      "channel": "[YO draft] Channel",
+      "hasEvidence": "[YO draft] Has media",
+      "clear": "[YO draft] Reset filters"
+    },
+    "columns": {
+      "urgency": "[YO draft] Urgency",
+      "reference": "[YO draft] Reference",
+      "category": "[YO draft] Category",
+      "location": "[YO draft] Location",
+      "occurred": "[YO draft] Occurred",
+      "evidence": "[YO draft] Evidence",
+      "status": "[YO draft] Status"
+    },
+    "urgency": {
+      "urgent": "[YO draft] Urgent",
+      "high": "[YO draft] High",
+      "normal": "[YO draft] Normal",
+      "low": "[YO draft] Low"
+    },
+    "reasons": {
+      "danger_reported": "[YO draft] Danger reported",
+      "intimidation": "[YO draft] Intimidation",
+      "vote_buying": "[YO draft] Vote buying",
+      "seen_firsthand": "[YO draft] Firsthand",
+      "told_by_someone": "[YO draft] Hearsay",
+      "video": "[YO draft] Video",
+      "photo": "[YO draft] Photo",
+      "audio": "[YO draft] Audio",
+      "cluster": "[YO draft] Area cluster",
+      "result_sheet_flag": "[YO draft] Result sheet flag",
+      "citizen_report": "[YO draft] Citizen report",
+      "sms_report": "[YO draft] SMS report"
+    },
+    "empty": "[YO draft] No cases matching the current filters.",
+    "emptySubtitle": "[YO draft] New reports assigned to you will appear here.",
+    "loadMore": "[YO draft] Load more cases"
+  },
+  "s03": {
+    "title": "[YO draft] Case review",
+    "caseRef": "[YO draft] Case {ref}",
+    "reporter": {
+      "observer": "[YO draft] Accredited observer ({code})",
+      "citizen": "[YO draft] Citizen report ({code})",
+      "sms": "[YO draft] SMS report",
+      "ussd": "[YO draft] USSD report"
+    },
+    "originalText": "[YO draft] Original description",
+    "language": "[YO draft] Language: {lang}",
+    "translation": "[YO draft] Machine translation. Check the original.",
+    "translationNotice": "[YO draft] Machine translation. Check the original.",
+    "redaction": {
+      "title": "[YO draft] Redact personal names",
+      "hint": "[YO draft] Select text in the description to hide names before publication or sharing.",
+      "hideSelection": "[YO draft] Hide selection",
+      "hideThisName": "[YO draft] Hide this name",
+      "undo": "[YO draft] Undo",
+      "hidden": "[YO draft] Hidden",
+      "start": "[YO draft] Start offset",
+      "end": "[YO draft] End offset",
+      "addSpan": "[YO draft] Add redaction span",
+      "clearSpans": "[YO draft] Clear all redactions",
+      "save": "[YO draft] Save redactions",
+      "preview": "[YO draft] Redacted preview:"
+    },
+    "details": {
+      "category": "[YO draft] Category: {category}",
+      "danger": "[YO draft] Danger reported: Yes",
+      "firsthand": "[YO draft] Observed firsthand: Yes",
+      "location": "[YO draft] Location",
+      "occurredAt": "[YO draft] Occurred: {time}",
+      "receivedAt": "[YO draft] Received: {time}",
+      "skew": "[YO draft] Phone clock skew: {seconds}s"
+    },
+    "evidence": {
+      "title": "[YO draft] Evidence & integrity",
+      "sha256": "[YO draft] SHA-256 verified",
+      "exifRemoved": "[YO draft] EXIF stripped",
+      "blurred": "[YO draft] Faces blurred",
+      "unblur": "[YO draft] View unblurred (recorded in audit)",
+      "transcript": "[YO draft] Audio transcript",
+      "pendingUpload": "[YO draft] Pending upload: {received} of {total} bytes received",
+      "noEvidence": "[YO draft] No media attachments submitted."
+    },
+    "suggestions": {
+      "title": "[YO draft] AI suggestions",
+      "notice": "[YO draft] All suggestions are machine generated and require reviewer decision.",
+      "categorySuggested": "[YO draft] Suggested category: {category}",
+      "urgencySuggested": "[YO draft] Suggested urgency: {urgency}",
+      "accept": "[YO draft] Accept suggestion",
+      "correct": "[YO draft] Correct suggestion",
+      "correctLabel": "[YO draft] Choose correction",
+      "saveCorrection": "[YO draft] Apply correction"
+    },
+    "duplicates": {
+      "title": "[YO draft] Duplicate candidates",
+      "sideBySide": "[YO draft] Side-by-side comparison",
+      "similarity": "[YO draft] {percent}% match",
+      "link": "[YO draft] Link as duplicate",
+      "keepSeparate": "[YO draft] Keep separate",
+      "linked": "[YO draft] Linked",
+      "inaccessible": "[YO draft] Report from another organisation (metadata only)"
+    },
+    "resultSheet": {
+      "title": "[YO draft] Result sheet consistency check",
+      "disclaimer": "[YO draft] Consistency check for review. This is not a result.",
+      "entryMethod": "[YO draft] Entry method: {method}",
+      "flags": "[YO draft] Flags detected",
+      "accreditedExceeds": "[YO draft] Accredited voters exceed registered voters",
+      "sumDiffers": "[YO draft] Party votes plus rejected votes differs from accredited count",
+      "roundNumbers": "[YO draft] Unusually round numbers",
+      "benignCauses": "[YO draft] Possible benign causes: copy error, unreadable digit"
+    },
+    "conversation": {
+      "title": "[YO draft] Observer conversation",
+      "send": "[YO draft] Send message",
+      "placeholder": "[YO draft] Type a message to the observer...",
+      "markRead": "[YO draft] Mark messages read",
+      "noMessages": "[YO draft] No messages yet."
+    },
+    "actions": {
+      "title": "[YO draft] Case actions",
+      "startReview": "[YO draft] Start review",
+      "askQuestion": "[YO draft] Ask formal question",
+      "questionLabel": "[YO draft] Question for reporter",
+      "questionHint": "[YO draft] The observer or citizen will see this question and can respond.",
+      "submitQuestion": "[YO draft] Send question",
+      "closeCase": "[YO draft] Close case",
+      "outcomeLabel": "[YO draft] Outcome",
+      "outcome": {
+        "corroborated": "[YO draft] Corroborated",
+        "insufficient_evidence": "[YO draft] Insufficient evidence",
+        "out_of_scope": "[YO draft] Out of scope"
+      },
+      "rationaleLabel": "[YO draft] Internal rationale",
+      "rationaleHint": "[YO draft] Explain why this case was corroborated, closed or dismissed. Never shown to reporters.",
+      "expectedMediaLabel": "[YO draft] Confirm evidence considered in this closure",
+      "submitClose": "[YO draft] Confirm closure"
+    },
+    "history": {
+      "title": "[YO draft] Audit trail",
+      "chainIntact": "[YO draft] Hash chain intact",
+      "chainBroken": "[YO draft] Hash chain broken!"
+    }
+  },
+  "s04": {
+    "title": "[YO draft] Case assignments",
+    "subtitle": "[YO draft] Workload distribution and reviewer assignment",
+    "unassignedCount": "[YO draft] {count} unassigned cases",
+    "reviewers": "[YO draft] Active reviewers ({count})",
+    "openCases": "[YO draft] {count} open cases ({urgent} urgent)",
+    "activeNow": "[YO draft] Active now",
+    "suggestedBadge": "[YO draft] Suggested: {name}",
+    "reasonFewest": "[YO draft] Fewest open cases",
+    "reasonArea": "[YO draft] Same LGA today",
+    "reasonFewestInArea": "[YO draft] Fewest open cases in LGA",
+    "bulkAssign": "[YO draft] Assign selected ({count})",
+    "takeSuggested": "[YO draft] Take suggested reviewer",
+    "assignTo": "[YO draft] Assign to...",
+    "selectAll": "[YO draft] Select all",
+    "assignedSuccess": "[YO draft] Assigned {count} cases successfully.",
+    "assignedError": "[YO draft] Could not assign some cases: {error}"
+  },
+  "s05": {
+    "title": "[YO draft] Operations room",
+    "subtitle": "[YO draft] Aggregates, cluster warnings, and coverage monitoring",
+    "filterRange": "[YO draft] Date range",
+    "today": "[YO draft] Today",
+    "totals": {
+      "totalReports": "[YO draft] Total reports",
+      "incidents": "[YO draft] Incidents after links",
+      "urgentOpen": "[YO draft] Urgent open",
+      "openQuestions": "[YO draft] Questions open",
+      "resultFlags": "[YO draft] Result sheet flags",
+      "withdrawn": "[YO draft] Withdrawn"
+    },
+    "clusters": {
+      "title": "[YO draft] Cluster warnings",
+      "badge": "[YO draft] {count} reports in {window}m",
+      "baseline": "[YO draft] Baseline: {baseline}",
+      "reviewButton": "[YO draft] Mark reviewed",
+      "reviewNote": "[YO draft] Review note (optional)",
+      "reviewedBadge": "[YO draft] Reviewed",
+      "settings": "[YO draft] Cluster thresholds",
+      "windowMinutes": "[YO draft] Window (minutes)",
+      "minReports": "[YO draft] Minimum reports",
+      "saveSettings": "[YO draft] Update thresholds"
+    },
+    "coverage": {
+      "title": "[YO draft] Coverage gaps",
+      "expected": "[YO draft] {expected} expected polling units",
+      "withChecklist": "[YO draft] {count} reported ({percent}%)",
+      "withoutChecklist": "[YO draft] {count} missing",
+      "noAnswers": "[YO draft] Units with most 'No' answers"
+    },
+    "lateMaterials": {
+      "title": "[YO draft] Late materials risk",
+      "subtitle": "[YO draft] Logistical prediction model",
+      "hours": "[YO draft] {hours}h predicted transit",
+      "riskHigh": "[YO draft] High risk",
+      "riskMedium": "[YO draft] Medium risk",
+      "riskLow": "[YO draft] Low risk"
+    },
+    "resultSheetFlags": {
+      "title": "[YO draft] Result sheet flags",
+      "disclaimer": "[YO draft] Consistency check for review. This is not a result.",
+      "openFlags": "[YO draft] {count} sheets flagged for review"
+    },
+    "lgaBreakdown": {
+      "title": "[YO draft] Reports by LGA",
+      "count": "[YO draft] {count} reports ({urgent} urgent)",
+      "viewMap": "[YO draft] Map view (LGA level)",
+      "viewTable": "[YO draft] Table view"
+    }
+  },
+  "s06": {
+    "title": "[YO draft] Rumour desk",
+    "subtitle": "[YO draft] Track online claims, match with field observations, draft responses",
+    "newClaim": "[YO draft] Log new claim",
+    "claimText": "[YO draft] Claim text",
+    "source": "[YO draft] Seen on",
+    "image": "[YO draft] Upload screenshot/image",
+    "claimsList": "[YO draft] Active claims",
+    "harmLevel": "[YO draft] Harm risk: {level}",
+    "checkWorthiness": "[YO draft] Check-worthiness: {level}",
+    "imageGuide": {
+      "title": "[YO draft] Image verification guide",
+      "notice": "[YO draft] Guidance only. Always verify with human judgment.",
+      "reverseSearch": "[YO draft] Run reverse image search",
+      "checkDate": "[YO draft] Verify date against claim timestamp",
+      "lookEdits": "[YO draft] Inspect for image manipulations",
+      "compression": "[YO draft] Compression artifact hint: {hint}"
+    },
+    "matches": {
+      "title": "[YO draft] Matched field observations",
+      "corroboratedOnly": "[YO draft] Only closed corroborated reports shown",
+      "pastClaims": "[YO draft] Past verified claims"
+    },
+    "response": {
+      "title": "[YO draft] Public response draft",
+      "textLabel": "[YO draft] Response text",
+      "saveDraft": "[YO draft] Save draft",
+      "approve": "[YO draft] Approve response",
+      "reject": "[YO draft] Reject draft",
+      "dismiss": "[YO draft] Dismiss claim",
+      "draftedBy": "[YO draft] Drafted by {name} at {time}",
+      "approvedBy": "[YO draft] Approved by {name} at {time}",
+      "secondPersonNotice": "[YO draft] Another coordinator must approve a response you drafted.",
+      "rejectNote": "[YO draft] Rejection note"
+    }
+  },
+  "s07": {
+    "title": "[YO draft] Publish snapshots",
+    "subtitle": "[YO draft] Public aggregated releases with statistical privacy suppression",
+    "createTitle": "[YO draft] Create new snapshot",
+    "cutoffLabel": "[YO draft] Cutoff time",
+    "cutoffHint": "[YO draft] Must be at least 60 minutes in the past.",
+    "createButton": "[YO draft] Generate preview",
+    "scheduleTitle": "[YO draft] Automatic hourly release",
+    "scheduleHint": "[YO draft] Builds and publishes a snapshot every hour if checks pass.",
+    "scheduleOn": "[YO draft] Hourly publishing is active",
+    "scheduleOff": "[YO draft] Hourly publishing is paused",
+    "snapshotsList": "[YO draft] Snapshot history",
+    "previewTitle": "[YO draft] Snapshot preview (exact public data)",
+    "suppressionNotice": "[YO draft] Counts below 5 are suppressed with 'fewer than 5'. Primary and secondary suppression applied.",
+    "excludedTitle": "[YO draft] Excluded from snapshot",
+    "excludedNotClosed": "[YO draft] {count} not yet closed",
+    "excludedWithdrawn": "[YO draft] {count} withdrawn",
+    "excludedAfterCutoff": "[YO draft] {count} after cutoff",
+    "approvePublish": "[YO draft] Approve and publish",
+    "discard": "[YO draft] Discard draft"
+  },
+  "s08": {
+    "title": "[YO draft] Discussion moderation",
+    "subtitle": "[YO draft] Community oversight and safety for observer forums",
+    "flagsInbox": "[YO draft] Reported posts ({count})",
+    "flaggedBy": "[YO draft] Flagged {count} times",
+    "reasons": "[YO draft] Reasons: {reasons}",
+    "nameCheckAlert": "[YO draft] Possible personal name detected",
+    "hidePost": "[YO draft] Hide post",
+    "unhidePost": "[YO draft] Unhide post",
+    "hideReason": "[YO draft] Reason for hiding",
+    "removeMember": "[YO draft] Remove member from forum",
+    "closeDiscussion": "[YO draft] Close discussion",
+    "createDiscussion": "[YO draft] Create new discussion",
+    "topic": "[YO draft] Discussion topic",
+    "wardLga": "[YO draft] Ward or LGA scope",
+    "inviteCodes": "[YO draft] Invite observer codes"
+  },
+  "s09": {
+    "title": "[YO draft] Observer code batches",
+    "subtitle": "[YO draft] Batch generation, printable cards, and credential management",
+    "batches": "[YO draft] Batches",
+    "createBatch": "[YO draft] Create code batch",
+    "label": "[YO draft] Batch label",
+    "count": "[YO draft] Number of codes",
+    "printCards": "[YO draft] Print code cards",
+    "printConfirm": "[YO draft] Issue setup PINs and prepare printable cards",
+    "printNotice": "[YO draft] Setup PINs are shown only once. Print or distribute immediately.",
+    "codesTable": "[YO draft] Observer codes",
+    "searchCodes": "[YO draft] Search codes",
+    "status": {
+      "unclaimed": "[YO draft] Unclaimed",
+      "active": "[YO draft] Active",
+      "locked": "[YO draft] Locked",
+      "revoked": "[YO draft] Revoked"
+    },
+    "actions": {
+      "revoke": "[YO draft] Revoke code",
+      "reissue": "[YO draft] Reissue code",
+      "resetPin": "[YO draft] Reset PIN",
+      "reason": "[YO draft] Reason"
+    }
+  },
+  "s10": {
+    "title": "[YO draft] Staff accounts",
+    "subtitle": "[YO draft] Manage staff access, roles, and two-factor credentials",
+    "staffList": "[YO draft] Staff members ({count})",
+    "createStaff": "[YO draft] Add staff member",
+    "displayName": "[YO draft] Display name",
+    "email": "[YO draft] Email address",
+    "roles": "[YO draft] Assigned roles",
+    "roleAdminAlone": "[YO draft] Admin role cannot be combined with reviewer, coordinator, or moderator.",
+    "inviteUrl": "[YO draft] One-time invitation link",
+    "copyInvite": "[YO draft] Copy link",
+    "reset2fa": "[YO draft] Reset 2FA",
+    "offboard": "[YO draft] Offboard staff",
+    "offboardReason": "[YO draft] Offboarding reason",
+    "offboardWarning": "[YO draft] Any open cases assigned to this user will be returned to the unassigned queue."
+  },
+  "s11": {
+    "title": "[YO draft] Organisation settings",
+    "subtitle": "[YO draft] Intake control, data retention, and election parameters",
+    "intakePause": "[YO draft] Pause report intake",
+    "intakePauseHint": "[YO draft] Temporarily stop accepting new reports from observers and citizens.",
+    "retention": "[YO draft] Data retention period",
+    "retentionDays": "[YO draft] {days} days",
+    "retentionConfirm": "[YO draft] Shortening retention will delete older records at next purge.",
+    "electionDay": "[YO draft] Election day",
+    "publicDelay": "[YO draft] Public snapshot delay",
+    "delayMinutes": "[YO draft] {minutes} minutes",
+    "partyLabels": "[YO draft] Party labels on result sheets",
+    "saveSettings": "[YO draft] Save organisation settings",
+    "auditExport": "[YO draft] Export audit log"
+  },
+  "s12": {
+    "title": "[YO draft] Security & audit monitoring",
+    "subtitle": "[YO draft] Security rule alerts and cryptographic audit chain verification",
+    "alerts": "[YO draft] Security alerts",
+    "severity": "[YO draft] Severity",
+    "detector": "[YO draft] Detector",
+    "updateStatus": "[YO draft] Update status",
+    "auditVerify": "[YO draft] Audit hash chain verification",
+    "chainStatus": "[YO draft] Chain integrity",
+    "eventsChecked": "[YO draft] {count} events verified",
+    "headHash": "[YO draft] Chain head hash: {hash}",
+    "brokenEvent": "[YO draft] First broken event: {id}",
+    "verifyNow": "[YO draft] Run verification check",
+    "exportLog": "[YO draft] Export audit log (JSONL/CSV)"
   }
 }

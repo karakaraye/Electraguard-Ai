@@ -1,0 +1,102 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-6);
+  max-width: 960px;
+  margin: 0 auto;
+  padding: var(--sp-4);
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+
+.title {
+  font: var(--t-display);
+  margin: 0;
+}
+
+.subtitle {
+  font: var(--t-body);
+  color: var(--c-muted);
+  margin: 0;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-md);
+  padding: var(--sp-6);
+}
+
+.sectionTitle {
+  font: var(--t-heading);
+  margin: 0 0 var(--sp-1) 0;
+}
+
+.sectionDescription {
+  font: var(--t-small);
+  color: var(--c-muted);
+  margin: 0 0 var(--sp-4) 0;
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--sp-4);
+}
+
+.toggleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--sp-3) var(--sp-4);
+  background: var(--c-surface-raised);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-md);
+}
+
+.toggleMeta {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+
+.toggleLabel {
+  font: var(--t-body);
+  font-weight: 600;
+}
+
+.toggleHint {
+  font: var(--t-small);
+  color: var(--c-muted);
+}
+
+.dangerBox {
+  border-left: 4px solid var(--c-danger);
+  background: var(--c-surface-raised);
+  padding: var(--sp-4);
+  border-radius: var(--r-sm);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+.metaInfo {
+  font: var(--t-small);
+  color: var(--c-muted);
+  border-top: 1px solid var(--c-border);
+  padding-top: var(--sp-4);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  margin-top: var(--sp-2);
+}

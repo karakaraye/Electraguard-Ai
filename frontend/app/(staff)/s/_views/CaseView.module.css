@@ -1,0 +1,222 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-5);
+  width: 100%;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--s-3);
+  padding-bottom: var(--s-4);
+  border-bottom: 1px solid var(--rule);
+}
+
+.caseTitle {
+  margin: 0;
+  font: var(--t-heading);
+  font-family: monospace;
+}
+
+.reporterTag {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  padding: var(--s-1) var(--s-3);
+  background: var(--paper-2);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-pill);
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+  padding: var(--s-4);
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+}
+
+.sectionTitle {
+  margin: 0;
+  font: var(--t-heading);
+  font-size: 1.125rem;
+  font-weight: 700;
+}
+
+.textBlock {
+  padding: var(--s-3);
+  background: var(--paper-2);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  font: var(--t-body);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.translationLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  font: var(--t-label);
+  font-size: 0.8125rem;
+  color: var(--ink-2);
+}
+
+.evidenceGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: var(--s-3);
+}
+
+.evidenceCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+  padding: var(--s-3);
+  background: var(--paper-2);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+}
+
+.integrityMarks {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.75rem;
+  color: var(--ink-2);
+}
+
+.integrityRow {
+  display: flex;
+  align-items: center;
+  gap: var(--s-1);
+}
+
+.integrityRow[data-ok="true"] {
+  color: var(--ok);
+}
+
+.duplicateGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--s-3);
+}
+
+.duplicateCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+  padding: var(--s-3);
+  background: var(--paper-2);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+}
+
+.resultSheetNotice {
+  padding: var(--s-3);
+  background: var(--attn-bg);
+  border: 1px solid var(--attn-border);
+  color: var(--attn-ink);
+  border-radius: var(--radius);
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.redactBox {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+  padding: var(--s-3);
+  background: var(--paper-2);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+}
+
+.redactedMark {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--ink);
+  color: var(--on-ink);
+  padding: 2px 8px;
+  border-radius: var(--radius);
+  font-weight: 600;
+  font-size: 0.8125rem;
+  margin: 0 2px;
+  vertical-align: middle;
+}
+
+.undoRedactionBtn {
+  background: transparent;
+  border: none;
+  color: var(--on-ink);
+  cursor: pointer;
+  padding: 0 4px;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.undoRedactionBtn:hover {
+  opacity: 0.8;
+}
+
+.selectableText {
+  user-select: text;
+  cursor: text;
+  padding: var(--s-3);
+  background: var(--paper-2);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  font: var(--t-body);
+  line-height: 1.6;
+}
+
+.wordChecklist {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+  margin-top: var(--s-2);
+  padding: var(--s-3);
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+}
+
+.wordBtn {
+  padding: 4px 10px;
+  background: var(--paper-2);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  font-size: 0.8125rem;
+  cursor: pointer;
+  color: var(--ink);
+}
+
+.wordBtn[data-active="true"] {
+  background: var(--ink);
+  color: var(--on-ink);
+  border-color: var(--ink);
+}
+
+.actionsGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-4);
+}
+
+.actionForm {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+  padding: var(--s-3);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+}

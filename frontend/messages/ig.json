@@ -904,5 +904,444 @@
     },
     "sms": "Enweghị smartphone? Ziga STATUS na koodu gị gaa na {shortCode}.",
     "checkCode": "Lelee {code}"
+  },
+  "staff": {
+    "nav": {
+      "queue": "[IG draft] Review Queue",
+      "cases": "[IG draft] Cases",
+      "assign": "[IG draft] Assign",
+      "ops": "[IG draft] Operations",
+      "rumours": "[IG draft] Rumour Desk",
+      "publish": "[IG draft] Publish",
+      "discussions": "[IG draft] Discussions",
+      "codes": "[IG draft] Observer Codes",
+      "staff": "[IG draft] Staff Accounts",
+      "settings": "[IG draft] Settings",
+      "security": "[IG draft] Security"
+    },
+    "roles": {
+      "reviewer": "[IG draft] Reviewer",
+      "moderator": "[IG draft] Moderator",
+      "coordinator": "[IG draft] Coordinator",
+      "org_admin": "[IG draft] Admin"
+    },
+    "signOut": "[IG draft] Sign out",
+    "signedInAs": "[IG draft] Signed in as {name}",
+    "forbidden": "[IG draft] You do not have permission to view this section.",
+    "networkError": "[IG draft] Could not connect to the server. Check your network connection.",
+    "endpointNotReady": "[IG draft] This endpoint is not available yet (HTTP 404).",
+    "loading": "[IG draft] Loading staff data...",
+    "retry": "[IG draft] Try again",
+    "save": "[IG draft] Save changes",
+    "cancel": "[IG draft] Cancel",
+    "confirm": "[IG draft] Confirm",
+    "backToQueue": "[IG draft] Back to queue"
+  },
+  "s01": {
+    "title": "[IG draft] Staff sign-in",
+    "subtitle": "[IG draft] Official election observation review portal",
+    "emailLabel": "[IG draft] Email address",
+    "emailHint": "[IG draft] Your registered staff email",
+    "passwordLabel": "[IG draft] Password",
+    "signInButton": "[IG draft] Sign in",
+    "signingIn": "[IG draft] Signing in...",
+    "totpTitle": "[IG draft] Two-factor authentication",
+    "totpHint": "[IG draft] Enter the 6-digit verification code from your authenticator app.",
+    "totpLabel": "[IG draft] Authenticator code",
+    "totpVerify": "[IG draft] Verify code",
+    "totpVerifying": "[IG draft] Verifying...",
+    "enrolTitle": "[IG draft] Set up two-factor authentication",
+    "enrolSubtitle": "[IG draft] Scan the code or enter the secret key into your authenticator app.",
+    "enrolSecretLabel": "[IG draft] Secret key",
+    "enrolSecretCopy": "[IG draft] Copy key",
+    "enrolSecretCopied": "[IG draft] Copied",
+    "enrolUriLabel": "[IG draft] Authenticator link",
+    "enrolCodeLabel": "[IG draft] Enter the 6-digit code to confirm",
+    "enrolConfirm": "[IG draft] Confirm and sign in",
+    "inviteTitle": "[IG draft] Accept staff invitation",
+    "inviteSubtitle": "[IG draft] Choose a secure password for your account.",
+    "newPasswordLabel": "[IG draft] New password",
+    "newPasswordHint": "[IG draft] At least 12 characters. Use a mix of letters, numbers, and symbols.",
+    "acceptInviteButton": "[IG draft] Set password and continue",
+    "errors": {
+      "invalidCredentials": "[IG draft] Email or password is wrong.",
+      "accountLocked": "[IG draft] Too many failed tries. Try again in 15 minutes.",
+      "totpInvalid": "[IG draft] That code did not work. Check the time on your phone and try again.",
+      "totpRequired": "[IG draft] Two-factor verification required.",
+      "inviteInvalid": "[IG draft] This invitation link is invalid or has expired.",
+      "rateLimited": "[IG draft] Too many attempts. Please wait a moment."
+    }
+  },
+  "s02": {
+    "title": "[IG draft] Review queue",
+    "subtitle": "[IG draft] Cases ordered by urgency and danger",
+    "counts": {
+      "received": "[IG draft] {count} received",
+      "inReview": "[IG draft] {count} in review",
+      "question": "[IG draft] {count} waiting on answer"
+    },
+    "filters": {
+      "all": "[IG draft] All",
+      "status": "[IG draft] Status",
+      "urgency": "[IG draft] Urgency",
+      "category": "[IG draft] Category",
+      "channel": "[IG draft] Channel",
+      "hasEvidence": "[IG draft] Has media",
+      "clear": "[IG draft] Reset filters"
+    },
+    "columns": {
+      "urgency": "[IG draft] Urgency",
+      "reference": "[IG draft] Reference",
+      "category": "[IG draft] Category",
+      "location": "[IG draft] Location",
+      "occurred": "[IG draft] Occurred",
+      "evidence": "[IG draft] Evidence",
+      "status": "[IG draft] Status"
+    },
+    "urgency": {
+      "urgent": "[IG draft] Urgent",
+      "high": "[IG draft] High",
+      "normal": "[IG draft] Normal",
+      "low": "[IG draft] Low"
+    },
+    "reasons": {
+      "danger_reported": "[IG draft] Danger reported",
+      "intimidation": "[IG draft] Intimidation",
+      "vote_buying": "[IG draft] Vote buying",
+      "seen_firsthand": "[IG draft] Firsthand",
+      "told_by_someone": "[IG draft] Hearsay",
+      "video": "[IG draft] Video",
+      "photo": "[IG draft] Photo",
+      "audio": "[IG draft] Audio",
+      "cluster": "[IG draft] Area cluster",
+      "result_sheet_flag": "[IG draft] Result sheet flag",
+      "citizen_report": "[IG draft] Citizen report",
+      "sms_report": "[IG draft] SMS report"
+    },
+    "empty": "[IG draft] No cases matching the current filters.",
+    "emptySubtitle": "[IG draft] New reports assigned to you will appear here.",
+    "loadMore": "[IG draft] Load more cases"
+  },
+  "s03": {
+    "title": "[IG draft] Case review",
+    "caseRef": "[IG draft] Case {ref}",
+    "reporter": {
+      "observer": "[IG draft] Accredited observer ({code})",
+      "citizen": "[IG draft] Citizen report ({code})",
+      "sms": "[IG draft] SMS report",
+      "ussd": "[IG draft] USSD report"
+    },
+    "originalText": "[IG draft] Original description",
+    "language": "[IG draft] Language: {lang}",
+    "translation": "[IG draft] Machine translation. Check the original.",
+    "translationNotice": "[IG draft] Machine translation. Check the original.",
+    "redaction": {
+      "title": "[IG draft] Redact personal names",
+      "hint": "[IG draft] Select text in the description to hide names before publication or sharing.",
+      "hideSelection": "[IG draft] Hide selection",
+      "hideThisName": "[IG draft] Hide this name",
+      "undo": "[IG draft] Undo",
+      "hidden": "[IG draft] Hidden",
+      "start": "[IG draft] Start offset",
+      "end": "[IG draft] End offset",
+      "addSpan": "[IG draft] Add redaction span",
+      "clearSpans": "[IG draft] Clear all redactions",
+      "save": "[IG draft] Save redactions",
+      "preview": "[IG draft] Redacted preview:"
+    },
+    "details": {
+      "category": "[IG draft] Category: {category}",
+      "danger": "[IG draft] Danger reported: Yes",
+      "firsthand": "[IG draft] Observed firsthand: Yes",
+      "location": "[IG draft] Location",
+      "occurredAt": "[IG draft] Occurred: {time}",
+      "receivedAt": "[IG draft] Received: {time}",
+      "skew": "[IG draft] Phone clock skew: {seconds}s"
+    },
+    "evidence": {
+      "title": "[IG draft] Evidence & integrity",
+      "sha256": "[IG draft] SHA-256 verified",
+      "exifRemoved": "[IG draft] EXIF stripped",
+      "blurred": "[IG draft] Faces blurred",
+      "unblur": "[IG draft] View unblurred (recorded in audit)",
+      "transcript": "[IG draft] Audio transcript",
+      "pendingUpload": "[IG draft] Pending upload: {received} of {total} bytes received",
+      "noEvidence": "[IG draft] No media attachments submitted."
+    },
+    "suggestions": {
+      "title": "[IG draft] AI suggestions",
+      "notice": "[IG draft] All suggestions are machine generated and require reviewer decision.",
+      "categorySuggested": "[IG draft] Suggested category: {category}",
+      "urgencySuggested": "[IG draft] Suggested urgency: {urgency}",
+      "accept": "[IG draft] Accept suggestion",
+      "correct": "[IG draft] Correct suggestion",
+      "correctLabel": "[IG draft] Choose correction",
+      "saveCorrection": "[IG draft] Apply correction"
+    },
+    "duplicates": {
+      "title": "[IG draft] Duplicate candidates",
+      "sideBySide": "[IG draft] Side-by-side comparison",
+      "similarity": "[IG draft] {percent}% match",
+      "link": "[IG draft] Link as duplicate",
+      "keepSeparate": "[IG draft] Keep separate",
+      "linked": "[IG draft] Linked",
+      "inaccessible": "[IG draft] Report from another organisation (metadata only)"
+    },
+    "resultSheet": {
+      "title": "[IG draft] Result sheet consistency check",
+      "disclaimer": "[IG draft] Consistency check for review. This is not a result.",
+      "entryMethod": "[IG draft] Entry method: {method}",
+      "flags": "[IG draft] Flags detected",
+      "accreditedExceeds": "[IG draft] Accredited voters exceed registered voters",
+      "sumDiffers": "[IG draft] Party votes plus rejected votes differs from accredited count",
+      "roundNumbers": "[IG draft] Unusually round numbers",
+      "benignCauses": "[IG draft] Possible benign causes: copy error, unreadable digit"
+    },
+    "conversation": {
+      "title": "[IG draft] Observer conversation",
+      "send": "[IG draft] Send message",
+      "placeholder": "[IG draft] Type a message to the observer...",
+      "markRead": "[IG draft] Mark messages read",
+      "noMessages": "[IG draft] No messages yet."
+    },
+    "actions": {
+      "title": "[IG draft] Case actions",
+      "startReview": "[IG draft] Start review",
+      "askQuestion": "[IG draft] Ask formal question",
+      "questionLabel": "[IG draft] Question for reporter",
+      "questionHint": "[IG draft] The observer or citizen will see this question and can respond.",
+      "submitQuestion": "[IG draft] Send question",
+      "closeCase": "[IG draft] Close case",
+      "outcomeLabel": "[IG draft] Outcome",
+      "outcome": {
+        "corroborated": "[IG draft] Corroborated",
+        "insufficient_evidence": "[IG draft] Insufficient evidence",
+        "out_of_scope": "[IG draft] Out of scope"
+      },
+      "rationaleLabel": "[IG draft] Internal rationale",
+      "rationaleHint": "[IG draft] Explain why this case was corroborated, closed or dismissed. Never shown to reporters.",
+      "expectedMediaLabel": "[IG draft] Confirm evidence considered in this closure",
+      "submitClose": "[IG draft] Confirm closure"
+    },
+    "history": {
+      "title": "[IG draft] Audit trail",
+      "chainIntact": "[IG draft] Hash chain intact",
+      "chainBroken": "[IG draft] Hash chain broken!"
+    }
+  },
+  "s04": {
+    "title": "[IG draft] Case assignments",
+    "subtitle": "[IG draft] Workload distribution and reviewer assignment",
+    "unassignedCount": "[IG draft] {count} unassigned cases",
+    "reviewers": "[IG draft] Active reviewers ({count})",
+    "openCases": "[IG draft] {count} open cases ({urgent} urgent)",
+    "activeNow": "[IG draft] Active now",
+    "suggestedBadge": "[IG draft] Suggested: {name}",
+    "reasonFewest": "[IG draft] Fewest open cases",
+    "reasonArea": "[IG draft] Same LGA today",
+    "reasonFewestInArea": "[IG draft] Fewest open cases in LGA",
+    "bulkAssign": "[IG draft] Assign selected ({count})",
+    "takeSuggested": "[IG draft] Take suggested reviewer",
+    "assignTo": "[IG draft] Assign to...",
+    "selectAll": "[IG draft] Select all",
+    "assignedSuccess": "[IG draft] Assigned {count} cases successfully.",
+    "assignedError": "[IG draft] Could not assign some cases: {error}"
+  },
+  "s05": {
+    "title": "[IG draft] Operations room",
+    "subtitle": "[IG draft] Aggregates, cluster warnings, and coverage monitoring",
+    "filterRange": "[IG draft] Date range",
+    "today": "[IG draft] Today",
+    "totals": {
+      "totalReports": "[IG draft] Total reports",
+      "incidents": "[IG draft] Incidents after links",
+      "urgentOpen": "[IG draft] Urgent open",
+      "openQuestions": "[IG draft] Questions open",
+      "resultFlags": "[IG draft] Result sheet flags",
+      "withdrawn": "[IG draft] Withdrawn"
+    },
+    "clusters": {
+      "title": "[IG draft] Cluster warnings",
+      "badge": "[IG draft] {count} reports in {window}m",
+      "baseline": "[IG draft] Baseline: {baseline}",
+      "reviewButton": "[IG draft] Mark reviewed",
+      "reviewNote": "[IG draft] Review note (optional)",
+      "reviewedBadge": "[IG draft] Reviewed",
+      "settings": "[IG draft] Cluster thresholds",
+      "windowMinutes": "[IG draft] Window (minutes)",
+      "minReports": "[IG draft] Minimum reports",
+      "saveSettings": "[IG draft] Update thresholds"
+    },
+    "coverage": {
+      "title": "[IG draft] Coverage gaps",
+      "expected": "[IG draft] {expected} expected polling units",
+      "withChecklist": "[IG draft] {count} reported ({percent}%)",
+      "withoutChecklist": "[IG draft] {count} missing",
+      "noAnswers": "[IG draft] Units with most 'No' answers"
+    },
+    "lateMaterials": {
+      "title": "[IG draft] Late materials risk",
+      "subtitle": "[IG draft] Logistical prediction model",
+      "hours": "[IG draft] {hours}h predicted transit",
+      "riskHigh": "[IG draft] High risk",
+      "riskMedium": "[IG draft] Medium risk",
+      "riskLow": "[IG draft] Low risk"
+    },
+    "resultSheetFlags": {
+      "title": "[IG draft] Result sheet flags",
+      "disclaimer": "[IG draft] Consistency check for review. This is not a result.",
+      "openFlags": "[IG draft] {count} sheets flagged for review"
+    },
+    "lgaBreakdown": {
+      "title": "[IG draft] Reports by LGA",
+      "count": "[IG draft] {count} reports ({urgent} urgent)",
+      "viewMap": "[IG draft] Map view (LGA level)",
+      "viewTable": "[IG draft] Table view"
+    }
+  },
+  "s06": {
+    "title": "[IG draft] Rumour desk",
+    "subtitle": "[IG draft] Track online claims, match with field observations, draft responses",
+    "newClaim": "[IG draft] Log new claim",
+    "claimText": "[IG draft] Claim text",
+    "source": "[IG draft] Seen on",
+    "image": "[IG draft] Upload screenshot/image",
+    "claimsList": "[IG draft] Active claims",
+    "harmLevel": "[IG draft] Harm risk: {level}",
+    "checkWorthiness": "[IG draft] Check-worthiness: {level}",
+    "imageGuide": {
+      "title": "[IG draft] Image verification guide",
+      "notice": "[IG draft] Guidance only. Always verify with human judgment.",
+      "reverseSearch": "[IG draft] Run reverse image search",
+      "checkDate": "[IG draft] Verify date against claim timestamp",
+      "lookEdits": "[IG draft] Inspect for image manipulations",
+      "compression": "[IG draft] Compression artifact hint: {hint}"
+    },
+    "matches": {
+      "title": "[IG draft] Matched field observations",
+      "corroboratedOnly": "[IG draft] Only closed corroborated reports shown",
+      "pastClaims": "[IG draft] Past verified claims"
+    },
+    "response": {
+      "title": "[IG draft] Public response draft",
+      "textLabel": "[IG draft] Response text",
+      "saveDraft": "[IG draft] Save draft",
+      "approve": "[IG draft] Approve response",
+      "reject": "[IG draft] Reject draft",
+      "dismiss": "[IG draft] Dismiss claim",
+      "draftedBy": "[IG draft] Drafted by {name} at {time}",
+      "approvedBy": "[IG draft] Approved by {name} at {time}",
+      "secondPersonNotice": "[IG draft] Another coordinator must approve a response you drafted.",
+      "rejectNote": "[IG draft] Rejection note"
+    }
+  },
+  "s07": {
+    "title": "[IG draft] Publish snapshots",
+    "subtitle": "[IG draft] Public aggregated releases with statistical privacy suppression",
+    "createTitle": "[IG draft] Create new snapshot",
+    "cutoffLabel": "[IG draft] Cutoff time",
+    "cutoffHint": "[IG draft] Must be at least 60 minutes in the past.",
+    "createButton": "[IG draft] Generate preview",
+    "scheduleTitle": "[IG draft] Automatic hourly release",
+    "scheduleHint": "[IG draft] Builds and publishes a snapshot every hour if checks pass.",
+    "scheduleOn": "[IG draft] Hourly publishing is active",
+    "scheduleOff": "[IG draft] Hourly publishing is paused",
+    "snapshotsList": "[IG draft] Snapshot history",
+    "previewTitle": "[IG draft] Snapshot preview (exact public data)",
+    "suppressionNotice": "[IG draft] Counts below 5 are suppressed with 'fewer than 5'. Primary and secondary suppression applied.",
+    "excludedTitle": "[IG draft] Excluded from snapshot",
+    "excludedNotClosed": "[IG draft] {count} not yet closed",
+    "excludedWithdrawn": "[IG draft] {count} withdrawn",
+    "excludedAfterCutoff": "[IG draft] {count} after cutoff",
+    "approvePublish": "[IG draft] Approve and publish",
+    "discard": "[IG draft] Discard draft"
+  },
+  "s08": {
+    "title": "[IG draft] Discussion moderation",
+    "subtitle": "[IG draft] Community oversight and safety for observer forums",
+    "flagsInbox": "[IG draft] Reported posts ({count})",
+    "flaggedBy": "[IG draft] Flagged {count} times",
+    "reasons": "[IG draft] Reasons: {reasons}",
+    "nameCheckAlert": "[IG draft] Possible personal name detected",
+    "hidePost": "[IG draft] Hide post",
+    "unhidePost": "[IG draft] Unhide post",
+    "hideReason": "[IG draft] Reason for hiding",
+    "removeMember": "[IG draft] Remove member from forum",
+    "closeDiscussion": "[IG draft] Close discussion",
+    "createDiscussion": "[IG draft] Create new discussion",
+    "topic": "[IG draft] Discussion topic",
+    "wardLga": "[IG draft] Ward or LGA scope",
+    "inviteCodes": "[IG draft] Invite observer codes"
+  },
+  "s09": {
+    "title": "[IG draft] Observer code batches",
+    "subtitle": "[IG draft] Batch generation, printable cards, and credential management",
+    "batches": "[IG draft] Batches",
+    "createBatch": "[IG draft] Create code batch",
+    "label": "[IG draft] Batch label",
+    "count": "[IG draft] Number of codes",
+    "printCards": "[IG draft] Print code cards",
+    "printConfirm": "[IG draft] Issue setup PINs and prepare printable cards",
+    "printNotice": "[IG draft] Setup PINs are shown only once. Print or distribute immediately.",
+    "codesTable": "[IG draft] Observer codes",
+    "searchCodes": "[IG draft] Search codes",
+    "status": {
+      "unclaimed": "[IG draft] Unclaimed",
+      "active": "[IG draft] Active",
+      "locked": "[IG draft] Locked",
+      "revoked": "[IG draft] Revoked"
+    },
+    "actions": {
+      "revoke": "[IG draft] Revoke code",
+      "reissue": "[IG draft] Reissue code",
+      "resetPin": "[IG draft] Reset PIN",
+      "reason": "[IG draft] Reason"
+    }
+  },
+  "s10": {
+    "title": "[IG draft] Staff accounts",
+    "subtitle": "[IG draft] Manage staff access, roles, and two-factor credentials",
+    "staffList": "[IG draft] Staff members ({count})",
+    "createStaff": "[IG draft] Add staff member",
+    "displayName": "[IG draft] Display name",
+    "email": "[IG draft] Email address",
+    "roles": "[IG draft] Assigned roles",
+    "roleAdminAlone": "[IG draft] Admin role cannot be combined with reviewer, coordinator, or moderator.",
+    "inviteUrl": "[IG draft] One-time invitation link",
+    "copyInvite": "[IG draft] Copy link",
+    "reset2fa": "[IG draft] Reset 2FA",
+    "offboard": "[IG draft] Offboard staff",
+    "offboardReason": "[IG draft] Offboarding reason",
+    "offboardWarning": "[IG draft] Any open cases assigned to this user will be returned to the unassigned queue."
+  },
+  "s11": {
+    "title": "[IG draft] Organisation settings",
+    "subtitle": "[IG draft] Intake control, data retention, and election parameters",
+    "intakePause": "[IG draft] Pause report intake",
+    "intakePauseHint": "[IG draft] Temporarily stop accepting new reports from observers and citizens.",
+    "retention": "[IG draft] Data retention period",
+    "retentionDays": "[IG draft] {days} days",
+    "retentionConfirm": "[IG draft] Shortening retention will delete older records at next purge.",
+    "electionDay": "[IG draft] Election day",
+    "publicDelay": "[IG draft] Public snapshot delay",
+    "delayMinutes": "[IG draft] {minutes} minutes",
+    "partyLabels": "[IG draft] Party labels on result sheets",
+    "saveSettings": "[IG draft] Save organisation settings",
+    "auditExport": "[IG draft] Export audit log"
+  },
+  "s12": {
+    "title": "[IG draft] Security & audit monitoring",
+    "subtitle": "[IG draft] Security rule alerts and cryptographic audit chain verification",
+    "alerts": "[IG draft] Security alerts",
+    "severity": "[IG draft] Severity",
+    "detector": "[IG draft] Detector",
+    "updateStatus": "[IG draft] Update status",
+    "auditVerify": "[IG draft] Audit hash chain verification",
+    "chainStatus": "[IG draft] Chain integrity",
+    "eventsChecked": "[IG draft] {count} events verified",
+    "headHash": "[IG draft] Chain head hash: {hash}",
+    "brokenEvent": "[IG draft] First broken event: {id}",
+    "verifyNow": "[IG draft] Run verification check",
+    "exportLog": "[IG draft] Export audit log (JSONL/CSV)"
   }
 }
