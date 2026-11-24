@@ -1,7 +1,7 @@
 # Model / System Card: ElectraGuard AI Multi-Component Suite
 
 ## Summary
-The ElectraGuard AI system is a modular suite of assistive statistical classifiers, rule-based heuristics, and grounded information retrieval models designed to support election observation and civic transparency in Nigeria. It comprises nine core intelligence components: Category Triage (A1), Urgency Ranking (A2), Uncertainty Abstention (A3), Duplicate Detection (A4), Cluster Detection (A5), Result-Sheet Verification (A6), Claim Ranking (A8), Materials Transit Risk (A13), and Grounded Guide Retrieval (Ask ElectraGuard), supported by client-side face obfuscation and transcription safeguards.
+The ElectraGuard AI system is a modular suite of assistive statistical classifiers, rule-based heuristics, and grounded information retrieval models designed to support election observation and civic transparency in Nigeria. It comprises nine core intelligence components: Category Triage (A1), Urgency Ranking (A2), Uncertainty Abstention (A3), Duplicate Detection (A4), Cluster Detection (A5), Result-Sheet Verification (A6), Claim Ranking (A8), Materials Transit Risk (A13), and Grounded Guide Retrieval (Ask ElectraGuard), supported by server-side face obfuscation (OpenCV YuNet) and transcription safeguards.
 
 - **Model Types:** Calibrated Naive Bayes, Logistic Regression, Gradient Boosted Trees (LightGBM/XGBoost-equivalent), spatial density algorithms, and grounded vector semantic search.
 - **Version:** 1.0.0 (Release Candidate 1)

@@ -36,6 +36,6 @@ Election observation in Nigeria confronts a fundamental paradox: on polling day,
 
 ## ElectraGuard AI's Intervention
 ElectraGuard AI resolves these bottlenecks through an integrated, privacy-first pipeline:
-1. **Offline-First, Zero-PII Field Intake (5A, 5C):** Observers report via anonymous code/PIN credentials with local device encryption and queued outbox synchronization. Feature phone users report via USSD/SMS.
+1. **Offline-First, Zero-PII Field Intake (5A, 5C):** Observers report via anonymous code/PIN credentials with client IndexedDB queued outbox synchronization (WebCrypto encryption planned for future hardening) and instant data wipe. Feature phone users report via USSD/SMS prototype channels.
 2. **Deterministic & Assistive AI Triage (5B, 1A, 2A):** Local multilingual models classify category and urgency, detect geographic clusters, and flag result-sheet anomalies, always requiring human sign-off.
 3. **Cryptographic Transparency & Closed Loops (5D, 5E, 4C):** Citizens receive tamper-proof cryptographic receipts (`HMAC-SHA256`) to check report status, while the public accesses aggregated, cell-suppressed transparency snapshots anchored to a verifiable SHA-256 audit chain.

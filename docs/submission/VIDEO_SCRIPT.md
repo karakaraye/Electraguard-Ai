@@ -42,16 +42,16 @@
   2. Selects category: *Tsoratarwa da Tashin Hankali* (Intimidation & Violence).
   3. Taps *"Ba a cikin gaggawa ba"* (Not in immediate physical danger).
   4. Selects polling unit from offline database and taps *"Yanzu nan"* (Just now).
-  5. Speaks an audio observation in Hausa; records a 5-second video clip. The interface automatically demonstrates **client-side face blur** across background bystanders.
-  6. Submits. An immediate alert confirms: *"An ajiye a wannan wayar"* (Saved securely in encrypted on-device outbox).
+  5. Speaks an audio observation in Hausa; records a 5-second video clip. The server-side media processing pipeline automatically executes **face blur** (OpenCV YuNet detector) across background bystanders.
+  6. Submits. An immediate alert confirms: *"An ajiye a wannan wayar"* (Saved in local on-device outbox).
   7. Observer toggles Airplane Mode OFF. The background outbox reconnects via TLS 1.3: a green checkmark confirms upload, generating a cryptographic submission receipt code (`REC-KN-7492`).
 * **Voiceover:**  
-  *"ElectraGuard changes that. Here, an observer in Kano works completely offline in Hausa. She records an incident, attaches audio, and captures video with bystanders' faces automatically blurred. The report is encrypted in her local device outbox. The moment network returns, it syncs seamlessly, providing a tamper-proof cryptographic receipt."*
+  *"ElectraGuard changes that. Here, an observer in Kano works completely offline in Hausa. She records an incident, attaches audio, and captures video with bystanders' faces automatically blurred. The report is queued safely in her local device outbox. The moment network returns, it syncs seamlessly, providing a tamper-proof cryptographic receipt."*
 
 ---
 
 ### Scene 3: The Citizen: USSD & SMS on a Basic Feature Phone (0:50 – 1:05)
-* **Visual:** Split screen. On the left, an actor dials `*384*24#` on an inexpensive Nokia feature phone. On the right, the ElectraGuard phone simulator terminal reflects incoming gateway webhook callbacks.
+* **Visual:** Split screen. On the left, an actor dials `*384*24#` on an inexpensive Nokia feature phone. On the right, the ElectraGuard phone simulator terminal reflects incoming gateway webhook callbacks (tested against Africa's Talking sandbox and simulator).
 * **Action:**
   1. The user navigates the quick USSD menu: selects language (Pidgin), selects category (Late Materials), selects LGA.
   2. Types short text: *"officials never show since 8am"*.

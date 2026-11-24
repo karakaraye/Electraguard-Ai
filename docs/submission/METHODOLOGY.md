@@ -15,9 +15,9 @@ AI models inside ElectraGuard serve solely as assistive, ranking, and consistenc
 
 ### 1.2 Offline-First Edge & Resilient Telecom Ingestion
 Recognizing severe connectivity constraints across Nigerian polling units:
-- **Web Client (PWA):** Features an encrypted local outbox with exponential backoff synchronization. The web app operates completely offline, allowing observers to record incidents, checklists, and result sheets without network.
-- **Feature Phone Channels:** Integrated SMS and USSD (`*384*24#`) ingestion via gateway callbacks (Africa's Talking interface), normalizing structured inputs over 2G GSM networks.
-- **Privacy by Design:** Field observers authenticate using anonymous, random observer codes and 6-digit PINs. No names, phone numbers, or email addresses are ever stored with observer records. Phone numbers for SMS/USSD intake are immediately converted into cryptographic one-way hashes (`HMAC-SHA256`) with rotating salts.
+- **Web Client (PWA):** Features an offline-first local outbox (IndexedDB) with backoff synchronization (client-side WebCrypto encryption planned for future release). The web app operates completely offline, allowing observers to record incidents, checklists, and result sheets without network.
+- **Feature Phone Channels:** Integrated SMS and USSD (`*384*24#`) ingestion via gateway callbacks (tested against Africa's Talking sandbox and simulator), normalizing structured inputs over 2G GSM networks.
+- **Privacy by Design:** Field observers authenticate using anonymous, random observer codes and 6-digit PINs. No names, phone numbers, or email addresses are ever stored with observer records. Phone numbers for SMS/USSD intake are immediately converted into cryptographic one-way hashes (`salted_hmac` with purpose-scoped salt and server secret key).
 
 ### 1.3 Calibrated Multi-Task Intelligence
 Rather than deploying an opaque, ungrounded Large Language Model, ElectraGuard decomposes incident understanding into specialized, explainable modules:

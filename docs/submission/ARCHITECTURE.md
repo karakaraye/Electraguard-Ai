@@ -15,13 +15,13 @@ ElectraGuard AI is a nonpartisan, offline-first election observation, incident v
 ```mermaid
 flowchart TD
   subgraph Ingestion["Ingestion Channels"]
-    Obs[Accredited Observer PWA] -->|Offline-First Queue| Outbox[Encrypted Local Outbox]
+    Obs[Accredited Observer PWA] -->|Offline-First Queue| Outbox[Local Outbox (IndexedDB)]
     Cit[Citizen Web Portal] -->|Anonymous Form| WebAPI[REST API Gateway]
-    Phone[Feature Phone User] -->|SMS / USSD *384*24#| Telecom[Africa's Talking Gateway]
+    Phone[Feature Phone User] -->|SMS / USSD *384*24# (Prototype)| Telecom[Africa's Talking Sandbox / Simulator]
   end
 
-  Outbox -->|WebCrypto AES-GCM Sync| WebAPI
-  Telecom -->|HMAC-SHA256 Webhook| WebAPI
+  Outbox -->|Background Sync (TLS 1.3)| WebAPI
+  Telecom -->|Webhook Callback| WebAPI
 
   subgraph Processing["Backend Application & AI Services"]
     WebAPI --> Auth[Anonymous Code / PIN & Staff Auth]
@@ -57,12 +57,12 @@ flowchart TD
 
 | Component | Responsibility | Tech Stack | Owner |
 |---|---|---|---|
-| **Observer PWA (`app/(observer)`)** | Offline checklist, incident reporting, PIN management, encrypted outbox. | Next.js 16 App Router, React 19, CSS Modules, WebCrypto | Front-End Team |
+| **Observer PWA (`app/(observer)`)** | Offline checklist, incident reporting, PIN management, client-side IndexedDB outbox with prompt wipe (WebCrypto AES-GCM encryption planned for future release). | Next.js 16 App Router, React 19, CSS Modules, IndexedDB | Front-End Team |
 | **Staff Console (`app/(staff)`)** | Queue triage, case review, redaction, operations room, rumour approval, audit export. | Next.js 16 App Router, React 19, CSS Modules | Front-End Team |
 | **Public Portal (`app/(public)`)** | Citizen reporting, receipt lookup, public transparency dashboard with `< 5` cell suppression. | Next.js 16, React 19, Server Components | Front-End Team |
 | **API Gateway & Core (`backend/`)** | REST API endpoints, organisation scoping, observer code authentication, case transitions. | Django 5, Django REST Framework, PostgreSQL | Backend Team |
 | **Intelligence Engine (`backend/intelligence`)** | Triage (A1), urgency (A2), abstention (A3), duplicates (A4), clusters (A5), result checks (A6), rumour ranking (A8). | Python 3.12, scikit-learn, NumPy, SciPy | AI / ML Team |
-| **Telecom Channels (`backend/phone_channels`)** | SMS and USSD callback webhooks, HMAC phone hashing, outbound receipt dispatch. | Africa's Talking API, Django Channels | Telephony Team |
+| **Telecom Channels (`backend/phone_channels`)** | SMS and USSD (`*384*24#`) callback webhooks, HMAC phone hashing, outbound receipt dispatch (tested against Africa's Talking sandbox and simulator). | Africa's Talking API Sandbox, Django Channels | Telephony Team |
 | **Cryptographic Audit (`backend/reports`)** | Immutable SHA-256 tamper-evident hash chaining for all state transitions. | Python `hashlib`, PostgreSQL | Security Team |
 
 ---
@@ -78,7 +78,7 @@ flowchart TD
        ▼ (Encrypted in transit via TLS 1.3; authenticated via batch token / session)
 [Database Storage]
   ├── Raw report narrative (sanitized of immediate regex PII)
-  ├── Anonymous Reporter Hash (`HMAC-SHA256(phone, rotating_salt)`)
+  ├── Anonymous Reporter Hash (`salted_hmac(phone-channel:<purpose>, phone)`)
   └── Location: LGA / Ward / Polling Unit Code
        │
        ▼ (AI Inference: read-only feature extraction; generates suggestions only)
@@ -139,7 +139,7 @@ flowchart TD
 - **Containerized Architecture:** Fully dockerized via `deploy/compose.yaml` (Django REST API, PostgreSQL 16 with PostGIS, Next.js Node runtime, Redis cache).
 - **Target Cloud Environment:** Microsoft Azure (Azure App Service / AKS, Azure Database for PostgreSQL, Azure Blob Storage with customer-managed keys).
 - **Low-Resource Local Execution:** Runs completely on standard commodity hardware (4-core CPU, 8 GB RAM) via local SQLite/Postgres test harness.
-- **Offline Client Operation:** Service Worker caches app shell; WebCrypto AES-GCM local storage queues reports until connectivity resumes.
+- **Offline Client Operation:** Service Worker caches app shell; client-side IndexedDB queues reports until connectivity resumes (WebCrypto AES-GCM encryption planned for future release).
 
 ---
 
