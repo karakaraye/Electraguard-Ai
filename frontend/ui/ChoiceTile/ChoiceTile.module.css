@@ -249,15 +249,27 @@
   border-color: var(--danger);
 }
 
+/* Answer icons sit in a 48 px disc: sun tint by default, danger tint for a danger answer. */
 .answerIcon {
-  display: inline-flex;
+  position: relative;
+  display: grid;
   flex: none;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--sun-tint);
+  color: var(--ink);
+}
+
+.tile[data-tone="danger"] .answerIcon {
+  background: var(--danger-bg);
   color: var(--danger);
 }
 
 .answerIcon svg {
-  width: 28px;
-  height: 28px;
+  width: 26px;
+  height: 26px;
 }
 
 .yesNo .tick {

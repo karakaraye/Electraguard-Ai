@@ -1209,3 +1209,60 @@
   background: var(--attn-solid);
   color: var(--fixed-ink);
 }
+
+/* ---------- Get safe first (spec screen 12) ---------- */
+/* One danger-tinted card holds the steps, Call 112 and the no-dispatch line. */
+.safetyCard {
+  display: grid;
+  gap: var(--s-4);
+  padding: var(--s-5) var(--s-4);
+  border: 1px solid var(--danger);
+  border-radius: var(--radius-xl);
+  background: var(--danger-bg);
+}
+
+.safetyCard .titleRow {
+  align-items: center;
+}
+
+.safetyDisc {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--paper-raised);
+  color: var(--danger);
+}
+
+.safetyCard .titleRow svg {
+  margin: 0;
+}
+
+.safetySteps li::before {
+  border: 0;
+  background: var(--paper-raised);
+  color: var(--danger);
+}
+
+/* Call 112 is the strongest action here: filled, not outlined. White on the solid red
+   is 5.6:1 in light and dark. */
+.safetyCard .callNow {
+  min-height: 64px;
+  border-color: var(--danger-solid);
+  background: var(--danger-solid);
+  color: var(--fixed-paper);
+  font-size: 1.25rem;
+}
+
+.safetyCard .callNow:focus-visible {
+  outline: var(--focus-outline);
+  outline-offset: var(--focus-offset);
+}
+
+.safetyCard .noDispatch {
+  padding: 0;
+  border: 0;
+  background: none;
+}

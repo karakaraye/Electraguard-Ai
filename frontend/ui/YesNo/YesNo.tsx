@@ -16,6 +16,8 @@ export type YesNoProps = ChoiceGroupChrome & {
   noLabel?: string;
   /** Icon before the "Yes" label (for example a danger triangle). */
   yesIcon?: ReactNode;
+  /** Icon for the No answer, drawn in the same disc as yesIcon. */
+  noIcon?: ReactNode;
   /** Status outline for the "Yes" answer (never colour alone: pair it with an icon). */
   yesTone?: "danger";
   /** One answer per row on phones (long answers); side by side from 600 px. */
@@ -36,6 +38,7 @@ export function YesNo({
   yesLabel,
   noLabel,
   yesIcon,
+  noIcon,
   yesTone,
   stacked,
   disabled,
@@ -47,7 +50,7 @@ export function YesNo({
   const errorId = error ? `${id}-error` : undefined;
   const choices = [
     { key: "yes", label: yesLabel ?? t("ui.yes"), answer: true, icon: yesIcon, tone: yesTone },
-    { key: "no", label: noLabel ?? t("ui.no"), answer: false, icon: undefined, tone: undefined },
+    { key: "no", label: noLabel ?? t("ui.no"), answer: false, icon: noIcon, tone: undefined },
   ];
   return (
     <fieldset

@@ -38,6 +38,7 @@ import {
   PhoneIcon,
   PlaceIcon,
   RetryIcon,
+  ShieldCheckIcon,
   TrashIcon,
   VideoIcon,
 } from "../../../../ui/icons";
@@ -215,6 +216,7 @@ export function DangerView({ value, error, onAnswer, ...shell }: DangerViewProps
         yesLabel={t("o06.yes")}
         noLabel={t("o06.no")}
         yesIcon={<AlertIcon />}
+        noIcon={<ShieldCheckIcon />}
         yesTone="danger"
         stacked
         data-testid="o06-answer"
@@ -237,27 +239,34 @@ export function EmergencyView({ onContinue, onLater, ...shell }: EmergencyViewPr
           <Button variant="quiet" block onClick={onLater} data-testid="o06-later">
             {t("o06.emergency.later")}
           </Button>
-          <Button block onClick={onContinue} data-testid="o06-continue">
+          <Button variant="secondary" block onClick={onContinue} data-testid="o06-continue">
             {t("o06.emergency.continue")}
           </Button>
         </>
       }
     >
-      <div className={styles.titleRow}>
-        <AlertIcon size={28} aria-hidden="true" />
-        <h1 className={styles.title}>{t("o06.emergency.title")}</h1>
-      </div>
-      <ol className={styles.steps}>
-        <li>{t("o06.emergency.step1")}</li>
-        <li>{t("o06.emergency.step2")}</li>
-        <li>{t("o06.emergency.step3")}</li>
-      </ol>
-      <ButtonLink href={`tel:${EMERGENCY_NUMBER}`} variant="danger" block icon={<PhoneIcon />} className={styles.call} data-testid="o06-call">
-        {t("o06.emergency.call")}
-      </ButtonLink>
-      <p className={styles.noDispatch} data-testid="o06-no-dispatch">
-        {t("o06.emergency.noDispatch")}
-      </p>
+      {/* One safety card: the steps, then Call 112 as the strongest action on the page. */}
+      <section className={styles.safetyCard} aria-labelledby="o06-emergency-title">
+        <div className={styles.titleRow}>
+          <span className={styles.safetyDisc} aria-hidden="true">
+            <AlertIcon size={26} />
+          </span>
+          <h1 className={styles.title} id="o06-emergency-title">
+            {t("o06.emergency.title")}
+          </h1>
+        </div>
+        <ol className={`${styles.steps} ${styles.safetySteps}`}>
+          <li>{t("o06.emergency.step1")}</li>
+          <li>{t("o06.emergency.step2")}</li>
+          <li>{t("o06.emergency.step3")}</li>
+        </ol>
+        <ButtonLink href={`tel:${EMERGENCY_NUMBER}`} variant="danger" block icon={<PhoneIcon />} className={`${styles.call} ${styles.callNow}`} data-testid="o06-call">
+          {t("o06.emergency.call")}
+        </ButtonLink>
+        <p className={styles.noDispatch} data-testid="o06-no-dispatch">
+          {t("o06.emergency.noDispatch")}
+        </p>
+      </section>
     </StepShell>
   );
 }
