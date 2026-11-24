@@ -53,30 +53,35 @@ export function ReceiptView({ code, receivedAt, justSent, citizen, items, remove
       onBack={onHome}
       offline={offline}
       actions={
-        <>
-          <Button variant="quiet" block onClick={onAnother} data-testid="o12-another">
-            {t("o12.another")}
-          </Button>
+        <div className={styles.receiptFooterActions}>
           {onView ? (
-            <>
-              <Button variant="quiet" block onClick={onHome} data-testid="o12-home">
-                {t("o12.home")}
-              </Button>
-              <Button block onClick={onView} data-testid="o12-view">
-                {t("o12.viewReport")}
-              </Button>
-            </>
+            <Button block onClick={onView} data-testid="o12-view">
+              {t("o12.viewReport")}
+            </Button>
           ) : (
             <Button block onClick={onHome} data-testid="o12-home">
               {t("o12.home")}
             </Button>
           )}
-        </>
+          <div className={styles.receiptQuietLinks}>
+            <Button variant="quiet" onClick={onAnother} data-testid="o12-another">
+              {t("o12.another")}
+            </Button>
+            {onView ? (
+              <>
+                <span className={styles.quietSep} aria-hidden="true">·</span>
+                <Button variant="quiet" onClick={onHome} data-testid="o12-home">
+                  {t("o12.home")}
+                </Button>
+              </>
+            ) : null}
+          </div>
+        </div>
       }
       data-testid="o12"
     >
       <BackgroundArt variant="soft" />
-      <div className={`${styles.screen} ${styles.wide}`}>
+      <div className={`${styles.screen} ${styles.wide} ${styles.receiptScreen}`}>
         <div className={styles.receiptTopHeader}>
           <div className={styles.receiptSunRings} aria-hidden="true">
             <div className={styles.receiptRingOuter}>

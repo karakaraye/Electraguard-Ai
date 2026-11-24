@@ -860,6 +860,30 @@
   gap: var(--s-4);
 }
 
+.receiptScreen {
+  padding-bottom: calc(var(--s-6, 28px) + 7.5rem);
+}
+
+.receiptFooterActions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2, 8px);
+  width: 100%;
+}
+
+.receiptQuietLinks {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-2, 8px);
+  flex-wrap: wrap;
+}
+
+.quietSep {
+  color: var(--ink-3, #756f66);
+  user-select: none;
+}
+
 /* ---------- Report not received yet (O-12 from Home) ---------- */
 
 .noCode {
