@@ -57,7 +57,7 @@ jobs:
           python backend/manage.py migrate --noinput
           python backend/manage.py makemigrations --check --dry-run
       - name: Run the PostgreSQL-backed suite
-        run: python backend/manage.py test accounts reports config
+        run: python backend/manage.py test accounts approved_answers config discussions intelligence ops phone_channels publicdata reference reports rumours security staff
       - name: Check production Django settings
         env:
           DJANGO_DEBUG: "false"
