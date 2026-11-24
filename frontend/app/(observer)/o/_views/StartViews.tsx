@@ -169,7 +169,7 @@ export function NoticeView({ onBack, onContinue, readOnly, offline, banner }: No
             <span className={slide === 2 ? styles.dotActive : styles.dot} />
             <span className={styles.dot} />
           </div>
-          <Button block onClick={handleNext} data-testid="o02-next">
+          <Button variant="primary" block onClick={handleNext} data-testid="o02-next">
             {t("o02.next") || "Next"}
           </Button>
         </div>

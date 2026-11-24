@@ -648,6 +648,7 @@
     "title": "Àkọsílẹ̀ àyẹ̀wò ọjọ́ ìdìbò",
     "answerQuestions": "Dáhùn àwọn ìbéèrè",
     "hint": "Kún ìpele kọ̀ọ̀kan nígbà tí ó bá ṣẹlẹ̀. Ìpele kọ̀ọ̀kan ń lọ fúnra rẹ̀.",
+    "progress": "Ìpele {done} ninu {total} ti pari",
     "stage": {
       "arrival": "Ìdé",
       "opening": "Ìṣíde",

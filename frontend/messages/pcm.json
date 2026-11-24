@@ -648,6 +648,7 @@
     "title": "Polling-day checklist",
     "answerQuestions": "Answer questions",
     "hint": "Fill each stage when e happen. Each stage dey send by itself.",
+    "progress": "{done} of {total} stages don done",
     "stage": {
       "arrival": "When you reach",
       "opening": "Opening",

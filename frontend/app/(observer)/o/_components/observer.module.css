@@ -253,6 +253,14 @@
   width: 100%;
 }
 
+.onboardingActions button {
+  background: var(--ink) !important;
+  color: var(--on-ink) !important;
+  border-color: var(--ink) !important;
+  font-weight: 700;
+  min-height: 48px;
+}
+
 .dots {
   display: flex;
   align-items: center;

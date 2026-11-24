@@ -648,6 +648,7 @@
     "title": "Jerin abubuwan ranar zaɓe",
     "answerQuestions": "Amsa tambayoyi",
     "hint": "Cike kowane mataki idan ya faru. Kowane mataki yana tafiya shi kaɗai.",
+    "progress": "An gama matakai {done} cikin {total}",
     "stage": {
       "arrival": "Isowa",
       "opening": "Buɗewa",

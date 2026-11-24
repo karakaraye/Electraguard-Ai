@@ -56,9 +56,9 @@ export function ChecklistListView({ offline, stages, unitLabel, onBack }: Checkl
       <div className={styles.screen}>
         <div className={s.checklistHeader}>
           <h1 className={s.checklistTitle}>{t("o15.title")}</h1>
-          <p className={s.checklistSubtitle}>
+          <p className={s.checklistSubtitle} data-testid="o15-subtitle">
             {unitLabel ? `${unitLabel} · ` : ""}
-            {doneCount} of {stages.length} stages done
+            {t("o15.progress", { done: doneCount, total: stages.length }) || `${doneCount} of ${stages.length} stages done`}
           </p>
         </div>
 

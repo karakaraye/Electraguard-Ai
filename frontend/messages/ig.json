@@ -648,6 +648,7 @@
     "title": "Ndepụta ụbọchị ntuli aka",
     "answerQuestions": "Zaa ajụjụ",
     "hint": "Jupụta ọkwa ọ bụla mgbe ọ na-eme. Ọkwa ọ bụla na-aga n'onwe ya.",
+    "progress": "Emechara usoro {done} n'ime {total}",
     "stage": {
       "arrival": "Ọbịbịa",
       "opening": "Mmeghe",

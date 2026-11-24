@@ -175,6 +175,25 @@ async function main() {
 
     // 08-polling-day
     console.log("  -> 08-polling-day");
+    await page.evaluate(({ observerCode }) => {
+      const today = new Intl.DateTimeFormat("en-CA", { timeZone: "Africa/Lagos", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date());
+      const key = `eg.checklist.${observerCode}.${today}`;
+      const data = {
+        unit: {
+          code: "001",
+          label: "St. Peter's Primary School",
+          state_code: "LA",
+          lga_code: "01",
+          ward_code: "01",
+          ward_name: "Ward 1",
+        },
+        stages: {
+          arrival: { answers: {}, state: "received" },
+          opening: { answers: {}, state: "received" },
+        },
+      };
+      window.localStorage.setItem(key, JSON.stringify(data));
+    }, { observerCode: code });
     await page.goto("http://127.0.0.1:3361/o/checklist");
     await page.getByTestId("o15").waitFor({ state: "visible" });
     await page.waitForTimeout(400);
@@ -205,6 +224,56 @@ ReviewEvent.objects.create(organisation=r.organisation, report=r, action=ReviewE
 
     await context.close();
   }
+
+  // Also capture 3 screens at 360x740
+  console.log("\nCapturing 360x740 responsive screens");
+  const ctx360 = await browser.newContext({
+    baseURL: "http://127.0.0.1:3361",
+    viewport: { width: 360, height: 740 },
+    colorScheme: "light",
+    deviceScaleFactor: 2,
+  });
+  const p360 = await ctx360.newPage();
+  await p360.addInitScript(() => {
+    document.documentElement.setAttribute("data-theme", "light");
+    window.localStorage.setItem("eg.theme", "light");
+    window.localStorage.setItem("eg.locale", "en");
+    window.localStorage.setItem("eg.test.ready", "1");
+    window.localStorage.setItem("eg.noticeSeen", "2026-11-22");
+  });
+
+  // 1. Splash at 360
+  await p360.goto("http://127.0.0.1:3361/o/start?splash=1");
+  await p360.waitForTimeout(500);
+  await shot(p360, join(SHOTS_DIR, "01-splash-360.png"));
+
+  // Sign in observer for home & receipt
+  const { code: code360, pin: setupPin360 } = server("issue");
+  await p360.goto("http://127.0.0.1:3361/o/start?view=sign-in");
+  await p360.getByTestId("o03-code").fill(code360);
+  await p360.getByTestId("o03-pin").fill(setupPin360);
+  await p360.getByTestId("o03-submit").click();
+  await p360.getByTestId("o03-set-pin").waitFor({ state: "visible", timeout: 10000 });
+  await p360.getByTestId("o03-newpin").fill("482913");
+  await p360.getByTestId("o03-confirmpin").fill("482913");
+  await p360.getByTestId("o03-setpin-submit").click();
+  await p360.waitForURL(/\/o$/);
+  await p360.getByTestId("o04").waitFor({ state: "visible" });
+
+  // 2. Home at 360
+  await p360.waitForTimeout(300);
+  await shot(p360, join(SHOTS_DIR, "05-home-360.png"));
+
+  // 3. Receipt at 360
+  const samplePhoto360 = photo("sample360.jpg", 800, 600, 6);
+  await fillReport(p360 as unknown as Page, { photoPath: samplePhoto360 });
+  await p360.getByTestId("o11-send").click();
+  await p360.waitForURL(/\/o\/reports\/[0-9a-f-]{36}\?just-sent=1/, { timeout: 30_000 });
+  await p360.getByTestId("receipt-card-code").waitFor({ state: "visible" });
+  await p360.waitForTimeout(500);
+  await shot(p360, join(SHOTS_DIR, "07-receipt-360.png"));
+
+  await ctx360.close();
 
   await browser.close();
   console.log("\nAll 11 screens captured in light and dark modes!");

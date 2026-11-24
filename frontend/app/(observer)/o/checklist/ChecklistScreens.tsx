@@ -65,7 +65,8 @@ export function ChecklistListScreen() {
   );
 
   if (!session) return null;
-  return <ChecklistListView offline={offline} stages={stages} unitLabel={record.unit?.label} onBack={() => router.push("/o")} />;
+  const unitLabel = record.unit?.label ?? null;
+  return <ChecklistListView offline={offline} stages={stages} unitLabel={unitLabel} onBack={() => router.push("/o")} />;
 }
 
 /* ---------- Stage form ---------- */
