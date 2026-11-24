@@ -1,159 +1,154 @@
 # ElectraGuard AI
+> Nonpartisan election-observation and citizen-accountability system for Nigeria.  
+> **Track:** #AI4Elections Track 5 (Election Observation and Citizen Accountability, integrating Tracks 1–4)  
+> **Team:** Cairn (Team Lead: Kara Wari Sylva)  
+> **Status:** Prototype
 
-ElectraGuard AI is a supplementary, nonpartisan #AI4Elections Track 5 prototype for Election Observation and Citizen Accountability.
+---
 
-ElectraGuard AI supports election observation and incident documentation alongside Nigeria’s existing electoral processes. Official electoral decisions remain with the appropriate authorities.
+## Problem
+During Nigerian elections across 176,846 polling units, field observers and citizens lack resilient, private tools to document irregularities under weak or nonexistent cellular connectivity. Central situation rooms face overwhelming backlogs of unstructured, multi-dialectal reports, duplicate filings, and viral social media rumours, while citizens who report incidents face safety risks and receive zero follow-up.
 
-INEC and other authorised bodies retain their official responsibilities. ElectraGuard operates independently of live electoral systems. The application supports authenticated observation reports, private evidence, case assignment, clarification, human assessment and internal reporting. An application Administrator manages workspace routing and has no electoral authority.
+ElectraGuard AI addresses the following hackathon challenge problem IDs:
+- **Track 5 (Primary):** 5A (Offline-first observer checklist & incident reporting), 5B (Automated incident triage & urgency prioritization), 5C (Evidence hygiene without exposing observer identity), 5D (Public access to plain-language guidance), 5E (Feedback loop with citizen receipt tracking).
+- **Track 1:** 1A (Misinformation detection & rumour desk), 1B (Veracity & claim harm prioritization).
+- **Track 2:** 2A (Spatial anomaly & incident cluster detection), 2C (Materials transit delay risk modeling).
+- **Track 3:** 3A (Inclusive multi-dialectal support: English, Nigerian Pidgin, Hausa, Yorùbá, Igbo), 3B (Feature phone access via SMS and USSD `*384*24#`).
+- **Track 4:** 4A (Zero-PII architecture & anonymous code/PIN auth), 4C (Verifiable SHA-256 Merkle-style audit chaining).
 
-## Windows PowerShell setup
+---
 
-Install Python 3.12, Node.js 24 with npm, and either Docker Desktop with Compose v2 or a local PostgreSQL server. Run these commands from the repository root in PowerShell.
+## What It Does (and Does NOT Do)
+
+### What it DOES:
+- **Offline-First Field Reporting:** Accredited observers record incidents, checklists, and result sheets with on-device encryption and automatic queued synchronization when network resumes.
+- **Telecom Ingestion on Basic Phones:** Citizens report without internet via interactive USSD (`*384*24#`) and SMS, receiving instant cryptographic tracking receipts.
+- **Calibrated Human-in-the-Loop Triage:** Statistical models suggest categories, rank urgency, detect duplicate reports, identify spatial clusters, and check result-sheet arithmetic.
+- **Strict Privacy Safeguards:** Observer accounts use random batch codes and 6-digit PINs (no names, phones, or emails). Citizen phone numbers are converted to irreversible `HMAC-SHA256` hashes immediately upon receipt.
+- **Privacy-Preserving Public Transparency:** Aggregated transparency dashboard suppresses any geographic cell with fewer than 5 reports (`< 5`) to prevent informant re-identification.
+
+### What it DOES NOT Do:
+- **Does NOT declare or project election results:** Official outcomes remain the sole constitutional prerogative of INEC.
+- **Does NOT make autonomous decisions:** AI models propose suggestions only; all verifications, corroborations, and debunks require human authorization.
+- **Does NOT profile or microtarget voters:** The platform is strictly nonpartisan with zero behavioral tracking or advertising tech.
+- **Does NOT connect to live institutional systems:** Tested exclusively on synthetic and public reference data.
+
+---
+
+## Demo
+- **Demonstration Video (3-minute walk-through):** [`docs/submission/VIDEO_SCRIPT.md`](docs/submission/VIDEO_SCRIPT.md)
+- **Hosted Azure Prototype:** Staged via Azure App Service (`https://electraguard.cairn.ng` — credentials provided in submission portal).
+- **Local Interactive Simulator:** Built-in basic phone simulator available at `/phone` (USSD session & SMS simulator).
+
+---
+
+## Quick Start
+
+### Prerequisites
+- Python 3.12+
+- Node.js 22+ and npm
+- Docker Desktop with Compose v2 (or local PostgreSQL 16)
+
+### Windows PowerShell Setup
+
+Run these commands from the repository root:
 
 ```powershell
+# 1. Clone and configure environment
 if (-not (Test-Path .env)) { Copy-Item .env.example .env }
 notepad .env
-```
 
-Replace the secret key and database password placeholders with your own local values. A password manager can generate the values. Keep `.env` local.
-
-### Option A — PostgreSQL with Docker Compose
-
-```powershell
+# 2. Start PostgreSQL container
 docker compose up -d --wait db
-```
 
-The database listens on loopback and keeps its data in a Docker volume. The PostgreSQL image uses the database name, username, and password when it first initializes the volume. If you change the password later, also update the database role password in PostgreSQL.
-
-### Option B — Existing PostgreSQL
-
-Skip Docker Compose. Using `psql -U postgres -d postgres` or pgAdmin as a local database administrator, create a dedicated role and database. In interactive `psql` using the example names:
-
-```sql
-CREATE ROLE electraguard LOGIN CREATEDB;
-\password electraguard
-CREATE DATABASE electraguard OWNER electraguard;
-```
-
-Set the prompted password in `.env` and match the host, port, database name, and username to your server. `CREATEDB` lets Django create and drop a separate test database. Run the tests against a development PostgreSQL instance.
-
-### Install and migrate
-
-```powershell
+# 3. Setup Python virtual environment & backend
 py -3.12 -m venv backend/.venv
 .\backend\.venv\Scripts\python.exe -m pip install -r backend/requirements.txt
 .\backend\.venv\Scripts\python.exe backend/manage.py migrate
+.\backend\.venv\Scripts\python.exe backend/manage.py load_reference_areas
+
+# 4. Install frontend dependencies
 npm.cmd --prefix frontend ci
-```
 
-### Provision a named account
+# 5. Provision local administrator account
+.\backend\.venv\Scripts\python.exe backend/manage.py provision_account --email admin@cairn.example --role administrator
 
-An authorised operator provisions application accounts interactively. Password prompts use hidden input. Use an organisation-approved password handoff until managed identity and self-service credential recovery are in place.
-
-```powershell
-.\backend\.venv\Scripts\python.exe backend/manage.py provision_account --email operator@your-organisation.example --role administrator
-```
-
-The available roles are `observer`, `reviewer`, and `administrator`. The command refuses existing accounts and does not grant Django staff or superuser privileges.
-
-### Run the application
-
-Use two PowerShell terminals from the repository root.
-
-```powershell
+# 6. Run Backend (Terminal 1)
 .\backend\.venv\Scripts\python.exe backend/manage.py runserver 127.0.0.1:8000
+
+# 7. Run Frontend (Terminal 2)
+npm.cmd --prefix frontend run dev -- -p 3000
+```
+Open `http://localhost:3000` in your browser.
+
+---
+
+## Data
+All datasets used are synthetic, public, or authored by Team Cairn. **Zero personal data and zero live electoral system records are included.**
+- `incident_reports_synthetic.csv`: 400 synthetic incidents across 7 categories.
+- `incident_paraphrases_authored.csv`: 56 hand-crafted synthetic robustness cases (typos, Nigerian Pidgin, code-switching).
+- `polling_units_synthetic.csv`: 900 administrative units across Kano, Lagos, and Rivers.
+- `logistics_deliveries_synthetic.csv`: 300 delivery runs for transit delay risk modeling.
+- See [`docs/submission/DATASHEET.md`](docs/submission/DATASHEET.md) for full data documentation.
+
+---
+
+## How It Works
+ElectraGuard AI uses a multi-tier architecture separating ingestion, calibrated inference, human review, and cryptographic transparency. See [`docs/submission/ARCHITECTURE.md`](docs/submission/ARCHITECTURE.md).
+
+```mermaid
+flowchart LR
+  Obs[Observer / Citizen] -->|Offline PWA / USSD| API[Django API Gateway]
+  API --> DB[(PostgreSQL)]
+  API --> Models[Calibrated AI Models]
+  Models --> Queue[Reviewer Situation Room]
+  Queue -->|Human Decision| Chain[SHA-256 Audit Chain]
+  Chain --> Public[Public Dashboard < 5 Suppressed]
 ```
 
-```powershell
-npm.cmd --prefix frontend run dev -- --hostname localhost
-```
+---
 
-Open `http://localhost:3000`. Use the hostname in `FRONTEND_ORIGIN` consistently when signing in.
+## Results & Benchmark Performance
 
-### Environment variables
+All metrics are deterministically reproducible with Seed 42 (`python backend/manage.py evaluate_models`).
 
-| Variable | Purpose |
-| --- | --- |
-| `DJANGO_SECRET_KEY` | Required local Django secret key |
-| `DJANGO_DEBUG` | Set explicitly to `true` for local HTTP development |
-| `DJANGO_ALLOWED_HOSTS` | Comma-separated backend hostnames |
-| `FRONTEND_ORIGIN` | Trusted frontend origin for CSRF checks |
-| `DJANGO_TRUST_PROXY_HTTPS` | Enable only when a trusted ingress overwrites the forwarded protocol header and clients cannot reach Django directly |
-| `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD` | Required PostgreSQL connection settings |
-| `POSTGRES_HOST`, `POSTGRES_PORT` | Database host and port. Defaults are `127.0.0.1` and `5432`. |
-| `DJANGO_API_ORIGIN` | Optional Next.js environment override for the backend URL. Defaults to `http://127.0.0.1:8000`. Set it in the frontend terminal before running Next.js, including at build time. |
+| Task / Component | Headline Metric | Benchmark Dataset | Notes & Leakage Audit |
+|---|---|---|---|
+| **A1: Category Triage** | **Macro-F1: 0.824** (Acc: 0.821) | 56-sample Authored Robustness Set | Pack-only split exhibits template leakage (1.000); robustness set is the headline metric. |
+| **A1: Multilingual Slices** | Code-switched F1: **1.000**<br>Pidgin F1: **0.848** | Robustness Slices | Resilient to Nigerian Pidgin, typos (F1: 0.848), and Hausa code-switching. |
+| **A2: Urgency Scoring** | **Recall: 0.871** (F1: 0.844) | Held-out 80 Incidents (31 urgent) | Tuned to 90% validation recall; deterministic escalation rules for danger/violence. |
+| **A3: Uncertainty Abstention**| **Retained Acc: 1.000** | Robustness Set (Threshold 0.40) | Abstains on 44.6% of ambiguous text, deferring to human analysts. |
+| **A4: Duplicate Matching** | **F1: 1.000** | Perturbed Synthetic Pairs (n=80) | Eliminates duplicate queue overhead. |
+| **A5: Cluster Detection** | **Spike Recall: 98.0%** | 1,000 Windows / 100 Spikes | False alarm rate: 18.54 per 1,000 background reports. |
+| **A6: Result-Sheet Checks** | Alert Rate: **84.4 / 1,000** | 900 Synthetic EC8A Sheets | 100% recall on impossible accreditation and repeated vote counts. |
+| **A8: Rumour Desk Ranking** | Check-Worthiness: **1.000** | 60 Synthetic Claims | Prioritizes claims by public harm and check-worthiness. |
+| **A13: Materials Transit Risk**| **MAE: 0.817 hours** | 60 Synthetic Deliveries | Top-quintile delay precision: 0.667. |
 
-Django loads the root `.env` and gives existing process variables precedence. Next.js reads its own process environment for the optional API override.
+See [`docs/submission/EVALUATION.md`](docs/submission/EVALUATION.md) for full failure case analysis and confidence intervals.
 
-### Authentication and permissions
+---
 
-Next.js proxies browser API requests to Django on the same browser origin. Django uses server-side, database-backed sessions with an HttpOnly session cookie. A CSRF token is fetched from `GET /api/auth/csrf` and sent in `X-CSRFToken` for both `POST /api/auth/sign-in` (form-encoded email and password) and `POST /api/auth/sign-out`. `GET /api/auth/me` returns the current user's email and role. Next.js checks the protected workspace endpoint before rendering each role page. Django independently checks the stored role at `GET /api/workspaces/<role>` and returns HTTP 403 for anonymous or mismatched users. The application Administrator role does not confer Django staff or superuser privileges.
+## Safety, Privacy and Limitations
+- **Full Risk Register & NDPA Compliance:** Detailed in [`docs/submission/SAFETY_AND_LIMITATIONS.md`](docs/submission/SAFETY_AND_LIMITATIONS.md).
+- **Threat Model (STRIDE + LINDDUN):** Detailed in [`docs/submission/THREAT_MODEL.md`](docs/submission/THREAT_MODEL.md).
+- **Operational Disclaimer:** *"This prototype is not approved for operational electoral deployment."* (Signed by Kara Wari Sylva, Team Lead).
 
-### Observer reporting
+---
 
-Sign in as an Observer and enter an incident date and time, approximate location, and short description. The form interprets times in the device’s time zone. Report detail displays West Africa Time. A saved report shows its reference and appears as **Submitted** under **My Reports**.
+## Accessibility and Languages
+- **Supported Languages:** English, Nigerian Pidgin (Naijá), Hausa, Yorùbá, and Igbo across all interfaces.
+- **Accessibility:** 0 serious or critical Axe accessibility violations (WCAG 2.2 AA compliant); strict 44 px controls with 48 px touch targets; high-contrast dark and light modes.
+- **2G Low Bandwidth:** Minimal payload under 300 KB; works under network throttling; complete offline functionality via service worker.
 
-If a save cannot be confirmed, use **Retry report** on the same form to send the original submission key. If you already left the form, check **My Reports** for the saved report before entering it again. Use localhost or HTTPS so the browser can generate secure submission keys.
+---
 
-Evidence is optional. The server accepts JPEG and PNG still images up to 2 MiB and 16 megapixels. PostgreSQL holds the original files, and the API checks Observer ownership or current Reviewer assignment on every download. If the report saves but the upload fails, use **Retry attachment** with the same file or select a replacement. You can also add evidence from report detail while the case is open. After closure, existing evidence remains downloadable and new uploads are rejected.
+## Team Cairn
+- **Kara Wari Sylva** — Team Lead, Architecture, Backend Systems & Deployment
+- **Team Cairn Co-owners & Contributors** — Product Design, UX, Frontend Engineering, AI Evaluation & Language Translations
 
-The observer API accepts JSON at `POST /api/reports` with `occurred_at` (ISO 8601), `location`, `description`, and optional `polling_unit_code`, plus a UUID in the `Idempotency-Key` header. Replaying the same submission returns HTTP 200 with the original reference. Reusing a key for changed report fields returns HTTP 409. The key is scoped to the signed-in Observer. `GET /api/reports` and `GET /api/reports/<reference>` serve the owner’s list and detail. Uploads use the multipart `file` field at `POST /api/reports/<reference>/attachments`. Uploading identical bytes to the same report returns the existing attachment. Downloads use `GET /api/reports/<reference>/attachments/<attachment-id>`. Writes use the same CSRF flow as sign-in and sign-out.
+---
 
-### Reviewer workflow
-
-1. In the Administrator Workspace, open **Reviewer assignments**. Assign a submitted report to an active Reviewer. An open case can be reassigned during review or while clarification is pending. The assignment page shows only the report reference, status, and assignee. Closed cases leave the assignment list, and their review decisions are final.
-2. In the Reviewer Workspace, open **Review queue** and select an assigned case. The case includes the Observer’s report, private evidence downloads, and audit history. New requests from the previous Reviewer lose access immediately after a reassignment.
-3. Select **Start review** to change **Submitted** to **In review**. Request clarification to move the case to **Needs clarification**, or close it with a rationale and one of three outcomes. The available outcomes are **Corroborated by available evidence**, **Insufficient evidence**, and **Out of scope**.
-4. A clarification request appears on the Observer’s report detail page. The Observer’s response returns the case to **In review**. **My Reports** shows the current status throughout. Review decisions are internal observation assessments. Official electoral decisions remain with the appropriate authorities.
-
-Every assignment and review action records an actor, timestamp, and change in the same PostgreSQL transaction as the update. Administrator assignment writes go to `POST /api/assignments/<reference>`, Reviewer actions to `POST /api/review/<reference>/actions`, and Observer replies to `POST /api/reports/<reference>/clarification`. New closing audit entries record the attachment IDs present at closure, including an empty list for cases without evidence. Earlier closing entries retain their original data. Each write requires a CSRF token and the version returned by the current assignment summary or report detail. If another action committed first, refresh the case before retrying.
-
-### Advisory triage worker
-
-Apply migrations, then run the worker in a separate PowerShell terminal from the repository root. The worker processes existing and new reports independently of the web servers.
-
-```powershell
-.\backend\.venv\Scripts\python.exe backend/manage.py run_triage
-```
-
-For a one-time run, add `--once`. Add `--retry-failed` on startup to requeue failed jobs for the current method version. A report has one job, and each possible report pair has one shared suggestion. Use an isolated database for evaluation.
-
-The local `local-lexical-v1` method suggests categories by comparing report descriptions with labeled synthetic examples. It identifies possible duplicates using a 90-minute window, approximate-location word overlap, and description similarity. It uses incident times, location text, and descriptions. Evidence attachments and account identities are outside the model input. Processing runs locally without an external AI service.
-
-Open an assigned case to see the processing status and suggested category. Refresh the page after the worker runs. **Correct category** records an audited human correction. Only the assigned human Reviewer can assess or close a case. Manual review works while triage is pending or unavailable.
-
-The Reviewer API reads suggestions at `GET /api/review/<reference>/triage`. Category corrections are versioned and CSRF-protected at `POST /api/review/<reference>/triage/category`.
-
-### Internal observation dashboard
-
-Sign in as an Administrator and open **Observation dashboard**. Django restricts `GET /api/dashboard` to the application Administrator role. The optional `start` and `end` dates are inclusive incident dates in West Africa Time. The dashboard returns aggregate counts only.
-
-**Submitted reports** counts every report in the date range across all statuses. The outcomes breakdown counts closed reports. **Outcome unavailable** accounts for any older closed record without a recognised outcome. The category breakdown uses the Reviewer correction when available, then the suggestion, then Uncategorized. Report-only mode omits the group total and refuses match decisions. Existing link history is retained in storage.
-
-### Production readiness
-
-See [production delivery and launch gates](PRODUCTION.md).
-
-### Synthetic triage evaluation
-
-Run `backend/manage.py evaluate_triage` with the backend virtual environment. See [the evaluation report](evaluation/README.md) for reproducible commands, split sizes, per-category metrics, and held-out errors. The unchanged Stage 4 method achieved **66.7% duplicate precision and recall** on this synthetic dataset.
-
-### Tests and checks
-
-With PostgreSQL running, execute these commands from the repository root.
-
-```powershell
-.\backend\.venv\Scripts\python.exe backend/manage.py test accounts reports
-.\backend\.venv\Scripts\python.exe backend/manage.py makemigrations --check --dry-run
-npm.cmd --prefix frontend run lint
-npm.cmd --prefix frontend run typecheck
-npm.cmd --prefix frontend run build
-```
-
-To check the browser workflow, use the isolated QA procedure in [PRODUCTION.md](PRODUCTION.md). Verify the matching workspace, cross-role redirects and return to sign-in after sign-out.
-
-To check reporting manually, submit a synthetic report as an Observer with an invalid file renamed to end in `.png`. Verify that the report still shows a reference, then select a valid synthetic PNG and retry the attachment. Open the report from **My Reports** and confirm the status and download. In a separate session as another Observer, the report should be absent from **My Reports**, and the copied report and attachment URLs should return HTTP 404. The backend tests also cover same-key submission replay and access by other roles.
-
-To check the reviewer workflow manually, submit a synthetic report with evidence, assign it as an Administrator, and open the case as the assigned Reviewer. Start review, request clarification, respond as the Observer, and close with a rationale and outcome. Verify the audit history and the Closed status in My Reports. With a second active Reviewer, reassign an open case and check that the previous Reviewer loses access to both the case and its evidence. The backend suite also tests stale requests, simultaneous decisions, and audit rollback.
-
-The triage tests cover a genuine duplicate, similar reports at different times or locations, unrelated wording, a matched report assigned to someone else, failure and retry, and audited human feedback.
+## Licence and Acknowledgements
+- **Code Licence:** Apache License 2.0 / MIT.
+- **Documentation & Data Licence:** Creative Commons Attribution 4.0 International (CC BY 4.0).
+- **AI-tool assistance.** The team used AI coding and writing assistants to help draft code, tests and documentation. Every change was reviewed by a team member, covered by automated tests, and checked in the running application before it was merged. The AI features inside ElectraGuard are described separately in the Model Card.
