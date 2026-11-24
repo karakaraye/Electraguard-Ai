@@ -3,8 +3,8 @@
   gap: var(--s-2);
   padding: var(--s-4);
   border: 1px dashed var(--info);
-  border-radius: var(--radius);
-  background: var(--paper);
+  border-radius: var(--radius-lg);
+  background: var(--paper-raised);
   color: var(--ink);
 }
 
@@ -32,6 +32,14 @@
   color: var(--info);
   font: var(--t-label);
   letter-spacing: var(--t-label-tracking);
+}
+
+.eyebrow {
+  margin: 0;
+  color: var(--info);
+  font: var(--t-eyebrow);
+  letter-spacing: var(--t-eyebrow-tracking);
+  text-transform: uppercase;
 }
 
 .field {

@@ -23,9 +23,9 @@
   min-height: 96px;
   margin: 0;
   padding: var(--s-3) var(--s-3) var(--s-4);
-  border: var(--border-w) solid var(--ink);
-  border-radius: var(--radius);
-  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  background: var(--paper-raised);
   color: var(--ink);
   font: inherit;
   text-align: start;

@@ -48,47 +48,80 @@
 
 :root {
   --font: "Noto Sans", "Noto Sans Fallback", system-ui, "Segoe UI", Roboto, sans-serif;
+  /* Headings: Noto Sans Display once its files are added; Noto Sans bold until then.
+     Both cover every Hausa, Yoruba and Igbo letter. */
+  --font-display: "Noto Sans Display", var(--font);
+  --display-tracking: -0.02em;
 
   /* ---------- Type scale: weight size/line-height family ---------- */
-  --t-display: 700 2.25rem/1.1 var(--font);
-  --t-title: 700 1.625rem/1.2 var(--font);
-  --t-heading: 600 1.25rem/1.3 var(--font);
+  --t-display: 800 2.5rem/1.1 var(--font-display);
+  --t-title: 800 2rem/1.1 var(--font-display);
+  --t-headline: 700 1.5rem/1.25 var(--font-display);
+  --t-heading: 700 1.25rem/1.3 var(--font-display);
+  --t-eyebrow: 700 0.8125rem/1.2 var(--font);
+  --t-eyebrow-tracking: 0.08em;
   --t-body-lg: 400 1.125rem/1.5 var(--font);
   --t-body: 400 1rem/1.5 var(--font);
   --t-small: 400 0.875rem/1.4 var(--font);
-  --t-label: 600 0.875rem/1.2 var(--font);
+  --t-label: 600 1rem/1.25 var(--font);
   --t-label-tracking: 0.02em;
 
   /* Body text for the current audience (observer and citizen default) */
   --t-base: var(--t-body-lg);
   --t-base-size: 1.125rem;
 
-  /* ---------- Colour: ink on paper ---------- */
-  --ink: #0b0b0c;
-  --ink-2: #3a3a3d;
-  --ink-3: #5f5f63;
-  --paper: #ffffff;
-  --paper-2: #f4f4f2;
-  --rule: #d8d8d4;
-  /* Control outlines need 3:1 against the surface (WCAG 1.4.11); --rule is for hairlines only */
-  --rule-control: #707075;
-  --on-ink: #ffffff;
-
-  /* ---------- Colour: status, always with a shape and a text label ---------- */
-  --ok: #0f6b3a;
-  --ok-bg: #e5f1ea;
-  --attn: #8a5a00;
-  --attn-bg: #fff4d6;
-  --wait: #4a4a4f;
-  --wait-bg: #ededea;
-  --danger: #a3141c;
-  --danger-bg: #fbe9ea;
-  --info: #1f4e8c;
-  --info-bg: #e7eef7;
+  /* ---------- Colour: Ink and Paper (design spec B1) ----------
+   * Ink leads; paper is warm; the sun is the only accent (fills only, never text,
+   * except --sun-ink). --paper is the page ground; --paper-raised is for cards.
+   * Status colours appear only with a shape and a word. */
+  --ink: #0e0d0b;
+  --ink-2: #45413a;
+  --ink-3: #6e6a62;
+  --paper: #faf8f3;
+  --paper-2: #f2efe7;
+  --paper-raised: #ffffff;
+  --paper-sunk: #f2efe7;
+  --rule: #e6e1d5;
+  --rule-control: #8a857a;
+  --on-ink: #faf8f3;
+  --hero: #0e0d0b;
+  /* Text on --hero. The hero stays dark in both themes, so these do not flip. */
+  /* Colours that never flip with the theme: content on the white plus disc and on-ink buttons */
+  --fixed-ink: #0e0d0b;
+  --fixed-paper: #ffffff;
+  --hero-ink: #f4f1ea;
+  --hero-ink-2: #cfc9be;
+  --sun: #e3b060;
+  --sun-strong: #c98f2e;
+  --sun-ink: #7a4e0e;
+  --sun-tint: #f6e7c6;
+  --sun-wash: #fbf4e4;
+  --sun-line: #ead9b4;
+  --ok: #1b5e20;
+  --ok-bg: #e7f3e8;
+  --attn: #8a3b00;
+  --attn-bg: #fff1dc;
+  --wait: #45413a;
+  --wait-bg: #eeebe4;
+  --danger: #a3161a;
+  --danger-bg: #fdecec;
+  --info: #0d4a94;
+  --info-bg: #e3eefb;
+  --ok-solid: #2e7d32;
+  --info-solid: #1565c0;
+  --attn-solid: #e0a13b;
+  --danger-solid: #c62828;
+  --art-line: #7d6f5c;
+  --art-fill: #d9cfbc;
+  --art-wall: #f4eee2;
+  --art-ground: #efe8da;
+  --focus-ring: #0e0d0b;
+  --focus-gap: #faf8f3;
+  --shadow-sheet: 0 -8px 32px rgb(14 13 11 / 0.18);
+  --shadow-raised: 0 8px 24px rgb(14 13 11 / 0.14);
+  --scrim: rgb(14 13 11 / 0.4);
 
   /* ---------- Focus: 3px ink outline with a 2px paper gap ---------- */
-  --focus-ring: #0b0b0c;
-  --focus-gap: #ffffff;
   --focus-outline: 3px solid var(--focus-ring);
   --focus-offset: 2px;
   --focus-halo: 0 0 0 2px var(--focus-gap);
@@ -102,31 +135,45 @@
   --s-6: 32px;
   --s-7: 48px;
   --s-8: 64px;
-  --gutter: 16px;
+  --gutter: 20px;
   --measure: 34rem;
 
   /* ---------- Shape and elevation ---------- */
-  --radius: 10px;
+  --radius-sm: 10px;
+  --radius: 14px;
+  --radius-lg: 18px;
+  --radius-xl: 22px;
   --radius-pill: 999px;
-  --shadow-sheet: 0 -1px 0 var(--rule), 0 12px 40px rgb(11 11 12 / 0.18);
 
   /* ---------- Controls ---------- */
-  --control-h: 52px;
+  --control-h: 56px;
   --target-min: 48px;
   --border-w: 1.5px;
 
   /* ---------- Motion ---------- */
-  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
-  --ease-sheet: cubic-bezier(0.32, 0.72, 0, 1);
-  --dur-press: 120ms;
-  --dur-fade: 150ms;
-  --dur-step: 180ms;
-  --dur-sheet: 200ms;
-  --dur-tick: 320ms;
+  /* Design spec C1. Only transform, opacity, clip-path and stroke-dashoffset animate. */
+  --ease-out: cubic-bezier(0.2, 0, 0, 1);
+  --ease-enter: cubic-bezier(0.05, 0.7, 0.1, 1);
+  --ease-exit: cubic-bezier(0.3, 0, 0.8, 0.15);
+  --ease-sheet: cubic-bezier(0.05, 0.7, 0.1, 1);
+  --ease-pop: cubic-bezier(0.2, 1.4, 0.4, 1);
+  --dur-press: 80ms;
+  --dur-fade: 160ms;
+  --dur-step: 240ms;
+  --dur-sheet: 320ms;
+  --dur-exit: 200ms;
+  --dur-tick: 400ms;
+  --dur-scene: 800ms;
 
   /* ---------- Layers ---------- */
   --z-sticky: 10;
   --z-menu: 20;
+}
+
+@media (max-width: 359px) {
+  :root {
+    --gutter: 16px;
+  }
 }
 
 @media (min-width: 600px) {
@@ -137,79 +184,137 @@
 
 /* ---------- Dark theme ---------- */
 [data-theme="dark"] {
-  --ink: #f4f4f2;
-  --ink-2: #c9c9c6;
-  --ink-3: #9d9d99;
-  --paper: #111112;
-  --paper-2: #1b1b1d;
-  --rule: #34343a;
-  --rule-control: #8c8c92;
-  --on-ink: #111112;
-  --ok: #7fd6a2;
-  --ok-bg: #11291c;
-  --attn: #f0c46a;
-  --attn-bg: #2d2410;
-  --wait: #c9c9c6;
-  --wait-bg: #29292d;
-  --danger: #ff9a9e;
-  --danger-bg: #3a1517;
-  --info: #a4c2f2;
-  --info-bg: #142339;
-  --focus-ring: #f4f4f2;
-  --focus-gap: #111112;
-  --shadow-sheet: 0 -1px 0 var(--rule), 0 12px 40px rgb(0 0 0 / 0.55);
+  --ink: #f4f1ea;
+  --ink-2: #cfc9be;
+  --ink-3: #9f998e;
+  --paper: #121110;
+  --paper-2: #1b1a17;
+  --paper-raised: #1b1a17;
+  --paper-sunk: #0c0b0a;
+  --rule: #312e28;
+  --rule-control: #7d776c;
+  --on-ink: #121110;
+  --hero: #26231e;
+  --sun: #e3b060;
+  --sun-strong: #f0c77e;
+  --sun-ink: #f0c77e;
+  --sun-tint: #3a2e18;
+  --sun-wash: #211b12;
+  --sun-line: #4a3a20;
+  --ok: #8fd694;
+  --ok-bg: #16291a;
+  --attn: #ffc371;
+  --attn-bg: #38250e;
+  --wait: #cfc9be;
+  --wait-bg: #24221e;
+  --danger: #ff9a94;
+  --danger-bg: #3b1b1c;
+  --info: #9cc8f5;
+  --info-bg: #13283e;
+  --ok-solid: #3e8e47;
+  --info-solid: #4a8fdc;
+  --attn-solid: #e0a13b;
+  --danger-solid: #e0534f;
+  --art-line: #8c826f;
+  --art-fill: #2e2a24;
+  --art-wall: #24211c;
+  --art-ground: #1e1c18;
+  --focus-ring: #f4f1ea;
+  --focus-gap: #121110;
+  --shadow-sheet: 0 -8px 32px rgb(0 0 0 / 0.55);
+  --shadow-raised: 0 8px 24px rgb(0 0 0 / 0.5);
+  --scrim: rgb(0 0 0 / 0.55);
   color-scheme: dark;
 }
 
 @media (prefers-color-scheme: dark) {
   [data-theme="system"] {
-    --ink: #f4f4f2;
-    --ink-2: #c9c9c6;
-    --ink-3: #9d9d99;
-    --paper: #111112;
-    --paper-2: #1b1b1d;
-    --rule: #34343a;
-    --rule-control: #8c8c92;
-    --on-ink: #111112;
-    --ok: #7fd6a2;
-    --ok-bg: #11291c;
-    --attn: #f0c46a;
-    --attn-bg: #2d2410;
-    --wait: #c9c9c6;
-    --wait-bg: #29292d;
-    --danger: #ff9a9e;
-    --danger-bg: #3a1517;
-    --info: #a4c2f2;
-    --info-bg: #142339;
-    --focus-ring: #f4f4f2;
-    --focus-gap: #111112;
-    --shadow-sheet: 0 -1px 0 var(--rule), 0 12px 40px rgb(0 0 0 / 0.55);
+    --ink: #f4f1ea;
+    --ink-2: #cfc9be;
+    --ink-3: #9f998e;
+    --paper: #121110;
+    --paper-2: #1b1a17;
+    --paper-raised: #1b1a17;
+    --paper-sunk: #0c0b0a;
+  --paper-sunk: #0c0b0a;
+    --rule: #312e28;
+    --rule-control: #7d776c;
+    --on-ink: #121110;
+    --hero: #26231e;
+    --sun: #e3b060;
+    --sun-strong: #f0c77e;
+    --sun-ink: #f0c77e;
+    --sun-tint: #3a2e18;
+    --sun-wash: #211b12;
+    --sun-line: #4a3a20;
+    --ok: #8fd694;
+    --ok-bg: #16291a;
+    --attn: #ffc371;
+    --attn-bg: #38250e;
+    --wait: #cfc9be;
+    --wait-bg: #24221e;
+    --danger: #ff9a94;
+    --danger-bg: #3b1b1c;
+    --info: #9cc8f5;
+    --info-bg: #13283e;
+    --ok-solid: #3e8e47;
+    --info-solid: #4a8fdc;
+    --attn-solid: #e0a13b;
+    --danger-solid: #e0534f;
+    --art-line: #8c826f;
+    --art-fill: #2e2a24;
+    --art-wall: #24211c;
+    --art-ground: #1e1c18;
+    --focus-ring: #f4f1ea;
+    --focus-gap: #121110;
+    --shadow-sheet: 0 -8px 32px rgb(0 0 0 / 0.55);
+    --shadow-raised: 0 8px 24px rgb(0 0 0 / 0.5);
+    --scrim: rgb(0 0 0 / 0.55);
     color-scheme: dark;
   }
 }
 
 [data-theme="light"] {
-  --ink: #0b0b0c;
-  --ink-2: #3a3a3d;
-  --ink-3: #5f5f63;
-  --paper: #ffffff;
-  --paper-2: #f4f4f2;
-  --rule: #d8d8d4;
-  --rule-control: #707075;
-  --on-ink: #ffffff;
-  --ok: #0f6b3a;
-  --ok-bg: #e5f1ea;
-  --attn: #8a5a00;
-  --attn-bg: #fff4d6;
-  --wait: #4a4a4f;
-  --wait-bg: #ededea;
-  --danger: #a3141c;
-  --danger-bg: #fbe9ea;
-  --info: #1f4e8c;
-  --info-bg: #e7eef7;
-  --focus-ring: #0b0b0c;
-  --focus-gap: #ffffff;
-  --shadow-sheet: 0 -1px 0 var(--rule), 0 12px 40px rgb(11 11 12 / 0.18);
+  --ink: #0e0d0b;
+  --ink-2: #45413a;
+  --ink-3: #6e6a62;
+  --paper: #faf8f3;
+  --paper-2: #f2efe7;
+  --paper-raised: #ffffff;
+  --paper-sunk: #f2efe7;
+  --rule: #e6e1d5;
+  --rule-control: #8a857a;
+  --on-ink: #faf8f3;
+  --hero: #0e0d0b;
+  --sun: #e3b060;
+  --sun-strong: #c98f2e;
+  --sun-ink: #7a4e0e;
+  --sun-tint: #f6e7c6;
+  --sun-wash: #fbf4e4;
+  --sun-line: #ead9b4;
+  --ok: #1b5e20;
+  --ok-bg: #e7f3e8;
+  --attn: #8a3b00;
+  --attn-bg: #fff1dc;
+  --wait: #45413a;
+  --wait-bg: #eeebe4;
+  --danger: #a3161a;
+  --danger-bg: #fdecec;
+  --info: #0d4a94;
+  --info-bg: #e3eefb;
+  --ok-solid: #2e7d32;
+  --info-solid: #1565c0;
+  --attn-solid: #e0a13b;
+  --danger-solid: #c62828;
+  --art-line: #7d6f5c;
+  --art-fill: #d9cfbc;
+  --art-wall: #f4eee2;
+  --art-ground: #efe8da;
+  --focus-ring: #0e0d0b;
+  --focus-gap: #faf8f3;
+  --shadow-sheet: 0 -8px 32px rgb(14 13 11 / 0.18);
+  --shadow-raised: 0 8px 24px rgb(14 13 11 / 0.14);
+  --scrim: rgb(14 13 11 / 0.4);
   color-scheme: light;
 }
 
@@ -224,10 +329,12 @@
 @media (prefers-reduced-motion: reduce) {
   :root {
     --dur-press: 0ms;
-    --dur-fade: 0ms;
+    --dur-fade: 80ms;
     --dur-step: 0ms;
     --dur-sheet: 0ms;
+    --dur-exit: 0ms;
     --dur-tick: 0ms;
+    --dur-scene: 0ms;
   }
 }
 
@@ -246,4 +353,11 @@
   clip: rect(0 0 0 0);
   white-space: nowrap;
   border: 0;
+}
+
+/* ---------- Page hidden: loops stop (set by ui/motion.ts) ---------- */
+[data-page-hidden] *,
+[data-page-hidden] *::before,
+[data-page-hidden] *::after {
+  animation-play-state: paused !important;
 }

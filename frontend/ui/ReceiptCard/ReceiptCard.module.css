@@ -1,41 +1,38 @@
 .card {
   display: grid;
   gap: var(--s-3);
-  padding: var(--s-5) var(--s-4);
-  border: var(--border-w) solid var(--ink);
-  border-radius: var(--radius);
-  background: var(--paper);
   color: var(--ink);
 }
 
-@media (min-width: 600px) {
-  .card {
-    padding: var(--s-6);
-  }
+/* The ticket: paper on a desk, with a tear line and two notches */
+.ticket {
+  position: relative;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-xl);
+  background: var(--paper-raised);
+  box-shadow: 0 0 0 6px var(--sun-wash);
 }
 
-.head {
-  display: flex;
-  align-items: center;
-  gap: var(--s-3);
+.top {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  padding: 20px 16px 18px;
+  text-align: center;
 }
 
-.tick {
-  flex: none;
-}
-
-.label {
+.eyebrow {
   margin: 0;
-  font: var(--t-label);
-  font-size: var(--t-base-size);
-  letter-spacing: var(--t-label-tracking);
+  color: var(--ink-2);
+  font: var(--t-small);
 }
 
 .code {
-  margin: var(--s-2) 0 0;
+  margin: 0;
   font: var(--t-display);
+  font-size: clamp(1.75rem, 9.5vw, 2.5rem);
   font-variant-numeric: tabular-nums slashed-zero;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.02em;
   overflow-wrap: anywhere;
   user-select: all;
 }
@@ -47,26 +44,53 @@
 .received {
   margin: 0;
   color: var(--ink-2);
-  font: var(--t-base);
+  font: var(--t-small);
+}
+
+.tear {
+  position: relative;
+  height: 0;
+  margin: 0 18px;
+  border-top: 1.5px dashed var(--rule-control);
+}
+
+.tear::before,
+.tear::after {
+  content: "";
+  position: absolute;
+  top: -12px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--paper);
+}
+
+.tear::before {
+  left: -29px;
+  border-right: 1px solid var(--rule);
+}
+
+.tear::after {
+  right: -29px;
+  border-left: 1px solid var(--rule);
 }
 
 .actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--s-2);
-  margin-top: var(--s-2);
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+  gap: 10px;
+  padding: 14px 16px 16px;
 }
 
 .copyStatus {
   margin: 0;
-  min-height: 0;
   color: var(--ok);
   font: var(--t-small);
   font-weight: 600;
 }
 
 .copyStatus:empty {
-  margin-top: calc(var(--s-3) * -1);
+  display: none;
 }
 
 .next {

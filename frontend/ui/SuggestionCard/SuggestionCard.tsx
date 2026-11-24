@@ -45,6 +45,7 @@ export function SuggestionCard({
   const t = useT();
   return (
     <section className={styles.card} data-state={state} data-testid={testId} aria-label={`${t("ui.suggestion.label")}: ${field}`}>
+      <p className={styles.eyebrow}>{t("ui.suggestion.notDecided")}</p>
       <div className={styles.head}>
         <span className={styles.flag}>
           <StatusShape tone="info" size={14} />

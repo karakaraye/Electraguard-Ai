@@ -117,6 +117,7 @@
     },
     "suggestion": {
       "label": "We suggest am",
+      "notDecided": "Na suggestion, no be decision",
       "accept": "Accept am",
       "correct": "Correct am",
       "accepted": "Dem don accept am",

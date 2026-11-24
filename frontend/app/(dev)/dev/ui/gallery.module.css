@@ -239,3 +239,90 @@
 .stack {
   grid-template-columns: minmax(0, 1fr);
 }
+
+/* ---------- Ink and Paper groups: light and dark side by side ---------- */
+
+.inkRoot {
+  display: grid;
+  gap: var(--s-6);
+}
+
+.inkTitle {
+  margin: 0;
+  font: var(--t-title);
+}
+
+.note {
+  margin: 0 0 var(--s-3);
+  color: var(--ink-2);
+  font: var(--t-small);
+  max-width: 60ch;
+}
+
+.pair {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+  gap: var(--s-4);
+  align-items: start;
+}
+
+.pane {
+  min-width: 0;
+  padding: var(--s-4);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-xl);
+  background: var(--paper);
+  color: var(--ink);
+  font: var(--t-base);
+}
+
+.paneLabel {
+  margin: 0 0 var(--s-3);
+  color: var(--ink-3);
+  font: var(--t-eyebrow);
+  letter-spacing: var(--t-eyebrow-tracking);
+  text-transform: uppercase;
+}
+
+.paneBody {
+  display: grid;
+  gap: var(--s-4);
+  min-width: 0;
+}
+
+.onInk {
+  padding: var(--s-4);
+  border-radius: var(--radius-lg);
+  background: var(--hero);
+}
+
+.card {
+  padding: var(--s-4);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  background: var(--paper-raised);
+}
+
+.cardTitle {
+  margin: 0 0 var(--s-2);
+  font: var(--t-label);
+}
+
+.zoomFrame {
+  box-sizing: border-box;
+  width: 390px;
+  max-width: 100%;
+  padding: 0;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-xl);
+  background: var(--paper);
+  color: var(--ink);
+  overflow: hidden;
+}
+
+.zoomInner {
+  width: 194px;
+  zoom: 2;
+  display: grid;
+  gap: var(--s-3);
+}

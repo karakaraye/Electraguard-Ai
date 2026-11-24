@@ -29,3 +29,14 @@ export { PollingUnitPicker, compactCode, type PlaceChange, type PlaceValue, type
 export { DictationButton, type DictationButtonProps, type DictationState } from "./DictationButton/DictationButton";
 export { MediaCapture, useVoiceRecorder, formatClock, type CaptureSource, type MediaCaptureProps, type VoiceRecorder } from "./MediaCapture/MediaCapture";
 export { BackgroundArt, type BackgroundArtProps } from "./BackgroundArt/BackgroundArt";
+export { animate, haptic, prefersReducedMotion, type AnimateOptions, type MotionToken } from "./motion";
+export { SunRings, type SunRingsProps } from "./SunRings/SunRings";
+export { DayArc, sunPosition, type DayArcProps, type DayArcStage } from "./DayArc/DayArc";
+export { HeroCard, type HeroCardProps } from "./HeroCard/HeroCard";
+export { QuestionCard, type QuestionCardProps } from "./QuestionCard/QuestionCard";
+export { SegmentedControl, type SegmentedControlProps, type SegmentedOption } from "./SegmentedControl/SegmentedControl";
+export { ToastProvider, useToast, type ToastOptions } from "./Toast/Toast";
+export { OutboxBadge, type OutboxBadgeProps } from "./OutboxBadge/OutboxBadge";
+export { Skeleton, type SkeletonProps } from "./Skeleton/Skeleton";
+export { ArtPlate, type ArtPlateProps } from "./ArtPlate/ArtPlate";
+export { BottomNav, type BottomNavItem, type BottomNavProps } from "./BottomNav/BottomNav";

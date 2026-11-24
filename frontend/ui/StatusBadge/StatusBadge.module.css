@@ -3,12 +3,12 @@
   align-items: center;
   gap: 6px;
   max-width: 100%;
-  min-height: 28px;
-  padding: 3px 10px 3px 8px;
-  border: 1px solid currentColor;
+  min-height: 30px;
+  padding: 3px 11px 3px 9px;
+  border: 1px solid transparent;
   border-radius: var(--radius-pill);
   font: var(--t-label);
-  letter-spacing: var(--t-label-tracking);
+  font-size: 0.84rem;
   line-height: 1.25;
   vertical-align: middle;
   overflow-wrap: anywhere;
@@ -52,4 +52,12 @@
   color: var(--info);
   background: var(--info-bg);
   --badge-bg: var(--info-bg);
+}
+
+/* Withdrawn: a dashed circle, no fill, muted ink */
+.badge[data-variant="withdrawn"] {
+  border-color: var(--rule-control);
+  border-style: dashed;
+  background: transparent;
+  color: var(--ink-3);
 }

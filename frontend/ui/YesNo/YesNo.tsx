@@ -4,6 +4,7 @@ import { useId, type ReactNode } from "react";
 import { useT } from "../../lib/i18n/client";
 import { GroupError, GroupLegend, type ChoiceGroupChrome } from "../ChoiceTile/ChoiceTile";
 import { CheckIcon } from "../icons";
+import { haptic } from "../motion";
 import styles from "../ChoiceTile/ChoiceTile.module.css";
 
 export type YesNoProps = ChoiceGroupChrome & {
@@ -76,8 +77,12 @@ export function YesNo({
                 name={name}
                 value={choice.key}
                 checked={checked}
-                onChange={() => onChange(choice.answer)}
+                onChange={() => {
+                  haptic(8);
+                  onChange(choice.answer);
+                }}
               />
+              <i className={styles.sweep} aria-hidden="true" />
               {choice.icon ? (
                 <span className={styles.answerIcon} aria-hidden="true">
                   {choice.icon}
@@ -87,7 +92,7 @@ export function YesNo({
                 <span className={styles.tileLabel}>{choice.label}</span>
               </span>
               <span className={styles.tick} aria-hidden="true">
-                <CheckIcon size={16} strokeWidth={2.5} />
+                <CheckIcon size={14} strokeWidth={3} />
               </span>
             </label>
           );

@@ -10,6 +10,7 @@
   border: var(--border-w) solid transparent;
   border-radius: var(--radius);
   font: var(--t-label);
+  font-weight: 700;
   font-size: var(--t-base-size);
   letter-spacing: 0.01em;
   text-align: center;
@@ -41,7 +42,7 @@
 }
 
 .button:active:not([aria-disabled="true"]) {
-  transform: scale(0.97);
+  transform: scale(0.98);
 }
 
 .block {
@@ -56,7 +57,7 @@
 }
 
 .secondary {
-  background: var(--paper);
+  background: transparent;
   border-color: var(--ink);
   color: var(--ink);
 }
@@ -64,6 +65,7 @@
 .quiet {
   background: transparent;
   color: var(--ink);
+  min-height: max(var(--control-h), var(--target-min));
   padding: 0 var(--s-3);
   text-decoration: underline;
   text-decoration-thickness: 1px;
@@ -71,9 +73,21 @@
 }
 
 .danger {
-  background: var(--danger);
+  background: transparent;
   border-color: var(--danger);
-  color: var(--paper);
+  color: var(--danger);
+}
+
+/* White fill on the dark hero card; the hero is dark in both themes */
+.onInk {
+  background: var(--fixed-paper);
+  border-color: var(--fixed-paper);
+  color: var(--fixed-ink);
+}
+
+.onInk:focus-visible {
+  outline-color: var(--sun-strong);
+  box-shadow: none;
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -88,7 +102,10 @@
     text-decoration-thickness: 2px;
   }
   .danger:hover:not([aria-disabled="true"]) {
-    background: color-mix(in srgb, var(--danger) 86%, var(--ink));
+    background: var(--danger-bg);
+  }
+  .onInk:hover:not([aria-disabled="true"]) {
+    background: var(--hero-ink);
   }
 }
 

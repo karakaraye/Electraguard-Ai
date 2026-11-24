@@ -117,6 +117,7 @@
     },
     "suggestion": {
       "label": "Àbá",
+      "notDecided": "Àbá ni, kì í ṣe ìpinnu",
       "accept": "Gbà á",
       "correct": "Tún un ṣe",
       "accepted": "A ti fọwọ́ sí i",

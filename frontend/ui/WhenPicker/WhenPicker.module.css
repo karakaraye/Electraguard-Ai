@@ -27,7 +27,7 @@
   gap: var(--s-3);
   min-height: var(--control-h);
   padding: var(--s-3) var(--s-4);
-  background: var(--paper);
+  background: var(--paper-raised);
   color: var(--ink);
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;

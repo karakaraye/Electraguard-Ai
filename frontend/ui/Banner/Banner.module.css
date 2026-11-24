@@ -4,9 +4,17 @@
   align-items: start;
   gap: var(--s-3);
   margin: 0;
-  padding: var(--s-4);
-  border: 1px solid currentColor;
-  border-radius: var(--radius);
+  padding: 12px 14px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-lg);
+}
+
+/* info: sun wash */
+.banner[data-tone="info"] {
+  color: var(--info);
+  background: var(--sun-wash);
+  border-color: var(--sun-line);
+  --badge-bg: var(--sun-wash);
 }
 
 .banner[data-tone="ok"] {
@@ -21,22 +29,22 @@
   --badge-bg: var(--attn-bg);
 }
 
-.banner[data-tone="wait"] {
-  color: var(--wait);
-  background: var(--wait-bg);
-  --badge-bg: var(--wait-bg);
-}
-
 .banner[data-tone="danger"] {
   color: var(--danger);
   background: var(--danger-bg);
   --badge-bg: var(--danger-bg);
 }
 
-.banner[data-tone="info"] {
-  color: var(--info);
-  background: var(--info-bg);
-  --badge-bg: var(--info-bg);
+/* wait and offline: ink fill, text in the on-ink colour */
+.banner[data-tone="wait"] {
+  color: var(--on-ink);
+  background: var(--ink);
+  --badge-bg: var(--ink);
+}
+
+.banner[data-tone="wait"] .text,
+.banner[data-tone="wait"] .dismiss {
+  color: var(--on-ink);
 }
 
 .shape {
@@ -58,7 +66,7 @@
   overflow-wrap: anywhere;
 }
 
-/* Body text in ink for 7:1 contrast; the tone lives in the border, shape and title */
+/* Body text in ink for 7:1 contrast; the tone lives in the shape and the title */
 .text {
   color: var(--ink);
   font: var(--t-small);
@@ -94,4 +102,15 @@
 .dismiss:focus-visible {
   outline: var(--focus-outline);
   outline-offset: -4px;
+}
+
+/* Actions on the ink-filled banner: outline in the on-ink colour so they stay visible
+   in both themes (the banner's fill is --ink, so ink-coloured buttons would vanish). */
+.banner[data-tone="wait"] .action :is(a, button) {
+  color: var(--on-ink);
+  border-color: var(--on-ink);
+  background: transparent;
+}
+.banner[data-tone="wait"] .action :is(a, button):focus-visible {
+  outline-color: var(--sun-strong);
 }

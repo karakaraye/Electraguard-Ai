@@ -5,7 +5,7 @@ import type { ButtonHTMLAttributes, ReactNode, Ref } from "react";
 import { useT } from "../../lib/i18n/client";
 import styles from "./Button.module.css";
 
-export type ButtonVariant = "primary" | "secondary" | "quiet" | "danger";
+export type ButtonVariant = "primary" | "secondary" | "quiet" | "danger" | "onInk";
 
 type CommonProps = {
   variant?: ButtonVariant;

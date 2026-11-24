@@ -6,7 +6,12 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "check:contrast": "node scripts/check-contrast.mts",
+    "check:keys": "node scripts/check-message-keys.mts",
+    "check:glyphs": "node scripts/check-glyphs.mts",
+    "check:privacy": "node scripts/check-privacy.mts",
+    "check": "npm run check:contrast && npm run check:keys && npm run check:glyphs && npm run check:privacy"
   },
   "dependencies": {
     "next": "16.4.6",

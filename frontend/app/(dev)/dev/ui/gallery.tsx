@@ -28,6 +28,7 @@ import {
   SuggestionCard,
   TextArea,
   ThemeSwitcher,
+  ToastProvider,
   Timeline,
   UploadItem,
   UploadList,
@@ -40,6 +41,7 @@ import {
 } from "../../../../ui";
 import * as Icons from "../../../../ui/icons";
 import { categoryPictograms, incidentCategories, type IconProps, type IncidentCategory } from "../../../../ui/icons";
+import { InkGallery } from "./gallery-ink";
 import styles from "./gallery.module.css";
 
 const categoryNames: Record<IncidentCategory, string> = {
@@ -113,6 +115,7 @@ export function Gallery() {
   const fixedNow = Date.parse("2026-11-22T13:05:00+01:00");
 
   return (
+    <ToastProvider>
     <div className={styles.gallery} data-theme={theme} data-testid="gallery">
       <header className={styles.header}>
         <div>
@@ -129,6 +132,8 @@ export function Gallery() {
           ))}
         </fieldset>
       </header>
+
+      <InkGallery />
 
       <Section id="type" title="Type scale">
         <div className={styles.typeScale}>
@@ -540,5 +545,6 @@ export function Gallery() {
         </div>
       </Section>
     </div>
+    </ToastProvider>
   );
 }

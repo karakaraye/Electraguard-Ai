@@ -34,9 +34,9 @@
   gap: var(--s-3);
   min-height: 60px;
   padding: var(--s-3) var(--s-4);
-  border: var(--border-w) solid var(--rule-control);
-  border-radius: var(--radius);
-  background: var(--paper);
+  border: 1px solid var(--rule-control);
+  border-radius: var(--radius-lg);
+  background: var(--paper-raised);
   color: var(--ink);
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
@@ -56,7 +56,8 @@
 
 .option[data-checked] {
   border-color: var(--ink);
-  box-shadow: inset 0 0 0 calc(2px - var(--border-w)) var(--ink);
+  background: var(--sun-tint);
+  box-shadow: inset 0 0 0 1px var(--ink);
 }
 
 .option:has(.input:focus-visible) {
@@ -122,9 +123,9 @@
   min-height: var(--control-h);
   margin: 0;
   padding: var(--s-3) calc(var(--s-4) + 28px) var(--s-3) var(--s-4);
-  border: var(--border-w) solid var(--rule-control);
+  border: 1px solid var(--rule-control);
   border-radius: var(--radius);
-  background: var(--paper);
+  background: var(--paper-raised);
   color: var(--ink);
   font: var(--t-base);
   appearance: none;

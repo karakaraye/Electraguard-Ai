@@ -117,6 +117,7 @@
     },
     "suggestion": {
       "label": "Ndụmọdụ",
+      "notDecided": "Ndụmọdụ ka ọ bụ, ọ bụghị mkpebi",
       "accept": "Nabata ya",
       "correct": "Gbazie ya",
       "accepted": "Anabatala ya",

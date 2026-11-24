@@ -3,8 +3,8 @@
   max-height: var(--table-max-height, none);
   overflow: auto;
   border: 1px solid var(--rule);
-  border-radius: var(--radius);
-  background: var(--paper);
+  border-radius: var(--radius-lg);
+  background: var(--paper-raised);
 }
 
 .scroller:focus-visible {

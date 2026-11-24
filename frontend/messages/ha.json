@@ -117,6 +117,7 @@
     },
     "suggestion": {
       "label": "Shawara",
+      "notDecided": "Shawara ce, ba hukunci ba",
       "accept": "Karɓa",
       "correct": "Gyara",
       "accepted": "An amince",

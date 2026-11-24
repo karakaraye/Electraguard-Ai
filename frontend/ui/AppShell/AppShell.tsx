@@ -2,9 +2,10 @@
 
 import Link from "next/link";
 import { preload } from "react-dom";
-import type { CSSProperties, ReactNode } from "react";
+import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import { useT } from "../../lib/i18n/client";
 import { useKeyboardInset, useOffline } from "../hooks";
+import { BrandMark } from "../BrandMark/BrandMark";
 import { ArrowLeftIcon, MenuIcon, OfflineIcon } from "../icons";
 import { useThemePreference, type ThemePreference } from "../theme";
 import "../tokens.css";
@@ -22,6 +23,10 @@ export type AppShellProps = {
   onMenu?: () => void;
   /** Replaces the Menu button with your own control. */
   menu?: ReactNode;
+  /** Extra controls before the menu (outbox badge, language). */
+  end?: ReactNode;
+  /** "home" shows the mark and name on the left instead of Back. */
+  variant?: "home" | "task" | "plain";
   /** Banners shown under the top bar (intake paused, question waiting). */
   banner?: ReactNode;
   /** The pinned bottom action area: normally one primary Button. */
@@ -57,6 +62,8 @@ export function AppShell({
   hideBack,
   onMenu,
   menu,
+  end,
+  variant,
   banner,
   actions,
   offline,
@@ -73,9 +80,43 @@ export function AppShell({
   const storedTheme = useThemePreference("light");
   const isOffline = offline ?? browserOffline;
   const Root = preview ? "div" : "main";
+  const shellRef = useRef<HTMLDivElement>(null);
+  const sentinelRef = useRef<HTMLDivElement>(null);
+  const actionsRef = useRef<HTMLDivElement>(null);
+  const [scrolled, setScrolled] = useState(false);
+
+  // The bar's bottom rule appears only once content has scrolled under it.
+  useEffect(() => {
+    const sentinel = sentinelRef.current;
+    if (!sentinel || typeof IntersectionObserver === "undefined") return;
+    const observer = new IntersectionObserver(([entry]) => setScrolled(!entry.isIntersecting));
+    observer.observe(sentinel);
+    return () => observer.disconnect();
+  }, []);
+
+  // A focused field or the last tile is never hidden behind the action bar.
+  const hasActions = Boolean(actions);
+  useEffect(() => {
+    const bar = actionsRef.current;
+    const target = preview ? shellRef.current : document.documentElement;
+    if (!bar || !target) return;
+    const apply = () => target.style.setProperty("scroll-padding-bottom", `${bar.offsetHeight + 16}px`);
+    apply();
+    if (typeof ResizeObserver === "undefined") return;
+    const observer = new ResizeObserver(apply);
+    observer.observe(bar);
+    return () => {
+      observer.disconnect();
+      target.style.removeProperty("scroll-padding-bottom");
+    };
+  }, [hasActions, preview]);
   const contentId = preview ? undefined : "eg-content";
 
-  const back = hideBack ? (
+  const back = variant === "home" ? (
+    <span className={styles.brand}>
+      <BrandMark variant="lockup" size="bar" />
+    </span>
+  ) : hideBack ? (
     <span />
   ) : backHref ? (
     <Link href={backHref} className={styles.back} data-testid="back">
@@ -96,6 +137,7 @@ export function AppShell({
 
   return (
     <div
+      ref={shellRef}
       className={`${styles.shell} ${preview ? styles.preview : ""}`}
       data-theme={theme ?? storedTheme}
       data-testid={testId}
@@ -106,19 +148,21 @@ export function AppShell({
           {t("ui.skipToContent")}
         </a>
       )}
-      <header className={styles.top}>
+      <div ref={sentinelRef} className={styles.sentinel} aria-hidden="true" />
+      <header className={styles.top} data-scrolled={scrolled || undefined}>
         <div className={styles.topInner}>
           {back}
-          {title ? <p className={styles.title}>{title}</p> : <span />}
-          {menu ??
-            (onMenu ? (
-              <button type="button" className={styles.menu} onClick={onMenu} data-testid="menu">
-                <MenuIcon />
-                <span>{t("ui.menu")}</span>
-              </button>
-            ) : (
-              <span />
-            ))}
+          {title && variant !== "home" ? <p className={styles.title}>{title}</p> : <span />}
+          <div className={styles.end}>
+            {end}
+            {menu ??
+              (onMenu ? (
+                <button type="button" className={styles.menu} onClick={onMenu} data-testid="menu">
+                  <MenuIcon />
+                  <span>{t("ui.menu")}</span>
+                </button>
+              ) : null)}
+          </div>
         </div>
       </header>
 
@@ -144,7 +188,7 @@ export function AppShell({
       </Root>
 
       {actions ? (
-        <div className={styles.actions} data-keyboard={keyboard > 0 || undefined} data-testid="action-area">
+        <div ref={actionsRef} className={styles.actions} data-keyboard={keyboard > 0 || undefined} data-testid="action-area">
           <div className={styles.actionsInner}>{actions}</div>
         </div>
       ) : null}

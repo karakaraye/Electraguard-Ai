@@ -116,6 +116,7 @@
     },
     "suggestion": {
       "label": "Suggested",
+      "notDecided": "Suggested, not decided",
       "accept": "Accept",
       "correct": "Correct",
       "accepted": "Accepted",

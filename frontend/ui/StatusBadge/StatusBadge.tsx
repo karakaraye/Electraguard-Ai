@@ -59,14 +59,21 @@ export type StatusBadgeProps =
   | { status?: never; tone: StatusTone; label: string; size?: "md" | "lg"; "data-testid"?: string };
 
 /** Distinct shape per tone, so status never depends on colour alone. */
-export function StatusShape({ tone, size = 14 }: { tone: StatusTone; size?: number }) {
+export function StatusShape({ tone, size = 14, dashed }: { tone: StatusTone; size?: number; dashed?: boolean }) {
   const common = { width: size, height: size, viewBox: "0 0 16 16", "aria-hidden": true, focusable: false } as const;
+  if (dashed) {
+    return (
+      <svg {...common}>
+        <circle cx="8" cy="8" r="6.25" fill="none" stroke="currentColor" strokeWidth="1.75" strokeDasharray="2.6 2.2" />
+      </svg>
+    );
+  }
   switch (tone) {
     case "ok":
       return (
         <svg {...common}>
           <circle cx="8" cy="8" r="7.25" fill="currentColor" />
-          <path d="m4.75 8.25 2.25 2.25 4.25-4.5" fill="none" stroke="var(--badge-bg, #fff)" strokeWidth="1.75" strokeLinecap="square" />
+          <path d="m4.75 8.25 2.25 2.25 4.25-4.5" fill="none" stroke="var(--badge-bg, var(--paper-raised))" strokeWidth="1.75" strokeLinecap="square" />
         </svg>
       );
     case "attn":
@@ -103,8 +110,14 @@ export function StatusBadge(props: StatusBadgeProps) {
   const tone = props.status ? statusTone[props.status] : props.tone!;
   const label = props.label ?? (props.status ? t(statusKey[props.status]) : "");
   return (
-    <span className={styles.badge} data-tone={tone} data-size={props.size ?? "md"} data-testid={props["data-testid"] ?? "status-badge"}>
-      <StatusShape tone={tone} size={props.size === "lg" ? 16 : 14} />
+    <span
+      className={styles.badge}
+      data-tone={tone}
+      data-variant={props.status === "withdrawn" ? "withdrawn" : undefined}
+      data-size={props.size ?? "md"}
+      data-testid={props["data-testid"] ?? "status-badge"}
+    >
+      <StatusShape tone={tone} size={props.size === "lg" ? 16 : 14} dashed={props.status === "withdrawn"} />
       <span>{label}</span>
     </span>
   );
