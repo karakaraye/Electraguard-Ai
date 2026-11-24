@@ -1196,7 +1196,7 @@ Discussion member labels are observer codes only. Posts are text only. No report
 
 #### CASE-03 · Accept or correct a suggestion (category, urgency)
 
-Category suggestions are available. Urgency suggestions are **pending merge** (PR #14).
+Category and rule-based urgency suggestions are available. The additional triage models are **pending merge** (PR #14).
 
 - **Status:** CHANGE (from `POST /api/review/<reference>/triage/category`, correct only; adds accept and urgency).
 - **Screens:** S-03 (SuggestionCard). **Auth:** the assigned reviewer; CSRF; `Idempotency-Key`.
