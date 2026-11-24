@@ -59,6 +59,11 @@ The full plan is in [hackathon-plan.md](hackathon-plan.md).
 
 ## Updates
 
+### 23 Nov 2026 · C10 staff operations and administration
+
+- Added rumour review, delayed public snapshots with complementary suppression, security alerts, organisation audit export and verification, observer code batches, settings, and retention cleanup.
+- Added cluster warnings and coverage gaps over the existing reports. The late-materials endpoint and risk rows ship together in C11.
+- Applied the backend migrations to a fresh PostgreSQL database. The 118-test backend suite passed, along with six access-boundary tests. Run the backend test suite from `backend/` with `python manage.py test --noinput`.
 ### 23 Nov 2026 · C11 intelligence and phone channels
 
 - SMS and USSD share the citizen report and reply persistence paths. The simulator exercises the same handlers and marks its reports for reviewer display and exclusion from public counts.

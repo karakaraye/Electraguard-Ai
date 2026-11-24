@@ -21,6 +21,14 @@ class Organisation(models.Model):
     coverage_lga_codes = models.JSONField(default=list)
     party_labels = models.JSONField(default=default_party_labels)
 
+    election_day = models.DateField(null=True, blank=True)
+    public_delay_minutes = models.PositiveSmallIntegerField(default=60)
+    retention_days = models.PositiveSmallIntegerField(default=180)
+    settings_updated_at = models.DateTimeField(null=True)
+    settings_updated_by = models.CharField(blank=True, max_length=254)
+    settings_version = models.PositiveIntegerField(default=0)
+    simulator_enabled = models.BooleanField(default=False)
+
 
 class OrganisationOwned(models.Model):
     organisation = models.ForeignKey(Organisation, on_delete=models.PROTECT, default=INITIAL_ORGANISATION)
@@ -118,6 +126,8 @@ class ObserverCode(OrganisationOwned):
     token_digest = models.CharField(max_length=64, unique=True, null=True)
     token_expires_at = models.DateTimeField(null=True)
     token_attempts = models.PositiveSmallIntegerField(default=0)
+    activated_at = models.DateTimeField(null=True)
+    replaced_by = models.ForeignKey("self", null=True, on_delete=models.PROTECT)
 
 
 class AuthThrottle(models.Model):

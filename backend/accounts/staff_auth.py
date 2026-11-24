@@ -211,6 +211,9 @@ def finish(request, data, *, confirming):
         return wrong_code(request, user, pending, row, now)
     credential.secret = encrypt(secret)
     credential.last_totp_step = max(matches)
+    from security.detectors import staff_network
+
+    staff_network(request, user)
     credential.last_sign_in_on = now
     credential.enforce_totp = True
     credential.save()

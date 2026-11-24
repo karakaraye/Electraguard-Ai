@@ -51,6 +51,11 @@ AUTH_TRUSTED_PROXY_IPS = frozenset(
 )
 
 INSTALLED_APPS = [
+    "staff.apps.StaffConfig",
+    "rumours",
+    "publicdata",
+    "security",
+    "ops",
     "intelligence",
     "phone_channels",
     "django.contrib.auth",
