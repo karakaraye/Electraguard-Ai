@@ -58,7 +58,7 @@ def endpoint(method, *, max_body_bytes=None):
                 response = error(405, "method_not_allowed", "This method is not available.")
                 response["Allow"] = method
                 return response
-            if method == "POST":
+            if method in ("POST", "PATCH", "PUT"):
                 if request.content_type != "application/json":
                     return error(400, "bad_request", "Send a JSON object.")
                 try:
@@ -98,22 +98,27 @@ def identity(request):
         ),
         "server_time": wat(timezone.now()),
     }
+    pending = getattr(request, "pending_staff_session", None)
+    if pending:
+        from .staff_sessions import pending_status
+
+        result["pending"] = pending_status(pending.user)
     if user.is_authenticated:
         credential = org_scope(request, ObserverCode).filter(user=user).first()
         observer = user.role == User.Role.OBSERVER
         result["user"] = {
             "id": str(user.public_id), "kind": "observer" if observer else "staff",
             "observer_code": credential.code if credential else None,
-            "roles": [user.role] if user.role else [],
+            "roles": user.application_roles,
             "display_name": None if observer else user.get_full_name() or None,
             "email": None if observer else user.email,
-            "totp_enrolled": False,
+            "totp_enrolled": not observer and hasattr(user, "staff_credential") and bool(user.staff_credential.secret),
             "organisation": {
                 "id": str(organisation.pk), "name": organisation.name,
                 "intake_paused": organisation.intake_paused or not settings.OBSERVATION_INTAKE_ENABLED,
             },
         }
-        result["session_expires_at"] = wat(request.session.get_expiry_date())
+        result["session_expires_at"] = wat(getattr(request, "staff_session_expires_at", None) or request.session.get_expiry_date())
     return result
 
 
@@ -278,6 +283,8 @@ def set_pin(request, data):
     credential.setup_expires_at = credential.token_expires_at = None
     credential.token_digest = None
     credential.status = Status.ACTIVE
+    if credential.activated_at is None:
+        credential.activated_at = timezone.now()
     credential.save()
     start_observer_session(request, credential.user)
     return JsonResponse({"status": "signed_in", "me": identity(request)})
@@ -337,7 +344,7 @@ def change_credential_pin(request, current, new):
 
     credential.pin_hash = pin_hash(new)
     credential.status = Status.ACTIVE
-    credential.save(update_fields=["pin_hash", "status"])
+    credential.save(update_fields=["activated_at", "pin_hash", "status"])
     return HttpResponse(status=204)
 
 
@@ -347,8 +354,17 @@ def sign_out(request, data):
     everywhere = data.get("everywhere", False)
     if not isinstance(everywhere, bool):
         return validation({"everywhere": {"code": "invalid", "message": "Use true or false."}})
+    pending = getattr(request, "pending_staff_session", None)
+    if pending:
+        staff = User.objects.select_for_update().get(pk=pending.user_id)
+        if everywhere and AccountSession.objects.filter(pk=pending.pk, user=staff, pending=True).exists():
+            end_sessions(staff, include_legacy=True)
+        else:
+            AccountSession.objects.filter(pk=pending.pk, user=staff).delete()
     if request.user.is_authenticated:
         if everywhere:
+            if request.user.role != User.Role.OBSERVER:
+                User.objects.select_for_update().get(pk=request.user.pk)
             credential = org_scope(request, ObserverCode).select_for_update().filter(user=request.user).first()
             end_sessions(request.user, include_legacy=credential is None)
         else:

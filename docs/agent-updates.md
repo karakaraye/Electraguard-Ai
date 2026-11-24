@@ -42,6 +42,7 @@ The full plan is in [hackathon-plan.md](hackathon-plan.md).
 | C5 citizen reports and receipts | Codex | `backend/v1-citizen-reports` | `docs/agent-updates.md`, `backend/reports/`, `backend/accounts/organisations.py`, `backend/config/settings.py`, `scripts/verify-restored-data.py` |
 | C6 reviewer queue and case actions | Codex | `backend/v1-review` | `docs/agent-updates.md`, `backend/reports/`, `scripts/verify-restored-data.py` |
 | C7 coordinator assignment and overview | Codex | `backend/v1-operations` | `docs/agent-updates.md`, `backend/accounts/`, `backend/config/urls.py`, `backend/reports/`, `scripts/verify-restored-data.py` |
+| C8 staff authentication and account administration | Codex | `backend/v1-staff-auth` | `docs/agent-updates.md`, `backend/accounts/`, `backend/config/settings.py`, `backend/config/urls.py`, `backend/requirements.txt`, `backend/reports/` (staff permission checks and shared idempotency helper) |
 | C9 observer extras (checklist, result sheet, RS-01, messages, discussions, Ask, REF-02) | Claude | `backend/v1-observer-extras` | `backend/approved_answers/`, `backend/discussions/`, `backend/reports/conversation.py`, `backend/reports/result_checks.py`, `backend/reports/result_ocr.py`, `backend/reports/structured_input.py` |
 | C10 staff extras (rumours, public data, security, audit, code batches, org settings, retention, OPS-02..04) | Claude | `backend/v1-staff-extras` | `backend/rumours/`, `backend/publicdata/`, `backend/security/`, `backend/ops/`, `backend/staff/` (codes, audit, retention, organisation settings only) |
 | C11 intelligence and phone channels | Claude | `backend/v1-intelligence` | `backend/intelligence/`, `backend/phone_channels/`, `data/synthetic/`, `docs/eval/` |
@@ -57,6 +58,17 @@ The full plan is in [hackathon-plan.md](hackathon-plan.md).
 
 ## Updates
 
+### 24 Nov 2026 · Kara's agents · C12 review changes; merged with C9 to C11
+
+- Changes from the #18 review:
+  - Length and size are enforced while decoding, not taken from the container.
+  - ffmpeg and ffprobe run under `prlimit`, and ffprobe is bounded during upload.
+  - Per-stream metadata is stripped explicitly.
+  - The unprocessed original downloads only as an attachment, and audit events are throttled per reason.
+  - New tests cover hostile files and access by outsiders.
+- Merged `production-readiness` (C9 to C11). The media migration is now `reports/0015_media_video_audio`, after `0014_merge_observer_and_triage`. Media access uses `has_role`. The queue's "has evidence" filter counts videos and voice notes too.
+- C14 moved to its own PR (`deploy/azure`). Region: South Africa North.
+
 ### 23 Nov 2026 · Kara's agents · Slice C12 video, voice notes, face blur and transcripts
 
 - MED-01 to MED-04 now accept video (MP4/WebM, 25 MiB, 60 s) and voice notes (WebM/Ogg/M4A/MP3, 4 MiB, 120 s). Files are identified by content with ffprobe, then queued as `processing`. The new `media-worker` (`run_media`) re-encodes them with all metadata removed, adds a video poster, blurs faces, writes local Whisper transcripts and deletes the original.
@@ -65,6 +77,22 @@ The full plan is in [hackathon-plan.md](hackathon-plan.md).
 - The image sets `ORT_DISABLE_TELEMETRY=1`, because onnxruntime otherwise starts Microsoft telemetry.
 - Not measured yet: faces missed per 100 (A12) and word error rate per language (A11). Both need labelled data, and the team's voice clips for A11. [Slice report](reviews/2026-11-23-c12-video-voice-blur.md).
 - **For the front end:** video and audio players, the `poster` variant, the `processing` and `failed` states, `media_counts.video/audio`, and the reviewer transcript panel are ready to wire. Next on this branch: C14 Azure deployment scripts.
+
+### 23 Nov 2026 · C10 staff operations and administration
+
+- Added rumour review, delayed public snapshots with complementary suppression, security alerts, organisation audit export and verification, observer code batches, settings, and retention cleanup.
+- Added cluster warnings and coverage gaps over the existing reports. The late-materials endpoint and risk rows ship together in C11.
+- Applied the backend migrations to a fresh PostgreSQL database. The 118-test backend suite passed, along with six access-boundary tests. Run the backend test suite from `backend/` with `python manage.py test --noinput`.
+### 23 Nov 2026 · C11 intelligence and phone channels
+
+- SMS and USSD share the citizen report and reply persistence paths. The simulator exercises the same handlers and marks its reports for reviewer display and exclusion from public counts.
+- The triage worker writes advisory suggestions to the existing reviewer model. Late-materials risk rows are organisation-scoped and served by OPS-04. Duplicate suggestions remain subject to the existing grouping release gate.
+- An empty PostgreSQL database migrated successfully. Regenerating the evaluation reproduced the checked-in report byte-for-byte, with 87.1% held-out urgency recall and the category leakage audit intact.
+### 23 Nov 2026 · C9 observer backend extras
+
+- Added structured observer reports, private result-sheet photo reading, report conversations, ward discussions, and cited approved-document retrieval. Result-sheet consistency flags and benign explanations are visible to the assigned reviewer. Checks use individual sheets and publish no tallies.
+- The observer list includes attention counts, unread markers, and message previews. Existing setup PIN validation and observer reference settings remain in place.
+- Reused the citizen, reviewer, assignment, staff session, and private media paths. Verified the migrations on an empty PostgreSQL database.
 
 ### 23 Nov 2026 · Kara's agents · Claims C12 and C14; agrees C13
 
@@ -123,6 +151,16 @@ Answer to Kara's two questions.
 - Bug to fix (front end): the State/LGA/Ward/Polling unit dropdowns announce "Choose" to screen readers instead of their labels (`frontend/ui/PollingUnitPicker`). The reference data has only 16 synthetic units; load the official 900 from `polling_units_synthetic.csv` (backend task).
 - Still running: review fixes and the background illustration on `design/observer-flow`.
 
+
+### 23 Nov 2026 · Codex · Slice C8 staff authentication and account administration
+
+- Added AUTH-04 and AUTH-05 with password-only pending sessions and RFC 6238 verification. Pending sessions expire after five minutes and are fenced to AUTH-05, AUTH-06 and AUTH-07. Verified sessions use browser cookies and enforce a 30-minute idle timeout and eight-hour absolute lifetime. AUTH-06 removes tracked sessions on all devices when requested.
+- Added organisation-scoped ADM-03 staff management for verified organisation administrators. Staff roles can be combined except for organisation administrator. Reset ends sessions, and offboarding ends sessions, unassigns open cases, and records the corresponding audit and security events.
+- Invite URLs are returned once and expire after 72 hours. The database stores only the token digest. An idempotent retry returns the existing staff summary without the link. Legacy password sign-in remains available to existing and bootstrap accounts until they enrol or an administrator explicitly requires 2FA.
+- TOTP secrets use Fernet with a key derived from the deployment's Django secret. Keep the previous Django secret available through the comma-separated `DJANGO_SECRET_KEY_FALLBACKS` environment variable during a key rotation until enrolled staff have verified and their records have been re-encrypted. The pre-2FA client must retain its CSRF token across the password and TOTP steps.
+- Verified with PostgreSQL 17.12 using `python backend/manage.py test accounts reports config --noinput` (94 tests), `python backend/manage.py migrate --noinput`, `python backend/manage.py migrate --check`, `python backend/manage.py makemigrations --check --dry-run`, and `git diff --check`.
+- Next, connect the staff screens to C8 and test invite acceptance, enrolment, verification, reset, and offboarding in the browser. Retire legacy staff password-only sign-in after the staff screens are ready.
+- **Questions:** The contract does not say how to recover a lost invite response or renew an unused expired link. The current API keeps the link single-display and records no retrievable token. The account-wide TOTP lock lasts one hour from the tenth failure, which gives the failure window time to clear.
 
 ### 23 Nov 2026 · Codex · Slice C7 coordinator assignments and overview
 

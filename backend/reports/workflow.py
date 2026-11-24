@@ -93,7 +93,7 @@ def transition(report, actor, action, data):
 def assignments(request):
     require_role(request.user, User.Role.ADMINISTRATOR)
     reports = org_scope(request, Report).exclude(status__in=[Status.CLOSED, Status.WITHDRAWN]).select_related("assigned_reviewer")
-    reviewers = org_scope(request, User).filter(role=User.Role.REVIEWER, is_active=True).order_by("email")
+    reviewers = org_scope(request, User).filter(User.with_role(User.Role.REVIEWER), is_active=True).order_by("email")
     return Response({
         "reports": AssignmentSummarySerializer(reports, many=True).data,
         "reviewers": list(reviewers.values("id", "email")),
@@ -113,7 +113,7 @@ def assign(request, reference):
     if report.status in (Status.CLOSED, Status.WITHDRAWN):
         raise Conflict("A closed case cannot be reassigned.")
     reviewer = org_scope(request, User).select_for_update().filter(
-        pk=data["reviewer"], role=User.Role.REVIEWER, is_active=True
+        User.with_role(User.Role.REVIEWER), pk=data["reviewer"], is_active=True
     ).first()
     if reviewer is None:
         raise ValidationError("Select an active Reviewer.")

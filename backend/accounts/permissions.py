@@ -4,7 +4,7 @@ from .models import User
 
 
 def require_role(user, role):
-    actual = getattr(user, "role", None)
-    allowed = actual == role or (role == User.Role.ADMINISTRATOR and actual == User.Role.COORDINATOR)
-    if not user.is_active or not allowed:
+    if not user.is_active or not (
+        user.has_role(role) or (role == User.Role.ADMINISTRATOR and user.has_role(User.Role.COORDINATOR))
+    ):
         raise PermissionDenied("This endpoint requires a different application role.")

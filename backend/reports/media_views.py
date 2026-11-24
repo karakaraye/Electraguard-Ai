@@ -594,13 +594,13 @@ def download(request, reference):
     ).exclude(report__status=Report.Status.WITHDRAWN)
     if actor.role == User.Role.OBSERVER:
         items = items.filter(report__observer=actor)
-    elif actor.role == User.Role.REVIEWER:
+    elif actor.has_role(User.Role.REVIEWER):
         items = items.filter(report__assigned_reviewer=actor)
     else:
         return missing()
     item = items.first()
     variant = request.GET.get("variant", "display")
-    reviewer = actor.role == User.Role.REVIEWER
+    reviewer = actor.has_role(User.Role.REVIEWER)
     legacy = None
     if item is None and reviewer and variant == "original":
         legacy = org_scope(request, Evidence).filter(

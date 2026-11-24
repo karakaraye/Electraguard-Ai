@@ -7,7 +7,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ("accounts", "0006_alter_accountoffboarding_role_alter_user_role"),
-        ("reports", "0012_assignmentbatch"),
+        ("reports", "0014_merge_observer_and_triage"),
     ]
 
     operations = [

@@ -17,6 +17,9 @@ COPY backend/accounts ./accounts
 COPY backend/config ./config
 COPY backend/reports ./reports
 COPY backend/reference ./reference
+COPY backend/intelligence ./intelligence
+COPY backend/phone_channels ./phone_channels
+COPY data/synthetic /data/synthetic
 # load_reference_areas resolves its default dataset to /data/reference in this layout.
 COPY data/reference /data/reference
 COPY --chmod=0555 deploy/django-entrypoint.sh /usr/local/bin/electraguard-django

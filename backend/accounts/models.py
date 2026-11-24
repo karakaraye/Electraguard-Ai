@@ -16,9 +16,18 @@ class Organisation(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     name = models.CharField(max_length=160)
     intake_paused = models.BooleanField(default=False)
+    election_day = models.DateField(null=True, blank=True)
     coverage_state_codes = models.JSONField(default=list)
     coverage_lga_codes = models.JSONField(default=list)
     party_labels = models.JSONField(default=default_party_labels)
+
+    election_day = models.DateField(null=True, blank=True)
+    public_delay_minutes = models.PositiveSmallIntegerField(default=60)
+    retention_days = models.PositiveSmallIntegerField(default=180)
+    settings_updated_at = models.DateTimeField(null=True)
+    settings_updated_by = models.CharField(blank=True, max_length=254)
+    settings_version = models.PositiveIntegerField(default=0)
+    simulator_enabled = models.BooleanField(default=False)
 
 
 class OrganisationOwned(models.Model):
@@ -61,11 +70,25 @@ class User(AbstractUser, OrganisationOwned):
         ADMINISTRATOR = "administrator", "Administrator"
         COORDINATOR = "coordinator", "Coordinator"
         ORG_ADMIN = "org_admin", "Organisation administrator"
+        MODERATOR = "moderator", "Moderator"
 
     public_id = models.UUIDField(default=uuid4, editable=False, unique=True)
     username = None
     email = models.EmailField(unique=True)
     role = models.CharField(max_length=16, choices=Role.choices, blank=True, default="")
+
+    additional_roles = models.JSONField(default=list, blank=True)
+
+    @property
+    def application_roles(self):
+        return [self.role, *self.additional_roles] if self.role else []
+
+    def has_role(self, role):
+        return role in self.application_roles
+
+    @staticmethod
+    def with_role(role):
+        return models.Q(role=role) | models.Q(additional_roles__contains=[role])
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
@@ -103,6 +126,8 @@ class ObserverCode(OrganisationOwned):
     token_digest = models.CharField(max_length=64, unique=True, null=True)
     token_expires_at = models.DateTimeField(null=True)
     token_attempts = models.PositiveSmallIntegerField(default=0)
+    activated_at = models.DateTimeField(null=True)
+    replaced_by = models.ForeignKey("self", null=True, on_delete=models.PROTECT)
 
 
 class AuthThrottle(models.Model):
@@ -118,9 +143,51 @@ class AccountSession(OrganisationOwned):
     key = models.CharField(max_length=40, primary_key=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     absolute_expires_at = models.DateTimeField(null=True)
+    idle_expires_at = models.DateTimeField(null=True)
+    pending = models.BooleanField(default=False)
+    enrolment_secret = models.TextField(blank=True)
+    totp_attempts = models.PositiveSmallIntegerField(default=0)
 
 
 class ObserverSecurityAlert(OrganisationOwned):
     credential = models.ForeignKey(ObserverCode, on_delete=models.PROTECT)
     permanent = models.BooleanField()
     created_at = models.DateTimeField(auto_now_add=True)
+
+
+class StaffCredential(OrganisationOwned):
+    user = models.OneToOneField(User, on_delete=models.PROTECT, related_name="staff_credential")
+    secret = models.TextField(blank=True)
+    enforce_totp = models.BooleanField(default=False)
+    last_totp_step = models.BigIntegerField(default=-1)
+    invite_digest = models.CharField(max_length=64, unique=True, null=True)
+    invite_expires_at = models.DateTimeField(null=True)
+    last_sign_in_on = models.DateTimeField(null=True)
+    version = models.PositiveIntegerField(default=0)
+
+
+class StaffSecurityAlert(OrganisationOwned):
+    class Rule(models.TextChoices):
+        SIGN_IN = "repeated_failed_staff_sign_in"
+        TOTP = "repeated_failed_staff_totp"
+        OFFBOARD = "staff_offboarded_with_cases"
+
+    user = models.ForeignKey(User, on_delete=models.PROTECT)
+    rule = models.CharField(max_length=40, choices=Rule.choices)
+    details = models.JSONField(default=dict)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+class StaffMutation(OrganisationOwned):
+    actor = models.ForeignKey(User, on_delete=models.PROTECT)
+    operation = models.CharField(max_length=24)
+    key = models.UUIDField()
+    digest = models.CharField(max_length=64)
+    status = models.PositiveSmallIntegerField()
+    body = models.JSONField()
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=["organisation", "actor", "operation", "key"], name="accounts_staff_mutation_key"),
+        ]
