@@ -895,12 +895,12 @@
 }
 
 .timelineMarkerActive {
-  background: var(--sun-accent, #E3B060);
-  box-shadow: 0 0 0 4px var(--sun-light, #F6E3B8);
+  background: var(--sun);
+  box-shadow: 0 0 0 4px var(--sun-light);
 }
 
 .timelineMarkerPending {
-  border: 2px solid var(--rule-control, #C8B896);
+  border: 2px solid var(--rule-control);
   background: transparent;
 }
 
@@ -1009,7 +1009,7 @@
 }
 
 .journeyStep[data-active]:not(:last-child)::after {
-  background: var(--sun-accent, #E3B060);
+  background: var(--sun);
 }
 
 .journeyStep[data-dashed]:not(:last-child)::after {
@@ -1032,12 +1032,12 @@
 }
 
 .journeyNodeReview {
-  background: #2563EB;
+  background: var(--info);
   color: #fff;
 }
 
 .journeyNodeDiamond {
-  background: var(--sun-accent, #E3B060);
+  background: var(--sun);
   color: var(--ink);
   transform: rotate(45deg);
   border-radius: 4px;
@@ -1066,9 +1066,9 @@
 
 /* Reviewer Question Card */
 .reviewerCard {
-  background: var(--paper-2, #FAF6EE);
+  background: var(--paper-2);
   border: 1px solid var(--rule);
-  border-left: 5px solid var(--sun-accent, #E3B060);
+  border-left: 5px solid var(--sun);
   border-radius: var(--radius-lg, 16px);
   padding: var(--s-5);
   display: grid;
@@ -1081,7 +1081,7 @@
   font-size: 0.75rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--sun-accent, #C68A2E);
+  color: var(--sun);
   font-weight: 700;
 }
 

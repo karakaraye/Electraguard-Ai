@@ -13,14 +13,12 @@ function isTheme(value: unknown): value is ThemePreference {
 }
 
 function read(): ThemePreference | null {
-  if (memory) return memory;
   try {
-    const stored = window.localStorage.getItem(STORAGE_KEY);
-    memory = isTheme(stored) ? stored : null;
+    const stored = typeof window !== "undefined" ? window.localStorage.getItem(STORAGE_KEY) : null;
+    return isTheme(stored) ? stored : memory;
   } catch {
-    memory = null;
+    return memory;
   }
-  return memory;
 }
 
 /** Saves the appearance choice on this device. */

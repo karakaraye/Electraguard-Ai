@@ -1,6 +1,6 @@
 import { chromium, type Page } from "playwright";
 import { execFileSync } from "node:child_process";
-import { existsSync, mkdirSync, copyFileSync, readdirSync } from "node:fs";
+import { existsSync, mkdirSync, readdirSync } from "node:fs";
 import { homedir } from "node:os";
 import { join, resolve } from "node:path";
 import { fillReport, photo, server } from "../e2e/observer-real/helpers";
@@ -23,7 +23,6 @@ function chromiumPath(): string | undefined {
 
 const FRONTEND_DIR = resolve(__dirname, "..");
 const WORKTREE_DIR = resolve(FRONTEND_DIR, "..");
-const TARGETS_DIR = "C:\\Users\\Windows\\Desktop\\CAIRN\\.worktrees\\design-proto\\screens";
 const SHOTS_DIR = join(WORKTREE_DIR, "docs", "design", "visual-refresh-shots");
 const PYTHON = "C:\\Users\\Windows\\Desktop\\CAIRN\\.worktrees\\Electraguard-Ai\\backend\\.venv\\Scripts\\python.exe";
 const BACKEND_DIR = join(WORKTREE_DIR, "backend");
@@ -34,6 +33,24 @@ function runDjango(script: string) {
     input: script,
     encoding: "utf8",
   });
+}
+
+function compressPng(filePath: string) {
+  execFileSync(PYTHON, [
+    "-c",
+    `
+from PIL import Image
+p = r"""${filePath}"""
+img = Image.open(p)
+q = img.quantize(colors=256, method=Image.Quantize.MEDIANCUT)
+q.save(p, optimize=True)
+`,
+  ]);
+}
+
+async function shot(page: Page, path: string) {
+  await page.screenshot({ path });
+  compressPng(path);
 }
 
 async function main() {
@@ -71,7 +88,7 @@ async function main() {
     console.log("  -> 01-splash");
     await page.goto("http://127.0.0.1:3361/o/start?splash=1");
     await page.waitForTimeout(500);
-    await page.screenshot({ path: join(SHOTS_DIR, `01-splash-${theme}.png`) });
+    await shot(page, join(SHOTS_DIR, `01-splash-${theme}.png`));
 
     // 02-onboarding-report
     console.log("  -> 02-onboarding-report");
@@ -81,26 +98,26 @@ async function main() {
     await page.goto("http://127.0.0.1:3361/o/start?view=notice");
     await page.getByTestId("o02").waitFor({ state: "visible" });
     await page.waitForTimeout(300);
-    await page.screenshot({ path: join(SHOTS_DIR, `02-onboarding-report-${theme}.png`) });
+    await shot(page, join(SHOTS_DIR, `02-onboarding-report-${theme}.png`));
 
     // 03-onboarding-safe
     console.log("  -> 03-onboarding-safe");
     await page.getByTestId("o02-next").click();
     await page.waitForTimeout(300);
-    await page.screenshot({ path: join(SHOTS_DIR, `03-onboarding-safe-${theme}.png`) });
+    await shot(page, join(SHOTS_DIR, `03-onboarding-safe-${theme}.png`));
 
     // 04-onboarding-offline
     console.log("  -> 04-onboarding-offline");
     await page.getByTestId("o02-next").click();
     await page.waitForTimeout(300);
-    await page.screenshot({ path: join(SHOTS_DIR, `04-onboarding-offline-${theme}.png`) });
+    await shot(page, join(SHOTS_DIR, `04-onboarding-offline-${theme}.png`));
 
     // 05a-choose-role
     console.log("  -> 05a-choose-role");
     await page.goto("http://127.0.0.1:3361/o/start?view=choose");
     await page.getByTestId("o03-choose").waitFor({ state: "visible" });
     await page.waitForTimeout(300);
-    await page.screenshot({ path: join(SHOTS_DIR, `05a-choose-role-${theme}.png`) });
+    await shot(page, join(SHOTS_DIR, `05a-choose-role-${theme}.png`));
 
     // Sign in observer
     console.log("  -> Signing in observer");
@@ -130,14 +147,14 @@ async function main() {
     // 05-home
     console.log("  -> 05-home");
     await page.waitForTimeout(300);
-    await page.screenshot({ path: join(SHOTS_DIR, `05-home-${theme}.png`) });
+    await shot(page, join(SHOTS_DIR, `05-home-${theme}.png`));
 
     // 06-what-happened
     console.log("  -> 06-what-happened");
     await page.goto("http://127.0.0.1:3361/o/new/what");
     await page.getByTestId("o05").waitFor({ state: "visible" });
     await page.waitForTimeout(300);
-    await page.screenshot({ path: join(SHOTS_DIR, `06-what-happened-${theme}.png`) });
+    await shot(page, join(SHOTS_DIR, `06-what-happened-${theme}.png`));
 
     // Submit report for receipt and detail
     console.log("  -> Submitting report");
@@ -154,14 +171,14 @@ async function main() {
     console.log("  -> 07-receipt");
     await page.getByTestId("receipt-card-code").waitFor({ state: "visible" });
     await page.waitForTimeout(500);
-    await page.screenshot({ path: join(SHOTS_DIR, `07-receipt-${theme}.png`) });
+    await shot(page, join(SHOTS_DIR, `07-receipt-${theme}.png`));
 
     // 08-polling-day
     console.log("  -> 08-polling-day");
     await page.goto("http://127.0.0.1:3361/o/checklist");
     await page.getByTestId("o15").waitFor({ state: "visible" });
     await page.waitForTimeout(400);
-    await page.screenshot({ path: join(SHOTS_DIR, `08-polling-day-${theme}.png`) });
+    await shot(page, join(SHOTS_DIR, `08-polling-day-${theme}.png`));
 
     // 09-report-detail (with clarification question)
     console.log("  -> 09-report-detail");
@@ -177,14 +194,14 @@ ReviewEvent.objects.create(organisation=r.organisation, report=r, action=ReviewE
     await page.getByTestId("o14").waitFor({ state: "visible" });
     await page.getByTestId("o14-question").waitFor({ state: "visible" });
     await page.waitForTimeout(500);
-    await page.screenshot({ path: join(SHOTS_DIR, `09-report-detail-${theme}.png`) });
+    await shot(page, join(SHOTS_DIR, `09-report-detail-${theme}.png`));
 
     // 10-public-results
     console.log("  -> 10-public-results");
     await page.goto("http://127.0.0.1:3361/results");
     await page.waitForSelector("main");
     await page.waitForTimeout(400);
-    await page.screenshot({ path: join(SHOTS_DIR, `10-public-results-${theme}.png`) });
+    await shot(page, join(SHOTS_DIR, `10-public-results-${theme}.png`));
 
     await context.close();
   }

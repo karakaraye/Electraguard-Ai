@@ -70,7 +70,7 @@ export function AppShell({
   const t = useT();
   const browserOffline = useOffline();
   const keyboard = useKeyboardInset(!preview);
-  const storedTheme = useThemePreference("light");
+  const storedTheme = useThemePreference("system");
   const isOffline = offline ?? browserOffline;
   const Root = preview ? "div" : "main";
   const contentId = preview ? undefined : "eg-content";

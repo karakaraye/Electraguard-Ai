@@ -170,8 +170,21 @@
   }
 }
 
+/* ---------- Base elements ---------- */
+html {
+  background-color: var(--paper);
+  color: var(--ink);
+}
+
+body {
+  margin: 0;
+  background-color: var(--paper);
+  color: var(--ink);
+}
+
 /* ---------- Dark theme (early dawn: warm dark ground, sun stays warm) ---------- */
-[data-theme="dark"] {
+[data-theme="dark"],
+:root[data-theme="dark"] {
   --ink: #faf7f0;
   --ink-2: #d0c9be;
   --ink-3: #9c9488;
@@ -208,7 +221,9 @@
 }
 
 @media (prefers-color-scheme: dark) {
-  [data-theme="system"] {
+  :root:not([data-theme="light"]),
+  [data-theme="system"],
+  [data-theme="dark"] {
     --ink: #faf7f0;
     --ink-2: #d0c9be;
     --ink-3: #9c9488;
