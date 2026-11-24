@@ -1,55 +1,80 @@
+from django.db import transaction
 from django.utils import timezone
+
+from clocks.calculator import compute_clock_state
 from clocks.models import ReviewClock
 from reports.models import Report
+from security.models import Alert
 from staff.audit import record
 
 
 def sweep_review_clocks(now=None):
-    """Evaluates all open review clocks, updating their state and notifying coordinators once when overdue."""
+    """Evaluates open review clocks atomically, updating state and notifying coordinators once when overdue."""
     if now is None:
         now = timezone.now()
 
-    open_clocks = ReviewClock.objects.filter(
-        stopped_at__isnull=True,
-    ).select_related("report", "organisation")
+    clock_ids = list(
+        ReviewClock.objects.filter(stopped_at__isnull=True).values_list("pk", flat=True)
+    )
 
     newly_overdue = 0
     total_overdue = 0
 
-    for clock in open_clocks.iterator():
-        report = clock.report
-        # If report is closed or withdrawn, stop the clock
-        if report.status in (Report.Status.CLOSED, Report.Status.WITHDRAWN):
-            clock.stopped_at = now
-            clock.save(update_fields=["stopped_at"])
-            continue
+    for clock_id in clock_ids:
+        with transaction.atomic():
+            clock = (
+                ReviewClock.objects.select_for_update(skip_locked=True)
+                .select_related("report", "organisation")
+                .filter(pk=clock_id, stopped_at__isnull=True)
+                .first()
+            )
+            if clock is None:
+                continue
 
-        target_seconds = clock.target_minutes * 60
-        effective_now = clock.paused_at if (clock.paused and clock.paused_at) else now
-        elapsed_seconds = (effective_now - clock.started_at).total_seconds() - clock.paused_seconds
-        remaining_seconds = target_seconds - elapsed_seconds
+            report = clock.report
+            if report.status in (Report.Status.CLOSED, Report.Status.WITHDRAWN):
+                clock.stopped_at = now
+                clock.state = ReviewClock.State.STOPPED
+                clock.save(update_fields=["stopped_at", "state"])
+                continue
 
-        if remaining_seconds <= 0:
-            new_state = ReviewClock.State.OVERDUE
-            total_overdue += 1
-        elif remaining_seconds <= 0.25 * target_seconds:
-            new_state = ReviewClock.State.DUE_SOON
-        else:
-            new_state = ReviewClock.State.ON_TIME
+            computed = compute_clock_state(clock, now=now)
+            new_state = computed["state"]
 
-        fields_to_update = []
-        if clock.state != new_state:
-            clock.state = new_state
-            fields_to_update.append("state")
+            if clock.state != new_state:
+                clock.state = new_state
+                clock.save(update_fields=["state"])
 
-        if new_state == ReviewClock.State.OVERDUE and not clock.notified_at:
-            clock.notified_at = now
-            fields_to_update.append("notified_at")
-            newly_overdue += 1
-            if clock.organisation_id:
-                record(clock.organisation_id, "case.overdue", "report", clock.report_id)
-
-        if fields_to_update:
-            clock.save(update_fields=fields_to_update)
+            if new_state == ReviewClock.State.OVERDUE:
+                total_overdue += 1
+                if clock.notified_at is None:
+                    updated = ReviewClock.objects.filter(
+                        pk=clock.pk,
+                        notified_at__isnull=True,
+                    ).update(notified_at=now)
+                    if updated == 1:
+                        newly_overdue += 1
+                        if clock.organisation_id:
+                            Alert.objects.get_or_create(
+                                organisation_id=clock.organisation_id,
+                                rule="review_clock_overdue",
+                                subject_key=f"clock:{clock.pk}",
+                                status="open",
+                                defaults={
+                                    "severity": "high" if clock.urgency == "urgent" else "medium",
+                                    "subject_type": "report",
+                                    "subject_label": f"Overdue {clock.kind} ({clock.urgency}) case {report.receipt_code}"[:254],
+                                    "details": {
+                                        "report_id": str(report.pk),
+                                        "clock_id": str(clock.pk),
+                                        "kind": clock.kind,
+                                        "urgency": clock.urgency,
+                                        "target_minutes": clock.target_minutes,
+                                        "minutes_left": computed["minutes_left"],
+                                    },
+                                    "detector": "clock",
+                                },
+                            )
+                            record(clock.organisation_id, "case.overdue", "report", str(report.pk))
 
     return {"total_overdue": total_overdue, "newly_overdue": newly_overdue}

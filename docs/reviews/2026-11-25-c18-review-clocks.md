@@ -30,7 +30,21 @@ Branch `backend/c18-review-clocks`, on top of `backend/c17-emerging-alerts`. Bac
 - **Management Command:**
   - `python manage.py run_review_clocks [--once] [--loop] [--interval 60]`.
 
-**Contracts Implemented (G18).**
+- **Contracts Implemented (G18):**
+  - **Q-01 & CASE-01 (`backend/reports/reviewer_views.py`):**
+    - Both `queue_item` and `case()` return `clock: { target_minutes, due_at, state, minutes_left, paused }`.
+    - `minutes_left` is negative when overdue; stopped clocks return `state: "stopped"` and are excluded from `clock_state` filtering and `OPS-01` `overdue` counts.
+    - Filtering by `clock_state` sorts results by `due_at` ascending.
+    - Reads are read-only with `prefetch_related("clocks")`.
+  - **Question-reply clock & lifecycle:**
+    - `first_action` clock starts at server `created_at` (on REP-01, REP-05, citizen form, and SMS/USSD intake) and stops at the first reviewer action (`start`, `request_clarification`, `close`, or `withdraw`).
+    - When an observer/citizen replies (`Action.RESPOND`), a separate `question_reply` clock starts (120m default) and stops when staff next respond or close.
+    - Urgency changes (`CASE-03`) recompute `due_at` from the original `started_at`.
+  - **Sweep & Backfill:**
+    - `sweep_review_clocks` uses `select_for_update(skip_locked=True)` + conditional `UPDATE ... WHERE notified_at IS NULL` and notifies coordinators once via `security.models.Alert` (`rule="review_clock_overdue"`) and `staff.audit.record`.
+    - `backfill_review_clocks` creates already-acted cases as `stopped` so deploying does not flood coordinators.
+  - **ADM-04 (`backend/staff/organisation_settings.py`):**
+    - Supports partial `review_targets` updates, validates 5–1440 min with `field_invalid`, and recomputes `due_at` on open clocks.
 - **Q-01 & CASE-01 (`backend/reports/reviewer_views.py`):**
   - `queue_item` and `case` detail endpoints return the `clock` block:
     ```json

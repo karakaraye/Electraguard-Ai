@@ -227,6 +227,8 @@ def persist_report(actor, organisation, values, *, code="", secret_digest="", **
     Triage.objects.create(
         report=report, organisation_id=report.organisation_id, method_version=METHOD_VERSION,
     )
+    from clocks.calculator import create_initial_clock
+    create_initial_clock(report)
     return 201, {
         **identity(report), "version": report.version,
         **({"channel": "citizen"} if report.observer_id is None else {}),
@@ -439,6 +441,8 @@ def withdraw_report(request, report, data, *, public=False):
     record_change(report, None if public else request.user, ReviewEvent.Action.WITHDRAW, {
         "from_status": "received", "to_status": "withdrawn",
     })
+    from clocks.calculator import stop_open_clocks
+    stop_open_clocks(report)
     stub = withdrawn_stub(report)
     org_scope(request, ReportIdempotency, public=public).filter(report=report).update(body=stub)
     return 200, stub, report

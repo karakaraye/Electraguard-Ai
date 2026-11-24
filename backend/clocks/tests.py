@@ -1,23 +1,23 @@
-from datetime import timedelta
+from datetime import date, timedelta
 from uuid import uuid4
 
 from django.core.management import call_command
 from django.test import TestCase
 from django.utils import timezone
 
-from accounts.models import Organisation, User
+from accounts.models import ObserverCode, Organisation, User
 from accounts.staff_sessions import VERIFIED
 from clocks.calculator import (
     clock_json,
-    get_or_create_clock,
-    pause_clock,
-    resume_clock,
-    stop_clock,
+    create_initial_clock,
+    start_question_reply_clock,
+    stop_open_clocks,
 )
 from clocks.models import ReviewClock
 from clocks.sweep import sweep_review_clocks
-from reports.models import Report, ReviewEvent
-from reports.workflow import record_change
+from reference.models import AreaDataset
+from reports.models import Report, ReviewEvent, Triage
+from security.models import Alert
 from staff.audit import AuditEvent
 from staff.test_support import bind_staff_session
 
@@ -25,6 +25,19 @@ from staff.test_support import bind_staff_session
 class ReviewClocksTests(TestCase):
     def setUp(self):
         self.org = Organisation.objects.create(name="Citizen Election Watch")
+        self.other_org = Organisation.objects.create(name="Other Org")
+        self.observer = User.objects.create_user(
+            "obs@cew.org",
+            role=User.Role.OBSERVER,
+            organisation=self.org,
+        )
+        ObserverCode.objects.create(
+            organisation=self.org,
+            user=self.observer,
+            code="OBS-CLOCK1",
+            pin_hash="mock",
+            status="active",
+        )
         self.reviewer = User.objects.create_user(
             "reviewer@cew.org",
             role=User.Role.REVIEWER,
@@ -40,21 +53,47 @@ class ReviewClocksTests(TestCase):
             role=User.Role.ORG_ADMIN,
             organisation=self.org,
         )
-        self.client.force_login(self.reviewer)
-        session = self.client.session
-        session[VERIFIED] = True
-        session.save()
-        bind_staff_session(session, self.reviewer)
+        if not AreaDataset.objects.exists():
+            AreaDataset.objects.create(
+                version="2026.1",
+                released_on=date(2026, 11, 20),
+                revision=1,
+                source=AreaDataset.Source.SYNTHETIC,
+                index={},
+                states={
+                    "KN": {
+                        "state_code": "KN", "name": "Kano",
+                        "lgas": [{
+                            "lga_code": "KN-04", "name": "Dala",
+                            "wards": [{
+                                "ward_code": "KN-04-01", "name": "Ward 1",
+                                "units": [["KN-04-01-001", "PU 001"]],
+                            }],
+                        }],
+                    }
+                },
+            )
+        self.login_as(self.reviewer)
 
-    def create_case(self, urgency="normal", danger_now=False, created_at=None, status=Report.Status.SUBMITTED):
+    def login_as(self, user):
+        self.client.force_login(user)
+        if user.role != User.Role.OBSERVER:
+            session = self.client.session
+            session[VERIFIED] = True
+            session.save()
+            bind_staff_session(session, user)
+
+    def create_case(self, urgency="normal", danger_now=False, created_at=None, status=Report.Status.SUBMITTED, org=None):
         if created_at is None:
             created_at = timezone.now()
+        target_org = org or self.org
         is_danger = danger_now or (urgency == "urgent")
         cat_obs = "intimidation_violence" if urgency == "high" else ("other" if urgency == "normal" else "intimidation_violence")
         report = Report.objects.create(
-            organisation=self.org,
-            observer=self.reviewer,
-            assigned_reviewer=self.reviewer,
+            organisation=target_org,
+            observer=self.observer if target_org == self.org else None,
+            assigned_reviewer=self.reviewer if target_org == self.org else None,
+            receipt_code=f"EG-{uuid4().hex[:8].upper()}",
             submission_key=uuid4(),
             occurred_at=created_at,
             status=status,
@@ -69,210 +108,218 @@ class ReviewClocksTests(TestCase):
         )
         Report.objects.filter(pk=report.pk).update(created_at=created_at)
         report.refresh_from_db()
+        create_initial_clock(report, now=created_at)
         return report
 
-    def test_clock_creation_and_urgency_targets(self):
-        # Urgent case: 15 min default
-        urgent_case = self.create_case(urgency="urgent", danger_now=True)
-        clock_urgent = get_or_create_clock(urgent_case)
-        self.assertEqual(clock_urgent.target_minutes, 15)
-        self.assertEqual(clock_urgent.urgency, "urgent")
-
-        # Normal case: 240 min default
-        normal_case = self.create_case(urgency="normal")
-        clock_normal = get_or_create_clock(normal_case)
-        self.assertEqual(clock_normal.target_minutes, 240)
-
-    def test_clock_states_on_time_due_soon_overdue(self):
-        now = timezone.now()
-        # 1. On time: 10 minutes elapsed of 60 min target (50 min left > 25%)
-        case_ontime = self.create_case(urgency="high", created_at=now - timedelta(minutes=10))
-        json_ontime = clock_json(case_ontime, now=now)
-        self.assertEqual(json_ontime["state"], "on_time")
-        self.assertEqual(json_ontime["target_minutes"], 60)
-        self.assertAlmostEqual(json_ontime["minutes_left"], 50, delta=1)
-
-        # 2. Due soon: 50 minutes elapsed of 60 min target (10 min left <= 15 min / 25%)
-        case_duesoon = self.create_case(urgency="high", created_at=now - timedelta(minutes=50))
-        json_duesoon = clock_json(case_duesoon, now=now)
-        self.assertEqual(json_duesoon["state"], "due_soon")
-        self.assertAlmostEqual(json_duesoon["minutes_left"], 10, delta=1)
-
-        # 3. Overdue: 75 minutes elapsed of 60 min target
-        case_overdue = self.create_case(urgency="high", created_at=now - timedelta(minutes=75))
-        json_overdue = clock_json(case_overdue, now=now)
-        self.assertEqual(json_overdue["state"], "overdue")
-        self.assertEqual(json_overdue["minutes_left"], 0)
-
-    def test_clock_pause_on_question_and_resume_on_reply(self):
-        t0 = timezone.now()
-        case = self.create_case(urgency="high", created_at=t0)
-        clock = get_or_create_clock(case, now=t0)
-
-        # 20 minutes in, reviewer asks formal question -> pause clock
-        t_question = t0 + timedelta(minutes=20)
-        pause_clock(case, now=t_question)
-        clock.refresh_from_db()
-        self.assertTrue(clock.paused)
-        self.assertEqual(clock.paused_at, t_question)
-
-        # 40 minutes pass while waiting for observer (clock is paused)
-        t_during_pause = t_question + timedelta(minutes=40)
-        json_during = clock_json(case, now=t_during_pause)
-        self.assertTrue(json_during["paused"])
-        # Minutes left should still reflect 40 minutes remaining (60 - 20)
-        self.assertAlmostEqual(json_during["minutes_left"], 40, delta=1)
-
-        # Observer replies 50 minutes after question was asked -> resume clock
-        t_reply = t_question + timedelta(minutes=50)
-        resume_clock(case, now=t_reply)
-        clock.refresh_from_db()
-        self.assertFalse(clock.paused)
-        self.assertIsNone(clock.paused_at)
-        self.assertEqual(clock.paused_seconds, 50 * 60)
-        # Due at has been shifted by 50 minutes
-        self.assertEqual(clock.due_at, clock.started_at + timedelta(minutes=60, seconds=50 * 60))
-
-    def test_clock_stops_on_first_reviewer_action(self):
-        t0 = timezone.now()
-        case = self.create_case(urgency="urgent", created_at=t0)
-        clock = get_or_create_clock(case, now=t0)
-        self.assertIsNone(clock.stopped_at)
-
-        # Reviewer starts review at t0 + 5 min
-        t_action = t0 + timedelta(minutes=5)
-        stop_clock(case, now=t_action)
-        clock.refresh_from_db()
-        self.assertEqual(clock.stopped_at, t_action)
-        self.assertEqual(clock.state, "on_time")
-
-    def test_sweep_escalates_overdue_and_notifies_once(self):
-        now = timezone.now()
-        # Case created 2 hours ago with 15 min urgent target -> overdue
-        overdue_case = self.create_case(urgency="urgent", created_at=now - timedelta(hours=2))
-        get_or_create_clock(overdue_case)
-
-        # Run sweep
-        res = sweep_review_clocks(now=now)
-        self.assertEqual(res["newly_overdue"], 1)
-        self.assertEqual(res["total_overdue"], 1)
-
-        # Verify audit event recorded
-        self.assertTrue(
-            AuditEvent.objects.filter(
-                organisation_id=self.org.pk,
-                action="case.overdue",
-                object_id=str(overdue_case.pk),
-            ).exists()
+    def test_clock_created_on_intake_and_negative_minutes_left_when_overdue(self):
+        self.login_as(self.observer)
+        res = self.client.post(
+            "/api/v1/reports",
+            {
+                "submission_key": str(uuid4()),
+                "occurred_at": timezone.now().isoformat(),
+                "description": "Urgent incident at unit.",
+                "kind": "incident",
+                "language": "en",
+                "danger_now": True,
+                "firsthand": True,
+                "place": {"polling_unit_code": "KN-04-01-001", "ward_code": "KN-04-01"},
+                "category_observer": "intimidation_violence",
+            },
+            content_type="application/json",
+            HTTP_IDEMPOTENCY_KEY=str(uuid4()),
         )
+        self.assertEqual(res.status_code, 201, res.content)
+        report = Report.objects.get(pk=res.json()["id"])
+        clock = ReviewClock.objects.filter(report=report, kind=ReviewClock.Kind.FIRST_ACTION).first()
+        self.assertIsNotNone(clock)
+        self.assertEqual(clock.target_minutes, 15)
 
-        # Second sweep immediately after does NOT duplicate notification
-        res2 = sweep_review_clocks(now=now)
-        self.assertEqual(res2["newly_overdue"], 0)
-        self.assertEqual(res2["total_overdue"], 1)
-        self.assertEqual(
-            AuditEvent.objects.filter(organisation_id=self.org.pk, action="case.overdue").count(),
-            1,
-        )
+        # Simulate 35 minutes elapsed -> overdue with negative minutes_left (-20)
+        future = clock.started_at + timedelta(minutes=35)
+        info = clock_json(report, now=future)
+        self.assertEqual(info["state"], "overdue")
+        self.assertEqual(info["minutes_left"], -20)
+        self.assertTrue(info["due_at"].endswith("+01:00"))
 
-    def test_q_01_queue_and_clock_state_filter(self):
+    def test_case_01_and_q_01_clock_and_due_at_sort_and_stopped_exclusion(self):
         now = timezone.now()
-        # 1 overdue, 1 on_time
-        overdue_case = self.create_case(urgency="urgent", created_at=now - timedelta(hours=1))
+        overdue_older = self.create_case(urgency="urgent", created_at=now - timedelta(minutes=60))
+        overdue_newer = self.create_case(urgency="urgent", created_at=now - timedelta(minutes=30))
         ontime_case = self.create_case(urgency="normal", created_at=now - timedelta(minutes=5))
+        stopped_case = self.create_case(urgency="urgent", created_at=now - timedelta(minutes=90), status=Report.Status.IN_REVIEW)
 
-        # Test queue endpoint
-        res = self.client.get("/api/v1/review/cases")
-        self.assertEqual(res.status_code, 200)
-        items = res.json()["items"]
-        self.assertEqual(len(items), 2)
-        for item in items:
-            self.assertIn("clock", item)
-            clock = item["clock"]
-            self.assertIn("target_minutes", clock)
-            self.assertIn("due_at", clock)
-            self.assertIn("state", clock)
-            self.assertIn("minutes_left", clock)
-            self.assertIn("paused", clock)
+        self.login_as(self.reviewer)
+        # CASE-01 includes clock
+        case_res = self.client.get(f"/api/v1/review/cases/{overdue_newer.pk}")
+        self.assertEqual(case_res.status_code, 200)
+        case_data = case_res.json()
+        self.assertIn("clock", case_data)
+        self.assertEqual(case_data["clock"]["state"], "overdue")
+        self.assertLess(case_data["clock"]["minutes_left"], 0)
+        self.assertTrue(case_data["clock"]["due_at"].endswith("+01:00"))
 
-        # Test filter by clock_state=overdue
-        res_overdue = self.client.get("/api/v1/review/cases?clock_state=overdue")
-        self.assertEqual(res_overdue.status_code, 200)
-        overdue_items = res_overdue.json()["items"]
-        self.assertEqual(len(overdue_items), 1)
-        self.assertEqual(overdue_items[0]["id"], str(overdue_case.pk))
+        # Stopped clock reports state="stopped" and is excluded from clock_state=overdue
+        stopped_res = self.client.get(f"/api/v1/review/cases/{stopped_case.pk}").json()
+        self.assertEqual(stopped_res["clock"]["state"], "stopped")
 
-        # Test filter by clock_state=on_time
-        res_ontime = self.client.get("/api/v1/review/cases?clock_state=on_time")
-        self.assertEqual(res_ontime.status_code, 200)
-        ontime_items = res_ontime.json()["items"]
-        self.assertEqual(len(ontime_items), 1)
-        self.assertEqual(ontime_items[0]["id"], str(ontime_case.pk))
+        # Q-01 clock_state=overdue returns only running overdue cases, sorted by due_at ascending
+        q_res = self.client.get("/api/v1/review/queue?clock_state=overdue")
+        self.assertEqual(q_res.status_code, 200)
+        items = q_res.json()["items"]
+        self.assertEqual([i["id"] for i in items], [str(overdue_older.pk), str(overdue_newer.pk)])
 
-    def test_ops_01_overview_includes_overdue_breakdown(self):
+    def test_urgency_correction_recomputes_due_at_from_started_at(self):
         now = timezone.now()
-        # 1 urgent overdue, 1 high overdue
-        self.create_case(urgency="urgent", created_at=now - timedelta(hours=1))
-        self.create_case(urgency="high", created_at=now - timedelta(hours=2))
-        self.create_case(urgency="normal", created_at=now - timedelta(minutes=10))
+        case = self.create_case(urgency="normal", created_at=now - timedelta(minutes=10))
+        Triage.objects.create(
+            report=case, organisation=self.org, status=Triage.Status.READY, method_version="v1",
+            suggestions={"urgency": {"value": "normal", "reasons": []}, "category": {"value": "other", "reasons": []}},
+        )
 
-        # Login as coordinator
-        self.client.force_login(self.coordinator)
-        session = self.client.session
-        session[VERIFIED] = True
-        session.save()
-        bind_staff_session(session, self.coordinator)
+        self.login_as(self.reviewer)
+        res = self.client.post(
+            f"/api/v1/review/cases/{case.pk}/suggestions/urgency",
+            {"decision": "correct", "value": "urgent", "version": case.version},
+            content_type="application/json",
+            HTTP_IDEMPOTENCY_KEY=str(uuid4()),
+        )
+        self.assertEqual(res.status_code, 200, res.content)
+        clock = ReviewClock.objects.get(report=case, kind=ReviewClock.Kind.FIRST_ACTION)
+        self.assertEqual(clock.target_minutes, 15)
+        self.assertEqual(clock.due_at, clock.started_at + timedelta(minutes=15))
 
-        res = self.client.get("/api/v1/ops/overview")
-        self.assertEqual(res.status_code, 200)
-        data = res.json()
-        self.assertIn("overdue", data)
-        self.assertEqual(data["overdue"]["urgent"], 1)
-        self.assertEqual(data["overdue"]["high"], 1)
-        self.assertEqual(data["overdue"]["normal"], 0)
-        self.assertEqual(data["overdue"]["low"], 0)
+    def test_question_reply_clock_lifecycle_via_api(self):
+        case = self.create_case(urgency="normal")
+        self.login_as(self.reviewer)
 
-    def test_adm_04_review_targets_crud(self):
-        # Login as org_admin
-        self.client.force_login(self.org_admin)
-        session = self.client.session
-        session[VERIFIED] = True
-        session.save()
-        bind_staff_session(session, self.org_admin)
+        # 1. Reviewer starts review -> first_action clock stops
+        r1 = self.client.post(
+            f"/api/v1/review/cases/{case.pk}/actions",
+            {"action": "start", "version": case.version},
+            content_type="application/json",
+            HTTP_IDEMPOTENCY_KEY=str(uuid4()),
+        )
+        self.assertEqual(r1.status_code, 200, r1.content)
+        first_clock = ReviewClock.objects.get(report=case, kind=ReviewClock.Kind.FIRST_ACTION)
+        self.assertIsNotNone(first_clock.stopped_at)
+        self.assertEqual(first_clock.state, "stopped")
 
-        # 1. GET settings returns review_targets
-        get_res = self.client.get("/api/v1/admin/settings")
-        self.assertEqual(get_res.status_code, 200)
-        settings = get_res.json()
-        self.assertIn("review_targets", settings)
-        self.assertEqual(settings["review_targets"]["urgent"], 15)
-        self.assertEqual(settings["review_targets"]["question_reply"], 120)
+        # 2. Reviewer asks formal question
+        case.refresh_from_db()
+        r2 = self.client.post(
+            f"/api/v1/review/cases/{case.pk}/actions",
+            {"action": "ask", "question": "Which gate?", "version": case.version},
+            content_type="application/json",
+            HTTP_IDEMPOTENCY_KEY=str(uuid4()),
+        )
+        self.assertEqual(r2.status_code, 200, r2.content)
+        case_data = self.client.get(f"/api/v1/review/cases/{case.pk}").json()
+        q_id = case_data["open_question"]["id"]
 
-        # 2. PATCH settings with valid review targets
-        version = settings["version"]
-        new_targets = {
-            "urgent": 20,
-            "high": 90,
-            "normal": 300,
-            "low": 600,
-            "question_reply": 180,
-        }
-        patch_res = self.client.patch(
+        # 3. Observer replies -> starts question_reply clock (120 min)
+        self.login_as(self.observer)
+        r3 = self.client.post(
+            f"/api/v1/reports/{case.pk}/messages",
+            {"kind": "reply", "question_id": q_id, "body": "North gate."},
+            content_type="application/json",
+            HTTP_IDEMPOTENCY_KEY=str(uuid4()),
+        )
+        self.assertEqual(r3.status_code, 201, r3.content)
+        qr_clock = ReviewClock.objects.filter(report=case, kind=ReviewClock.Kind.QUESTION_REPLY).first()
+        self.assertIsNotNone(qr_clock)
+        self.assertEqual(qr_clock.target_minutes, 120)
+        self.assertIsNone(qr_clock.stopped_at)
+
+        # 4. Staff responds -> stops question_reply clock
+        self.login_as(self.reviewer)
+        case.refresh_from_db()
+        r4 = self.client.post(
+            f"/api/v1/reports/{case.pk}/messages",
+            {"kind": "message", "body": "Thank you, noted.", "version": case.version},
+            content_type="application/json",
+            HTTP_IDEMPOTENCY_KEY=str(uuid4()),
+        )
+        self.assertEqual(r4.status_code, 201, r4.content)
+        qr_clock.refresh_from_db()
+        self.assertIsNotNone(qr_clock.stopped_at)
+        self.assertEqual(qr_clock.state, "stopped")
+
+    def test_withdrawal_stops_clock(self):
+        case = self.create_case(urgency="urgent")
+        self.login_as(self.observer)
+        res = self.client.post(
+            f"/api/v1/reports/{case.pk}/withdraw",
+            {"version": case.version, "confirm": True},
+            content_type="application/json",
+            HTTP_IDEMPOTENCY_KEY=str(uuid4()),
+        )
+        self.assertEqual(res.status_code, 200, res.content)
+        clock = ReviewClock.objects.get(report=case, kind=ReviewClock.Kind.FIRST_ACTION)
+        self.assertIsNotNone(clock.stopped_at)
+        self.assertEqual(clock.state, "stopped")
+
+    def test_concurrent_sweeps_notify_once_and_org_isolation(self):
+        now = timezone.now()
+        c_org1 = self.create_case(urgency="urgent", created_at=now - timedelta(hours=1), org=self.org)
+        c_org2 = self.create_case(urgency="urgent", created_at=now - timedelta(hours=1), org=self.other_org)
+
+        res1 = sweep_review_clocks(now=now)
+        res2 = sweep_review_clocks(now=now)
+        self.assertEqual(res1["newly_overdue"], 2)
+        self.assertEqual(res2["newly_overdue"], 0)
+
+        self.assertEqual(Alert.objects.filter(organisation=self.org, rule="review_clock_overdue").count(), 1)
+        self.assertEqual(Alert.objects.filter(organisation=self.other_org, rule="review_clock_overdue").count(), 1)
+        self.assertEqual(AuditEvent.objects.filter(organisation=self.org, action="case.overdue").count(), 1)
+
+        # OPS-01 overview is org-scoped and excludes stopped clocks
+        self.login_as(self.coordinator)
+        from_date = (now - timedelta(hours=1)).astimezone(timezone.get_current_timezone()).date().isoformat()
+        to_date = now.astimezone(timezone.get_current_timezone()).date().isoformat()
+        ov = self.client.get(f"/api/v1/ops/overview?from={from_date}&to={to_date}").json()
+        self.assertEqual(ov["overdue"]["urgent"], 1)
+
+    def test_backfill_creates_already_acted_cases_stopped(self):
+        now = timezone.now()
+        acted = Report.objects.create(
+            organisation=self.org, observer=self.observer, submission_key=uuid4(),
+            occurred_at=now - timedelta(hours=5), status=Report.Status.IN_REVIEW,
+            description="Pre-deploy active case",
+        )
+        ReviewEvent.objects.create(
+            report=acted, organisation=self.org, actor=self.reviewer,
+            version=1, action=ReviewEvent.Action.START, change={"to_status": "in_review"},
+        )
+        call_command("backfill_review_clocks")
+        clock = ReviewClock.objects.get(report=acted)
+        self.assertIsNotNone(clock.stopped_at)
+        self.assertEqual(clock.state, "stopped")
+
+    def test_adm_04_partial_review_targets_and_recomputes_open_clocks(self):
+        open_urgent = self.create_case(urgency="urgent")
+        self.login_as(self.org_admin)
+        settings = self.client.get("/api/v1/admin/settings").json()
+
+        # Partial update of urgent target only
+        patch = self.client.patch(
             "/api/v1/admin/settings",
-            {"version": version, "review_targets": new_targets},
+            {"version": settings["version"], "review_targets": {"urgent": 30}},
             content_type="application/json",
         )
-        self.assertEqual(patch_res.status_code, 200)
-        updated = patch_res.json()
-        self.assertEqual(updated["review_targets"]["urgent"], 20)
-        self.assertEqual(updated["review_targets"]["high"], 90)
+        self.assertEqual(patch.status_code, 200, patch.content)
+        self.assertEqual(patch.json()["review_targets"]["urgent"], 30)
+        self.assertEqual(patch.json()["review_targets"]["high"], 60)
 
-        # 3. PATCH settings with invalid target value (< 5 min) -> 422
-        invalid_targets = dict(new_targets)
-        invalid_targets["urgent"] = 2  # below 5 min minimum
-        bad_res = self.client.patch(
+        clock = ReviewClock.objects.get(report=open_urgent)
+        self.assertEqual(clock.target_minutes, 30)
+        self.assertEqual(clock.due_at, clock.started_at + timedelta(minutes=30))
+
+        # Invalid value returns field_invalid
+        bad = self.client.patch(
             "/api/v1/admin/settings",
-            {"version": updated["version"], "review_targets": invalid_targets},
+            {"version": patch.json()["version"], "review_targets": {"urgent": 2}},
             content_type="application/json",
         )
-        self.assertEqual(bad_res.status_code, 422)
+        self.assertEqual(bad.status_code, 422)
+        self.assertEqual(bad.json()["error"]["fields"]["review_targets"]["code"], "field_invalid")

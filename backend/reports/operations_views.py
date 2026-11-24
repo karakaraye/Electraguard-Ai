@@ -358,7 +358,7 @@ def overview(request):
     closure = org_scope(request, ReviewEvent).filter(
         report_id=OuterRef("pk"), action=ReviewEvent.Action.CLOSE,
     ).order_by("-version").values("change__outcome")[:1]
-    active = active.select_related("triage").defer("description", "redacted_description", "redactions").annotate(
+    active = active.select_related("triage").prefetch_related("clocks").defer("description", "redacted_description", "redactions").annotate(
         closure_outcome=Subquery(closure),
     )
 

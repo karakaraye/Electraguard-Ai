@@ -57,20 +57,14 @@ def record_change(report, actor, action, change, field=None):
     ReviewEvent.objects.create(
         report=report, organisation_id=report.organisation_id, actor=actor, action=action, version=report.version, change=change
     )
-    if action in (Action.START, Action.REQUEST_CLARIFICATION, Action.CLOSE):
-        try:
-            from clocks.calculator import stop_clock, pause_clock
-            if action == Action.REQUEST_CLARIFICATION:
-                pause_clock(report)
-            stop_clock(report)
-        except Exception:
-            pass
+    from clocks.calculator import start_question_reply_clock, stop_open_clocks
+
+    if action in (Action.START, Action.REQUEST_CLARIFICATION, Action.CLOSE, Action.WITHDRAW):
+        stop_open_clocks(report)
     elif action == Action.RESPOND:
-        try:
-            from clocks.calculator import resume_clock
-            resume_clock(report)
-        except Exception:
-            pass
+        start_question_reply_clock(report)
+    elif action == Action.MESSAGE and isinstance(change, dict) and change.get("author") == "reviewer":
+        stop_open_clocks(report)
 
 
 def closure_snapshot(report):
