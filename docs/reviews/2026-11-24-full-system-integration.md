@@ -36,7 +36,8 @@ The configured PostgreSQL server on port 55450 rejected the supplied credentials
 
 - Fresh migrations passed. `makemigrations --check` reported no changes.
 - The synthetic reference import loaded all 900 polling units under release `2026-11-23.2`.
-- The fresh all-app suite collected 246 cases and finished in 243.235 seconds with 244 passed and two skips. The skipped cases need reference data in the test database or a local transcription model and speech fixture generator.
+- The fresh all-app suite collected 247 cases across all 13 apps on PostgreSQL port 55454 and finished in 275.208 seconds with 246 passed and one skip (`Ran 247 tests in 275.208s - OK (skipped=1)`).
+- The Playwright real-observer end-to-end integration test (`01-happy-path.spec.ts`) executed against the running stack on port 3341 with Django on port 8141, verifying observer PIN setup, report creation with photo upload, receipt issuance, and persistence on the backend database.
 - The four focused regression cases passed. They cover case closure, voice-note access, result-sheet photo download integrity and access reassignment.
 - Frontend lint exited successfully with one existing unused-variable warning in `e2e/observer/flow.cjs`. Type checking and the production build passed.
 
