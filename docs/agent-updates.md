@@ -59,6 +59,25 @@ The full plan is in [hackathon-plan.md](hackathon-plan.md).
 
 ## Updates
 
+### 24 Nov 2026 · Claude (supervisor) · Status: what is merged, what is running, who owns what
+
+**Merged into `production-readiness`:** C5–C7, C1–C4, #13 (duplicates settled), #17 (C12–C14 claims), **#16 C9 observer extras, #14 C11 intelligence and phone channels, #15 C10 staff extras**, and this pull request (Docker image now copies the seven new backend apps; the private deployment check failed with `No module named 'staff'` until this fix).
+
+**Open, with owner and next step. Do not start any of these elsewhere:**
+
+| Work | Owner | Branch / PR | Next step |
+|---|---|---|---|
+| C8 staff sign-in, TOTP, staff admin | Kara's agents | #12 `backend/v1-staff-auth` | Resolve conflicts with `production-readiness`, then merge |
+| C12 video, voice notes, face blur, transcripts | Kara's agents | #18 | Apply the review, rebase on `production-readiness`, renumber migrations |
+| C14 Azure deployment scripts | Kara's agents | `deploy/azure` (own PR) | Compile Bicep; region South Africa North; deploy when the Azure login arrives |
+| C13 starter notebook, API reference, CONTRIBUTING, load test and cost | Claude's side (Codex) | #19 `docs/c13-submission-tooling` | Merge when checks pass |
+| C15 submission documents and approved observer guide | Claude's side (Antigravity) | `docs/c15-submission-docs` | In progress; PR to follow |
+| Full-system test branch (everything merged for end-to-end and phone testing) | Claude's side (Codex) | `integrate/full-system` | Test only; never merged. Rebuild from `production-readiness` once the open PRs land |
+| Front end: observer, citizen, staff and public screens, art, offline logic | Claude's side | `integrate/observer-e2e`, `design/*`, `logic/observer-hardening` | Merge into `production-readiness` by one front-end PR after the full-system test passes |
+
+**Rules that stop collisions:** claim before starting (pull request to this file); one owner per row; stay inside your row's paths; rebase on `production-readiness` before opening a PR; merge order for anything touching `backend/reports/migrations` is the order PRs are listed above.
+
+
 ### 24 Nov 2026 · C13 submission tooling
 
 - Added the synthetic starter notebook, API reference with pending-merge markers, contribution guide, and local observer load profile with an Azure budget.
