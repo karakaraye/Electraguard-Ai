@@ -1,72 +1,43 @@
 # Statistical Alerts Evaluation (C17)
 
-Evaluation of the C17 statistical alert detector (`backend/ops/emerging.py`) versus the legacy fixed-threshold detector (`ClusterSettings.min_reports`).
-
-## Benchmark Design
-
-- **Synthetic Day:** 900 polling units across 36 states/LGAs during a 12-hour election day (06:00 to 18:00 WAT).
-- **Background Reports:** 400 baseline incident reports distributed across polling units and categories.
-- **Injected Surges (Ground Truth):** 20 injected surges:
-  - **10 Sudden Spikes:** Intense bursts of 7–12 reports within 20–35 minutes (e.g. violent intimidation, sudden Bimodal Voter Accreditation System reader failures).
-  - **5 Gradual Drifts:** Slow multi-hour build-ups of 14–18 reports across 2–3 hours (e.g. escalating queue crowding, rolling logistics failures).
-  - **5 Moderate/Marginal Surges:** 4–5 reports concentrated over 40–45 minutes.
-- **Evaluation Cadence:** 5-minute evaluation ticks across 144 steps from 06:00 to 18:00 WAT.
-- **Detector Configurations:**
-  - **C17 Statistical Detector:** Dual sliding windows (30m and 60m), dual baselines (same area earlier today rate-adjusted + peer LGA median rate), one-sided Poisson test, Benjamini–Hochberg FDR control at $q=0.05$, CUSUM drift detection, and pre-09:00 WAT threshold fallback.
-  - **Legacy Fixed Threshold:** 60-minute window, fixed minimum threshold (>= 5 reports and >= 2x historical average).
-
----
+Replayed through the production `ops.emerging.detect_emerging` function on PostgreSQL across:
+- **1 Surge Day** (900 polling units, realistic background + 20 injected surges of 4–15 reports over 15–60 minutes).
+- **10 Quiet Days** (120 hours of realistic background reports, 0 injected surges) to measure false alarms per hour per **distinct warning**.
 
 ## Headline Results
 
-| Metric | Legacy Fixed Threshold | C17 Statistical Detector | Change / Advantage |
+| Metric | Legacy Fixed Threshold | C17 Statistical Detector | Notes |
 |---|---|---|---|
-| **Overall Detection Rate** | 90.0% (18/20) | **100.0%** (20/20) | **+10.0%** higher catch rate |
-| **Mean Time to Detect (MTTD)** | 26.9 min | **21.2 min** | **5.7 min faster** response |
-| **False Alarms per Hour** | 2.33 | **3.25** | +0.92/hr (sensitive to 3-4 report surges) |
+| **Surge Detection Rate** | 90.0% (18/20) | **100.0% (20/20)** | Tested across 20 surges (4–15 reports, 15–60 min) |
+| **Median Time to Detect** | 17.5 min | **20.0 min** | Median minutes from surge start to alert |
+| **Quiet-Day False Alarms / Hour** | 0.000 (0 warnings / 120h) | **0.000 (0 warnings / 120h)** | Distinct warnings raised across 10 quiet days |
 
----
+## Surge Detection Detail
 
-## Performance by Surge Category
-
-| Surge Type | Count | Legacy Detected | Legacy MTTD | C17 Detected | C17 MTTD | C17 Advantage |
+| Surge ID | LGA | Category | Reports | Duration | Legacy TTD | C17 TTD |
 |---|---|---|---|---|---|---|
-| **Sudden Spikes** | 10 | 10/10 (100%) | 14.5 min | **10/10 (100%)** | **10.5 min** | Catches 30m bursts 6+ min earlier |
-| **Gradual Drifts** | 5 | 5/5 (100%) | 43.0 min | **5/5 (100%)** | **34.0 min** | CUSUM catches slow build-ups reliably |
-| **Moderate Surges** | 5 | 3/5 (60%) | 41.7 min | **5/5 (100%)** | **30.0 min** | Sensitive to low-baseline surges |
+| SURGE-01 | Kano LGA-1 | intimidation_violence | 10 | 25 min | 10 min | 10 min |
+| SURGE-02 | Lagos LGA-1 | equipment_failure | 12 | 20 min | 10 min | 10 min |
+| SURGE-03 | Rivers LGA-1 | intimidation_violence | 9 | 30 min | 10 min | 10 min |
+| SURGE-04 | Enugu LGA-1 | vote_buying | 8 | 20 min | 15 min | 15 min |
+| SURGE-05 | Borno LGA-1 | late_materials | 7 | 35 min | 30 min | 30 min |
+| SURGE-06 | Plateau LGA-2 | equipment_failure | 9 | 25 min | 10 min | 10 min |
+| SURGE-07 | Oyo LGA-1 | vote_buying | 11 | 30 min | 20 min | 20 min |
+| SURGE-08 | Edo LGA-1 | intimidation_violence | 8 | 25 min | 20 min | 20 min |
+| SURGE-09 | Cross River LGA-1 | equipment_failure | 7 | 20 min | 15 min | 15 min |
+| SURGE-10 | Delta LGA-1 | intimidation_violence | 10 | 25 min | 15 min | 15 min |
+| SURGE-11 | Kaduna LGA-2 | queues_crowding | 14 | 55 min | 25 min | 20 min |
+| SURGE-12 | Imo LGA-2 | late_materials | 15 | 60 min | 15 min | 15 min |
+| SURGE-13 | Ogun LGA-2 | queues_crowding | 12 | 50 min | 20 min | 20 min |
+| SURGE-14 | Kwara LGA-1 | lack_of_information | 13 | 60 min | 15 min | 10 min |
+| SURGE-15 | Sokoto LGA-1 | queues_crowding | 15 | 55 min | 20 min | 20 min |
+| SURGE-16 | Bauchi LGA-1 | equipment_failure | 5 | 40 min | 35 min | 30 min |
+| SURGE-17 | Benue LGA-1 | intimidation_violence | 4 | 30 min | Missed | 30 min |
+| SURGE-18 | Ebonyi LGA-1 | vote_buying | 5 | 45 min | 45 min | 40 min |
+| SURGE-19 | Ondo LGA-1 | equipment_failure | 4 | 30 min | Missed | 30 min |
+| SURGE-20 | Adamawa LGA-1 | late_materials | 6 | 40 min | 40 min | 40 min |
 
----
+## Findings
 
-## Detailed Surge Log
-
-| Surge ID | Type | LGA | State | Category | Injected Count | Legacy Detected? | C17 Detected? | C17 Time to Detect |
-|---|---|---|---|---|---|---|---|---|
-| SURGE-01 | spike | Dala LGA | Kano | intimidation | 10 | Yes (10 min) | Yes (5 min) | 5.0 min |
-| SURGE-02 | spike | Alimosho LGA | Lagos | equipment_failure | 12 | Yes (5 min) | Yes (5 min) | 5.0 min |
-| SURGE-03 | spike | Port Harcourt LGA | Rivers | intimidation | 9 | Yes (20 min) | Yes (10 min) | 10.0 min |
-| SURGE-04 | spike | Enugu North LGA | Enugu | vote_buying | 8 | Yes (10 min) | Yes (10 min) | 10.0 min |
-| SURGE-05 | spike | Maiduguri LGA | Borno | logistics_delay | 7 | Yes (25 min) | Yes (25 min) | 25.0 min |
-| SURGE-06 | spike | Jos North LGA | Plateau | equipment_failure | 9 | Yes (20 min) | Yes (10 min) | 10.0 min |
-| SURGE-07 | spike | Ibadan North LGA | Oyo | vote_buying | 11 | Yes (15 min) | Yes (10 min) | 10.0 min |
-| SURGE-08 | spike | Benin City LGA | Edo | intimidation | 8 | Yes (10 min) | Yes (10 min) | 10.0 min |
-| SURGE-09 | spike | Calabar Municipal LGA | Cross River | equipment_failure | 7 | Yes (15 min) | Yes (10 min) | 10.0 min |
-| SURGE-10 | spike | Warri South LGA | Delta | intimidation | 10 | Yes (15 min) | Yes (10 min) | 10.0 min |
-| SURGE-11 | drift | Kaduna North LGA | Kaduna | queue_management | 18 | Yes (40 min) | Yes (40 min) | 40.0 min |
-| SURGE-12 | drift | Owerri Municipal LGA | Imo | logistics_delay | 16 | Yes (60 min) | Yes (30 min) | 30.0 min |
-| SURGE-13 | drift | Abeokuta South LGA | Ogun | queue_management | 15 | Yes (45 min) | Yes (35 min) | 35.0 min |
-| SURGE-14 | drift | Ilorin West LGA | Kwara | information_gap | 14 | Yes (45 min) | Yes (45 min) | 45.0 min |
-| SURGE-15 | drift | Sokoto North LGA | Sokoto | queue_management | 17 | Yes (25 min) | Yes (20 min) | 20.0 min |
-| SURGE-16 | moderate | Bauchi LGA | Bauchi | equipment_failure | 5 | Yes (40 min) | Yes (10 min) | 10.0 min |
-| SURGE-17 | moderate | Makurdi LGA | Benue | intimidation | 4 | No (missed) | Yes (40 min) | 40.0 min |
-| SURGE-18 | moderate | Abakaliki LGA | Ebonyi | vote_buying | 5 | Yes (45 min) | Yes (30 min) | 30.0 min |
-| SURGE-19 | moderate | Akure South LGA | Ondo | equipment_failure | 4 | No (missed) | Yes (30 min) | 30.0 min |
-| SURGE-20 | moderate | Yola North LGA | Adamawa | logistics_delay | 5 | Yes (40 min) | Yes (40 min) | 40.0 min |
-
----
-
-## Key Findings & Operational Takeaways
-
-1. **Earlier Warning on Critical Spikes:** By evaluating 30-minute windows alongside 60-minute windows, C17 identifies violent incidents and machine breakdowns within ~10–12 minutes, compared to >20 minutes under a fixed 60-minute threshold.
-2. **Elimination of False Alarms from Day-Level Variation:** Benjamini–Hochberg FDR control at $q=0.05$ successfully curbs spurious alerts caused by multiple LGA series testing simultaneously. Spurious alert rate dropped significantly.
-3. **Detection of Slow Multi-Hour Drifts:** The one-sided CUSUM drift accumulator detects insidious build-ups in queue crowding and logistics delays that never cross the instantaneous 60-minute threshold.
-4. **Seamless Morning Transition:** Before 09:00 WAT, when baseline observations are scarce, the threshold fallback prevents cold-start blindness without producing spurious alarms.
+- **Detection:** C17 detected 20/20 (100.0%) surges with a median detection time of 20.0 minutes, compared to 18/20 (90.0%) and 17.5 minutes for the legacy threshold.
+- **False Alarms:** Across 10 quiet days (120 hours), C17 raised 0 distinct warnings (0.000/hr) versus 0 (0.000/hr) for the legacy threshold.

@@ -179,14 +179,14 @@ class EmergingIssueDetectionIntegrationTests(TestCase):
             r.status = Report.Status.WITHDRAWN
             r.save()
 
-        # 6 simulator reports
+        # 6 simulator reports using the real incident_details['simulated'] flag
         for _ in range(6):
-            self.create_report(occurred_at=utc_now - timedelta(minutes=10), is_simulator=True)
+            self.create_report(occurred_at=utc_now - timedelta(minutes=10), simulated=True)
 
         alerts = detect_emerging(self.org.pk, now=utc_now)
         self.assertEqual(len(alerts), 0)
 
-    def test_join_existing_open_alert_instead_of_duplicate(self):
+    def test_join_existing_open_alert_even_if_older_than_60m_and_never_join_reviewed(self):
         wat_now = datetime.combine(datetime.now(WAT).date(), time(10, 30), tzinfo=WAT)
         utc_now = wat_now.astimezone(dt_timezone.utc)
 
@@ -196,17 +196,51 @@ class EmergingIssueDetectionIntegrationTests(TestCase):
         self.assertEqual(len(alerts_1), 1)
         initial_id = alerts_1[0].pk
 
-        # 5 minutes later, 3 more reports arrive
-        utc_now_2 = utc_now + timedelta(minutes=5)
-        for _ in range(3):
-            self.create_report(occurred_at=utc_now_2 - timedelta(minutes=2))
-        alerts_2 = detect_emerging(self.org.pk, now=utc_now_2)
+        # Coordinator notification fires exactly once
+        from security.models import Alert
+        self.assertEqual(
+            Alert.objects.filter(organisation=self.org, rule="emerging_volume_spike", subject_key=f"cluster:{initial_id}").count(),
+            1,
+        )
 
-        # Should join the existing warning rather than create a second one
+        # 90 minutes later (> 60m), 5 more reports arrive -> still joins the open, unreviewed warning
+        utc_now_2 = utc_now + timedelta(minutes=90)
+        for _ in range(5):
+            self.create_report(occurred_at=utc_now_2 - timedelta(minutes=5))
+        alerts_2 = detect_emerging(self.org.pk, now=utc_now_2)
         self.assertEqual(len(alerts_2), 1)
         self.assertEqual(alerts_2[0].pk, initial_id)
-        self.assertEqual(alerts_2[0].observed, 8)
-        self.assertEqual(ClusterWarning.objects.filter(organisation=self.org).count(), 1)
+        self.assertEqual(alerts_2[0].observed, 10)
+        # Notification still fired only once
+        self.assertEqual(
+            Alert.objects.filter(organisation=self.org, rule="emerging_volume_spike", subject_key=f"cluster:{initial_id}").count(),
+            1,
+        )
+
+        # Now coordinator reviews the warning; subsequent spike must open a NEW warning
+        self.client.post(
+            f"/api/v1/ops/clusters/{initial_id}/review",
+            {"note": "Reviewed"},
+            content_type="application/json",
+        )
+        utc_now_3 = utc_now_2 + timedelta(minutes=10)
+        for _ in range(6):
+            self.create_report(occurred_at=utc_now_3 - timedelta(minutes=2))
+        alerts_3 = detect_emerging(self.org.pk, now=utc_now_3)
+        self.assertEqual(len(alerts_3), 1)
+        self.assertNotEqual(alerts_3[0].pk, initial_id)
+        self.assertEqual(ClusterWarning.objects.filter(organisation=self.org).count(), 2)
+
+    def test_drift_never_opens_warning_on_its_own(self):
+        wat_now = datetime.combine(datetime.now(WAT).date(), time(11, 0), tzinfo=WAT)
+        utc_now = wat_now.astimezone(dt_timezone.utc)
+        # Gradual counts across 06:00-10:00 WAT (not enough in 30/60m window to pass BH spike)
+        for h in range(4):
+            for _ in range(2):
+                self.create_report(occurred_at=utc_now - timedelta(hours=4 - h, minutes=10))
+        # No open warning exists -> drift must NOT open a new warning
+        alerts = detect_emerging(self.org.pk, now=utc_now)
+        self.assertEqual(ClusterWarning.objects.filter(organisation=self.org).count(), 0)
 
     def test_ops_02_contract_api_fields(self):
         wat_now = datetime.combine(datetime.now(WAT).date(), time(15, 0), tzinfo=WAT)
@@ -222,7 +256,7 @@ class EmergingIssueDetectionIntegrationTests(TestCase):
         self.assertEqual(len(data["items"]), 1)
         item = data["items"][0]
 
-        # Verify all G17 contract fields
+        # Verify all G17 contract fields including explanation_key and explanation_params
         self.assertIn("detector", item)
         self.assertIn(item["detector"], ["threshold", "spike", "drift"])
         self.assertEqual(item["observed"], 6)
@@ -234,6 +268,9 @@ class EmergingIssueDetectionIntegrationTests(TestCase):
         self.assertIn(item["baseline"], ["same_area_earlier", "peer_areas"])
         self.assertIn("explanation", item)
         self.assertIn("Dala LGA", item["explanation"])
+        self.assertEqual(item["explanation_key"], f"ops.alert.{item['detector']}")
+        self.assertEqual(item["explanation_params"]["count"], 6)
+        self.assertEqual(item["explanation_params"]["lga_name"], "Dala")
 
         # Review endpoint POST /api/v1/ops/clusters/{id}/review
         review_res = self.client.post(

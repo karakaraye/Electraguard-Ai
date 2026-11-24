@@ -42,6 +42,7 @@ class ClusterWarning(OrganisationOwned):
     explanation = models.TextField(blank=True, default="")
     window_start = models.DateTimeField()
     window_end = models.DateTimeField()
+    notified_at = models.DateTimeField(null=True, blank=True)
     reviewed_at = models.DateTimeField(null=True)
     reviewed_by = models.CharField(max_length=254, blank=True)
 

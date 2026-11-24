@@ -34,8 +34,11 @@ def detect(org_id, now):
 
 
 def warning_json(warning):
+    detector = getattr(warning, "detector", None) or "threshold"
     baseline_kind = getattr(warning, "baseline_kind", None)
-    if not baseline_kind or baseline_kind == "threshold":
+    if detector == "threshold" or baseline_kind == "threshold":
+        baseline_str = None
+    elif not baseline_kind:
         baseline_str = "same_area_earlier"
     else:
         baseline_str = str(baseline_kind)
@@ -51,13 +54,12 @@ def warning_json(warning):
     q_val = getattr(warning, "q_value", None)
     q_val = round(float(q_val), 4) if q_val is not None else None
 
-    detector = getattr(warning, "detector", None) or "threshold"
     win_min = getattr(warning, "window_minutes", None) or 60
+    lga_name = (warning.area or {}).get("lga_name") or warning.lga_code
 
     explanation = getattr(warning, "explanation", "") or ""
     if not explanation:
         cat_display = warning.category.replace("_", " ")
-        lga_name = (warning.area or {}).get("lga_name") or warning.lga_code
         exp_disp = round(expected, 1)
         if exp_disp.is_integer():
             exp_disp = int(exp_disp)
@@ -76,6 +78,14 @@ def warning_json(warning):
         "window_minutes": win_min,
         "baseline": baseline_str,
         "explanation": explanation,
+        "explanation_key": f"ops.alert.{detector}",
+        "explanation_params": {
+            "count": observed,
+            "category": warning.category,
+            "lga_name": lga_name,
+            "window_minutes": win_min,
+            "expected": expected,
+        },
         "window_start": wat(warning.window_start),
         "window_end": wat(warning.window_end),
         "report_ids": warning.report_ids,

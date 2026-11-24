@@ -7,7 +7,13 @@ Branch `backend/c17-emerging-alerts`, on top of `backend/c16-redaction`. Backend
 **Statistical Detection Engine (`backend/ops/emerging.py`).**
 - Ported statistical surge detection concepts from Trace (`incidents/EmergingIssueDetector.java`, `incidents/IncidentGrouper.java`, `incidents/DetectionStats.java`) into Python/Django.
 - Replaces the single static threshold (`ClusterSettings.min_reports` and `window_minutes`) with a dynamic statistical detector:
-  - **Dual sliding windows:** Evaluates both 30-minute and 60-minute windows simultaneously per `category x LGA` (with ward tracked internally).
+- **Dual sliding windows:** Evaluates both 30-minute and 60-minute windows simultaneously per `category x LGA`.
+- **False Discovery Rate Control:** Runs the Poisson tail test on every series × window with at least 1 report, applies Benjamini–Hochberg at $q=0.05$ across the full family, and then requires `observed >= 3` and `q_value <= 0.05`.
+- **CUSUM Drift:** Runs over completed hours starting at 06:00 WAT (excluding the partial current hour) using baseline (a) as the reference mean. Drift only adds evidence to an already open, unreviewed `ClusterWarning` and never opens one on its own.
+- **Joining & Notification:** Joins only open, unreviewed warnings (`reviewed_at__isnull=True`) for the same `(organisation, category, lga_code)` regardless of age. Notifies coordinators once per warning via `security.models.Alert` (`rule="emerging_volume_spike"`).
+- **Exclusions:** Excludes withdrawn reports and simulated reports (`incident_details["simulated"]`).
+- **Contract OPS-02:** Returns `detector`, `observed`, `expected`, `p_value`, `q_value`, `window_minutes`, `baseline` (`null` for `threshold`), `explanation`, `explanation_key`, and `explanation_params`.
+- **Legacy test behaviour:** `test_observations.py` freezes time to 08:30 WAT (pre-09:00 fallback) and asserts the G17 schema (`expected: 0.14`, `baseline: null`, `detector: "threshold"`).
   - **Dual baselines:** Compares observed volume against two baselines:
     1. `same_area_earlier`: The same LGA's rate-adjusted count from earlier hours today (since 06:00 WAT election start).
     2. `peer_areas`: The median count in the same window across peer LGAs in the same state right now.
