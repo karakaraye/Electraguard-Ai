@@ -101,6 +101,17 @@ services:
       - -ec
       - python manage.py migrate --check && exec python manage.py run_triage
 
+  media-worker:
+    <<: *django
+    environment: *django-environment
+    volumes:
+      - private-media:/var/lib/electraguard/media
+    restart: unless-stopped
+    command:
+      - /bin/sh
+      - -ec
+      - python manage.py migrate --check && exec python manage.py run_media
+
   frontend:
     image: electraguard-frontend:${ELECTRAGUARD_RELEASE:?Set ELECTRAGUARD_RELEASE}
     build:

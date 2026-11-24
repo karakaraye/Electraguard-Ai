@@ -120,8 +120,10 @@ class OcrEndpointTests(TestCase):
         detail = self.client.get(f"/api/v1/reports/{report.pk}").json()
         self.assertNotIn("result_flags", detail)
         downloaded = self.client.get(f"/api/v1/media/{evidence.pk}/content")
-        self.assertEqual(downloaded.status_code, 200, downloaded.content)
-        self.assertEqual(sha256(downloaded.content).hexdigest(), evidence.sha256)
+        self.assertEqual(downloaded.status_code, 200)
+        # MED-04 streams stored files (C12), so read the streamed body.
+        content = b"".join(downloaded.streaming_content) if downloaded.streaming else downloaded.content
+        self.assertEqual(sha256(content).hexdigest(), evidence.sha256)
         reuse = self.post(self.sheet(ocr_id))
         self.assertEqual(reuse.json()["error"]["fields"]["result_sheet.ocr_id"]["code"], "invalid")
         self.assertEqual(MediaItem.objects.count(), 1)

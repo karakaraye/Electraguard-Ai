@@ -169,20 +169,48 @@ class ReportIdempotency(OrganisationOwned):
 
 
 class MediaItem(OrganisationOwned):
+    class Kind(models.TextChoices):
+        PHOTO = "photo", "Photo"
+        VIDEO = "video", "Video"
+        AUDIO = "audio", "Audio"
+
+    class Status(models.TextChoices):
+        PROCESSING = "processing", "Processing"
+        READY = "ready", "Ready"
+        FAILED = "failed", "Failed"
+
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     report = models.ForeignKey(Report, related_name="media_items", on_delete=models.CASCADE)
     purpose = models.CharField(max_length=12)
+    kind = models.CharField(max_length=8, choices=Kind.choices, default=Kind.PHOTO)
+    status = models.CharField(max_length=12, choices=Status.choices, default=Status.READY)
+    # The verified upload's declared type, used only while the original is kept for processing.
+    content_type = models.CharField(max_length=32, blank=True)
     size_bytes = models.PositiveIntegerField()
+    duration_ms = models.PositiveIntegerField(null=True)
     original_sha256 = models.CharField(max_length=64)
+    # Empty until processing has produced the cleaned file.
     sha256 = models.CharField(max_length=64)
+    blur_requested = models.BooleanField(default=False)
+    # The stored file has had automatic face blur applied and no unblurred copy is kept.
     blurred = models.BooleanField(default=False)
+    # A separate face-blurred copy exists for reviewers; the stored file is unblurred.
+    review_copy = models.BooleanField(default=False)
     exif_removed = models.BooleanField(default=True)
+    transcript = models.TextField(null=True)
+    transcript_status = models.CharField(max_length=24, blank=True)
+    transcript_language = models.CharField(max_length=8, blank=True)
+    transcript_method = models.CharField(max_length=64, blank=True)
+    attempts = models.PositiveSmallIntegerField(default=0)
+    claimed_at = models.DateTimeField(null=True)
+    failure_code = models.CharField(max_length=32, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         constraints = [
             models.UniqueConstraint(fields=["report", "original_sha256"], name="report_unique_media_hash")
         ]
+        indexes = [models.Index(fields=["status", "created_at"], name="media_processing_queue")]
 
 
 class UploadSession(OrganisationOwned):
@@ -195,6 +223,8 @@ class UploadSession(OrganisationOwned):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     report = models.ForeignKey(Report, related_name="media_uploads", on_delete=models.CASCADE)
     client_attachment_id = models.CharField(max_length=64)
+    kind = models.CharField(max_length=8, default="photo")
+    duration_ms = models.PositiveIntegerField(null=True)
     content_type = models.CharField(max_length=32)
     purpose = models.CharField(max_length=12)
     size_bytes = models.PositiveIntegerField()
