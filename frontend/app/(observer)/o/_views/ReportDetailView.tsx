@@ -7,7 +7,7 @@ import type { Category, MessageKind, QuestionState, ReportKind } from "../../../
 import { useLocale, useT } from "../../../../lib/i18n/client";
 import { AppShell, Banner, Button, ButtonLink, Sheet, StatusBadge, TextArea, UploadItem, UploadList, type ReportStatus, type StatusTone, type UploadState } from "../../../../ui";
 import { formatWatDateTime } from "../../../../ui/format";
-import { categoryPictograms, ClockIcon, ImageIcon, PlaceIcon } from "../../../../ui/icons";
+import { categoryPictograms, CheckIcon, ClockIcon, ImageIcon, PlaceIcon } from "../../../../ui/icons";
 import { categoryMeta } from "../_lib/categories";
 import { ChecklistPictogram, SheetPictogram } from "../_components/pictograms";
 import styles from "../_components/observer.module.css";
@@ -181,6 +181,55 @@ export function ReportDetailView(props: ReportDetailViewProps) {
   }
 
   const questionOpen = Boolean(props.question) && props.replyState !== "sent";
+
+  // Visual Refresh: 4-stage status journey (09-report-detail.png)
+  const isReceived = status !== "on-phone" && status !== "sending";
+  const isInReview = status === "in-review" || status === "question" || Boolean(props.question);
+  const hasQuestion = Boolean(props.question);
+  const isClosed = status === "closed" || status === "withdrawn";
+
+  const statusJourney = (
+    <div className={s.statusJourney} aria-label="Report progress">
+      <div className={s.journeyStep} data-passed={isReceived ? "true" : undefined}>
+        <span className={`${s.journeyNode} ${s.journeyNodeDone}`}>
+          <CheckIcon size={16} />
+        </span>
+        <span className={s.journeyLabel}>{t("o14.journey.received") || "Received"}</span>
+      </div>
+
+      <div
+        className={s.journeyStep}
+        data-passed={isInReview || isClosed ? "true" : undefined}
+        data-active={status === "in-review" && !hasQuestion ? "true" : undefined}
+        data-inactive={!isInReview && !isClosed ? "true" : undefined}
+      >
+        <span className={`${s.journeyNode} ${isInReview || isClosed ? s.journeyNodeReview : s.journeyNodePending}`}>
+          <ClockIcon size={14} />
+        </span>
+        <span className={s.journeyLabel}>{t("o14.journey.inReview") || "In review"}</span>
+      </div>
+
+      <div
+        className={s.journeyStep}
+        data-passed={isClosed ? "true" : undefined}
+        data-active={hasQuestion && !isClosed ? "true" : undefined}
+        data-inactive={!hasQuestion && !isClosed ? "true" : undefined}
+      >
+        <span className={`${s.journeyNode} ${hasQuestion ? s.journeyNodeDiamond : s.journeyNodePending}`}>
+          <span />
+        </span>
+        <span className={s.journeyLabel}>{t("o14.journey.question") || "Question for you"}</span>
+      </div>
+
+      <div className={s.journeyStep} data-passed={isClosed ? "true" : undefined} data-inactive={!isClosed ? "true" : undefined}>
+        <span className={`${s.journeyNode} ${isClosed ? s.journeyNodeDone : s.journeyNodePending}`}>
+          {isClosed ? <CheckIcon size={16} /> : null}
+        </span>
+        <span className={s.journeyLabel}>{t("o14.journey.closed") || "Closed"}</span>
+      </div>
+    </div>
+  );
+
   const statusBlock = (
     <div className={s.statusBlock}>
       <StatusBadge status={status} size="lg" />
@@ -199,17 +248,11 @@ export function ReportDetailView(props: ReportDetailViewProps) {
   );
 
   const questionBlock = props.question ? (
-    <section className={s.question} aria-labelledby="o14-question" data-testid="o14-question">
-      <h2 className={s.questionHead} id="o14-question" tabIndex={-1}>
-        <Diamond />
-        {t("o14.question.title")}
+    <section className={s.reviewerCard} aria-labelledby="o14-question" data-testid="o14-question">
+      <span className={s.reviewerTag}>{t("o14.reviewerQuestion") || "REVIEWER QUESTION"}</span>
+      <h2 className={s.reviewerQuestionPrompt} id="o14-question" tabIndex={-1}>
+        {props.question.body}
       </h2>
-      {props.question.body ? (
-        <>
-          <p className={s.questionBody}>{props.question.body}</p>
-          <p className={styles.meta}>{t("o14.question.asked", { time: when(props.question.askedAt, locale) })}</p>
-        </>
-      ) : null}
       {props.replyState === "sent" ? (
         <p className={styles.tag} role="status" data-testid="o14-reply-sent">
           {t("o14.question.sent")}
@@ -218,6 +261,7 @@ export function ReportDetailView(props: ReportDetailViewProps) {
         <>
           <TextArea
             label={t("o14.question.replyLabel")}
+            placeholder={t("o14.question.replyPlaceholder") || "Write your answer"}
             value={props.reply}
             onChange={(event) => props.onReply(event.target.value)}
             maxLength={2000}
@@ -237,14 +281,62 @@ export function ReportDetailView(props: ReportDetailViewProps) {
               }
             />
           ) : (
-            <Button block loading={props.replyState === "sending"} loadingLabel={t("o14.question.sending")} onClick={props.onSendReply} data-testid="o14-reply-send">
-              {t("o14.question.send")}
+            <Button
+              block
+              loading={props.replyState === "sending"}
+              loadingLabel={t("o14.question.sending")}
+              onClick={props.onSendReply}
+              data-testid="o14-reply-send"
+            >
+              {t("o14.sendReply") || t("o14.question.send") || "Send reply"}
             </Button>
           )}
         </>
       )}
     </section>
   ) : null;
+
+  const firstAttachment = props.attachments[0];
+
+  const yourReportCard = (
+    <section className={s.yourReportCard} aria-labelledby="o14-your-report">
+      <span className={s.yourReportTag}>{t("o14.yourReport") || "YOUR REPORT"}</span>
+      <div className={s.yourReportBody}>
+        <div className={s.yourReportContent}>
+          {props.description !== null ? (
+            <p className={s.yourReportText}>{props.description}</p>
+          ) : props.answers?.length ? (
+            <dl className={s.facts}>
+              {props.answers.map((answer) => (
+                <Fact key={answer.label} label={answer.label} value={answer.value} />
+              ))}
+            </dl>
+          ) : (
+            <p className={styles.note} data-testid="o14-not-kept">
+              {t("o14.contentNotKept")}
+            </p>
+          )}
+          {props.place ? (
+            <p className={`${styles.meta} ${styles.valueRow}`} style={{ marginTop: "var(--s-2)" }}>
+              <PlaceIcon size={16} aria-hidden="true" />
+              {props.place}
+            </p>
+          ) : null}
+        </div>
+
+        {firstAttachment ? (
+          <div className={s.mediaThumbBox}>
+            <div className={s.mediaThumbImg} style={{ display: "grid", placeItems: "center" }}>
+              <ImageIcon size={32} />
+            </div>
+            <span className={s.mediaThumbPill}>
+              {t("o14.locationRemoved") || "Location removed"}
+            </span>
+          </div>
+        ) : null}
+      </div>
+    </section>
+  );
 
   const details = (
     <section aria-labelledby="o14-details" className={styles.tight}>
@@ -417,10 +509,20 @@ export function ReportDetailView(props: ReportDetailViewProps) {
     <>
       {shell(
         <div className={`${styles.screen} ${styles.wide}`}>
-          <h1 className={styles.title}>{title}</h1>
+          <div className={s.detailHeader}>
+            <h1 className={s.detailTitle}>{title}</h1>
+            <p className={s.detailSubtitle}>
+              {props.place ? `${props.place} · ` : ""}
+              {when(props.observedAt ?? props.receivedAt, locale)}
+            </p>
+          </div>
+
+          {statusJourney}
+
           <div className={s.detail}>
             <div className={s.column}>
               {questionBlock}
+              {yourReportCard}
               {statusBlock}
               {details}
               {attachments}

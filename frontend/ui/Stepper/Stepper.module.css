@@ -1,20 +1,23 @@
 .stepper {
-  display: grid;
+  display: flex;
+  flex-direction: column-reverse;
   gap: var(--s-2);
-  margin-bottom: var(--s-5);
+  margin-bottom: var(--s-4);
 }
 
 .text {
   margin: 0;
+  text-align: right;
   color: var(--ink-2);
   font: var(--t-label);
+  font-size: 0.9375rem;
   letter-spacing: var(--t-label-tracking);
 }
 
 .track {
   height: 3px;
   border-radius: 2px;
-  background: var(--rule);
+  background: var(--rule, #e8e3d8);
   overflow: hidden;
 }
 

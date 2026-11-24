@@ -6,7 +6,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import type { MissingMaterial, QueueSize, YesNoNotSeen } from "../../../../lib/api/types";
 import { useLocale, useT } from "../../../../lib/i18n/client";
-import { AppShell, Banner, Button, Field, Sheet, StatusBadge, type ReportStatus } from "../../../../ui";
+import { AppShell, Banner, Button, Field, PollingDayIllustration, Sheet } from "../../../../ui";
 import { formatWatTime } from "../../../../ui/format";
 import { CheckIcon, ChevronRightIcon, PlaceIcon } from "../../../../ui/icons";
 import { MATERIALS, QUESTIONS, QUEUE_SIZES, type StageAnswers, type StageSlug } from "../_lib/checklist";
@@ -17,52 +17,105 @@ import s from "../_components/screens.module.css";
 
 export type StageState = "notStarted" | "draft" | "onPhone" | "needsAttention" | "received";
 
-const STATE_BADGE: Record<Exclude<StageState, "notStarted">, ReportStatus> = {
-  draft: "on-phone",
-  onPhone: "on-phone",
-  needsAttention: "needs-attention",
-  received: "received",
+const STAGE_TIMES: Record<StageSlug, string> = {
+  arrival: "07:00",
+  opening: "07:30",
+  accreditation: "08:30",
+  voting: "now",
+  closing: "14:00",
+  results: "16:00",
+};
+
+const STAGE_HINTS: Record<StageSlug, string> = {
+  arrival: "Record your arrival and polling unit",
+  opening: "Poll opening and materials check",
+  accreditation: "Voter accreditation and device check",
+  voting: "People are casting their votes",
+  closing: "Expected around 14:00",
+  results: "Consistency check, not a result\nExpected around 16:00",
 };
 
 export type ChecklistListViewProps = {
   offline: boolean;
   stages: Array<{ slug: StageSlug; state: StageState; receivedAt?: string | null; href: string }>;
+  unitLabel?: string | null;
   onBack: () => void;
 };
 
-export function ChecklistListView({ offline, stages, onBack }: ChecklistListViewProps) {
+export function ChecklistListView({ offline, stages, unitLabel, onBack }: ChecklistListViewProps) {
   const t = useT();
   const { locale } = useLocale();
+
+  const doneCount = stages.filter((stage) => stage.state === "received").length;
+  // Progress along the arc: 0 to 1
+  const progress = stages.length > 0 ? (doneCount + 0.5) / stages.length : 0.45;
+  const activeIndex = stages.findIndex((stage) => stage.state !== "received");
+
   return (
     <AppShell title={t("o15.title")} onBack={onBack} offline={offline} data-testid="o15">
       <div className={styles.screen}>
-        <h1 className={styles.title}>{t("o15.title")}</h1>
-        <p className={styles.lead}>{t("o15.hint")}</p>
-        <ol className={s.stageList} aria-label={t("o15.title")}>
-          {stages.map((stage) => (
-            <li key={stage.slug}>
-              <Link href={stage.href} className={s.stageRow} data-done={stage.state === "received" || undefined} data-testid={`o15-stage-${stage.slug}`}>
-                <span className={s.stageMain}>
-                  <span className={s.stageName}>{t(`o15.stage.${stage.slug}`)}</span>
-                  {stage.state === "notStarted" ? (
-                    <span className={styles.meta}>{t("o15.stageState.notStarted")}</span>
-                  ) : (
-                    <StatusBadge
-                      status={STATE_BADGE[stage.state]}
-                      label={
-                        stage.state === "received" && stage.receivedAt
-                          ? t("o15.received", { time: formatWatTime(stage.receivedAt, locale) })
-                          : stage.state === "draft"
-                            ? t("o15.stageState.draft")
-                            : undefined
-                      }
-                    />
-                  )}
-                </span>
-                <ChevronRightIcon aria-hidden="true" />
-              </Link>
-            </li>
-          ))}
+        <div className={s.checklistHeader}>
+          <h1 className={s.checklistTitle}>{t("o15.title")}</h1>
+          <p className={s.checklistSubtitle}>
+            {unitLabel ? `${unitLabel} · ` : ""}
+            {doneCount} of {stages.length} stages done
+          </p>
+        </div>
+
+        <PollingDayIllustration progress={progress} />
+
+        <ol className={s.checklistTimeline} aria-label={t("o15.title")}>
+          {stages.map((stage, idx) => {
+            const isDone = stage.state === "received";
+            const isActive = idx === activeIndex;
+            const timeStr = isDone
+              ? stage.receivedAt
+                ? formatWatTime(stage.receivedAt, locale)
+                : STAGE_TIMES[stage.slug]
+              : isActive
+                ? "now"
+                : null;
+
+            return (
+              <li key={stage.slug}>
+                <Link
+                  href={stage.href}
+                  className={s.timelineRow}
+                  data-done={isDone || undefined}
+                  data-testid={`o15-stage-${stage.slug}`}
+                >
+                  <span className={s.timelineMarker}>
+                    {isDone ? (
+                      <span className={`${s.timelineMarker} ${s.timelineMarkerDone}`}>
+                        <CheckIcon size={16} />
+                      </span>
+                    ) : isActive ? (
+                      <span className={`${s.timelineMarker} ${s.timelineMarkerActive}`} />
+                    ) : (
+                      <span className={`${s.timelineMarker} ${s.timelineMarkerPending}`} />
+                    )}
+                  </span>
+
+                  <span className={s.timelineBody}>
+                    <span className={s.timelineStageTitle}>
+                      {t(`o15.stage.${stage.slug}`)}
+                      {timeStr ? ` · ${timeStr}` : ""}
+                    </span>
+
+                    <p className={s.timelineStageHint}>
+                      {isDone ? t("o15.stageState.received") || "Received" : STAGE_HINTS[stage.slug]}
+                    </p>
+
+                    {isActive && (
+                      <span className={s.timelineCta}>
+                        {t("o15.answerQuestions") || `Answer ${QUESTIONS[stage.slug]?.length ?? 4} questions`} &rarr;
+                      </span>
+                    )}
+                  </span>
+                </Link>
+              </li>
+            );
+          })}
         </ol>
       </div>
     </AppShell>

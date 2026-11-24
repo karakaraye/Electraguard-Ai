@@ -17,11 +17,12 @@ export type FieldFrameProps = {
   className?: string;
   /** Extra content under the control (character count). */
   footer?: ReactNode;
+  "data-testid"?: string;
   children: (control: { id: string; describedBy: string | undefined; invalid: boolean }) => ReactNode;
 };
 
 /** Label above, hint below the label, control, then error with an icon. */
-export function FieldFrame({ label, hint, error, optional, id, className, footer, children }: FieldFrameProps) {
+export function FieldFrame({ label, hint, error, optional, id, className, footer, "data-testid": testId, children }: FieldFrameProps) {
   const t = useT();
   const autoId = useId();
   const controlId = id ?? `f${autoId}`;
@@ -29,7 +30,12 @@ export function FieldFrame({ label, hint, error, optional, id, className, footer
   const errorId = error ? `${controlId}-error` : undefined;
   const describedBy = [hintId, errorId].filter(Boolean).join(" ") || undefined;
   return (
-    <div className={`${styles.field} ${className ?? ""}`} data-invalid={error ? "" : undefined}>
+    <div
+      className={`${styles.field} ${className ?? ""}`}
+      data-invalid={error ? "" : undefined}
+      aria-invalid={error ? "true" : undefined}
+      data-testid={testId}
+    >
       <label className={styles.label} htmlFor={controlId}>
         {label}
         {optional ? <span className={styles.optional}> ({t("ui.optional")})</span> : null}

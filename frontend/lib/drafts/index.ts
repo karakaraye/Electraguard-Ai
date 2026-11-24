@@ -200,9 +200,11 @@ export function useDraft(owner: string | null, mode: IncidentDraft["mode"], lang
       if (document.visibilityState === "hidden") void flush();
     };
     window.addEventListener("pagehide", flush);
+    window.addEventListener("beforeunload", flush);
     document.addEventListener("visibilitychange", onHide);
     return () => {
       window.removeEventListener("pagehide", flush);
+      window.removeEventListener("beforeunload", flush);
       document.removeEventListener("visibilitychange", onHide);
       void flush();
     };
@@ -217,8 +219,12 @@ export function useDraft(owner: string | null, mode: IncidentDraft["mode"], lang
       current.current = next;
       setDraft(next);
       pending.current = next;
-      // Never push the write back: the latest value reaches the phone within 250 ms of the first change.
-      if (timer.current === undefined) {
+      // Discrete choices save immediately so navigation/reload never loses them.
+      // Text description typing uses debounce.
+      const isTextOnly = "description" in changes && Object.keys(changes).length === 1;
+      if (!isTextOnly) {
+        void flush();
+      } else if (timer.current === undefined) {
         timer.current = window.setTimeout(() => {
           timer.current = undefined;
           void flush();

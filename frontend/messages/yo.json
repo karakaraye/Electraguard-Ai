@@ -225,7 +225,17 @@
     "listen": "Gbọ́ èyí",
     "privacyLink": "Ka ìkéde ìpamọ́ ní kíkún",
     "continue": "Ó yé mi",
-    "line5": "Tí o bá lo Sọ̀rọ̀, iṣẹ́ ìsọ̀rọ̀ fóònù rẹ lè ṣe ohùn rẹ láti sọ ọ́ di ọ̀rọ̀."
+    "line5": "Tí o bá lo Sọ̀rọ̀, iṣẹ́ ìsọ̀rọ̀ fóònù rẹ lè ṣe ohùn rẹ láti sọ ọ́ di ọ̀rọ̀.",
+    "reportTitle": "Se o ri nkan kan? Jabo re.",
+    "reportLead": "So fun wa ohun ti o sele ni ibudo idibo re.",
+    "safeTitle": "O wa ni aabo.",
+    "safeLine1": "A kii beere oruko re lae.",
+    "safeLine2": "A n yo ibi ti o wa kuro ninu awon foto re.",
+    "safeLine3": "A le bo awon oju.",
+    "offlineTitle": "O n sise laisi intaneti.",
+    "offlineLead": "Ijabo re yoo duro lailewu lori foonu re yoo si fi ara re ranse nigbati netiwooki ba pada.",
+    "next": "Itele",
+    "skip": "Rekoja"
   },
   "o03": {
     "title": "Ta ni ọ́?",
@@ -277,7 +287,9 @@
       "clearTitle": "Ṣé kí a pa àwọn ìròyìn wọ̀nyí rẹ́ lórí fóònù yìí?",
       "clearBody": "A kò fi wọ́n ránṣẹ́ rí. Tí o bá pa wọ́n rẹ́, wọn yóò lọ pátápátá. A kò lè dá wọn padà.",
       "clearConfirm": "Pa àwọn ìròyìn rẹ́"
-    }
+    },
+    "chooseTitle": "Bawo ni iwo yoo se kopa?",
+    "stepCount": "4 ninu 4"
   },
   "o04": {
     "title": "Ilé",
@@ -314,7 +326,10 @@
     "fix": "Tún un ṣe",
     "purpose": "Ròyìn ohun tí o rí ní ibùdó ìdìbò rẹ. Gbogbo ìròyìn ń ràn wá lọ́wọ́ láti kọ́ Nàìjíríà tó dára jù.",
     "tasks": "Ohun tí o lè ṣe",
-    "allReports": "Wo gbogbo ìròyìn mi"
+    "allReports": "Wo gbogbo ìròyìn mi",
+    "greeting": "E kaaro",
+    "heroSubtitle": "Sọ ohun ti o ri ni ibudo idibo rẹ fun wa",
+    "checklistStages": "Ipele 2 ninu 5"
   },
   "incident": {
     "draftKept": "A ti fi ìròyìn rẹ pamọ́ sórí fóònù yìí.",
@@ -378,7 +393,7 @@
     "unknownUnitNote": "A ó lo wọ́ọ̀dù nìkan.",
     "useToday": "Lo ibùdó ìdìbò mi ti òní: {unit}",
     "noResults": "Kò sí ibùdó ìdìbò tó bá \"{query}\" mu. Ṣàyẹ̀wò kóòdù náà, tàbí yàn án ní ìgbésẹ̀-ìgbésẹ̀.",
-    "selected": "Èyí tí o yàn: {place}",
+    "selected": "{place}",
     "listMissing": "Àkójọ àwọn ibùdó ìdìbò kò tíì sí lórí fóònù yìí. So mọ́ nẹ́tíwọ̀ọ̀kì lẹ́ẹ̀kan láti gbà á sílẹ̀.",
     "listDownloading": "À ń gba àkójọ àwọn ibùdó ìdìbò sílẹ̀ ({percent}%)",
     "error": "Yan ibùdó ìdìbò kan, tàbí yan wọ́ọ̀dù kan kí o sì tẹ \"Mi ò mọ ibùdó ìdìbò náà\".",
@@ -545,9 +560,20 @@
     "observed": "Ó ṣẹlẹ̀ ní {time}",
     "received": "A gbà á ní {time}",
     "notSentYet": "Kò tíì lọ",
+    "journey": {
+      "received": "A ti gbà á",
+      "inReview": "À ń wò ó",
+      "question": "Ìbéèrè fún ọ",
+      "closed": "Ti parí"
+    },
+    "reviewerQuestion": "ÌBÉÈRÈ OLÙWÒRAN",
+    "yourReport": "ÌRÒYÌN RẸ",
+    "sendReply": "Fi èsì ránṣẹ́",
+    "locationRemoved": "A ti yọ ibi kúrò",
     "question": {
       "title": "Ìbéèrè fún ọ",
       "replyLabel": "Ìdáhùn rẹ",
+      "replyPlaceholder": "Kọ idahun rẹ",
       "send": "Fi ìdáhùn ránṣẹ́",
       "sending": "À ń fi ránṣẹ́",
       "queued": "A ti fi ìdáhùn rẹ pamọ́ sórí fóònù yìí. Yóò lọ nígbà tí o bá ní nẹ́tíwọ̀ọ̀kì.",
@@ -620,6 +646,7 @@
   },
   "o15": {
     "title": "Àkọsílẹ̀ àyẹ̀wò ọjọ́ ìdìbò",
+    "answerQuestions": "Dáhùn àwọn ìbéèrè",
     "hint": "Kún ìpele kọ̀ọ̀kan nígbà tí ó bá ṣẹlẹ̀. Ìpele kọ̀ọ̀kan ń lọ fúnra rẹ̀.",
     "stage": {
       "arrival": "Ìdé",

@@ -32,6 +32,7 @@ export function TextArea({
   defaultValue,
   onChange,
   ref,
+  "data-testid": testId,
   ...rest
 }: TextAreaProps) {
   const t = useT();
@@ -53,7 +54,16 @@ export function TextArea({
     ) : null;
 
   return (
-    <FieldFrame label={label} hint={hint} error={error} optional={optional} id={id} className={className} footer={footer}>
+    <FieldFrame
+      label={label}
+      hint={hint}
+      error={error}
+      optional={optional}
+      id={id}
+      className={className}
+      footer={footer}
+      data-testid={testId}
+    >
       {({ id: controlId, describedBy, invalid }) => (
         <textarea
           ref={ref}

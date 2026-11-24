@@ -225,7 +225,17 @@
     "listen": "Saurari wannan",
     "privacyLink": "Karanta cikakkiyar sanarwar sirri",
     "continue": "Na fahimta",
-    "line5": "Idan ka yi amfani da Yi magana, sabis ɗin magana na wayarka na iya sarrafa muryarka don mayar da ita rubutu."
+    "line5": "Idan ka yi amfani da Yi magana, sabis ɗin magana na wayarka na iya sarrafa muryarka don mayar da ita rubutu.",
+    "reportTitle": "Ka ga wani abu? Ba da rahoto.",
+    "reportLead": "Fada mana abin da ke faruwa a rumfar zaben ku.",
+    "safeTitle": "Kuna nan lafiya.",
+    "safeLine1": "Ba mu taba tambayar sunanka ba.",
+    "safeLine2": "Muna cire wurin daga hotunanku.",
+    "safeLine3": "Za a iya rufe fuskoki.",
+    "offlineTitle": "Yana aiki ba tare da intanet ba.",
+    "offlineLead": "Rahotonku yana zama a wayarku cikin aminci kuma yana aikawa idan hanyar sadarwa ta dawo.",
+    "next": "Gaba",
+    "skip": "Tsallake"
   },
   "o03": {
     "title": "Kai wane ne?",
@@ -277,7 +287,9 @@
       "clearTitle": "A goge waɗannan rahotannin daga wannan wayar?",
       "clearBody": "Ba a taɓa aika su ba. Idan ka goge su, za su ɓace gaba ɗaya. Ba za a iya dawo da su ba.",
       "clearConfirm": "Goge rahotanni"
-    }
+    },
+    "chooseTitle": "Ta yaya za ku shiga?",
+    "stepCount": "4 cikin 4"
   },
   "o04": {
     "title": "Gida",
@@ -314,7 +326,10 @@
     "fix": "Gyara shi",
     "purpose": "Ka ba da rahoton abin da ka gani a rumfar zaɓenka. Kowane rahoto yana taimakawa wajen gina Najeriya mafi kyau.",
     "tasks": "Abin da za ka iya yi",
-    "allReports": "Duba duk rahotannina"
+    "allReports": "Duba duk rahotannina",
+    "greeting": "Barka da safe",
+    "heroSubtitle": "Faɗa mana abin da kuke gani a rumfar zaɓenku",
+    "checklistStages": "Matakai 2 cikin 5"
   },
   "incident": {
     "draftKept": "An ajiye rahotonka a kan wannan wayar.",
@@ -378,7 +393,7 @@
     "unknownUnitNote": "Za mu yi amfani da mazaɓa kawai.",
     "useToday": "Yi amfani da rumfar zaɓena ta yau: {unit}",
     "noResults": "Babu rumfar zaɓe da ta dace da \"{query}\". Ka duba lambar, ko ka zaɓa mataki-mataki.",
-    "selected": "An zaɓa: {place}",
+    "selected": "{place}",
     "listMissing": "Jerin rumfunan zaɓe bai shigo wannan wayar ba tukuna. Ka haɗa da sabis sau ɗaya don sauke shi.",
     "listDownloading": "Ana sauke jerin rumfunan zaɓe ({percent}%)",
     "error": "Zaɓi rumfar zaɓe, ko ka zaɓi mazaɓa sannan ka taɓa \"Ban san rumfar zaɓen ba\".",
@@ -545,9 +560,20 @@
     "observed": "Ya faru {time}",
     "received": "An karɓa {time}",
     "notSentYet": "Ba a aika ba tukuna",
+    "journey": {
+      "received": "An karɓa",
+      "inReview": "Ana bita",
+      "question": "Tambaya gare ka",
+      "closed": "An rufe"
+    },
+    "reviewerQuestion": "TAMBAYAR MAI BITA",
+    "yourReport": "RAHOTONKA",
+    "sendReply": "Aika amsa",
+    "locationRemoved": "An cire wuri",
     "question": {
       "title": "Tambaya gare ka",
       "replyLabel": "Amsarka",
+      "replyPlaceholder": "Rubuta amsarka",
       "send": "Aika amsa",
       "sending": "Ana aikawa",
       "queued": "An ajiye amsarka a kan wannan wayar. Za a aika idan ka samu sabis.",
@@ -620,6 +646,7 @@
   },
   "o15": {
     "title": "Jerin abubuwan ranar zaɓe",
+    "answerQuestions": "Amsa tambayoyi",
     "hint": "Cike kowane mataki idan ya faru. Kowane mataki yana tafiya shi kaɗai.",
     "stage": {
       "arrival": "Isowa",

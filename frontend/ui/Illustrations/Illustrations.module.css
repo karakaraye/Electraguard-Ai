@@ -1,0 +1,61 @@
+.illustrationWrapper {
+  width: 100%;
+  max-width: 340px;
+  margin: 0 auto var(--s-4, 16px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.svgSafe,
+.svgOffline {
+  width: 100%;
+  height: auto;
+  max-height: 240px;
+}
+
+.dashedArc {
+  animation: dash 3s linear infinite;
+}
+
+@keyframes dash {
+  to {
+    stroke-dashoffset: -16;
+  }
+}
+
+.flyingTicket {
+  animation: float 2.5s ease-in-out infinite alternate;
+}
+
+@keyframes float {
+  from {
+    transform: translate(170px, 75px) rotate(10deg);
+  }
+  to {
+    transform: translate(172px, 70px) rotate(12deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dashedArc,
+  .flyingTicket {
+    animation: none;
+  }
+}
+
+.pollingDayIllustration {
+  width: 100%;
+  max-width: 380px;
+  margin: 0 auto var(--s-3, 12px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.svgPollingDay {
+  width: 100%;
+  height: auto;
+  max-height: 220px;
+}
+

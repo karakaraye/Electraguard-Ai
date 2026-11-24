@@ -225,7 +225,17 @@
     "listen": "Listen to am",
     "privacyLink": "Read the full privacy notice",
     "continue": "I don understand",
-    "line5": "If you use Talk am, your phone speech service fit process your voice to turn am to words."
+    "line5": "If you use Talk am, your phone speech service fit process your voice to turn am to words.",
+    "reportTitle": "You see something? Report am.",
+    "reportLead": "Tell us wetin dey happen for your polling unit.",
+    "safeTitle": "You dey safe.",
+    "safeLine1": "We no dey ask your name at all.",
+    "safeLine2": "We dey commot where you dey from your photo.",
+    "safeLine3": "Faces fit dey blur.",
+    "offlineTitle": "E dey work without network.",
+    "offlineLead": "Your report go wait safely for your phone and send itself once network show.",
+    "next": "Next",
+    "skip": "Skip"
   },
   "o03": {
     "title": "Who you be?",
@@ -277,7 +287,9 @@
       "clearTitle": "You wan delete these reports from this phone?",
       "clearBody": "Dem never send at all. If you delete dem, dem don go for good. You no fit bring dem back.",
       "clearConfirm": "Delete reports"
-    }
+    },
+    "chooseTitle": "How you wan take part?",
+    "stepCount": "4 of 4"
   },
   "o04": {
     "title": "Home",
@@ -314,7 +326,10 @@
     "fix": "Fix am",
     "purpose": "Report wetin you see for your polling unit. Every report dey help build better Naija.",
     "tasks": "Wetin you fit do",
-    "allReports": "See all my reports"
+    "allReports": "See all my reports",
+    "greeting": "Good morning",
+    "heroSubtitle": "Tell us wetin you see for your polling unit",
+    "checklistStages": "2 of 5 stages"
   },
   "incident": {
     "draftKept": "Your report dey saved for this phone.",
@@ -378,7 +393,7 @@
     "unknownUnitNote": "We go use only the ward.",
     "useToday": "Use my polling unit for today: {unit}",
     "noResults": "No polling unit match \"{query}\". Check the code, or choose am one by one.",
-    "selected": "You choose: {place}",
+    "selected": "{place}",
     "listMissing": "The polling-unit list never dey this phone. Connect to network one time to download am.",
     "listDownloading": "E dey download the polling-unit list ({percent}%)",
     "error": "Choose polling unit, or choose ward and tap \"I no know the polling unit\".",
@@ -545,9 +560,20 @@
     "observed": "E happen {time}",
     "received": "Dem receive am {time}",
     "notSentYet": "E never send",
+    "journey": {
+      "received": "We don see am",
+      "inReview": "Dey look am",
+      "question": "Question dey for you",
+      "closed": "Don close"
+    },
+    "reviewerQuestion": "QUESTION WEY REVIEWER ASK",
+    "yourReport": "WETIN YOU REPORT",
+    "sendReply": "Send your answer",
+    "locationRemoved": "Location don commot",
     "question": {
       "title": "Question dey for you",
       "replyLabel": "Your answer",
+      "replyPlaceholder": "Write your answer",
       "send": "Send answer",
       "sending": "E dey send",
       "queued": "We save your answer for this phone. E never send. E go send when network come.",
@@ -620,6 +646,7 @@
   },
   "o15": {
     "title": "Polling-day checklist",
+    "answerQuestions": "Answer questions",
     "hint": "Fill each stage when e happen. Each stage dey send by itself.",
     "stage": {
       "arrival": "When you reach",

@@ -225,7 +225,17 @@
     "listen": "Gee ntị na nke a",
     "privacyLink": "Gụọ ọkwa nzuzo zuru ezu",
     "continue": "Aghọtara m",
-    "line5": "Ọ bụrụ na i jiri Kwuo okwu, ọrụ okwu ekwentị gị nwere ike ịhazi olu gị ka ọ bụrụ okwu."
+    "line5": "Ọ bụrụ na i jiri Kwuo okwu, ọrụ okwu ekwentị gị nwere ike ịhazi olu gị ka ọ bụrụ okwu.",
+    "reportTitle": "I huru ihe? Koo ya.",
+    "reportLead": "Gwa anyi ihe na-eme na ngalaba itu vootu gi.",
+    "safeTitle": "I no na nchekwa.",
+    "safeLine1": "Anyi anaghi aju aha gi ma oli.",
+    "safeLine2": "Anyi na-ewepu ebe i no na foto gi.",
+    "safeLine3": "Enwere ike ime ka ihu ghara iputa nke oma.",
+    "offlineTitle": "O na-aru oru n enweghi netwok.",
+    "offlineLead": "Akuko gi na-eche n enweghi nsogbu na ekwenti gi ma na-eziga onwe ya mgbe netwok lotara.",
+    "next": "Na-esote",
+    "skip": "Wupu"
   },
   "o03": {
     "title": "Ònye ka ị bụ?",
@@ -277,7 +287,9 @@
       "clearTitle": "Hichapụ akụkọ ndị a na ekwentị a?",
       "clearBody": "E zigaghị ha. Ọ bụrụ na i hichapụ ha, ha ga-efu kpamkpam. A gaghị enwe ike iweghachi ha.",
       "clearConfirm": "Hichapụ akụkọ"
-    }
+    },
+    "chooseTitle": "Kedu ka i ga-esi tinye aka?",
+    "stepCount": "4 n ime 4"
   },
   "o04": {
     "title": "Mbido",
@@ -314,7 +326,10 @@
     "fix": "Mezie ya",
     "purpose": "Kọọ ihe ị hụrụ n'ebe ntuli aka gị. Akụkọ ọ bụla na-enyere aka iwulite Naịjirịa ka mma.",
     "tasks": "Ihe ị nwere ike ime",
-    "allReports": "Lee akụkọ m niile"
+    "allReports": "Lee akụkọ m niile",
+    "greeting": "Ụtụtụ ọma",
+    "heroSubtitle": "Gwa anyị ihe ị na-ahụ na ngalaba ịtụ vootu gị",
+    "checklistStages": "Nkebi 2 n ime 5"
   },
   "incident": {
     "draftKept": "Echekwara akụkọ gị na ekwentị a.",
@@ -378,7 +393,7 @@
     "unknownUnitNote": "Anyị ga-eji naanị wọọdụ.",
     "useToday": "Jiri ebe ntuli aka m taa: {unit}",
     "noResults": "Ọ dịghị ebe ntuli aka dabara na \"{query}\". Lelee koodu ahụ, ma ọ bụ họrọ n'usoro.",
-    "selected": "Ihe ị họrọ: {place}",
+    "selected": "{place}",
     "listMissing": "Ndepụta ebe ntuli aka adịbeghị na ekwentị a. Jikọọ na netwọk otu ugboro ka ị budata ya.",
     "listDownloading": "A na-ebudata ndepụta ebe ntuli aka ({percent}%)",
     "error": "Họrọ ebe ntuli aka, ma ọ bụ họrọ wọọdụ wee pịa \"Amaghị m ebe ntuli aka ahụ\".",
@@ -545,9 +560,20 @@
     "observed": "O mere {time}",
     "received": "Anatara ya {time}",
     "notSentYet": "E zigabeghị ya",
+    "journey": {
+      "received": "Anabatala",
+      "inReview": "Na-enyocha",
+      "question": "Ajụjụ maka gị",
+      "closed": "Emechiri"
+    },
+    "reviewerQuestion": "AJỤJỤ ONYE NYOCHE",
+    "yourReport": "AKỤKỌ GỊ",
+    "sendReply": "Ziga azịza",
+    "locationRemoved": "E wepụrụ ebe",
     "question": {
       "title": "Ajụjụ maka gị",
       "replyLabel": "Azịza gị",
+      "replyPlaceholder": "Dee azịza gị",
       "send": "Ziga azịza",
       "sending": "A na-eziga ya",
       "queued": "Echekwara azịza gị na ekwentị a. Ọ ga-aga mgbe i nwere netwọk.",
@@ -620,6 +646,7 @@
   },
   "o15": {
     "title": "Ndepụta ụbọchị ntuli aka",
+    "answerQuestions": "Zaa ajụjụ",
     "hint": "Jupụta ọkwa ọ bụla mgbe ọ na-eme. Ọkwa ọ bụla na-aga n'onwe ya.",
     "stage": {
       "arrival": "Ọbịbịa",

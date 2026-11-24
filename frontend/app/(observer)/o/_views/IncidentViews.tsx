@@ -399,7 +399,7 @@ export function DescribeView({
 }: DescribeViewProps) {
   const t = useT();
   const { locale } = useLocale();
-  const errorText = textError ? (textError.key === "o09.tooShort" ? t(textError.key, { min: textError.min }) : t(textError.key, { max: textError.max })) : undefined;
+  const errorText = textError ? (textError.key === "o09.tooShort" ? t(textError.key, { min: textError.min }) : t(textError.key, { max: String(textError.max) })) : undefined;
   return (
     <StepShell
       step={5}

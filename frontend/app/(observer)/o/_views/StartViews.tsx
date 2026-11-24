@@ -76,6 +76,9 @@ export function LanguageView({ selected, onChoose, offline, banner }: LanguageVi
   );
 }
 
+import { SafeIllustration } from "../../../../ui/Illustrations/SafeIllustration";
+import { OfflineIllustration } from "../../../../ui/Illustrations/OfflineIllustration";
+
 /* ---------- O-02 ---------- */
 
 export type NoticeViewProps = Shell & {
@@ -87,6 +90,8 @@ export type NoticeViewProps = Shell & {
 
 export function NoticeView({ onBack, onContinue, readOnly, offline, banner }: NoticeViewProps) {
   const t = useT();
+  const [slide, setSlide] = useState(0);
+
   const lines: Array<{ key: string; icon: ReactNode; safety?: boolean }> = [
     { key: "o02.line1", icon: <EyeIcon /> },
     { key: "o02.line2", icon: <ImageIcon /> },
@@ -94,36 +99,137 @@ export function NoticeView({ onBack, onContinue, readOnly, offline, banner }: No
     { key: "o02.line5", icon: <MicIcon /> },
     { key: "o02.line4", icon: <PhoneIcon />, safety: true },
   ];
+
+  if (readOnly) {
+    return (
+      <AppShell
+        title={<AppBarTitle />}
+        onBack={onBack}
+        offline={offline}
+        banner={banner}
+        data-testid="o02"
+      >
+        <BackgroundArt variant="hero" />
+        <div className={styles.screen}>
+          <h1 className={styles.title}>{t("o02.title")}</h1>
+          <ul className={styles.lines}>
+            {lines.map((line) => (
+              <li key={line.key} className={`${styles.line} ${line.safety ? styles.lineSafety : ""}`}>
+                <span aria-hidden="true">{line.icon}</span>
+                <span>{t(line.key)}</span>
+              </li>
+            ))}
+          </ul>
+          <p className={styles.credit}>
+            <BrandMark variant="lockup" size="md" credit />
+          </p>
+        </div>
+      </AppShell>
+    );
+  }
+
+  const handleNext = () => {
+    if (slide < 2) {
+      setSlide(slide + 1);
+    } else {
+      onContinue();
+    }
+  };
+
+  const handleBack = () => {
+    if (slide > 0) {
+      setSlide(slide - 1);
+    } else {
+      onBack();
+    }
+  };
+
   return (
     <AppShell
       title={<AppBarTitle />}
-      onBack={onBack}
+      onBack={slide > 0 ? handleBack : undefined}
       offline={offline}
       banner={banner}
+      menu={
+        <button
+          type="button"
+          className={styles.skipButton}
+          onClick={onContinue}
+          aria-label={t("o02.skip") || "Skip"}
+          data-testid="o02-continue"
+        >
+          {t("o02.skip") || "Skip"}
+        </button>
+      }
       actions={
-        readOnly ? undefined : (
-          <Button block onClick={onContinue} data-testid="o02-continue">
-            {t("o02.continue")}
+        <div className={styles.onboardingActions}>
+          <div className={styles.dots} aria-label={`Step ${slide + 1} of 4`}>
+            <span className={slide === 0 ? styles.dotActive : styles.dot} />
+            <span className={slide === 1 ? styles.dotActive : styles.dot} />
+            <span className={slide === 2 ? styles.dotActive : styles.dot} />
+            <span className={styles.dot} />
+          </div>
+          <Button block onClick={handleNext} data-testid="o02-next">
+            {t("o02.next") || "Next"}
           </Button>
-        )
+        </div>
       }
       data-testid="o02"
     >
-      <BackgroundArt variant="hero" />
-      <div className={styles.screen}>
-        <h1 className={styles.title}>{t("o02.title")}</h1>
-        <ul className={styles.lines}>
-          {lines.map((line) => (
-            <li key={line.key} className={`${styles.line} ${line.safety ? styles.lineSafety : ""}`}>
-              <span aria-hidden="true">{line.icon}</span>
-              <span>{t(line.key)}</span>
+      {slide === 0 && (
+        <>
+          <BackgroundArt variant="hero" />
+          <div className={styles.screen}>
+            <h1 className={styles.displayTitle}>
+              {t("o02.reportTitle") || "See something? Report it."}
+            </h1>
+            <p className={styles.lead}>
+              {t("o02.reportLead") || "Tell us what happens at your polling unit."}
+            </p>
+          </div>
+        </>
+      )}
+
+      {slide === 1 && (
+        <div className={styles.screen}>
+          <SafeIllustration />
+          <h1 className={styles.displayTitle}>
+            {t("o02.safeTitle") || "You stay safe."}
+          </h1>
+          <ul className={styles.safeBullets}>
+            <li className={styles.safeBullet}>
+              <span className={styles.bulletIcon} aria-hidden="true">
+                <PersonPictogram size={24} />
+              </span>
+              <span>{t("o02.safeLine1") || "We never ask your name."}</span>
             </li>
-          ))}
-        </ul>
-        <p className={styles.credit}>
-          <BrandMark variant="lockup" size="md" credit />
-        </p>
-      </div>
+            <li className={styles.safeBullet}>
+              <span className={styles.bulletIcon} aria-hidden="true">
+                <LockIcon />
+              </span>
+              <span>{t("o02.safeLine2") || "We remove the location from your photos."}</span>
+            </li>
+            <li className={styles.safeBullet}>
+              <span className={styles.bulletIcon} aria-hidden="true">
+                <EyeIcon />
+              </span>
+              <span>{t("o02.safeLine3") || "Faces can be blurred."}</span>
+            </li>
+          </ul>
+        </div>
+      )}
+
+      {slide === 2 && (
+        <div className={styles.screen}>
+          <h1 className={styles.displayTitle}>
+            {t("o02.offlineTitle") || "Works without network."}
+          </h1>
+          <p className={styles.lead}>
+            {t("o02.offlineLead") || "Your report waits safely on your phone and sends itself when the signal returns."}
+          </p>
+          <OfflineIllustration />
+        </div>
+      )}
     </AppShell>
   );
 }
@@ -140,13 +246,22 @@ export type ChooseViewProps = Shell & {
 export function ChooseView({ onBack, onObserver, onCitizen, onCheckStatus, offline, banner }: ChooseViewProps) {
   const t = useT();
   return (
-    <AppShell title={<AppBarTitle />} onBack={onBack} offline={offline} banner={banner} data-testid="o03-choose">
+    <AppShell
+      title={<AppBarTitle />}
+      onBack={onBack}
+      offline={offline}
+      banner={banner}
+      menu={<span className={styles.stepBadge}>{t("o03.stepCount") || "4 of 4"}</span>}
+      data-testid="o03-choose"
+    >
       <BackgroundArt variant="hero" />
       <div className={`${styles.screen} ${styles.wide}`}>
-        <h1 className={styles.title}>{t("o03.title")}</h1>
+        <h1 className={styles.displayTitle}>{t("o03.chooseTitle") || t("o03.title")}</h1>
         <div className={styles.choices}>
           <button type="button" className={styles.choice} onClick={onObserver} data-testid="o03-observer">
-            <BadgePictogram size={40} aria-hidden="true" />
+            <span className={styles.choiceIconDisc} aria-hidden="true">
+              <BadgePictogram size={32} />
+            </span>
             <span className={styles.choiceText}>
               <span className={styles.choiceLabel}>{t("o03.observer")}</span>
               <span className={styles.choiceHint}>{t("o03.observerHint")}</span>
@@ -154,7 +269,9 @@ export function ChooseView({ onBack, onObserver, onCitizen, onCheckStatus, offli
             <ChevronRightIcon aria-hidden="true" />
           </button>
           <button type="button" className={styles.choice} onClick={onCitizen} data-testid="o03-citizen">
-            <PersonPictogram size={40} aria-hidden="true" />
+            <span className={styles.choiceIconDisc} aria-hidden="true">
+              <PersonPictogram size={32} />
+            </span>
             <span className={styles.choiceText}>
               <span className={styles.choiceLabel}>{t("o03.citizen")}</span>
               <span className={styles.choiceHint}>{t("o03.citizenHint")}</span>
@@ -165,6 +282,9 @@ export function ChooseView({ onBack, onObserver, onCitizen, onCheckStatus, offli
         <Button variant="quiet" className={styles.link} onClick={onCheckStatus} data-testid="o03-check-status">
           {t("o03.checkStatus")}
         </Button>
+        <p className={styles.brandFooterCredit}>
+          ElectraGuard AI by Cairn · Independent and nonpartisan
+        </p>
       </div>
     </AppShell>
   );

@@ -29,3 +29,7 @@ export { PollingUnitPicker, compactCode, type PlaceChange, type PlaceValue, type
 export { DictationButton, type DictationButtonProps, type DictationState } from "./DictationButton/DictationButton";
 export { MediaCapture, useVoiceRecorder, formatClock, type CaptureSource, type MediaCaptureProps, type VoiceRecorder } from "./MediaCapture/MediaCapture";
 export { BackgroundArt, type BackgroundArtProps } from "./BackgroundArt/BackgroundArt";
+export { SafeIllustration } from "./Illustrations/SafeIllustration";
+export { OfflineIllustration } from "./Illustrations/OfflineIllustration";
+export { PollingDayIllustration } from "./Illustrations/PollingDayIllustration";
+

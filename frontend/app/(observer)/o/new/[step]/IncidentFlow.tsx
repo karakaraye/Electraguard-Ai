@@ -632,7 +632,7 @@ function useTranslatorForErrors() {
           case "where":
             return t("o07.error");
           case "describe":
-            return code === "max_length" ? t("o09.tooLong", { max: 2000 }) : t("o09.tooShort", { min: 20 });
+            return code === "max_length" ? t("o09.tooLong", { max: "2000" }) : t("o09.tooShort", { min: 20 });
           case "source":
             return t("o09.sourceError");
           case "danger":

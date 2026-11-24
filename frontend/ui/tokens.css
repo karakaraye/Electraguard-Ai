@@ -2,15 +2,34 @@
  * ElectraGuard design tokens (design contract, section 4).
  *
  * Scope rules
- * - Only custom properties, @font-face and two prefixed utilities live here, so
- *   importing this file never restyles existing pages.
+ * - Only custom properties, @font-face and utilities live here, so
+ *   importing this file never breaks existing layout logic.
  * - Light is the default. A subtree (or <html>) opts into another theme with
  *   data-theme="dark" or data-theme="system" (follows the device).
  * - Density: observer and citizen screens use the default (larger) values;
  *   staff screens set data-density="staff".
  */
 
-/* ---------- Fonts: Noto Sans variable, weights 400-700, self-hosted ---------- */
+/* ---------- Fonts: Bricolage Grotesque display + Noto Sans body ---------- */
+
+@font-face {
+  font-family: "Bricolage Grotesque";
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url("/fonts/bricolage-grotesque-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+    U+2000-206F, U+20A6, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "Bricolage Grotesque";
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url("/fonts/bricolage-grotesque-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20CF;
+}
 
 @font-face {
   font-family: "Noto Sans";
@@ -36,7 +55,7 @@
     U+1ECA-1ECD, U+1EE4-1EE5;
 }
 
-/* Metric-matched system fallback, so the swap to Noto Sans does not move the layout */
+/* Metric-matched system fallback */
 @font-face {
   font-family: "Noto Sans Fallback";
   src: local("Roboto"), local("Segoe UI"), local("Arial");
@@ -47,53 +66,66 @@
 }
 
 :root {
-  --font: "Noto Sans", "Noto Sans Fallback", system-ui, "Segoe UI", Roboto, sans-serif;
+  --font-display: "Bricolage Grotesque", "Noto Sans", system-ui, -apple-system, sans-serif;
+  --font-body: "Noto Sans", "Noto Sans Fallback", system-ui, "Segoe UI", Roboto, sans-serif;
+  --font: var(--font-body);
 
   /* ---------- Type scale: weight size/line-height family ---------- */
-  --t-display: 700 2.25rem/1.1 var(--font);
-  --t-title: 700 1.625rem/1.2 var(--font);
-  --t-heading: 600 1.25rem/1.3 var(--font);
-  --t-body-lg: 400 1.125rem/1.5 var(--font);
-  --t-body: 400 1rem/1.5 var(--font);
-  --t-small: 400 0.875rem/1.4 var(--font);
-  --t-label: 600 0.875rem/1.2 var(--font);
+  --t-display: 700 2.5rem/1.1 var(--font-display);
+  --t-title: 700 1.875rem/1.15 var(--font-display);
+  --t-heading: 700 1.25rem/1.3 var(--font-display);
+  --t-body-lg: 400 1.125rem/1.5 var(--font-body);
+  --t-body: 400 1rem/1.5 var(--font-body);
+  --t-small: 400 0.875rem/1.4 var(--font-body);
+  --t-label: 600 0.875rem/1.2 var(--font-body);
   --t-label-tracking: 0.02em;
 
-  /* Body text for the current audience (observer and citizen default) */
+  /* Body text for the current audience */
   --t-base: var(--t-body-lg);
   --t-base-size: 1.125rem;
 
-  /* ---------- Colour: ink on paper ---------- */
-  --ink: #0b0b0c;
-  --ink-2: #3a3a3d;
-  --ink-3: #5f5f63;
-  --paper: #ffffff;
-  --paper-2: #f4f4f2;
-  --rule: #d8d8d4;
-  /* Control outlines need 3:1 against the surface (WCAG 1.4.11); --rule is for hairlines only */
-  --rule-control: #707075;
-  --on-ink: #ffffff;
+  /* ---------- Colour: warm paper white, deep ink, sunlight ochre ---------- */
+  --paper: #faf7f0;
+  --paper-card: #ffffff;
+  --paper-2: #f3efe6;
+  --paper-3: #eae4d7;
+  --ink: #16130f;
+  --ink-2: #4a453e;
+  --ink-3: #756f66;
+  --rule: #e8e3d8;
+  --rule-control: #8c8476;
+  --on-ink: #faf7f0;
 
-  /* ---------- Colour: status, always with a shape and a text label ---------- */
-  --ok: #0f6b3a;
-  --ok-bg: #e5f1ea;
-  --attn: #8a5a00;
-  --attn-bg: #fff4d6;
-  --wait: #4a4a4f;
-  --wait-bg: #ededea;
-  --danger: #a3141c;
-  --danger-bg: #fbe9ea;
-  --info: #1f4e8c;
-  --info-bg: #e7eef7;
+  /* Sunlight accent (sand-ochre and paler tints for rings and tile discs) */
+  --sun: #e3b060;
+  --sun-hover: #d59f4a;
+  --sun-light: #f6e3b8;
+  --sun-pale: #fbf4e4;
+  --sun-ring-1: #e3b060;
+  --sun-ring-2: #edcb85;
+  --sun-ring-3: #f6e3b8;
+  --sun-ring-4: rgba(246, 227, 184, 0.45);
 
-  /* ---------- Focus: 3px ink outline with a 2px paper gap ---------- */
-  --focus-ring: #0b0b0c;
-  --focus-gap: #ffffff;
+  /* ---------- Status colours: strictly for status, shape + word ---------- */
+  --ok: #2e7d32;
+  --ok-bg: #e8f5e9;
+  --attn: #e65100;
+  --attn-bg: #fff3e0;
+  --wait: #757575;
+  --wait-bg: #eeeeee;
+  --danger: #d32f2f;
+  --danger-bg: #ffebee;
+  --info: #1976d2;
+  --info-bg: #e3f2fd;
+
+  /* ---------- Focus: high contrast outline with gap ---------- */
+  --focus-ring: #16130f;
+  --focus-gap: #faf7f0;
   --focus-outline: 3px solid var(--focus-ring);
   --focus-offset: 2px;
   --focus-halo: 0 0 0 2px var(--focus-gap);
 
-  /* ---------- Space (px scale 4, 8, 12, 16, 24, 32, 48, 64) ---------- */
+  /* ---------- Space scale (4, 8, 12, 16, 24, 32, 48, 64) ---------- */
   --s-1: 4px;
   --s-2: 8px;
   --s-3: 12px;
@@ -106,9 +138,12 @@
   --measure: 34rem;
 
   /* ---------- Shape and elevation ---------- */
-  --radius: 10px;
+  --radius-sm: 8px;
+  --radius: 16px;
+  --radius-lg: 24px;
   --radius-pill: 999px;
-  --shadow-sheet: 0 -1px 0 var(--rule), 0 12px 40px rgb(11 11 12 / 0.18);
+  --shadow-sheet: 0 -1px 0 var(--rule), 0 12px 40px rgba(22, 19, 15, 0.12);
+  --shadow-card: 0 2px 8px rgba(22, 19, 15, 0.04);
 
   /* ---------- Controls ---------- */
   --control-h: 52px;
@@ -135,81 +170,114 @@
   }
 }
 
-/* ---------- Dark theme ---------- */
+/* ---------- Dark theme (early dawn: warm dark ground, sun stays warm) ---------- */
 [data-theme="dark"] {
-  --ink: #f4f4f2;
-  --ink-2: #c9c9c6;
-  --ink-3: #9d9d99;
-  --paper: #111112;
-  --paper-2: #1b1b1d;
-  --rule: #34343a;
-  --rule-control: #8c8c92;
-  --on-ink: #111112;
-  --ok: #7fd6a2;
-  --ok-bg: #11291c;
-  --attn: #f0c46a;
-  --attn-bg: #2d2410;
-  --wait: #c9c9c6;
-  --wait-bg: #29292d;
-  --danger: #ff9a9e;
-  --danger-bg: #3a1517;
-  --info: #a4c2f2;
-  --info-bg: #142339;
-  --focus-ring: #f4f4f2;
-  --focus-gap: #111112;
-  --shadow-sheet: 0 -1px 0 var(--rule), 0 12px 40px rgb(0 0 0 / 0.55);
+  --ink: #faf7f0;
+  --ink-2: #d0c9be;
+  --ink-3: #9c9488;
+  --paper: #181512;
+  --paper-card: #221e19;
+  --paper-2: #2c2721;
+  --paper-3: #37312a;
+  --rule: #3d362e;
+  --rule-control: #685e53;
+  --on-ink: #181512;
+  --sun: #e3b060;
+  --sun-hover: #e8b96e;
+  --sun-light: #4a3a20;
+  --sun-pale: #312615;
+  --sun-ring-1: #e3b060;
+  --sun-ring-2: #b58943;
+  --sun-ring-3: #6b5329;
+  --sun-ring-4: rgba(107, 83, 41, 0.35);
+  --ok: #66bb6a;
+  --ok-bg: #1b3320;
+  --attn: #ffa726;
+  --attn-bg: #38250e;
+  --wait: #bdbdbd;
+  --wait-bg: #2b2825;
+  --danger: #ef5350;
+  --danger-bg: #3b1b1c;
+  --info: #64b5f6;
+  --info-bg: #13283e;
+  --focus-ring: #faf7f0;
+  --focus-gap: #181512;
+  --shadow-sheet: 0 -1px 0 var(--rule), 0 12px 40px rgba(0, 0, 0, 0.55);
+  --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.25);
   color-scheme: dark;
 }
 
 @media (prefers-color-scheme: dark) {
   [data-theme="system"] {
-    --ink: #f4f4f2;
-    --ink-2: #c9c9c6;
-    --ink-3: #9d9d99;
-    --paper: #111112;
-    --paper-2: #1b1b1d;
-    --rule: #34343a;
-    --rule-control: #8c8c92;
-    --on-ink: #111112;
-    --ok: #7fd6a2;
-    --ok-bg: #11291c;
-    --attn: #f0c46a;
-    --attn-bg: #2d2410;
-    --wait: #c9c9c6;
-    --wait-bg: #29292d;
-    --danger: #ff9a9e;
-    --danger-bg: #3a1517;
-    --info: #a4c2f2;
-    --info-bg: #142339;
-    --focus-ring: #f4f4f2;
-    --focus-gap: #111112;
-    --shadow-sheet: 0 -1px 0 var(--rule), 0 12px 40px rgb(0 0 0 / 0.55);
+    --ink: #faf7f0;
+    --ink-2: #d0c9be;
+    --ink-3: #9c9488;
+    --paper: #181512;
+    --paper-card: #221e19;
+    --paper-2: #2c2721;
+    --paper-3: #37312a;
+    --rule: #3d362e;
+    --rule-control: #685e53;
+    --on-ink: #181512;
+    --sun: #e3b060;
+    --sun-hover: #e8b96e;
+    --sun-light: #4a3a20;
+    --sun-pale: #312615;
+    --sun-ring-1: #e3b060;
+    --sun-ring-2: #b58943;
+    --sun-ring-3: #6b5329;
+    --sun-ring-4: rgba(107, 83, 41, 0.35);
+    --ok: #66bb6a;
+    --ok-bg: #1b3320;
+    --attn: #ffa726;
+    --attn-bg: #38250e;
+    --wait: #bdbdbd;
+    --wait-bg: #2b2825;
+    --danger: #ef5350;
+    --danger-bg: #3b1b1c;
+    --info: #64b5f6;
+    --info-bg: #13283e;
+    --focus-ring: #faf7f0;
+    --focus-gap: #181512;
+    --shadow-sheet: 0 -1px 0 var(--rule), 0 12px 40px rgba(0, 0, 0, 0.55);
+    --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.25);
     color-scheme: dark;
   }
 }
 
 [data-theme="light"] {
-  --ink: #0b0b0c;
-  --ink-2: #3a3a3d;
-  --ink-3: #5f5f63;
-  --paper: #ffffff;
-  --paper-2: #f4f4f2;
-  --rule: #d8d8d4;
-  --rule-control: #707075;
-  --on-ink: #ffffff;
-  --ok: #0f6b3a;
-  --ok-bg: #e5f1ea;
-  --attn: #8a5a00;
-  --attn-bg: #fff4d6;
-  --wait: #4a4a4f;
-  --wait-bg: #ededea;
-  --danger: #a3141c;
-  --danger-bg: #fbe9ea;
-  --info: #1f4e8c;
-  --info-bg: #e7eef7;
-  --focus-ring: #0b0b0c;
-  --focus-gap: #ffffff;
-  --shadow-sheet: 0 -1px 0 var(--rule), 0 12px 40px rgb(11 11 12 / 0.18);
+  --ink: #16130f;
+  --ink-2: #4a453e;
+  --ink-3: #756f66;
+  --paper: #faf7f0;
+  --paper-card: #ffffff;
+  --paper-2: #f3efe6;
+  --paper-3: #eae4d7;
+  --rule: #e8e3d8;
+  --rule-control: #8c8476;
+  --on-ink: #faf7f0;
+  --sun: #e3b060;
+  --sun-hover: #d59f4a;
+  --sun-light: #f6e3b8;
+  --sun-pale: #fbf4e4;
+  --sun-ring-1: #e3b060;
+  --sun-ring-2: #edcb85;
+  --sun-ring-3: #f6e3b8;
+  --sun-ring-4: rgba(246, 227, 184, 0.45);
+  --ok: #2e7d32;
+  --ok-bg: #e8f5e9;
+  --attn: #e65100;
+  --attn-bg: #fff3e0;
+  --wait: #757575;
+  --wait-bg: #eeeeee;
+  --danger: #d32f2f;
+  --danger-bg: #ffebee;
+  --info: #1976d2;
+  --info-bg: #e3f2fd;
+  --focus-ring: #16130f;
+  --focus-gap: #faf7f0;
+  --shadow-sheet: 0 -1px 0 var(--rule), 0 12px 40px rgba(22, 19, 15, 0.12);
+  --shadow-card: 0 2px 8px rgba(22, 19, 15, 0.04);
   color-scheme: light;
 }
 
@@ -220,7 +288,7 @@
   --control-h: 44px;
 }
 
-/* ---------- Reduced motion: every transition and animation becomes instant ---------- */
+/* ---------- Reduced motion: instant transitions ---------- */
 @media (prefers-reduced-motion: reduce) {
   :root {
     --dur-press: 0ms;
@@ -229,6 +297,16 @@
     --dur-sheet: 0ms;
     --dur-tick: 0ms;
   }
+}
+
+/* ---------- Global body & paper texture ---------- */
+body {
+  background-color: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  background-image: radial-gradient(circle at 50% 0%, rgba(227, 176, 96, 0.04) 0%, transparent 60%);
+  background-repeat: no-repeat;
+  scroll-padding-bottom: 5.5rem;
 }
 
 /* ---------- Utilities ---------- */

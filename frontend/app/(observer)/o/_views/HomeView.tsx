@@ -11,7 +11,7 @@ import { AppShell, Banner, Button, ButtonLink, LanguageSwitcher, ReportList, Rep
 import { formatWatDateTime } from "../../../../ui/format";
 import { categoryPictograms, ChevronRightIcon, type IconProps } from "../../../../ui/icons";
 import { AppBarTitle } from "../_components/AppBarTitle";
-import { AskPictogram, ChecklistPictogram, DiscussionsPictogram, MessagesPictogram, ReportPictogram } from "../_components/pictograms";
+import { AskPictogram, DiscussionsPictogram, MessagesPictogram } from "../_components/pictograms";
 import styles from "../_components/observer.module.css";
 import s from "../_components/screens.module.css";
 import { categoryMeta } from "../_lib/categories";
@@ -152,10 +152,16 @@ export function HomeView(props: HomeViewProps) {
       {rows.length === 0 ? <BackgroundArt variant="soft" clear="none" /> : null}
       <h1 className="eg-sr-only">{t("o04.title")}</h1>
       <div className={styles.home}>
-        <div className={styles.stack}>
-          <p className={styles.meta} data-testid="o04-signed-in">
+        <div className={styles.homeHeader}>
+          <div className={styles.homeGreeting} data-testid="o04-greeting">
+            {t("o04.greeting") || "Good morning"}
+          </div>
+          <p className={styles.homeSubhead} data-testid="o04-signed-in">
             {t("o04.signedInAs", { code })}
           </p>
+        </div>
+
+        <div className={styles.stack}>
           {draft && DraftPictogram ? (
             <div className={styles.draftCard} data-testid="o04-draft">
               <div className={styles.draftHead}>
@@ -170,18 +176,66 @@ export function HomeView(props: HomeViewProps) {
               </Button>
             </div>
           ) : null}
-          <button type="button" className={`${styles.choice} ${styles.choicePrimary}`} onClick={props.onReport} data-testid="o04-report">
-            <ReportPictogram size={32} aria-hidden="true" />
-            <span className={styles.choiceText}>
-              <span className={styles.choiceLabel}>{t("o04.report")}</span>
-            </span>
-            <ChevronRightIcon aria-hidden="true" />
-          </button>
+
+          {/* Hero "Report something" card matching 05-home.png */}
+          <div
+            className={styles.heroReportCard}
+            onClick={props.onReport}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                props.onReport();
+              }
+            }}
+          >
+            <div className={styles.heroSunDisc} aria-hidden="true" />
+            <div className={styles.heroCardContent}>
+              <h2 className={styles.heroCardTitle} data-testid="o04-report">{t("o04.report")}</h2>
+              <p className={styles.heroCardSubtitle}>
+                {t("o04.heroSubtitle") || "Tell us what you see at your polling unit"}
+              </p>
+            </div>
+            <div className={styles.heroPlusBtn} aria-hidden="true">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                <line x1="12" y1="5" x2="12" y2="19" />
+                <line x1="5" y1="12" x2="19" y2="12" />
+              </svg>
+            </div>
+          </div>
+
+          {/* Polling-day checklist arc card matching 05-home.png */}
+          <Link href="/o/checklist" className={styles.checklistArcCard} data-testid="o04-checklist">
+            <div className={styles.checklistCardHeader}>
+              <h2 className={styles.checklistCardTitle}>
+                {t("o04.checklist")} · <span className={styles.checklistStageCount}>{t("o04.checklistStages") || "2 of 5 stages"}</span>
+              </h2>
+            </div>
+            <div className={styles.arcContainer} aria-hidden="true">
+              <svg viewBox="0 0 320 80" className={styles.arcSvg}>
+                <path d="M 30 65 Q 160 15 290 65" stroke="var(--rule, #e8e3d8)" strokeWidth="3" fill="none" />
+                <path d="M 30 65 Q 95 38 120 37" stroke="var(--sun, #e3b060)" strokeWidth="3" fill="none" />
+                <circle cx="120" cy="37" r="10" fill="var(--sun, #e3b060)" />
+                <circle cx="120" cy="37" r="5" fill="#faf7f0" />
+                <circle cx="30" cy="65" r="5" fill="var(--ink, #16130f)" />
+                <circle cx="180" cy="46" r="4" fill="var(--rule, #e8e3d8)" />
+                <circle cx="235" cy="56" r="4" fill="var(--rule, #e8e3d8)" />
+                <circle cx="290" cy="65" r="4" fill="var(--rule, #e8e3d8)" />
+              </svg>
+              <div className={styles.arcLabels}>
+                <span>Before opening</span>
+                <span className={styles.activeArcLabel}>Opening</span>
+                <span>Voting</span>
+                <span>Close</span>
+                <span>After</span>
+              </div>
+            </div>
+          </Link>
         </div>
 
         <nav aria-label={t("o04.tasks")} className={styles.tight}>
           <ul className={s.tasks}>
-            <TaskLink href="/o/checklist" icon={ChecklistPictogram} label={t("o04.checklist")} testId="o04-checklist" />
             <TaskLink
               href="/o/messages"
               icon={MessagesPictogram}
@@ -199,9 +253,16 @@ export function HomeView(props: HomeViewProps) {
         </nav>
 
         <section aria-labelledby="o04-reports" className={styles.tight}>
-          <h2 className={styles.sectionTitle} id="o04-reports">
-            {t("o04.myReports")}
-          </h2>
+          <div className={styles.reportsSectionHead}>
+            <h2 className={styles.sectionTitle} id="o04-reports">
+              {t("o04.myReports")}
+            </h2>
+            {rows.length ? (
+              <Link href="/o/reports" className={styles.seeAllLink} data-testid="o04-all-reports">
+                {t("o04.allReports")} &gt;
+              </Link>
+            ) : null}
+          </div>
           {rows.length ? (
             <ReportList label={t("o04.myReports")}>
               {rows.map((row) => {
@@ -225,17 +286,38 @@ export function HomeView(props: HomeViewProps) {
               {t("o04.myReportsCount", { count: 0 })}
             </p>
           )}
-          {rows.length ? (
-            <Link href="/o/reports" className={s.textLink} data-testid="o04-all-reports">
-              {t("o04.allReports")}
-            </Link>
-          ) : null}
           {rows.length === 0 ? (
             <p className={styles.purpose} data-testid="o04-purpose">
               {t("o04.purpose")}
             </p>
           ) : null}
         </section>
+
+        {/* Bottom navigation bar */}
+        <nav className={styles.bottomNav} aria-label="Main Navigation">
+          <Link href="/o" className={`${styles.navItem} ${styles.navActive}`} aria-current="page">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
+            </svg>
+            <span>Home</span>
+          </Link>
+          <Link href="/o/reports" className={styles.navItem}>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+              <polyline points="14 2 14 8 20 8" />
+              <line x1="16" y1="13" x2="8" y2="13" />
+              <line x1="16" y1="17" x2="8" y2="17" />
+            </svg>
+            <span>Reports</span>
+          </Link>
+          <Link href="/o/settings" className={styles.navItem}>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
+            </svg>
+            <span>Profile</span>
+          </Link>
+        </nav>
       </div>
 
       <Sheet open={menu} onClose={() => setMenu(false)} title={t("ui.menu")} data-testid="o04-menu">

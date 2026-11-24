@@ -48,33 +48,53 @@ Shared code: `frontend/ui/` (design system), `frontend/lib/` (API client, offlin
 
 ### 4.1 Type
 
-- **Family:** Noto Sans (variable, weights 400/600/700), self-hosted, subset Latin + Latin Extended (covers ẹ ọ ṣ ị ụ ṅ ɓ ɗ ƙ and tone marks). Fallback: `system-ui, "Segoe UI", Roboto, sans-serif`. Tabular figures for references, codes, times and counts (`font-variant-numeric: tabular-nums`).
+- **Display Family:** Bricolage Grotesque (variable, weights 400–800), self-hosted under `frontend/public/fonts/` with its SIL Open Font License (`bricolage-grotesque-latin.woff2`, `bricolage-grotesque-latin-ext.woff2`). Used for prominent headings, screen titles, and receipt codes.
+- **Body Family:** Noto Sans (variable, weights 400/600/700), self-hosted, subset Latin + Latin Extended (covers Nigerian orthographies: Hausa, Yoruba, Igbo tone marks and special characters ẹ ọ ṣ ị ụ ṅ ɓ ɗ ƙ ƴ). Fallback: `system-ui, "Segoe UI", Roboto, sans-serif`. Tabular figures for references, codes, times and counts (`font-variant-numeric: tabular-nums`).
 - **Scale (rem, root 16 px; observer base is larger):**
 
-| Token | Size / line height | Use |
-|---|---|---|
-| `--t-display` | 2.25 / 1.1, 700 | Receipt code, big numbers |
-| `--t-title` | 1.625 / 1.2, 700 | Screen question ("What happened?") |
-| `--t-heading` | 1.25 / 1.3, 600 | Section headings |
-| `--t-body-lg` | 1.125 / 1.5, 400 | Observer and citizen body (default there) |
-| `--t-body` | 1 / 1.5, 400 | Staff body |
-| `--t-small` | 0.875 / 1.4, 400 | Meta, timestamps (never below 14 px) |
-| `--t-label` | 0.875 / 1.2, 600, letter-spacing .02em | Field labels, badges |
+| Token | Size / line height | Weight / Family | Use |
+|---|---|---|---|
+| `--t-display` | 2.5 / 1.1 | 700 var(--font-display) | Splash title, receipt code, hero numbers |
+| `--t-title` | 1.875 / 1.15 | 700 var(--font-display) | Screen questions ("What happened?", "Good morning") |
+| `--t-heading` | 1.25 / 1.3 | 700 var(--font-display) | Section headings ("My reports", "Polling-day checklist") |
+| `--t-body-lg` | 1.125 / 1.5 | 400 var(--font-body) | Observer and citizen body (default there) |
+| `--t-body` | 1 / 1.5 | 400 var(--font-body) | Staff body |
+| `--t-small` | 0.875 / 1.4 | 400 var(--font-body) | Meta, timestamps (never below 14 px) |
+| `--t-label` | 0.875 / 1.2 | 600, letter-spacing .02em | Field labels, status badges |
 
 - Screen questions are phrased as questions in plain words. Reading age 9–11.
 
-### 4.2 Colour
+### 4.2 Colour & Visual Theme
 
-| Token | Light | Dark | Use |
+The visual theme is anchored in warm paper white with deep ink typography and warm sunlight motifs (the rising sun of democracy in concentric rings). Dark mode is designed as early dawn (a warm dark ground where the sun stays warm), never a stark or cold color inversion.
+
+| Token | Light | Dark (Early Dawn) | Use |
 |---|---|---|---|
-| `--ink` | #0B0B0C | #F4F4F2 | Text, primary button fill, icons |
-| `--ink-2` | #3A3A3D | #C9C9C6 | Secondary text (≥ 7:1 on paper) |
-| `--ink-3` | #5F5F63 | #9D9D99 | Meta only (≥ 4.5:1) |
-| `--paper` | #FFFFFF | #111112 | Surfaces |
-| `--paper-2` | #F4F4F2 | #1B1B1D | Page background, input fill |
-| `--rule` | #D8D8D4 | #34343A | Hairlines, borders |
-| `--focus` | #0B0B0C 3 px outline + 2 px #FFFFFF offset | inverted | Focus ring |
-| `--rule-control` | #707075 | #8C8C92 | Input and control borders (≥ 3:1, WCAG 1.4.11); `--rule` stays for hairlines |
+| `--paper` | #FAF7F0 | #181512 | Page background (warm paper white / warm dawn) |
+| `--paper-card` | #FFFFFF | #221E19 | Surface / card background |
+| `--paper-2` | #F3EFE6 | #2C2721 | Subtle secondary container fill |
+| `--paper-3` | #EAE4D7 | #37312A | Muted control fill |
+| `--ink` | #16130F | #FAF7F0 | Deep ink text, primary button fill, dark icons |
+| `--ink-2` | #4A453E | #D0C9BE | Secondary descriptive text |
+| `--ink-3` | #756F66 | #9C9488 | Meta timestamps, subtle captions |
+| `--rule` | #E5DFC0 | #3D362E | Thin borders, card outlines, separators |
+| `--rule-control` | #8C8476 | #685E53 | Form inputs and control outlines |
+| `--sun` | #E3B060 | #E3B060 | Sunlight accent (sand-ochre; sun stays warm) |
+| `--sun-light` | #F6E3B8 | #4A3A20 | Pale sunlight tint for rings, tile discs |
+| `--sun-pale` | #FBF4E4 | #312615 | Selected card surface, light highlight tint |
+| `--on-ink` | #FAF7F0 | #181512 | Text / icons on top of deep ink |
+
+### 4.3 Status Colours (strictly for status, always with shape + label)
+
+Status colors stay strictly for status and always pair an unambiguous shape and text label:
+
+| Status | Shape | Light Value | Light Background | Dark Value | Dark Background |
+|---|---|---|---|---|---|
+| **Received / Closed** | Green tick | #2E7D32 | #E8F5E9 | #66BB6A | #1B3320 |
+| **In review** | Blue pie / half circle | #1976D2 | #E3F2FD | #64B5F6 | #13283E |
+| **Question for you** | Amber diamond | #E65100 | #FFF3E0 | #FFA726 | #38250E |
+| **On this phone** | Hollow grey circle | #757575 | #EEEEEE | #BDBDBD | #2B2825 |
+| **Danger** | Red triangle | #D32F2F | #FFEBEE | #EF5350 | #3B1B1C |
 
 Status colours have a background and a dark value each; the values in `frontend/ui/tokens.css` are the reference. Staff buttons are 44 px visible with a 48 px tap area. Pictograms use a 2 px stroke on their 40 px grid. Font subsets must include U+1EA0–1EF9 (ẹ ọ ị ụ) and the combining tone marks U+0300–0303, U+0323. The root layout must not add its own header or `<main>` for the new route groups: the shells provide the landmarks.
 

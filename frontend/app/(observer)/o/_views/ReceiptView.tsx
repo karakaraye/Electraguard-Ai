@@ -9,7 +9,7 @@ import { useLocale, useT } from "../../../../lib/i18n/client";
 import type { ReportViewState } from "../../../../lib/outbox";
 import { AppShell, Banner, Button, ButtonLink, ReceiptCard, StatusBadge, UploadItem, UploadList, type ReportStatus, type UploadState } from "../../../../ui";
 import { formatWatDateTime } from "../../../../ui/format";
-import { categoryPictograms, PlaceIcon, ClockIcon } from "../../../../ui/icons";
+import { categoryPictograms, PlaceIcon, ClockIcon, CheckIcon } from "../../../../ui/icons";
 import { AppBarTitle } from "../_components/AppBarTitle";
 import styles from "../_components/observer.module.css";
 import { categoryMeta } from "../_lib/categories";
@@ -77,7 +77,18 @@ export function ReceiptView({ code, receivedAt, justSent, citizen, items, remove
     >
       <BackgroundArt variant="soft" />
       <div className={`${styles.screen} ${styles.wide}`}>
-        <h1 className={styles.title}>{t("o12.title")}</h1>
+        <div className={styles.receiptTopHeader}>
+          <div className={styles.receiptSunRings} aria-hidden="true">
+            <div className={styles.receiptRingOuter}>
+              <div className={styles.receiptRingMid}>
+                <div className={styles.receiptRingTick}>
+                  <CheckIcon size={36} strokeWidth={3} />
+                </div>
+              </div>
+            </div>
+          </div>
+          <h1 className={styles.receiptDisplayTitle}>{t("o12.title")}</h1>
+        </div>
         <div className={styles.receipt}>
           <div className={styles.receiptSide}>
             <ReceiptCard

@@ -1,11 +1,13 @@
 .card {
+  position: relative;
   display: grid;
   gap: var(--s-3);
-  padding: var(--s-5) var(--s-4);
-  border: var(--border-w) solid var(--ink);
-  border-radius: var(--radius);
-  background: var(--paper);
+  padding: var(--s-5) var(--s-5);
+  border: 1.5px solid var(--rule, #e8e3d8);
+  border-radius: var(--radius, 16px);
+  background: var(--paper-card, #ffffff);
   color: var(--ink);
+  box-shadow: var(--shadow-card);
 }
 
 @media (min-width: 600px) {
@@ -14,28 +16,58 @@
   }
 }
 
+/* Ticket cutout notches on left and right */
+.card::before,
+.card::after {
+  content: "";
+  position: absolute;
+  top: 48%;
+  width: 16px;
+  height: 24px;
+  background-color: var(--paper, #faf7f0);
+  border: 1.5px solid var(--rule, #e8e3d8);
+}
+
+.card::before {
+  left: -1px;
+  border-left: 0;
+  border-radius: 0 16px 16px 0;
+}
+
+.card::after {
+  right: -1px;
+  border-right: 0;
+  border-radius: 16px 0 0 16px;
+}
+
 .head {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: var(--s-3);
 }
 
 .tick {
-  flex: none;
+  display: none;
 }
 
 .label {
   margin: 0;
-  font: var(--t-label);
-  font-size: var(--t-base-size);
+  text-align: center;
+  font-family: var(--font-body, "Noto Sans", sans-serif);
+  font-size: 0.9375rem;
+  color: var(--ink-2);
   letter-spacing: var(--t-label-tracking);
 }
 
 .code {
-  margin: var(--s-2) 0 0;
-  font: var(--t-display);
-  font-variant-numeric: tabular-nums slashed-zero;
-  letter-spacing: 0.04em;
+  margin: var(--s-1) 0 0;
+  text-align: center;
+  font-family: var(--font-display, "Bricolage Grotesque", sans-serif);
+  font-size: clamp(1.875rem, 6vw, 2.5rem);
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.05em;
   overflow-wrap: anywhere;
   user-select: all;
 }
@@ -46,20 +78,22 @@
 
 .received {
   margin: 0;
+  text-align: center;
   color: var(--ink-2);
-  font: var(--t-base);
+  font-size: 0.9375rem;
 }
 
 .actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--s-2);
-  margin-top: var(--s-2);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--s-3);
+  margin-top: var(--s-3);
 }
 
 .copyStatus {
   margin: 0;
   min-height: 0;
+  text-align: center;
   color: var(--ok);
   font: var(--t-small);
   font-weight: 600;
@@ -70,26 +104,49 @@
 }
 
 .next {
-  margin-top: var(--s-2);
+  margin-top: var(--s-4);
   padding-top: var(--s-4);
-  border-top: 1px solid var(--rule);
+  border-top: 1px dashed var(--rule, #e8e3d8);
 }
 
 .nextTitle {
-  margin: 0 0 var(--s-2);
-  font: var(--t-heading);
+  margin: 0 0 var(--s-3);
+  font-family: var(--font-display, "Bricolage Grotesque", sans-serif);
+  font-size: 1.125rem;
+  font-weight: 800;
 }
 
 .nextList {
   display: grid;
-  gap: var(--s-2);
+  gap: var(--s-3);
   margin: 0;
-  padding-left: 1.4em;
-  font: var(--t-base);
-  color: var(--ink-2);
+  padding: 0;
+  list-style: none;
+  counter-reset: next-counter;
 }
 
-.nextList li::marker {
+.nextList li {
+  counter-increment: next-counter;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--s-3);
+  font-size: 1rem;
   color: var(--ink);
+  line-height: 1.45;
+}
+
+.nextList li::before {
+  content: counter(next-counter);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--paper-2, #f3efe6);
+  color: var(--ink);
+  font-size: 0.8125rem;
   font-weight: 700;
+  flex: none;
+  margin-top: 2px;
 }

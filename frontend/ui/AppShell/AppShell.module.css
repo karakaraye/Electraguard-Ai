@@ -169,7 +169,8 @@
   width: 100%;
   max-width: 44rem;
   margin: 0 auto;
-  padding: var(--s-5) var(--gutter) var(--s-6);
+  padding: var(--s-5) var(--gutter) calc(var(--s-6) + 4.5rem);
+  scroll-padding-bottom: 5.5rem;
   outline: none;
 }
 

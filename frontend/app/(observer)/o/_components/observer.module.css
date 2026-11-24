@@ -221,11 +221,119 @@
   font-weight: 600;
 }
 
+.displayTitle {
+  margin: 0;
+  font-family: var(--font-display, "Bricolage Grotesque", sans-serif);
+  font-size: clamp(2.125rem, 6.5vw, 2.75rem);
+  font-weight: 800;
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  text-wrap: balance;
+}
+
+.skipButton {
+  background: transparent;
+  border: 0;
+  color: var(--ink-2);
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 1rem;
+  padding: var(--s-2) var(--s-3);
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+}
+
+.onboardingActions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s-4);
+  width: 100%;
+}
+
+.dots {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: var(--s-2);
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--paper-3, #eae4d7);
+  transition: background-color var(--dur-fade) ease;
+}
+
+.dotActive {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--sun, #e3b060);
+}
+
+.safeBullets {
+  list-style: none;
+  margin: var(--s-3) 0 0;
+  padding: 0;
+  display: grid;
+  gap: var(--s-4);
+}
+
+.safeBullet {
+  display: flex;
+  align-items: center;
+  gap: var(--s-4);
+  font-size: 1.125rem;
+  color: var(--ink);
+  font-weight: 500;
+}
+
+.bulletIcon {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--paper-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+}
+
+.stepBadge {
+  font-family: var(--font-body);
+  font-size: 0.9375rem;
+  color: var(--ink-2);
+  font-weight: 600;
+}
+
+.choiceIconDisc {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--paper-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+}
+
+.brandFooterCredit {
+  margin-top: var(--s-6);
+  font-size: 0.875rem;
+  color: var(--ink-3);
+  text-align: center;
+}
+
 /* ---------- Big choice buttons (O-03 choose, O-04 report) ---------- */
 
 .choices {
   display: grid;
-  gap: var(--s-3);
+  gap: var(--s-4);
 }
 
 @media (min-width: 720px) {
@@ -236,14 +344,15 @@
 
 .choice {
   display: grid;
-  grid-template-columns: 40px minmax(0, 1fr) 24px;
+  grid-template-columns: 48px minmax(0, 1fr) 24px;
   align-items: center;
   gap: var(--s-4);
   min-height: 96px;
-  padding: var(--s-4);
-  border: var(--border-w) solid var(--ink);
+  padding: var(--s-4) var(--s-5);
+  border: 1.5px solid var(--rule);
   border-radius: var(--radius);
-  background: var(--paper);
+  background: var(--paper-card, #ffffff);
+  box-shadow: var(--shadow-card);
   color: var(--ink);
   text-align: start;
   text-decoration: none;
@@ -251,6 +360,7 @@
   -webkit-tap-highlight-color: transparent;
   transition:
     transform var(--dur-press) var(--ease-out),
+    border-color var(--dur-fade) ease,
     background-color var(--dur-fade) ease;
 }
 
@@ -266,7 +376,8 @@
 
 @media (hover: hover) and (pointer: fine) {
   .choice:hover {
-    background: var(--paper-2);
+    border-color: var(--sun, #e3b060);
+    background: var(--sun-pale, #fbf4e4);
   }
 }
 
@@ -671,7 +782,64 @@
   height: 48px;
 }
 
-/* ---------- Receipt (O-12) ---------- */
+/* ---------- Receipt (O-12) Visual Refresh ---------- */
+
+.receiptTopHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  margin-bottom: var(--s-3, 12px);
+}
+
+.receiptSunRings {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: var(--s-3, 12px);
+}
+
+.receiptRingOuter {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  background: var(--sun-ring-4, rgba(246, 227, 184, 0.45));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.receiptRingMid {
+  width: 108px;
+  height: 108px;
+  border-radius: 50%;
+  background: var(--sun-ring-3, #f6e3b8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.receiptRingTick {
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  background: var(--ok, #2e7d32);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 14px rgba(46, 125, 50, 0.3);
+}
+
+.receiptDisplayTitle {
+  margin: 0;
+  font-family: var(--font-display, "Bricolage Grotesque", sans-serif);
+  font-size: clamp(2rem, 6.5vw, 2.5rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
 
 .receipt {
   display: grid;
@@ -708,4 +876,224 @@
   max-width: 30ch;
   color: var(--ink-2);
   font: var(--t-base);
+}
+
+/* ---------- Visual Refresh Home Styling (05-home.png) ---------- */
+
+.homeHeader {
+  display: grid;
+  gap: 4px;
+  margin-bottom: var(--s-2, 8px);
+}
+
+.homeGreeting {
+  margin: 0;
+  font-family: var(--font-display, "Bricolage Grotesque", sans-serif);
+  font-size: clamp(2rem, 7vw, 2.75rem);
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+  color: var(--ink);
+}
+
+.homeSubhead {
+  margin: 0;
+  font-family: var(--font-body, "Noto Sans", sans-serif);
+  font-size: 0.9375rem;
+  color: var(--ink-2, #4a453e);
+  font-weight: 500;
+}
+
+.heroReportCard {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 120px;
+  padding: var(--s-5, 24px);
+  border-radius: var(--radius-lg, 24px);
+  background: #1c2320;
+  color: #faf7f0;
+  cursor: pointer;
+  overflow: hidden;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  transition: transform var(--dur-press) var(--ease-out);
+}
+
+.heroReportCard:active {
+  transform: scale(0.985);
+}
+
+.heroReportCard:focus-visible {
+  outline: var(--focus-outline);
+  outline-offset: 3px;
+}
+
+.heroSunDisc {
+  position: absolute;
+  top: 14px;
+  right: 88px;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--sun, #e3b060);
+  opacity: 0.95;
+  box-shadow: 0 0 24px rgba(227, 176, 96, 0.4);
+}
+
+.heroCardContent {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  gap: 6px;
+  max-width: 65%;
+}
+
+.heroCardTitle {
+  margin: 0;
+  font-family: var(--font-display, "Bricolage Grotesque", sans-serif);
+  font-size: 1.5rem;
+  font-weight: 800;
+  line-height: 1.2;
+  color: #ffffff;
+}
+
+.heroCardSubtitle {
+  margin: 0;
+  font-family: var(--font-body, "Noto Sans", sans-serif);
+  font-size: 0.9375rem;
+  line-height: 1.4;
+  color: #d0c9be;
+}
+
+.heroPlusBtn {
+  position: relative;
+  z-index: 2;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: #ffffff;
+  color: #16130f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  flex: none;
+}
+
+.checklistArcCard {
+  display: block;
+  padding: var(--s-4, 16px) var(--s-5, 20px);
+  border: 1.5px solid var(--rule, #e8e3d8);
+  border-radius: var(--radius, 16px);
+  background: var(--paper-card, #ffffff);
+  box-shadow: var(--shadow-card, 0 2px 8px rgba(22, 19, 15, 0.04));
+  text-decoration: none;
+  color: var(--ink);
+  transition: border-color var(--dur-fade) ease;
+}
+
+.checklistArcCard:hover {
+  border-color: var(--sun, #e3b060);
+}
+
+.checklistCardHeader {
+  margin-bottom: var(--s-2, 8px);
+}
+
+.checklistCardTitle {
+  margin: 0;
+  font-family: var(--font-display, "Bricolage Grotesque", sans-serif);
+  font-size: 1.125rem;
+  font-weight: 800;
+  color: var(--ink);
+}
+
+.checklistStageCount {
+  font-family: var(--font-body, "Noto Sans", sans-serif);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--ink-2);
+}
+
+.arcContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 4px;
+}
+
+.arcSvg {
+  width: 100%;
+  max-width: 320px;
+  height: 70px;
+}
+
+.arcLabels {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 330px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--ink-3);
+  margin-top: -6px;
+}
+
+.activeArcLabel {
+  font-weight: 700;
+  color: var(--sun, #e3b060);
+}
+
+.reportsSectionHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: var(--s-3, 12px);
+}
+
+.seeAllLink {
+  font-family: var(--font-body, "Noto Sans", sans-serif);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--ink-2);
+  text-decoration: none;
+}
+
+.seeAllLink:hover {
+  color: var(--ink);
+  text-decoration: underline;
+}
+
+.bottomNav {
+  position: sticky;
+  bottom: 0;
+  margin: var(--s-6, 32px) calc(var(--gutter) * -1) 0;
+  padding: 8px var(--gutter) calc(8px + env(safe-area-inset-bottom));
+  background: var(--paper-card, #ffffff);
+  border-top: 1.5px solid var(--rule, #e8e3d8);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  z-index: var(--z-sticky);
+}
+
+.navItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--ink-3, #756f66);
+  text-decoration: none;
+  padding: 4px 12px;
+  border-radius: var(--radius-sm);
+  transition: color var(--dur-fade) ease;
+}
+
+.navActive {
+  color: var(--ink, #16130f);
 }

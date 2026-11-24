@@ -224,7 +224,17 @@
     "listen": "Listen to this",
     "privacyLink": "Read the full privacy notice",
     "continue": "I understand",
-    "line5": "If you use Speak, your phone's speech service may process your voice to turn it into words."
+    "line5": "If you use Speak, your phone's speech service may process your voice to turn it into words.",
+    "reportTitle": "See something? Report it.",
+    "reportLead": "Tell us what happens at your polling unit.",
+    "safeTitle": "You stay safe.",
+    "safeLine1": "We never ask your name.",
+    "safeLine2": "We remove the location from your photos.",
+    "safeLine3": "Faces can be blurred.",
+    "offlineTitle": "Works without network.",
+    "offlineLead": "Your report waits safely on your phone and sends itself when the signal returns.",
+    "next": "Next",
+    "skip": "Skip"
   },
   "o03": {
     "title": "Who are you?",
@@ -276,7 +286,9 @@
       "clearTitle": "Delete these reports from this phone?",
       "clearBody": "They were never sent. If you delete them, they are gone for good. This cannot be undone.",
       "clearConfirm": "Delete reports"
-    }
+    },
+    "chooseTitle": "How will you take part?",
+    "stepCount": "4 of 4"
   },
   "o04": {
     "title": "Home",
@@ -313,7 +325,10 @@
     "fix": "Fix it",
     "purpose": "Report what you see at your polling unit. Every report helps build a better Nigeria.",
     "tasks": "What you can do",
-    "allReports": "See all my reports"
+    "allReports": "See all my reports",
+    "greeting": "Good morning",
+    "heroSubtitle": "Tell us what you see at your polling unit",
+    "checklistStages": "2 of 5 stages"
   },
   "incident": {
     "draftKept": "Your report is saved on this phone.",
@@ -377,7 +392,7 @@
     "unknownUnitNote": "We will use the ward only.",
     "useToday": "Use my polling unit today: {unit}",
     "noResults": "No polling unit matches \"{query}\". Check the code, or choose step by step.",
-    "selected": "Selected: {place}",
+    "selected": "{place}",
     "listMissing": "The polling-unit list is not on this phone yet. Connect to network once to download it.",
     "listDownloading": "Downloading the polling-unit list ({percent}%)",
     "error": "Choose a polling unit, or choose a ward and tap \"I don't know the polling unit\".",
@@ -544,9 +559,20 @@
     "observed": "Happened {time}",
     "received": "Received {time}",
     "notSentYet": "Not sent yet",
+    "journey": {
+      "received": "Received",
+      "inReview": "In review",
+      "question": "Question for you",
+      "closed": "Closed"
+    },
+    "reviewerQuestion": "REVIEWER QUESTION",
+    "yourReport": "YOUR REPORT",
+    "sendReply": "Send reply",
+    "locationRemoved": "Location removed",
     "question": {
       "title": "Question for you",
       "replyLabel": "Your answer",
+      "replyPlaceholder": "Write your answer",
       "send": "Send answer",
       "sending": "Sending",
       "queued": "Your answer is saved on this phone. It will send when you have network.",
@@ -619,6 +645,7 @@
   },
   "o15": {
     "title": "Polling-day checklist",
+    "answerQuestions": "Answer questions",
     "hint": "Fill each stage when it happens. Each stage sends on its own.",
     "stage": {
       "arrival": "Arrival",

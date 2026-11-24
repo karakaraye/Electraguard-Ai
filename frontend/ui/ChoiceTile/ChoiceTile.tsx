@@ -101,6 +101,9 @@ export function ChoiceTileGroup({
               data-checked={checked || undefined}
               data-disabled={option.disabled || undefined}
               data-testid={`${testId}-${option.value}`}
+              onClick={() => {
+                if (!option.disabled) onChange(option.value);
+              }}
             >
               <input
                 className={styles.input}

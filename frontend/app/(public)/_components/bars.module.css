@@ -20,9 +20,9 @@
 
 .track {
   display: block;
-  height: 12px;
-  border-radius: 2px;
-  background: var(--paper-2);
+  height: 8px;
+  border-radius: var(--radius-pill, 9999px);
+  background: var(--paper-2, #EFECE6);
   overflow: hidden;
 }
 
@@ -34,7 +34,8 @@
 .fill {
   display: block;
   height: 100%;
-  background: var(--ink);
+  border-radius: var(--radius-pill, 9999px);
+  background: var(--sun-accent, #E3B060);
 }
 
 @media (forced-colors: active) {
