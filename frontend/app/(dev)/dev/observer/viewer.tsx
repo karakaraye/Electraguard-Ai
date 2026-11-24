@@ -42,6 +42,7 @@ import {
   FIXTURE_STATES,
   FIXTURE_TEXT,
 } from "./fixtures";
+import { MORE_SCREENS } from "./viewer-more";
 
 const noop = () => undefined;
 
@@ -351,6 +352,7 @@ export const SCREENS: Record<string, Record<string, (t: Translate) => ReactEleme
     "needs-attention": () => <PendingView state="needs_attention" category="late_materials" place={FIXTURE_PLACE} occurredAt={FIXTURE_OCCURRED_AT} offline={false} onHome={noop} />,
     unknown: () => <PendingView state="unknown" offline={false} onHome={noop} />,
   },
+  ...MORE_SCREENS,
 };
 
 export function ObserverStateViewer() {

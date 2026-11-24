@@ -53,6 +53,8 @@ export function HomeScreen() {
   const { offline, back } = useNetwork();
   const [draft, setDraft] = useState<IncidentDraft | null>(null);
   const [questions, setQuestions] = useState(0);
+  const [unread, setUnread] = useState(0);
+  const [discussions, setDiscussions] = useState<{ count: number } | null>(null);
   const [flags] = useState(() => (typeof window === "undefined" ? { pin: false, kept: false } : { pin: takeFlag("eg.pinSaved"), kept: takeFlag("eg.draftKept") }));
   const [keptVisible, setKeptVisible] = useState(flags.kept);
 
@@ -85,8 +87,17 @@ export function HomeScreen() {
         router.replace("/o/start?view=sign-in");
         return;
       }
-      const list = await api("REP-02", { query: { limit: 1 } });
-      if (!cancelled && list.ok) setQuestions(list.data.counts.open_questions);
+      const [list, talks] = await Promise.all([api("REP-02", { query: { limit: 1 } }), api("DIS-01", { query: { status: "open", limit: 100 } })]);
+      if (cancelled) return;
+      if (list.ok) {
+        setQuestions(list.data.counts.open_questions);
+        setUnread(list.data.counts.unread_messages);
+      }
+      // The Discussions row exists only with an invitation or a membership (O-18).
+      if (talks.ok) {
+        const mine = talks.data.items.filter((item) => item.membership === "invited" || item.membership === "member");
+        setDiscussions(mine.length ? { count: mine.filter((item) => item.membership === "invited").length + mine.reduce((sum, item) => sum + item.unread_posts, 0) } : null);
+      }
     })();
     return () => {
       cancelled = true;
@@ -140,6 +151,8 @@ export function HomeScreen() {
       unsentCount={unsent.length + pendingUploads.length}
       needsAttentionCount={attention.length}
       questionCount={questions}
+      unreadCount={unread}
+      discussions={discussions}
       pinSaved={flags.pin}
       draftKept={keptVisible && Boolean(draft)}
       draft={draft ? { category: draft.category_observer, startedAt: draft.created_at } : null}

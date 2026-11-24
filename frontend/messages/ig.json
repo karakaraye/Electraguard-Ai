@@ -189,7 +189,8 @@
       "intakePaused": "Otu gị akwụsịla nnata akụkọ ọhụrụ ugbu a. Echekwara akụkọ gị na ekwentị a. Ọ ga-aga mgbe ha malitere ọzọ.",
       "tooManyTries": "Ị nwaala ọtụtụ ugboro. Chere {minutes, plural, one {nkeji #} other {nkeji #}} wee nwaa ọzọ.",
       "notFound": "Anyị ahụghị ya. Lelee ya wee nwaa ọzọ.",
-      "storageFull": "Ekwentị a ejupụtala. Ziga ihe na-eche, ma ọ bụ hichapụ foto na vidiyo ụfọdụ."
+      "storageFull": "Ekwentị a ejupụtala. Ziga ihe na-eche, ma ọ bụ hichapụ foto na vidiyo ụfọdụ.",
+      "unavailable": "Nke a adịbeghị. Nwaa ọzọ mgbe e mesịrị."
     },
     "discard": {
       "title": "Hichapụ akụkọ a?",
@@ -311,7 +312,9 @@
     "deleteWaiting": "Hichapụ ha",
     "needsAttention": "{count, plural, one {Akụkọ # chọrọ nlebara anya gị tupu e zigaa ya.} other {Akụkọ # chọrọ nlebara anya gị tupu e zigaa ya.}}",
     "fix": "Mezie ya",
-    "purpose": "Kọọ ihe ị hụrụ n'ebe ntuli aka gị. Akụkọ ọ bụla na-enyere aka iwulite Naịjirịa ka mma."
+    "purpose": "Kọọ ihe ị hụrụ n'ebe ntuli aka gị. Akụkọ ọ bụla na-enyere aka iwulite Naịjirịa ka mma.",
+    "tasks": "Ihe ị nwere ike ime",
+    "allReports": "Lee akụkọ m niile"
   },
   "incident": {
     "draftKept": "Echekwara akụkọ gị na ekwentị a.",
@@ -532,7 +535,10 @@
     "loadError": "Anyị enweghị ike iweta akụkọ gị. Nwaa ọzọ.",
     "checklistStage": "Ndepụta: {stage}",
     "resultSheet": "Nlele mpempe akwụkwọ nsonaazụ",
-    "unknownPlace": "Naanị wọọdụ"
+    "unknownPlace": "Naanị wọọdụ",
+    "filterLabel": "Gosi",
+    "more": "Gosi akụkọ ndị ọzọ",
+    "resultCount": "{count, plural, =0 {Egosighị akụkọ ọ bụla} one {Egosiri akụkọ #} other {Egosiri akụkọ #}}"
   },
   "o14": {
     "title": "Akụkọ {ref}",
@@ -545,7 +551,11 @@
       "send": "Ziga azịza",
       "sending": "A na-eziga ya",
       "queued": "Echekwara azịza gị na ekwentị a. Ọ ga-aga mgbe i nwere netwọk.",
-      "sent": "E zigala azịza. Onye nyocha nwere ike ịhụ ya."
+      "sent": "E zigala azịza. Onye nyocha nwere ike ịhụ ya.",
+      "asked": "A jụrụ {time}",
+      "empty": "Buru ụzọ dee azịza gị.",
+      "alreadyAnswered": "E zaala ajụjụ a ma ọ bụ mechie ya. Ị nwere ike iziga ederede gị dị ka ozi.",
+      "sendAsMessage": "Ziga ya dị ka ozi"
     },
     "conversation": {
       "title": "Ozi gị na onye nyocha gị",
@@ -557,7 +567,16 @@
       "send": "Ziga ozi",
       "attach": "Tinye foto ma ọ bụ olu",
       "queued": "Ọ nọ na ekwentị a",
-      "notAssigned": "E kenyebeghị onye nyocha. Ị ka nwere ike ide ihe. Ha ga-ahụ ya."
+      "notAssigned": "E kenyebeghị onye nyocha. Ị ka nwere ike ide ihe. Ha ga-ahụ ya.",
+      "loading": "Anyị na-enweta ozi",
+      "loadError": "Anyị enweghị ike inweta ozi ndị ahụ. Ha ga-apụta mgbe anyị nwere ike ịchọta sava.",
+      "offline": "Enweghị netwọk. Ozi ga-apụta mgbe netwọk dị. Ị ka nwere ike ide; ọ ga-aga mgbe e mesịrị.",
+      "write": "Dee ozi, ma ọ bụ tinye foto ma ọ bụ olu.",
+      "attached": "Etinyere: {name}",
+      "openAttachment": "Mepee faịlụ ahụ",
+      "unsent": "Ozi gị ezigaghị",
+      "answered": "e zaala ya",
+      "closedUnanswered": "emechiri ya na-enweghị azịza"
     },
     "attachments": "Foto, vidiyo, olu",
     "details": "Ihe i kọrọ",
@@ -578,7 +597,26 @@
     },
     "closedNote": "Emechiela akụkọ a. Daalụ maka ịkọ ya.",
     "loadError": "Anyị enweghị ike imeghe akụkọ a. Nwaa ọzọ.",
-    "loading": "A na-emeghe akụkọ"
+    "loading": "A na-emeghe akụkọ",
+    "description": "Ihe i dere",
+    "receivedLabel": "Anatala ya",
+    "withdrawnLabel": "Ewepụla ya",
+    "view": "Mepe {kind, select, photo {foto} video {vidio} other {ọdịyo}} {n}",
+    "add": "Tinye foto, vidio ma ọ bụ olu",
+    "addOffline": "Ị chọrọ netwọk iji tinye faịlụ n'akụkọ e zigara.",
+    "tooLong": "Ekwela ya karịa mkpụrụedemede 2000.",
+    "writesRefused": "Akụkọ a anaghị anabata ozi ọzọ. Echekwara ederede gị n'okpuru ka ị were detuo ya.",
+    "hint": {
+      "inReview": "Onye nyocha na-ele ya anya. Ị nwere ike izigara ya ozi.",
+      "question": "Onye nyocha chọrọ ozi ndị ọzọ. Zaa ajụjụ dị n'elu."
+    },
+    "media": {
+      "tooBig": "Faịlụ a buru ibu. Foto ruo 2 MB, vidio ruo 25 MB, olu ruo 4 MB.",
+      "tooLong": "Vidio ruo sekọnd 60 na olu ruo nkeji 2.",
+      "limit": "Akụkọ nwere ike inwe faịlụ 6 kachasị.",
+      "failed": "Faịlụ ahụ ezigaghị. Lelee netwọk gị ma nwaa ọzọ.",
+      "processing": "A na-akwadebe ya. Ọ ga-emeghe n'ime nkeji ole na ole."
+    }
   },
   "o15": {
     "title": "Ndepụta ụbọchị ntuli aka",
@@ -624,7 +662,9 @@
       "booths": "Ebe nzuzo ịtụ vootu",
       "ink": "Inki",
       "device": "Igwe nnabata",
-      "register": "Akwụkwọ ndebanye aha ndị ntuli aka"
+      "register": "Akwụkwọ ndebanye aha ndị ntuli aka",
+      "stamps": "Stampụ na akara",
+      "other": "Ihe ọzọ"
     },
     "queue": {
       "none": "Enweghị ahịrị",
@@ -643,7 +683,13 @@
     "unanswered": "{count, plural, one {Ajụjụ # enweghị azịza. Ziga n'agbanyeghị?} other {Ajụjụ # enweghị azịza. Ziga n'agbanyeghị?}}",
     "sendAnyway": "Ziga n'agbanyeghị",
     "goBack": "Zaa ha",
-    "draftExists": "Ị nwere akụkọ ị na-emechabeghị. Anyị emepela ya. Mechaa ya ma ọ bụ hichapụ ya mbụ, wee kọọ nke a."
+    "draftExists": "Ị nwere akụkọ ị na-emechabeghị. Anyị emepela ya. Mechaa ya ma ọ bụ hichapụ ya mbụ, wee kọọ nke a.",
+    "answer": {
+      "notSeen": "Ahụghị m ya"
+    },
+    "answerInvalid": "Họrọ otu n'ime azịza ndị ahụ.",
+    "unitRequired": "Họrọ ebe ntuli aka ị nọ. Wọọdụ naanị ya ezughị ebe a.",
+    "unansweredHint": "Ị nwere ike iziga ugbu a ma mezie ndị fọrọ n’oge ọzọ, ma ọ bụ laghachi zaa ha."
   },
   "o16": {
     "title": "Lelee mpempe akwụkwọ nsonaazụ",
@@ -658,7 +704,12 @@
       "reading": "A na-agụ ọnụọgụ si na foto ahụ",
       "readFailed": "Anyị enweghị ike ịgụ ọnụọgụ ndị ahụ. Biko pịnye ha site na mpempe akwụkwọ ahụ.",
       "offline": "Enweghị netwọk, ya mere anyị enweghị ike ịgụ foto ahụ ugbu a. Biko pịnye ọnụọgụ ndị ahụ site na mpempe akwụkwọ ahụ.",
-      "skip": "Pịnye ọnụọgụ kama"
+      "skip": "Pịnye ọnụọgụ kama",
+      "alt": "Foto mpempe akwụkwọ nsonaazụ e tụrụ",
+      "view": "Lee foto ahụ",
+      "tooBig": "Foto a buru ibu. Were ya ọzọ site n'ebe dị anya ntakịrị.",
+      "tooMany": "E gụwo foto dị ukwuu n’ime otu awa gara aga. Pịnye ọnụọgụ ndị ahụ site na mpempe akwụkwọ ahụ.",
+      "unavailable": "Ịgụ foto adịbeghị. Pịnye ọnụọgụ ndị ahụ site na mpempe akwụkwọ ahụ."
     },
     "numbers": {
       "title": "Pịnye kpọmkwem ihe mpempe akwụkwọ ahụ gosiri",
@@ -670,7 +721,9 @@
       "rejected": "Akwụkwọ ntuli aka a jụrụ",
       "blank": "Hapụ ya ka ọ tọgbọ chakoo ma mpempe akwụkwọ ahụ egosighị ya",
       "notNumber": "Jiri naanị ọnụọgụ, dịka 245.",
-      "tooBig": "Ọnụọgụ ahụ karịrị maka otu ebe ntuli aka. Lelee ya ọzọ."
+      "tooBig": "Ọnụọgụ ahụ karịrị maka otu ebe ntuli aka. Lelee ya ọzọ.",
+      "checkThis": "Lelee ọnụọgụ a",
+      "required": "Pịnye ọnụọgụ dị na mpempe akwụkwọ ahụ. Pịnye 0 ma ọ bụrụ na mpempe akwụkwọ ahụ gosiri 0."
     },
     "confirm": "Elelela m ọnụọgụ ọ bụla na mpempe akwụkwọ e dobere",
     "confirmError": "Pịa igbe ahụ mgbe i lelechara ọnụọgụ ọ bụla.",
@@ -722,8 +775,24 @@
       "leaveConfirm": "Hapụ",
       "removed": "Ị nọghịzi na mkparịta ụka a.",
       "tooLong": "Mee ka ihe i dere dị n'okpuru mkpụrụedemede {max}.",
-      "earlier": "Gosi ozi ndị bu ụzọ"
-    }
+      "earlier": "Gosi ozi ndị bu ụzọ",
+      "more": "Gosi ederede ndị ọhụrụ",
+      "emptyPost": "Buru ụzọ dee ihe.",
+      "noUnitCode": "Kpọọ aha wọọdụ, ọ bụghị ebe ntuli aka.",
+      "flag": "Kọọ ederede a",
+      "flagTitle": "Gịnị bụ nsogbu nke ederede a?",
+      "flagBody": "Onye nlekọta mkparịta ụka ga-elele ya. A gaghị agwa onye dere ya onye kọọrọ ya.",
+      "flagged": "Daalụ. Onye nlekọta mkparịta ụka ga-elele ederede ahụ.",
+      "flagReason": {
+        "names_a_person": "Ọ na-akpọ aha mmadụ",
+        "too_specific_location": "Ọ na-enye ebe kpọmkwem",
+        "abusive": "Ọ bụ okwu mkparị",
+        "other": "Ihe ọzọ"
+      }
+    },
+    "offline": "Enweghị netwọk. Mkparịta ụka ga-apụta mgbe netwọk dị.",
+    "needNetwork": "Ị chọrọ netwọk iji sonye ma ọ bụ pụọ na mkparịta ụka.",
+    "unread": "{count, plural, one {# ọhụrụ} other {# ọhụrụ}}"
   },
   "o19": {
     "title": "Gịnị ka ị chọrọ ịma?",
@@ -739,7 +808,12 @@
     "note": "Azịza na-esi naanị na ntuziaka akwadoro. Ha abụghị ndụmọdụ iwu.",
     "error": "Anyị enweghị ike inweta azịza. Nwaa ọzọ.",
     "empty": "Pịnye ajụjụ ị chọrọ ịjụ.",
-    "otherLanguage": "Akwadoro ntụziaka a naanị n'asụsụ {language}."
+    "otherLanguage": "Akwadoro ntụziaka a naanị n'asụsụ {language}.",
+    "appTitle": "Jụọ ElectraGuard",
+    "ready": "Azịza adịla njikere.",
+    "version": "ụdị {version}",
+    "openSourceNamed": "Mepee {title}",
+    "noGuides": "Echekwabeghị ntuziaka ọ bụla na ekwentị a. A na-echekwa ha mgbe ị mepere ha na netwọk."
   },
   "o20": {
     "title": "Ntọala",
@@ -751,7 +825,9 @@
       "confirmLabel": "Pịnye PIN ọhụrụ ahụ ọzọ",
       "save": "Chekwaa PIN ọhụrụ",
       "saved": "Echekwala PIN ọhụrụ gị.",
-      "wrongCurrent": "PIN gị dị ugbu a ezighị ezi."
+      "wrongCurrent": "PIN gị dị ugbu a ezighị ezi.",
+      "format": "PIN gị bụ ọnụọgụ 6.",
+      "reused": "Họrọ PIN ị na-adabeghị eji, ọ bụghịkwa nke dị na kaadị gị."
     },
     "privacy": "Ọkwa nzuzo",
     "storage": "Na ekwentị a: {reports, plural, =0 {ọ dịghị akụkọ na-eche} one {akụkọ # na-eche} other {akụkọ # na-eche}}, {size} nke foto, vidiyo na olu",
@@ -764,7 +840,9 @@
       "unsentWarning": "{count, plural, one {E zigabeghị akụkọ #. Ọ ga-efu.} other {E zigabeghị akụkọ #. Ha ga-efu.}}",
       "sendFirst": "Buru ụzọ ziga ha",
       "confirm": "Hichapụ ma pụọ",
-      "signedOut": "Ị pụọla."
+      "signedOut": "Ị pụọla.",
+      "everywhere": "Pụọ n'ekwentị niile",
+      "unsentKept": "{count, plural, one {E zigabeghị akụkọ #. Ọ ga-anọ na ekwentị a ma ziga mgbe ị banyere ọzọ na koodu a.} other {E zigabeghị akụkọ #. Ha ga-anọ na ekwentị a ma ziga mgbe ị banyere ọzọ na koodu a.}}"
     },
     "version": "Mbipụta {version}"
   },
@@ -788,7 +866,9 @@
     "sms": "Site na SMS: ziga STATUS {code} gaa na {shortCode}",
     "checkStatus": "Lelee ọnọdụ",
     "another": "Kọọ ihe ọzọ",
-    "citizenLabel": "Akụkọ nwa amaala, ọ bụghị nke onye nlebanya nwere ikike"
+    "citizenLabel": "Akụkọ nwa amaala, ọ bụghị nke onye nlebanya nwere ikike",
+    "testNumber": "nọmba nnwale",
+    "secretMissing": "Enweghị ike itinye faịlụ a site na ekwentị a."
   },
   "p01": {
     "title": "Lelee akụkọ",
@@ -812,7 +892,8 @@
       "title": "Onye nyocha nwere ajụjụ",
       "replyLabel": "Azịza gị",
       "send": "Ziga azịza",
-      "sent": "E zigala azịza. Daalụ."
+      "sent": "E zigala azịza. Daalụ.",
+      "needSecret": "Ajụjụ na-eche. Ị nwere ike iza ya naanị n'ekwentị zigara akụkọ ahụ."
     },
     "explain": {
       "received": "Akụkọ gị na-eche onye nyocha.",
@@ -821,6 +902,7 @@
       "closed": "Nyocha agwụla.",
       "withdrawn": "E wepụla akụkọ a."
     },
-    "sms": "Enweghị smartphone? Ziga STATUS na koodu gị gaa na {shortCode}."
+    "sms": "Enweghị smartphone? Ziga STATUS na koodu gị gaa na {shortCode}.",
+    "checkCode": "Lelee {code}"
   }
 }

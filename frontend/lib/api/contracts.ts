@@ -24,8 +24,8 @@ export type Caller =
 export type ContractStatus = "EXISTS" | "CHANGE" | "NEW";
 
 export type ContractId =
-  | "AUTH-01" | "AUTH-02" | "AUTH-03" | "AUTH-04" | "AUTH-05" | "AUTH-06" | "AUTH-07"
-  | "REF-01"
+  | "AUTH-01" | "AUTH-02" | "AUTH-03" | "AUTH-04" | "AUTH-05" | "AUTH-06" | "AUTH-07" | "AUTH-08"
+  | "REF-01" | "REF-02"
   | "REP-01" | "REP-02" | "REP-03" | "REP-04" | "REP-05" | "REP-06" | "REP-07"
   | "MED-01" | "MED-02" | "MED-03" | "MED-04" | "MED-05"
   | "MSG-01" | "MSG-02"
@@ -73,10 +73,14 @@ export const OPERATIONS = {
   "AUTH-05.accept_invite": { contract: "AUTH-05", method: "POST", path: "/auth/staff/invite", callers: ["public"], status: "NEW", idempotent: false, body: "json" },
   "AUTH-06": { contract: "AUTH-06", method: "POST", path: "/auth/sign-out", callers: ["observer", ...STAFF], status: "CHANGE", idempotent: false, body: "json" },
   "AUTH-07": { contract: "AUTH-07", method: "GET", path: "/auth/me", callers: ALL, status: "CHANGE", idempotent: false },
+  /** Gap decision G12: change an existing personal PIN. */
+  "AUTH-08": { contract: "AUTH-08", method: "POST", path: "/auth/observer/pin/change", callers: OBS, status: "NEW", idempotent: false, body: "json" },
 
   // REF
   "REF-01.index": { contract: "REF-01", method: "GET", path: "/reference/areas", callers: ALL, status: "NEW", idempotent: false },
   "REF-01.state": { contract: "REF-01", method: "GET", path: "/reference/areas/{state_code}", callers: ALL, status: "NEW", idempotent: false },
+  /** Gap decisions G4/G5: the signed-in observer's coverage area and party labels. */
+  "REF-02": { contract: "REF-02", method: "GET", path: "/reference/settings", callers: OBS, status: "NEW", idempotent: false },
 
   // REP
   "REP-01": { contract: "REP-01", method: "POST", path: "/reports", callers: OBS, status: "CHANGE", idempotent: true, body: "json" },
@@ -229,9 +233,11 @@ export interface OperationTypes {
   "AUTH-05.accept_invite": Io<T.AcceptInviteRequest, T.StaffSignInResponse>;
   "AUTH-06": Io<T.SignOutRequest, T.NoContent>;
   "AUTH-07": Io<undefined, T.MeResponse>;
+  "AUTH-08": Io<T.ObserverPinChangeRequest, T.NoContent>;
 
   "REF-01.index": Io<undefined, T.AreaIndexResponse>;
   "REF-01.state": Io<undefined, T.StateAreasResponse>;
+  "REF-02": Io<undefined, T.ObserverSettingsResponse>;
 
   "REP-01": Io<T.ReportCreateRequest, T.ReportCreateResponse | T.WithdrawnStub>;
   "REP-02": Io<undefined, T.ReportListResponse, T.ReportListQuery>;

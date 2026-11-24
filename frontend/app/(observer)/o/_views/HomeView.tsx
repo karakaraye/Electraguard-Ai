@@ -3,15 +3,17 @@ import { BackgroundArt } from "../../../../ui/BackgroundArt/BackgroundArt";
 
 /* O-04 Home */
 
-import { useState } from "react";
+import Link from "next/link";
+import { useState, type ComponentType } from "react";
 import { useLocale, useT } from "../../../../lib/i18n/client";
 import type { Category } from "../../../../lib/api/types";
-import { AppShell, Banner, Button, LanguageSwitcher, ReportList, ReportRow, Sheet, type ReportStatus } from "../../../../ui";
+import { AppShell, Banner, Button, ButtonLink, LanguageSwitcher, ReportList, ReportRow, Sheet, type ReportStatus } from "../../../../ui";
 import { formatWatDateTime } from "../../../../ui/format";
-import { categoryPictograms, ChevronRightIcon } from "../../../../ui/icons";
+import { categoryPictograms, ChevronRightIcon, type IconProps } from "../../../../ui/icons";
 import { AppBarTitle } from "../_components/AppBarTitle";
-import { ReportPictogram } from "../_components/pictograms";
+import { AskPictogram, ChecklistPictogram, DiscussionsPictogram, MessagesPictogram, ReportPictogram } from "../_components/pictograms";
 import styles from "../_components/observer.module.css";
+import s from "../_components/screens.module.css";
 import { categoryMeta } from "../_lib/categories";
 
 export type HomeRow = {
@@ -33,6 +35,10 @@ export type HomeViewProps = {
   unsentCount: number;
   needsAttentionCount: number;
   questionCount: number;
+  /** Reports with unread reviewer messages (REP-02 counts). */
+  unreadCount?: number;
+  /** Discussions: null when the observer has none (the row is hidden, O-18), else invitations + unread posts. */
+  discussions?: { count: number } | null;
   pinSaved: boolean;
   draftKept: boolean;
   draft: { category: Category | null; startedAt: number } | null;
@@ -116,7 +122,18 @@ export function HomeView(props: HomeViewProps) {
           data-testid="o04-needs-attention"
         />
       ) : null}
-      {questionCount > 0 ? <Banner tone="attn" title={t("o04.questionBanner", { count: questionCount })} data-testid="o04-question" /> : null}
+      {questionCount > 0 ? (
+        <Banner
+          tone="attn"
+          title={t("o04.questionBanner", { count: questionCount })}
+          action={
+            <ButtonLink href="/o/messages" variant="secondary" data-testid="o04-answer">
+              {t("o04.answer")}
+            </ButtonLink>
+          }
+          data-testid="o04-question"
+        />
+      ) : null}
     </div>
   );
   const hasBanner =
@@ -162,6 +179,25 @@ export function HomeView(props: HomeViewProps) {
           </button>
         </div>
 
+        <nav aria-label={t("o04.tasks")} className={styles.tight}>
+          <ul className={s.tasks}>
+            <TaskLink href="/o/checklist" icon={ChecklistPictogram} label={t("o04.checklist")} testId="o04-checklist" />
+            <TaskLink
+              href="/o/messages"
+              icon={MessagesPictogram}
+              label={t("o04.messages")}
+              count={questionCount + (props.unreadCount ?? 0)}
+              attn={questionCount > 0}
+              countLabel={questionCount > 0 ? t("o04.questionBanner", { count: questionCount }) : t("o17.newMessage", { count: props.unreadCount ?? 0 })}
+              testId="o04-messages"
+            />
+            {props.discussions ? (
+              <TaskLink href="/o/discussions" icon={DiscussionsPictogram} label={t("o04.discussions")} count={props.discussions.count} countLabel={t("o18.unread", { count: props.discussions.count })} testId="o04-discussions" />
+            ) : null}
+            <TaskLink href="/o/ask" icon={AskPictogram} label={t("o04.ask")} testId="o04-ask" />
+          </ul>
+        </nav>
+
         <section aria-labelledby="o04-reports" className={styles.tight}>
           <h2 className={styles.sectionTitle} id="o04-reports">
             {t("o04.myReports")}
@@ -189,6 +225,11 @@ export function HomeView(props: HomeViewProps) {
               {t("o04.myReportsCount", { count: 0 })}
             </p>
           )}
+          {rows.length ? (
+            <Link href="/o/reports" className={s.textLink} data-testid="o04-all-reports">
+              {t("o04.allReports")}
+            </Link>
+          ) : null}
           {rows.length === 0 ? (
             <p className={styles.purpose} data-testid="o04-purpose">
               {t("o04.purpose")}
@@ -198,8 +239,68 @@ export function HomeView(props: HomeViewProps) {
       </div>
 
       <Sheet open={menu} onClose={() => setMenu(false)} title={t("ui.menu")} data-testid="o04-menu">
+        <ObserverMenu />
         <LanguageSwitcher variant="compact" />
       </Sheet>
     </AppShell>
+  );
+}
+
+function TaskLink({
+  href,
+  icon: Icon,
+  label,
+  count = 0,
+  attn,
+  countLabel,
+  testId,
+}: {
+  href: string;
+  icon: ComponentType<IconProps>;
+  label: string;
+  count?: number;
+  attn?: boolean;
+  countLabel?: string;
+  testId: string;
+}) {
+  return (
+    <li>
+      <Link href={href} className={s.taskLink} data-testid={testId}>
+        <Icon size={32} aria-hidden="true" />
+        <span>{label}</span>
+        {count > 0 ? (
+          <span className={`${s.count} ${attn ? s.countAttn : ""}`}>
+            <span aria-hidden="true">{count}</span>
+            <span className="eg-sr-only">{countLabel}</span>
+          </span>
+        ) : (
+          <span />
+        )}
+        <ChevronRightIcon className={s.chev} aria-hidden="true" />
+      </Link>
+    </li>
+  );
+}
+
+/** The top-bar menu on every observer screen that has one: Settings, Messages, Discussions, Ask. */
+export function ObserverMenu() {
+  const t = useT();
+  const links: Array<{ href: string; key: string }> = [
+    { href: "/o/settings", key: "o20.title" },
+    { href: "/o/reports", key: "o13.title" },
+    { href: "/o/messages", key: "o17.title" },
+    { href: "/o/discussions", key: "o18.title" },
+    { href: "/o/ask", key: "o04.ask" },
+  ];
+  return (
+    <ul className={s.menuList}>
+      {links.map((link) => (
+        <li key={link.href}>
+          <Link href={link.href} className={s.menuLink} data-testid={`menu-${link.href.split("/").pop()}`}>
+            {t(link.key)}
+          </Link>
+        </li>
+      ))}
+    </ul>
   );
 }

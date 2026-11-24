@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-/** Development only: every observer screen O-01 … O-12 in every spec state, from local fixtures. */
+/** Development only: every observer screen O-01 … O-20, C-01 and P-01 in every spec state, from local fixtures. */
 export default function ObserverStatesPage() {
   if (process.env.NODE_ENV === "production") notFound();
   return (

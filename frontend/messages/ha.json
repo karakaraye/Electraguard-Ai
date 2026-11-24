@@ -189,7 +189,8 @@
       "intakePaused": "Ƙungiyarka ta dakatar da karɓar sababbin rahotanni na ɗan lokaci. An ajiye rahotonka a kan wannan wayar. Za a aika idan sun sake farawa.",
       "tooManyTries": "Ka gwada sau da yawa. Ka jira {minutes, plural, one {minti #} other {mintuna #}} sannan ka sake gwadawa.",
       "notFound": "Ba mu same shi ba. Ka duba sannan ka sake gwadawa.",
-      "storageFull": "Wannan wayar ta cika. Ka aika abin da ke jira, ko ka cire wasu hotuna da bidiyo."
+      "storageFull": "Wannan wayar ta cika. Ka aika abin da ke jira, ko ka cire wasu hotuna da bidiyo.",
+      "unavailable": "Wannan bai samu ba tukuna. Ka sake gwadawa daga baya."
     },
     "discard": {
       "title": "A goge wannan rahoton?",
@@ -311,7 +312,9 @@
     "deleteWaiting": "Share su",
     "needsAttention": "{count, plural, one {Rahoto # yana buƙatar hankalinka kafin a iya aika shi.} other {Rahotanni # suna buƙatar hankalinka kafin a iya aika su.}}",
     "fix": "Gyara shi",
-    "purpose": "Ka ba da rahoton abin da ka gani a rumfar zaɓenka. Kowane rahoto yana taimakawa wajen gina Najeriya mafi kyau."
+    "purpose": "Ka ba da rahoton abin da ka gani a rumfar zaɓenka. Kowane rahoto yana taimakawa wajen gina Najeriya mafi kyau.",
+    "tasks": "Abin da za ka iya yi",
+    "allReports": "Duba duk rahotannina"
   },
   "incident": {
     "draftKept": "An ajiye rahotonka a kan wannan wayar.",
@@ -532,7 +535,10 @@
     "loadError": "Ba mu iya samo rahotanninka ba. Sake gwadawa.",
     "checklistStage": "Jerin abubuwa: {stage}",
     "resultSheet": "Duba takardar sakamako",
-    "unknownPlace": "Mazaɓa kawai"
+    "unknownPlace": "Mazaɓa kawai",
+    "filterLabel": "Nuna",
+    "more": "Nuna ƙarin rahotanni",
+    "resultCount": "{count, plural, =0 {Babu rahoto da aka nuna} one {An nuna rahoto #} other {An nuna rahotanni #}}"
   },
   "o14": {
     "title": "Rahoto {ref}",
@@ -545,7 +551,11 @@
       "send": "Aika amsa",
       "sending": "Ana aikawa",
       "queued": "An ajiye amsarka a kan wannan wayar. Za a aika idan ka samu sabis.",
-      "sent": "An aika amsa. Mai dubawa zai iya ganinta."
+      "sent": "An aika amsa. Mai dubawa zai iya ganinta.",
+      "asked": "An yi tambayar {time}",
+      "empty": "Fara rubuta amsarka.",
+      "alreadyAnswered": "An riga an amsa wannan tambaya ko an rufe ta. Za ka iya aika rubutunka a matsayin saƙo.",
+      "sendAsMessage": "Aika a matsayin saƙo"
     },
     "conversation": {
       "title": "Saƙonni tsakaninka da mai dubawa",
@@ -557,7 +567,16 @@
       "send": "Aika saƙo",
       "attach": "Ƙara hoto ko murya",
       "queued": "Yana kan wannan wayar",
-      "notAssigned": "Ba a sanya mai dubawa ba tukuna. Za ka iya rubutawa, zai gani."
+      "notAssigned": "Ba a sanya mai dubawa ba tukuna. Za ka iya rubutawa, zai gani.",
+      "loading": "Ana samo saƙonni",
+      "loadError": "Ba mu iya samo saƙonnin ba. Za su bayyana idan mun sami sabar.",
+      "offline": "Babu sabis. Saƙonni za su bayyana idan sabis ya dawo. Za ka iya rubutawa; zai tafi daga baya.",
+      "write": "Rubuta saƙo, ko ƙara hoto ko saƙon murya.",
+      "attached": "An ƙara: {name}",
+      "openAttachment": "Buɗe fayil ɗin",
+      "unsent": "Saƙonka da bai tafi ba",
+      "answered": "an amsa",
+      "closedUnanswered": "an rufe ba amsa"
     },
     "attachments": "Hotuna, bidiyo, murya",
     "details": "Abin da ka kai rahoto",
@@ -578,7 +597,26 @@
     },
     "closedNote": "An rufe wannan rahoton. Mun gode da rahotonka.",
     "loadError": "Ba mu iya buɗe wannan rahoton ba. Sake gwadawa.",
-    "loading": "Ana buɗe rahoto"
+    "loading": "Ana buɗe rahoto",
+    "description": "Abin da ka rubuta",
+    "receivedLabel": "An karɓa",
+    "withdrawnLabel": "An janye",
+    "view": "Buɗe {kind, select, photo {hoto} video {bidiyo} other {saƙon murya}} {n}",
+    "add": "Ƙara hoto, bidiyo ko murya",
+    "addOffline": "Kana buƙatar sabis don ƙara fayil a rahoton da aka aika.",
+    "tooLong": "Kada ya wuce haruffa 2000.",
+    "writesRefused": "Wannan rahoto ba ya karɓar saƙonni yanzu. An ajiye rubutunka a ƙasa don ka kwafa.",
+    "hint": {
+      "inReview": "Mai dubawa yana duba shi. Za ka iya aika masa saƙo.",
+      "question": "Mai dubawa yana buƙatar ƙarin bayani. Amsa tambayar da ke sama."
+    },
+    "media": {
+      "tooBig": "Wannan fayil ya yi girma. Hoto har 2 MB, bidiyo har 25 MB, murya har 4 MB.",
+      "tooLong": "Bidiyo har daƙiƙa 60 da murya har minti 2.",
+      "limit": "Rahoto zai iya samun fayiloli 6 a mafi yawa.",
+      "failed": "Fayil ɗin bai tafi ba. Ka duba sabis ɗinka ka sake gwadawa.",
+      "processing": "Ana shirya shi. Zai buɗe nan da ƙanƙanin lokaci."
+    }
   },
   "o15": {
     "title": "Jerin abubuwan ranar zaɓe",
@@ -624,7 +662,9 @@
       "booths": "Kebin kaɗa ƙuri'a a ɓoye",
       "ink": "Tawada",
       "device": "Na'urar tantancewa",
-      "register": "Rajistar masu zaɓe"
+      "register": "Rajistar masu zaɓe",
+      "stamps": "Tambari da hatimi",
+      "other": "Wani abu daban"
     },
     "queue": {
       "none": "Babu layi",
@@ -643,7 +683,13 @@
     "unanswered": "{count, plural, one {Tambaya # ba ta da amsa. A aika haka?} other {Tambayoyi # ba su da amsa. A aika haka?}}",
     "sendAnyway": "Aika haka nan",
     "goBack": "Amsa su",
-    "draftExists": "Akwai rahoton da ba ka gama ba. Mun buɗe shi. Ka gama shi ko ka goge shi tukuna, sannan ka kai rahoton wannan."
+    "draftExists": "Akwai rahoton da ba ka gama ba. Mun buɗe shi. Ka gama shi ko ka goge shi tukuna, sannan ka kai rahoton wannan.",
+    "answer": {
+      "notSeen": "Ban gani ba"
+    },
+    "answerInvalid": "Zaɓi ɗaya daga cikin amsoshin.",
+    "unitRequired": "Zaɓi rumfar zaɓe da kake ciki. Mazaɓa kaɗai ba ta isa a nan ba.",
+    "unansweredHint": "Za ka iya aikawa yanzu ka cike sauran daga baya, ko ka koma ka amsa su."
   },
   "o16": {
     "title": "Duba takardar sakamako",
@@ -658,7 +704,12 @@
       "reading": "Ana karanta lambobi daga hoton",
       "readFailed": "Ba mu iya karanta lambobin ba. Don Allah ka rubuta su daga takardar.",
       "offline": "Babu sabis, don haka ba za mu iya karanta hoton yanzu ba. Don Allah ka rubuta lambobin daga takardar.",
-      "skip": "Rubuta lambobin maimakon haka"
+      "skip": "Rubuta lambobin maimakon haka",
+      "alt": "Hoton takardar sakamako da aka liƙa",
+      "view": "Duba hoton",
+      "tooBig": "Wannan hoto ya yi girma. Sake ɗaukarsa daga ɗan nesa.",
+      "tooMany": "An karanta hotuna da yawa a cikin awa ɗaya da ta wuce. Rubuta lambobin daga takardar.",
+      "unavailable": "Karanta hotuna bai samu ba tukuna. Rubuta lambobin daga takardar."
     },
     "numbers": {
       "title": "Rubuta daidai abin da ke kan takardar",
@@ -670,7 +721,9 @@
       "rejected": "Ƙuri'un da aka ƙi",
       "blank": "Bar shi babu komai idan takardar ba ta nuna shi ba",
       "notNumber": "Yi amfani da lambobi kawai, kamar 245.",
-      "tooBig": "Wannan lambar ta yi yawa ga rumfar zaɓe ɗaya. Ka sake dubawa."
+      "tooBig": "Wannan lambar ta yi yawa ga rumfar zaɓe ɗaya. Ka sake dubawa.",
+      "checkThis": "Duba wannan lamba",
+      "required": "Rubuta lambar da ke kan takardar. Rubuta 0 idan takardar ta nuna 0."
     },
     "confirm": "Na duba kowace lamba da takardar da aka liƙa",
     "confirmError": "Ka yi alama a akwatin bayan ka duba kowace lamba.",
@@ -722,8 +775,24 @@
       "leaveConfirm": "Fita",
       "removed": "Ba ka cikin wannan tattaunawa yanzu.",
       "tooLong": "Kada saƙo ya wuce haruffa {max}.",
-      "earlier": "Nuna rubuce-rubucen da suka gabata"
-    }
+      "earlier": "Nuna rubuce-rubucen da suka gabata",
+      "more": "Nuna sababbin rubutu",
+      "emptyPost": "Fara rubuta wani abu.",
+      "noUnitCode": "Ambaci mazaɓa, ba rumfar zaɓe ba.",
+      "flag": "Kai rahoton wannan rubutu",
+      "flagTitle": "Menene matsalar wannan rubutu?",
+      "flagBody": "Mai kula da tattaunawa zai duba shi. Ba za a gaya wa mai rubutun wanda ya kai rahoto ba.",
+      "flagged": "Na gode. Mai kula da tattaunawa zai duba rubutun.",
+      "flagReason": {
+        "names_a_person": "Yana ambaton mutum",
+        "too_specific_location": "Yana ba da ainihin wuri",
+        "abusive": "Yana cin mutunci",
+        "other": "Wani abu daban"
+      }
+    },
+    "offline": "Babu sabis. Tattaunawa za su bayyana idan sabis ya dawo.",
+    "needNetwork": "Kana buƙatar sabis don shiga ko fita daga tattaunawa.",
+    "unread": "{count, plural, one {# sabo} other {# sabbi}}"
   },
   "o19": {
     "title": "Me kake son sani?",
@@ -739,7 +808,12 @@
     "note": "Amsoshi suna fitowa ne daga takardun bayani da aka amince da su kawai. Ba shawarar shari'a ba ne.",
     "error": "Ba mu iya samun amsa ba. Sake gwadawa.",
     "empty": "Rubuta tambayar da kake son yi.",
-    "otherLanguage": "An amince da wannan takardar bayani a {language} kawai."
+    "otherLanguage": "An amince da wannan takardar bayani a {language} kawai.",
+    "appTitle": "Tambayi ElectraGuard",
+    "ready": "Amsar ta shirya.",
+    "version": "sigar {version}",
+    "openSourceNamed": "Buɗe {title}",
+    "noGuides": "Babu takardun bayani da aka ajiye a wannan wayar tukuna. Ana ajiye su idan ka buɗe su da sabis."
   },
   "o20": {
     "title": "Saituna",
@@ -751,7 +825,9 @@
       "confirmLabel": "Sake rubuta sabon PIN",
       "save": "Ajiye sabon PIN",
       "saved": "An ajiye sabon PIN ɗinka.",
-      "wrongCurrent": "PIN ɗinka na yanzu ba daidai ba ne."
+      "wrongCurrent": "PIN ɗinka na yanzu ba daidai ba ne.",
+      "format": "PIN ɗinka lambobi 6 ne.",
+      "reused": "Zaɓi PIN da ba ka taɓa amfani da shi ba, kuma ba wanda ke kan katinka ba."
     },
     "privacy": "Sanarwar sirri",
     "storage": "A kan wannan wayar: {reports, plural, =0 {babu rahoto da ke jira} one {rahoto # yana jira} other {rahotanni # suna jira}}, {size} na hotuna da bidiyo",
@@ -764,7 +840,9 @@
       "unsentWarning": "{count, plural, one {Ba a aika rahoto # ba tukuna. Zai ɓace.} other {Ba a aika rahotanni # ba tukuna. Za su ɓace.}}",
       "sendFirst": "Fara aika su",
       "confirm": "Share ka fita",
-      "signedOut": "Ka fita."
+      "signedOut": "Ka fita.",
+      "everywhere": "Fita a kowace waya",
+      "unsentKept": "{count, plural, one {Ba a aika rahoto # ba tukuna. Zai zauna a wannan wayar kuma ya tafi idan ka sake shiga da wannan lambar.} other {Ba a aika rahotanni # ba tukuna. Za su zauna a wannan wayar kuma su tafi idan ka sake shiga da wannan lambar.}}"
     },
     "version": "Siga {version}"
   },
@@ -788,7 +866,9 @@
     "sms": "Ta SMS: aika STATUS {code} zuwa {shortCode}",
     "checkStatus": "Duba matsayi",
     "another": "Kai wani rahoto daban",
-    "citizenLabel": "Rahoton ɗan ƙasa, ba daga mai sa ido da aka amince da shi ba"
+    "citizenLabel": "Rahoton ɗan ƙasa, ba daga mai sa ido da aka amince da shi ba",
+    "testNumber": "lambar gwaji",
+    "secretMissing": "Ba za a iya ƙara wannan fayil daga wannan wayar ba."
   },
   "p01": {
     "title": "Duba rahoto",
@@ -812,7 +892,8 @@
       "title": "Mai dubawa yana da tambaya",
       "replyLabel": "Amsarka",
       "send": "Aika amsa",
-      "sent": "An aika amsa. Mun gode."
+      "sent": "An aika amsa. Mun gode.",
+      "needSecret": "Ana jiran amsar wata tambaya. Za ka iya amsa ta ne kawai a wayar da ta aika rahoton."
     },
     "explain": {
       "received": "Rahotonka yana jiran mai dubawa.",
@@ -821,6 +902,7 @@
       "closed": "An gama dubawa.",
       "withdrawn": "An janye wannan rahoton."
     },
-    "sms": "Ba ka da wayar zamani? Aika STATUS da lambarka zuwa {shortCode}."
+    "sms": "Ba ka da wayar zamani? Aika STATUS da lambarka zuwa {shortCode}.",
+    "checkCode": "Duba {code}"
   }
 }
