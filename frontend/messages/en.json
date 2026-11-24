@@ -219,6 +219,8 @@
   "ob": {
     "title1": "Report what you see at the polling unit.",
     "body1": "A trained reviewer reads every report. You get a receipt code to follow it.",
+    "title3": "No network? It still works.",
+    "body3": "Your report waits safely on this phone and sends itself when the network is back.",
     "next": "Next",
     "skip": "Skip",
     "progress": "Page {current} of {total}"

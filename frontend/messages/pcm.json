@@ -220,6 +220,8 @@
   "ob": {
     "title1": "Report wetin you see for polling unit.",
     "body1": "One trained reviewer dey read every report. You go get receipt code to follow am.",
+    "title3": "Network no dey? E still dey work.",
+    "body3": "Your report go wait well for this phone, e go send by itself when network come back.",
     "next": "Next",
     "skip": "Skip",
     "progress": "Page {current} of {total}"

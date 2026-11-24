@@ -10,10 +10,10 @@ import { adoptWaitingItems, removeItems, setPaused, useOutbox } from "../../../.
 import { normaliseObserverCode, observerCodeValid, pinTooSimple } from "../_lib/codes";
 import { useFocusTitle, useNetwork } from "../_lib/network";
 import { lastCode, localeChosen, markNoticeSeen, noticeSeen, signedIn, updateFromMe, useObserverSession } from "../_lib/session";
-import { ChooseView, LanguageView, NoticeView, RevokedView, SetPinView, SignInView, WelcomeView, type SignInError } from "../_views/StartViews";
+import { ChooseView, LanguageView, NoticeView, RevokedView, SetPinView, SignInView, WelcomeView, OfflineWelcomeView, type SignInError } from "../_views/StartViews";
 
-type View = "language" | "welcome" | "notice" | "choose" | "sign-in" | "set-pin" | "revoked";
-const VIEWS: View[] = ["language", "welcome", "notice", "choose", "sign-in", "set-pin", "revoked"];
+type View = "language" | "welcome" | "notice" | "offline" | "choose" | "sign-in" | "set-pin" | "revoked";
+const VIEWS: View[] = ["language", "welcome", "notice", "offline", "choose", "sign-in", "set-pin", "revoked"];
 
 function firstView(): View {
   if (!localeChosen()) return "language";
@@ -45,7 +45,7 @@ export function StartFlow() {
   useEffect(() => {
     if (!ready) return;
     const next = requested && VIEWS.includes(requested) ? requested : firstView();
-    if (session?.code && next !== "revoked" && next !== "language" && next !== "welcome" && next !== "notice") {
+    if (session?.code && next !== "revoked" && next !== "language" && next !== "welcome" && next !== "notice" && next !== "offline") {
       router.replace("/o");
       return;
     }
@@ -195,15 +195,17 @@ export function StartFlow() {
             markNoticeSeen(NOTICE_VERSION);
             // Read again from Settings (O-20): back to Settings, not into sign-in.
             if (params.get("from") === "settings") router.push("/o/settings");
-            else go("choose");
+            else go("offline");
           }}
         />
       );
+    case "offline":
+      return <OfflineWelcomeView offline={offline} onBack={() => go("notice")} onContinue={() => go("choose")} />;
     case "choose":
       return (
         <ChooseView
           offline={offline}
-          onBack={() => go("notice")}
+          onBack={() => go("offline")}
           onObserver={() => {
             if (!code) setCode(lastCode());
             go("sign-in");

@@ -220,6 +220,8 @@
   "ob": {
     "title1": "Ròyìn ohun tí o rí ní ibùdó ìdìbò.",
     "body1": "Olùyẹ̀wò tí a ti kọ́ ń ka gbogbo ìròyìn. Wàá gba kóòdù ìjẹ́rìísí láti tẹ̀lé e.",
+    "title3": "Kò sí nẹ́tíwọ̀ọ̀kì? Ó ṣì ń ṣiṣẹ́.",
+    "body3": "Ìròyìn rẹ yóò dúró láìléwu lórí fóònù yìí, yóò sì lọ fúnra rẹ̀ nígbà tí nẹ́tíwọ̀ọ̀kì bá padà.",
     "next": "Èyí tó kàn",
     "skip": "Fò ó",
     "progress": "Ojú-ìwé {current} nínú {total}"

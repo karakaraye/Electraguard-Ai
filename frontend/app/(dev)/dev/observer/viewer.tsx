@@ -28,7 +28,7 @@ import {
   type WhereViewProps,
 } from "../../../(observer)/o/_views/IncidentViews";
 import { PendingView, ReceiptView, type ReceiptViewProps } from "../../../(observer)/o/_views/ReceiptView";
-import { ChooseView, LanguageView, NoticeView, RevokedView, SetPinView, SignInView, WelcomeView, type SignInViewProps } from "../../../(observer)/o/_views/StartViews";
+import { ChooseView, LanguageView, NoticeView, RevokedView, SetPinView, SignInView, WelcomeView, OfflineWelcomeView, type SignInViewProps } from "../../../(observer)/o/_views/StartViews";
 import {
   FIXTURE_AREAS,
   FIXTURE_CODE,
@@ -234,6 +234,10 @@ export const SCREENS: Record<string, Record<string, (t: Translate) => ReactEleme
   ob1: {
     first: () => <WelcomeView onBack={noop} onNext={noop} onSkip={noop} />,
     offline: () => <WelcomeView onBack={noop} onNext={noop} onSkip={noop} offline />,
+  },
+  ob3: {
+    first: () => <OfflineWelcomeView onBack={noop} onContinue={noop} />,
+    offline: () => <OfflineWelcomeView onBack={noop} onContinue={noop} offline />,
   },
   o02: {
     first: () => <NoticeView onBack={noop} onContinue={noop} />,

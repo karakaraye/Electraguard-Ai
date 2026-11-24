@@ -220,6 +220,8 @@
   "ob": {
     "title1": "Ka ba da rahoton abin da ka gani a rumfar zaɓe.",
     "body1": "Ƙwararren mai dubawa yana karanta kowane rahoto. Za ka sami lambar rasiti don bin diddiginsa.",
+    "title3": "Babu sabis? Har yanzu yana aiki.",
+    "body3": "Rahotonka zai jira lafiya a wannan wayar, kuma za a aika shi da kansa idan sabis ya dawo.",
     "next": "Na gaba",
     "skip": "Tsallake",
     "progress": "Shafi {current} cikin {total}"

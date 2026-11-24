@@ -11,6 +11,7 @@ test("first run: setup PIN, own PIN, report with a photo, receipt; one report an
   await page.getByTestId("o01-en").click();
   await page.getByTestId("ob1-next").click();
   await page.getByTestId("o02-continue").click();
+  await page.getByTestId("ob3-next").click();
   await page.getByTestId("o03-observer").click();
   await page.getByTestId("o03-code").fill(code.toLowerCase().replace("-", " "));
   await page.getByTestId("o03-pin").fill(setupPin);

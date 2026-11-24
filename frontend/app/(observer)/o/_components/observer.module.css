@@ -891,3 +891,14 @@
   outline: var(--focus-outline);
   outline-offset: var(--focus-offset);
 }
+
+/* A short welcome page sits in the middle of the screen, not hanging from the top. */
+.centredPage {
+  min-height: calc(100dvh - 240px);
+  align-content: center;
+}
+
+.centredPage .safeArt {
+  max-width: 360px;
+  margin-bottom: var(--s-3);
+}

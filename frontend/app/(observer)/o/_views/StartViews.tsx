@@ -148,6 +148,53 @@ export function WelcomeView({ onBack, onNext, onSkip, offline, banner }: Welcome
   );
 }
 
+/** Welcome page 3 of 3: reports wait on the phone and send themselves (spec screen 5). */
+export function OfflineWelcomeView({ onBack, onContinue, offline, banner }: Shell & { onBack: () => void; onContinue: () => void }) {
+  const t = useT();
+  return (
+    <AppShell
+      title={<AppBarTitle />}
+      onBack={onBack}
+      offline={offline}
+      banner={banner}
+      actions={<WelcomeBar page={3} onNext={onContinue} nextLabel={t("common.continue")} />}
+      data-testid="ob3"
+    >
+      <div className={`${styles.screen} ${styles.centredPage}`}>
+        <OfflineArt />
+        <h1 className={styles.welcomeTitle}>{t("ob.title3")}</h1>
+        <p className={styles.lead}>{t("ob.body3")}</p>
+      </div>
+    </AppShell>
+  );
+}
+
+/**
+ * Stand-in for art plate E (spec B6): a phone with three paper envelopes waiting beside it
+ * and the sun rising behind. Replaced by the hand-drawn plate when it arrives.
+ */
+function OfflineArt() {
+  return (
+    <svg className={styles.safeArt} viewBox="0 0 320 168" aria-hidden="true" focusable="false">
+      <circle cx="160" cy="96" r="72" fill="var(--sun-wash)" />
+      <circle cx="160" cy="96" r="44" fill="var(--sun)" />
+      <path d="M0 150 Q100 138 170 144 T320 140 V168 H0Z" fill="var(--art-ground)" />
+      <g transform="translate(100 52)">
+        <rect width="62" height="102" rx="10" fill="var(--fixed-ink)" />
+        <rect x="6" y="9" width="50" height="78" rx="4" fill="var(--paper-raised)" />
+        <path d="M14 30 H48 M14 40 H42 M14 50 H46" stroke="var(--art-line)" strokeWidth="3" strokeLinecap="round" />
+        <circle cx="31" cy="94" r="3" fill="var(--paper-raised)" />
+      </g>
+      <g fill="var(--paper-raised)" stroke="var(--art-line)" strokeWidth="1.4" strokeLinejoin="round">
+        <rect x="178" y="124" width="52" height="32" rx="3" />
+        <rect x="186" y="110" width="52" height="32" rx="3" />
+        <rect x="194" y="96" width="52" height="32" rx="3" />
+      </g>
+      <path d="M194 98 L220 116 L246 98" fill="none" stroke="var(--art-line)" strokeWidth="1.4" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
 /** Page dots, Skip and Next: the welcome pages' action bar. */
 export function WelcomeBar({ page, onNext, onSkip, nextLabel, nextTestId }: { page: 1 | 2 | 3; onNext: () => void; onSkip?: () => void; nextLabel?: string; nextTestId?: string }) {
   const t = useT();

@@ -220,6 +220,8 @@
   "ob": {
     "title1": "Kọọ ihe ị hụrụ n'ebe ntuli aka.",
     "body1": "Onye nyocha a zụrụ azụ na-agụ akụkọ ọ bụla. Ị ga-enweta koodu nnata iji soro ya.",
+    "title3": "Enweghị netwọk? Ọ ka na-arụ ọrụ.",
+    "body3": "Akụkọ gị ga-echere n'udo na ekwentị a, ọ ga-agakwa n'onwe ya mgbe netwọk lọghachiri.",
     "next": "Ọzọ",
     "skip": "Wufee",
     "progress": "Peeji {current} n'ime {total}"
