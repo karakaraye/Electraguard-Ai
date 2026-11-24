@@ -11,7 +11,7 @@ from django.core.exceptions import RequestDataTooBig
 from django.db import OperationalError, transaction
 from django.db.models import Q, Sum
 from django.db.models.functions import Length
-from django.http import HttpResponse, JsonResponse, StreamingHttpResponse
+from django.http import FileResponse, HttpResponse, JsonResponse
 from django.utils import timezone
 from django.views.decorators.cache import never_cache
 from PIL import Image
@@ -495,6 +495,20 @@ def partial_response(raw, header, content_type="image/jpeg"):
     return response
 
 
+class ByteRangeReader:
+    def __init__(self, handle, length):
+        self.handle = handle
+        self.remaining = length
+
+    def read(self, size):
+        block = self.handle.read(min(size, self.remaining))
+        self.remaining -= len(block)
+        return block
+
+    def close(self):
+        self.handle.close()
+
+
 def file_response(key, header, content_type):
     """Stream a stored file, or one byte range of it, without loading it into memory."""
     try:
@@ -509,16 +523,12 @@ def file_response(key, header, content_type):
     first, last = span or (0, size - 1)
     handle.seek(first)
 
-    def chunks(remaining=last - first + 1):
-        with handle:
-            while remaining > 0:
-                block = handle.read(min(256 * 1024, remaining))
-                if not block:
-                    return
-                remaining -= len(block)
-                yield block
-
-    response = StreamingHttpResponse(chunks(), status=206 if span else 200, content_type=content_type)
+    response = FileResponse(
+        ByteRangeReader(handle, last - first + 1),
+        status=206 if span else 200,
+        content_type=content_type,
+    )
+    response.block_size = 256 * 1024
     response["Content-Length"] = last - first + 1
     if span:
         response["Content-Range"] = f"bytes {first}-{last}/{size}"
@@ -654,6 +664,8 @@ def download(request, reference):
 
     if response.status_code in (200, 206):
         if reviewer and not log_download(request, item or legacy, as_attachment, reason):
+            if response.streaming:
+                response.file_to_stream.close()
             return error(503, "service_unavailable", "Private media is temporarily unavailable.")
         response["Content-Disposition"] = f'{"attachment" if as_attachment else "inline"}; filename="{name}"'
         if not response.streaming:

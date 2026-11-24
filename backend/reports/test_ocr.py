@@ -14,6 +14,7 @@ from . import test_v1_reports
 from .media_storage import photo_key, storage
 from .models import MediaItem, OcrRead, Report
 from .result_ocr import OcrUnavailable, parse_lines
+from .test_media import body
 
 URL = "/api/v1/result-sheets/ocr"
 LINES = [
@@ -120,8 +121,9 @@ class OcrEndpointTests(TestCase):
         detail = self.client.get(f"/api/v1/reports/{report.pk}").json()
         self.assertNotIn("result_flags", detail)
         downloaded = self.client.get(f"/api/v1/media/{evidence.pk}/content")
-        self.assertEqual(downloaded.status_code, 200, downloaded.content)
-        self.assertEqual(sha256(downloaded.content).hexdigest(), evidence.sha256)
+        downloaded_bytes = body(downloaded)
+        self.assertEqual(downloaded.status_code, 200, downloaded_bytes)
+        self.assertEqual(sha256(downloaded_bytes).hexdigest(), evidence.sha256)
         reuse = self.post(self.sheet(ocr_id))
         self.assertEqual(reuse.json()["error"]["fields"]["result_sheet.ocr_id"]["code"], "invalid")
         self.assertEqual(MediaItem.objects.count(), 1)

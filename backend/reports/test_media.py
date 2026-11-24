@@ -264,7 +264,9 @@ class PhotoUploadTests(TestCase):
         self.assertFalse(storage().path(pending_key).exists())
         self.client.force_login(self.observer)
         self.assertEqual(self.complete(pending).json()["error"]["code"], "report_closed")
-        self.assertEqual(self.client.get(f"/api/v1/media/{media['id']}/content").status_code, 200)
+        response = self.client.get(f"/api/v1/media/{media['id']}/content")
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(body(response))
 
     def test_withdrawal_removes_clean_and_pending_files(self):
         first = self.upload_url()

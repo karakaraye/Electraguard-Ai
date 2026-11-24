@@ -226,7 +226,9 @@ class RecordingTests(TestCase):
         self.assertNotIn("transcript", self.client.get(f"/api/v1/reports/{self.report.pk}").json()["media"][0])
 
         self.assign()
-        self.assertEqual(self.client.get(url).status_code, 200)
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(body(response))
         self.assertEqual(self.client.get(url + "?variant=original", HTTP_X_MEDIA_ACCESS_REASON="x").status_code, 404)
         case = self.client.get(f"/api/v1/review/cases/{self.report.pk}").json()
         self.assertEqual(case["media"][0]["transcript"], {

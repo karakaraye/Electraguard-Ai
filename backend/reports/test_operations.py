@@ -18,6 +18,7 @@ from accounts.models import Organisation, User
 
 from .media_storage import photo_key, storage
 from .models import AssignmentBatch, MediaItem, Report, ReviewEvent, Triage
+from .test_media import body as media_body
 from .v1_views import receipt
 
 ASSIGN = "/api/v1/assignments"
@@ -160,7 +161,9 @@ class CoordinatorTests(TestCase):
             storage().write(photo_key(photo.organisation_id, photo.pk), b"abc")
             self.client.force_login(self.reviewer)
             self.assertEqual(self.client.get(case).status_code, 200)
-            self.assertEqual(self.client.get(media, HTTP_X_MEDIA_ACCESS_REASON="Synthetic review").status_code, 200)
+            response = self.client.get(media, HTTP_X_MEDIA_ACCESS_REASON="Synthetic review")
+            self.assertEqual(response.status_code, 200)
+            self.assertTrue(media_body(response))
             self.client.force_login(self.coordinator)
             result = self.post([{"report_id": str(report.pk), "reviewer_id": str(self.other.pk), "version": 0}])
             self.assertTrue(result.json()["results"][0]["ok"])
