@@ -7,13 +7,13 @@
  * working.
  */
 
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useEffect, useState, useSyncExternalStore, type ReactNode } from "react";
 import { api, onApiEvent } from "../../../../lib/api/client";
 import { useT } from "../../../../lib/i18n/client";
-import { kick, markWaitingCode, setPaused, startSync, useOutbox } from "../../../../lib/outbox";
+import { kick, markWaitingCode, resumeAfterIntakePause, setPaused, startSync, useOutbox } from "../../../../lib/outbox";
 import { Button, Field, Sheet } from "../../../../ui";
-import { clearSession, getSession, markExpired, signedIn, useObserverSession } from "../_lib/session";
+import { clearSession, getSession, markExpired, signedIn, updateFromMe, useObserverSession } from "../_lib/session";
 import styles from "./observer.module.css";
 
 /* ---------- "Enter your PIN" prompt store ---------- */
@@ -47,7 +47,6 @@ function registerServiceWorker() {
 }
 
 export function ObserverRuntime({ children }: { children: ReactNode }) {
-  const router = useRouter();
   const pathname = usePathname();
   const { session } = useObserverSession();
   const outbox = useOutbox();
@@ -71,6 +70,26 @@ export function ObserverRuntime({ children }: { children: ReactNode }) {
     [],
   );
 
+  // Intake paused (R5): while a report waits for it, re-read AUTH-07 every minute and send as soon as intake reopens.
+  const waitingForIntake = outbox.items.some((item) => item.state === "queued" && item.wait_reason === "intake_paused");
+  useEffect(() => {
+    if (!waitingForIntake) return;
+    let cancelled = false;
+    const check = async () => {
+      if (!navigator.onLine) return;
+      const me = await api("AUTH-07", {});
+      if (cancelled || !me.ok) return;
+      updateFromMe(me.data);
+      if (me.data.authenticated && !me.data.user.organisation.intake_paused) await resumeAfterIntakePause();
+    };
+    void check();
+    const timer = window.setInterval(() => void check(), 60_000);
+    return () => {
+      cancelled = true;
+      window.clearInterval(timer);
+    };
+  }, [waitingForIntake]);
+
   // Session expired while something waits to send: ask for the PIN once.
   useEffect(() => {
     if (outbox.paused === "auth" && getSession()) setPinOpen(true);
@@ -84,9 +103,12 @@ export function ObserverRuntime({ children }: { children: ReactNode }) {
       if (code) await markWaitingCode(code);
       clearSession();
       setPaused(null);
-      if (!pathname.startsWith("/o/start")) router.replace("/o/start?view=revoked");
+      // A full navigation: Home reacts to the cleared session with its own redirect, which would otherwise win the race.
+      if (!pathname.startsWith("/o/start") || !window.location.search.includes("view=revoked")) {
+        window.location.replace("/o/start?view=revoked");
+      }
     })();
-  }, [outbox.paused, pathname, router]);
+  }, [outbox.paused, pathname]);
 
   return (
     <>

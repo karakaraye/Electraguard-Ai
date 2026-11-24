@@ -25,7 +25,7 @@ export {
   unsentFor,
   waitingCodeItems,
 } from "./store";
-export { kick, retryMedia, sendNow, startSync, stopSync } from "./sync";
+export { kick, resumeAfterIntakePause, retryMedia, sendNow, startSync, stopSync } from "./sync";
 
 /** The whole outbox mirror (loads it from the phone on first use). */
 export function useOutbox(): OutboxSnapshot {

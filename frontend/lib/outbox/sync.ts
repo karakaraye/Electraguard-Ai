@@ -93,6 +93,21 @@ export async function sendNow() {
   kick();
 }
 
+/**
+ * AUTH-07 says intake is open again (R5): reports waiting out a pause try now
+ * instead of sitting out the rest of the 600 s Retry-After.
+ */
+export async function resumeAfterIntakePause() {
+  let changed = false;
+  for (const item of getSnapshot().items) {
+    if (item.state === "queued" && item.wait_reason === "intake_paused" && item.next_at > Date.now()) {
+      await saveItem({ ...item, next_at: 0 });
+      changed = true;
+    }
+  }
+  if (changed) kick();
+}
+
 function currentItem(id: string): OutboxItem | undefined {
   return getSnapshot().items.find((item) => item.id === id);
 }
@@ -304,8 +319,21 @@ async function sendMedia(itemId: string, mediaId: string) {
   }
   const secret = item.channel === "citizen" ? item.receipt_secret : undefined;
 
-  // 1. Start (or resume) the session. A replay with the same key returns current progress.
-  if (!media.upload_id) {
+  // 1. Refresh an existing session after a retry or restart. The last chunk
+  // may have reached the server before its response reached this phone.
+  if (media.upload_id) {
+    const progress = await api("MED-02.progress", { params: { upload_id: media.upload_id }, receipt_secret: secret });
+    if (progress.ok) {
+      media = (await updateMedia(itemId, mediaId, { received_bytes: progress.data.received_bytes }))!;
+    } else if (progress.error.code === "upload_expired") {
+      await updateMedia(itemId, mediaId, { start_key: uuidv4(), upload_id: null, received_bytes: 0, state: "waiting", next_at: 0 });
+      again = true;
+      return;
+    } else if (progress.error.code !== "upload_completed") {
+      await failMedia(itemId, media, progress);
+      return;
+    }
+  } else {
     const start = await api("MED-01", {
       params: { report_id: item.server.id },
       body: {
