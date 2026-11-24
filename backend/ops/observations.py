@@ -41,7 +41,7 @@ def expected_units(organisation):
             code = lga["lga_code"]
             if state_code in states or code in selected_lgas:
                 units = {code: name for ward in lga["wards"] for code, name in ward["units"]}
-                lgas[code] = (lga["lga_name"], units)
+                lgas[code] = (lga["name"], units)
     return lgas
 
 

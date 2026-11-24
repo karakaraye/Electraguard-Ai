@@ -115,6 +115,17 @@ class RumourErrorTests(TwoOrganisations):
         self.assertEqual(code_of(response), "rate_limited")
         self.assertEqual(response.status_code, 429)
 
+    def test_known_area_is_named_from_the_reference_data(self):
+        from io import StringIO
+
+        from django.core.management import call_command
+
+        call_command("load_reference_areas", stdout=StringIO())
+        created = self.create(area={"state_code": "SYN-KN", "lga_code": "SYN-KN-01"})
+        self.assertEqual(created.status_code, 201, created.content)
+        self.assertEqual(created.json()["area"]["lga_name"], "Fictional LGA 1")
+        self.assertEqual(created.json()["area"]["state_name"], "Synthetic Kano")
+
     def test_image_errors(self):
         def upload(content, name="x.jpg", kind="image/jpeg"):
             return self.client.post(self.url, {
@@ -656,9 +667,12 @@ class CoverageChecklistTests(TwoOrganisations):
     def test_counts_use_latest_checklist_and_no_answers(self):
         from reference.models import AreaDataset
 
+        from io import StringIO
+
+        from django.core.management import call_command
+
+        call_command("load_reference_areas", stdout=StringIO())
         release = AreaDataset.objects.first()
-        if release is None:
-            self.skipTest("no reference areas loaded")
         state_code, state = next(iter(release.states.items()))
         lga = state["lgas"][0]
         unit = lga["wards"][0]["units"][0][0]
