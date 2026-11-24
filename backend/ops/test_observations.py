@@ -41,7 +41,11 @@ class OperationsTests(TestCase):
         self.assertEqual(len(response["items"]), 1)
         warning = response["items"][0]
         self.assertEqual(warning["report_count"], 5)
-        self.assertEqual(warning["baseline"], 0.14)
+        self.assertEqual(warning["observed"], 5)
+        self.assertIn(warning["baseline"], ["same_area_earlier", "peer_areas"])
+        self.assertIn(warning["detector"], ["spike", "threshold"])
+        self.assertIsNotNone(warning["expected"])
+        self.assertIn("vote buying", warning["explanation"])
         result = self.client.post(
             f'/api/v1/ops/clusters/{warning["id"]}/review', {"note": "Reviewed"}, content_type="application/json",
         )
