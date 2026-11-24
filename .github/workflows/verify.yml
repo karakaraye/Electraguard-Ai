@@ -42,6 +42,8 @@ jobs:
       - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
         with:
           python-version: "3.12"
+      - name: Install ffmpeg for video and voice-note processing
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends ffmpeg
       - name: Install backend dependencies
         run: python -m pip install -r backend/requirements.txt
       - name: Configure the isolated test application
@@ -55,7 +57,7 @@ jobs:
           python backend/manage.py migrate --noinput
           python backend/manage.py makemigrations --check --dry-run
       - name: Run the PostgreSQL-backed suite
-        run: python backend/manage.py test accounts reports config
+        run: python backend/manage.py test accounts approved_answers config discussions intelligence ops phone_channels publicdata reference reports rumours security staff
       - name: Check production Django settings
         env:
           DJANGO_DEBUG: "false"

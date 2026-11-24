@@ -22,6 +22,12 @@ docker compose -f deploy/compose.yaml up -d --wait backend frontend gateway
 
 After migration, verify the sign-in page and authenticated HTTPS workflow from the intended private network. Check production cookie flags, unauthorised access, a maximum-size accepted photo, and report confirmation replay. Confirm no database or origin ports are reachable from client networks. Verify the worker starts separately with the `triage` profile and that manual review works while it is stopped.
 
+## Video and voice-note worker
+
+The `media-worker` service runs `python manage.py run_media`. It re-encodes uploaded video and voice notes, removes their metadata, applies automatic face blur, and writes local Whisper transcripts. It shares the `private-media` volume with the backend. Until it processes an item, the observer sees the item as saved and processing, and only the assigned reviewer can open the verified original, with a recorded reason. Media the observer asked to blur is never shown unblurred.
+
+The image bundles the YuNet face detector and, by default, the `Systran/faster-whisper-small` model in `/opt/electraguard/whisper`. Build with `--build-arg WHISPER_MODEL=` to leave the model out. Voice notes then still work and their transcripts are reported as unavailable. The worker processes one item at a time. A 60-second 1280 x 720 video took 68 seconds with blur requested and 88 seconds with the separate reviewer copy, on four CPU cores. The image sets `ORT_DISABLE_TELEMETRY=1`, because the onnxruntime library used for speech detection otherwise starts Microsoft usage telemetry. An item that fails three attempts is marked failed and its original is deleted.
+
 ## Readiness and triage alerts
 
 Use the backend readiness check for PostgreSQL connectivity and run the operations command from the restricted operator environment. Its JSON contains the intake setting, aggregate triage counts, and the age in seconds of the oldest report with pending triage. Run it at the interval approved by the deployment owner.

@@ -65,9 +65,10 @@ def closure_snapshot(report):
     ]}
     pending = cancel_report_uploads(report)
     media = [
-        {"id": str(pk), "sha256": digest}
-        for pk, digest in report.media_items.filter(organisation_id=report.organisation_id)
-        .order_by("pk").values_list("pk", "sha256")
+        # A recording still being processed is identified by its verified upload hash.
+        {"id": str(pk), "sha256": digest} if digest else {"id": str(pk), "original_sha256": original, "status": status}
+        for pk, digest, original, status in report.media_items.filter(organisation_id=report.organisation_id)
+        .order_by("pk").values_list("pk", "sha256", "original_sha256", "status")
     ]
     if media or pending:
         snapshot.update(media_ids=media, pending_uploads=pending)

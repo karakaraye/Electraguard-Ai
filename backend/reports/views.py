@@ -112,7 +112,7 @@ def upload_evidence(request, reference):
 @api_view(["GET"])
 def download_evidence(request, reference, attachment_id):
     if request.user.has_role(User.Role.REVIEWER):
-        # New reports use MED-04, where unblurred access requires a recorded reason.
+        # Pre-v1 reports only. New reports use MED-04, where reviewers see blurred copies.
         accessible = org_scope(request, Report).filter(
             assigned_reviewer=request.user, receipt_code__isnull=True,
         )

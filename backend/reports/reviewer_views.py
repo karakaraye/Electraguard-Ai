@@ -18,7 +18,7 @@ from .citizen_views import reply_message
 from .idempotency import idempotent
 from .incident_input import CATEGORIES, KINDS, aware_datetime, field
 from .models import Evidence, MediaItem, Report, ReviewEvent, Triage, UploadSession
-from .media_lifecycle import describe_photo
+from .media_lifecycle import describe_media, describe_transcript
 from .v1_views import STATES, identity, missing, question_id
 from .workflow import closure_snapshot, record_change
 
@@ -58,7 +58,7 @@ def current_triage(report):
     return triage if triage and triage.organisation_id == report.organisation_id else None
 
 
-def urgency_rules(report, photo_count):
+def urgency_rules(report, photo_count, video_count=0, audio_count=0):
     details = report.incident_details
     reasons = []
     level = "normal"
@@ -74,14 +74,15 @@ def urgency_rules(report, photo_count):
         reasons.append(flagged)
     if details.get("firsthand") is not None:
         reasons.append("seen_firsthand" if details["firsthand"] else "told_by_someone")
-    if photo_count:
-        reasons.append("photo")
+    for kind, count in (("video", video_count), ("photo", photo_count), ("audio", audio_count)):
+        if count:
+            reasons.append(kind)
     if not report.observer_id:
         reasons.append("citizen_report")
     return level, reasons
 
 
-def suggestions(report, photo_count):
+def suggestions(report, photo_count, video_count=0, audio_count=0):
     triage = current_triage(report)
     ready = triage and triage.status == Triage.Status.READY
     if ready and triage.suggestions:
@@ -90,7 +91,7 @@ def suggestions(report, photo_count):
             result[name] = {**result[name], **report.review_suggestions.get(name, {})}
         return result
     category = LEGACY_CATEGORY.get(triage.category) if ready else None
-    level, reasons = urgency_rules(report, photo_count)
+    level, reasons = urgency_rules(report, photo_count, video_count, audio_count)
     values = {}
     for name, value, evidence in (("category", category, []), ("urgency", level if ready else None, reasons)):
         decision = report.review_suggestions.get(name, {})
@@ -106,8 +107,8 @@ def suggestions(report, photo_count):
     }
 
 
-def queue_item(report, photo_count, events):
-    suggestion = suggestions(report, photo_count)
+def queue_item(report, photo_count, events, video_count=0, audio_count=0):
+    suggestion = suggestions(report, photo_count, video_count, audio_count)
     category, urgency = suggestion["category"], suggestion["urgency"]
     observed = report.incident_details.get("category_observer") or "not_sure"
     triage = current_triage(report)
@@ -127,7 +128,7 @@ def queue_item(report, photo_count, events):
         },
         "area": report.incident_details.get("area"),
         "occurred_at": wat(report.occurred_at) if report.occurred_at else None,
-        "media_counts": {"photo": photo_count, "video": 0, "audio": 0},
+        "media_counts": {"photo": photo_count, "video": video_count, "audio": audio_count},
         "has_open_question": report.status == Status.NEEDS_CLARIFICATION, "unread_messages": 0,
         "flags": {"possible_duplicate": False, "result_sheet_flags": 0, "possible_names": False},
         "last_activity_at": wat(events[-1].created_at if events else report.created_at),
@@ -161,7 +162,7 @@ def queue_parameters(query):
 def matches(item, filters):
     values = {
         **item, **(item["area"] or {}), "category": item["category"]["value"],
-        "urgency": item["urgency"]["level"], "has_evidence": "true" if item["media_counts"]["photo"] else "false",
+        "urgency": item["urgency"]["level"], "has_evidence": "true" if any(item["media_counts"].values()) else "false",
     }
     return all(values.get(name) in choices for name, choices in filters.items())
 
@@ -195,8 +196,8 @@ def queue(request):
     scoped = cases(request)
     counts = {STATES[state]: scoped.filter(status=state).count() for state in ACTIVE}
 
-    def photo_count(model):
-        photo_rows = org_scope(request, model).filter(report_id=OuterRef("pk")).order_by()
+    def photo_count(model, **kind):
+        photo_rows = org_scope(request, model).filter(report_id=OuterRef("pk"), **kind).order_by()
         return Coalesce(
             Subquery(photo_rows.values("report_id").annotate(n=Count("pk")).values("n"), output_field=IntegerField()),
             Value(0),
@@ -204,11 +205,12 @@ def queue(request):
 
     reports = scoped.filter(status__in=[state for state, wire in STATES.items() if wire in filters["status"]])
     reports = reports.select_related("triage").annotate(
-        photo_count=photo_count(MediaItem) + photo_count(Evidence),
+        photo_count=photo_count(MediaItem, kind="photo") + photo_count(Evidence),
+        video_count=photo_count(MediaItem, kind="video"), audio_count=photo_count(MediaItem, kind="audio"),
     ).defer("description", "redacted_description", "redactions").prefetch_related(Prefetch("review_events", queryset=report_events(request), to_attr="case_events"))
     ordered = []
     for report in reports:
-        item = queue_item(report, report.photo_count, report.case_events)
+        item = queue_item(report, report.photo_count, report.case_events, report.video_count, report.audio_count)
         if not matches(item, filters):
             continue
         key = (-URGENCIES.index(item["urgency"]["level"]), not report.incident_details.get("danger_now", False),
@@ -235,8 +237,8 @@ def describe_case_media(request, report):
     ]
     for item in org_scope(request, MediaItem).filter(report=report).order_by("created_at", "pk"):
         media.append({
-            **describe_photo(item), "sha256": item.sha256, "original_sha256": item.original_sha256,
-            "integrity_verified": True, "transcript": None,
+            **describe_media(item), "sha256": item.sha256 or None, "original_sha256": item.original_sha256,
+            "integrity_verified": True, "transcript": describe_transcript(item),
         })
     return media
 
@@ -323,10 +325,10 @@ def case(request, reference):
         "checklist": report.structured_details if report.kind == "checklist" else None,
         "result_sheet": report.structured_details if report.kind == "result_sheet" else None, "media": media,
         "pending_uploads": [
-            {"id": str(upload.pk), "kind": "photo", "size_bytes": upload.size_bytes, "received_bytes": upload.received_bytes}
+            {"id": str(upload.pk), "kind": upload.kind, "size_bytes": upload.size_bytes, "received_bytes": upload.received_bytes}
             for upload in pending
         ],
-        "suggestions": suggestions(report, len(media)), "duplicates": [], "result_sheet_flags": report.result_flags,
+        "suggestions": suggestions(report, *(sum(item["kind"] == kind for item in media) for kind in ("photo", "video", "audio"))), "duplicates": [], "result_sheet_flags": report.result_flags,
         "related_claims": [], "name_check": {"possible_names": False},
         "open_question": next((item for item in messages if item["question_state"] == "open"), None),
         "conversation": messages, "allowed_actions": [*actions, "redact"],

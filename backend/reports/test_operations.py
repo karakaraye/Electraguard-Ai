@@ -152,10 +152,11 @@ class CoordinatorTests(TestCase):
         report = self.report(assigned_reviewer=self.reviewer)
         photo = MediaItem.objects.create(
             report=report, purpose="evidence", size_bytes=3, sha256=sha256(b"abc").hexdigest(),
-            original_sha256=sha256(b"abc").hexdigest(),
+            original_sha256=sha256(b"abc").hexdigest(), blurred=True,
         )
         case = f"/api/v1/review/cases/{report.pk}"
-        media = f"/api/v1/media/{photo.pk}/content?variant=original"
+        # A blurred photo: reviewers see it without a reason (C12, MED-04).
+        media = f"/api/v1/media/{photo.pk}/content"
         with TemporaryDirectory() as directory, override_settings(PRIVATE_MEDIA_ROOT=Path(directory)):
             storage().write(photo_key(photo.organisation_id, photo.pk), b"abc")
             self.client.force_login(self.reviewer)
