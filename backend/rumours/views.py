@@ -68,8 +68,8 @@ def claim_area(value):
         if lga_code and lga is None:
             continue
         return {
-            "state_code": state_code, "state_name": state["state_name"], "lga_code": lga_code,
-            "lga_name": lga["lga_name"] if lga else None,
+            "state_code": state_code, "state_name": state["name"], "lga_code": lga_code,
+            "lga_name": lga["name"] if lga else None,
         }
     return None
 

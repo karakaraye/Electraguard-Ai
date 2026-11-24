@@ -116,6 +116,17 @@ class RumourErrorTests(TwoOrganisations):
         self.assertEqual(code_of(response), "rate_limited")
         self.assertEqual(response.status_code, 429)
 
+    def test_known_area_is_named_from_the_reference_data(self):
+        from io import StringIO
+
+        from django.core.management import call_command
+
+        call_command("load_reference_areas", stdout=StringIO())
+        created = self.create(area={"state_code": "SYN-KN", "lga_code": "SYN-KN-01"})
+        self.assertEqual(created.status_code, 201, created.content)
+        self.assertEqual(created.json()["area"]["lga_name"], "Fictional LGA 1")
+        self.assertEqual(created.json()["area"]["state_name"], "Synthetic Kano")
+
     def test_image_errors(self):
         def upload(content, name="x.jpg", kind="image/jpeg"):
             return self.client.post(self.url, {
@@ -639,7 +650,7 @@ class OperationsErrorTests(TwoOrganisations):
 
 from unittest import skipUnless  # noqa: E402
 
-from ops.observations import STRUCTURED  # noqa: E402
+from ops.observations import LAGOS, STRUCTURED  # noqa: E402
 from reports.models import Report  # noqa: E402
 
 
@@ -650,6 +661,7 @@ class CoverageChecklistTests(TwoOrganisations):
         if supersedes:
             details["supersedes"] = str(supersedes)
         return Report.objects.create(
+            organisation=self.user.organisation,
             observer=self.user, submission_key=uuid4(), description="", kind="checklist",
             polling_unit_code=unit, occurred_at=timezone.now(), structured_details=details,
         )
@@ -657,6 +669,7 @@ class CoverageChecklistTests(TwoOrganisations):
     def test_counts_use_latest_checklist_and_no_answers(self):
         from reference.models import AreaDataset
 
+        AreaDataset.objects.all().delete()
         call_command("load_reference_areas", stdout=StringIO())
         release = AreaDataset.objects.first()
         state_code, state = next(iter(release.states.items()))
@@ -667,7 +680,7 @@ class CoverageChecklistTests(TwoOrganisations):
         organisation.save()
         first = self.checklist(unit, [{"question": "opened_on_time", "answer": "no"}])
         self.checklist(unit, [{"question": "opened_on_time", "answer": "yes"}], supersedes=first.pk)
-        today = timezone.now().astimezone().date().isoformat()
+        today = timezone.now().astimezone(LAGOS).date().isoformat()
         body = self.client.get("/api/v1/ops/coverage", {"date": today, "stage": "opening"}).json()
         row = next(item for item in body["rows"] if item["lga_code"] == lga["lga_code"])
         self.assertEqual(row["lga_name"], lga["name"])
