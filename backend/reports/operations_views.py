@@ -30,7 +30,7 @@ QUEUE_CURSOR = "coordinator-assignment-queue"
 def coordinator_required(request):
     if not request.user.is_authenticated:
         return error(401, "not_authenticated", "Sign in to continue.")
-    if not request.user.is_active or request.user.role != User.Role.COORDINATOR:
+    if not request.user.is_active or not request.user.has_role(User.Role.COORDINATOR):
         return error(403, "forbidden", "Your role cannot do this.")
 
 
@@ -39,7 +39,7 @@ def reviewer_info(reviewer):
 
 
 def reviewers_and_workloads(request):
-    reviewers = list(org_scope(request, User).filter(role=User.Role.REVIEWER, is_active=True))
+    reviewers = list(org_scope(request, User).filter(User.with_role(User.Role.REVIEWER), is_active=True))
     reviewer_ids = {reviewer.pk for reviewer in reviewers}
     loads = {
         pk: {"open_cases": 0, "urgent_open": 0, "areas": set(), "today": set(), "active_now": False}
@@ -245,7 +245,7 @@ def assign_item(request, item):
     else:
         pk = reviewer_id(value)
     reviewer = org_scope(request, User).select_for_update().filter(
-        pk=pk, role=User.Role.REVIEWER, is_active=True,
+        User.with_role(User.Role.REVIEWER), pk=pk, is_active=True,
     ).first() if pk else None
     if reviewer is None:
         return item_error(str(reference), "validation_failed", "Select an active Reviewer in this organisation.", fields={

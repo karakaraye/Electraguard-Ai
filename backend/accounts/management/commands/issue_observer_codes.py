@@ -2,8 +2,8 @@ from django.core.exceptions import ValidationError
 from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
 
-from accounts.models import INITIAL_ORGANISATION, ObserverCode, Organisation, User
-from accounts.observer_credentials import generate_code, locked_throttle, new_setup_pin
+from accounts.models import INITIAL_ORGANISATION, Organisation
+from accounts.observer_credentials import issue_code
 
 
 class Command(BaseCommand):
@@ -29,17 +29,6 @@ class Command(BaseCommand):
             organisation = Organisation.objects.select_for_update().get(pk=organisation_id)
         except (Organisation.DoesNotExist, ValidationError) as exc:
             raise CommandError("No matching organisation.") from exc
-        cards = []
-        for _ in range(count):
-            while True:
-                code = generate_code()
-                throttle = locked_throttle("code", code)
-                if not ObserverCode.objects.filter(code=code).exists():
-                    break
-            user = User.objects.create_user(
-                email=f"{code.lower()}@observer.invalid", role=User.Role.OBSERVER, organisation=organisation
-            )
-            credential = ObserverCode(user=user, code=code, organisation=organisation, label=label)
-            cards.append((code, new_setup_pin(credential)))
-            throttle.delete()
-        return cards
+        return [(credential.code, pin) for credential, pin in (
+            issue_code(organisation, label) for _ in range(count)
+        )]

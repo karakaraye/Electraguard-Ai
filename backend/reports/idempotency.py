@@ -16,14 +16,14 @@ def request_digest(request, data):
     return hashlib.sha256(f"{request.method}\n{request.path_info}\n{canonical}".encode()).hexdigest()
 
 
-def lock_key(scope):
+def lock_key(scope, *, timeout="5s"):
     # No pending record is necessary. The lock is released even if the worker crashes.
     key = int.from_bytes(hashlib.sha256(scope.encode()).digest()[:8], "big", signed=True)
     try:
         with transaction.atomic(), connection.cursor() as cursor:
             cursor.execute("SELECT current_setting('lock_timeout')")
             previous = cursor.fetchone()[0]
-            cursor.execute("SELECT set_config('lock_timeout', '5s', true)")
+            cursor.execute("SELECT set_config('lock_timeout', %s, true)", [timeout])
             cursor.execute("SELECT pg_advisory_xact_lock(%s)", [key])
             cursor.execute("SELECT set_config('lock_timeout', %s, true)", [previous])
     except OperationalError as exc:
@@ -34,7 +34,9 @@ def lock_key(scope):
 
 
 @transaction.atomic
-def idempotent(request, operation, data, perform, *, replay=None, citizen_digest=None):
+def idempotent(
+    request, operation, data, perform, *, replay=None, citizen_digest=None, record_model=ReportIdempotency,
+):
     try:
         key = UUID(request.headers.get("Idempotency-Key", ""))
         if key.version != 4:
@@ -55,9 +57,10 @@ def idempotent(request, operation, data, perform, *, replay=None, citizen_digest
     if not lock_key(f"reports:{organisation}:{identity}:{operation}:{key}"):
         return error(409, "request_in_progress", "This request is still being processed.", retry=2)
 
-    records = org_scope(request, ReportIdempotency, public=public).filter(
-        actor=actor, citizen_digest=citizen_digest or "", operation=operation,
-    )
+    # Staff writes use the same locking and replay protocol without report or citizen data.
+    is_report_write = record_model is ReportIdempotency
+    citizen_fields = {"citizen_digest": citizen_digest or ""} if is_report_write else {}
+    records = org_scope(request, record_model, public=public).filter(actor=actor, operation=operation, **citizen_fields)
     previous = records.filter(key=key).first()
     if previous is not None:
         if previous.digest != digest:
@@ -80,7 +83,7 @@ def idempotent(request, operation, data, perform, *, replay=None, citizen_digest
         return result
     status, body, report = result
     records.create(
-        actor=actor, citizen_digest=citizen_digest or "", organisation_id=organisation, operation=operation, key=key,
-        digest=digest, status=status, body=body, report=report,
+        actor=actor, organisation_id=organisation, operation=operation, key=key,
+        digest=digest, status=status, body=body, **citizen_fields, **({"report": report} if is_report_write else {}),
     )
     return JsonResponse(body, status=status)

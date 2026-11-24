@@ -7,3 +7,6 @@ psycopg-binary==3.3.9
 python-dotenv==1.2.4
 sqlparse==0.6.1
 typing-extensions==4.16.0
+cryptography==46.0.7
+scikit-learn==1.9.1
+pytesseract==0.3.13
