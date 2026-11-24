@@ -6,6 +6,7 @@ crafted upload cannot make the server read other files or reach the network.
 """
 
 import json
+import shutil
 import subprocess
 from dataclasses import dataclass
 
@@ -13,7 +14,10 @@ VIDEO_LIMIT_MS = 60_000
 AUDIO_LIMIT_MS = 120_000
 # Container timestamps are often a few frames longer than the phone's own count.
 DURATION_TOLERANCE_MS = 1_000
-PROBE_TIMEOUT = 30
+PROBE_TIMEOUT = 10
+PROBE_OUTPUT_LIMIT = 64 * 1024
+MAX_STREAMS = 4
+GIB = 1024 ** 3
 
 # Declared type -> (ffprobe format names it may sniff as, demuxer to pin for decoding).
 CONTAINERS = {
@@ -40,6 +44,33 @@ class UnsupportedMedia(ValueError):
 class UnreadableMedia(ValueError):
     """The contents could not be decoded."""
 
+    code = "media_unreadable"
+
+
+class MediaTooLong(UnreadableMedia):
+    """More content than the declared length and the kind's limit allow."""
+
+    code = "media_too_long"
+
+
+class MediaTooLarge(UnreadableMedia):
+    """The cleaned output would exceed the storage cap."""
+
+    code = "media_too_large"
+
+
+PRLIMIT = shutil.which("prlimit")
+
+
+def limited(command, *, memory=GIB, cpu_seconds=10, file_bytes=None):
+    """Run ffmpeg tools under memory, CPU-time and output-size limits (util-linux prlimit)."""
+    if PRLIMIT is None:
+        raise RuntimeError("prlimit (util-linux) is required to run ffmpeg safely.")
+    bounds = [f"--as={memory}", f"--cpu={cpu_seconds}"]
+    if file_bytes is not None:
+        bounds.append(f"--fsize={file_bytes}")
+    return [PRLIMIT, *bounds, "--", *command]
+
 
 @dataclass(frozen=True)
 class MediaInfo:
@@ -52,19 +83,30 @@ class MediaInfo:
     has_audio: bool = False
 
 
+def run_capped(command, timeout, limit):
+    """Run a command with a wall-clock timeout; output longer than `limit` is cut off."""
+    result = subprocess.run(command, stdin=subprocess.DEVNULL, capture_output=True, timeout=timeout, check=False)
+    return result.returncode, result.stdout[:limit + 1]
+
+
 def run_ffprobe(path):
-    command = [
-        "ffprobe", "-v", "error", *SAFE_INPUT, "-print_format", "json",
-        "-show_format", "-show_streams", str(path),
-    ]
+    command = limited([
+        "ffprobe", "-v", "error", *SAFE_INPUT, "-probesize", "5000000", "-analyzeduration", "5000000",
+        "-print_format", "json", "-show_entries",
+        "format=format_name,duration,nb_streams:stream=index,codec_type,codec_name,width,height,"
+        "avg_frame_rate,r_frame_rate:stream_disposition=attached_pic:stream_tags=rotate:stream_side_data=rotation",
+        str(path),
+    ], cpu_seconds=PROBE_TIMEOUT)
     try:
-        result = subprocess.run(command, capture_output=True, timeout=PROBE_TIMEOUT, check=False, stdin=subprocess.DEVNULL)
+        code, output = run_capped(command, PROBE_TIMEOUT, PROBE_OUTPUT_LIMIT)
     except subprocess.TimeoutExpired as exc:
         raise UnreadableMedia("Probing timed out.") from exc
-    if result.returncode != 0:
+    if code != 0:
         raise UnsupportedMedia("The container is not an accepted format.")
+    if len(output) > PROBE_OUTPUT_LIMIT:
+        raise UnsupportedMedia("The file describes too many streams.")
     try:
-        return json.loads(result.stdout)
+        return json.loads(output)
     except ValueError as exc:
         raise UnreadableMedia("Probe output was unreadable.") from exc
 
@@ -99,6 +141,8 @@ def probe(path, kind, content_type):
         raise UnsupportedMedia("The contents do not match the declared type.")
 
     streams = data.get("streams") or []
+    if len(streams) > MAX_STREAMS or int(data.get("format", {}).get("nb_streams") or 0) > MAX_STREAMS:
+        raise UnsupportedMedia("The file has too many streams.")
     videos = [s for s in streams if s.get("codec_type") == "video" and not s.get("disposition", {}).get("attached_pic")]
     audios = [s for s in streams if s.get("codec_type") == "audio"]
     if any(s.get("codec_name") not in AUDIO_CODECS[content_type] for s in audios[:1]):

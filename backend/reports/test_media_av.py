@@ -3,7 +3,9 @@
 import json
 import os
 import shutil
+import socket
 import subprocess
+import tempfile
 from hashlib import sha256
 from io import StringIO
 from pathlib import Path
@@ -17,7 +19,7 @@ from django.core.management import call_command
 from django.test import Client, TestCase, override_settings
 from django.utils import timezone
 
-from accounts.models import User
+from accounts.models import Organisation, User
 
 from .media_av import faces, transcode
 from .media_av.transcribe import Transcript
@@ -64,7 +66,11 @@ class RecordingTests(TestCase):
         super().setUpClass()
         cls.fixtures = TemporaryDirectory()
         folder = Path(cls.fixtures.name)
-        tags = ["-metadata", "comment=private-camera-note", "-metadata", "location=+04.5000+007.0000/"]
+        tags = [
+            "-metadata", "comment=private-camera-note", "-metadata", "location=+04.5000+007.0000/",
+            "-metadata:s:v:0", "title=private-stream-title", "-metadata:s:v:0", "language=yor",
+            "-metadata:s:a:0", "handler_name=private-handler",
+        ]
         ffmpeg(
             "-loop", "1", "-i", str(FACE), "-f", "lavfi", "-i", "sine=frequency=440:duration=2", "-t", "2",
             "-vf", "scale=480:480,format=yuv420p", "-r", "15", "-c:v", "libx264", "-c:a", "aac", *tags,
@@ -73,7 +79,7 @@ class RecordingTests(TestCase):
         ffmpeg("-loop", "1", "-i", str(FACE), "-t", "1", "-vf", "scale=320:320", "-r", "10", "-c:v", "libvpx",
                str(folder / "face.webm"))
         ffmpeg("-f", "lavfi", "-i", "sine=frequency=300:duration=2", "-c:a", "libopus", "-b:a", "32k",
-               "-metadata", "title=private-voice-title", str(folder / "voice.ogg"))
+               "-metadata", "title=private-voice-title", "-metadata:s:a:0", "ARTIST=private-artist", str(folder / "voice.ogg"))
         cls.video = (folder / "face.mp4").read_bytes()
         cls.webm = (folder / "face.webm").read_bytes()
         cls.voice = (folder / "voice.ogg").read_bytes()
@@ -162,6 +168,7 @@ class RecordingTests(TestCase):
         early = self.client.get(original, HTTP_X_MEDIA_ACCESS_REASON="Urgent synthetic case")
         self.assertEqual((early.status_code, early["Content-Type"]), (200, "video/mp4"))
         self.assertEqual(body(early), self.video)
+        self.assertTrue(early["Content-Disposition"].startswith("attachment"))
         self.assertEqual(MediaAccess.objects.get().action, "download_original")
 
         self.work()
@@ -178,6 +185,9 @@ class RecordingTests(TestCase):
         self.assertNotIn("comment", probed["format"].get("tags", {}))
         self.assertNotIn("location", probed["format"].get("tags", {}))
         self.assertEqual([s["codec_name"] for s in probed["streams"]], ["h264", "aac"])
+        stream_tags = json.dumps([stream.get("tags", {}) for stream in probed["streams"]])
+        for planted in ("private", "yor"):
+            self.assertNotIn(planted, stream_tags)
         own_poster = self.client.get(url + "?variant=poster")
         self.assertEqual(own_poster["Content-Type"], "image/jpeg")
         self.assertGreater(faces_in(body(own_poster)), 0)
@@ -222,6 +232,7 @@ class RecordingTests(TestCase):
         self.assertEqual(own["Content-Type"], "audio/ogg")
         voice = body(own)
         self.assertNotIn(b"private-voice-title", voice)
+        self.assertNotIn(b"private-artist", voice)
         self.assertEqual(ffprobe(voice)["streams"][0]["codec_name"], "opus")
         self.assertNotIn("transcript", self.client.get(f"/api/v1/reports/{self.report.pk}").json()["media"][0])
 
@@ -335,6 +346,141 @@ class RecordingTests(TestCase):
         unblurred = self.client.get(url + "?variant=original", HTTP_X_MEDIA_ACCESS_REASON="Identify the uniform")
         self.assertEqual(faces_in(body(unblurred)), 1)
         self.assertEqual(MediaAccess.objects.filter(action="download_original").count(), 1)
+
+
+    # ---- hardening (review of #18) ------------------------------------------------
+
+    def hostile(self, raw, content_type="video/mp4", kind="video"):
+        response = self.send(raw, kind=kind, content_type=content_type, duration_ms=1000)
+        self.assertIn(response.status_code, (415, 422), response.content)
+        return response
+
+    def test_playlists_and_references_are_rejected_without_network_or_file_access(self):
+        listener = socket.socket()
+        listener.bind(("127.0.0.1", 0))
+        listener.listen()
+        listener.settimeout(0.5)
+        self.addCleanup(listener.close)
+        url = f"http://127.0.0.1:{listener.getsockname()[1]}/clip.ts"
+        playlists = {
+            "video/mp4": f"#EXTM3U\n#EXT-X-TARGETDURATION:1\n#EXTINF:1,\n{url}\n#EXT-X-ENDLIST\n".encode(),
+            "video/webm": b"ffconcat version 1.0\nfile '/etc/passwd'\nfile 'file:/etc/hostname'\n",
+            "audio/ogg": f"ffconcat version 1.0\nfile '{url}'\n".encode(),
+        }
+        for content_type, raw in playlists.items():
+            with self.subTest(content_type):
+                self.hostile(raw, content_type, "audio" if content_type.startswith("audio/") else "video")
+        with self.assertRaises(socket.timeout):
+            listener.accept()
+        self.assertFalse(MediaItem.objects.exists())
+
+    def test_truncated_empty_and_many_stream_files_are_rejected(self):
+        folder = Path(self.fixtures.name)
+        self.hostile(self.video[: len(self.video) // 2])
+        ffmpeg("-f", "lavfi", "-i", "color=size=64x64", "-frames:v", "0", "-c:v", "libvpx", str(folder / "empty.webm"))
+        self.hostile((folder / "empty.webm").read_bytes(), "video/webm")
+        ffmpeg("-f", "lavfi", "-i", "color=size=64x64:duration=1", "-f", "lavfi", "-i", "sine=duration=1",
+               "-map", "0:v", *["-map", "1:a"] * 5, "-c:v", "libvpx", "-c:a", "libopus", str(folder / "streams.webm"))
+        self.hostile((folder / "streams.webm").read_bytes(), "video/webm")
+        self.assertFalse(MediaItem.objects.exists())
+
+    def test_truncated_file_that_still_probes_never_stays_processing(self):
+        folder = Path(self.fixtures.name)
+        ffmpeg("-i", str(folder / "face.mp4"), "-c", "copy", "-movflags", "+faststart", str(folder / "fast.mp4"))
+        raw = (folder / "fast.mp4").read_bytes()
+        cut = raw[: int(len(raw) * 0.6)]
+        response = self.send(cut)
+        if response.status_code == 201:
+            self.work()
+            item = MediaItem.objects.get()
+            self.assertIn(item.status, ("ready", "failed"))
+            self.assertFalse(storage().path(original_key(item.organisation_id, item.pk)).exists())
+        else:
+            self.assertIn(response.status_code, (415, 422))
+
+    def test_decoding_ignores_the_declared_length(self):
+        # A container can claim to be short and hold far more frames. The decoder counts
+        # frames itself; here the limit is lowered so the 2 s fixture is "too long".
+        media = self.send(self.video).json()["media"]
+        with mock.patch("reports.media_av.transcode.max_frames", return_value=10):
+            self.work()
+        item = MediaItem.objects.get(pk=media["id"])
+        self.assertEqual((item.status, item.failure_code, item.attempts), ("failed", "media_too_long", 1))
+        self.assertEqual(self.stored_files(), [])
+
+    def test_voice_note_longer_than_the_limit_fails(self):
+        self.send(self.voice, kind="audio", content_type="audio/ogg", duration_ms=2000)
+        with mock.patch("reports.media_av.transcode.AUDIO_LIMIT_MS", 500):
+            self.work()
+        self.assertEqual(MediaItem.objects.get().failure_code, "media_too_long")
+
+    def test_output_size_is_capped(self):
+        self.send(self.video)
+        with mock.patch("reports.media_av.transcode.MAX_VIDEO_BYTES", 2_000):
+            self.work()
+        item = MediaItem.objects.get()
+        self.assertEqual((item.status, item.failure_code), ("failed", "media_too_large"))
+        self.assertEqual(self.stored_files(), [])
+
+    def test_timeout_kills_ffmpeg_and_removes_temporary_files(self):
+        media = self.send(self.video).json()["media"]
+        before = set(Path(tempfile.gettempdir()).glob("electraguard-media-*"))
+        with mock.patch("reports.media_av.transcode.TIMEOUT_SECONDS", -1):
+            self.work()
+        item = MediaItem.objects.get(pk=media["id"])
+        self.assertEqual((item.status, item.attempts), ("failed", 3))
+        self.assertEqual(set(Path(tempfile.gettempdir()).glob("electraguard-media-*")), before)
+        running = []
+        for status in Path("/proc").glob("[0-9]*/cmdline"):
+            try:
+                command = status.read_bytes()
+            except OSError:
+                continue
+            if media["id"].encode() in command:
+                running.append(command)
+        self.assertEqual(running, [])
+
+    def test_only_owner_and_assigned_reviewer_reach_recordings(self):
+        video = self.send(self.video).json()["media"]["id"]
+        voice = self.send(self.voice, kind="audio", content_type="audio/ogg", duration_ms=2000).json()["media"]["id"]
+        organisation = Organisation.objects.create(name="Other synthetic organisation")
+        outsiders = [
+            User.objects.create_user("other-observer@av-test.example", role=User.Role.OBSERVER),
+            User.objects.create_user("other-reviewer@av-test.example", role=User.Role.REVIEWER),
+            User.objects.create_user("foreign-observer@av-test.example", role=User.Role.OBSERVER, organisation=organisation),
+            User.objects.create_user("foreign-reviewer@av-test.example", role=User.Role.REVIEWER, organisation=organisation),
+        ]
+        Report.objects.filter(pk=self.report.pk).update(assigned_reviewer=self.reviewer, status=Report.Status.IN_REVIEW)
+        reason = {"HTTP_X_MEDIA_ACCESS_REASON": "Synthetic check"}
+
+        def check(stage):
+            for user in outsiders:
+                self.client.force_login(user)
+                for media_id in (video, voice):
+                    for variant in ("display", "poster", "original"):
+                        with self.subTest(stage=stage, user=user.email, media=media_id, variant=variant):
+                            response = self.client.get(f"/api/v1/media/{media_id}/content?variant={variant}", **reason)
+                            self.assertEqual(response.status_code, 404)
+
+        check("processing")
+        self.work()
+        check("ready")
+        self.assertFalse(MediaAccess.objects.exclude(actor=self.reviewer).exists())
+
+    def test_range_requests_write_one_audit_event_per_reason(self):
+        media = self.send(self.video).json()["media"]
+        self.work()
+        self.assign()
+        url = f"/api/v1/media/{media['id']}/content"
+        for first in (0, 100, 200):
+            self.assertEqual(self.client.get(url, HTTP_RANGE=f"bytes={first}-{first + 99}").status_code, 206)
+        self.assertEqual(MediaAccess.objects.filter(action="view_media").count(), 1)
+        for reason in ("Check the uniform", "Check the uniform", "Compare the timing"):
+            self.client.get(url + "?variant=original", HTTP_RANGE="bytes=0-99", HTTP_X_MEDIA_ACCESS_REASON=reason)
+        self.assertEqual(
+            list(MediaAccess.objects.filter(action="download_original").order_by("created_at").values_list("reason", flat=True)),
+            ["Check the uniform", "Compare the timing"],
+        )
 
 
 @skipUnless(os.getenv("TRANSCRIPTION_MODEL") and shutil.which("espeak-ng"), "needs a local Whisper model and espeak-ng")

@@ -13,7 +13,7 @@ import numpy as np
 from django.conf import settings
 from django.utils.module_loading import import_string
 
-from .probe import PROBE_TIMEOUT
+from .probe import PROBE_TIMEOUT, limited
 
 MAX_CHARACTERS = 10_000
 # Report language -> Whisper language. Whisper has no Igbo, and Naija Pidgin is
@@ -32,10 +32,10 @@ def unavailable(status, method=""):
 
 
 def pcm16k(path):
-    command = [
+    command = limited([
         "ffmpeg", "-nostdin", "-v", "error", "-protocol_whitelist", "file", "-f", "ogg", "-i", str(path),
         "-f", "s16le", "-ac", "1", "-ar", "16000", "-",
-    ]
+    ], cpu_seconds=120)
     result = subprocess.run(command, capture_output=True, timeout=PROBE_TIMEOUT * 4, check=True, stdin=subprocess.DEVNULL)
     return np.frombuffer(result.stdout, np.int16).astype(np.float32) / 32768
 

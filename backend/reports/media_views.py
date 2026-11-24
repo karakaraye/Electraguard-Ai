@@ -528,10 +528,15 @@ def file_response(key, header, content_type):
 def log_download(request, photo, download, reason=""):
     action = "download_original" if reason else ("download_media" if download else "view_media")
     access = org_scope(request, MediaAccess).filter(actor=request.user, media_id=photo.pk, action=action)
+    # MED-04: at most one event per user, item and action every 10 minutes, so a video
+    # player's many range requests do not flood the audit log. A new reason is always logged.
+    recent = access.filter(created_at__gt=timezone.now() - timedelta(minutes=10))
+    if reason:
+        recent = recent.filter(reason=reason)
     with transaction.atomic():
         if not lock_key(f"media-access:{request.user.pk}:{photo.pk}:{action}"):
             return False
-        if reason or not access.filter(created_at__gt=timezone.now() - timedelta(minutes=10)).exists():
+        if not recent.exists():
             access.create(
                 organisation_id=photo.organisation_id, report=photo.report,
                 actor=request.user, media_id=photo.pk, action=action, reason=reason,
@@ -636,7 +641,8 @@ def download(request, reference):
         if variant != "original" or item.blur_requested:
             return error(409, "invalid_transition", "This file is still being prepared.")
         response = file_response(original_key(item.organisation_id, item.pk), header, item.content_type)
-        name = "original"
+        # The unprocessed upload still carries camera metadata; never render it inline.
+        name, as_attachment = "original", True
     else:
         source = stored_source(item, variant, reviewer)
         if not isinstance(source, tuple):

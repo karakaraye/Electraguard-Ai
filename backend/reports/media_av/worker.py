@@ -79,7 +79,7 @@ def build(item, workdir):
         }
         return files, fields
 
-    voice = transcode.process_audio(source, info, workdir)
+    voice, duration_ms = transcode.process_audio(source, info, workdir)
     language = item.report.incident_details.get("language", "")
     try:
         transcript = transcribe(voice, language)
@@ -88,7 +88,7 @@ def build(item, workdir):
         logger.exception("Transcription failed")
         transcript = {"status": "failed", "text": None, "language": "", "method": ""}
     fields = {
-        "duration_ms": info.duration_ms, "size_bytes": voice.stat().st_size, "sha256": file_digest(voice),
+        "duration_ms": duration_ms, "size_bytes": voice.stat().st_size, "sha256": file_digest(voice),
         "transcript": transcript["text"], "transcript_status": transcript["status"],
         "transcript_language": transcript["language"], "transcript_method": transcript["method"],
     }
@@ -99,11 +99,12 @@ def process(item):
     with tempfile.TemporaryDirectory(prefix="electraguard-media-") as workdir:
         try:
             files, fields = build(item, Path(workdir))
-        except (UnsupportedMedia, UnreadableMedia):
+        except (UnsupportedMedia, UnreadableMedia) as exc:
+            # Retrying cannot help: the file itself is unsupported, unreadable, too long or too large.
             with transaction.atomic():
                 current = MediaItem.objects.select_for_update().filter(pk=item.pk, claimed_at=item.claimed_at).first()
                 if current:
-                    fail(current, "media_unreadable")
+                    fail(current, getattr(exc, "code", "media_unreadable"))
             return Status.FAILED
         except (transcode.ProcessingFailed, FaceDetectionUnavailable, OSError):
             logger.exception("Media processing attempt %s failed", item.attempts)

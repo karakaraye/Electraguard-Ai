@@ -82,3 +82,36 @@ While an item is processing, only the assigned reviewer can open the verified or
 ## Contract open question 3
 
 "Face blur replaces the original?" As implemented: when the observer asks for blur, yes, and no unblurred copy exists. When they do not, the unblurred file is kept for the observer and for reason-logged reviewer access, and reviewers see a blurred copy by default.
+
+## Changes after review (24 Nov)
+
+Review on #18 from the other team (changes requested):
+
+- **Length and size are enforced while decoding, not taken from the container.**
+  - The decoder stops at the limit plus 2 s.
+  - Each frame is counted, and the item fails as `media_too_long` once the count passes (limit + 1 s) x fps.
+  - Outputs are capped at 60 MiB (video) and 4 MiB (voice note) and fail as `media_too_large`.
+  - The stored duration is clamped to the limit. Voice-note length comes from our own cleaned output.
+  - These failures are final and are not retried.
+- **Every ffmpeg and ffprobe process runs under `prlimit`:**
+  - memory: 3 GiB for encoding, 1 GiB for probing
+  - CPU time: 30 minutes for encoding, 10 s for probing
+  - output file size: a backstop above the caps
+  - A killed process is always waited on, so no zombie processes remain.
+- **ffprobe during upload completion:**
+  - 10 s timeout, and bounded probe size.
+  - Only the needed fields are requested, and the output is capped.
+  - Files with more than 4 streams are rejected.
+- **Per-stream metadata is stripped explicitly** (`-map_metadata:s:v -1`, `-map_metadata:s:a -1`). Tests now plant stream-level title, language, handler and Opus artist tags and assert none survive.
+- **The unprocessed original is always sent as an attachment**, never inline, and its access is logged.
+- **Audit events:** at most one per reviewer, item and action every 10 minutes. For reason-logged access, a new reason is always logged. Video range requests no longer write one event each.
+- **New tests:**
+  - HLS and concat playlists with `http:` and `file:` references, declared as MP4, WebM and Ogg. A local listener confirms no connection is made.
+  - Truncated, empty and many-stream files.
+  - A container that is shorter than its content; a too-long voice note; the output size cap.
+  - A timeout that kills ffmpeg and leaves no temporary files or processes.
+  - `404` for another observer, an unassigned reviewer and both roles in another organisation, on video and audio, for display, poster and original, during processing and when ready.
+  - Audit throttling.
+- **Verified:** 106 backend tests pass. A 60 s 1280 x 720 video still processes within the limits: 1,800 frames, 72 s on 4 cores, with the reviewer copy.
+
+**Deliberate deviation from MED-04, kept pending a decision (review item 4).** For a ready photo or video that the observer did not ask to blur, the assigned reviewer can open the unblurred cleaned file. They must give a reason, and the access is logged. C6 introduced this for photos, so a reviewer can check details the blur hides, such as a uniform or a sign. The contract allows `original` only while processing. Either the contract is amended to match, or this access is removed. Media the observer asked to blur never has an unblurred copy.
