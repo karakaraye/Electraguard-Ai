@@ -14,7 +14,8 @@ test("draft: reload and Back keep every value, one draft per code, a language ch
 
   await page.getByTestId("o04-report").click();
   await stepIs(page, "what");
-  await page.locator('input[name="category"][value="vote_buying"]').check({ force: true });
+  const voteBuying = page.locator('input[name="category"][value="vote_buying"]');
+  await page.locator("label").filter({ has: voteBuying }).click();
   // Reload at once: the change must already be on the phone (written within 300 ms, flushed on page hide).
   await reloadAt(page, "what");
   await expect(page.locator('input[name="category"]:checked')).toHaveValue("vote_buying");
@@ -36,7 +37,7 @@ test("draft: reload and Back keep every value, one draft per code, a language ch
 
   await stepIs(page, "describe");
   await page.locator("textarea").fill(TEXT);
-  await page.getByTestId("o09-source").getByRole("radio").nth(1).check({ force: true });
+  await page.getByTestId("o09-source-no").click();
   await reloadAt(page, "describe");
   await expect(page.locator("textarea")).toHaveValue(TEXT);
   await expect(page.getByTestId("o09-source").getByRole("radio").nth(1)).toBeChecked();

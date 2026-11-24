@@ -52,6 +52,7 @@ export function YesNo({
     <fieldset
       className={styles.group}
       aria-describedby={[hintId, errorId].filter(Boolean).join(" ") || undefined}
+      aria-invalid={error ? true : undefined}
       data-invalid={error ? "" : undefined}
       disabled={disabled}
       data-testid={testId}

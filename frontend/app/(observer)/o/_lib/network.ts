@@ -64,8 +64,9 @@ export function useNetwork(): { offline: boolean; back: boolean } {
 }
 
 /** Move focus to the screen question (h1) on every route and step change (R7). */
-export function useFocusTitle(key: string) {
+export function useFocusTitle(key: string, ready = true) {
   useLayoutEffect(() => {
+    if (!ready) return;
     function focusHeading() {
       const active = document.activeElement;
       if (active && active.closest("#eg-content") && /^(INPUT|TEXTAREA|SELECT)$/.test(active.tagName)) return true;
@@ -84,5 +85,5 @@ export function useFocusTitle(key: string) {
       window.cancelAnimationFrame(frame);
       window.clearTimeout(timer);
     };
-  }, [key]);
+  }, [key, ready]);
 }
