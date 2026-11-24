@@ -1,0 +1,141 @@
+split,kind,category,description
+train,paraphrase,access_barrier,There is no ramp so a man in a wheelchair cannot get into the polling unit.
+train,paraphrase,access_barrier,Blind voters had nobody to guide them and no braille ballot guide.
+train,paraphrase,access_barrier,"The only entrance is a flight of stairs, elderly voters are turned back."
+train,paraphrase,access_barrier,Pregnant women and people on crutches cannot reach the voting room on the upper floor.
+train,paraphrase,access_barrier,The polling unit is across a flooded path and disabled people cannot cross.
+train,paraphrase,access_barrier,Deaf voters cannot follow instructions because no one uses sign language.
+train,paraphrase,access_barrier,Door too narrow for a wheelchair at this polling station.
+train,paraphrase,access_barrier,Voters with disabilities were refused priority and sent to the back.
+calibration,paraphrase,access_barrier,The voting booth is too high for a wheelchair user to mark the ballot.
+calibration,paraphrase,access_barrier,Old people could not climb the steps to vote here.
+calibration,paraphrase,access_barrier,Polling unit has a locked gate for the ramp so disabled voters stay outside.
+calibration,paraphrase,access_barrier,A visually impaired woman was not allowed to bring her helper inside.
+robustness,paraphrase,access_barrier,Wheelchair users are unable to enter because the building has only steps.
+robustness,paraphrase,access_barrier,People living with disability face difficulty reaching the ballot box at this venue.
+robustness,paraphrase,access_barrier,Elderly voters could not manage the stairs and left without voting.
+robustness,typo,access_barrier,"Ther is no ramp, wheelchar voters cant get in to the polling unt."
+robustness,typo,access_barrier,Blind voter had no asistance and could not mark the balot.
+robustness,pidgin,access_barrier,"Dem no put ramp, person wey dey use wheelchair no fit enter vote."
+robustness,pidgin,access_barrier,"Old mama no fit climb the staircase to vote, dem send her go house."
+robustness,code_switched,access_barrier,"Wheelchair user no fit enter, kofar ta yi matsi, no ramp at all."
+train,paraphrase,equipment_failure,The BVAS machine stopped working and voters are waiting.
+train,paraphrase,equipment_failure,Fingerprint scanner keeps failing to recognise voters at this unit.
+train,paraphrase,equipment_failure,The accreditation device has no battery and there is no generator.
+train,paraphrase,equipment_failure,Card reader froze and officials restarted it five times.
+train,paraphrase,equipment_failure,The ballot box seal is broken and the lid does not close.
+train,paraphrase,equipment_failure,Voter verification machine shows an error for every voter.
+train,paraphrase,equipment_failure,There is no light in the polling unit and the device screen is not readable.
+train,paraphrase,equipment_failure,The device could not connect and accreditation has stopped.
+calibration,paraphrase,equipment_failure,The machine is dead and officials are using paper only.
+calibration,paraphrase,equipment_failure,"Scanner not responding, officials say the device is faulty."
+calibration,paraphrase,equipment_failure,Power failed and the accreditation tablet shut down.
+calibration,paraphrase,equipment_failure,The verification device was replaced twice and still fails.
+robustness,paraphrase,equipment_failure,Accreditation has halted because the biometric device will not switch on.
+robustness,paraphrase,equipment_failure,The voter register tablet crashes whenever an official scans a thumbprint.
+robustness,paraphrase,equipment_failure,Faulty equipment at this station is holding up the voting process.
+robustness,typo,equipment_failure,"Card reeder not workng, officals dont know what to do."
+robustness,typo,equipment_failure,The machin has gone off and nobody can be acredited.
+robustness,pidgin,equipment_failure,"The machine don spoil, dem no fit accredit person."
+robustness,pidgin,equipment_failure,"Dem card reader no dey work, light don go for here."
+robustness,code_switched,equipment_failure,"Machine din ya lalace, we no fit vote, na'ura ba ta aiki."
+train,paraphrase,good_practice,Officials were polite and helped first-time voters find their names.
+train,paraphrase,good_practice,Voting started on time and materials were complete.
+train,paraphrase,good_practice,The presiding officer explained the process clearly to everyone.
+train,paraphrase,good_practice,Security agents were calm and kept the line orderly.
+train,paraphrase,good_practice,Ballot boxes were shown empty before voting began.
+train,paraphrase,good_practice,Officials gave priority to pregnant women and the elderly.
+train,paraphrase,good_practice,Results were counted openly and agents signed the form.
+train,paraphrase,good_practice,Everything is peaceful and voters are moving smoothly.
+calibration,paraphrase,good_practice,Staff were friendly and helpful at this unit.
+calibration,paraphrase,good_practice,Polling officials arrived early and set up properly.
+calibration,paraphrase,good_practice,The process is orderly and agents from all parties are present.
+calibration,paraphrase,good_practice,Voters praised how quickly officials attended to them.
+robustness,paraphrase,good_practice,The exercise here is running smoothly and officers are courteous.
+robustness,paraphrase,good_practice,Election staff started right on schedule and treated every voter well.
+robustness,paraphrase,good_practice,Peaceful voting with transparent counting at our unit.
+robustness,typo,good_practice,Officals were very helpfull and voting is orderly.
+robustness,typo,good_practice,Votng started on tyme and everybody is calm.
+robustness,pidgin,good_practice,"Everything dey go well, officials dey treat people nicely."
+robustness,pidgin,good_practice,Dem start for correct time and the people dey happy.
+robustness,code_switched,good_practice,"Everything dey okay, an yi kyau sosai, officials dey help us."
+train,paraphrase,intimidation_violence,Armed thugs are threatening voters at the polling unit.
+train,paraphrase,intimidation_violence,A man with a machete chased voters away from the queue.
+train,paraphrase,intimidation_violence,Party agents are forcing people to show how they voted.
+train,paraphrase,intimidation_violence,Gunshots were heard near the polling station and people ran.
+train,paraphrase,intimidation_violence,Voters were beaten for refusing to take money.
+train,paraphrase,intimidation_violence,Hooded men snatched the ballot box and threatened officials.
+train,paraphrase,intimidation_violence,Soldiers are harassing voters and shouting at them to go home.
+train,paraphrase,intimidation_violence,Youths are blocking the road and attacking anyone who wants to vote.
+calibration,paraphrase,intimidation_violence,A mob is threatening our agents and demanding they leave.
+calibration,paraphrase,intimidation_violence,Someone was slapped and told not to vote for the opposition.
+calibration,paraphrase,intimidation_violence,Thugs came with weapons and everyone is afraid.
+calibration,paraphrase,intimidation_violence,Voters are being warned that something bad will happen if they vote.
+robustness,paraphrase,intimidation_violence,Gangs with weapons are scaring people away from casting their ballots.
+robustness,paraphrase,intimidation_violence,Officials were threatened at gunpoint and told to hand over the materials.
+robustness,paraphrase,intimidation_violence,Men are menacing voters and attacking those who resist.
+robustness,typo,intimidation_violence,"Thugs wit guns are threatning voters, pleese help."
+robustness,typo,intimidation_violence,A voter was beatn up and the attackrs ran away with the box.
+robustness,pidgin,intimidation_violence,"Thugs dey beat people for here, dem carry gun, people don run."
+robustness,pidgin,intimidation_violence,Area boys dey threaten us make we no vote.
+robustness,code_switched,intimidation_violence,"Thugs dey here, suna dukan mutane, dem don show cutlass."
+train,paraphrase,lack_of_information,Voters do not know which polling unit they should go to.
+train,paraphrase,lack_of_information,No list is pasted so people cannot find their names.
+train,paraphrase,lack_of_information,Nobody told us the voting time and people came too early.
+train,paraphrase,lack_of_information,Officials could not say where the ballot box for our street is.
+train,paraphrase,lack_of_information,There are no signs or posters showing the voting procedure.
+train,paraphrase,lack_of_information,Voters were given conflicting directions to different venues.
+train,paraphrase,lack_of_information,People do not understand how to fold and mark the ballot.
+train,paraphrase,lack_of_information,The polling unit was moved and nobody announced it.
+calibration,paraphrase,lack_of_information,Voters are confused because there is no information on the wall.
+calibration,paraphrase,lack_of_information,We could not find out whether our unit is open today.
+calibration,paraphrase,lack_of_information,Nobody explained the new accreditation steps to the people.
+calibration,paraphrase,lack_of_information,Many people are going from place to place looking for their unit.
+robustness,paraphrase,lack_of_information,Residents cannot tell where to cast their votes because there is no notice.
+robustness,paraphrase,lack_of_information,The voters register was not displayed so nobody could confirm their names.
+robustness,paraphrase,lack_of_information,People are misinformed about the opening time of the polling unit.
+robustness,typo,lack_of_information,"Voters dont no where to go, no inforamtion was given."
+robustness,typo,lack_of_information,Nobody anounced the new polling locashun.
+robustness,pidgin,lack_of_information,"Nobody tell us where we go vote, people dey waka up and down."
+robustness,pidgin,lack_of_information,"Dem no paste name for wall, we no sabi our unit."
+robustness,code_switched,lack_of_information,"We no sabi where to vote, babu bayani at all, abeg tell us."
+train,paraphrase,late_materials,Election materials have not arrived and it is already noon.
+train,paraphrase,late_materials,The ballot papers came four hours late.
+train,paraphrase,late_materials,Officials are still waiting for the result sheets and the box.
+train,paraphrase,late_materials,"No materials at the unit, voters are going home."
+train,paraphrase,late_materials,The delivery truck got stuck and materials arrived very late.
+train,paraphrase,late_materials,Voting could not begin because ballot papers were missing.
+train,paraphrase,late_materials,INEC staff arrived without ballot boxes and is waiting for supplies.
+train,paraphrase,late_materials,Materials reached the unit after the voting hours had begun.
+calibration,paraphrase,late_materials,Still no sign of the materials and voters are getting angry.
+calibration,paraphrase,late_materials,"The ballot papers are not here yet, the officials are waiting."
+calibration,paraphrase,late_materials,Delivery of voting materials delayed by hours.
+calibration,paraphrase,late_materials,Voting has not started since materials are not available.
+robustness,paraphrase,late_materials,The polling kit showed up well past opening time and voting was delayed.
+robustness,paraphrase,late_materials,We have been waiting all morning for ballots and result forms to be delivered.
+robustness,paraphrase,late_materials,Supplies for this polling unit are behind schedule and nothing has started.
+robustness,typo,late_materials,Materals have not arived and people are waitin.
+robustness,typo,late_materials,"The balot papers came very latte, voting dont start."
+robustness,pidgin,late_materials,"Dem never bring the materials, we don wait since morning."
+robustness,pidgin,late_materials,"Ballot paper no reach, officials dey wait for truck."
+robustness,code_switched,late_materials,"Materials never reach, kayan zabe ba su zo ba, we dey wait."
+train,paraphrase,queues_crowding,The queue is very long and people have waited for hours.
+train,paraphrase,queues_crowding,Voters are crowded together with no shade in the sun.
+train,paraphrase,queues_crowding,Only one accreditation point serves hundreds of people.
+train,paraphrase,queues_crowding,The line moves very slowly and many people are leaving.
+train,paraphrase,queues_crowding,There is pushing and shoving because the crowd is too big.
+train,paraphrase,queues_crowding,People have been standing since dawn and some are fainting.
+train,paraphrase,queues_crowding,No one is managing the crowd so the lines have mixed together.
+train,paraphrase,queues_crowding,Hundreds are waiting outside with only two officials working.
+calibration,paraphrase,queues_crowding,The line stretches around the block and barely moves.
+calibration,paraphrase,queues_crowding,"A huge crowd, nobody is organising the voters."
+calibration,paraphrase,queues_crowding,Voters are tired from standing in the long queue.
+calibration,paraphrase,queues_crowding,The crowd at the gate is so thick that people cannot get in.
+robustness,paraphrase,queues_crowding,A very lengthy line of voters is crawling forward and some are giving up.
+robustness,paraphrase,queues_crowding,Overcrowding at this venue is making the wait unbearable.
+robustness,paraphrase,queues_crowding,"Too many people for too few officials, so waiting times are huge."
+robustness,typo,queues_crowding,"The qeue is too long, peple are wating in the hot sun."
+robustness,typo,queues_crowding,Crwod everywhere and the linne dont move.
+robustness,pidgin,queues_crowding,"The line long well well, people dey stand for sun."
+robustness,pidgin,queues_crowding,"Plenty people dey here, dem no dey organise the line."
+robustness,code_switched,queues_crowding,"Line don long, mutane suna jira, we don stand since morning."

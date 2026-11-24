@@ -19,6 +19,14 @@ DEBUG = os.getenv("DJANGO_DEBUG", "").lower() == "true"
 OBSERVATION_INTAKE_ENABLED = os.getenv(
     "OBSERVATION_INTAKE_ENABLED", "true" if DEBUG else "false"
 ).lower() == "true"
+SIMULATOR_ENABLED = os.getenv("SIMULATOR_ENABLED", "false").lower() == "true"
+CHANNEL_WEBHOOK_SECRET = os.getenv("CHANNEL_WEBHOOK_SECRET", "")
+CHANNEL_SMS_API_KEY = os.getenv("CHANNEL_SMS_API_KEY", "")
+CHANNEL_SMS_SHORT_CODE = os.getenv("CHANNEL_SMS_SHORT_CODE", "")
+CHANNEL_GATEWAY_NETWORKS = tuple(
+    network.strip() for network in os.getenv("CHANNEL_GATEWAY_NETWORKS", "").split(",") if network.strip()
+)
+CHANNEL_REQUIRE_GATEWAY_ALLOWLIST = not DEBUG
 host_setting = os.getenv("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1" if DEBUG else "")
 ALLOWED_HOSTS = [host.strip() for host in host_setting.split(",") if host.strip()]
 frontend_origin = os.getenv("FRONTEND_ORIGIN", "http://localhost:3000" if DEBUG else "")
@@ -43,6 +51,8 @@ AUTH_TRUSTED_PROXY_IPS = frozenset(
 )
 
 INSTALLED_APPS = [
+    "intelligence",
+    "phone_channels",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
