@@ -1,5 +1,7 @@
-from datetime import timedelta
+from datetime import datetime, time, timedelta, timezone as dt_timezone
+from unittest.mock import patch
 from uuid import uuid4
+from zoneinfo import ZoneInfo
 
 from django.core.management import call_command
 from django.test import TestCase
@@ -9,6 +11,8 @@ from accounts.models import User
 from accounts.staff_sessions import VERIFIED
 from staff.test_support import bind_staff_session
 from reports.models import Report
+
+WAT = ZoneInfo("Africa/Lagos")
 
 
 class OperationsTests(TestCase):
@@ -20,9 +24,9 @@ class OperationsTests(TestCase):
         session.save()
         bind_staff_session(session, self.actor)
 
-    def observation(self, **details):
+    def observation(self, occurred_at=None, **details):
         return Report.objects.create(
-            observer=self.actor, submission_key=uuid4(), occurred_at=timezone.now(),
+            observer=self.actor, submission_key=uuid4(), occurred_at=occurred_at or timezone.now(),
             description="Private description",
             incident_details={
                 "area": {"state_code": "KN", "lga_code": "KN-01", "lga_name": "LGA"},
@@ -31,20 +35,20 @@ class OperationsTests(TestCase):
         )
 
     def test_cluster_detects_threshold_and_can_be_reviewed(self):
+        fixed_now = datetime(2026, 11, 24, 8, 30, tzinfo=WAT).astimezone(dt_timezone.utc)
         for _ in range(5):
-            self.observation()
-        old = self.observation()
-        Report.objects.filter(pk=old.pk).update(occurred_at=timezone.now() - timedelta(hours=3))
-        call_command("detect_observation_clusters")
-        call_command("detect_observation_clusters")
+            self.observation(occurred_at=fixed_now - timedelta(minutes=10))
+        self.observation(occurred_at=fixed_now - timedelta(hours=3))
+        with patch("django.utils.timezone.now", return_value=fixed_now):
+            call_command("detect_observation_clusters")
+            call_command("detect_observation_clusters")
         response = self.client.get("/api/v1/ops/clusters").json()
         self.assertEqual(len(response["items"]), 1)
         warning = response["items"][0]
         self.assertEqual(warning["report_count"], 5)
-        self.assertEqual(warning["observed"], 5)
-        self.assertIn(warning["baseline"], ["same_area_earlier", "peer_areas"])
-        self.assertIn(warning["detector"], ["spike", "threshold"])
-        self.assertIsNotNone(warning["expected"])
+        self.assertEqual(warning["expected"], 0.14)
+        self.assertIsNone(warning["baseline"])
+        self.assertEqual(warning["detector"], "threshold")
         self.assertIn("vote buying", warning["explanation"])
         result = self.client.post(
             f'/api/v1/ops/clusters/{warning["id"]}/review', {"note": "Reviewed"}, content_type="application/json",
