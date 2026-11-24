@@ -1343,5 +1343,321 @@
     "brokenEvent": "[PCM draft] First broken event: {id}",
     "verifyNow": "[PCM draft] Run verification check",
     "exportLog": "[PCM draft] Export audit log (JSONL/CSV)"
+  },
+  "pub": {
+    "homeLink": "ElectraGuard AI home",
+    "menu": "Menu",
+    "nav": {
+      "label": "Main",
+      "home": "Home",
+      "results": "Results",
+      "ask": "Ask question",
+      "guide": "Guides",
+      "phone": "Try SMS and USSD",
+      "privacy": "Privacy"
+    },
+    "footer": {
+      "label": "More",
+      "nonpartisan": "We no dey for any party or candidate. We no be INEC.",
+      "emergency": "If person dey for danger, call 112. ElectraGuard dey write report down. E no dey send help.",
+      "observer": "Observer app",
+      "staff": "Staff sign in"
+    }
+  },
+  "p02": {
+    "heading": "You see wahala for polling unit? Report am.",
+    "lead": "ElectraGuard dey keep wetin voters and accredited observers see for election day. Reviewers wey don train dey check every report, and dem dey put the reviewed total here.",
+    "report": "Report wetin you see",
+    "reportHint": "No account, no name. You go get receipt code to check am later.",
+    "basicPhone": "No smartphone? Dial {ussd} or send SMS go {shortCode}.",
+    "testNumber": "(test number)",
+    "tryPhone": "Try am for the phone wey dey this screen",
+    "check": {
+      "title": "Check report",
+      "lead": "Put the receipt code wey you get when you report.",
+      "outcome": "Wetin dem find: {outcome}",
+      "question": "Reviewer get question for you. Open the report for the phone wey you take send am.",
+      "receivedLabel": "Dem receive am",
+      "updatedLabel": "Last change",
+      "tooMany": "Too many check from this network. Wait one minute, try again.",
+      "unavailable": "Check no dey work now. Try again after some minutes."
+    },
+    "results": {
+      "title": "Reviewed results",
+      "unit": "{count, plural, one {reviewed report} other {reviewed reports}}",
+      "suppressed": "Reviewed report never reach 5 yet",
+      "published": "Dem publish am {time}.",
+      "cutoff": "E cover reports wey people see before {time}.",
+      "empty": "Nothing don publish yet.",
+      "emptyHint": "Total go show here after reviewers finish reports, at least 60 minutes after.",
+      "how": "How dem dey publish results",
+      "unavailable": "Results no fit load now.",
+      "open": "See results by state"
+    },
+    "how": {
+      "title": "How e dey work",
+      "1": "You report wetin you see, for your own language. E dey work even when network weak.",
+      "2": "You go get receipt code. Keep am to check your report.",
+      "3": "Reviewer wey don train go check the report. AI dey help arrange reports; na person dey decide.",
+      "4": "Reviewed total by state go show here. Never name, wetin you write, or photo."
+    },
+    "help": {
+      "title": "Questions",
+      "ask": "Ask ElectraGuard",
+      "askHint": "Answer dey come only from approved guides, and e go show where e come from.",
+      "guide": "Approved guide",
+      "guides": "Guides",
+      "guidesHint": "Short approved guides for voters and observers.",
+      "privacy": "Privacy notice",
+      "privacyHint": "Wetin we dey keep, and wetin we no dey ever collect."
+    }
+  },
+  "results": {
+    "notice": "Na only reviewed observations. No be official results. We no be INEC."
+  },
+  "p03": {
+    "title": "Reviewed observations",
+    "lead": "Total of election-day reports wey trained reviewers don finish. We dey hide small numbers to protect the people wey report.",
+    "view": {
+      "label": "Show results from",
+      "combined": "All organisations together"
+    },
+    "totalUnit": "{count, plural, one {reviewed report} other {reviewed reports}}",
+    "totalSuppressed": "Reviewed report never reach 5",
+    "source": "From",
+    "publishedLabel": "Dem publish am",
+    "cutoffLabel": "Reports wey people see before",
+    "delay": "Dem publish am at least {minutes, plural, one {# minute} other {# minutes}} after the reports, so nobody fit trace person from am.",
+    "combinedNote": "Combined number go show only when every organisation number dey show.",
+    "byState": {
+      "title": "Reports by state",
+      "caption": "Reviewed reports for each state"
+    },
+    "categories": {
+      "title": "Wetin happen, by state",
+      "hint": "Open one state to see im reports by type.",
+      "caption": "Reviewed reports for {state}, by type"
+    },
+    "outcomes": {
+      "title": "Wetin dem find",
+      "hint": "How reviewers close the reports.",
+      "caption": "Reviewed reports by wetin dem find"
+    },
+    "timeline": {
+      "title": "Reports by hour",
+      "hint": "By the hour wey people see am, West Africa Time.",
+      "caption": "Reviewed reports by the hour"
+    },
+    "col": {
+      "state": "State",
+      "reports": "Reports",
+      "category": "Wetin happen",
+      "outcome": "Wetin dem find",
+      "share": "Share",
+      "hour": "Hour"
+    },
+    "percent": "{value}%",
+    "fewerThan": "e no reach 5",
+    "noRows": "No state to show yet.",
+    "audit": {
+      "title": "Audit record",
+      "body": "{count, plural, one {# event wey dem record} other {# events wey dem record}} reach {time}. Fingerprint:",
+      "explain": "Every review action dey join this record. If anybody change old entry, this fingerprint no go match again."
+    },
+    "empty": {
+      "title": "Nothing don publish yet.",
+      "body": "Total go show after reviewers finish reports, and at least 60 minutes after people make the reports."
+    },
+    "error": {
+      "title": "Results no fit load.",
+      "body": "The problem dey our side or for network. Try again after one minute."
+    },
+    "retry": "Try again"
+  },
+  "p04": {
+    "title": "Ask ElectraGuard",
+    "heading": "Wetin you wan know?",
+    "lead": "Answer dey come word for word from approved guides, with where e come from. If no approved answer dey, ElectraGuard go tell you.",
+    "label": "Your question",
+    "hint": "Example: How I go take check my report?",
+    "ask": "Ask",
+    "asking": "E dey find answer",
+    "tooShort": "Write at least 3 letters.",
+    "tooLong": "No pass 500 letters.",
+    "answered": "From the approved guides",
+    "source": "Where e come from: {title}, {section}",
+    "version": "Approved version {version}",
+    "openSource": "Read am for the guide",
+    "fallback": "Dem only approve this answer for English, so na English e dey.",
+    "abstain": {
+      "title": "I no get approved answer for that one.",
+      "body": "Nothing for the approved guides answer this question, so ElectraGuard no go guess. Try use another word, or read the guides."
+    },
+    "again": "Ask another question",
+    "guides": "Read the guides",
+    "error": "We no fit get answer. Try again.",
+    "offline": "You need network to ask question.",
+    "tooMany": "Too many questions from this network. Wait one minute, try again.",
+    "unavailable": "Ask ElectraGuard never on yet. Read the guides instead.",
+    "note": "No be legal advice. We no dey keep your questions."
+  },
+  "p05": {
+    "title": "Guides",
+    "lead": "Short approved guides for voters and observers.",
+    "version": "Version {version}",
+    "englishOnly": "(English only)",
+    "approved": "Dem approve am {date}. Version {version}.",
+    "fallback": "Dem never approve this guide for your language, so na English e dey.",
+    "contents": "For this page",
+    "allGuides": "All guides",
+    "ask": "Ask question about the guides",
+    "askInstead": "Ask question instead",
+    "empty": {
+      "title": "No guide dey yet.",
+      "body": "Approved guides go show here when the observation organisation load dem."
+    },
+    "notFound": {
+      "title": "This guide no dey.",
+      "body": "Maybe dem never load am, or the link no correct."
+    },
+    "error": {
+      "title": "Guides no fit load.",
+      "body": "Try again after one minute."
+    }
+  },
+  "p06": {
+    "title": "Privacy notice",
+    "lead": "Wetin ElectraGuard dey keep, wetin e no dey ever collect, and wetin you fit do. For simple words.",
+    "updated": "Last update {date}.",
+    "who": {
+      "h": "Who dey run ElectraGuard",
+      "p": "ElectraGuard AI na software wey Cairn make. Observation organisations dey use am collect and review reports about election. The organisation wey receive your report na im dey responsible for am. ElectraGuard no dey for any party and e no be INEC."
+    },
+    "never": {
+      "h": "Wetin we no dey ever collect",
+      "1": "Your name. Citizens and observers no dey give name.",
+      "2": "Your location from GPS. The app no dey ever read am.",
+      "3": "Your phone number as e be. For SMS and USSD, we dey keep the number only as scattered code, and we go delete the real number once our reply don go."
+    },
+    "keep": {
+      "h": "Wetin we dey keep",
+      "1": "Wetin you report: wetin happen, where (no closer pass the polling unit wey you choose), when, and wetin you write.",
+      "2": "Photos, videos and voice notes wey you add. We dey remove location from photos for your phone and again for our server. Faces wey we fit see, we go blur dem.",
+      "3": "For observers: the observer code and scattered form of the PIN. Na only the organisation know who get code, and dem dey keep that list outside ElectraGuard.",
+      "4": "Small security records, like sign-in wey fail, without wetin dey inside any report."
+    },
+    "see": {
+      "h": "Who fit see your report",
+      "p": "Na only reviewers for the organisation wey receive am, and only when dem give dem the report. Organisations no fit see each other reports. Every time person open photo or video, we dey record am."
+    },
+    "public": {
+      "h": "Wetin we dey show public",
+      "p": "Na only total of reviewed reports, by state, type and hour, at least 60 minutes after. Any number wey no reach 5 go show as \"e no reach 5\". Never your words, photos, polling unit, ward, receipt code or observer code."
+    },
+    "ai": {
+      "h": "How we dey use AI",
+      "p": "AI dey suggest type and how urgent report be, to help reviewers arrange reports. We dey always mark am as suggestion, and na person dey make every decision. Ask ElectraGuard dey quote only approved guides, and we no dey keep your questions."
+    },
+    "speech": {
+      "h": "To talk instead of to type",
+      "p": "If you use Speak, your phone speech service fit process your voice to turn am to words. You fit use your keyboard voice typing, or type, instead."
+    },
+    "rights": {
+      "h": "Wetin you fit do",
+      "1": "Withdraw (comot) report before review start. We go delete the words and files.",
+      "2": "Check your report any time with im receipt code.",
+      "3": "Clear phone wey people share: observers fit sign out and remove everything from the phone one time.",
+      "4": "Under the Nigeria Data Protection Act 2023, you fit ask the organisation wey receive your report make dem show, correct or delete information about you."
+    },
+    "keepFor": {
+      "h": "How long we dey keep reports",
+      "p": "Each organisation dey set time between 30 days and 2 years. After that, we go delete reports, files and messages, and backups go expire on the same time."
+    },
+    "security": {
+      "h": "How we dey protect am",
+      "p": "Reports dey travel through locked (encrypted) connection and we dey store dem locked. Staff dey use named accounts with two-step sign-in. Every change for report dey inside record wey go show if person change anything."
+    },
+    "danger": {
+      "h": "If person dey for danger",
+      "p": "Call 112. ElectraGuard dey write report down. E no dey send help."
+    },
+    "contact": {
+      "h": "Questions",
+      "p": "If you get question about your report, ask the organisation wey give you your observer code, or write to the reviewer for your report messages."
+    },
+    "languages": "This notice dey for English, Naijá, Hausa, Yorùbá and Igbo. Choose language for the top of the page."
+  },
+  "p07": {
+    "title": "Try report by SMS and USSD",
+    "lead": "Use this phone wey dey screen to try ElectraGuard the way small phone dey do am. Na the same system with real SMS and USSD.",
+    "deviceLabel": "Small phone for practice",
+    "screenLabel": "Phone screen",
+    "keypadLabel": "Phone buttons",
+    "screen": {
+      "starting": "Phone dey start",
+      "wait": "Abeg wait"
+    },
+    "home": {
+      "title": "Practice phone",
+      "label": "Number to dial",
+      "hint": "Dial {code} and press Call."
+    },
+    "ussd": {
+      "reply": "Your answer",
+      "wrongCode": "That number no dey answer. Dial {code}.",
+      "ended": "Session don end."
+    },
+    "sms": {
+      "title": "New message",
+      "to": "To: {shortCode}",
+      "label": "Message",
+      "count": "{count} of {max}",
+      "empty": "Write message first."
+    },
+    "inbox": {
+      "title": "Messages",
+      "empty": "No message yet.",
+      "you": "You"
+    },
+    "key": {
+      "call": "Call",
+      "end": "End",
+      "send": "Send",
+      "messages": "Messages",
+      "messagesCount": "Messages ({count})",
+      "clear": "Clear",
+      "back": "Back",
+      "write": "Write",
+      "ok": "OK",
+      "star": "Star",
+      "hash": "Hash"
+    },
+    "how": {
+      "title": "Try am",
+      "ussd": "Dial {code} and press Call. Answer each menu with the buttons, then press Send.",
+      "report": "Or write message: REPORT, category number, polling unit code if you know am, then wetin happen.",
+      "reportExample": "REPORT 3 Long queue and only one official checking names",
+      "status": "Check report: STATUS and the receipt code.",
+      "reply": "Answer reviewer question: REPLY, the receipt code, then your answer.",
+      "lang": "Change reply language: LANG EN, PCM, HA, YO or IG."
+    },
+    "example": "Use this example",
+    "startMessage": "Start this message",
+    "categories": {
+      "title": "Category numbers"
+    },
+    "simulated": "Practice number {number}. Reports wey you send from here get Simulated mark and dem no go ever show for public results.",
+    "reset": "New practice number",
+    "resetHint": "E go start again with another number and clear this screen.",
+    "error": {
+      "network": "No network. Check your connection and try again.",
+      "server": "Phone service no answer. Try again after one minute.",
+      "tooMany": "Too many messages from this phone. Wait some minutes.",
+      "invalid": "Network no accept that message. Check am and try again."
+    },
+    "disabled": {
+      "title": "Practice phone don off.",
+      "body": "The observation organisation don off am for now. You fit still report for this website."
+    }
   }
 }

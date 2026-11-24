@@ -1343,5 +1343,321 @@
     "brokenEvent": "[IG draft] First broken event: {id}",
     "verifyNow": "[IG draft] Run verification check",
     "exportLog": "[IG draft] Export audit log (JSONL/CSV)"
+  },
+  "pub": {
+    "homeLink": "Ibe mbụ ElectraGuard AI",
+    "menu": "Menu",
+    "nav": {
+      "label": "Isi",
+      "home": "Ụlọ",
+      "results": "Nsonaazụ",
+      "ask": "Jụọ",
+      "guide": "Ntụziaka",
+      "phone": "Nwalee SMS na USSD",
+      "privacy": "Nzuzo"
+    },
+    "footer": {
+      "label": "Ndị ọzọ",
+      "nonpartisan": "Anyị anaghị akwado otu ndọrọ ndọrọ ọchịchị ma ọ bụ onye ọ bụla na-azọ ọkwa. Anyị abụghị INEC.",
+      "emergency": "Ọ bụrụ na mmadụ nọ n'ihe egwu, kpọọ 112. ElectraGuard na-edekọ akụkọ. Ọ naghị eziga enyemaka.",
+      "observer": "Ngwa onye nlebanya",
+      "staff": "Nbanye ndị ọrụ"
+    }
+  },
+  "p02": {
+    "heading": "Ị hụrụ nsogbu n'ebe ntuli aka? Kọọ ya.",
+    "lead": "ElectraGuard na-edekọ ihe ndị ntuli aka na ndị nlebanya a kwadoro hụrụ n'ụbọchị ntuli aka. Ndị nyocha a zụrụ azụ na-enyocha akụkọ ọ bụla, a na-ebipụtakwa ngụkọta enyochara ebe a.",
+    "report": "Kọọ ihe ị hụrụ",
+    "reportHint": "Enweghị akaụntụ, enweghị aha. Ị ga-enweta koodu nnata iji lelee ya emesịa.",
+    "basicPhone": "Enweghị ekwentị smart? Pịa {ussd} ma ọ bụ ziga SMS na {shortCode}.",
+    "testNumber": "(nọmba nnwale)",
+    "tryPhone": "Nwalee ya na ekwentị dị na ihuenyo",
+    "check": {
+      "title": "Lelee akụkọ",
+      "lead": "Tinye koodu nnata i nwetara mgbe ị kọrọ akụkọ.",
+      "outcome": "Nsonaazụ: {outcome}",
+      "question": "Onye nyocha nwere ajụjụ maka gị. Mepee akụkọ ahụ na ekwentị i ji zipụ ya.",
+      "receivedLabel": "Anatala ya",
+      "updatedLabel": "Mgbanwe ikpeazụ",
+      "tooMany": "Nlele dị ukwuu site na netwọk a. Chere otu nkeji ma nwaa ọzọ.",
+      "unavailable": "Enweghị ike ilele ugbu a. Nwaa ọzọ mgbe nkeji ole na ole gachara."
+    },
+    "results": {
+      "title": "Nsonaazụ enyochara",
+      "unit": "{count, plural, one {akụkọ enyochara} other {akụkọ enyochara}}",
+      "suppressed": "Akụkọ enyochara erubeghị 5",
+      "published": "E bipụtara ya {time}.",
+      "cutoff": "Ọ gụnyere akụkọ a hụrụ tupu {time}.",
+      "empty": "E bipụtabeghị ihe ọ bụla.",
+      "emptyHint": "Ngụkọta ga-apụta ebe a mgbe ndị nyocha mechara akụkọ, opekata mpe nkeji 60 ka e mesịrị.",
+      "how": "Otu e si ebipụta nsonaazụ",
+      "unavailable": "Enweghị ike ibulite nsonaazụ ugbu a.",
+      "open": "Hụ nsonaazụ site na steeti"
+    },
+    "how": {
+      "title": "Otu o si arụ ọrụ",
+      "1": "Ị na-akọ ihe ị hụrụ, n'asụsụ gị. Ọ na-arụ ọrụ ọbụna mgbe netwọk adịghị ike.",
+      "2": "Ị ga-enweta koodu nnata. Debe ya iji lelee akụkọ gị.",
+      "3": "Onye nyocha a zụrụ azụ ga-enyocha akụkọ ahụ. AI na-enyere aka ịhazi akụkọ; mmadụ na-ekpebi.",
+      "4": "A na-ebipụta ngụkọta enyochara site na steeti ebe a. Ọ dịghị mgbe aha, okwu ma ọ bụ foto."
+    },
+    "help": {
+      "title": "Ajụjụ",
+      "ask": "Jụọ ElectraGuard",
+      "askHint": "Azịza na-esi naanị na ntụziaka a kwadoro, ya na ebe o si.",
+      "guide": "Ntụziaka a kwadoro",
+      "guides": "Ntụziaka",
+      "guidesHint": "Ntụziaka dị mkpirikpi a kwadoro maka ndị ntuli aka na ndị nlebanya.",
+      "privacy": "Ọkwa nzuzo",
+      "privacyHint": "Ihe anyị na-edebe, na ihe anyị anaghị anakọta mgbe ọ bụla."
+    }
+  },
+  "results": {
+    "notice": "Naanị ihe a hụrụ enyochara. Ọ bụghị nsonaazụ gọọmentị. Anyị abụghị INEC."
+  },
+  "p03": {
+    "title": "Ihe a hụrụ enyochara",
+    "lead": "Ngụkọta akụkọ ụbọchị ntuli aka ndị nyocha a zụrụ azụ mechara. A na-ezo obere ọnụọgụ iji chebe ndị kọrọ akụkọ.",
+    "view": {
+      "label": "Gosi nsonaazụ si na",
+      "combined": "Otu niile jikọtara ọnụ"
+    },
+    "totalUnit": "{count, plural, one {akụkọ enyochara} other {akụkọ enyochara}}",
+    "totalSuppressed": "Akụkọ enyochara erughị 5",
+    "source": "Si na",
+    "publishedLabel": "E bipụtara ya",
+    "cutoffLabel": "Akụkọ a hụrụ tupu",
+    "delay": "E bipụtara ya opekata mpe {minutes, plural, one {nkeji #} other {nkeji #}} ka akụkọ ndị ahụ gachara, ka onye ọ bụla ghara ịchọpụta mmadụ site na ha.",
+    "combinedNote": "A na-egosi ọnụọgụ jikọtara ọnụ naanị mgbe ọnụọgụ otu ọ bụla na-egosi.",
+    "byState": {
+      "title": "Akụkọ site na steeti",
+      "caption": "Akụkọ enyochara na steeti ọ bụla"
+    },
+    "categories": {
+      "title": "Ihe mere, site na steeti",
+      "hint": "Mepee steeti iji hụ akụkọ ya site n'ụdị.",
+      "caption": "Akụkọ enyochara na {state}, site n'ụdị"
+    },
+    "outcomes": {
+      "title": "Nsonaazụ",
+      "hint": "Otu ndị nyocha si mechie akụkọ ndị ahụ.",
+      "caption": "Akụkọ enyochara site na nsonaazụ"
+    },
+    "timeline": {
+      "title": "Akụkọ site n'awa",
+      "hint": "Site n'awa a hụrụ ya, oge West Africa.",
+      "caption": "Akụkọ enyochara site n'awa"
+    },
+    "col": {
+      "state": "Steeti",
+      "reports": "Akụkọ",
+      "category": "Ihe mere",
+      "outcome": "Nsonaazụ",
+      "share": "Òkè",
+      "hour": "Awa"
+    },
+    "percent": "{value}%",
+    "fewerThan": "erughị 5",
+    "noRows": "Enweghị steeti a ga-egosi ugbu a.",
+    "audit": {
+      "title": "Ndekọ nyocha",
+      "body": "{count, plural, one {ihe omume # e dekọrọ} other {ihe omume # e dekọrọ}} ruo {time}. Mkpịsị aka:",
+      "explain": "E jikọtara omume nyocha ọ bụla na ndekọ a. Ọ bụrụ na agbanwee ihe ochie ọ bụla, mkpịsị aka a agaghị adaba ọzọ."
+    },
+    "empty": {
+      "title": "E bipụtabeghị ihe ọ bụla.",
+      "body": "Ngụkọta na-apụta mgbe ndị nyocha mechara akụkọ, na opekata mpe nkeji 60 ka e mere akụkọ ndị ahụ."
+    },
+    "error": {
+      "title": "Enweghị ike ibulite nsonaazụ.",
+      "body": "Nsogbu ahụ dị n'akụkụ anyị ma ọ bụ na netwọk. Nwaa ọzọ mgbe otu nkeji gachara."
+    },
+    "retry": "Nwaa ọzọ"
+  },
+  "p04": {
+    "title": "Jụọ ElectraGuard",
+    "heading": "Gịnị ka ị chọrọ ịma?",
+    "lead": "A na-ehota azịza okwu n'okwu site na ntụziaka a kwadoro, ya na ebe o si. Ọ bụrụ na enweghị azịza a kwadoro, ElectraGuard ga-ekwu ya.",
+    "label": "Ajụjụ gị",
+    "hint": "Ọmụmaatụ: Kedu ka m ga-esi lelee akụkọ m?",
+    "ask": "Jụọ",
+    "asking": "Ana-achọ azịza",
+    "tooShort": "Dee opekata mpe mkpụrụedemede 3.",
+    "tooLong": "Ejila karịa mkpụrụedemede 500.",
+    "answered": "Site na ntụziaka a kwadoro",
+    "source": "Ebe o si: {title}, {section}",
+    "version": "Ụdị a kwadoro {version}",
+    "openSource": "Gụọ nke a na ntụziaka",
+    "fallback": "A kwadoro azịza a naanị n'asụsụ Bekee, ya mere ọ dị na Bekee.",
+    "abstain": {
+      "title": "Enweghị m azịza a kwadoro maka nke ahụ.",
+      "body": "Ọ dịghị ihe dị na ntụziaka a kwadoro na-aza ajụjụ a, ya mere ElectraGuard agaghị eche echiche. Nwaa okwu ndị ọzọ, ma ọ bụ gụọ ntụziaka ndị ahụ."
+    },
+    "again": "Jụọ ajụjụ ọzọ",
+    "guides": "Gụọ ntụziaka",
+    "error": "Anyị enwetaghị azịza. Nwaa ọzọ.",
+    "offline": "Ị chọrọ netwọk iji jụọ ajụjụ.",
+    "tooMany": "Ajụjụ dị ukwuu site na netwọk a. Chere otu nkeji ma nwaa ọzọ.",
+    "unavailable": "A gbanyebeghị Jụọ ElectraGuard. Gụọ ntụziaka kama.",
+    "note": "Ọ bụghị ndụmọdụ iwu. Anyị anaghị edebe ajụjụ gị."
+  },
+  "p05": {
+    "title": "Ntụziaka",
+    "lead": "Ntụziaka dị mkpirikpi a kwadoro maka ndị ntuli aka na ndị nlebanya.",
+    "version": "Ụdị {version}",
+    "englishOnly": "(Naanị Bekee)",
+    "approved": "A kwadoro ya {date}. Ụdị {version}.",
+    "fallback": "A kwadobeghị ntụziaka a n'asụsụ gị, ya mere ọ dị na Bekee.",
+    "contents": "Na ibe a",
+    "allGuides": "Ntụziaka niile",
+    "ask": "Jụọ ajụjụ gbasara ntụziaka",
+    "askInstead": "Jụọ ajụjụ kama",
+    "empty": {
+      "title": "E tinyebeghị ntụziaka ọ bụla.",
+      "body": "Ntụziaka a kwadoro ga-apụta ebe a ozugbo otu nlebanya tinyere ha."
+    },
+    "notFound": {
+      "title": "Ntụziaka a adịghị.",
+      "body": "Ma eleghị anya e tinyebeghị ya, ma ọ bụ njikọ ahụ ezighi ezi."
+    },
+    "error": {
+      "title": "Enweghị ike ibulite ntụziaka.",
+      "body": "Nwaa ọzọ mgbe otu nkeji gachara."
+    }
+  },
+  "p06": {
+    "title": "Ọkwa nzuzo",
+    "lead": "Ihe ElectraGuard na-edebe, ihe ọ naghị anakọta mgbe ọ bụla, na ihe ị nwere ike ime. N'okwu dị mfe.",
+    "updated": "Emelitere ikpeazụ {date}.",
+    "who": {
+      "h": "Onye na-arụ ElectraGuard",
+      "p": "ElectraGuard AI bụ ngwanrọ Cairn mere. Otu nlebanya na-eji ya anakọta ma nyochaa akụkọ gbasara ntuli aka. Otu natara akụkọ gị bụ onye na-ahụ maka ya. ElectraGuard anaghị akwado onye ọ bụla, ọ dịkwaghị n'okpuru INEC."
+    },
+    "never": {
+      "h": "Ihe anyị anaghị anakọta mgbe ọ bụla",
+      "1": "Aha gị. Ụmụ amaala na ndị nlebanya anaghị enye aha.",
+      "2": "Ọnọdụ gị site na GPS. Ngwa ahụ anaghị agụ ya mgbe ọ bụla.",
+      "3": "Nọmba ekwentị gị dịka ọ dị. Maka SMS na USSD, a na-edebe nọmba ahụ naanị dịka koodu a gwakọtara, a na-ehichapụkwa nọmba n'ezie ozugbo e zigara azịza anyị."
+    },
+    "keep": {
+      "h": "Ihe anyị na-edebe",
+      "1": "Ihe ị kọrọ: ihe mere, ebe (ọ gaghị abịaru nso karịa ebe ntuli aka ị họọrọ), mgbe, na ihe i dere.",
+      "2": "Foto, vidiyo na ozi olu ị tinyere. A na-ewepụ ozi ọnọdụ na foto na ekwentị gị yana na sava anyị. A na-ekpuchi ihu ndị anyị nwere ike ịhụ.",
+      "3": "Maka ndị nlebanya: koodu onye nlebanya na PIN a gwakọtara. Naanị otu ahụ maara onye nwere koodu, ọ na-edebekwa ndepụta ahụ n'èzí ElectraGuard.",
+      "4": "Ndekọ nchekwa ndị bụ isi, dịka mbọ nbanye na-agaghị nke ọma, na-enweghị ihe dị n'ime akụkọ ọ bụla."
+    },
+    "see": {
+      "h": "Onye nwere ike ịhụ akụkọ gị",
+      "p": "Naanị ndị nyocha nke otu natara ya, naanị mgbe e nyere ha akụkọ ahụ. Otu dị iche iche enweghị ike ịhụ akụkọ ibe ha. Oge ọ bụla mmadụ meghere foto ma ọ bụ vidiyo, a na-edekọ ya."
+    },
+    "public": {
+      "h": "Ihe a na-egosi ọha",
+      "p": "Naanị ngụkọta akụkọ enyochara, site na steeti, ụdị na awa, opekata mpe nkeji 60 ka e mesịrị. Ọnụọgụ ọ bụla erughị 5 ga-egosi dịka \"erughị 5\". Ọ dịghị mgbe okwu gị, foto, ebe ntuli aka, wọọdụ, koodu nnata ma ọ bụ koodu onye nlebanya."
+    },
+    "ai": {
+      "h": "Otu e si eji AI",
+      "p": "AI na-atụ aro ụdị akụkọ na otu o si dị ngwa, iji nyere ndị nyocha aka ịhazi akụkọ. A na-akara ya dịka aro mgbe niile, mmadụ na-emekwa mkpebi ọ bụla. Jụọ ElectraGuard na-ehota naanị ntụziaka a kwadoro, anyị anaghị edebekwa ajụjụ gị."
+    },
+    "speech": {
+      "h": "Ikwu okwu kama ịpị",
+      "p": "Ọ bụrụ na ị jiri Kwuo okwu, ọrụ olu ekwentị gị nwere ike ịhazi olu gị ka ọ ghọọ okwu. Ị nwere ike iji ịpị olu nke kibọọdụ gị, ma ọ bụ pịa, kama."
+    },
+    "rights": {
+      "h": "Ihe ị nwere ike ime",
+      "1": "Wepụ akụkọ tupu nyocha amalite. A ga-ehichapụ okwu na faịlụ ya.",
+      "2": "Lelee akụkọ gị n'oge ọ bụla site na koodu nnata ya.",
+      "3": "Hichaa ekwentị a na-ekerịta: ndị nlebanya nwere ike ịpụ ma wepụ ihe niile na ekwentị n'otu nzọụkwụ.",
+      "4": "N'okpuru Iwu Nchedo Data Naịjirịa nke 2023, ị nwere ike ịrịọ otu natara akụkọ gị ka ha gosi, dozie ma ọ bụ hichapụ ozi gbasara gị."
+    },
+    "keepFor": {
+      "h": "Ogologo oge e na-edebe akụkọ",
+      "p": "Otu ọ bụla na-edobe oge n'etiti ụbọchị 30 na afọ 2. Mgbe nke ahụ gasịrị, a na-ehichapụ akụkọ, faịlụ na ozi, ndabere na-agwụkwa n'otu oge ahụ."
+    },
+    "security": {
+      "h": "Otu e si echebe ya",
+      "p": "Akụkọ na-aga site na njikọ ezoro ezo, a na-echekwakwa ha n'ezoghị ọha. Ndị ọrụ na-eji akaụntụ nwere aha na nbanye nzọụkwụ abụọ. Mgbanwe ọ bụla na akụkọ dị na ndekọ na-egosi ma a gbanwere ihe ọ bụla."
+    },
+    "danger": {
+      "h": "Ọ bụrụ na mmadụ nọ n'ihe egwu",
+      "p": "Kpọọ 112. ElectraGuard na-edekọ akụkọ. Ọ naghị eziga enyemaka."
+    },
+    "contact": {
+      "h": "Ajụjụ",
+      "p": "Maka ajụjụ gbasara akụkọ gị, jụọ otu nyere gị koodu onye nlebanya gị, ma ọ bụ degara onye nyocha na ozi akụkọ gị."
+    },
+    "languages": "Ọkwa a dị na Bekee, Naijá, Hausa, Yorùbá na Igbo. Họrọ asụsụ n'elu ibe ahụ."
+  },
+  "p07": {
+    "title": "Nwalee ịkọ akụkọ site na SMS na USSD",
+    "lead": "Jiri ekwentị a dị na ihuenyo nwalee ElectraGuard dịka obere ekwentị si eme ya. Ọ na-eji otu usoro ahụ dị ka SMS na USSD n'ezie.",
+    "deviceLabel": "Obere ekwentị nnwale",
+    "screenLabel": "Ihuenyo ekwentị",
+    "keypadLabel": "Bọtịnụ ekwentị",
+    "screen": {
+      "starting": "Ekwentị na-amalite",
+      "wait": "Biko chere"
+    },
+    "home": {
+      "title": "Ekwentị nnwale",
+      "label": "Nọmba a ga-akpọ",
+      "hint": "Pịa {code} ma pịa Kpọọ."
+    },
+    "ussd": {
+      "reply": "Azịza gị",
+      "wrongCode": "Nọmba ahụ anaghị aza. Pịa {code}.",
+      "ended": "Nnọkọ agwụla."
+    },
+    "sms": {
+      "title": "Ozi ọhụrụ",
+      "to": "Gaa na: {shortCode}",
+      "label": "Ozi",
+      "count": "{count} n'ime {max}",
+      "empty": "Dee ozi mbụ."
+    },
+    "inbox": {
+      "title": "Ozi",
+      "empty": "Enweghị ozi ugbu a.",
+      "you": "Gị"
+    },
+    "key": {
+      "call": "Kpọọ",
+      "end": "Kwụsị",
+      "send": "Ziga",
+      "messages": "Ozi",
+      "messagesCount": "Ozi ({count})",
+      "clear": "Hichapụ",
+      "back": "Azụ",
+      "write": "Dee",
+      "ok": "Ọ dị mma",
+      "star": "Kpakpando",
+      "hash": "Hash"
+    },
+    "how": {
+      "title": "Nwalee ya",
+      "ussd": "Pịa {code} ma pịa Kpọọ. Zaa menu ọ bụla site na bọtịnụ, wee pịa Ziga.",
+      "report": "Ma ọ bụ dee ozi: REPORT, nọmba ụdị, koodu ebe ntuli aka ma ọ bụrụ na ị ma ya, wee ihe mere.",
+      "reportExample": "REPORT 3 Ahịrị dị ogologo, naanị otu onye ọrụ na-enyocha aha",
+      "status": "Lelee akụkọ: STATUS na koodu nnata.",
+      "reply": "Zaa ajụjụ onye nyocha: REPLY, koodu nnata, wee azịza gị.",
+      "lang": "Gbanwee asụsụ azịza: LANG EN, PCM, HA, YO ma ọ bụ IG."
+    },
+    "example": "Jiri ọmụmaatụ a",
+    "startMessage": "Malite ozi a",
+    "categories": {
+      "title": "Nọmba ụdị"
+    },
+    "simulated": "Nọmba nnwale {number}. Akụkọ e zigara site ebe a nwere akara Nnwale, ha agaghị apụta na nsonaazụ ọha mgbe ọ bụla.",
+    "reset": "Nọmba nnwale ọhụrụ",
+    "resetHint": "Ọ na-amalite ọzọ na nọmba dị iche ma hichaa ihuenyo a.",
+    "error": {
+      "network": "Enweghị netwọk. Lelee njikọ gị ma nwaa ọzọ.",
+      "server": "Ọrụ ekwentị azaghị. Nwaa ọzọ mgbe otu nkeji gachara.",
+      "tooMany": "Ozi dị ukwuu site na ekwentị a. Chere nkeji ole na ole.",
+      "invalid": "Netwọk jụrụ ozi ahụ. Lelee ya ma nwaa ọzọ."
+    },
+    "disabled": {
+      "title": "Agbanyụla ekwentị nnwale.",
+      "body": "Otu nlebanya agbanyụla ya ugbu a. Ị ka nwere ike ịkọ akụkọ na weebụsaịtị a."
+    }
   }
 }

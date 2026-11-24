@@ -1342,5 +1342,321 @@
     "brokenEvent": "First broken event: {id}",
     "verifyNow": "Run verification check",
     "exportLog": "Export audit log (JSONL/CSV)"
+  },
+  "pub": {
+    "homeLink": "ElectraGuard AI home",
+    "menu": "Menu",
+    "nav": {
+      "label": "Main",
+      "home": "Home",
+      "results": "Results",
+      "ask": "Ask",
+      "guide": "Guides",
+      "phone": "Try SMS and USSD",
+      "privacy": "Privacy"
+    },
+    "footer": {
+      "label": "More",
+      "nonpartisan": "Nonpartisan. Not linked to any party or candidate. Independent of INEC.",
+      "emergency": "If someone is in danger, call 112. ElectraGuard records reports. It does not send help.",
+      "observer": "Observer app",
+      "staff": "Staff sign in"
+    }
+  },
+  "p02": {
+    "heading": "Saw a problem at a polling unit? Report it.",
+    "lead": "ElectraGuard records what voters and accredited observers see on election day. Trained reviewers check every report, and reviewed totals are published here.",
+    "report": "Report what you saw",
+    "reportHint": "No account and no name. You get a receipt code to check it later.",
+    "basicPhone": "No smartphone? Dial {ussd} or send an SMS to {shortCode}.",
+    "testNumber": "(test number)",
+    "tryPhone": "Try it on the on-screen phone",
+    "check": {
+      "title": "Check a report",
+      "lead": "Enter the receipt code you got when you reported.",
+      "outcome": "Outcome: {outcome}",
+      "question": "A reviewer has a question for you. Open the report on the phone you used to send it.",
+      "receivedLabel": "Received",
+      "updatedLabel": "Last change",
+      "tooMany": "Too many checks from this network. Wait a minute and try again.",
+      "unavailable": "Checking is not available right now. Try again in a few minutes."
+    },
+    "results": {
+      "title": "Reviewed results",
+      "unit": "{count, plural, one {reviewed report} other {reviewed reports}}",
+      "suppressed": "Fewer than 5 reviewed reports so far",
+      "published": "Published {time}.",
+      "cutoff": "Covers reports observed before {time}.",
+      "empty": "Nothing has been published yet.",
+      "emptyHint": "Totals appear here after reviewers finish reports, at least 60 minutes later.",
+      "how": "How results are published",
+      "unavailable": "Results could not be loaded right now.",
+      "open": "See results by state"
+    },
+    "how": {
+      "title": "How it works",
+      "1": "You report what you saw, in your language. It works on weak network.",
+      "2": "You get a receipt code. Keep it to check your report.",
+      "3": "A trained reviewer checks the report. AI helps sort reports; a person decides.",
+      "4": "Reviewed totals by state are published here. Never names, words or photos."
+    },
+    "help": {
+      "title": "Questions",
+      "ask": "Ask ElectraGuard",
+      "askHint": "Answers come only from approved guides, with the source shown.",
+      "guide": "Approved guide",
+      "guides": "Guides",
+      "guidesHint": "Short, approved guides for voters and observers.",
+      "privacy": "Privacy notice",
+      "privacyHint": "What we keep, and what we never collect."
+    }
+  },
+  "results": {
+    "notice": "Reviewed observations only. Not official results. Independent of INEC."
+  },
+  "p03": {
+    "title": "Reviewed observations",
+    "lead": "Totals of election-day reports that trained reviewers have finished. Small numbers are hidden to protect the people who reported.",
+    "view": {
+      "label": "Show results from",
+      "combined": "All organisations combined"
+    },
+    "totalUnit": "{count, plural, one {reviewed report} other {reviewed reports}}",
+    "totalSuppressed": "Fewer than 5 reviewed reports",
+    "source": "From",
+    "publishedLabel": "Published",
+    "cutoffLabel": "Reports observed before",
+    "delay": "Published at least {minutes, plural, one {# minute} other {# minutes}} after the reports, so no one can be traced from them.",
+    "combinedNote": "A combined number is shown only when every organisation's number is shown.",
+    "byState": {
+      "title": "Reports by state",
+      "caption": "Reviewed reports in each state"
+    },
+    "categories": {
+      "title": "What happened, by state",
+      "hint": "Open a state to see its reports by type.",
+      "caption": "Reviewed reports in {state}, by type"
+    },
+    "outcomes": {
+      "title": "Outcomes",
+      "hint": "How reviewers closed the reports.",
+      "caption": "Reviewed reports by outcome"
+    },
+    "timeline": {
+      "title": "Reports by hour",
+      "hint": "By the hour the reports were observed, West Africa Time.",
+      "caption": "Reviewed reports by hour observed"
+    },
+    "col": {
+      "state": "State",
+      "reports": "Reports",
+      "category": "What happened",
+      "outcome": "Outcome",
+      "share": "Share",
+      "hour": "Hour"
+    },
+    "percent": "{value}%",
+    "fewerThan": "fewer than 5",
+    "noRows": "No states to show yet.",
+    "audit": {
+      "title": "Audit record",
+      "body": "{count, plural, one {# recorded event} other {# recorded events}} up to {time}. Fingerprint:",
+      "explain": "Every review action is chained into this record. If any past entry is changed, this fingerprint no longer matches."
+    },
+    "empty": {
+      "title": "Nothing has been published yet.",
+      "body": "Totals appear after reviewers finish reports, and at least 60 minutes after the reports were made."
+    },
+    "error": {
+      "title": "Results could not be loaded.",
+      "body": "The problem is on our side or with the network. Try again in a minute."
+    },
+    "retry": "Try again"
+  },
+  "p04": {
+    "title": "Ask ElectraGuard",
+    "heading": "What do you want to know?",
+    "lead": "Answers are quoted word for word from approved guides, with the source. If there is no approved answer, ElectraGuard says so.",
+    "label": "Your question",
+    "hint": "Example: How do I check my report?",
+    "ask": "Ask",
+    "asking": "Finding an answer",
+    "tooShort": "Write at least 3 letters.",
+    "tooLong": "Use 500 letters or fewer.",
+    "answered": "From the approved guides",
+    "source": "Source: {title}, {section}",
+    "version": "Approved version {version}",
+    "openSource": "Read this in the guide",
+    "fallback": "This answer is only approved in English, so it is shown in English.",
+    "abstain": {
+      "title": "I don't have an approved answer to that.",
+      "body": "Nothing in the approved guides answers this question, so ElectraGuard will not guess. Try other words, or read the guides."
+    },
+    "again": "Ask another question",
+    "guides": "Read the guides",
+    "error": "We could not get an answer. Try again.",
+    "offline": "You need network to ask a question.",
+    "tooMany": "Too many questions from this network. Wait a minute and try again.",
+    "unavailable": "Ask ElectraGuard is not switched on yet. Read the guides instead.",
+    "note": "Not legal advice. Your questions are not stored."
+  },
+  "p05": {
+    "title": "Guides",
+    "lead": "Short, approved guides for voters and observers.",
+    "version": "Version {version}",
+    "englishOnly": "(English only)",
+    "approved": "Approved {date}. Version {version}.",
+    "fallback": "This guide is not approved in your language yet, so it is shown in English.",
+    "contents": "On this page",
+    "allGuides": "All guides",
+    "ask": "Ask a question about the guides",
+    "askInstead": "Ask a question instead",
+    "empty": {
+      "title": "No guides are loaded yet.",
+      "body": "Approved guides appear here once the observation organisation loads them."
+    },
+    "notFound": {
+      "title": "This guide is not available.",
+      "body": "It may not be loaded yet, or the link is wrong."
+    },
+    "error": {
+      "title": "Guides could not be loaded.",
+      "body": "Try again in a minute."
+    }
+  },
+  "p06": {
+    "title": "Privacy notice",
+    "lead": "What ElectraGuard keeps, what it never collects, and what you can do. In plain words.",
+    "updated": "Last updated {date}.",
+    "who": {
+      "h": "Who runs ElectraGuard",
+      "p": "ElectraGuard AI is software made by Cairn. Observation organisations use it to collect and review reports about elections. The organisation that receives your report is responsible for it. ElectraGuard is nonpartisan and independent of INEC."
+    },
+    "never": {
+      "h": "What we never collect",
+      "1": "Your name. Citizens and observers do not give a name.",
+      "2": "Your location from GPS. The app never reads it.",
+      "3": "Your phone number in plain form. For SMS and USSD the number is kept only as a scrambled code, and the plain number is deleted once our reply is sent."
+    },
+    "keep": {
+      "h": "What we keep",
+      "1": "What you report: what happened, where (no closer than the polling unit you choose), when, and what you wrote.",
+      "2": "Photos, videos and voice notes you add. Location data is removed from photos on your phone and again on our server. Faces we can detect are blurred.",
+      "3": "For observers: the observer code and a scrambled form of the PIN. Only the organisation knows who holds a code, and it keeps that list outside ElectraGuard.",
+      "4": "Basic security records, such as failed sign-in attempts, without the content of any report."
+    },
+    "see": {
+      "h": "Who can see your report",
+      "p": "Only reviewers of the organisation that received it, and only when the report is given to them. Organisations cannot see each other's reports. Every time someone opens a photo or video, it is recorded."
+    },
+    "public": {
+      "h": "What is made public",
+      "p": "Only totals of reviewed reports, by state, type and hour, published at least 60 minutes later. Any number below 5 is shown as \"fewer than 5\". Never your words, photos, polling unit, ward, receipt code or observer code."
+    },
+    "ai": {
+      "h": "How AI is used",
+      "p": "AI suggests a type and how urgent a report is, to help reviewers sort reports. It is always marked as a suggestion, and a person makes every decision. Ask ElectraGuard only quotes approved guides, and your questions are not stored."
+    },
+    "speech": {
+      "h": "Speaking instead of typing",
+      "p": "If you use Speak, your phone's speech service may process your voice to turn it into words. You can use your keyboard's voice typing, or type, instead."
+    },
+    "rights": {
+      "h": "What you can do",
+      "1": "Withdraw a report before review starts. Its words and files are deleted.",
+      "2": "Check your report at any time with its receipt code.",
+      "3": "Clear a shared phone: observers can sign out and remove everything from the phone in one step.",
+      "4": "Under the Nigeria Data Protection Act 2023 you can ask the organisation that received your report to show, correct or delete information about you."
+    },
+    "keepFor": {
+      "h": "How long reports are kept",
+      "p": "Each organisation sets a period between 30 days and 2 years. After that, reports, files and messages are deleted, and backups expire on the same schedule."
+    },
+    "security": {
+      "h": "How it is protected",
+      "p": "Reports travel over encrypted connections and are stored encrypted. Staff use named accounts with two-step sign-in. Every change to a report is kept in a record that shows if anything was altered."
+    },
+    "danger": {
+      "h": "If someone is in danger",
+      "p": "Call 112. ElectraGuard records reports. It does not send help."
+    },
+    "contact": {
+      "h": "Questions",
+      "p": "For questions about your report, ask the organisation that gave you your observer code, or write to the reviewer in your report's messages."
+    },
+    "languages": "This notice is in English, Naijá, Hausa, Yorùbá and Igbo. Choose a language at the top of the page."
+  },
+  "p07": {
+    "title": "Try reporting by SMS and USSD",
+    "lead": "Use this on-screen phone to try ElectraGuard the way a basic phone does. It runs on the same system as real SMS and USSD.",
+    "deviceLabel": "Simulated basic phone",
+    "screenLabel": "Phone screen",
+    "keypadLabel": "Phone keys",
+    "screen": {
+      "starting": "Starting the phone",
+      "wait": "Please wait"
+    },
+    "home": {
+      "title": "Simulated phone",
+      "label": "Number to dial",
+      "hint": "Dial {code} and press Call."
+    },
+    "ussd": {
+      "reply": "Your answer",
+      "wrongCode": "That number does not answer. Dial {code}.",
+      "ended": "Session ended."
+    },
+    "sms": {
+      "title": "New message",
+      "to": "To: {shortCode}",
+      "label": "Message",
+      "count": "{count} of {max}",
+      "empty": "Write a message first."
+    },
+    "inbox": {
+      "title": "Messages",
+      "empty": "No messages yet.",
+      "you": "You"
+    },
+    "key": {
+      "call": "Call",
+      "end": "End",
+      "send": "Send",
+      "messages": "Messages",
+      "messagesCount": "Messages ({count})",
+      "clear": "Clear",
+      "back": "Back",
+      "write": "Write",
+      "ok": "OK",
+      "star": "Star",
+      "hash": "Hash"
+    },
+    "how": {
+      "title": "Try it",
+      "ussd": "Dial {code} and press Call. Answer each menu with the keypad, then press Send.",
+      "report": "Or write a message: REPORT, a category number, a polling unit code if you know it, then what happened.",
+      "reportExample": "REPORT 3 Long queue and only one official checking names",
+      "status": "Check a report: STATUS and the receipt code.",
+      "reply": "Answer a reviewer's question: REPLY, the receipt code, then your answer.",
+      "lang": "Change the language of replies: LANG EN, PCM, HA, YO or IG."
+    },
+    "example": "Use this example",
+    "startMessage": "Start this message",
+    "categories": {
+      "title": "Category numbers"
+    },
+    "simulated": "Simulated number {number}. Reports sent from here are marked Simulated and never appear in public results.",
+    "reset": "New simulated number",
+    "resetHint": "Starts again with a different number and clears this screen.",
+    "error": {
+      "network": "No network. Check your connection and try again.",
+      "server": "The phone service did not answer. Try again in a minute.",
+      "tooMany": "Too many messages from this phone. Wait a few minutes.",
+      "invalid": "The network refused that message. Check it and try again."
+    },
+    "disabled": {
+      "title": "The phone simulator is switched off.",
+      "body": "The observation organisation has turned it off for now. You can still report on this website."
+    }
   }
 }

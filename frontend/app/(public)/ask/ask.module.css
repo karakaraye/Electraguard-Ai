@@ -1,0 +1,175 @@
+.ask {
+  display: grid;
+  gap: var(--s-6);
+  max-width: 44rem;
+}
+
+.form {
+  display: grid;
+  gap: var(--s-4);
+}
+
+.submit {
+  display: flex;
+}
+
+.answer {
+  outline: none;
+}
+
+.answer:empty {
+  display: none;
+}
+
+.answerTitle {
+  margin: 0 0 var(--s-3);
+  font: var(--t-heading);
+}
+
+.note {
+  margin: 0 0 var(--s-3);
+  padding: var(--s-3);
+  border-radius: var(--radius);
+  background: var(--info-bg);
+  color: var(--ink);
+  font: var(--t-body);
+}
+
+.passages {
+  display: grid;
+  gap: var(--s-5);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.passage {
+  margin: 0;
+  display: grid;
+  gap: var(--s-3);
+}
+
+/* The quoted passage: set apart by an opening quote mark and size, never by a coloured side stripe */
+.passage blockquote {
+  position: relative;
+  margin: 0;
+  padding: var(--s-5) var(--s-5) var(--s-5) var(--s-7);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: var(--paper-2);
+}
+
+.passage blockquote::before {
+  content: "\201C";
+  position: absolute;
+  inset-inline-start: var(--s-4);
+  top: var(--s-2);
+  font: var(--t-display);
+  font-size: 3rem;
+  line-height: 1;
+  color: var(--ink);
+}
+
+.passage blockquote p {
+  margin: 0;
+  font: var(--t-body-lg);
+  white-space: pre-line;
+}
+
+.source {
+  display: grid;
+  gap: 2px;
+  font: var(--t-small);
+  font-size: 0.9375rem;
+  color: var(--ink-2);
+}
+
+.sourceTitle {
+  font: var(--t-label);
+  font-size: 0.9375rem;
+  color: var(--ink);
+}
+
+.version {
+  font-variant-numeric: tabular-nums;
+}
+
+.sourceLink,
+.links a {
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--target-min);
+  color: var(--ink);
+  font: var(--t-label);
+  font-size: 1rem;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.again {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--target-min);
+  margin-top: var(--s-3);
+  padding: 0 var(--s-4);
+  border: var(--border-w) solid var(--ink);
+  border-radius: var(--radius);
+  background: var(--paper);
+  color: var(--ink);
+  font: var(--t-label);
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.links .again {
+  margin-top: 0;
+}
+
+.sourceLink:focus-visible,
+.links a:focus-visible,
+.again:focus-visible {
+  outline: var(--focus-outline);
+  outline-offset: var(--focus-offset);
+  box-shadow: var(--focus-halo);
+}
+
+.abstain,
+.problem {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--s-3);
+  padding: var(--s-5);
+  border: 1px solid var(--rule-control);
+  border-radius: var(--radius);
+}
+
+.problem {
+  border-color: var(--danger);
+  background: var(--danger-bg);
+}
+
+.problem .shape {
+  color: var(--danger);
+}
+
+.abstain .shape {
+  color: var(--wait);
+}
+
+.shape {
+  padding-top: 4px;
+}
+
+.text {
+  margin: 0;
+  font: var(--t-body-lg);
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-3) var(--s-5);
+  margin: var(--s-3) 0 0;
+}
