@@ -25,11 +25,27 @@ export function SafeIllustration() {
         <circle cx="170" cy="115" r="76" fill="var(--sun-ring-3, #F6E3B8)" opacity="0.65" />
         <circle cx="170" cy="115" r="54" fill="var(--sun, #E3B060)" opacity="0.85" />
 
-        {/* --- Natural arm and wrist coming from bottom-center/right --- */}
-        {/* Forearm & wrist */}
+        {/* --- Bent forearm and soft cuff supporting the phone --- */}
         <path
-          d="M135 280 C138 250 142 225 152 205 C158 193 166 186 178 184 L204 186 C214 192 218 206 220 225 C222 250 225 280 225 280 Z"
+          d="M166 190 C178 184 195 187 207 196 C221 207 226 229 230 251 C232 263 234 273 238 280 L177 280 C178 258 171 238 163 218 C158 207 159 197 166 190 Z"
           fill="var(--paper-3, #EAE4D7)"
+        />
+        <path
+          d="M178 202 C187 197 198 199 205 205 C213 213 217 227 220 240"
+          stroke="var(--paper-card, #FFFFFF)"
+          strokeWidth="4"
+          strokeLinecap="round"
+          opacity="0.5"
+        />
+        <path
+          d="M177 264 C194 258 216 260 234 268 L238 280 L177 280 Z"
+          fill="var(--paper-2, #F3EFE6)"
+        />
+        <path
+          d="M177 264 C194 258 216 260 234 268"
+          stroke="var(--rule-control, #8C8476)"
+          strokeWidth="1"
+          opacity="0.55"
         />
         {/* Palm base supporting phone */}
         <path
@@ -104,15 +120,15 @@ export function SafeIllustration() {
         {/* Head with softly pixelated / blurred face */}
         <circle cx="150" cy="99" r="8" fill="var(--paper-3, #EAE4D7)" />
         <g transform="translate(144, 93)">
-          <rect x="0" y="0" width="4" height="4" fill="var(--sun, #E3B060)" opacity="0.9" />
-          <rect x="4" y="0" width="4" height="4" fill="var(--sun-ring-2, #B58943)" opacity="0.8" />
-          <rect x="8" y="0" width="4" height="4" fill="var(--sun-light, #F6E3B8)" opacity="0.9" />
-          <rect x="0" y="4" width="4" height="4" fill="var(--sun-ring-3, #6B5329)" opacity="0.75" />
-          <rect x="4" y="4" width="4" height="4" fill="var(--sun, #E3B060)" opacity="0.95" />
-          <rect x="8" y="4" width="4" height="4" fill="var(--sun-ring-2, #B58943)" opacity="0.8" />
-          <rect x="0" y="8" width="4" height="4" fill="var(--sun-light, #F6E3B8)" opacity="0.8" />
-          <rect x="4" y="8" width="4" height="4" fill="var(--sun-ring-2, #B58943)" opacity="0.85" />
-          <rect x="8" y="8" width="4" height="4" fill="var(--sun, #E3B060)" opacity="0.9" />
+          <rect x="0" y="0" width="4" height="4" fill="var(--paper-2, #F3EFE6)" />
+          <rect x="4" y="0" width="4" height="4" fill="var(--ink-3, #756F66)" opacity="0.75" />
+          <rect x="8" y="0" width="4" height="4" fill="var(--paper-card, #FFFFFF)" />
+          <rect x="0" y="4" width="4" height="4" fill="var(--ink-3, #756F66)" opacity="0.7" />
+          <rect x="4" y="4" width="4" height="4" fill="var(--paper-3, #EAE4D7)" />
+          <rect x="8" y="4" width="4" height="4" fill="var(--ink-2, #4A453E)" opacity="0.65" />
+          <rect x="0" y="8" width="4" height="4" fill="var(--paper-card, #FFFFFF)" />
+          <rect x="4" y="8" width="4" height="4" fill="var(--ink-3, #756F66)" opacity="0.7" />
+          <rect x="8" y="8" width="4" height="4" fill="var(--paper-2, #F3EFE6)" />
         </g>
 
         {/* Figure 2: Polling official seated behind desk */}
@@ -123,15 +139,15 @@ export function SafeIllustration() {
         {/* Head with pixelated face */}
         <circle cx="191" cy="101" r="7.5" fill="var(--paper-3, #EAE4D7)" />
         <g transform="translate(186, 96)">
-          <rect x="0" y="0" width="3.5" height="3.5" fill="var(--sun-ring-2, #B58943)" opacity="0.8" />
-          <rect x="3.5" y="0" width="3.5" height="3.5" fill="var(--sun, #E3B060)" opacity="0.9" />
-          <rect x="7" y="0" width="3.5" height="3.5" fill="var(--sun-light, #F6E3B8)" opacity="0.8" />
-          <rect x="0" y="3.5" width="3.5" height="3.5" fill="var(--sun, #E3B060)" opacity="0.95" />
-          <rect x="3.5" y="3.5" width="3.5" height="3.5" fill="var(--sun-ring-3, #6B5329)" opacity="0.7" />
-          <rect x="7" y="3.5" width="3.5" height="3.5" fill="var(--sun, #E3B060)" opacity="0.9" />
-          <rect x="0" y="7" width="3.5" height="3.5" fill="var(--sun-light, #F6E3B8)" opacity="0.85" />
-          <rect x="3.5" y="7" width="3.5" height="3.5" fill="var(--sun-ring-2, #B58943)" opacity="0.85" />
-          <rect x="7" y="7" width="3.5" height="3.5" fill="var(--sun, #E3B060)" opacity="0.9" />
+          <rect x="0" y="0" width="3.5" height="3.5" fill="var(--ink-3, #756F66)" opacity="0.75" />
+          <rect x="3.5" y="0" width="3.5" height="3.5" fill="var(--paper-2, #F3EFE6)" />
+          <rect x="7" y="0" width="3.5" height="3.5" fill="var(--ink-2, #4A453E)" opacity="0.6" />
+          <rect x="0" y="3.5" width="3.5" height="3.5" fill="var(--paper-card, #FFFFFF)" />
+          <rect x="3.5" y="3.5" width="3.5" height="3.5" fill="var(--ink-3, #756F66)" opacity="0.7" />
+          <rect x="7" y="3.5" width="3.5" height="3.5" fill="var(--paper-3, #EAE4D7)" />
+          <rect x="0" y="7" width="3.5" height="3.5" fill="var(--ink-2, #4A453E)" opacity="0.55" />
+          <rect x="3.5" y="7" width="3.5" height="3.5" fill="var(--paper-card, #FFFFFF)" />
+          <rect x="7" y="7" width="3.5" height="3.5" fill="var(--ink-3, #756F66)" opacity="0.65" />
         </g>
 
         {/* --- Fingers holding the sides of the phone --- */}
