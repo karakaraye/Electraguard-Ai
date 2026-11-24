@@ -16,10 +16,10 @@ import {
   CheckIcon,
   ChevronRightIcon,
   EyeIcon,
-  ImageIcon,
   LockIcon,
   MicIcon,
   PhoneIcon,
+  PlaceIcon,
   ShieldCheckIcon,
 } from "../../../../ui/icons";
 import { AppBarTitle } from "../_components/AppBarTitle";
@@ -149,7 +149,7 @@ export function WelcomeView({ onBack, onNext, onSkip, offline, banner }: Welcome
 }
 
 /** Page dots, Skip and Next: the welcome pages' action bar. */
-export function WelcomeBar({ page, onNext, onSkip, nextLabel }: { page: 1 | 2 | 3; onNext: () => void; onSkip?: () => void; nextLabel?: string }) {
+export function WelcomeBar({ page, onNext, onSkip, nextLabel, nextTestId }: { page: 1 | 2 | 3; onNext: () => void; onSkip?: () => void; nextLabel?: string; nextTestId?: string }) {
   const t = useT();
   return (
     <div className={styles.welcomeBar}>
@@ -163,7 +163,7 @@ export function WelcomeBar({ page, onNext, onSkip, nextLabel }: { page: 1 | 2 | 
           {t("ob.skip")}
         </Button>
       ) : null}
-      <Button onClick={onNext} data-testid={`ob${page}-next`}>
+      <Button onClick={onNext} data-testid={nextTestId ?? `ob${page}-next`}>
         {nextLabel ?? t("ob.next")}
       </Button>
     </div>
@@ -182,11 +182,11 @@ export type NoticeViewProps = Shell & {
 export function NoticeView({ onBack, onContinue, readOnly, offline, banner }: NoticeViewProps) {
   const t = useT();
   const lines: Array<{ key: string; icon: ReactNode; safety?: boolean }> = [
-    { key: "o02.line1", icon: <EyeIcon /> },
-    { key: "o02.line2", icon: <ImageIcon /> },
-    { key: "o02.line3", icon: <ArrowLeftIcon /> },
-    { key: "o02.line5", icon: <MicIcon /> },
-    { key: "o02.line4", icon: <PhoneIcon />, safety: true },
+    { key: "o02.line1", icon: <ShieldCheckIcon size={20} /> },
+    { key: "o02.line2", icon: <PlaceIcon size={20} /> },
+    { key: "o02.line3", icon: <ArrowLeftIcon size={20} /> },
+    { key: "o02.line5", icon: <MicIcon size={20} /> },
+    { key: "o02.line4", icon: <PhoneIcon size={20} />, safety: true },
   ];
   return (
     <AppShell
@@ -196,31 +196,70 @@ export function NoticeView({ onBack, onContinue, readOnly, offline, banner }: No
       banner={banner}
       actions={
         readOnly ? undefined : (
-          <Button block onClick={onContinue} data-testid="o02-continue">
-            {t("o02.continue")}
-          </Button>
+          // Welcome page 2 of 3 (spec screen 4). Everyone sees it once: there is no Skip here.
+          <WelcomeBar page={2} onNext={onContinue} nextLabel={t("o02.continue")} nextTestId="o02-continue" />
         )
       }
       data-testid="o02"
     >
-      <BackgroundArt variant="hero" />
       <div className={styles.screen}>
-        <h1 className={styles.title}>{t("o02.title")}</h1>
-        <ul className={styles.lines}>
+        <SafeArt />
+        <h1 className={styles.welcomeTitle}>{t("o02.title")}</h1>
+        <ul className={styles.keeps}>
           {lines.map((line) => (
-            <li key={line.key} className={`${styles.line} ${line.safety ? styles.lineSafety : ""}`}>
-              <span aria-hidden="true">{line.icon}</span>
+            <li key={line.key} className={styles.keep} data-safety={line.safety || undefined}>
+              <span className={styles.keepDisc} aria-hidden="true">
+                {line.icon}
+              </span>
               <span>{t(line.key)}</span>
             </li>
           ))}
         </ul>
-        <p className={styles.credit}>
-          <BrandMark variant="lockup" size="md" credit />
-        </p>
+        <a className={styles.quietLink} href="/privacy">
+          {t("o02.privacyLink")}
+        </a>
       </div>
     </AppShell>
   );
 }
+
+/**
+ * Stand-in for art plate D (spec B6): a phone showing a photo whose faces are blurred,
+ * a soft shield behind it, and the sun. Replaced by the hand-drawn plate when it arrives.
+ */
+function SafeArt() {
+  return (
+    <svg className={styles.safeArt} viewBox="0 0 320 168" aria-hidden="true" focusable="false">
+      <defs>
+        <filter id="safe-blur" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur stdDeviation="3.2" />
+        </filter>
+      </defs>
+      <circle cx="232" cy="52" r="34" fill="var(--sun-wash)" />
+      <circle cx="232" cy="52" r="20" fill="var(--sun)" />
+      <path d="M0 150 Q100 138 170 144 T320 140 V168 H0Z" fill="var(--art-ground)" />
+      <path
+        d="M160 18 L214 36 V84 C214 116 192 136 160 148 C128 136 106 116 106 84 V36 Z"
+        fill="var(--sun-tint)"
+        stroke="var(--art-line)"
+        strokeWidth="1.4"
+        strokeLinejoin="round"
+      />
+      <g transform="translate(126 40)">
+        <rect width="68" height="112" rx="11" fill="var(--fixed-ink)" />
+        <rect x="6" y="10" width="56" height="86" rx="4" fill="var(--paper-raised)" />
+        <rect x="6" y="64" width="56" height="32" fill="var(--art-ground)" />
+        <g filter="url(#safe-blur)">
+          <circle cx="20" cy="50" r="7" fill="var(--art-line)" />
+          <circle cx="40" cy="46" r="7" fill="var(--art-line)" />
+        </g>
+        <path d="M12 96 V68 Q20 60 28 68 V96Z M32 96 V64 Q40 56 48 64 V96Z" fill="var(--art-line)" opacity="0.75" />
+        <circle cx="34" cy="104" r="3" fill="var(--paper-raised)" />
+      </g>
+    </svg>
+  );
+}
+
 
 /* ---------- O-03 choose ---------- */
 

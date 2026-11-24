@@ -828,3 +828,66 @@
 .welcome .screen {
   padding-top: var(--s-2);
 }
+
+/* ---------- What this app keeps (welcome page 2, spec screen 4) ---------- */
+.safeArt {
+  display: block;
+  width: 100%;
+  max-width: 320px;
+  height: auto;
+  margin: 0 auto;
+}
+
+.keeps {
+  display: grid;
+  gap: var(--s-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.keep {
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr);
+  gap: var(--s-3);
+  align-items: center;
+  font: var(--t-base);
+}
+
+.keepDisc {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--sun-tint);
+  color: var(--ink);
+}
+
+/* The 112 line: set apart, danger-tinted disc, bold (fixed safety wording, spec Part E). */
+.keep[data-safety] {
+  padding-top: var(--s-4);
+  border-top: 1px solid var(--rule);
+  font-weight: 600;
+}
+
+.keep[data-safety] .keepDisc {
+  background: var(--danger-bg);
+  color: var(--danger);
+}
+
+.quietLink {
+  justify-self: start;
+  min-height: 48px;
+  display: inline-flex;
+  align-items: center;
+  color: var(--ink);
+  font: var(--t-label);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.quietLink:focus-visible {
+  outline: var(--focus-outline);
+  outline-offset: var(--focus-offset);
+}
