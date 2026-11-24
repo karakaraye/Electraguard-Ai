@@ -59,6 +59,8 @@ export function YesNo({
       data-testid={testId}
     >
       <GroupLegend legend={legend} headingLevel={headingLevel} hint={hint} hintId={hintId} />
+      {/* The error sits under the question, never below a long list where it can be hidden. */}
+      {error && errorId ? <GroupError error={error} id={errorId} /> : null}
       <div className={styles.yesNo} data-stacked={stacked || undefined}>
         {choices.map((choice) => {
           const checked = value === choice.answer;
@@ -98,7 +100,6 @@ export function YesNo({
           );
         })}
       </div>
-      {error && errorId ? <GroupError error={error} id={errorId} /> : null}
     </fieldset>
   );
 }

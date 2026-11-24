@@ -102,6 +102,8 @@ export function WhenPicker({
   return (
     <fieldset className={styles.group} data-testid={testId} aria-describedby={errorText ? errorId : undefined}>
       <GroupLegend legend={legend ?? t("ui.when.legend")} headingLevel={headingLevel} hint={hint} />
+      {/* The error sits under the question, never below a long list where it can be hidden. */}
+      {errorText ? <GroupError error={errorText} id={errorId} /> : null}
       <div className={styles.modes}>
         {modes.map((option) => {
           const checked = value.mode === option.mode;
@@ -167,7 +169,6 @@ export function WhenPicker({
         </p>
       ) : null}
 
-      {errorText ? <GroupError error={errorText} id={errorId} /> : null}
     </fieldset>
   );
 }

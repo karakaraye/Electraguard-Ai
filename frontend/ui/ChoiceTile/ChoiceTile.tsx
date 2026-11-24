@@ -91,6 +91,8 @@ export function ChoiceTileGroup({
       data-testid={testId}
     >
       <GroupLegend legend={legend} headingLevel={headingLevel} hint={hint} hintId={hintId} />
+      {/* The error sits under the question, never below a long list where it can be hidden. */}
+      {error && errorId ? <GroupError error={error} id={errorId} /> : null}
       <div className={styles.grid} data-columns={columns}>
         {options.map((option) => {
           const checked = value === option.value;
@@ -132,7 +134,6 @@ export function ChoiceTileGroup({
           );
         })}
       </div>
-      {error && errorId ? <GroupError error={error} id={errorId} /> : null}
     </fieldset>
   );
 }
