@@ -40,3 +40,5 @@ export { OutboxBadge, type OutboxBadgeProps } from "./OutboxBadge/OutboxBadge";
 export { Skeleton, type SkeletonProps } from "./Skeleton/Skeleton";
 export { ArtPlate, type ArtPlateProps } from "./ArtPlate/ArtPlate";
 export { BottomNav, type BottomNavItem, type BottomNavProps } from "./BottomNav/BottomNav";
+export { Splash, type SplashProps } from "./Splash/Splash";
+export { splashGateScript, SPLASH_SEEN_KEY } from "./Splash/gate";

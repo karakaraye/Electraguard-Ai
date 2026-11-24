@@ -8,6 +8,8 @@ export type SunRingsProps = {
   rings?: 2 | 3 | 4;
   /** Play the one-shot ripple on mount (the rings expand outward, 120 ms apart). */
   ripple?: boolean;
+  /** Gap between rings in px. Default spreads them evenly; the splash uses 24 (232 → 136 px disc). */
+  step?: number;
   /** Centre content, for example a check disc or the mark. */
   children?: ReactNode;
   className?: string;
@@ -16,11 +18,11 @@ export type SunRingsProps = {
 const FILLS = ["var(--sun-wash)", "var(--sun-tint)", "var(--sun-tint)", "var(--sun)"];
 
 /** Concentric sun-toned circles. Decorative. */
-export function SunRings({ size = 156, rings = 3, ripple, children, className }: SunRingsProps) {
+export function SunRings({ size = 156, rings = 3, ripple, step: stepPx, children, className }: SunRingsProps) {
   const count = Math.min(4, Math.max(2, rings));
   // The outermost is the wash, the innermost is the sun (or the tint when there are only two).
   const fills = count === 2 ? [FILLS[0], FILLS[3]] : count === 3 ? [FILLS[0], FILLS[1], FILLS[3]] : FILLS;
-  const step = size / (count * 2 + 0.6);
+  const step = stepPx ?? size / (count * 2 + 0.6);
   return (
     <span
       className={`${styles.rings} ${className ?? ""}`}

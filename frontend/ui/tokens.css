@@ -361,3 +361,8 @@
 [data-page-hidden] *::after {
   animation-play-state: paused !important;
 }
+
+/* ---------- Splash (spec screen 1): the page underneath does not scroll ---------- */
+html[data-eg-splash] {
+  overflow: hidden;
+}

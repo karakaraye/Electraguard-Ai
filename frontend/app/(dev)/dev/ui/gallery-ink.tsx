@@ -6,6 +6,7 @@
  * codes (OBS-7K2P9X, EG-4H7Q-92KD).
  */
 import { useState, type ReactNode } from "react";
+import { Splash } from "../../../../ui/Splash/Splash";
 import {
   ArtPlate,
   AppShell,
@@ -129,6 +130,13 @@ function PairedStates() {
 
   return (
     <>
+      <Group id="ink-splash" title="Splash" note="Screen 1, settled frame. Live: once per install on /o and /o/start, at most 1.2 s, a tap skips it.">
+        {() => (
+          <div style={{ width: 360, height: 640, maxWidth: "100%", borderRadius: 22, overflow: "hidden", border: "1px solid var(--rule)" }}>
+            <Splash credit="by Cairn" preview />
+          </div>
+        )}
+      </Group>
       <Group id="ink-buttons" title="Button" note="Primary, secondary, quiet, danger, on-ink; default, disabled, loading. Staff density below.">
         {() => (
           <div className={styles.stack}>
