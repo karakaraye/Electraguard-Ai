@@ -25,6 +25,10 @@ export type SearchSelectProps = {
   placeholder?: string;
   /** Most options to list at once; type more to narrow. */
   limit?: number;
+  /** Custom match (for example codes typed without dashes). Defaults to label + detail, ignoring case and tone marks. */
+  filter?: (option: SearchOption, query: string) => boolean;
+  /** Text when nothing matches (receives the typed query). */
+  noMatchesText?: (query: string) => string;
   disabled?: boolean;
   id?: string;
   "data-testid"?: string;
@@ -53,6 +57,8 @@ export function SearchSelect({
   onChange,
   placeholder,
   limit = 50,
+  filter,
+  noMatchesText,
   disabled,
   id,
   "data-testid": testId = "search-select",
@@ -69,10 +75,12 @@ export function SearchSelect({
   const matches = useMemo(() => {
     const needle = normalise(query ?? "");
     const found = needle
-      ? options.filter((option) => normalise(`${option.label} ${option.detail ?? ""}`).includes(needle))
+      ? options.filter((option) =>
+          filter ? filter(option, query ?? "") : normalise(`${option.label} ${option.detail ?? ""}`).includes(needle),
+        )
       : options;
     return found.slice(0, limit);
-  }, [options, query, limit]);
+  }, [options, query, limit, filter]);
   const activeIndex = Math.min(active, Math.max(0, matches.length - 1));
   const activeId = open && matches.length ? `${listId}-opt-${activeIndex}` : undefined;
 
@@ -228,7 +236,7 @@ export function SearchSelect({
             })}
             {matches.length === 0 ? (
               <li className={styles.empty} role="presentation">
-                {t("ui.search.noMatches")}
+                {noMatchesText ? noMatchesText(query ?? "") : t("ui.search.noMatches")}
               </li>
             ) : null}
           </ul>

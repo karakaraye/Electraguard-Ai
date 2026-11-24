@@ -1,0 +1,148 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-6);
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--sp-4);
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+
+.title {
+  font: var(--t-display);
+  margin: 0;
+}
+
+.subtitle {
+  font: var(--t-body);
+  color: var(--c-muted);
+  margin: 0;
+}
+
+.verifySection {
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-md);
+  padding: var(--sp-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+
+.verifyHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--sp-3);
+}
+
+.verifyGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--sp-4);
+}
+
+.verifyTile {
+  background: var(--c-surface-raised);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-md);
+  padding: var(--sp-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+
+.tileLabel {
+  font: var(--t-small);
+  color: var(--c-muted);
+}
+
+.tileValue {
+  font: var(--t-heading);
+}
+
+.tileDetail {
+  font: var(--t-caption);
+  color: var(--c-muted);
+  word-break: break-all;
+}
+
+.alertsSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--sp-3);
+}
+
+.filterGroup {
+  display: flex;
+  gap: var(--sp-2);
+  align-items: center;
+}
+
+.alertCard {
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-md);
+  padding: var(--sp-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+.alertHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--sp-3);
+  flex-wrap: wrap;
+}
+
+.alertMeta {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  flex-wrap: wrap;
+}
+
+.alertRule {
+  font: var(--t-heading);
+  margin: 0;
+}
+
+.alertSubject {
+  font: var(--t-body);
+  font-weight: 500;
+}
+
+.alertDetails {
+  background: var(--c-surface-raised);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-sm);
+  padding: var(--sp-3);
+  font: var(--t-small);
+  font-family: var(--f-mono, monospace);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-4);
+}
+
+.alertActions {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  flex-wrap: wrap;
+}

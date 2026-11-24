@@ -282,6 +282,13 @@ export interface ObserverPinSetRequest {
   new_pin: string;
 }
 
+/** AUTH-08 (gap decision G12). Other sessions of the code stay signed in (Q9). */
+export interface ObserverPinChangeRequest {
+  current_pin: string;
+  /** Exactly 6 digits. */
+  new_pin: string;
+}
+
 export interface StaffSignInRequest {
   email: string;
   password: string;
@@ -326,6 +333,12 @@ export interface AreaIndexResponse {
     version: string;
     bytes_gzip: number;
   }>;
+}
+
+/** REF-02 (gap decisions G4/G5). */
+export interface ObserverSettingsResponse {
+  coverage_area: { state_codes: StateCode[]; lga_codes: LgaCode[] };
+  party_labels: string[];
 }
 
 /** [polling_unit_code, name] */
@@ -463,6 +476,8 @@ export interface ReportListQuery extends PageQuery {
   kind?: ReportKind;
   status?: ReportStatus;
   has_messages?: boolean;
+  /** Gap decision G14: open question or unread message. */
+  needs_attention?: boolean;
 }
 
 export interface ReportListItem {
@@ -480,10 +495,15 @@ export interface ReportListItem {
   unread_messages: number;
   last_activity_at: DateTimeString;
   media_count: number;
+  /** Gap decision G7: false when only the date is known. */
+  time_known?: boolean | null;
+  /** Gap decision G8: the latest reviewer message on the observer's own report. */
+  last_message_preview?: { author: MessageAuthor; snippet: string; created_at: DateTimeString } | null;
 }
 
 export interface ReportListResponse extends Page<ReportListItem> {
-  counts: { open_questions: number; unread_messages: number };
+  /** `total` and `needs_attention`: gap decisions G3 and G14. */
+  counts: { open_questions: number; unread_messages: number; total?: number; needs_attention?: number };
 }
 
 export interface MediaSummary {
@@ -540,6 +560,9 @@ export interface ReportDetail {
   can_withdraw: boolean;
   can_add_media: boolean;
   can_message: boolean;
+  /** Gap decision G10. */
+  reviewer_assigned?: boolean;
+  time_known?: boolean | null;
 }
 
 export interface WithdrawRequest {
@@ -826,6 +849,37 @@ export interface AskResponse {
   language: Language;
   passages: AskPassage[];
   fallback_language_used: boolean;
+}
+
+// ---------------------------------------------------------------------------
+// GUIDE
+// ---------------------------------------------------------------------------
+
+export interface GuideSummary {
+  slug: string;
+  document_id: string;
+  title: string;
+  version: string;
+  language: Language;
+}
+
+export interface GuideListResponse {
+  language: Language;
+  documents: Array<GuideSummary & { fallback_language_used: boolean }>;
+}
+
+export interface GuideSection {
+  /** Anchor id; ASK-01 source urls point at /guide/{slug}#{id}. */
+  id: string;
+  heading: string;
+  /** Plain text. Paragraphs are separated by a blank line; lines starting "- " are list items. */
+  body: string;
+}
+
+export interface GuideDocument extends GuideSummary {
+  fallback_language_used: boolean;
+  approved_on: DateString;
+  sections: GuideSection[];
 }
 
 // ---------------------------------------------------------------------------

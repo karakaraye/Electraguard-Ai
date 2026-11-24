@@ -1,0 +1,141 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-5);
+  width: 100%;
+}
+
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: var(--s-3);
+}
+
+.filterBar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-3);
+  padding: var(--s-3);
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+}
+
+.filterGroup {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+}
+
+.select {
+  min-height: var(--target-min);
+  padding: 0 var(--s-3);
+  background: var(--paper);
+  color: var(--ink);
+  border: 1px solid var(--rule-control);
+  border-radius: var(--radius);
+  font: var(--t-body);
+}
+
+.select:focus-visible {
+  outline: var(--focus-outline);
+  outline-offset: var(--focus-offset);
+}
+
+.queueList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+}
+
+.queueCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+  padding: var(--s-3) var(--s-4);
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  color: inherit;
+  text-decoration: none;
+  transition: border-color 0.15s ease;
+}
+
+.queueCard:hover {
+  border-color: var(--ink);
+}
+
+.queueCard[data-selected="true"] {
+  border: 2px solid var(--ink);
+  background: var(--paper-2);
+}
+
+.cardTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-2);
+  flex-wrap: wrap;
+}
+
+.cardRef {
+  font-family: monospace;
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.badgeGroup {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  flex-wrap: wrap;
+}
+
+.reasonsList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.reasonPill {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  background: var(--paper-2);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-pill);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--ink-2);
+}
+
+.cardMeta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-2);
+  font-size: 0.875rem;
+  color: var(--ink-2);
+}
+
+.mediaIcons {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+}
+
+.flagsGroup {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+}
+
+.flagPill {
+  padding: 2px 6px;
+  border-radius: var(--radius-pill);
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: var(--attn-bg);
+  color: var(--attn-ink);
+}

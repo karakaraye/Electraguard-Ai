@@ -1,0 +1,821 @@
+/* Observer screens O-13 to O-20, C-01 and P-01. Tokens only (design contract 4); borders over shadows. */
+
+/* ---------- Home: the other things an observer does (O-04) ---------- */
+
+.tasks {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--rule);
+}
+
+.taskLink {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr) auto 24px;
+  align-items: center;
+  gap: var(--s-3);
+  min-height: 64px;
+  padding: var(--s-3) var(--s-1);
+  border-bottom: 1px solid var(--rule);
+  color: var(--ink);
+  font: var(--t-label);
+  font-size: var(--t-base-size);
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: background-color var(--dur-fade) ease;
+}
+
+.taskLink:active {
+  background: var(--paper-2);
+}
+
+.taskLink:focus-visible,
+.menuLink:focus-visible,
+.stageRow:focus-visible {
+  outline: var(--focus-outline);
+  outline-offset: -3px;
+  border-radius: var(--radius);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .taskLink:hover,
+  .menuLink:hover,
+  .stageRow:hover {
+    background: var(--paper-2);
+  }
+}
+
+.chev {
+  color: var(--ink-2);
+}
+
+.count {
+  display: inline-grid;
+  place-items: center;
+  min-width: 28px;
+  height: 28px;
+  padding: 0 var(--s-2);
+  border-radius: var(--radius-pill);
+  background: var(--ink);
+  color: var(--on-ink);
+  font: var(--t-label);
+  font-variant-numeric: tabular-nums;
+}
+
+.countAttn {
+  border: 1px solid var(--attn);
+  background: var(--attn-bg);
+  color: var(--attn);
+}
+
+/* ---------- Menu sheet ---------- */
+
+.menuList {
+  display: grid;
+  margin: 0 0 var(--s-5);
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--rule);
+}
+
+.menuLink {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  min-height: 56px;
+  padding: 0 var(--s-1);
+  border-bottom: 1px solid var(--rule);
+  color: var(--ink);
+  font: var(--t-label);
+  font-size: var(--t-base-size);
+  text-decoration: none;
+}
+
+/* ---------- Segmented filter (O-13) ---------- */
+
+.segmented {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  margin: 0;
+  padding: 3px;
+  border: var(--border-w) solid var(--rule-control);
+  border-radius: var(--radius);
+  background: var(--paper-2);
+  min-width: 0;
+}
+
+.segment {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: var(--target-min);
+  padding: var(--s-1) var(--s-2);
+  border-radius: calc(var(--radius) - 3px);
+  color: var(--ink-2);
+  font: var(--t-label);
+  font-size: 0.9375rem;
+  line-height: 1.2;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color var(--dur-fade) ease, color var(--dur-fade) ease;
+}
+
+.segment input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.segment:has(input:checked) {
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow: inset 0 0 0 2px var(--ink);
+}
+
+.segment:has(input:focus-visible) {
+  outline: var(--focus-outline);
+  outline-offset: var(--focus-offset);
+}
+
+.tnum {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Report detail (O-14) ---------- */
+
+.detail {
+  display: grid;
+  gap: var(--s-6);
+}
+
+@media (min-width: 900px) {
+  .detail {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: start;
+  }
+}
+
+.column {
+  display: grid;
+  gap: var(--s-5);
+  min-width: 0;
+}
+
+.statusBlock {
+  display: grid;
+  gap: var(--s-3);
+  justify-items: start;
+}
+
+.question {
+  display: grid;
+  gap: var(--s-3);
+  padding: var(--s-4);
+  border: 1px solid var(--attn);
+  border-radius: var(--radius);
+  background: var(--attn-bg);
+}
+
+.questionHead {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  margin: 0;
+  color: var(--attn);
+  font: var(--t-heading);
+}
+
+.questionHead:focus {
+  outline: none;
+}
+
+.questionBody {
+  margin: 0;
+  color: var(--ink);
+  font: var(--t-base);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.question textarea {
+  background: var(--paper);
+}
+
+.facts {
+  display: grid;
+  margin: 0;
+  border-top: 1px solid var(--rule);
+}
+
+.fact {
+  display: grid;
+  gap: var(--s-1);
+  padding: var(--s-3) 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+.fact dt {
+  color: var(--ink-2);
+  font: var(--t-label);
+  letter-spacing: var(--t-label-tracking);
+}
+
+.fact dd {
+  margin: 0;
+  font: var(--t-base);
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+/* Conversation: bubbles for messages, a bordered block for a formal question, a plain line for system notes. */
+.thread {
+  display: grid;
+  gap: var(--s-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.bubble {
+  display: grid;
+  gap: var(--s-1);
+  max-width: 88%;
+  padding: var(--s-3) var(--s-4);
+  border-radius: var(--radius);
+  background: var(--paper-2);
+  justify-self: start;
+}
+
+.bubbleMine {
+  justify-self: end;
+  background: var(--ink);
+  color: var(--on-ink);
+}
+
+.bubbleMine .bubbleMeta {
+  color: var(--on-ink);
+}
+
+.bubbleMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-1) var(--s-2);
+  color: var(--ink-2);
+  font: var(--t-small);
+  font-variant-numeric: tabular-nums;
+}
+
+.bubbleAuthor {
+  font-weight: 600;
+}
+
+.bubbleText {
+  margin: 0;
+  font: var(--t-base);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.formal {
+  display: grid;
+  gap: var(--s-2);
+  padding: var(--s-3) var(--s-4);
+  border: 1px solid var(--attn);
+  border-radius: var(--radius);
+  background: var(--paper);
+}
+
+.formalTag {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-1);
+  color: var(--attn);
+  font: var(--t-label);
+}
+
+.system {
+  justify-self: center;
+  margin: 0;
+  color: var(--ink-2);
+  font: var(--t-small);
+  text-align: center;
+}
+
+.composer {
+  display: grid;
+  gap: var(--s-3);
+}
+
+.composerActions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--s-2);
+}
+
+.dangerZone {
+  display: grid;
+  gap: var(--s-3);
+  padding-top: var(--s-5);
+  border-top: 1px solid var(--rule);
+}
+
+/* ---------- Checklist (O-15) ---------- */
+
+.stageList {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--rule);
+  counter-reset: stage;
+}
+
+.stageRow {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr) 24px;
+  align-items: center;
+  gap: var(--s-3);
+  min-height: 72px;
+  padding: var(--s-3) var(--s-1);
+  border-bottom: 1px solid var(--rule);
+  color: var(--ink);
+  text-decoration: none;
+  counter-increment: stage;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.stageRow::before {
+  content: counter(stage);
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: 1.5px solid var(--ink);
+  border-radius: var(--radius-pill);
+  font: var(--t-label);
+  font-size: 1rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.stageRow[data-done]::before {
+  border-color: var(--ok);
+  background: var(--ok);
+  color: var(--on-ink);
+}
+
+.stageMain {
+  display: grid;
+  gap: var(--s-1);
+  justify-items: start;
+  min-width: 0;
+}
+
+.stageName {
+  font: var(--t-label);
+  font-size: var(--t-base-size);
+}
+
+.questions {
+  display: grid;
+  gap: var(--s-6);
+}
+
+.answerGroup {
+  display: grid;
+  gap: var(--s-2);
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.answerLegend {
+  margin-bottom: var(--s-2);
+  padding: 0;
+  font: var(--t-heading);
+  text-wrap: pretty;
+}
+
+.answers {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--s-2);
+}
+
+.answersTwo {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.answer {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 56px;
+  padding: var(--s-2);
+  border: var(--border-w) solid var(--rule-control);
+  border-radius: var(--radius);
+  background: var(--paper);
+  color: var(--ink);
+  font: var(--t-label);
+  font-size: 1rem;
+  line-height: 1.2;
+  text-align: center;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform var(--dur-press) var(--ease-out);
+}
+
+.answer:active {
+  transform: scale(0.97);
+}
+
+.answer input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.answer:has(input:checked) {
+  border: 2px solid var(--ink);
+  box-shadow: inset 0 0 0 1px var(--ink);
+}
+
+.answer:has(input:focus-visible) {
+  outline: var(--focus-outline);
+  outline-offset: var(--focus-offset);
+}
+
+.answerTick {
+  display: none;
+}
+
+.answer:has(input:checked) .answerTick {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border-radius: var(--radius-pill);
+  background: var(--ink);
+  color: var(--on-ink);
+}
+
+.followUp {
+  display: grid;
+  gap: var(--s-2);
+  justify-items: start;
+  padding: var(--s-3) var(--s-4);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: var(--paper-2);
+}
+
+.unit {
+  display: grid;
+  gap: var(--s-1);
+  padding: var(--s-3) var(--s-4);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: var(--paper-2);
+}
+
+/* ---------- Result sheet (O-16) ---------- */
+
+.sheetPhoto {
+  display: block;
+  width: 100%;
+  max-height: 60vh;
+  object-fit: contain;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: var(--paper-2);
+}
+
+.sheetThumb {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-3);
+  justify-self: start;
+  min-height: var(--target-min);
+  padding: var(--s-1) var(--s-3) var(--s-1) var(--s-1);
+  border: 1px solid var(--rule-control);
+  border-radius: var(--radius);
+  background: var(--paper);
+  color: var(--ink);
+  font: var(--t-label);
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.sheetThumb img {
+  width: 56px;
+  height: 56px;
+  object-fit: cover;
+  border-radius: calc(var(--radius) - 4px);
+}
+
+.sheetThumb:focus-visible {
+  outline: var(--focus-outline);
+  outline-offset: var(--focus-offset);
+}
+
+.numbers {
+  display: grid;
+  gap: var(--s-4);
+}
+
+@media (min-width: 600px) {
+  .numbers {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.suggestedTag {
+  display: inline-flex;
+  align-items: center;
+  margin-inline-start: var(--s-2);
+  padding: 1px var(--s-2);
+  border: 1px solid var(--info);
+  border-radius: var(--radius-pill);
+  color: var(--info);
+  font: var(--t-label);
+  font-size: 0.8125rem;
+  vertical-align: middle;
+}
+
+.checkTag {
+  display: block;
+  margin-top: var(--s-1);
+  color: var(--attn);
+  font: var(--t-small);
+  font-weight: 600;
+}
+
+/* ---------- Discussions (O-18) ---------- */
+
+.invite {
+  display: grid;
+  gap: var(--s-3);
+  padding: var(--s-4);
+  border: var(--border-w) solid var(--ink);
+  border-radius: var(--radius);
+}
+
+.inviteTitle {
+  margin: 0;
+  font: var(--t-heading);
+  overflow-wrap: anywhere;
+}
+
+.posts {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--rule);
+}
+
+.post {
+  display: grid;
+  gap: var(--s-1);
+  padding: var(--s-3) 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+.postHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s-1) var(--s-3);
+  color: var(--ink-2);
+  font: var(--t-small);
+  font-variant-numeric: tabular-nums;
+}
+
+.postAuthor {
+  color: var(--ink);
+  font: var(--t-label);
+  font-size: 0.9375rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.postText {
+  margin: 0;
+  font: var(--t-base);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.postHidden {
+  margin: 0;
+  color: var(--ink-3);
+  font: var(--t-base);
+}
+
+.postActions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* ---------- Ask (O-19) ---------- */
+
+.quote {
+  display: grid;
+  gap: var(--s-3);
+  margin: 0;
+  padding: var(--s-4);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: var(--paper);
+}
+
+.quote p {
+  margin: 0;
+  font: var(--t-base);
+  white-space: pre-wrap;
+}
+
+.quoteSource {
+  display: grid;
+  gap: var(--s-2);
+  justify-items: start;
+  padding-top: var(--s-3);
+  border-top: 1px solid var(--rule);
+  color: var(--ink-2);
+  font: var(--t-small);
+}
+
+.guides {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--rule);
+}
+
+/* ---------- Settings (O-20) ---------- */
+
+.settings {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--rule);
+}
+
+.setting {
+  display: grid;
+  gap: var(--s-2);
+  padding: var(--s-3) 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+.settingRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-3);
+  width: 100%;
+  min-height: var(--target-min);
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--ink);
+  font: var(--t-label);
+  font-size: var(--t-base-size);
+  text-align: start;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.settingRow:focus-visible {
+  outline: var(--focus-outline);
+  outline-offset: var(--focus-offset);
+  border-radius: 4px;
+}
+
+.settingValue {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-1);
+  color: var(--ink-2);
+  font: var(--t-base);
+  font-weight: 400;
+}
+
+.pinForm {
+  display: grid;
+  gap: var(--s-4);
+  padding: var(--s-2) 0 var(--s-2);
+}
+
+.signOut {
+  display: grid;
+  gap: var(--s-3);
+  padding-top: var(--s-5);
+}
+
+/* ---------- Public: status lookup (P-01) and citizen receipt (C-01) ---------- */
+
+.codeInput input {
+  font-size: 1.375rem;
+  letter-spacing: 0.06em;
+  font-variant-numeric: tabular-nums;
+  text-transform: uppercase;
+}
+
+.savedCodes {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--rule);
+}
+
+.savedCode {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-1) var(--s-2);
+  padding: var(--s-1) 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+.result {
+  display: grid;
+  gap: var(--s-4);
+  justify-items: start;
+  padding-top: var(--s-5);
+  border-top: 2px solid var(--ink);
+}
+
+.result > * {
+  justify-self: stretch;
+}
+
+.result h2 {
+  margin: 0;
+  font: var(--t-heading);
+}
+
+.result h2:focus {
+  outline: none;
+}
+
+.twoCol {
+  display: grid;
+  gap: var(--s-6);
+}
+
+@media (min-width: 768px) {
+  .twoCol {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: start;
+  }
+}
+
+.testLabel {
+  color: var(--ink-2);
+  font-weight: 400;
+}
+
+/* ---------- Shared ---------- */
+
+/* A destructive action that is not the main one: danger text and outline, never a fill. */
+.dangerOutline {
+  border-color: var(--danger) !important;
+  color: var(--danger) !important;
+}
+
+.textLink {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--target-min);
+  color: var(--ink);
+  font: var(--t-label);
+  font-size: 1rem;
+  text-decoration: underline;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 3px;
+}
+
+.textLink:focus-visible {
+  outline: var(--focus-outline);
+  outline-offset: var(--focus-offset);
+  border-radius: 4px;
+}

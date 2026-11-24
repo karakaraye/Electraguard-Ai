@@ -1,6 +1,6 @@
 "use client";
 
-import { useId } from "react";
+import { useId, type ReactNode } from "react";
 import { useT } from "../../lib/i18n/client";
 import { GroupError, GroupLegend, type ChoiceGroupChrome } from "../ChoiceTile/ChoiceTile";
 import { CheckIcon } from "../icons";
@@ -13,6 +13,12 @@ export type YesNoProps = ChoiceGroupChrome & {
   /** Override the "Yes" and "No" words (for example "I saw it" / "Someone told me"). */
   yesLabel?: string;
   noLabel?: string;
+  /** Icon before the "Yes" label (for example a danger triangle). */
+  yesIcon?: ReactNode;
+  /** Status outline for the "Yes" answer (never colour alone: pair it with an icon). */
+  yesTone?: "danger";
+  /** One answer per row on phones (long answers); side by side from 600 px. */
+  stacked?: boolean;
   disabled?: boolean;
   "data-testid"?: string;
 };
@@ -28,6 +34,9 @@ export function YesNo({
   onChange,
   yesLabel,
   noLabel,
+  yesIcon,
+  yesTone,
+  stacked,
   disabled,
   "data-testid": testId = "yes-no",
 }: YesNoProps) {
@@ -36,19 +45,20 @@ export function YesNo({
   const hintId = hint ? `${id}-hint` : undefined;
   const errorId = error ? `${id}-error` : undefined;
   const choices = [
-    { key: "yes", label: yesLabel ?? t("ui.yes"), answer: true },
-    { key: "no", label: noLabel ?? t("ui.no"), answer: false },
+    { key: "yes", label: yesLabel ?? t("ui.yes"), answer: true, icon: yesIcon, tone: yesTone },
+    { key: "no", label: noLabel ?? t("ui.no"), answer: false, icon: undefined, tone: undefined },
   ];
   return (
     <fieldset
       className={styles.group}
       aria-describedby={[hintId, errorId].filter(Boolean).join(" ") || undefined}
+      aria-invalid={error ? true : undefined}
       data-invalid={error ? "" : undefined}
       disabled={disabled}
       data-testid={testId}
     >
       <GroupLegend legend={legend} headingLevel={headingLevel} hint={hint} hintId={hintId} />
-      <div className={styles.yesNo}>
+      <div className={styles.yesNo} data-stacked={stacked || undefined}>
         {choices.map((choice) => {
           const checked = value === choice.answer;
           return (
@@ -57,6 +67,7 @@ export function YesNo({
               className={styles.tile}
               data-checked={checked || undefined}
               data-disabled={disabled || undefined}
+              data-tone={choice.tone}
               data-testid={`${testId}-${choice.key}`}
             >
               <input
@@ -67,6 +78,11 @@ export function YesNo({
                 checked={checked}
                 onChange={() => onChange(choice.answer)}
               />
+              {choice.icon ? (
+                <span className={styles.answerIcon} aria-hidden="true">
+                  {choice.icon}
+                </span>
+              ) : null}
               <span className={styles.tileText}>
                 <span className={styles.tileLabel}>{choice.label}</span>
               </span>

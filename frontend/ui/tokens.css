@@ -189,6 +189,27 @@
 }
 
 [data-theme="light"] {
+  --ink: #0b0b0c;
+  --ink-2: #3a3a3d;
+  --ink-3: #5f5f63;
+  --paper: #ffffff;
+  --paper-2: #f4f4f2;
+  --rule: #d8d8d4;
+  --rule-control: #707075;
+  --on-ink: #ffffff;
+  --ok: #0f6b3a;
+  --ok-bg: #e5f1ea;
+  --attn: #8a5a00;
+  --attn-bg: #fff4d6;
+  --wait: #4a4a4f;
+  --wait-bg: #ededea;
+  --danger: #a3141c;
+  --danger-bg: #fbe9ea;
+  --info: #1f4e8c;
+  --info-bg: #e7eef7;
+  --focus-ring: #0b0b0c;
+  --focus-gap: #ffffff;
+  --shadow-sheet: 0 -1px 0 var(--rule), 0 12px 40px rgb(11 11 12 / 0.18);
   color-scheme: light;
 }
 

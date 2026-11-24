@@ -9,6 +9,9 @@ export type StatusTone = "ok" | "attn" | "wait" | "danger" | "info";
 /** Report lifecycle states (hackathon plan section 3) plus upload and urgency states. */
 export type ReportStatus =
   | "on-phone"
+  | "sending"
+  | "needs-attention"
+  | "waiting-code"
   | "not-confirmed"
   | "received"
   | "in-review"
@@ -21,6 +24,9 @@ export type ReportStatus =
 
 const statusTone: Record<ReportStatus, StatusTone> = {
   "on-phone": "wait",
+  sending: "wait",
+  "needs-attention": "attn",
+  "waiting-code": "attn",
   "not-confirmed": "wait",
   received: "ok",
   "in-review": "info",
@@ -34,6 +40,9 @@ const statusTone: Record<ReportStatus, StatusTone> = {
 
 const statusKey: Record<ReportStatus, string> = {
   "on-phone": "ui.status.onPhone",
+  sending: "common.status.sending",
+  "needs-attention": "common.status.needsAttention",
+  "waiting-code": "common.status.waitingCode",
   "not-confirmed": "ui.status.notConfirmed",
   received: "ui.status.received",
   "in-review": "ui.status.inReview",

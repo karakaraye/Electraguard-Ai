@@ -4,6 +4,7 @@ import Link from "next/link";
 import { preload } from "react-dom";
 import { useId, type ComponentType, type ReactNode } from "react";
 import { useT } from "../../lib/i18n/client";
+import { BrandMark } from "../BrandMark/BrandMark";
 import type { IconProps } from "../icons";
 import { setThemePreference, useThemePreference, type ThemePreference } from "../theme";
 import "../tokens.css";
@@ -92,7 +93,9 @@ export function StaffShell({
         </a>
       )}
       <nav className={styles.side} aria-label={t("ui.nav.main")}>
-        <p className={styles.brand}>{t("ui.productName")}</p>
+        <div className={styles.brand}>
+          <BrandMark variant="lockup" size="md" />
+        </div>
         <ul className={styles.sideList}>{navLinks("side")}</ul>
       </nav>
 
