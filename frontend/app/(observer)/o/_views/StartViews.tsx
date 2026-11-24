@@ -7,6 +7,7 @@ import { useRef, useState, type ReactNode } from "react";
 import { localeNames, locales, localeTags, type Locale } from "../../../../lib/i18n/config";
 import { useLocale, useT } from "../../../../lib/i18n/client";
 import { AppShell, Banner, Button, Field, Sheet } from "../../../../ui";
+import { haptic, prefersReducedMotion } from "../../../../ui/motion";
 import { BrandMark } from "../../../../ui/BrandMark/BrandMark";
 import { formatWatTime } from "../../../../ui/format";
 import {
@@ -37,6 +38,17 @@ export type LanguageViewProps = Shell & {
 
 export function LanguageView({ selected, onChoose, offline, banner }: LanguageViewProps) {
   const t = useT();
+  // The row just tapped: its sunlight sweep and check play before the flow moves on (spec I-3).
+  const [pending, setPending] = useState<Locale | null>(null);
+  const current = pending ?? selected;
+
+  function choose(code: Locale) {
+    if (pending) return;
+    setPending(code);
+    haptic(8);
+    window.setTimeout(() => onChoose(code), prefersReducedMotion() ? 0 : 280);
+  }
+
   return (
     <AppShell title={<AppBarTitle />} hideBack offline={offline} banner={banner} data-testid="o01">
       <BackgroundArt variant="hero" />
@@ -46,27 +58,35 @@ export function LanguageView({ selected, onChoose, offline, banner }: LanguageVi
         </h1>
         <p className={styles.lead}>{t("o01.hint")}</p>
         <div className={styles.languages} role="radiogroup" aria-labelledby="o01-title">
-          {locales.map((code) => (
-            <button
-              key={code}
-              type="button"
-              role="radio"
-              aria-checked={selected === code}
-              lang={localeTags[code]}
-              className={styles.language}
-              onClick={() => onChoose(code)}
-              data-testid={`o01-${code}`}
-            >
-              <span>{localeNames[code]}</span>
-              {selected === code ? (
-                <span className={styles.languageTick} aria-hidden="true">
-                  <CheckIcon size={16} strokeWidth={2.5} />
+          {locales.map((code) => {
+            const on = current === code;
+            return (
+              <button
+                key={code}
+                type="button"
+                role="radio"
+                aria-checked={on}
+                lang={localeTags[code]}
+                className={styles.language}
+                data-swept={pending === code || undefined}
+                onClick={() => choose(code)}
+                data-testid={`o01-${code}`}
+              >
+                {on ? <span className={styles.languageSweep} aria-hidden="true" /> : null}
+                <span className={styles.languageDisc} aria-hidden="true">
+                  {LANGUAGE_SHORT[code]}
                 </span>
-              ) : (
-                <ChevronRightIcon aria-hidden="true" />
-              )}
-            </button>
-          ))}
+                <span className={styles.languageName}>{localeNames[code]}</span>
+                {on ? (
+                  <span className={styles.languageTick} aria-hidden="true">
+                    <CheckIcon size={16} strokeWidth={2.5} />
+                  </span>
+                ) : (
+                  <ChevronRightIcon className={styles.languageChevron} aria-hidden="true" />
+                )}
+              </button>
+            );
+          })}
         </div>
         <p className={styles.credit}>
           <BrandMark variant="lockup" size="md" credit />
@@ -75,6 +95,9 @@ export function LanguageView({ selected, onChoose, offline, banner }: LanguageVi
     </AppShell>
   );
 }
+
+/** Short codes for the language discs, written as speakers abbreviate them. */
+const LANGUAGE_SHORT: Record<Locale, string> = { en: "EN", pcm: "NJ", ha: "HA", yo: "YO", ig: "IG" };
 
 /* ---------- O-02 ---------- */
 

@@ -134,27 +134,26 @@
   border: 0;
 }
 
+/* O-01 rows (spec screen 2): raised card, sun-tint disc with the short code, the
+   language's own name. A tap sweeps sunlight from the disc and pops the check. */
 .language {
   position: relative;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: var(--s-3);
-  min-height: 64px;
+  gap: var(--s-4);
+  min-height: 72px;
   margin: 0;
-  padding: 0 var(--s-4) 0 var(--s-5);
-  border: var(--border-w) solid var(--ink);
-  border-radius: var(--radius);
-  background: var(--paper);
+  padding: var(--s-3) var(--s-4);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  background: var(--paper-raised);
   color: var(--ink);
-  font: var(--t-heading);
-  font-weight: 600;
+  font: inherit;
   text-align: start;
+  overflow: hidden;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
-  transition:
-    transform var(--dur-press) var(--ease-out),
-    background-color var(--dur-fade) ease;
+  transition: transform var(--dur-press) var(--ease-out);
 }
 
 .language:active {
@@ -169,23 +168,91 @@
 
 @media (hover: hover) and (pointer: fine) {
   .language:hover {
-    background: var(--paper-2);
+    border-color: var(--rule-control);
   }
 }
 
 .language[aria-checked="true"] {
-  border-width: 2px;
-  padding-left: calc(var(--s-5) - 0.5px);
+  border: 2px solid var(--ink);
+  padding: calc(var(--s-3) - 1px) calc(var(--s-4) - 1px);
+}
+
+.languageSweep {
+  position: absolute;
+  inset: 0;
+  background: var(--sun-tint);
+  pointer-events: none;
+}
+
+.language[data-swept] .languageSweep {
+  animation: languageSweep var(--dur-step) var(--ease-out) both;
+}
+
+.languageDisc {
+  position: relative;
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--sun-tint);
+  font: 700 0.9375rem/1 var(--font-display);
+  letter-spacing: 0.02em;
+}
+
+.language[aria-checked="true"] .languageDisc {
+  background: var(--paper-raised);
+}
+
+.languageName {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  font: 700 1.25rem/1.25 var(--font-display);
+  overflow-wrap: anywhere;
 }
 
 .languageTick {
+  position: relative;
   display: grid;
+  flex: none;
   place-items: center;
   width: 28px;
   height: 28px;
   border-radius: var(--radius-pill);
   background: var(--ink);
   color: var(--on-ink);
+  animation: languageTick var(--dur-fade) var(--ease-pop) both;
+}
+
+.languageChevron {
+  position: relative;
+  flex: none;
+  color: var(--ink-2);
+}
+
+@keyframes languageSweep {
+  from {
+    clip-path: circle(0 at 38px 50%);
+  }
+  to {
+    clip-path: circle(150% at 38px 50%);
+  }
+}
+
+@keyframes languageTick {
+  from {
+    transform: scale(0.6);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .language[data-swept] .languageSweep,
+  .languageTick {
+    animation: none;
+  }
 }
 
 .credit {

@@ -1160,4 +1160,5 @@ A screen is done only when all of these are true:
   - The danger, "how do you know" and time questions are required, never defaulted.
   - Staff suggestions need a second step to apply ("Use this", then Confirm, or "Choose another").
   - Public tables apply complementary suppression in both rows and columns, so a hidden count can never be found by subtraction.
+- **v1.3 (25 Nov 2026), screen 2:** language keeps the existing one-tap advance (fastest for first-time users, and the end-to-end tests depend on it). The tap plays the sunlight sweep and check for 280 ms before moving on (instant under reduced motion); there is no separate Continue button. Rows show a short-code disc and the language's own name; no English sub-label, because the five names are already in their own scripts.
 - **v1.2 (24 Nov 2026), Phase 0 review:** token names follow the code (B0); disabled buttons are dashed instead of 40 % opacity; the DayArc sun rides above the arc; looping animations pause while the page is hidden.
