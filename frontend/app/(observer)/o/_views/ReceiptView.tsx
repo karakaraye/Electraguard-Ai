@@ -75,7 +75,7 @@ export function ReceiptView({ code, receivedAt, justSent, citizen, items, remove
       }
       data-testid="o12"
     >
-      <BackgroundArt />
+      <BackgroundArt variant="soft" />
       <div className={`${styles.screen} ${styles.wide}`}>
         <h1 className={styles.title}>{t("o12.title")}</h1>
         <div className={styles.receipt}>

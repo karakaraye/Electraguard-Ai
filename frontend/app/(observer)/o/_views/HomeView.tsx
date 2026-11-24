@@ -149,7 +149,7 @@ export function HomeView(props: HomeViewProps) {
       banner={hasBanner ? banners : undefined}
       data-testid="o04"
     >
-      {rows.length === 0 ? <BackgroundArt clear="none" /> : null}
+      {rows.length === 0 ? <BackgroundArt variant="soft" clear="none" /> : null}
       <h1 className="eg-sr-only">{t("o04.title")}</h1>
       <div className={styles.home}>
         <div className={styles.stack}>

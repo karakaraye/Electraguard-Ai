@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-/** Development only: the polling-day background art behind sample screen content. */
+/** Development only: the polling-day art (hero band and soft background) with sample screen content. */
 export default function BackgroundArtPage() {
   if (process.env.NODE_ENV === "production") notFound();
   return (
