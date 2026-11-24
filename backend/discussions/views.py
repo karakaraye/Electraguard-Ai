@@ -16,6 +16,7 @@ from reports.idempotency import idempotent
 from reports.incident_input import WAT, aware_datetime, field
 from reports.structured_input import clean_text
 from reports.v1_views import missing
+from privacy.redactor import redact
 
 from .models import Discussion, Flag, Membership, ModerationAction, Post, RequestRecord
 
@@ -221,7 +222,11 @@ def post_or_flag(request, data, discussion, member, post_id):
     if KnownPollingUnit.objects.filter(pk__in=candidates).exists():
         return invalid("body", "Name the ward, not the polling unit.", "contains_polling_unit_code")
     name_check = bool(re.search(r"\b(?:Mr|Mrs|Ms|Dr|Chief)\.?\s+[^\W\d_]+", body))
-    post = discussion.posts.create(author=member, body=body, name_check=name_check)
+    res = redact(body, discussion.organisation_id)
+    post = discussion.posts.create(
+        author=member, body=body, name_check=name_check or bool(res.spans),
+        auto_redacted_body=res.text, auto_redactions=res.spans,
+    )
     return 201, {"post": post_display(request, post)}, None
 
 

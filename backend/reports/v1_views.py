@@ -25,6 +25,7 @@ from .result_checks import check_result_sheet
 from .structured_input import checklist_input, result_input
 from .triage import METHOD_VERSION
 from .workflow import record_change
+from privacy.redactor import redact
 
 Status = Report.Status
 STATES = {
@@ -188,6 +189,11 @@ def attach_ocr_photo(photo, report):
 def persist_report(actor, organisation, values, *, code="", secret_digest="", **extra):
     details = values["incident_details"]
     area = details["area"]
+    desc = values.get("description", "")
+    if desc:
+        res = redact(desc, organisation)
+        values["auto_redacted_description"] = res.text
+        values["auto_redactions"] = res.spans
     while True:
         reference = receipt()
         try:
@@ -364,7 +370,12 @@ def detail(request, reference):
     )
     return JsonResponse({
         **identity(report), "channel": "app", "outcome": report.outcome,
-        **details, "description": (report.redacted_description if report.redacted_description is not None else report.description) if report.kind == "incident" else None,
+        **details, "description": report.description if report.kind == "incident" else None,
+        "redaction": {
+            "automatic": bool(report.auto_redactions),
+            "count": len(report.auto_redactions or []),
+            "kinds": sorted(list(set(r.get("kind") for r in (report.auto_redactions or [])))),
+        },
         "checklist": {k: v for k, v in report.structured_details.items() if k != "supersedes"} if report.kind == "checklist" else None,
         "result_sheet": report.structured_details if report.kind == "result_sheet" else None,
         "occurred_at": wat(report.occurred_at), "closed_at": wat(closure.created_at) if closure else None,

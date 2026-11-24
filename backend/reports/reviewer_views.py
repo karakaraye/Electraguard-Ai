@@ -12,7 +12,10 @@ from django.utils import timezone
 
 from accounts.models import User
 from accounts.observer_auth import endpoint, error, validation, wat
+from accounts.observer_credentials import rate_limit
 from accounts.organisations import org_scope
+from privacy.redactor import safe_text
+from staff.audit import record
 
 from .citizen_views import reply_message
 from .idempotency import idempotent
@@ -254,7 +257,7 @@ def conversation(report, events):
         if event.action == Action.RESPOND:
             reply = getattr(event, "citizen_reply", None)
             if reply:
-                message = reply_message(reply)
+                message = reply_message(reply, viewer="reviewer")
                 replies[message["reply_to"]] = message
             elif messages and "note" in event.change:
                 identifier = messages[-1]["id"]
@@ -306,14 +309,21 @@ def case(request, reference):
     return JsonResponse({
         "id": row["id"], "receipt_code": row["receipt_code"], "kind": row["kind"], "channel": row["channel"],
         "status": row["status"], "outcome": row["outcome"], "version": report.version,
+        "description": safe_text(report),
+        "original_available": True,
+        "redaction": {
+            "automatic": bool(report.auto_redactions),
+            "count": len(report.auto_redactions or []),
+            "kinds": sorted(list(set(r.get("kind") for r in (report.auto_redactions or [])))),
+        },
         "reporter": {
             "type": "observer" if report.observer_id else "citizen", "accredited": bool(report.observer_id),
             "label": reporter_label,
         },
         "language": details.get("language"),
         "original": {
-            "description": report.description, "redacted_description": report.redacted_description,
-            "redactions": report.redactions,
+            "description": report.description, "redacted_description": report.redacted_description or report.auto_redacted_description,
+            "redactions": report.redactions or report.auto_redactions, "original_available": True,
         },
         "translation": {"status": "unavailable", "text": None},
         "category_observer": details.get("category_observer"), "access_barrier_details": details.get("access_barrier_details", []),
@@ -525,3 +535,39 @@ def apply_redaction(request, report, data):
 @endpoint("POST", max_body_bytes=65536)
 def redact(request, data, reference):
     return write_case(request, reference, "CASE-05", data, lambda report: apply_redaction(request, report, data))
+
+
+@endpoint("POST", max_body_bytes=16384)
+@transaction.atomic
+def original(request, data, reference):
+    if not request.user.is_authenticated:
+        return error(401, "not_authenticated", "Sign in to continue.")
+    report = org_scope(request, Report).filter(pk=reference).first()
+    if report is None:
+        return missing()
+    if not request.user.has_role(User.Role.REVIEWER) or report.assigned_reviewer_id != request.user.pk:
+        return error(403, "forbidden", "Only the assigned reviewer can view the original text.")
+
+    retry = rate_limit("case-original-view", str(request.user.public_id), 30, 3600)
+    if retry is not None:
+        return error(429, "rate_limited", "Too many requests. Try again later.", retry=retry)
+
+    raw_reason = data.get("reason") if isinstance(data, dict) else None
+    reason = str(raw_reason).strip() if raw_reason is not None else ""
+    if not (1 <= len(reason) <= 500):
+        return validation({"reason": field("invalid", "Provide a reason between 1 and 500 characters.")})
+
+    record(
+        report.organisation_id,
+        "case.original_viewed",
+        "report",
+        str(report.pk),
+        actor=request.user,
+        content={"reason": reason},
+    )
+    return JsonResponse({
+        "id": str(report.pk),
+        "description": report.description,
+        "original_description": report.description,
+    })
+

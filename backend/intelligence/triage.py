@@ -7,6 +7,7 @@ from django.db.models import Q
 from django.utils import timezone
 
 from reports.models import Report, Triage, TriageMatch
+from privacy.redactor import safe_text
 
 from .learning import incident_models
 
@@ -55,7 +56,7 @@ def active_reports(report):
 
 
 def visible_description(report):
-    return report.redacted_description if report.redacted_description is not None else report.description
+    return safe_text(report)
 
 
 def suggest_duplicates(report, area):

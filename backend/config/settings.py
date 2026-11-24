@@ -58,6 +58,7 @@ INSTALLED_APPS = [
     "ops",
     "intelligence",
     "phone_channels",
+    "privacy",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",

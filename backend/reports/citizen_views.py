@@ -24,6 +24,7 @@ from .incident_input import field, incident_input
 from .models import CitizenReply, Report, ReviewEvent
 from .v1_views import STATES, missing, persist_report, question_id, withdraw_report
 from .workflow import record_change
+from privacy.redactor import redact
 
 Status = Report.Status
 Action = ReviewEvent.Action
@@ -148,10 +149,11 @@ def receipt_status(request, receipt_code):
     })
 
 
-def reply_message(reply):
+def reply_message(reply, viewer=None):
+    display_body = reply.body if viewer != "reviewer" else (getattr(reply, "auto_redacted_body", None) or reply.body)
     return {
         "id": str(reply.pk), "kind": "reply", "author": "citizen", "author_label": "Citizen",
-        "body": reply.body, "attachment": None, "question_state": None,
+        "body": display_body, "attachment": None, "question_state": None,
         "reply_to": str(reply.question_id), "created_at": wat(reply.created_at), "read": True,
     }
 
@@ -231,9 +233,11 @@ def persist_reply(report, data):
         "question_id": expected, "from_status": "needs_clarification", "to_status": "in_review",
         "body_sha256": sha256(body.encode()).hexdigest(),
     }, "status")
+    res = redact(body, report.organisation_id)
     reply = CitizenReply.objects.create(
         report=report, organisation_id=report.organisation_id, question_id=expected,
         event=ReviewEvent.objects.get(report=report, version=report.version), body=body,
+        auto_redacted_body=res.text, auto_redactions=res.spans,
     )
     return 201, {"message": reply_message(reply), "status": "in_review", "version": report.version}, report
 
