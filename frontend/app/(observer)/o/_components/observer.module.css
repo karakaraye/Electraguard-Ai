@@ -430,13 +430,22 @@
   }
 }
 
+/* An unfinished report: a warm card so it reads as "yours, in progress" next to the ink hero. */
 .draftCard {
   display: grid;
   gap: var(--s-3);
   padding: var(--s-4);
-  border: 1px solid var(--rule);
-  border-radius: var(--radius);
-  background: var(--paper-2);
+  border: 1px solid var(--sun-line);
+  border-radius: var(--radius-lg);
+  background: var(--sun-wash);
+}
+
+.draftHead > svg {
+  flex: none;
+  box-sizing: content-box;
+  padding: 8px;
+  border-radius: 50%;
+  background: var(--paper-raised);
 }
 
 .draftHead {
@@ -1045,4 +1054,128 @@
 
 .pinRules li[data-ok] .pinRuleMark svg {
   animation: languageTick var(--dur-fade) var(--ease-pop) both;
+}
+
+/* ---------- Home (spec screen 10) ---------- */
+.homeHead {
+  display: grid;
+  gap: var(--s-1);
+}
+
+.homeGreeting {
+  margin: 0;
+  font: var(--t-title);
+  letter-spacing: var(--display-tracking);
+}
+
+.arcCard {
+  display: grid;
+  gap: var(--s-2);
+  padding: var(--s-4) var(--s-4) var(--s-3);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  background: var(--paper-raised);
+  color: var(--ink);
+  text-decoration: none;
+  transition: transform var(--dur-press) var(--ease-out), border-color var(--dur-fade) ease;
+}
+
+.arcCard:active {
+  transform: scale(0.98);
+}
+
+.arcCard:focus-visible {
+  outline: var(--focus-outline);
+  outline-offset: var(--focus-offset);
+  box-shadow: var(--focus-halo);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .arcCard:hover {
+    border-color: var(--rule-control);
+  }
+}
+
+.arcHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s-1) var(--s-3);
+}
+
+.arcTitle {
+  font: var(--t-heading);
+}
+
+.sectionHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s-2);
+}
+
+.quickTiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(96px, 1fr));
+  gap: var(--s-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.quickTile {
+  display: grid;
+  align-content: space-between;
+  gap: var(--s-3);
+  min-height: 104px;
+  padding: var(--s-3);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  background: var(--paper-raised);
+  color: var(--ink);
+  font: var(--t-label);
+  text-decoration: none;
+  overflow-wrap: anywhere;
+  transition: transform var(--dur-press) var(--ease-out);
+}
+
+.quickTile:active {
+  transform: scale(0.97);
+}
+
+.quickTile:focus-visible {
+  outline: var(--focus-outline);
+  outline-offset: var(--focus-offset);
+  box-shadow: var(--focus-halo);
+}
+
+.quickDisc {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--sun-tint);
+}
+
+.quickCount {
+  position: absolute;
+  top: -4px;
+  right: -8px;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px;
+  border-radius: var(--radius-pill);
+  background: var(--ink);
+  color: var(--on-ink);
+  font: 700 0.75rem/20px var(--font);
+  text-align: center;
+}
+
+.quickCountAttn {
+  background: var(--attn-solid);
+  color: var(--fixed-ink);
 }

@@ -297,12 +297,21 @@
   "o04": {
     "title": "Mbido",
     "signedInAs": "Onye nlebanya {code}",
+    "greeting": {
+      "morning": "Ụtụtụ ọma",
+      "afternoon": "Ehihie ọma",
+      "evening": "Mgbede ọma"
+    },
     "citizenMode": "Akụkọ nwa amaala",
     "report": "Kọọ ihe mere",
+    "heroBody": "Gwa anyị ihe ị hụrụ n'ebe ntuli aka gị.",
     "continueDraft": "Gaa n'ihu n'akụkọ gị",
     "draftSaved": "E bidoro ya {time}",
     "checklist": "Ndepụta ụbọchị ntuli aka",
     "checklistProgress": "E zigala ọkwa {done} n'ime {total}",
+    "checklistNext": "Nke na-esote: {stage}",
+    "checklistDone": "E zigala nkebi niile",
+    "stageNext": "Nke na-esote",
     "myReports": "Akụkọ m",
     "myReportsCount": "{count, plural, =0 {Akụkọ adịbeghị} one {Akụkọ #} other {Akụkọ #}}",
     "messages": "Ozi",

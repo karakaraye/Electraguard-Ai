@@ -296,12 +296,21 @@
   "o04": {
     "title": "Home",
     "signedInAs": "Observer {code}",
+    "greeting": {
+      "morning": "Good morning",
+      "afternoon": "Good afternoon",
+      "evening": "Good evening"
+    },
     "citizenMode": "Citizen report",
     "report": "Report something",
+    "heroBody": "Tell us what you see at your polling unit.",
     "continueDraft": "Continue your report",
     "draftSaved": "Started {time}",
     "checklist": "Polling-day checklist",
     "checklistProgress": "{done} of {total} stages sent",
+    "checklistNext": "Next: {stage}",
+    "checklistDone": "All stages sent",
+    "stageNext": "Next",
     "myReports": "My reports",
     "myReportsCount": "{count, plural, =0 {No reports yet} one {# report} other {# reports}}",
     "messages": "Messages",

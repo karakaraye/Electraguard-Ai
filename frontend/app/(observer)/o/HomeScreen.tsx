@@ -18,6 +18,7 @@ import { openPinSheet } from "./_components/ObserverRuntime";
 import { useFocusTitle, useNetwork } from "./_lib/network";
 import { updateFromMe, useObserverSession } from "./_lib/session";
 import { HomeView, type HomeRow } from "./_views/HomeView";
+import { STAGES, useChecklistDay, watDay } from "./_lib/checklist";
 
 function takeFlag(key: string): boolean {
   try {
@@ -105,6 +106,17 @@ export function HomeScreen() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session?.code, offline]);
 
+  const today = useChecklistDay(session?.code ?? null, watDay());
+  const checklist = useMemo(() => {
+    // The first stage not yet received is "next"; the rest are "later".
+    const nextIndex = STAGES.findIndex((stage) => today.stages[stage.slug]?.state !== "received");
+    const stages = STAGES.map((stage, index) => ({
+      slug: stage.slug,
+      state: today.stages[stage.slug]?.state === "received" ? ("sent" as const) : index === nextIndex ? ("next" as const) : ("later" as const),
+    }));
+    return { unitLabel: today.unit?.label ?? null, stages };
+  }, [today]);
+
   const mine = useMemo(() => outbox.items.filter((item) => item.owner === session?.code), [outbox.items, session?.code]);
   const waiting = useMemo(() => outbox.items.filter((item) => item.state === "waiting_code"), [outbox.items]);
   const unsent = mine.filter((item) => item.state === "queued" || item.state === "unconfirmed" || item.state === "sending");
@@ -157,6 +169,7 @@ export function HomeScreen() {
       draftKept={keptVisible && Boolean(draft)}
       draft={draft ? { category: draft.category_observer, startedAt: draft.created_at } : null}
       rows={rows}
+      checklist={checklist}
       onReport={() => router.push(draft ? `/o/new/${draft.last_step}` : "/o/new/what")}
       onContinue={() => draft && router.push(`/o/new/${draft.last_step}`)}
       onSendNow={() => {

@@ -297,12 +297,21 @@
   "o04": {
     "title": "Ilé",
     "signedInAs": "Olùwòye {code}",
+    "greeting": {
+      "morning": "Ẹ káàárọ̀",
+      "afternoon": "Ẹ káàsán",
+      "evening": "Ẹ kúrọ̀lẹ́"
+    },
     "citizenMode": "Ìròyìn ọmọ ìlú",
     "report": "Ròyìn nǹkan kan",
+    "heroBody": "Sọ ohun tí o rí ní ibùdó ìdìbò rẹ fún wa.",
     "continueDraft": "Tẹ̀síwájú nínú ìròyìn rẹ",
     "draftSaved": "O bẹ̀rẹ̀ ní {time}",
     "checklist": "Àkọsílẹ̀ àyẹ̀wò ọjọ́ ìdìbò",
     "checklistProgress": "Ìpele {done} nínú {total} ti lọ",
+    "checklistNext": "Èyí tó kàn: {stage}",
+    "checklistDone": "A ti fi gbogbo ìpele ránṣẹ́",
+    "stageNext": "Èyí tó kàn",
     "myReports": "Àwọn ìròyìn mi",
     "myReportsCount": "{count, plural, =0 {Kò sí ìròyìn kankan síbẹ̀} one {Ìròyìn #} other {Ìròyìn #}}",
     "messages": "Àwọn ìfiránṣẹ́",

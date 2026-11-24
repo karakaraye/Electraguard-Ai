@@ -72,6 +72,17 @@ const homeBase: HomeViewProps = {
   draftKept: false,
   draft: null,
   rows: [],
+  checklist: {
+    unitLabel: "Kantudu Primary School I",
+    stages: [
+      { slug: "arrival", state: "sent" },
+      { slug: "opening", state: "sent" },
+      { slug: "accreditation", state: "next" },
+      { slug: "voting", state: "later" },
+      { slug: "closing", state: "later" },
+      { slug: "results", state: "later" },
+    ],
+  },
   onReport: noop,
   onContinue: noop,
   onSendNow: noop,

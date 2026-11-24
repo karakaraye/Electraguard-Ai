@@ -7,11 +7,11 @@ import Link from "next/link";
 import { useState, type ComponentType } from "react";
 import { useLocale, useT } from "../../../../lib/i18n/client";
 import type { Category } from "../../../../lib/api/types";
-import { AppShell, Banner, Button, ButtonLink, LanguageSwitcher, ReportList, ReportRow, Sheet, type ReportStatus } from "../../../../ui";
+import { AppShell, Banner, Button, ButtonLink, DayArc, HeroCard, LanguageSwitcher, ReportList, ReportRow, Sheet, type ReportStatus } from "../../../../ui";
 import { formatWatDateTime } from "../../../../ui/format";
 import { categoryPictograms, ChevronRightIcon, type IconProps } from "../../../../ui/icons";
 import { AppBarTitle } from "../_components/AppBarTitle";
-import { AskPictogram, ChecklistPictogram, DiscussionsPictogram, MessagesPictogram, ReportPictogram } from "../_components/pictograms";
+import { AskPictogram, DiscussionsPictogram, MessagesPictogram } from "../_components/pictograms";
 import styles from "../_components/observer.module.css";
 import s from "../_components/screens.module.css";
 import { categoryMeta } from "../_lib/categories";
@@ -43,6 +43,8 @@ export type HomeViewProps = {
   draftKept: boolean;
   draft: { category: Category | null; startedAt: number } | null;
   rows: HomeRow[];
+  /** Today's checklist from this phone (O-15 per-day state): each stage sent, next or later. */
+  checklist: { unitLabel: string | null; stages: Array<{ slug: string; state: "sent" | "next" | "later" }> };
   onReport: () => void;
   onContinue: () => void;
   onSendNow: () => void;
@@ -71,6 +73,8 @@ export function HomeView(props: HomeViewProps) {
     rows,
   } = props;
   const DraftPictogram = draft ? categoryPictograms[categoryMeta(draft.category).pictogram] : null;
+  const sentCount = props.checklist.stages.filter((stage) => stage.state === "sent").length;
+  const nextStage = props.checklist.stages.find((stage) => stage.state === "next");
 
   const banners = (
     <div className={styles.tight}>
@@ -150,61 +154,60 @@ export function HomeView(props: HomeViewProps) {
       data-testid="o04"
     >
       {rows.length === 0 ? <BackgroundArt variant="soft" clear="none" /> : null}
-      <h1 className="eg-sr-only">{t("o04.title")}</h1>
       <div className={styles.home}>
-        <div className={styles.stack}>
+        <header className={styles.homeHead}>
+          <h1 className={styles.homeGreeting}>{t(`o04.greeting.${greetingFor(new Date())}`)}</h1>
           <p className={styles.meta} data-testid="o04-signed-in">
             {t("o04.signedInAs", { code })}
+            {props.checklist.unitLabel ? ` · ${props.checklist.unitLabel}` : ""}
           </p>
-          {draft && DraftPictogram ? (
-            <div className={styles.draftCard} data-testid="o04-draft">
-              <div className={styles.draftHead}>
-                <DraftPictogram size={32} aria-hidden="true" />
-                <div className={styles.tight}>
-                  <p className={styles.itemName}>{t(`o05.tile.${categoryMeta(draft.category).tile}`)}</p>
-                  <p className={styles.meta}>{t("o04.draftSaved", { time: formatWatDateTime(draft.startedAt, locale) })}</p>
-                </div>
-              </div>
-              <Button variant="secondary" block icon={<ChevronRightIcon />} onClick={props.onContinue} data-testid="o04-continue">
-                {t("o04.continueDraft")}
-              </Button>
-            </div>
-          ) : null}
-          <button type="button" className={`${styles.choice} ${styles.choicePrimary}`} onClick={props.onReport} data-testid="o04-report">
-            <ReportPictogram size={32} aria-hidden="true" />
-            <span className={styles.choiceText}>
-              <span className={styles.choiceLabel}>{t("o04.report")}</span>
-            </span>
-            <ChevronRightIcon aria-hidden="true" />
-          </button>
-        </div>
+        </header>
 
-        <nav aria-label={t("o04.tasks")} className={styles.tight}>
-          <ul className={s.tasks}>
-            <TaskLink href="/o/checklist" icon={ChecklistPictogram} label={t("o04.checklist")} testId="o04-checklist" />
-            <TaskLink
-              href="/o/messages"
-              icon={MessagesPictogram}
-              label={t("o04.messages")}
-              count={questionCount + (props.unreadCount ?? 0)}
-              attn={questionCount > 0}
-              countLabel={questionCount > 0 ? t("o04.questionBanner", { count: questionCount }) : t("o17.newMessage", { count: props.unreadCount ?? 0 })}
-              testId="o04-messages"
-            />
-            {props.discussions ? (
-              <TaskLink href="/o/discussions" icon={DiscussionsPictogram} label={t("o04.discussions")} count={props.discussions.count} countLabel={t("o18.unread", { count: props.discussions.count })} testId="o04-discussions" />
-            ) : null}
-            <TaskLink href="/o/ask" icon={AskPictogram} label={t("o04.ask")} testId="o04-ask" />
-          </ul>
-        </nav>
+        {draft && DraftPictogram ? (
+          <div className={styles.draftCard} data-testid="o04-draft">
+            <div className={styles.draftHead}>
+              <DraftPictogram size={32} aria-hidden="true" />
+              <div className={styles.tight}>
+                <p className={styles.itemName}>{t(`o05.tile.${categoryMeta(draft.category).tile}`)}</p>
+                <p className={styles.meta}>{t("o04.draftSaved", { time: formatWatDateTime(draft.startedAt, locale) })}</p>
+              </div>
+            </div>
+            <Button variant="secondary" block icon={<ChevronRightIcon />} onClick={props.onContinue} data-testid="o04-continue">
+              {t("o04.continueDraft")}
+            </Button>
+          </div>
+        ) : null}
+
+        {/* Stays tappable when intake is paused: reports can still be written and wait on the phone. */}
+        <HeroCard title={t("o04.report")} body={t("o04.heroBody")} onClick={props.onReport} data-testid="o04-report" />
+
+        <Link href="/o/checklist" className={styles.arcCard} data-testid="o04-checklist">
+          <span className={styles.arcHead}>
+            <span className={styles.arcTitle}>{t("o04.checklist")}</span>
+            <span className={styles.meta}>{t("o04.checklistProgress", { done: sentCount, total: props.checklist.stages.length })}</span>
+          </span>
+          <DayArc
+            stages={props.checklist.stages.map((stage) => ({ id: stage.slug, label: t(`o15.stage.${stage.slug}`), state: stage.state }))}
+            nextLabel={nextStage ? t("o04.checklistNext", { stage: t(`o15.stage.${nextStage.slug}`) }) : t("o04.checklistDone")}
+            listLabel={t("o04.checklist")}
+            stateLabels={{ sent: t("o15.stageState.received"), next: t("o04.stageNext"), later: t("o15.stageState.notStarted") }}
+          />
+        </Link>
 
         <section aria-labelledby="o04-reports" className={styles.tight}>
-          <h2 className={styles.sectionTitle} id="o04-reports">
-            {t("o04.myReports")}
-          </h2>
+          <div className={styles.sectionHead}>
+            <h2 className={styles.sectionTitle} id="o04-reports">
+              {t("o04.myReports")}
+            </h2>
+            {rows.length ? (
+              <Link href="/o/reports" className={s.textLink} data-testid="o04-all-reports">
+                {t("o04.allReports")}
+              </Link>
+            ) : null}
+          </div>
           {rows.length ? (
             <ReportList label={t("o04.myReports")}>
-              {rows.map((row) => {
+              {rows.slice(0, 3).map((row) => {
                 const meta = categoryMeta(row.category);
                 return (
                   <ReportRow
@@ -221,21 +224,41 @@ export function HomeView(props: HomeViewProps) {
               })}
             </ReportList>
           ) : (
-            <p className={styles.meta} data-testid="o04-no-reports">
-              {t("o04.myReportsCount", { count: 0 })}
-            </p>
+            <>
+              <p className={styles.meta} data-testid="o04-no-reports">
+                {t("o04.myReportsCount", { count: 0 })}
+              </p>
+              <p className={styles.purpose} data-testid="o04-purpose">
+                {t("o04.purpose")}
+              </p>
+            </>
           )}
-          {rows.length ? (
-            <Link href="/o/reports" className={s.textLink} data-testid="o04-all-reports">
-              {t("o04.allReports")}
-            </Link>
-          ) : null}
-          {rows.length === 0 ? (
-            <p className={styles.purpose} data-testid="o04-purpose">
-              {t("o04.purpose")}
-            </p>
-          ) : null}
         </section>
+
+        <nav aria-label={t("o04.tasks")}>
+          <ul className={styles.quickTiles}>
+            <QuickTile
+              href="/o/messages"
+              icon={MessagesPictogram}
+              label={t("o04.messages")}
+              count={questionCount + (props.unreadCount ?? 0)}
+              attn={questionCount > 0}
+              countLabel={questionCount > 0 ? t("o04.questionBanner", { count: questionCount }) : t("o17.newMessage", { count: props.unreadCount ?? 0 })}
+              testId="o04-messages"
+            />
+            <QuickTile href="/o/ask" icon={AskPictogram} label={t("o04.ask")} testId="o04-ask" />
+            {props.discussions ? (
+              <QuickTile
+                href="/o/discussions"
+                icon={DiscussionsPictogram}
+                label={t("o04.discussions")}
+                count={props.discussions.count}
+                countLabel={t("o18.unread", { count: props.discussions.count })}
+                testId="o04-discussions"
+              />
+            ) : null}
+          </ul>
+        </nav>
       </div>
 
       <Sheet open={menu} onClose={() => setMenu(false)} title={t("ui.menu")} data-testid="o04-menu">
@@ -246,7 +269,13 @@ export function HomeView(props: HomeViewProps) {
   );
 }
 
-function TaskLink({
+/** Morning until 12:00, afternoon until 17:00, then evening, in West Africa Time. */
+function greetingFor(now: Date): "morning" | "afternoon" | "evening" {
+  const hour = Number(new Intl.DateTimeFormat("en-GB", { timeZone: "Africa/Lagos", hour: "numeric", hourCycle: "h23" }).format(now));
+  return hour < 12 ? "morning" : hour < 17 ? "afternoon" : "evening";
+}
+
+function QuickTile({
   href,
   icon: Icon,
   label,
@@ -265,18 +294,13 @@ function TaskLink({
 }) {
   return (
     <li>
-      <Link href={href} className={s.taskLink} data-testid={testId}>
-        <Icon size={32} aria-hidden="true" />
+      <Link href={href} className={styles.quickTile} data-testid={testId}>
+        <span className={styles.quickDisc} aria-hidden="true">
+          <Icon size={26} />
+          {count > 0 ? <span className={`${styles.quickCount} ${attn ? styles.quickCountAttn : ""} eg-tnum`}>{count}</span> : null}
+        </span>
         <span>{label}</span>
-        {count > 0 ? (
-          <span className={`${s.count} ${attn ? s.countAttn : ""}`}>
-            <span aria-hidden="true">{count}</span>
-            <span className="eg-sr-only">{countLabel}</span>
-          </span>
-        ) : (
-          <span />
-        )}
-        <ChevronRightIcon className={s.chev} aria-hidden="true" />
+        {count > 0 && countLabel ? <span className="eg-sr-only">{countLabel}</span> : null}
       </Link>
     </li>
   );

@@ -297,12 +297,21 @@
   "o04": {
     "title": "Gida",
     "signedInAs": "Mai sa ido {code}",
+    "greeting": {
+      "morning": "Ina kwana",
+      "afternoon": "Ina wuni",
+      "evening": "Barka da yamma"
+    },
     "citizenMode": "Rahoton ɗan ƙasa",
     "report": "Kai rahoto",
+    "heroBody": "Faɗa mana abin da ka gani a rumfar zaɓenka.",
     "continueDraft": "Ci gaba da rahotonka",
     "draftSaved": "An fara {time}",
     "checklist": "Jerin abubuwan ranar zaɓe",
     "checklistProgress": "An aika matakai {done} cikin {total}",
+    "checklistNext": "Na gaba: {stage}",
+    "checklistDone": "An aika dukkan matakai",
+    "stageNext": "Na gaba",
     "myReports": "Rahotannina",
     "myReportsCount": "{count, plural, =0 {Babu rahoto tukuna} one {Rahoto #} other {Rahotanni #}}",
     "messages": "Saƙonni",
