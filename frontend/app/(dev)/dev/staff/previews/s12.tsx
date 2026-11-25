@@ -1,33 +1,76 @@
 "use client";
 
 import { useT } from "../../../../../lib/i18n/client";
+import type { AlertStatus, SecurityAlert } from "../../../../../lib/api/types";
 import { SecurityView } from "../../../../(staff)/s/_views/SecurityView";
-import { FIXTURE_ALERT } from "../fixtures";
+import {
+  ALERTS_ACKNOWLEDGED,
+  ALERTS_MORE,
+  ALERTS_OPEN,
+  ALERTS_RESOLVED,
+  VERIFY_BROKEN,
+  VERIFY_INTACT,
+} from "./s12.fixtures";
 
 /** Screen 49 (S-12) preview states. Each state is one screenshot. */
-export const states = ["default", "loading", "empty", "error"] as const;
+export const states = [
+  "default",
+  "not_run",
+  "verifying",
+  "chain_broken",
+  "acknowledged",
+  "resolved",
+  "more",
+  "update_sheet",
+  "update_stale",
+  "export_range",
+  "loading",
+  "empty",
+  "error",
+  "forbidden",
+  "not_ready",
+] as const;
 
 export function Preview({ state }: { state: string }) {
   const t = useT();
-  void t;
+
+  const filter: AlertStatus = state === "acknowledged" ? "acknowledged" : state === "resolved" ? "resolved" : "open";
+  const alerts: SecurityAlert[] =
+    state === "empty" || state === "loading" || state === "error" || state === "forbidden" || state === "not_ready"
+      ? []
+      : state === "acknowledged"
+        ? ALERTS_ACKNOWLEDGED
+        : state === "resolved"
+          ? ALERTS_RESOLVED
+          : state === "more"
+            ? ALERTS_MORE
+            : ALERTS_OPEN;
+
+  const error =
+    state === "error" ? t("staff.networkError") : state === "forbidden" ? t("staff.forbidden") : state === "not_ready" ? t("staff.endpointNotReady") : null;
+
   return (
-          <SecurityView
-            alerts={state === "empty" ? [] : [FIXTURE_ALERT]}
-            verification={{
-              intact: true,
-              events_checked: 18422,
-              head: {
-                hash: "b5d12a884f3e9c1b72a0d9e8c6f1a4e2b0c9d7e5f3a1b4c6d8e0f2a4b6c8d0e2",
-                event_count: 18422,
-                at: "2026-12-05T11:00:00+01:00",
-              },
-              first_broken_event_id: null,
-              checked_at: "2026-12-05T11:02:00+01:00",
-            }}
-            loading={state === "loading"}
-            verifying={false}
-            error={state === "error" ? "Security verification failed" : null}
-            statusFilter="all"
-          />
-        );
+    <SecurityView
+      alerts={alerts}
+      verification={state === "not_run" || state === "loading" ? null : state === "chain_broken" ? VERIFY_BROKEN : VERIFY_INTACT}
+      loading={state === "loading"}
+      verifying={state === "verifying"}
+      error={error}
+      statusFilter={filter}
+      onStatusFilterChange={() => {}}
+      hasMore={state === "more"}
+      onLoadMore={() => {}}
+      onRetry={() => {}}
+      onVerifyChain={() => {}}
+      onUpdateAlert={async () => (state === "update_stale" ? { ok: false, message: t("s12.staleVersion") } : { ok: true })}
+      onExportAudit={async () => ({ ok: true })}
+      initialUpdateProblem={state === "update_stale" ? t("s12.staleVersion") : undefined}
+      initialEditing={state === "update_sheet" || state === "update_stale" ? "al-open-1" : undefined}
+      initialExport={
+        state === "export_range"
+          ? { from: "2026-08-01", to: "2026-12-05", notice: { tone: "danger", text: t("s12.exportRange") } }
+          : { from: "2026-11-05", to: "2026-12-05" }
+      }
+    />
+  );
 }
