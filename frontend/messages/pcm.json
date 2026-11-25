@@ -1659,6 +1659,9 @@
     }
   },
   "p07": {
+    "banner": "Na practice phone. Report wey you make here go get mark, and dem no go ever count am for public result.",
+    "keyboard": "You fit use your keyboard here: number dem, * and #, Enter for Call or OK, Escape for End.",
+    "more": { "title": "Other message wey you fit send" },
     "title": "Try report by SMS and USSD",
     "lead": "Use this phone wey dey screen to try ElectraGuard the way small phone dey do am. Na the same system with real SMS and USSD.",
     "deviceLabel": "Small phone for practice",

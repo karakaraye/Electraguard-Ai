@@ -1659,6 +1659,9 @@
     }
   },
   "p07": {
+    "banner": "Ekwentị nnwale. A na-aka akara akụkọ e mere ebe a, a gaghị agụnye ha na nsonaazụ ọha.",
+    "keyboard": "Ị nwere ike iji keyboard gị ebe a: ọnụọgụ, * na #, Enter maka Kpọọ ma ọ bụ Ọ dị mma, Escape maka Kwụsị.",
+    "more": { "title": "Ozi ndị ọzọ ị nwere ike iziga" },
     "title": "Nwalee ịkọ akụkọ site na SMS na USSD",
     "lead": "Jiri ekwentị a dị na ihuenyo nwalee ElectraGuard dịka obere ekwentị si eme ya. Ọ na-eji otu usoro ahụ dị ka SMS na USSD n'ezie.",
     "deviceLabel": "Obere ekwentị nnwale",

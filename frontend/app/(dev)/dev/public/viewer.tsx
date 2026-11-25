@@ -12,7 +12,7 @@ import { ResultsView } from "../../../(public)/_views/ResultsView";
 import { AskScreen } from "../../../(public)/ask/AskScreen";
 import { GuideDocumentView, GuideIndexView } from "../../../(public)/_views/GuideViews";
 import { PrivacyView } from "../../../(public)/_views/PrivacyView";
-import { PhoneSimulator } from "../../../(public)/phone/PhoneSimulator";
+import { PhoneSimulator, type PhoneSeed } from "../../../(public)/phone/PhoneSimulator";
 
 const cell = (count: number): Cell => ({ count, suppressed: false });
 
@@ -137,6 +137,41 @@ const FIXTURE_RESULTS: PublicResultsResponse = {
   ],
   combined: null,
 };
+
+/** Screen 37 states: the phone's views, plus every failure the spec lists. */
+function phoneSeed(state: string, t: (key: string, values?: Record<string, string | number>) => string): PhoneSeed {
+  const base: PhoneSeed = { status: "ready", phoneLabel: "+234 800 000 0417", view: { name: "home" } };
+  const sent = "2026-12-05T10:42:00+01:00";
+  switch (state) {
+    case "starting":
+      return { status: "loading" };
+    case "disabled":
+      return { status: "disabled" };
+    case "network":
+      return { status: "unreachable" };
+    case "server":
+      return { ...base, notice: t("p07.error.server") };
+    case "too_many":
+      return { ...base, notice: t("p07.error.tooMany") };
+    case "invalid":
+      return { ...base, view: { name: "compose" }, draft: "REPORT", notice: t("p07.error.invalid") };
+    case "ussd":
+      return { ...base, view: { name: "ussd", sessionId: "sess-1", text: "ElectraGuard\n1. Report what you saw\n2. Check a receipt\n3. Answer a question\n4. Language" } };
+    case "sms":
+      return { ...base, view: { name: "compose" }, draft: t("p07.how.reportExample") };
+    case "inbox":
+      return {
+        ...base,
+        view: { name: "inbox" },
+        messages: [
+          { id: "m1", text: t("p07.how.reportExample"), received_at: sent, from: "+234 800 000 0417", direction: "out" },
+          { id: "m2", text: "ElectraGuard: Report received. Your receipt code is EG-4H7Q-92KD. Text STATUS EG-4H7Q-92KD to check it.", received_at: sent, from: "ElectraGuard", direction: "in" },
+        ],
+      };
+    default:
+      return base;
+  }
+}
 
 const PAGES = [
   { id: "home", label: "Home" },
@@ -283,13 +318,7 @@ export function PublicStateViewer(): ReactElement {
 
       case "phone":
         return (
-          <PhoneSimulator
-            seed={{
-              status: "ready",
-              phoneLabel: "Basic Feature Phone (SIM-01)",
-              view: state === "ussd" ? { name: "ussd", sessionId: "sess-1", text: "Welcome to ElectraGuard USSD\n1. Report incident\n2. Check receipt" } : { name: "home" },
-            }}
-          />
+          <PhoneSimulator key={state} seed={phoneSeed(state, t)} />
         );
 
       default:

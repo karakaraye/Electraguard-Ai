@@ -1659,6 +1659,9 @@
     }
   },
   "p07": {
+    "banner": "Fóònù àdánwò ni. A máa ń sàmì sí àwọn ìròyìn tí a ṣe níbí, a kò sì ní kà wọ́n mọ́ àbájáde gbangba.",
+    "keyboard": "O lè lo kíbọ́ọ̀dù rẹ níbí: àwọn nọ́ńbà, * àti #, Enter fún Pè tàbí Ó dáa, Escape fún Parí.",
+    "more": { "title": "Àwọn ọ̀rọ̀ míì tí o lè fi ránṣẹ́" },
     "title": "Gbìyànjú fífi ìròyìn ránṣẹ́ pẹ̀lú SMS àti USSD",
     "lead": "Lo fóònù tó wà lójú ìbojú yìí láti gbìyànjú ElectraGuard bí fóònù kékeré ṣe ń ṣe é. Ó ń lo ètò kan náà pẹ̀lú SMS àti USSD gidi.",
     "deviceLabel": "Fóònù kékeré ìdánwò",

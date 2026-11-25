@@ -382,23 +382,108 @@
   font: var(--t-title);
 }
 
+.wrap {
+  display: grid;
+  gap: var(--s-6);
+  min-width: 0;
+}
+
+.card .command {
+  background: var(--paper);
+}
+
+/* Each way to try it: an icon in a sun disc, joined to the next by a sun line. */
 .tries {
   display: grid;
-  gap: var(--s-5);
+  gap: 0;
   margin: 0;
-  padding-inline-start: 1.5rem;
+  padding: 0;
+  list-style: none;
   font: var(--t-body-lg);
 }
 
-.tries li {
+.try {
+  position: relative;
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr);
+  gap: var(--s-4);
+  padding-bottom: var(--s-6);
+}
+
+.try:last-child {
+  padding-bottom: 0;
+}
+
+.try:not(:last-child)::before {
+  content: "";
+  position: absolute;
+  inset-block: 48px 8px;
+  inset-inline-start: 19px;
+  width: 2px;
+  border-radius: 1px;
+  background: var(--sun-line);
+}
+
+.tryBody {
   display: grid;
   justify-items: start;
   gap: var(--s-2);
-  padding-inline-start: var(--s-1);
+  min-width: 0;
+  padding-top: 6px;
 }
 
 .tries p {
   margin: 0;
+}
+
+.disc,
+.discSmall {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--sun-tint);
+  color: var(--ink);
+}
+
+.discSmall {
+  width: 32px;
+  height: 32px;
+}
+
+.card {
+  display: grid;
+  gap: var(--s-3);
+  padding: var(--s-5);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: var(--paper-raised);
+}
+
+.cardTitle {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  margin: 0;
+  font: var(--t-heading);
+}
+
+.moreRow {
+  display: grid;
+  justify-items: start;
+  gap: var(--s-2);
+}
+
+.moreRow p {
+  margin: 0;
+  font: var(--t-body);
+}
+
+.screen:focus-visible {
+  outline: 3px solid var(--sun);
+  outline-offset: 2px;
 }
 
 .command {
@@ -439,11 +524,6 @@
   color: var(--ink-2);
 }
 
-.catTitle {
-  margin: var(--s-3) 0 0;
-  font: var(--t-heading);
-}
-
 .cats {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr));
@@ -473,10 +553,10 @@
   display: grid;
   justify-items: start;
   gap: var(--s-2);
-  margin-top: var(--s-3);
-  padding: var(--s-4);
-  border: 1px solid var(--rule);
+  padding: var(--s-5);
+  border: 1px solid var(--sun-line);
   border-radius: var(--radius);
+  background: var(--sun-wash);
 }
 
 .number p {

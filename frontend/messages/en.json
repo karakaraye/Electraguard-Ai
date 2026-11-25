@@ -1658,6 +1658,9 @@
     }
   },
   "p07": {
+    "banner": "Simulated phone. Reports made here are marked and never counted in public results.",
+    "keyboard": "You can use your keyboard here: numbers, * and #, Enter for Call or OK, Escape for End.",
+    "more": { "title": "More messages you can send" },
     "title": "Try reporting by SMS and USSD",
     "lead": "Use this on-screen phone to try ElectraGuard the way a basic phone does. It runs on the same system as real SMS and USSD.",
     "deviceLabel": "Simulated basic phone",

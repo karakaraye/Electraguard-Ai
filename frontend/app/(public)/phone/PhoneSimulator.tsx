@@ -1,12 +1,13 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
+import { useCallback, useEffect, useRef, useState, type FormEvent, type KeyboardEvent, type ReactNode } from "react";
 import { api, uuidv4 } from "../../../lib/api/client";
 import type { SimMessage } from "../../../lib/api/types";
 import { SMS_SHORT_CODE } from "../../../lib/config";
 import { useLocale, useT } from "../../../lib/i18n/client";
 import { formatWatTime } from "../../../ui/format";
-import { PhoneIcon, SignalIcon } from "../../../ui/icons";
+import { Banner } from "../../../ui/Banner/Banner";
+import { ListIcon, MessageIcon, PhoneIcon, SearchIcon, SignalIcon } from "../../../ui/icons";
 import { CATEGORY_ROWS, USSD_SERVICE_CODE } from "../_lib/public";
 import styles from "./phone.module.css";
 
@@ -59,6 +60,7 @@ export function PhoneSimulator({ seed }: { seed?: PhoneSeed }) {
   const [notice, setNotice] = useState<string | null>(seed?.notice ?? null);
   const [unread, setUnread] = useState(0);
   const inputRef = useRef<HTMLInputElement | HTMLTextAreaElement | null>(null);
+  const screenRef = useRef<HTMLElement | null>(null);
   const lastId = useRef<string | undefined>(undefined);
   const timers = useRef<number[]>([]);
 
@@ -110,8 +112,13 @@ export function PhoneSimulator({ seed }: { seed?: PhoneSeed }) {
     for (const delay of [1500, 5000, 12000]) timers.current.push(window.setTimeout(() => void refreshInbox(), delay));
   }
 
+  /** Move focus with the view: into its field, or onto the screen when it has none (so Enter is OK). */
+  const shownView = useRef(view.name);
   useEffect(() => {
-    inputRef.current?.focus({ preventScroll: true });
+    const changed = shownView.current !== view.name;
+    shownView.current = view.name;
+    if (inputRef.current) inputRef.current.focus({ preventScroll: true });
+    else if (changed) screenRef.current?.focus({ preventScroll: true });
   }, [view.name]);
 
   function go(next: View) {
@@ -229,6 +236,34 @@ export function PhoneSimulator({ seed }: { seed?: PhoneSeed }) {
     if (view.name === "home") setDial((value) => value.slice(0, -1));
     else if (view.name === "ussd") setReply((value) => value.slice(0, -1));
     else if (view.name === "compose") setDraft((value) => value.slice(0, -1));
+  }
+
+  /**
+   * A physical keyboard works like the keypad: digits, * and # type, Enter is OK,
+   * Escape is End and Backspace clears. Fields keep their own typing and Enter.
+   */
+  function onDeviceKey(event: KeyboardEvent<HTMLDivElement>) {
+    if (status !== "ready" || event.altKey || event.ctrlKey || event.metaKey) return;
+    if (event.key === "Escape") {
+      event.preventDefault();
+      end();
+      return;
+    }
+    const target = event.target as HTMLElement;
+    if (target.tagName === "INPUT" || target.tagName === "TEXTAREA") return;
+    if (target.tagName === "BUTTON" && (event.key === "Enter" || event.key === " ")) return;
+    const typing = view.name === "home" || view.name === "ussd" || view.name === "compose";
+    if (typing && /^[0-9*#]$/.test(event.key)) {
+      event.preventDefault();
+      press(event.key);
+    } else if (event.key === "Backspace" && typing) {
+      event.preventDefault();
+      backspace();
+    } else if (event.key === "Enter") {
+      event.preventDefault();
+      if (view.name === "ussdEnd") end();
+      else call();
+    }
   }
 
   function loadExample(text: string) {
@@ -390,104 +425,147 @@ export function PhoneSimulator({ seed }: { seed?: PhoneSeed }) {
           : t("p07.home.title");
 
   return (
-    <div className={styles.layout}>
-      <div className={styles.device} id="eg-phone" role="group" aria-label={t("p07.deviceLabel")} data-testid="phone">
-        <div className={styles.speaker} aria-hidden="true" />
-        <section className={styles.screen} aria-label={t("p07.screenLabel")} aria-busy={busy || undefined}>
-          <div className={styles.statusBar}>
-            <SignalIcon size={16} />
-            <span className="eg-tnum">{phoneLabel || "..."}</span>
-          </div>
-          <p className={styles.viewTitle}>{viewTitle}</p>
-          <div className={styles.content} aria-live="polite">
-            {busy ? <p className={styles.center}>{t("p07.screen.wait")}</p> : screen}
-          </div>
-          {notice ? <p className={styles.notice} role="alert">{notice}</p> : null}
-          <div className={styles.softLabels} aria-hidden="true">
-            <span>{ready ? left.label : ""}</span>
-            <span>{ready ? right.label : ""}</span>
-          </div>
-        </section>
-
-        <div className={styles.keys} role="group" aria-label={t("p07.keypadLabel")}>
-          <div className={styles.softRow}>
-            <button type="button" className={styles.soft} onClick={left.action} disabled={!ready || left.disabled} data-testid="phone-soft-left">
-              {left.label}
-            </button>
-            <button type="button" className={styles.soft} onClick={right.action} disabled={!ready || right.disabled} data-testid="phone-soft-right">
-              {right.label}
-            </button>
-          </div>
-          <div className={styles.callRow}>
-            <button type="button" className={styles.call} onClick={call} disabled={!ready || busy} data-testid="phone-call">
-              <PhoneIcon size={20} />
-              {view.name === "compose" || view.name === "ussd" ? t("p07.key.send") : t("p07.key.call")}
-            </button>
-            <button type="button" className={styles.end} onClick={end} disabled={!ready} data-testid="phone-end">
-              {t("p07.key.end")}
-            </button>
-          </div>
-          <div className={styles.pad}>
-            {KEYS.map(({ key, letters }) => (
-              <button
-                key={key}
-                type="button"
-                className={styles.key}
-                onClick={() => press(key)}
-                disabled={!ready || busy || !(view.name === "home" || view.name === "ussd" || view.name === "compose")}
-                aria-label={key === "*" ? t("p07.key.star") : key === "#" ? t("p07.key.hash") : key}
-                data-testid={`phone-key-${key === "*" ? "star" : key === "#" ? "hash" : key}`}
-              >
-                <span className={styles.digit} aria-hidden="true">{key}</span>
-                {letters ? <span className={styles.letters} aria-hidden="true">{letters}</span> : null}
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      <aside className={styles.guide} aria-labelledby="p07-try">
-        <h2 id="p07-try" className={styles.guideTitle}>{t("p07.how.title")}</h2>
-        <ol className={styles.tries}>
-          <li>
-            <p>{t("p07.how.ussd", { code: USSD_SERVICE_CODE })}</p>
-          </li>
-          <li>
-            <p>{t("p07.how.report")}</p>
-            <p className={`${styles.command} eg-tnum`}>{t("p07.how.reportExample")}</p>
-            <button type="button" className={styles.example} onClick={() => loadExample(t("p07.how.reportExample"))} disabled={!ready} data-testid="phone-example-report">
-              {t("p07.example")}
-            </button>
-          </li>
-          <li>
-            <p>{t("p07.how.status")}</p>
-            <p className={`${styles.command} eg-tnum`}>STATUS EG-XXXX-XXXX</p>
-            <button type="button" className={styles.example} onClick={() => loadExample("STATUS ")} disabled={!ready} data-testid="phone-example-status">
-              {t("p07.startMessage")}
-            </button>
-          </li>
-        </ol>
-        <p className={styles.more}>{t("p07.how.reply")}</p>
-        <p className={styles.more}>{t("p07.how.lang")}</p>
-
-        <h3 className={styles.catTitle}>{t("p07.categories.title")}</h3>
-        <dl className={styles.cats}>
-          {[...CATEGORY_ROWS.slice(0, 9), CATEGORY_ROWS[9]].map((cat) => (
-            <div key={cat.value}>
-              <dt className="eg-tnum">{cat.number}</dt>
-              <dd>{t(cat.key)}</dd>
+    <div className={styles.wrap}>
+      <Banner tone="info" title={t("p07.banner")} data-testid="phone-banner" />
+      <div className={styles.layout}>
+        <div
+          className={styles.device}
+          id="eg-phone"
+          role="group"
+          aria-label={t("p07.deviceLabel")}
+          aria-describedby="p07-keyboard"
+          onKeyDown={onDeviceKey}
+          data-testid="phone"
+        >
+          <div className={styles.speaker} aria-hidden="true" />
+          <section
+            ref={screenRef}
+            tabIndex={-1}
+            className={styles.screen}
+            aria-label={t("p07.screenLabel")}
+            aria-busy={busy || undefined}
+          >
+            <div className={styles.statusBar}>
+              <SignalIcon size={16} />
+              <span className="eg-tnum">{phoneLabel || "..."}</span>
             </div>
-          ))}
-        </dl>
+            <p className={styles.viewTitle}>{viewTitle}</p>
+            <div className={styles.content} aria-live="polite">
+              {busy ? <p className={styles.center}>{t("p07.screen.wait")}</p> : screen}
+            </div>
+            {notice ? <p className={styles.notice} role="alert">{notice}</p> : null}
+            <div className={styles.softLabels} aria-hidden="true">
+              <span>{ready ? left.label : ""}</span>
+              <span>{ready ? right.label : ""}</span>
+            </div>
+          </section>
 
-        <div className={styles.number}>
-          <p>{t("p07.simulated", { number: phoneLabel || "..." })}</p>
-          <button type="button" className={styles.example} onClick={() => void reset()} disabled={!ready || busy} data-testid="phone-reset">
-            {t("p07.reset")}
-          </button>
-          <p className={styles.small}>{t("p07.resetHint")}</p>
+          <div className={styles.keys} role="group" aria-label={t("p07.keypadLabel")}>
+            <div className={styles.softRow}>
+              <button type="button" className={styles.soft} onClick={left.action} disabled={!ready || left.disabled} data-testid="phone-soft-left">
+                {left.label}
+              </button>
+              <button type="button" className={styles.soft} onClick={right.action} disabled={!ready || right.disabled} data-testid="phone-soft-right">
+                {right.label}
+              </button>
+            </div>
+            <div className={styles.callRow}>
+              <button type="button" className={styles.call} onClick={call} disabled={!ready || busy} data-testid="phone-call">
+                <PhoneIcon size={20} />
+                {view.name === "compose" || view.name === "ussd" ? t("p07.key.send") : t("p07.key.call")}
+              </button>
+              <button type="button" className={styles.end} onClick={end} disabled={!ready} data-testid="phone-end">
+                {t("p07.key.end")}
+              </button>
+            </div>
+            <div className={styles.pad}>
+              {KEYS.map(({ key, letters }) => (
+                <button
+                  key={key}
+                  type="button"
+                  className={styles.key}
+                  onClick={() => press(key)}
+                  disabled={!ready || busy || !(view.name === "home" || view.name === "ussd" || view.name === "compose")}
+                  aria-label={key === "*" ? t("p07.key.star") : key === "#" ? t("p07.key.hash") : key}
+                  data-testid={`phone-key-${key === "*" ? "star" : key === "#" ? "hash" : key}`}
+                >
+                  <span className={styles.digit} aria-hidden="true">{key}</span>
+                  {letters ? <span className={styles.letters} aria-hidden="true">{letters}</span> : null}
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
-      </aside>
+
+        <aside className={styles.guide} aria-labelledby="p07-try">
+          <h2 id="p07-try" className={styles.guideTitle}>{t("p07.how.title")}</h2>
+          <p id="p07-keyboard" className={styles.more}>{t("p07.keyboard")}</p>
+          <ol className={styles.tries}>
+            <li className={styles.try}>
+              <span className={styles.disc} aria-hidden="true"><PhoneIcon size={20} /></span>
+              <div className={styles.tryBody}>
+                <p>{t("p07.how.ussd", { code: USSD_SERVICE_CODE })}</p>
+                <p className={`${styles.command} eg-tnum`}>{USSD_SERVICE_CODE}</p>
+              </div>
+            </li>
+            <li className={styles.try}>
+              <span className={styles.disc} aria-hidden="true"><MessageIcon size={20} /></span>
+              <div className={styles.tryBody}>
+                <p>{t("p07.how.report")}</p>
+                <p className={`${styles.command} eg-tnum`}>{t("p07.how.reportExample")}</p>
+                <button type="button" className={styles.example} onClick={() => loadExample(t("p07.how.reportExample"))} disabled={!ready} data-testid="phone-example-report">
+                  {t("p07.example")}
+                </button>
+              </div>
+            </li>
+            <li className={styles.try}>
+              <span className={styles.disc} aria-hidden="true"><SearchIcon size={20} /></span>
+              <div className={styles.tryBody}>
+                <p>{t("p07.how.status")}</p>
+                <p className={`${styles.command} eg-tnum`}>STATUS EG-XXXX-XXXX</p>
+                <button type="button" className={styles.example} onClick={() => loadExample("STATUS ")} disabled={!ready} data-testid="phone-example-status">
+                  {t("p07.startMessage")}
+                </button>
+              </div>
+            </li>
+          </ol>
+
+          <section className={styles.card} aria-labelledby="p07-more">
+            <h3 id="p07-more" className={styles.cardTitle}>{t("p07.more.title")}</h3>
+            <div className={styles.moreRow}>
+              <p>{t("p07.how.reply")}</p>
+              <p className={`${styles.command} eg-tnum`}>REPLY EG-XXXX-XXXX</p>
+            </div>
+            <div className={styles.moreRow}>
+              <p>{t("p07.how.lang")}</p>
+              <p className={`${styles.command} eg-tnum`}>LANG PCM</p>
+            </div>
+          </section>
+
+          <section className={styles.card} aria-labelledby="p07-cats">
+            <h3 id="p07-cats" className={styles.cardTitle}>
+              <span className={styles.discSmall} aria-hidden="true"><ListIcon size={18} /></span>
+              {t("p07.categories.title")}
+            </h3>
+            <dl className={styles.cats}>
+              {[...CATEGORY_ROWS.slice(0, 9), CATEGORY_ROWS[9]].map((cat) => (
+                <div key={cat.value}>
+                  <dt className="eg-tnum">{cat.number}</dt>
+                  <dd>{t(cat.key)}</dd>
+                </div>
+              ))}
+            </dl>
+          </section>
+
+          <div className={styles.number}>
+            <p>{t("p07.simulated", { number: phoneLabel || "..." })}</p>
+            <button type="button" className={styles.example} onClick={() => void reset()} disabled={!ready || busy} data-testid="phone-reset">
+              {t("p07.reset")}
+            </button>
+            <p className={styles.small}>{t("p07.resetHint")}</p>
+          </div>
+        </aside>
+      </div>
     </div>
   );
 }

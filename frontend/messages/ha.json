@@ -1659,6 +1659,9 @@
     }
   },
   "p07": {
+    "banner": "Wayar gwaji ce. Ana yi wa rahotannin da aka yi a nan alama, kuma ba a taɓa ƙirga su a sakamakon jama’a ba.",
+    "keyboard": "Kana iya amfani da madannai a nan: lambobi, * da #, Enter don Kira ko To, Escape don Ƙarewa.",
+    "more": { "title": "Wasu saƙonnin da za ka iya aikawa" },
     "title": "Gwada kai rahoto ta SMS da USSD",
     "lead": "Yi amfani da wannan wayar da ke kan allo don gwada ElectraGuard kamar yadda ƙaramar waya ke yi. Tana aiki a tsarin da ainihin SMS da USSD ke amfani da shi.",
     "deviceLabel": "Ƙaramar waya ta gwaji",
