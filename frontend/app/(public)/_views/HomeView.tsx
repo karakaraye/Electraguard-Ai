@@ -1,5 +1,5 @@
 import Link from "next/link";
-import type { CSSProperties } from "react";
+import { Suspense, type CSSProperties } from "react";
 import type { Translate } from "../../../lib/i18n";
 import type { Cell, GuideSummary } from "../../../lib/api/types";
 import { SMS_SHORT_CODE } from "../../../lib/config";
@@ -26,12 +26,15 @@ export type HomeResults =
   | { kind: "empty" }
   | { kind: "unavailable" };
 
+type Awaitable<T> = T | Promise<T>;
+
 export type HomeViewProps = {
   t: Translate;
   locale: Locale;
-  results: HomeResults;
+  /** A promise on the live page, so the results stream in after the rest of the page. */
+  results: Awaitable<HomeResults>;
   /** null when the guide list could not be read (the section then links to /guide only). */
-  guides: GuideSummary[] | null;
+  guides: Awaitable<GuideSummary[] | null>;
   check?: { state: CheckState; code: string };
   /** The "Report what you saw" line in each language, for the language picker drawn in step 1 of the story. */
   reportLines?: Partial<Record<Locale, string>>;
@@ -56,7 +59,6 @@ const REPORT_HREF = "/o/new/what?as=citizen";
 
 /** P-02 public home (landing plan §4): one polling day told in order, from the hero to the evening scene. */
 export function HomeView({ t, locale, results, guides, check, reportLines }: HomeViewProps) {
-  const tag = localeTags[locale];
   const lines: Partial<Record<Locale, string>> = { ...reportLines, [locale]: t("p02.report") };
   const steps = [
     { n: "1", art: <ArtReport locale={locale} lines={lines} outbox={t("p02.how.art.outbox")} /> },
@@ -140,64 +142,9 @@ export function HomeView({ t, locale, results, guides, check, reportLines }: Hom
       <section className={styles.results} aria-labelledby="p02-results">
         <InView className={styles.resultsBlock}>
           <h2 id="p02-results" className={styles.heading}>{t("p02.results.title")}</h2>
-          {results.kind === "published" ? (
-            <>
-              <p className={styles.figure}>
-                {results.total.suppressed ? (
-                  <span className={styles.figureSmall}>{t("p02.results.suppressed")}</span>
-                ) : (
-                  <>
-                    <CountUp value={results.total.count} tag={tag} className={`${styles.number} eg-tnum`} />{" "}
-                    <span className={styles.unit}>{t("p02.results.unit", { count: results.total.count })}</span>
-                  </>
-                )}
-              </p>
-              {results.categories && results.categories.length ? (
-                <ol className={styles.bars} aria-label={t("p02.results.title")}>
-                  {results.categories.map((item, index) => {
-                    const max = results.categories![0].count || 1;
-                    const label = CATEGORY_ROWS.find((row) => row.value === item.category)?.key;
-                    const share = Math.max(4, Math.round((item.count / max) * 100)) / 100;
-                    return (
-                      <li key={item.category} className={styles.bar}>
-                        <span className={styles.barLabel}>{label ? t(label) : item.category}</span>
-                        <span className={`${styles.barCount} eg-tnum`}>{formatNumber(item.count, tag)}</span>
-                        <span className={styles.barTrack} aria-hidden="true">
-                          <span className={styles.barFill} style={{ "--v": share, "--i": index } as CSSProperties} />
-                        </span>
-                      </li>
-                    );
-                  })}
-                </ol>
-              ) : null}
-              <p className={styles.meta}>
-                {results.publishedAt ? t("p02.results.published", { time: formatWatDateTime(results.publishedAt, locale) }) : null}{" "}
-                {t("p02.results.cutoff", { time: formatWatDateTime(results.cutoff, locale) })}
-              </p>
-              <p className={styles.notice}>{t("results.notice")}</p>
-              <Link className={styles.more} href="/results">
-                {withArrow(t("p02.results.open"))}
-              </Link>
-            </>
-          ) : results.kind === "empty" ? (
-            <>
-              <p className={styles.textStrong}>{t("p02.results.empty")}</p>
-              <p className={styles.text}>{t("p02.results.emptyHint")}</p>
-              <Link className={styles.more} href="/results">
-                {withArrow(t("p02.results.how"))}
-              </Link>
-              <div className={styles.emptyArt}>
-                <ArtEmptyResults />
-              </div>
-            </>
-          ) : (
-            <>
-              <p className={styles.textStrong}>{t("p02.results.unavailable")}</p>
-              <Link className={styles.more} href="/results">
-                {withArrow(t("p02.results.open"))}
-              </Link>
-            </>
-          )}
+          <Suspense fallback={<div className={styles.resultsPending} />}>
+            <ResultsBody results={results} t={t} locale={locale} />
+          </Suspense>
         </InView>
       </section>
 
@@ -275,19 +222,8 @@ export function HomeView({ t, locale, results, guides, check, reportLines }: Hom
               <ArrowRightIcon size={20} className={styles.linkArrow} />
             </Link>
           </li>
-          {guides && guides.length > 0 ? (
-            guides.slice(0, 5).map((guide) => (
-              <li key={guide.slug}>
-                <Link href={`/guide/${guide.slug}`} lang={localeTags[guide.language]}>
-                  <span className={styles.linkBody}>
-                    <span className={styles.linkTitle}>{guide.title}</span>
-                    <span className={styles.linkText}>{t("p02.help.guide")}</span>
-                  </span>
-                  <ArrowRightIcon size={20} className={styles.linkArrow} />
-                </Link>
-              </li>
-            ))
-          ) : (
+          <Suspense
+            fallback={
             <li>
               <Link href="/guide">
                 <span className={styles.linkBody}>
@@ -297,7 +233,10 @@ export function HomeView({ t, locale, results, guides, check, reportLines }: Hom
                 <ArrowRightIcon size={20} className={styles.linkArrow} />
               </Link>
             </li>
-          )}
+            }
+          >
+            <GuideItems guides={guides} t={t} />
+          </Suspense>
           <li>
             <Link href="/privacy">
               <span className={styles.linkBody}>
@@ -315,11 +254,115 @@ export function HomeView({ t, locale, results, guides, check, reportLines }: Hom
 
       {/* 4.9 Evening at the polling unit: the day closes on "Reviewed totals are published here". */}
       <div className={styles.evening}>
-        {results.kind === "published" ? <p className={styles.eveningCaption}>{t("p02.eveningCaption")}</p> : null}
+        <Suspense fallback={null}>
+          <EveningCaption results={results} t={t} />
+        </Suspense>
         <div className={styles.eveningStage}>
           <LivingScene variant="evening" focus="xMidYMax" className={styles.eveningScene} data-testid="evening-scene" />
         </div>
       </div>
     </div>
   );
+}
+
+/** The results block waits for the API on its own, so a slow or unreachable API never holds back the rest of the page. */
+async function ResultsBody({ results: pending, t, locale }: { results: Awaitable<HomeResults>; t: Translate; locale: Locale }) {
+  const results = await pending;
+  const tag = localeTags[locale];
+  return (
+    results.kind === "published" ? (
+      <>
+        <p className={styles.figure}>
+          {results.total.suppressed ? (
+            <span className={styles.figureSmall}>{t("p02.results.suppressed")}</span>
+          ) : (
+            <>
+              <CountUp value={results.total.count} tag={tag} className={`${styles.number} eg-tnum`} />{" "}
+              <span className={styles.unit}>{t("p02.results.unit", { count: results.total.count })}</span>
+            </>
+          )}
+        </p>
+        {results.categories && results.categories.length ? (
+          <ol className={styles.bars} aria-label={t("p02.results.title")}>
+            {results.categories.map((item, index) => {
+              const max = results.categories![0].count || 1;
+              const label = CATEGORY_ROWS.find((row) => row.value === item.category)?.key;
+              const share = Math.max(4, Math.round((item.count / max) * 100)) / 100;
+              return (
+                <li key={item.category} className={styles.bar}>
+                  <span className={styles.barLabel}>{label ? t(label) : item.category}</span>
+                  <span className={`${styles.barCount} eg-tnum`}>{formatNumber(item.count, tag)}</span>
+                  <span className={styles.barTrack} aria-hidden="true">
+                    <span className={styles.barFill} style={{ "--v": share, "--i": index } as CSSProperties} />
+                  </span>
+                </li>
+              );
+            })}
+          </ol>
+        ) : null}
+        <p className={styles.meta}>
+          {results.publishedAt ? t("p02.results.published", { time: formatWatDateTime(results.publishedAt, locale) }) : null}{" "}
+          {t("p02.results.cutoff", { time: formatWatDateTime(results.cutoff, locale) })}
+        </p>
+        <p className={styles.notice}>{t("results.notice")}</p>
+        <Link className={styles.more} href="/results">
+          {withArrow(t("p02.results.open"))}
+        </Link>
+      </>
+    ) : results.kind === "empty" ? (
+      <>
+        <p className={styles.textStrong}>{t("p02.results.empty")}</p>
+        <p className={styles.text}>{t("p02.results.emptyHint")}</p>
+        <Link className={styles.more} href="/results">
+          {withArrow(t("p02.results.how"))}
+        </Link>
+        <div className={styles.emptyArt}>
+          <ArtEmptyResults />
+        </div>
+      </>
+    ) : (
+      <>
+        <p className={styles.textStrong}>{t("p02.results.unavailable")}</p>
+        <Link className={styles.more} href="/results">
+          {withArrow(t("p02.results.open"))}
+        </Link>
+      </>
+    )
+  );
+}
+
+/** Up to five guides from the real guide list; while it loads, or if it cannot be read, a link to all guides. */
+async function GuideItems({ guides: pending, t }: { guides: Awaitable<GuideSummary[] | null>; t: Translate }) {
+  const guides = await pending;
+  return (
+    guides && guides.length > 0 ? (
+      guides.slice(0, 5).map((guide) => (
+        <li key={guide.slug}>
+          <Link href={`/guide/${guide.slug}`} lang={localeTags[guide.language]}>
+            <span className={styles.linkBody}>
+              <span className={styles.linkTitle}>{guide.title}</span>
+              <span className={styles.linkText}>{t("p02.help.guide")}</span>
+            </span>
+            <ArrowRightIcon size={20} className={styles.linkArrow} />
+          </Link>
+        </li>
+      ))
+    ) : (
+      <li>
+        <Link href="/guide">
+          <span className={styles.linkBody}>
+            <span className={styles.linkTitle}>{t("p02.help.guides")}</span>
+            <span className={styles.linkText}>{t("p02.help.guidesHint")}</span>
+          </span>
+          <ArrowRightIcon size={20} className={styles.linkArrow} />
+        </Link>
+      </li>
+    )
+  );
+}
+
+/** The closing line appears only once totals are published, so it never contradicts the empty results. */
+async function EveningCaption({ results: pending, t }: { results: Awaitable<HomeResults>; t: Translate }) {
+  const results = await pending;
+  return results.kind === "published" ? <p className={styles.eveningCaption}>{t("p02.eveningCaption")}</p> : null;
 }

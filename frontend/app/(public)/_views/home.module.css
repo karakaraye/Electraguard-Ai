@@ -589,3 +589,8 @@
     height: 100%;
   }
 }
+
+/* Holds the space of the results while they stream in, so nothing below jumps when they arrive. */
+.resultsPending {
+  min-block-size: 9rem;
+}
