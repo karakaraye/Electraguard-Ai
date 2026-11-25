@@ -62,3 +62,19 @@ class ClaimRequest(OrganisationOwned):
         constraints = [
             models.UniqueConstraint(fields=["organisation", "actor", "key"], name="unique_claim_request"),
         ]
+
+
+class PublicCheckRequest(OrganisationOwned):
+    device_hash = models.CharField(max_length=64)
+    key = models.UUIDField()
+    digest = models.CharField(max_length=64)
+    status = models.PositiveSmallIntegerField(default=201)
+    body = models.JSONField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["organisation", "device_hash", "key"], name="unique_public_check_request"
+            ),
+        ]
