@@ -6,10 +6,11 @@ from django.http import HttpResponse, JsonResponse
 from django.utils import timezone
 from django.utils.http import parse_etags
 
-from accounts.models import Organisation
+from accounts.models import Organisation, User
 from accounts.observer_auth import endpoint, error, wat
 from reports.idempotency import lock_key, request_digest
 from reports.incident_input import aware_datetime
+from reports.models import Report
 from staff.audit import authorize, digest, record
 from staff.fields import invalid
 
@@ -249,3 +250,71 @@ def results(request):
     response["ETag"] = etag
     response["Cache-Control"] = "public, max-age=300"
     return response
+
+
+def observer_required(request):
+    if not request.user.is_authenticated:
+        return error(401, "not_authenticated", "Sign in to continue.")
+    if request.user.role != User.Role.OBSERVER and not request.user.has_role(User.Role.OBSERVER):
+        return error(403, "forbidden", "Only observers can access this.")
+    return None
+
+
+@endpoint("GET")
+def observer_area_today(request):
+    blocked = observer_required(request)
+    if blocked:
+        return blocked
+
+    lga_code = request.GET.get("lga_code")
+    if not lga_code:
+        latest = Report.objects.filter(observer=request.user).order_by("-created_at").first()
+        if latest and latest.incident_details and latest.incident_details.get("area"):
+            lga_code = latest.incident_details["area"].get("lga_code")
+
+    if not lga_code:
+        return error(400, "lga_required", "Specify an LGA or file a report first.")
+
+    from reference.models import resolve_place
+    place = resolve_place(lga_code) or {}
+    lga_name = place.get("lga_name") or lga_code
+
+    cutoff = timezone.now() - timezone.timedelta(minutes=60)
+    reports = Report.objects.filter(
+        organisation=request.user.organisation,
+        status=Report.Status.CLOSED,
+        occurred_at__lte=cutoff,
+    )
+
+    from collections import Counter
+    from reports.incident_input import CATEGORIES
+    from staff.fields import is_incident, observed_category
+    from .aggregate import series
+
+    counts = Counter({cat: 0 for cat in CATEGORIES})
+    for row in reports.values("incident_details", "kind").iterator():
+        details = row.get("incident_details") or {}
+        if not is_incident(details, row.get("kind", "incident")):
+            continue
+        area = details.get("area") or {}
+        if area.get("lga_code") != lga_code:
+            continue
+        cat = observed_category(details)
+        if cat in CATEGORIES:
+            counts[cat] += 1
+
+    masked = series(counts)
+    by_category = [
+        {
+            "category": cat,
+            "count": masked[cat]["count"] if not masked[cat]["suppressed"] and masked[cat]["count"] is not None else "fewer than 5",
+        }
+        for cat in CATEGORIES
+    ]
+
+    return JsonResponse({
+        "lga_code": lga_code,
+        "lga_name": lga_name,
+        "updated_at": wat(timezone.now()),
+        "by_category": by_category,
+    })

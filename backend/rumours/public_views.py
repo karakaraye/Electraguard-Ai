@@ -6,7 +6,7 @@ from unicodedata import category as unicode_category, normalize
 
 from django.conf import settings
 from django.db import IntegrityError, transaction
-from django.db.models import F
+from django.db.models import F, Sum
 from django.http import JsonResponse
 from django.utils import timezone
 
@@ -188,6 +188,11 @@ def submit_rumour_check(raw_text: str, lang: str, organisation, source: str = "p
     now = timezone.now()
     if existing is not None:
         increment_ask_count(existing, now=now)
+        current_hour = now.replace(minute=0, second=0, microsecond=0)
+        cutoff = current_hour - timezone.timedelta(hours=1)
+        total_asks = ClaimAskHour.objects.filter(claim=existing, hour__gte=cutoff).aggregate(Sum("count"))["count__sum"] or 0
+        harm, check_worthiness = assessment(existing.text, existing.area, existing.seen_at, organisation, ask_trend_1h=total_asks)
+        Claim.objects.filter(pk=existing.pk).update(harm=harm, check_worthiness=check_worthiness)
         return {"result": "matched", "claim_ref": str(existing.id)}
 
     harm, check_worthiness = assessment(stored_text, None, now, organisation)

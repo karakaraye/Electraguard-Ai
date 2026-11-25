@@ -41,6 +41,7 @@ urlpatterns = [
     path("api/v1/publish/schedule", publish.schedule),
     path("api/v1/public/results", publish.results),
     path("api/v1/public/check", rumour_public.public_check_view),
+    path("api/v1/observer/area-today", publish.observer_area_today),
     path("api/v1/rumours/claims", rumour_views.collection),
     path("api/v1/rumours/claims/<uuid:claim_id>", rumour_views.detail),
     path("api/v1/rumours/claims/<uuid:claim_id>/matches", rumour_views.matches),
