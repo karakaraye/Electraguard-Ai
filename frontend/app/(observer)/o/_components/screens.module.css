@@ -132,10 +132,64 @@
   cursor: pointer;
 }
 
+/* Chosen: sunlight fill and an ink edge, the same as every other choice in the app. */
 .segment:has(input:checked) {
-  background: var(--paper);
+  background: var(--sun-tint);
   color: var(--ink);
   box-shadow: inset 0 0 0 2px var(--ink);
+}
+
+.segment {
+  grid-template-rows: 1fr auto;
+  gap: 2px;
+}
+
+.segmentLabel {
+  align-self: center;
+}
+
+/* Long labels (Hausa, Yoruba) wrap evenly; the count line keeps the three tabs aligned. */
+.segmentLabel {
+  text-wrap: balance;
+}
+
+.segmentCount {
+  min-width: 24px;
+  padding: 0 6px;
+  border-radius: var(--radius-pill);
+  background: var(--paper-raised);
+  color: var(--ink);
+  font: var(--t-small);
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+/* Something needs the observer: the count turns to the attention tone. */
+.segmentCount[data-attention] {
+  background: var(--attn-bg);
+  color: var(--attn);
+}
+
+.skeletonList {
+  display: grid;
+  gap: var(--s-3);
+}
+
+.skeletonCard {
+  padding: var(--s-4);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  background: var(--paper-raised);
+}
+
+.emptyDisc {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--paper-raised);
+  color: var(--ink);
 }
 
 .segment:has(input:focus-visible) {

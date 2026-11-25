@@ -4,11 +4,12 @@
 
 import type { Category, ReportKind } from "../../../../lib/api/types";
 import { useLocale, useT } from "../../../../lib/i18n/client";
-import { AppShell, Banner, Button, EmptyState, ReportList, ReportRow, type ReportStatus } from "../../../../ui";
+import { AppShell, Banner, Button, EmptyState, ReportList, ReportRow, type ReportStatus, Skeleton, SunRings } from "../../../../ui";
 import { formatWatTime } from "../../../../ui/format";
 import { categoryMeta } from "../_lib/categories";
 import { ChecklistPictogram, SheetPictogram } from "../_components/pictograms";
 import styles from "../_components/observer.module.css";
+import { FileIcon } from "../../../../ui/icons";
 import s from "../_components/screens.module.css";
 
 export type ListRow = {
@@ -120,6 +121,13 @@ export function MyReportsView(props: MyReportsViewProps) {
         {nothingAtAll ? (
           <EmptyState
             title={t("o13.empty")}
+            art={
+              <SunRings size={128}>
+                <span className={s.emptyDisc}>
+                  <FileIcon size={30} aria-hidden="true" />
+                </span>
+              </SunRings>
+            }
             action={
               <Button onClick={props.onReport} data-testid="o13-report">
                 {t("o04.report")}
@@ -134,9 +142,9 @@ export function MyReportsView(props: MyReportsViewProps) {
               {options.map((option) => (
                 <label key={option} className={s.segment}>
                   <input type="radio" name="o13-filter" value={option} checked={filter === option} onChange={() => props.onFilter(option)} data-testid={`o13-filter-${option}`} />
-                  <span>
-                    {t(`o13.filter.${option}`)}
-                    {counts[option] > 0 && option !== "all" ? <span className={s.tnum}> ({counts[option]})</span> : null}
+                  <span className={s.segmentLabel}>{t(`o13.filter.${option}`)}</span>
+                  <span className={`${s.segmentCount} ${s.tnum}`} data-attention={option === "needsYou" && counts[option] > 0 ? "" : undefined}>
+                    {counts[option]}
                   </span>
                 </label>
               ))}
@@ -150,7 +158,15 @@ export function MyReportsView(props: MyReportsViewProps) {
                   <Row key={row.key} row={row} />
                 ))}
               </ReportList>
-            ) : load === "loading" ? null : (
+            ) : load === "loading" ? (
+              <div className={s.skeletonList} aria-hidden="true" data-testid="o13-loading">
+                {[0, 1, 2].map((index) => (
+                  <div key={index} className={s.skeletonCard}>
+                    <Skeleton lines={3} delay={0} />
+                  </div>
+                ))}
+              </div>
+            ) : (
               <p className={styles.lead} data-testid="o13-empty-filter">
                 {t("o13.emptyFilter")}
               </p>
