@@ -713,7 +713,7 @@ export function CheckView({
   const [all, setAll] = useState(false);
   const meta = category ? categoryMeta(category) : null;
   const Pictogram = meta ? categoryPictograms[meta.pictogram] : null;
-  const long = description.split("\n").length > 6 || description.length > 360;
+  const long = description.split("\n").length > 3 || description.length > 150;
   const busy = status === "sending" || status === "notConfirmed";
   const finished = status === "savedOffline" || status === "intakePaused" || status === "server" || status === "withdrawn";
   /* The outcome comes first: the title says what happened to the report, the card follows, the summary is secondary. */
@@ -726,7 +726,10 @@ export function CheckView({
 
   const block = (id: CheckBlock, label: string, value: ReactNode) => (
     <div className={styles.block} data-invalid={errors[id] ? "" : undefined} data-wide={id === "describe" || undefined} data-testid={`o11-${id}`}>
-      <dt>{label}</dt>
+      <dt>
+        {label}
+        {errors[id] ? <span className={styles.needsChip}>{t("o11.checkThis")}</span> : null}
+      </dt>
       <dd>
         {value}
         {errors[id] ? (
@@ -786,7 +789,7 @@ export function CheckView({
             disabled={status === "queueFull" || status === "storageFull"}
             data-testid="o11-send"
           >
-            {t("o11.send")}
+            {shell.offline ? t("o11.sendOffline") : t("o11.send")}
           </Button>
         )
       }
@@ -801,6 +804,7 @@ export function CheckView({
         <>
           <h1 className={styles.title}>{t("o11.title")}</h1>
           <p className={styles.lead}>{t("o11.hint")}</p>
+          {statusArea}
         </>
       )}
       <dl className={styles.summary} data-secondary={outcome ? "" : undefined}>
@@ -890,7 +894,6 @@ export function CheckView({
           ),
         )}
       </dl>
-      {outcome ? null : statusArea}
     </StepShell>
   );
 }

@@ -512,7 +512,9 @@
     "needsAttention": "We no fit accept this report yet. Fix the parts wey dem mark below, then send am again.",
     "savedTitle": "We save am for this phone",
     "checkingTitle": "We dey check your report",
-    "summaryTitle": "Your report"
+    "summaryTitle": "Your report",
+    "sendOffline": "Keep am, send when network come",
+    "checkThis": "Check am"
   },
   "o12": {
     "title": "Dem don receive your report",

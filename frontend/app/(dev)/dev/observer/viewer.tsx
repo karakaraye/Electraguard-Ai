@@ -343,6 +343,7 @@ export const SCREENS: Record<string, Record<string, (t: Translate) => ReactEleme
     first: (t) => check(t, {}),
     "long-text": (t) => check(t, { description: FIXTURE_LONG_TEXT, danger: true, justNow: true }),
     access: (t) => check(t, { category: "access_barrier", access: ["steps_no_ramp", "no_sign_language"], media: [] }),
+    offline: (t) => check(t, { offline: true }),
     sending: (t) => check(t, { status: "sending" }),
     "saved-offline": (t) => check(t, { status: "savedOffline", offline: true }),
     "not-confirmed": (t) => check(t, { status: "notConfirmed" }),

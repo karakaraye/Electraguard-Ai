@@ -511,7 +511,9 @@
     "needsAttention": "We could not accept this report yet. Fix the parts marked below, then send it again.",
     "savedTitle": "Saved on this phone",
     "checkingTitle": "Checking your report",
-    "summaryTitle": "Your report"
+    "summaryTitle": "Your report",
+    "sendOffline": "Save and send when online",
+    "checkThis": "Check this"
   },
   "o12": {
     "title": "Report received",

@@ -783,10 +783,18 @@
 
 /* ---------- Check and send (O-11) ---------- */
 
+/* The summary is one raised card; each part is a row in it (spec screen 17). */
 .summary {
   display: grid;
   margin: 0;
-  border-top: 1px solid var(--rule);
+  padding: 0 var(--s-4);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-xl);
+  background: var(--paper-raised);
+}
+
+.summary > .block:last-child {
+  border-bottom: 0;
 }
 
 @media (min-width: 720px) {
@@ -823,8 +831,38 @@
   overflow-wrap: anywhere;
 }
 
+/* A part that still needs an answer: the row is tinted to the card's edges. */
+.block[data-invalid] {
+  margin-inline: calc(var(--s-4) * -1);
+  padding-inline: var(--s-4);
+  background: var(--danger-bg);
+}
+
 .block[data-invalid] dt {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-1) var(--s-2);
   color: var(--danger);
+}
+
+.needsChip {
+  padding: 1px var(--s-2);
+  border: 1px solid var(--danger);
+  border-radius: var(--radius-pill);
+  background: var(--paper-raised);
+  color: var(--danger);
+  font: var(--t-small);
+  font-weight: 600;
+  letter-spacing: 0;
+}
+
+.summary > .block[data-invalid]:first-child {
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+}
+
+.summary > .block[data-invalid]:last-child {
+  border-radius: 0 0 var(--radius-xl) var(--radius-xl);
 }
 
 /* "Change" sits on the label line so the value can use the full width; its 48 px target reaches into the block padding. */
@@ -855,7 +893,7 @@
 
 .clamp {
   display: -webkit-box;
-  -webkit-line-clamp: 6;
+  -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
   white-space: pre-wrap;
@@ -1459,4 +1497,12 @@
   color: var(--ink-2);
   font: var(--t-small);
   font-weight: 600;
+}
+
+/* Two columns from 720 px: the tinted row stays inside its column. */
+@media (min-width: 720px) {
+  .block[data-invalid] {
+    margin-inline: 0;
+    border-radius: var(--radius);
+  }
 }
