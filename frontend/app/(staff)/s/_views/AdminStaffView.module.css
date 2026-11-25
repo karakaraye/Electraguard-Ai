@@ -1,90 +1,319 @@
-.container {
-  display: flex;
-  flex-direction: column;
+/* S-10 staff accounts. Plain ink and paper; colour only on status badges. */
+
+.page {
+  display: grid;
   gap: var(--s-5);
-  width: 100%;
+  min-width: 0;
 }
 
-.topSection {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: var(--s-3);
-}
-
-.card {
-  display: flex;
-  flex-direction: column;
-  gap: var(--s-3);
-  padding: var(--s-4);
-  background: var(--paper);
-  border: 1px solid var(--rule);
-  border-radius: var(--radius);
-}
-
-.cardTitle {
+.title {
   margin: 0;
   font: var(--t-heading);
-  font-size: 1.125rem;
+  font-size: 1.0625rem;
 }
 
-.inviteModal {
-  padding: var(--s-4);
-  background: var(--paper-2);
-  border: 2px solid var(--ok);
-  border-radius: var(--radius);
-  display: flex;
-  flex-direction: column;
-  gap: var(--s-2);
+.sub {
+  margin: 0;
+  color: var(--ink-2);
+  font: var(--t-small);
 }
 
-.inviteUrlBox {
+.nowrap {
+  white-space: nowrap;
+}
+
+.panel {
+  display: grid;
+  gap: var(--s-3);
+  min-width: 0;
+}
+
+.head {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: var(--s-2);
-  padding: var(--s-2) var(--s-3);
-  background: var(--paper);
-  border: 1px solid var(--rule);
-  border-radius: var(--radius);
-  font-family: monospace;
-  font-size: 0.875rem;
-  overflow-x: auto;
+  gap: var(--s-3);
 }
 
-.tableWrapper {
-  overflow-x: auto;
+.headEnd {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-3);
+  min-width: 0;
+}
+
+.loading {
+  padding: var(--s-4);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  background: var(--paper-raised);
+}
+
+/* ---------- Table ---------- */
+
+.scroller {
   max-width: 100%;
-  -webkit-overflow-scrolling: touch;
+  overflow-x: auto;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  background: var(--paper-raised);
 }
 
 .table {
   width: 100%;
-  min-width: 500px;
-  border-collapse: collapse;
-  font-size: 0.875rem;
-  text-align: left;
+  border-collapse: separate;
+  border-spacing: 0;
+  font: var(--t-base);
 }
 
 .table th,
 .table td {
-  padding: var(--s-2) var(--s-3);
+  padding: var(--s-3);
   border-bottom: 1px solid var(--rule);
+  text-align: left;
+  vertical-align: middle;
 }
 
-.table th {
-  font-weight: 600;
+.table thead th {
+  background: var(--paper-2);
+  color: var(--ink-2);
+  font: var(--t-label);
+  white-space: nowrap;
+}
+
+.table tbody tr:last-child > * {
+  border-bottom: 0;
+}
+
+.table tbody tr[data-off] > * {
   color: var(--ink-2);
 }
 
-.roleTag {
-  display: inline-block;
-  padding: 2px 6px;
-  background: var(--paper-2);
-  border: 1px solid var(--rule);
+.who {
+  font-weight: 400;
+  min-width: 14rem;
+}
+
+.whoStack {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.name {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-2);
+  font: var(--t-label);
+}
+
+.you {
+  padding: 1px var(--s-2);
+  border: 1px solid var(--sun-line);
   border-radius: var(--radius-pill);
-  font-size: 0.75rem;
+  background: var(--sun-wash);
+  color: var(--ink);
+  font: var(--t-small);
   font-weight: 600;
-  margin-right: 4px;
+}
+
+.roles {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: var(--s-1);
+}
+
+.roleTag {
+  padding: 1px var(--s-2);
+  border: 1px solid var(--rule-control);
+  border-radius: var(--radius-pill);
+  background: var(--paper);
+  color: var(--ink);
+  font: var(--t-small);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.actionsCell {
+  min-width: 15rem;
+}
+
+.rowActions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-2);
+}
+
+.selfNote {
+  flex-basis: 100%;
+  color: var(--ink-2);
+  font: var(--t-small);
+}
+
+/* ---------- Phone cards ---------- */
+
+.cards {
+  display: grid;
+  gap: var(--s-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cardRow {
+  display: grid;
+  justify-items: start;
+  gap: var(--s-2);
+  padding: var(--s-4);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  background: var(--paper-raised);
+  min-width: 0;
+}
+
+.cardRow[data-off] {
+  color: var(--ink-2);
+}
+
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+}
+
+/* ---------- Invite ---------- */
+
+.invite {
+  display: grid;
+  gap: var(--s-3);
+  padding: var(--s-4) var(--s-5);
+  border: 1px solid var(--ink);
+  border-radius: var(--radius-lg);
+  background: var(--paper-raised);
+}
+
+.body {
+  margin: 0;
+  max-width: 62ch;
+}
+
+.linkRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: var(--s-2);
+}
+
+.link {
+  flex: 1 1 18rem;
+  min-width: 0;
+  padding: var(--s-2) var(--s-3);
+  border: 1px solid var(--rule-control);
+  border-radius: var(--radius);
+  background: var(--paper-2);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+  user-select: all;
+}
+
+.copyState {
+  min-height: 1.2em;
+  margin: 0;
+  color: var(--danger);
+  font: var(--t-small);
+}
+
+/* ---------- Dialog forms ---------- */
+
+.form {
+  display: grid;
+  gap: var(--s-4);
+}
+
+.roleSet {
+  display: grid;
+  gap: var(--s-2);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+
+.legend {
+  padding: 0;
+  font: var(--t-label);
+}
+
+.roleGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--s-2);
+}
+
+.roleOption {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  min-height: var(--target-min);
+  padding: 0 var(--s-3);
+  border: 1px solid var(--rule-control);
+  border-radius: var(--radius);
+  background: var(--paper);
+  cursor: pointer;
+}
+
+.roleOption[data-checked] {
+  border-color: var(--ink);
+  background: var(--sun-wash);
+}
+
+.roleOption[data-blocked] {
+  color: var(--ink-2);
+}
+
+.roleOption input {
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  accent-color: var(--ink);
+}
+
+.roleOption:focus-within {
+  outline: var(--focus-outline);
+  outline-offset: var(--focus-offset);
+}
+
+.fieldError {
+  margin: 0;
+  color: var(--danger);
+  font: var(--t-small);
+  font-weight: 600;
+}
+
+@media (max-width: 480px) {
+  .roleGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .headEnd {
+    width: 100%;
+  }
+}
+
+/* Status and two-step badges never wrap inside their cell ("Active" was stacking letter by letter). */
+.table td :global([data-tone]),
+.table td > span {
+  white-space: nowrap;
+}
+
+.table td:has(> [data-tone]) {
+  width: 1%;
+  white-space: nowrap;
 }

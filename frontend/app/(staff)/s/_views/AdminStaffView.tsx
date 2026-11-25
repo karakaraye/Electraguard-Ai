@@ -1,300 +1,552 @@
 "use client";
 
-import { useState } from "react";
-import type { StaffAccount, StaffRole } from "../../../../lib/api/types";
-import { useT } from "../../../../lib/i18n/client";
-import { Banner, Button, EmptyState, Field } from "../../../../ui";
-import { CopyIcon } from "../../../../ui/icons";
+import { useEffect, useId, useMemo, useState, type FormEvent, useSyncExternalStore } from "react";
+import type { StaffAccount, StaffRole, StaffStatus } from "../../../../lib/api/types";
+import { localeTags, type Locale } from "../../../../lib/i18n/config";
+import { useLocale, useT } from "../../../../lib/i18n/client";
+import { Banner, Button, EmptyState, Field, SegmentedControl, Select, Sheet, Skeleton, StatusBadge, type StatusTone } from "../../../../ui";
+import { formatWatDateTime } from "../../../../ui/format";
+import { useMediaQuery } from "../../../../ui/hooks";
+import { CopyIcon, PlusIcon, RetryIcon } from "../../../../ui/icons";
 import styles from "./AdminStaffView.module.css";
+
+export type OffboardReason = "access_ended" | "role_changed" | "credential_risk";
+
+/** Roles an admin can give. Admin stands alone (the server refuses it with another role). */
+const ROLE_ORDER: StaffRole[] = ["reviewer", "coordinator", "moderator", "org_admin"];
+const OFFBOARD_REASONS: OffboardReason[] = ["access_ended", "role_changed", "credential_risk"];
+const NAME_MIN = 2;
+const NAME_MAX = 60;
+
+/** What a dialog action reports back. The message is already in the reader's language. */
+export type StaffActionResult = { ok: true } | { ok: false; message?: string; fields?: { email?: string; name?: string; roles?: string } };
+
+export interface StaffInvite {
+  url: string;
+  expires_at: string;
+  /** Who the link is for, shown beside it. */
+  name: string;
+}
+
+/** Opens a dialog on first render. Used by the preview and by tests; the real page never sets it. */
+export interface StaffDialogSeed {
+  kind: "create" | "reset" | "offboard";
+  staffId?: string;
+  message?: string;
+  fields?: { email?: string; name?: string; roles?: string };
+  email?: string;
+  name?: string;
+  roles?: StaffRole[];
+  reason?: OffboardReason;
+}
+
+type Dialog = { kind: "create" } | { kind: "reset"; staff: StaffAccount } | { kind: "offboard"; staff: StaffAccount };
+type Filter = "all" | StaffStatus;
 
 export interface AdminStaffViewProps {
   staffList: StaffAccount[];
   loading: boolean;
   error: string | null;
-  inviteResult: { url: string; expires_at: string } | null;
-  onCreateStaff?: (email: string, displayName: string, roles: StaffRole[]) => void;
-  onReset2fa?: (staffId: string, version: number) => void;
-  onOffboard?: (staffId: string, reason: "access_ended" | "role_changed" | "credential_risk", version: number) => void;
+  /** The signed-in admin, so their own row cannot be offboarded. */
+  currentUserId?: string | null;
+  /** The one-time link from the last create. Shown once; the page clears it on close. */
+  inviteResult: StaffInvite | null;
+  onCreateStaff?: (email: string, displayName: string, roles: StaffRole[]) => Promise<StaffActionResult>;
+  onReset2fa?: (staffId: string, version: number) => Promise<StaffActionResult>;
+  onOffboard?: (staffId: string, reason: OffboardReason, version: number) => Promise<StaffActionResult>;
   onCloseInvite?: () => void;
+  onRetry?: () => void;
+  initialDialog?: StaffDialogSeed | null;
   "data-testid"?: string;
 }
 
+function formatDay(value: string, locale: Locale) {
+  const tag = localeTags[locale];
+  const supported = Intl.DateTimeFormat.supportedLocalesOf([tag]);
+  return new Intl.DateTimeFormat(supported.length ? tag : "en-NG", { dateStyle: "medium", timeZone: "Africa/Lagos" }).format(
+    new Date(`${value}T12:00:00+01:00`),
+  );
+}
+
+const statusTone: Record<StaffStatus, StatusTone> = { active: "ok", invited: "wait", offboarded: "info" };
+
+/** S-10 staff accounts: who can sign in, with which roles, and the safe ways to change that. */
 export function AdminStaffView({
   staffList,
   loading,
   error,
+  currentUserId = null,
   inviteResult,
   onCreateStaff,
   onReset2fa,
   onOffboard,
   onCloseInvite,
+  onRetry,
+  initialDialog = null,
   "data-testid": testId = "admin-staff-view",
 }: AdminStaffViewProps) {
   const t = useT();
+  const { locale } = useLocale();
+  const tableWidth = useMediaQuery("(min-width: 768px)", true);
+  const [filter, setFilter] = useState<Filter>("all");
+  const [notice, setNotice] = useState<string | null>(null);
+  const [dialog, setDialog] = useState<Dialog | null>(() => {
+    if (!initialDialog) return null;
+    if (initialDialog.kind === "create") return { kind: "create" };
+    const staff = staffList.find((s) => s.id === initialDialog.staffId) ?? staffList[0];
+    return staff ? { kind: initialDialog.kind, staff } : null;
+  });
 
-  const [showCreate, setShowCreate] = useState(false);
-  const [newEmail, setNewEmail] = useState("");
-  const [newName, setNewName] = useState("");
-  const [newRoles, setNewRoles] = useState<StaffRole[]>(["reviewer"]);
-  const [copied, setCopied] = useState(false);
-
-  const [offboardTarget, setOffboardTarget] = useState<StaffAccount | null>(null);
-  const [offboardReason, setOffboardReason] = useState<"access_ended" | "role_changed" | "credential_risk">("access_ended");
-
-  const handleRoleToggle = (role: StaffRole) => {
-    if (role === "org_admin") {
-      setNewRoles(["org_admin"]);
-      return;
-    }
-    const withoutAdmin = newRoles.filter((r) => r !== "org_admin");
-    if (withoutAdmin.includes(role)) {
-      if (withoutAdmin.length > 1) {
-        setNewRoles(withoutAdmin.filter((r) => r !== role));
-      }
-    } else {
-      setNewRoles([...withoutAdmin, role]);
-    }
-  };
-
-  const handleCreateSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newEmail.trim() || !newName.trim() || !onCreateStaff) return;
-    onCreateStaff(newEmail, newName, newRoles);
-    setNewEmail("");
-    setNewName("");
-    setShowCreate(false);
-  };
-
-  const handleCopyInvite = async () => {
-    if (!inviteResult?.url) return;
-    try {
-      await navigator.clipboard.writeText(window.location.origin + inviteResult.url);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch {
-      // Ignored
-    }
-  };
+  const counts = useMemo(() => {
+    const c = { all: staffList.length, active: 0, invited: 0, offboarded: 0 };
+    for (const s of staffList) c[s.status] += 1;
+    return c;
+  }, [staffList]);
+  const rows = filter === "all" ? staffList : staffList.filter((s) => s.status === filter);
+  const showSkeleton = loading && staffList.length === 0 && !error;
 
   return (
-    <div className={styles.container} data-testid={testId}>
-      {error && <Banner tone="danger" title={error} critical />}
+    <div className={styles.page} data-testid={testId}>
+      {error ? (
+        <Banner
+          tone="danger"
+          title={error}
+          critical
+          action={onRetry ? <Button variant="secondary" icon={<RetryIcon />} onClick={onRetry}>{t("s10.retry")}</Button> : undefined}
+        />
+      ) : null}
+      {notice ? <Banner tone="ok" title={notice} onDismiss={() => setNotice(null)} data-testid="s10-notice" /> : null}
+      {inviteResult ? <InviteCard invite={inviteResult} onDone={() => onCloseInvite?.()} /> : null}
 
-      <div className={styles.topSection}>
-        <div>
-          <h2 style={{ margin: 0, font: "var(--t-heading)" }}>
-            {t("s10.staffList", { count: staffList.length })}
-          </h2>
-        </div>
-        <Button variant="primary" onClick={() => setShowCreate(!showCreate)}>
-          {t("s10.createStaff")}
-        </Button>
-      </div>
-
-      {/* Invite Modal / Box */}
-      {inviteResult && (
-        <section className={styles.inviteModal}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <strong>{t("s10.inviteUrl")}</strong>
-            <Button type="button" variant="quiet" onClick={onCloseInvite}>
-              {t("ui.close")}
+      <section className={styles.panel} aria-labelledby="s10-list">
+        <div className={styles.head}>
+          <h2 id="s10-list" className={styles.title}>{t("s10.staffList", { count: counts.all })}</h2>
+          <div className={styles.headEnd}>
+            {staffList.length > 0 ? (
+              <SegmentedControl
+                label={t("s10.filter.label")}
+                value={filter}
+                onChange={(value) => setFilter(value as Filter)}
+                options={[
+                  { value: "all", label: `${t("s10.filter.all")} ${counts.all}` },
+                  { value: "active", label: `${t("s10.filter.active")} ${counts.active}` },
+                  { value: "invited", label: `${t("s10.filter.invited")} ${counts.invited}` },
+                  { value: "offboarded", label: `${t("s10.filter.offboarded")} ${counts.offboarded}` },
+                ]}
+                data-testid="s10-filter"
+              />
+            ) : null}
+            <Button variant="primary" icon={<PlusIcon />} onClick={() => setDialog({ kind: "create" })} data-testid="s10-add">
+              {t("s10.createStaff")}
             </Button>
           </div>
-          <p style={{ margin: 0, fontSize: "0.875rem" }}>
-            Hand this one-time link to the staff member. It expires at {inviteResult.expires_at}.
-          </p>
-          <div className={styles.inviteUrlBox}>
-            <span>{typeof window !== "undefined" ? window.location.origin : ""}{inviteResult.url}</span>
-            <Button type="button" variant="secondary" onClick={handleCopyInvite}>
-              <CopyIcon size={14} />
-              <span>{copied ? "Copied" : t("s10.copyInvite")}</span>
-            </Button>
-          </div>
-        </section>
-      )}
-
-      {/* Create Staff Form */}
-      {showCreate && (
-        <div className={styles.card}>
-          <h3 className={styles.cardTitle}>{t("s10.createStaff")}</h3>
-          <form onSubmit={handleCreateSubmit} style={{ display: "flex", flexDirection: "column", gap: "var(--s-3)" }}>
-            <Field
-              id="staff-email"
-              label={t("s10.email")}
-              type="email"
-              required
-              value={newEmail}
-              onChange={(e) => setNewEmail(e.target.value)}
-            />
-            <Field
-              id="staff-display-name"
-              label={t("s10.displayName")}
-              required
-              maxLength={60}
-              value={newName}
-              onChange={(e) => setNewName(e.target.value)}
-            />
-
-            <div>
-              <span style={{ fontWeight: 600, fontSize: "0.875rem", display: "block", marginBottom: "var(--s-1)" }}>
-                {t("s10.roles")}
-              </span>
-              <p style={{ margin: "0 0 var(--s-2)", fontSize: "0.75rem", color: "var(--ink-2)" }}>
-                {t("s10.roleAdminAlone")}
-              </p>
-              <div style={{ display: "flex", gap: "var(--s-4)", flexWrap: "wrap" }}>
-                {(["reviewer", "moderator", "coordinator", "org_admin"] as StaffRole[]).map((role) => (
-                  <label key={role} style={{ display: "flex", alignItems: "center", gap: "var(--s-1)" }}>
-                    <input
-                      type="checkbox"
-                      checked={newRoles.includes(role)}
-                      onChange={() => handleRoleToggle(role)}
-                    />
-                    <span>{t(`staff.roles.${role}` as const)}</span>
-                  </label>
-                ))}
-              </div>
-            </div>
-
-            <div style={{ display: "flex", gap: "var(--s-2)" }}>
-              <Button type="submit" variant="primary" disabled={!newEmail.trim() || !newName.trim()}>
-                {t("common.save")}
-              </Button>
-              <Button type="button" variant="quiet" onClick={() => setShowCreate(false)}>
-                {t("common.cancel")}
-              </Button>
-            </div>
-          </form>
         </div>
-      )}
 
-      {/* Staff Accounts Table */}
-      <div className={styles.card}>
-        {loading && staffList.length === 0 && (
-          <div style={{ padding: "var(--s-4)", textAlign: "center", color: "var(--ink-2)" }}>
-            {t("staff.loading")}
+        {showSkeleton ? (
+          <div className={styles.loading} role="status" aria-busy="true" aria-label={t("staff.loading")}>
+            <Skeleton lines={5} height={44} delay={0} />
           </div>
-        )}
-
-        {!loading && staffList.length === 0 && (
-          <EmptyState title="No staff members registered" />
-        )}
-
-        {staffList.length > 0 && (
-          <div className={styles.tableWrapper}>
+        ) : rows.length === 0 ? (
+          error ? null : (
+            <EmptyState title={staffList.length === 0 ? t("s10.empty") : t("s10.emptyFilter")} data-testid="s10-empty" />
+          )
+        ) : tableWidth ? (
+          <div className={styles.scroller}>
             <table className={styles.table}>
+              <caption className="eg-sr-only">{t("s10.caption")}</caption>
               <thead>
                 <tr>
-                  <th>Staff Member</th>
-                  <th>Email</th>
-                  <th>Roles</th>
-                  <th>Status</th>
-                  <th>2FA Enrolled</th>
-                  <th>Actions</th>
+                  <th scope="col">{t("s10.columns.name")}</th>
+                  <th scope="col">{t("s10.columns.roles")}</th>
+                  <th scope="col">{t("s10.columns.status")}</th>
+                  <th scope="col">{t("s10.columns.twofa")}</th>
+                  <th scope="col">{t("s10.columns.lastSignIn")}</th>
+                  <th scope="col"><span className="eg-sr-only">{t("s10.columns.actions")}</span></th>
                 </tr>
               </thead>
               <tbody>
-                {staffList.map((st) => (
-                  <tr key={st.id}>
-                    <td><strong>{st.display_name}</strong></td>
-                    <td>{st.email}</td>
-                    <td>
-                      {st.roles.map((r) => (
-                        <span key={r} className={styles.roleTag}>
-                          {t(`staff.roles.${r}` as const)}
-                        </span>
-                      ))}
+                {rows.map((st) => (
+                  <tr key={st.id} data-off={st.status === "offboarded" ? "" : undefined}>
+                    <th scope="row" className={styles.who}>
+                      <Who staff={st} self={st.id === currentUserId} />
+                    </th>
+                    <td><Roles roles={st.roles} /></td>
+                    <td><StatusBadge tone={statusTone[st.status]} label={t(`s10.status.${st.status}`)} /></td>
+                    <td><TwoFa on={st.totp_enrolled} /></td>
+                    <td className={`${styles.nowrap} eg-tnum`}>
+                      {st.last_sign_in_on ? formatDay(st.last_sign_in_on, locale) : <span className={styles.sub}>{t("s10.neverSignedIn")}</span>}
                     </td>
-                    <td>
-                      <span
-                        style={{
-                          fontWeight: 600,
-                          color:
-                            st.status === "active"
-                              ? "var(--ok)"
-                              : st.status === "invited"
-                              ? "var(--attn-ink)"
-                              : "var(--danger)",
-                        }}
-                      >
-                        {st.status.toUpperCase()}
-                      </span>
-                    </td>
-                    <td>{st.totp_enrolled ? "Yes" : "No"}</td>
-                    <td>
-                      <div style={{ display: "flex", gap: "var(--s-2)" }}>
-                        {st.status !== "offboarded" && (
-                          <>
-                            <Button
-                              type="button"
-                              variant="quiet"
-                              onClick={() => onReset2fa?.(st.id, st.version)}
-                            >
-                              {t("s10.reset2fa")}
-                            </Button>
-                            <Button
-                              type="button"
-                              variant="quiet"
-                              onClick={() => setOffboardTarget(st)}
-                            >
-                              {t("s10.offboard")}
-                            </Button>
-                          </>
-                        )}
-                      </div>
+                    <td className={styles.actionsCell}>
+                      <RowActions staff={st} self={st.id === currentUserId} onReset={() => setDialog({ kind: "reset", staff: st })} onOffboard={() => setDialog({ kind: "offboard", staff: st })} />
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
+        ) : (
+          <ul className={styles.cards} aria-label={t("s10.caption")}>
+            {rows.map((st) => (
+              <li key={st.id} className={styles.cardRow} data-off={st.status === "offboarded" ? "" : undefined}>
+                <Who staff={st} self={st.id === currentUserId} />
+                <Roles roles={st.roles} />
+                <div className={styles.badges}>
+                  <StatusBadge tone={statusTone[st.status]} label={t(`s10.status.${st.status}`)} />
+                  <TwoFa on={st.totp_enrolled} />
+                </div>
+                <p className={`${styles.sub} eg-tnum`}>
+                  {t("s10.columns.lastSignIn")}: {st.last_sign_in_on ? formatDay(st.last_sign_in_on, locale) : t("s10.neverSignedIn")}
+                </p>
+                <RowActions staff={st} self={st.id === currentUserId} onReset={() => setDialog({ kind: "reset", staff: st })} onOffboard={() => setDialog({ kind: "offboard", staff: st })} />
+              </li>
+            ))}
+          </ul>
         )}
-      </div>
+      </section>
 
-      {/* Offboard Confirmation */}
-      {offboardTarget && (
-        <div className={styles.card} style={{ border: "2px solid var(--danger)" }}>
-          <h3 style={{ margin: 0, color: "var(--danger)" }}>
-            Offboard {offboardTarget.display_name}?
-          </h3>
-          <p style={{ margin: 0, fontSize: "0.875rem" }}>
-            {t("s10.offboardWarning")}
-          </p>
-          <div>
-            <label htmlFor="offboard-reason">
-              <strong>{t("s10.offboardReason")}</strong>
-            </label>
-            <select
-              id="offboard-reason"
-              className="eg-select"
-              value={offboardReason}
-              onChange={(e) =>
-                setOffboardReason(e.target.value as "access_ended" | "role_changed" | "credential_risk")
-              }
-              style={{ display: "block", marginTop: "var(--s-1)" }}
-            >
-              <option value="access_ended">Access ended</option>
-              <option value="role_changed">Role changed</option>
-              <option value="credential_risk">Credential risk</option>
-            </select>
-          </div>
-          <div style={{ display: "flex", gap: "var(--s-2)", marginTop: "var(--s-2)" }}>
-            <Button
-              type="button"
-              variant="danger"
-              onClick={() => {
-                onOffboard?.(offboardTarget.id, offboardReason, offboardTarget.version);
-                setOffboardTarget(null);
-              }}
-            >
-              Confirm Offboard
-            </Button>
-            <Button type="button" variant="quiet" onClick={() => setOffboardTarget(null)}>
-              {t("common.cancel")}
-            </Button>
-          </div>
-        </div>
-      )}
+      {dialog?.kind === "create" ? (
+        <CreateSheet
+          seed={initialDialog?.kind === "create" ? initialDialog : null}
+          onClose={() => setDialog(null)}
+          onSubmit={onCreateStaff}
+        />
+      ) : null}
+      {dialog?.kind === "reset" ? (
+        <ResetSheet
+          staff={dialog.staff}
+          seed={initialDialog?.kind === "reset" ? initialDialog : null}
+          onClose={() => setDialog(null)}
+          onSubmit={async () => {
+            const result = (await onReset2fa?.(dialog.staff.id, dialog.staff.version)) ?? { ok: true as const };
+            if (result.ok) setNotice(t("s10.reset.done", { name: dialog.staff.display_name }));
+            return result;
+          }}
+        />
+      ) : null}
+      {dialog?.kind === "offboard" ? (
+        <OffboardSheet
+          staff={dialog.staff}
+          seed={initialDialog?.kind === "offboard" ? initialDialog : null}
+          onClose={() => setDialog(null)}
+          onSubmit={async (reason) => {
+            const result = (await onOffboard?.(dialog.staff.id, reason, dialog.staff.version)) ?? { ok: true as const };
+            if (result.ok) setNotice(t("s10.offboardDialog.done", { name: dialog.staff.display_name }));
+            return result;
+          }}
+        />
+      ) : null}
     </div>
+  );
+}
+
+/* ---------- Row pieces ---------- */
+
+function Who({ staff, self }: { staff: StaffAccount; self: boolean }) {
+  const t = useT();
+  return (
+    <span className={styles.whoStack}>
+      <span className={styles.name}>
+        {staff.display_name}
+        {self ? <span className={styles.you}>{t("s10.you")}</span> : null}
+      </span>
+      <span className={styles.sub}>{staff.email}</span>
+    </span>
+  );
+}
+
+function Roles({ roles }: { roles: StaffRole[] }) {
+  const t = useT();
+  return (
+    <span className={styles.roles}>
+      {roles.map((role) => (
+        <span key={role} className={styles.roleTag}>{t(`staff.roles.${role}`)}</span>
+      ))}
+    </span>
+  );
+}
+
+function TwoFa({ on }: { on: boolean }) {
+  const t = useT();
+  return <StatusBadge tone={on ? "ok" : "attn"} label={on ? t("s10.twofa.on") : t("s10.twofa.off")} />;
+}
+
+function RowActions({ staff, self, onReset, onOffboard }: { staff: StaffAccount; self: boolean; onReset: () => void; onOffboard: () => void }) {
+  const t = useT();
+  const noteId = useId();
+  if (staff.status === "offboarded") return <span className={styles.sub} aria-hidden="true">&mdash;</span>;
+  return (
+    <div className={styles.rowActions}>
+      <Button variant="secondary" onClick={onReset} aria-label={t("s10.reset2faFor", { name: staff.display_name })} data-testid={`s10-reset-${staff.id}`}>
+        {t("s10.reset2fa")}
+      </Button>
+      <Button
+        variant="secondary"
+        onClick={onOffboard}
+        disabled={self}
+        aria-describedby={self ? noteId : undefined}
+        aria-label={t("s10.offboardFor", { name: staff.display_name })}
+        data-testid={`s10-offboard-${staff.id}`}
+      >
+        {t("s10.offboard")}
+      </Button>
+      {self ? <span id={noteId} className={styles.selfNote}>{t("s10.selfNote")}</span> : null}
+    </div>
+  );
+}
+
+/* ---------- Invite (shown once) ---------- */
+
+function InviteCard({ invite, onDone }: { invite: StaffInvite; onDone: () => void }) {
+  const t = useT();
+  const { locale } = useLocale();
+  // The page address is only known in the browser; the server render has none.
+  const origin = useSyncExternalStore(
+    () => () => {},
+    () => window.location.origin,
+    () => "",
+  );
+  const [copied, setCopied] = useState<"yes" | "failed" | null>(null);
+
+  useEffect(() => {
+    if (copied !== "yes") return;
+    const id = window.setTimeout(() => setCopied(null), 2500);
+    return () => window.clearTimeout(id);
+  }, [copied]);
+
+  async function copy() {
+    try {
+      await navigator.clipboard.writeText(origin + invite.url);
+      setCopied("yes");
+    } catch {
+      setCopied("failed");
+    }
+  }
+
+  return (
+    <section className={styles.invite} aria-labelledby="s10-invite" data-testid="s10-invite">
+      <h2 id="s10-invite" className={styles.title}>{t("s10.invite.title")}</h2>
+      <p className={styles.body}>{t("s10.invite.body", { name: invite.name, when: formatWatDateTime(invite.expires_at, locale) })}</p>
+      <div className={styles.linkRow}>
+        <output className={styles.link} aria-label={t("s10.invite.label")}>{origin + invite.url}</output>
+        <Button variant="secondary" icon={<CopyIcon size={16} />} onClick={() => void copy()} data-testid="s10-copy">
+          {copied === "yes" ? t("s10.invite.copied") : t("s10.invite.copy")}
+        </Button>
+      </div>
+      <p className={styles.copyState} role="status">{copied === "failed" ? t("s10.invite.copyFailed") : ""}</p>
+      <div>
+        <Button variant="primary" onClick={onDone} data-testid="s10-invite-done">{t("s10.invite.done")}</Button>
+      </div>
+    </section>
+  );
+}
+
+/* ---------- Dialogs ---------- */
+
+function emailLooksValid(value: string) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
+}
+
+function CreateSheet({
+  seed,
+  onClose,
+  onSubmit,
+}: {
+  seed: StaffDialogSeed | null;
+  onClose: () => void;
+  onSubmit?: AdminStaffViewProps["onCreateStaff"];
+}) {
+  const t = useT();
+  const formId = useId();
+  const [email, setEmail] = useState(seed?.email ?? "");
+  const [name, setName] = useState(seed?.name ?? "");
+  const [roles, setRoles] = useState<StaffRole[]>(seed?.roles ?? ["reviewer"]);
+  const [busy, setBusy] = useState(false);
+  const [message, setMessage] = useState<string | null>(seed?.message ?? null);
+  const [fields, setFields] = useState<{ email?: string; name?: string; roles?: string }>(seed?.fields ?? {});
+
+  function toggle(role: StaffRole) {
+    setFields((f) => ({ ...f, roles: undefined }));
+    if (role === "org_admin") return setRoles(roles.includes("org_admin") ? [] : ["org_admin"]);
+    const rest = roles.filter((r) => r !== "org_admin");
+    setRoles(rest.includes(role) ? rest.filter((r) => r !== role) : [...rest, role]);
+  }
+
+  async function submit(event: FormEvent) {
+    event.preventDefault();
+    const problems: { email?: string; name?: string; roles?: string } = {};
+    if (!emailLooksValid(email)) problems.email = t("s10.errors.invalidEmail");
+    const trimmed = name.trim();
+    if (trimmed.length < NAME_MIN || trimmed.length > NAME_MAX) problems.name = t("s10.errors.invalidName");
+    if (roles.length === 0) problems.roles = t("s10.errors.invalidRoles");
+    setFields(problems);
+    setMessage(null);
+    if (Object.keys(problems).length > 0 || !onSubmit) return;
+    setBusy(true);
+    const result = await onSubmit(email.trim(), trimmed, roles);
+    setBusy(false);
+    if (result.ok) return onClose();
+    setMessage(result.message ?? null);
+    setFields(result.fields ?? {});
+  }
+
+  return (
+    <Sheet
+      open
+      onClose={onClose}
+      title={t("s10.create.title")}
+      description={t("s10.create.description")}
+      data-testid="s10-create-sheet"
+      footer={
+        <>
+          <Button variant="quiet" onClick={onClose}>{t("s10.cancel")}</Button>
+          <Button type="submit" form={formId} variant="primary" loading={busy} data-testid="s10-create-submit">{t("s10.create.submit")}</Button>
+        </>
+      }
+    >
+      <form id={formId} className={styles.form} onSubmit={(e) => void submit(e)} noValidate>
+        {message ? <Banner tone="danger" title={message} critical data-testid="s10-create-error" /> : null}
+        <Field
+          label={t("s10.create.email")}
+          type="email"
+          inputMode="email"
+          autoComplete="off"
+          autoCapitalize="none"
+          spellCheck={false}
+          value={email}
+          error={fields.email}
+          onChange={(e) => {
+            setEmail(e.target.value);
+            setFields((f) => ({ ...f, email: undefined }));
+          }}
+          data-testid="s10-email"
+        />
+        <Field
+          label={t("s10.create.name")}
+          hint={t("s10.create.nameHint")}
+          autoComplete="off"
+          maxLength={NAME_MAX}
+          value={name}
+          error={fields.name}
+          onChange={(e) => {
+            setName(e.target.value);
+            setFields((f) => ({ ...f, name: undefined }));
+          }}
+          data-testid="s10-name"
+        />
+        <fieldset className={styles.roleSet} aria-describedby={`${formId}-roles-hint`}>
+          <legend className={styles.legend}>{t("s10.create.roles")}</legend>
+          <p id={`${formId}-roles-hint`} className={styles.sub}>{t("s10.create.rolesHint")}</p>
+          <div className={styles.roleGrid}>
+            {ROLE_ORDER.map((role) => {
+              const blocked = role !== "org_admin" && roles.includes("org_admin");
+              return (
+                <label key={role} className={styles.roleOption} data-checked={roles.includes(role) ? "" : undefined} data-blocked={blocked ? "" : undefined}>
+                  <input type="checkbox" checked={roles.includes(role)} onChange={() => toggle(role)} data-testid={`s10-role-${role}`} />
+                  <span>{t(`staff.roles.${role}`)}</span>
+                </label>
+              );
+            })}
+          </div>
+          {fields.roles ? <p className={styles.fieldError} role="alert">{fields.roles}</p> : null}
+        </fieldset>
+      </form>
+    </Sheet>
+  );
+}
+
+function ResetSheet({
+  staff,
+  seed,
+  onClose,
+  onSubmit,
+}: {
+  staff: StaffAccount;
+  seed: StaffDialogSeed | null;
+  onClose: () => void;
+  onSubmit: () => Promise<StaffActionResult>;
+}) {
+  const t = useT();
+  const [busy, setBusy] = useState(false);
+  const [message, setMessage] = useState<string | null>(seed?.message ?? null);
+
+  async function confirm() {
+    setBusy(true);
+    setMessage(null);
+    const result = await onSubmit();
+    setBusy(false);
+    if (result.ok) onClose();
+    else setMessage(result.message ?? null);
+  }
+
+  return (
+    <Sheet
+      open
+      onClose={onClose}
+      title={t("s10.reset.title", { name: staff.display_name })}
+      description={t("s10.reset.body", { name: staff.display_name })}
+      data-testid="s10-reset-sheet"
+      footer={
+        <>
+          <Button variant="quiet" onClick={onClose}>{t("s10.cancel")}</Button>
+          <Button variant="danger" loading={busy} onClick={() => void confirm()} data-testid="s10-reset-confirm">{t("s10.reset.confirm")}</Button>
+        </>
+      }
+    >
+      {message ? <Banner tone="danger" title={message} critical data-testid="s10-reset-error" /> : null}
+    </Sheet>
+  );
+}
+
+function OffboardSheet({
+  staff,
+  seed,
+  onClose,
+  onSubmit,
+}: {
+  staff: StaffAccount;
+  seed: StaffDialogSeed | null;
+  onClose: () => void;
+  onSubmit: (reason: OffboardReason) => Promise<StaffActionResult>;
+}) {
+  const t = useT();
+  const [reason, setReason] = useState<OffboardReason>(seed?.reason ?? "access_ended");
+  const [busy, setBusy] = useState(false);
+  const [message, setMessage] = useState<string | null>(seed?.message ?? null);
+
+  async function confirm() {
+    setBusy(true);
+    setMessage(null);
+    const result = await onSubmit(reason);
+    setBusy(false);
+    if (result.ok) onClose();
+    else setMessage(result.message ?? null);
+  }
+
+  return (
+    <Sheet
+      open
+      onClose={onClose}
+      title={t("s10.offboardDialog.title", { name: staff.display_name })}
+      description={t("s10.offboardDialog.body", { name: staff.display_name })}
+      data-testid="s10-offboard-sheet"
+      footer={
+        <>
+          <Button variant="quiet" onClick={onClose}>{t("s10.cancel")}</Button>
+          <Button variant="danger" loading={busy} onClick={() => void confirm()} data-testid="s10-offboard-confirm">{t("s10.offboardDialog.confirm")}</Button>
+        </>
+      }
+    >
+      <div className={styles.form}>
+        {message ? <Banner tone="danger" title={message} critical data-testid="s10-offboard-error" /> : null}
+        <Select
+          label={t("s10.offboardDialog.reason")}
+          placeholder={false}
+          value={reason}
+          onChange={(e) => setReason(e.target.value as OffboardReason)}
+          options={OFFBOARD_REASONS.map((value) => ({ value, label: t(`s10.offboardDialog.reasons.${value}`) }))}
+          data-testid="s10-offboard-reason"
+        />
+      </div>
+    </Sheet>
   );
 }
