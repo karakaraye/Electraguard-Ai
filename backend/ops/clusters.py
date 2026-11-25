@@ -70,6 +70,7 @@ def warning_json(warning):
         "id": str(warning.pk),
         "category": warning.category,
         "area": warning.area,
+        "trigger": getattr(warning, "trigger", "reports") or "reports",
         "report_count": len(warning.report_ids),
         "detector": detector,
         "observed": observed,

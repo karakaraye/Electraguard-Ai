@@ -1,0 +1,81 @@
+# INEC Registered Political Parties (names and abbreviations)
+APC
+All Progressives Congress
+PDP
+Peoples Democratic Party
+LP
+Labour Party
+NNPP
+New Nigeria Peoples Party
+APGA
+All Progressives Grand Alliance
+SDP
+Social Democratic Party
+ADC
+African Democratic Congress
+PRP
+People's Redemption Party
+AAC
+African Action Congress
+YPP
+Young Progressives Party
+ZLP
+Zenith Labour Party
+NRM
+National Rescue Movement
+APM
+Allied Peoples Movement
+APP
+Action Peoples Party
+BP
+Boot Party
+ADP
+Action Democratic Party
+Accord
+
+# Leading Political Candidates and Figures (all 5 languages / variants)
+Tinubu
+Bola Tinubu
+Bola Ahmed Tinubu
+Asiwaju
+Jagaban
+Shettima
+Kashim Shettima
+Atiku
+Atiku Abubakar
+Waziri
+Okowa
+Ifeanyi Okowa
+Peter Obi
+Obi
+Datti
+Datti Baba-Ahmed
+Yusuf Datti
+Kwankwaso
+Rabiu Kwankwaso
+Rabiu Musa Kwankwaso
+Oyo State Governor
+Lagos Governor
+Sanwo-Olu
+Adeleke
+Fubara
+Wike
+Nyesom Wike
+Ganduje
+Obaseki
+Soludo
+Chukwuma Soludo
+Abba Kabir Yusuf
+Bala Mohammed
+Uba Sani
+Nasir El-Rufai
+El-Rufai
+Buhari
+Muhammadu Buhari
+Goodluck Jonathan
+Jonathan
+Obasanjo
+Olusegun Obasanjo
+INEC Chairman
+Mahmood Yakubu
+Yakubu
