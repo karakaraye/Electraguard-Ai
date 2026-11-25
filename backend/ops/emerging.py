@@ -154,7 +154,7 @@ def _fallback_threshold_detection(organisation, config, now, configured_categori
         organisation=organisation,
         occurred_at__gte=start - 7 * interval,
         occurred_at__lt=now,
-    ).exclude(status=Report.Status.WITHDRAWN).only("pk", "occurred_at", "kind", "incident_details")
+    ).exclude(status=Report.Status.WITHDRAWN).only("pk", "occurred_at", "kind", "incident_details", "review_suggestions")
 
     recent = defaultdict(list)
     baseline = Counter()
@@ -240,7 +240,7 @@ def _statistical_detection(organisation, now, wat_now, configured_categories):
             organisation=organisation,
             occurred_at__gte=election_start_utc,
             occurred_at__lt=now,
-        ).exclude(status=Report.Status.WITHDRAWN).only("pk", "occurred_at", "kind", "incident_details")
+        ).exclude(status=Report.Status.WITHDRAWN).only("pk", "occurred_at", "kind", "incident_details", "review_suggestions")
     )
 
     valid_reports = []
