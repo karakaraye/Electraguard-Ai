@@ -61,15 +61,38 @@
   gap: var(--s-3);
 }
 
+.dayLong {
+  align-self: flex-end;
+  color: var(--ink-2);
+  font: var(--t-label);
+  font-size: 0.875rem;
+  line-height: 40px;
+}
+
+.card table thead th {
+  vertical-align: middle;
+}
+
+/* The reminder sits inside the same tile as the count, not below it. */
 .flagTile {
   display: grid;
   align-content: start;
-  gap: var(--s-1);
+  gap: var(--s-2);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  background: var(--paper-raised);
+}
+
+.flagTile > div {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
 }
 
 .notResult {
-  margin: 0;
+  margin: 0 var(--s-4) var(--s-4);
   padding: 2px var(--s-2);
+  justify-self: start;
   border-radius: 4px;
   background: var(--attn-bg);
   color: var(--attn);

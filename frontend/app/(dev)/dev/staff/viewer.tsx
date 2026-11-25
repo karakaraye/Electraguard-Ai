@@ -291,6 +291,7 @@ export function StaffStateViewer(): ReactElement {
     >
       {/* Dev Navigation Bar */}
       <div
+        data-dev-bar
         style={{
           background: "var(--paper)",
           color: "var(--ink)",

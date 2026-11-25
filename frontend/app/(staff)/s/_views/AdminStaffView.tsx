@@ -68,7 +68,12 @@ function formatDay(value: string, locale: Locale) {
   );
 }
 
-const statusTone: Record<StaffStatus, StatusTone> = { active: "ok", invited: "wait", offboarded: "info" };
+const statusTone: Record<"active" | "invited", StatusTone> = { active: "ok", invited: "wait" };
+
+/** Offboarded is not a review state: dashed grey, never the blue "in review" tone. */
+function StaffStatus({ status, label }: { status: StaffStatus; label: string }) {
+  return status === "offboarded" ? <StatusBadge status="withdrawn" label={label} /> : <StatusBadge tone={statusTone[status]} label={label} />;
+}
 
 /** S-10 staff accounts: who can sign in, with which roles, and the safe ways to change that. */
 export function AdminStaffView({
@@ -102,6 +107,12 @@ export function AdminStaffView({
     for (const s of staffList) c[s.status] += 1;
     return c;
   }, [staffList]);
+  const filterOptions = [
+    { value: "all", label: `${t("s10.filter.all")} ${counts.all}` },
+    { value: "active", label: `${t("s10.filter.active")} ${counts.active}` },
+    { value: "invited", label: `${t("s10.filter.invited")} ${counts.invited}` },
+    { value: "offboarded", label: `${t("s10.filter.offboarded")} ${counts.offboarded}` },
+  ];
   const rows = filter === "all" ? staffList : staffList.filter((s) => s.status === filter);
   const showSkeleton = loading && staffList.length === 0 && !error;
 
@@ -123,18 +134,25 @@ export function AdminStaffView({
           <h2 id="s10-list" className={styles.title}>{t("s10.staffList", { count: counts.all })}</h2>
           <div className={styles.headEnd}>
             {staffList.length > 0 ? (
-              <SegmentedControl
-                label={t("s10.filter.label")}
-                value={filter}
-                onChange={(value) => setFilter(value as Filter)}
-                options={[
-                  { value: "all", label: `${t("s10.filter.all")} ${counts.all}` },
-                  { value: "active", label: `${t("s10.filter.active")} ${counts.active}` },
-                  { value: "invited", label: `${t("s10.filter.invited")} ${counts.invited}` },
-                  { value: "offboarded", label: `${t("s10.filter.offboarded")} ${counts.offboarded}` },
-                ]}
-                data-testid="s10-filter"
-              />
+              tableWidth ? (
+                <SegmentedControl
+                  label={t("s10.filter.label")}
+                  value={filter}
+                  onChange={(value) => setFilter(value as Filter)}
+                  options={filterOptions}
+                  data-testid="s10-filter"
+                />
+              ) : (
+                <Select
+                  label={t("s10.filter.label")}
+                  value={filter}
+                  onChange={(event) => setFilter(event.target.value as Filter)}
+                  options={filterOptions}
+                  placeholder={false}
+                  className={styles.filterSelect}
+                  data-testid="s10-filter"
+                />
+              )
             ) : null}
             <Button variant="primary" icon={<PlusIcon />} onClick={() => setDialog({ kind: "create" })} data-testid="s10-add">
               {t("s10.createStaff")}
@@ -171,7 +189,7 @@ export function AdminStaffView({
                       <Who staff={st} self={st.id === currentUserId} />
                     </th>
                     <td><Roles roles={st.roles} /></td>
-                    <td><StatusBadge tone={statusTone[st.status]} label={t(`s10.status.${st.status}`)} /></td>
+                    <td><StaffStatus status={st.status} label={t(`s10.status.${st.status}`)} /></td>
                     <td><TwoFa on={st.totp_enrolled} /></td>
                     <td className={`${styles.nowrap} eg-tnum`}>
                       {st.last_sign_in_on ? formatDay(st.last_sign_in_on, locale) : <span className={styles.sub}>{t("s10.neverSignedIn")}</span>}
@@ -191,7 +209,7 @@ export function AdminStaffView({
                 <Who staff={st} self={st.id === currentUserId} />
                 <Roles roles={st.roles} />
                 <div className={styles.badges}>
-                  <StatusBadge tone={statusTone[st.status]} label={t(`s10.status.${st.status}`)} />
+                  <StaffStatus status={st.status} label={t(`s10.status.${st.status}`)} />
                   <TwoFa on={st.totp_enrolled} />
                 </div>
                 <p className={`${styles.sub} eg-tnum`}>
@@ -398,7 +416,7 @@ function CreateSheet({
       data-testid="s10-create-sheet"
       footer={
         <>
-          <Button variant="quiet" onClick={onClose}>{t("s10.cancel")}</Button>
+          <Button variant="secondary" onClick={onClose}>{t("s10.cancel")}</Button>
           <Button type="submit" form={formId} variant="primary" loading={busy} data-testid="s10-create-submit">{t("s10.create.submit")}</Button>
         </>
       }
@@ -487,7 +505,7 @@ function ResetSheet({
       data-testid="s10-reset-sheet"
       footer={
         <>
-          <Button variant="quiet" onClick={onClose}>{t("s10.cancel")}</Button>
+          <Button variant="secondary" onClick={onClose}>{t("s10.cancel")}</Button>
           <Button variant="danger" loading={busy} onClick={() => void confirm()} data-testid="s10-reset-confirm">{t("s10.reset.confirm")}</Button>
         </>
       }
@@ -531,7 +549,7 @@ function OffboardSheet({
       data-testid="s10-offboard-sheet"
       footer={
         <>
-          <Button variant="quiet" onClick={onClose}>{t("s10.cancel")}</Button>
+          <Button variant="secondary" onClick={onClose}>{t("s10.cancel")}</Button>
           <Button variant="danger" loading={busy} onClick={() => void confirm()} data-testid="s10-offboard-confirm">{t("s10.offboardDialog.confirm")}</Button>
         </>
       }

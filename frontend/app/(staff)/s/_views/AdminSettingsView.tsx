@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useId, useState, type FormEvent, type ReactNode } from "react";
+import { useEffect, useId, useState, type ComponentProps, type FormEvent, type ReactNode } from "react";
 import type { OrganisationSettings, UpdateSettingsRequest } from "../../../../lib/api/types";
+import { localeTags, type Locale } from "../../../../lib/i18n/config";
 import { useLocale, useT } from "../../../../lib/i18n/client";
 import { Banner, Button, Field, SegmentedControl, Sheet, Skeleton, StatusBadge } from "../../../../ui";
 import { formatWatDateTime } from "../../../../ui/format";
@@ -131,6 +132,16 @@ function parseLabels(value: string): string[] | null {
   return valid ? labels : null;
 }
 
+/** "5 Dec 2026" for a YYYY-MM-DD value, so the native date field is never read as day-first or month-first. */
+function dayInWords(value: string, locale: Locale): string | null {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return null;
+  const date = new Date(`${value}T12:00:00+01:00`);
+  if (Number.isNaN(date.getTime())) return null;
+  const tag = localeTags[locale];
+  const supported = Intl.DateTimeFormat.supportedLocalesOf([tag]);
+  return new Intl.DateTimeFormat(supported.length ? tag : "en-NG", { dateStyle: "medium", timeZone: "Africa/Lagos" }).format(date);
+}
+
 /** Today in Lagos as YYYY-MM-DD, shifted by some days. */
 function lagosDay(shiftDays = 0) {
   const parts = new Intl.DateTimeFormat("en-CA", { timeZone: "Africa/Lagos", year: "numeric", month: "2-digit", day: "2-digit" }).format(
@@ -205,6 +216,18 @@ function SaveRow({ label, busy, disabled, saved, message }: { label: string; bus
   );
 }
 
+/** A native date field with the chosen day written out in words underneath. */
+function DateField(props: Omit<ComponentProps<typeof Field>, "type">) {
+  const { locale } = useLocale();
+  const words = typeof props.value === "string" ? dayInWords(props.value, locale) : null;
+  return (
+    <div className={styles.dateField}>
+      <Field {...props} type="date" />
+      {words ? <p className={`${styles.dayEcho} eg-tnum`}>{words}</p> : null}
+    </div>
+  );
+}
+
 function Switch({ checked, onToggle, labelledBy, tone, busy }: { checked: boolean; onToggle: () => void; labelledBy: string; tone: "ink" | "danger"; busy?: boolean }) {
   return (
     <button
@@ -276,7 +299,7 @@ function IntakeCard({
           data-testid="s11-intake-sheet"
           footer={
             <>
-              <Button variant="quiet" onClick={() => setOpen(false)}>{t("s11.cancel")}</Button>
+              <Button variant="secondary" onClick={() => setOpen(false)}>{t("s11.cancel")}</Button>
               <Button variant={paused ? "primary" : "danger"} loading={busy} onClick={() => void confirm()} data-testid="s11-intake-confirm">
                 {paused ? t("s11.intakeCard.resumeConfirm") : t("s11.intakeCard.pauseConfirm")}
               </Button>
@@ -385,7 +408,7 @@ function RetentionCard({
           data-testid="s11-retention-sheet"
           footer={
             <>
-              <Button variant="quiet" onClick={() => setConfirmFor(null)}>{t("s11.cancel")}</Button>
+              <Button variant="secondary" onClick={() => setConfirmFor(null)}>{t("s11.cancel")}</Button>
               <Button variant="danger" loading={busy} onClick={() => void confirmShorten()} data-testid="s11-retention-confirm">
                 {t("s11.retentionCard.confirm")}
               </Button>
@@ -446,14 +469,14 @@ function ScheduleCard({
         footer={<SaveRow label={t("s11.scheduleCard.save")} busy={busy} disabled={!dirty} saved={saved} message={message} />}
       >
         <div className={styles.fields}>
-          <Field
+          <DateField
             label={t("s11.scheduleCard.electionDay")}
             hint={t("s11.scheduleCard.electionDayHint")}
-            type="date"
             value={day}
             onChange={(e) => setDay(e.target.value)}
             data-testid="s11-election-day"
           />
+
           <Field
             label={t("s11.scheduleCard.delay")}
             hint={t("s11.scheduleCard.delayHint")}
@@ -651,8 +674,8 @@ function AuditCard({ seed, onExport }: { seed: SettingsSeed | null; onExport?: A
             ]}
             data-testid="s11-audit-format"
           />
-          <Field label={t("s11.auditCard.from")} type="date" value={from} max={to || undefined} onChange={(e) => setFrom(e.target.value)} data-testid="s11-audit-from" />
-          <Field label={t("s11.auditCard.to")} type="date" value={to} min={from || undefined} onChange={(e) => setTo(e.target.value)} data-testid="s11-audit-to" />
+          <DateField label={t("s11.auditCard.from")} value={from} max={to || undefined} onChange={(e) => setFrom(e.target.value)} data-testid="s11-audit-from" />
+          <DateField label={t("s11.auditCard.to")} value={to} min={from || undefined} onChange={(e) => setTo(e.target.value)} data-testid="s11-audit-to" />
         </div>
       </Card>
     </form>

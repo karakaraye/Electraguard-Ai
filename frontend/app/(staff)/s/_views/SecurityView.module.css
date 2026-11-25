@@ -272,10 +272,29 @@
 /* ---------- Export ---------- */
 
 .exportForm {
+  padding-bottom: var(--s-5);
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
   align-items: end;
   gap: var(--s-3);
+}
+
+
+.dateField {
+  position: relative;
+  min-width: 0;
+}
+
+/* The day in words, hanging under the native date field so neighbouring fields stay aligned. */
+.dayEcho {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin: var(--s-1) 0 0;
+  color: var(--ink-2);
+  font: var(--t-small);
+  font-weight: 600;
+  white-space: nowrap;
 }
 
 .exportButton {
@@ -289,5 +308,44 @@
 
   .exportButton {
     justify-self: stretch;
+  }
+}
+
+/* The alerts table fits its card at 1280 px: tighter cells, whole badges and buttons, no clipped Update. */
+.alerts table th,
+.alerts table td {
+  padding-left: var(--s-2);
+  padding-right: var(--s-2);
+}
+
+.alerts table td:first-child,
+.alerts table th:first-child {
+  padding-left: var(--s-3);
+}
+
+.alerts table td:last-child,
+.alerts table th:last-child {
+  padding-right: var(--s-3);
+  white-space: nowrap;
+}
+
+.alerts table td > :global([data-tone]) {
+  white-space: nowrap;
+}
+
+/* Stacked on a phone, the day in words sits in the flow instead of hanging below. */
+@media (max-width: 767px) {
+  .exportForm {
+    padding-bottom: 0;
+  }
+
+  .dateField {
+    display: grid;
+    gap: var(--s-2);
+  }
+
+  .dayEcho {
+    position: static;
+    margin: 0;
   }
 }

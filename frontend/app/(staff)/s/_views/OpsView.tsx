@@ -5,6 +5,7 @@ import type { Category, ChecklistStage, Cluster, CoverageResponse, LateMaterials
 import { useLocale, useT } from "../../../../lib/i18n/client";
 import { Banner, Button, DataTable, MetricTile, Skeleton, StatusBadge, TextArea, type Column, type StatusTone } from "../../../../ui";
 import { formatWatDateTime, formatWatTime } from "../../../../ui/format";
+import { localeTags, type Locale } from "../../../../lib/i18n/config";
 import { CheckIcon, RetryIcon } from "../../../../ui/icons";
 import { CATEGORY_ROWS } from "../../../(public)/_lib/public";
 import { QUESTIONS } from "../../../(observer)/o/_lib/checklist";
@@ -63,7 +64,7 @@ export function OpsView({
   const t = useT();
   const { locale } = useLocale();
   const totals = overview.data?.totals;
-  const period = date === today ? t("s05.today") : date;
+  const period = date === today ? t("s05.today") : formatDay(date, locale);
 
   return (
     <div className={styles.page} data-testid={testId}>
@@ -72,6 +73,7 @@ export function OpsView({
           <span>{t("s05.filterDate")}</span>
           <input type="date" value={date} max={today} onChange={(e) => e.target.value && onDateChange?.(e.target.value)} data-testid="s05-date" />
         </label>
+        <span className={`${styles.dayLong} eg-tnum`}>{formatDay(date, locale)}</span>
         {date !== today ? <Button variant="quiet" onClick={() => onDateChange?.(today)}>{t("s05.today")}</Button> : null}
         <span className={styles.updated}>
           {overview.data ? <span className="eg-tnum">{t("s05.updated", { time: formatWatTime(overview.data.generated_at, locale) })}</span> : null}
@@ -108,6 +110,17 @@ export function OpsView({
       <LateMaterials section={lateMaterials} />
     </div>
   );
+}
+
+/** "5 Dec 2026" from a yyyy-mm-dd day, so a numeric date is never ambiguous. */
+function formatDay(day: string, locale: Locale): string {
+  const date = new Date(`${day}T12:00:00+01:00`);
+  if (Number.isNaN(date.getTime())) return day;
+  try {
+    return new Intl.DateTimeFormat(localeTags[locale], { dateStyle: "medium", timeZone: "Africa/Lagos" }).format(date);
+  } catch {
+    return day;
+  }
 }
 
 function SectionHead({ id, title, children }: { id: string; title: string; children?: React.ReactNode }) {
@@ -355,7 +368,7 @@ function LateMaterials({ section }: { section: Section<LateMaterialsResponse> })
             <p className={`${styles.muted} eg-tnum`}>
               {[
                 data.model_version ? t("s05.late.model", { version: data.model_version }) : null,
-                typeof data.metrics?.mae_transit_hours === "number" ? t("s05.late.error", { hours: data.metrics.mae_transit_hours.toFixed(1), on: data.metrics.evaluated_on ?? "" }) : null,
+                typeof data.metrics?.mae_transit_hours === "number" ? t("s05.late.error", { hours: data.metrics.mae_transit_hours.toFixed(1), on: data.metrics.evaluated_on ? formatDay(data.metrics.evaluated_on, locale) : "" }) : null,
                 data.generated_at ? t("s05.updated", { time: formatWatDateTime(data.generated_at, locale) }) : null,
               ].filter(Boolean).join(" · ")}
             </p>

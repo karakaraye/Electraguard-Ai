@@ -181,7 +181,7 @@
 
 @media (min-width: 1280px) {
   .work[data-preview] {
-    grid-template-columns: minmax(0, 1fr) 20rem;
+    grid-template-columns: minmax(0, 1fr) 19rem;
   }
 }
 
@@ -189,6 +189,15 @@
   display: grid;
   gap: var(--s-3);
   min-width: 0;
+}
+
+/* Tighter cells so every column fits inside the card, with the preview open or closed. */
+.tableCol table :is(th, td) {
+  padding-inline: var(--s-2);
+}
+
+.tableCol table :is(th, td):first-child {
+  padding-inline-start: var(--s-3);
 }
 
 .tableCol tbody tr[aria-selected="true"] > * {
@@ -244,7 +253,6 @@
   color: var(--ink);
   font: var(--t-small);
   font-weight: 600;
-  white-space: nowrap;
 }
 
 .evidence {

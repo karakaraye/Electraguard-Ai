@@ -169,8 +169,8 @@ export function RumourView({
       rowHeader: true,
       render: (row) => (
         <span className={styles.claimCell}>
-          <span className={styles.excerpt}>{excerpt(row.text, 110) || t("s06.detail.noText")}</span>
-          <span className={styles.sub}>{`${sourceLabel(row.seen_on)} · ${t(`s06.lang.${row.language}`)}`}</span>
+          <span className={`${styles.excerpt} ${styles.truncate}`} title={row.text ?? undefined}>{excerpt(row.text, 110) || t("s06.detail.noText")}</span>
+          <span className={`${styles.sub} ${styles.truncate}`}>{`${sourceLabel(row.seen_on)} · ${t(`s06.lang.${row.language}`)}`}</span>
         </span>
       ),
     },
@@ -439,8 +439,8 @@ function NewClaimSheet({
         </div>
         {empty ? <p className={styles.sub}>{t("s06.needTextOrImage")}</p> : null}
         <div className={styles.formActions}>
+          <Button type="button" variant="secondary" onClick={onClose}>{t("staff.cancel")}</Button>
           <Button type="submit" variant="primary" disabled={empty} loading={pending} data-testid="s06-save-claim">{t("s06.saveClaim")}</Button>
-          <Button type="button" variant="quiet" onClick={onClose}>{t("staff.cancel")}</Button>
         </div>
       </form>
     </Sheet>
@@ -702,10 +702,10 @@ function ClaimDetail({
         data-testid="s06-approve-sheet"
         footer={
           <>
+            <Button variant="secondary" onClick={() => setConfirm(null)}>{t("staff.cancel")}</Button>
             <Button variant="primary" loading={pending === "approve"} onClick={() => void run("approve", () => onApprove?.(claim.id, claim.version))} data-testid="s06-approve-confirm">
               {t("s06.response.approve")}
             </Button>
-            <Button variant="quiet" onClick={() => setConfirm(null)}>{t("staff.cancel")}</Button>
           </>
         }
       >
@@ -721,6 +721,7 @@ function ClaimDetail({
         data-testid="s06-note-sheet"
         footer={
           <>
+            <Button variant="secondary" onClick={() => setConfirm(null)}>{t("staff.cancel")}</Button>
             <Button
               variant={confirm === "dismiss" ? "danger" : "primary"}
               disabled={!noteOk}
@@ -734,7 +735,6 @@ function ClaimDetail({
             >
               {confirm === "dismiss" ? t("s06.response.dismiss") : t("s06.response.reject")}
             </Button>
-            <Button variant="quiet" onClick={() => setConfirm(null)}>{t("staff.cancel")}</Button>
           </>
         }
       >

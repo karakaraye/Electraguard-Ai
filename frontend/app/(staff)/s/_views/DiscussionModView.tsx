@@ -165,7 +165,7 @@ export function DiscussionModView({
                     <div className={styles.badges}>
                       {hidden ? <StatusBadge tone="wait" label={t("s08.hiddenBadge")} /> : null}
                       <StatusBadge tone="attn" label={t("s08.flaggedBy", { count: flag.flag_count })} />
-                      {names ? <StatusBadge tone="info" label={t("s08.nameCheckAlert")} /> : null}
+                      {names ? <StatusBadge tone="attn" label={t("s08.nameCheckAlert")} /> : null}
                     </div>
                   </div>
 
@@ -322,7 +322,7 @@ function HideSheet({
       data-testid="s08-hide-sheet"
       footer={
         <div className={styles.footer}>
-          <Button variant="quiet" onClick={onClose}>{t("s08.cancel")}</Button>
+          <Button variant="secondary" onClick={onClose}>{t("s08.cancel")}</Button>
           <Button type="submit" form={formId} variant="primary" loading={busy} data-testid="s08-hide-confirm">{t("s08.hideConfirm")}</Button>
         </div>
       }
@@ -367,7 +367,7 @@ function RemoveSheet({ code, onClose, onSubmit }: { code: string; onClose: () =>
       data-testid="s08-remove-sheet"
       footer={
         <div className={styles.footer}>
-          <Button variant="quiet" onClick={onClose}>{t("s08.cancel")}</Button>
+          <Button variant="secondary" onClick={onClose}>{t("s08.cancel")}</Button>
           <Button type="submit" form={formId} variant="danger" loading={busy} data-testid="s08-remove-confirm">{t("s08.removeConfirm")}</Button>
         </div>
       }
@@ -408,7 +408,7 @@ function CloseSheet({ onClose, onSubmit }: { onClose: () => void; onSubmit: () =
       data-testid="s08-close-sheet"
       footer={
         <div className={styles.footer}>
-          <Button variant="quiet" onClick={onClose}>{t("s08.cancel")}</Button>
+          <Button variant="secondary" onClick={onClose}>{t("s08.cancel")}</Button>
           <Button variant="danger" loading={busy} onClick={() => void go()} data-testid="s08-close-confirm">{t("s08.closeConfirm")}</Button>
         </div>
       }
@@ -472,7 +472,7 @@ function CreateSheet({
       data-testid="s08-create-sheet"
       footer={
         <div className={styles.footer}>
-          <Button variant="quiet" onClick={onClose}>{t("s08.cancel")}</Button>
+          <Button variant="secondary" onClick={onClose}>{t("s08.cancel")}</Button>
           <Button type="submit" form={formId} variant="primary" loading={busy} data-testid="s08-create-confirm">{t("s08.createSubmit")}</Button>
         </div>
       }

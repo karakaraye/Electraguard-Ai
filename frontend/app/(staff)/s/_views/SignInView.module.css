@@ -203,22 +203,25 @@
   display: grid;
   gap: var(--s-5);
   margin: 0;
-  padding-inline-start: 1.25rem;
+  padding: 0;
+  list-style: none;
+  counter-reset: enrol;
 }
 
 .enrolSteps li {
   display: grid;
   gap: var(--s-2);
-  padding-inline-start: var(--s-1);
-}
-
-.enrolSteps li::marker {
-  font: var(--t-label);
+  padding: 0;
+  counter-increment: enrol;
 }
 
 .enrolStepTitle {
   margin: 0;
   font: var(--t-label);
+}
+
+.enrolStepTitle::before {
+  content: counter(enrol) ". ";
 }
 
 .qr {

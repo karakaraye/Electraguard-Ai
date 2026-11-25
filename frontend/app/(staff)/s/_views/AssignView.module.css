@@ -2,6 +2,7 @@
 
 .page {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--s-5);
   min-width: 0;
 }
@@ -158,6 +159,7 @@
 
 .cases {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--s-3);
   min-width: 0;
 }
@@ -191,12 +193,16 @@
 .target {
   display: inline-flex;
   align-items: center;
+  flex: 1 1 14rem;
+  min-width: 0;
   gap: var(--s-2);
   font: var(--t-small);
 }
 
 .target select {
   min-height: 40px;
+  min-width: 0;
+  flex: 1 1 auto;
   max-width: 22rem;
   padding: 0 var(--s-3);
   border: 1px solid var(--on-ink);
@@ -331,8 +337,12 @@
   }
 
   .ref {
-    white-space: normal;
-    overflow-wrap: anywhere;
+    white-space: nowrap;
+  }
+
+  .checkCol {
+    width: 36px;
+    padding-inline-end: 0 !important;
   }
 
   .table th,

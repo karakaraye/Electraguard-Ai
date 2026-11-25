@@ -312,6 +312,14 @@
   object-fit: cover;
 }
 
+.mediaFallback {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  color: var(--ink-2);
+}
+
 .media audio {
   width: 100%;
 }

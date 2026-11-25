@@ -150,14 +150,14 @@ export const FIXTURE_CASE_DETAIL: CaseDetail = {
     category: {
       value: "intimidation_violence",
       confidence: "high",
-      reasons: ["armed disruption"],
+      reasons: ["Armed men are said to have driven voters away from the polling unit"],
       decision: null,
       corrected_value: null,
     },
     urgency: {
       value: "urgent",
       confidence: "high",
-      reasons: ["threats_to_observers"],
+      reasons: ["The report says people are in danger right now", "The observer saw it first-hand"],
       decision: null,
       corrected_value: null,
     },

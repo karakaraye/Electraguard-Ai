@@ -5,7 +5,7 @@ import type { CaseDetail, CaseMedia, Category, Message, Outcome, ResultSheetFlag
 import { useLocale, useT } from "../../../../lib/i18n/client";
 import { Banner, Button, SegmentedControl, Skeleton, StatusBadge, StatusShape, SuggestionCard, TextArea, Timeline, type ReportStatus as BadgeStatus } from "../../../../ui";
 import { formatBytes, formatWatDateTime } from "../../../../ui/format";
-import { CheckIcon, EyeIcon, MessageIcon, RetryIcon } from "../../../../ui/icons";
+import { CameraIcon, CheckIcon, EyeIcon, MessageIcon, RetryIcon } from "../../../../ui/icons";
 import { CATEGORY_ROWS } from "../../../(public)/_lib/public";
 import styles from "./CaseView.module.css";
 
@@ -402,6 +402,7 @@ function EvidenceItem({ media, onViewUnblurred }: { media: CaseMedia; onViewUnbl
   const [asking, setAsking] = useState(false);
   const [reason, setReason] = useState("");
   const [state, setState] = useState<{ url?: string; error?: string; loading?: boolean }>({});
+  const [thumbFailed, setThumbFailed] = useState(false);
   const visual = media.kind === "photo" || media.kind === "video";
   const src = (variant: string) => `/api/v1/media/${media.id}/content?variant=${variant}`;
 
@@ -429,9 +430,19 @@ function EvidenceItem({ media, onViewUnblurred }: { media: CaseMedia; onViewUnbl
         {state.url && media.kind === "photo" ? (
           /* eslint-disable-next-line @next/next/no-img-element */
           <img src={state.url} alt={t("s03.evidence.unblurredAlt")} />
+        ) : media.kind === "photo" && thumbFailed ? (
+          <div className={styles.mediaFallback} role="img" aria-label={t("s03.evidence.kind.photo")}>
+            <CameraIcon size={28} />
+          </div>
         ) : media.kind === "photo" ? (
           /* eslint-disable-next-line @next/next/no-img-element */
-          <img src={src("thumb")} alt={t("s03.evidence.kind.photo")} loading="lazy" />
+          <img src={src("thumb")} alt={t("s03.evidence.kind.photo")} loading="lazy"
+            onError={() => setThumbFailed(true)}
+            ref={(el) => {
+              /* The load may have failed before React attached onError (server-rendered page). */
+              if (el && el.complete && el.naturalWidth === 0) queueMicrotask(() => setThumbFailed(true));
+            }}
+          />
         ) : media.kind === "video" ? (
           <video src={state.url ?? src("display")} poster={src("poster")} controls preload="none" aria-label={t("s03.evidence.kind.video")} />
         ) : (
@@ -486,6 +497,11 @@ function EvidenceItem({ media, onViewUnblurred }: { media: CaseMedia; onViewUnbl
   );
 }
 
+/** The server sends plain sentences; drop anything that looks like an internal code (snake_case or no spaces). */
+function isPlainReason(reason: string): boolean {
+  return /\s/.test(reason.trim()) && !/^[a-z0-9]+(_[a-z0-9]+)+$/.test(reason.trim());
+}
+
 /* ---------- Suggestions: always labelled, never decided in one click ---------- */
 
 function Suggestions({
@@ -521,7 +537,7 @@ function Suggestions({
                 field={type === "category" ? t("s02.columns.category") : t("s02.columns.urgency")}
                 value={label(type, suggestion.value)}
                 confidence={suggestion.confidence ?? "low"}
-                reasons={suggestion.reasons}
+                reasons={suggestion.reasons.filter(isPlainReason)}
                 decision={suggestion.decision}
                 corrected={label(type, suggestion.corrected_value)}
                 options={

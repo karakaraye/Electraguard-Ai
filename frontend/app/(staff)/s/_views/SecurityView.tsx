@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
+import { useState, type ComponentProps, type ReactNode } from "react";
 import type { AlertStatus, AuditVerifyResponse, SecurityAlert } from "../../../../lib/api/types";
+import { localeTags } from "../../../../lib/i18n/config";
 import { useLocale, useT } from "../../../../lib/i18n/client";
 import {
   Banner,
@@ -59,7 +60,7 @@ export interface SecurityViewProps {
   "data-testid"?: string;
 }
 
-const SEVERITY_TONE: Record<SecurityAlert["severity"], StatusTone> = { high: "danger", medium: "attn", low: "info" };
+const SEVERITY_TONE: Record<SecurityAlert["severity"], StatusTone> = { high: "danger", medium: "attn", low: "wait" };
 const SEVERITY_RANK: Record<SecurityAlert["severity"], number> = { high: 3, medium: 2, low: 1 };
 const STATUS_TONE: Record<AlertStatus, StatusTone> = { open: "attn", acknowledged: "info", resolved: "ok", false_positive: "wait" };
 
@@ -423,10 +424,10 @@ function UpdateSheet({
       closeOnBrowserBack={false}
       footer={
         <div className={styles.sheetActions}>
+          <Button variant="secondary" onClick={onClose}>{t("ui.cancel")}</Button>
           <Button variant="primary" loading={saving} onClick={() => void save()} data-testid="s12-save">
             {t("s12.save")}
           </Button>
-          <Button variant="quiet" onClick={onClose}>{t("ui.cancel")}</Button>
         </div>
       }
       data-testid="s12-sheet"
@@ -484,6 +485,24 @@ function UpdateSheet({
 
 /* ---------- Export ---------- */
 
+/** A native date field with the chosen day in words underneath ("5 Dec 2026"), so the order of day and month is never in doubt. */
+function DateField(props: Omit<ComponentProps<typeof Field>, "type">) {
+  const { locale } = useLocale();
+  const value = typeof props.value === "string" ? props.value : "";
+  let words: string | null = null;
+  if (/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+    const tag = localeTags[locale];
+    const supported = Intl.DateTimeFormat.supportedLocalesOf([tag]);
+    words = new Intl.DateTimeFormat(supported.length ? tag : "en-NG", { dateStyle: "medium", timeZone: "Africa/Lagos" }).format(new Date(`${value}T12:00:00+01:00`));
+  }
+  return (
+    <div className={styles.dateField}>
+      <Field {...props} type="date" />
+      {words ? <p className={`${styles.dayEcho} eg-tnum`}>{words}</p> : null}
+    </div>
+  );
+}
+
 function ExportCard({
   onExport,
   initial,
@@ -519,8 +538,8 @@ function ExportCard({
         <p className={styles.sub}>{t("s12.exportHint")}</p>
       </div>
       <div className={styles.exportForm}>
-        <Field label={t("s12.exportFrom")} type="date" value={from} max={to || undefined} onChange={(event) => setFrom(event.target.value)} numeric data-testid="s12-export-from" />
-        <Field label={t("s12.exportTo")} type="date" value={to} min={from || undefined} onChange={(event) => setTo(event.target.value)} numeric data-testid="s12-export-to" />
+        <DateField label={t("s12.exportFrom")} value={from} max={to || undefined} onChange={(event) => setFrom(event.target.value)} numeric data-testid="s12-export-from" />
+        <DateField label={t("s12.exportTo")} value={to} min={from || undefined} onChange={(event) => setTo(event.target.value)} numeric data-testid="s12-export-to" />
         <Select
           label={t("s12.exportFormat")}
           value={format}
