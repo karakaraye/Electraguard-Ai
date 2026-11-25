@@ -1,6 +1,6 @@
 .row {
   display: grid;
-  grid-template-columns: minmax(5.5rem, auto) minmax(0, 1fr);
+  grid-template-columns: minmax(3rem, auto) minmax(0, 1fr);
   align-items: center;
   gap: var(--s-3);
   min-width: 0;
@@ -18,11 +18,12 @@
   color: var(--ink-2);
 }
 
+/* Sun bars on a sun-tint track, the same as the home page's category bars. */
 .track {
   display: block;
-  height: 12px;
-  border-radius: 2px;
-  background: var(--paper-2);
+  height: 10px;
+  border-radius: 5px;
+  background: var(--sun-tint);
   overflow: hidden;
 }
 
@@ -34,7 +35,8 @@
 .fill {
   display: block;
   height: 100%;
-  background: var(--ink);
+  border-radius: inherit;
+  background: var(--sun-strong);
 }
 
 @media (forced-colors: active) {
