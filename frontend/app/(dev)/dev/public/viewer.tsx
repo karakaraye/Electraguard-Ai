@@ -162,6 +162,11 @@ export function PublicStateViewer(): ReactElement {
                       publishedAt: "2026-12-05T14:00:00+01:00",
                       cutoff: "2026-12-05T13:00:00+01:00",
                       organisations: 4,
+                      categories: [
+                        { category: "late_materials", count: 412 },
+                        { category: "queues_crowding", count: 318 },
+                        { category: "equipment_failure", count: 207 },
+                      ],
                     }
             }
             guides={state === "error" ? null : FIXTURE_GUIDES}

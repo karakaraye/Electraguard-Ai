@@ -4,16 +4,16 @@ import type { Cell, GuideSummary } from "../../../lib/api/types";
 import { SMS_SHORT_CODE, SMS_SHORT_CODE_IS_TEST } from "../../../lib/config";
 import { ButtonLink } from "../../../ui/Button/Button";
 import { BackgroundArt } from "../../../ui/BackgroundArt/BackgroundArt";
-import { ArrowRightIcon } from "../../../ui/icons";
+import { ArrowRightIcon, EyeIcon, FileIcon, ListIcon, PenIcon } from "../../../ui/icons";
 import { formatWatDateTime } from "../../../ui/format";
 import type { Locale } from "../../../lib/i18n";
 import { formatNumber, localeTags } from "../../../lib/i18n";
 import { ReceiptCheck, type CheckState } from "../_components/ReceiptCheck";
-import { USSD_SERVICE_CODE } from "../_lib/public";
+import { CATEGORY_ROWS, USSD_SERVICE_CODE } from "../_lib/public";
 import styles from "./home.module.css";
 
 export type HomeResults =
-  | { kind: "published"; total: Cell; publishedAt: string | null; cutoff: string; organisations: number }
+  | { kind: "published"; total: Cell; publishedAt: string | null; cutoff: string; organisations: number; categories?: Array<{ category: string; count: number }> }
   | { kind: "empty" }
   | { kind: "unavailable" };
 
@@ -48,16 +48,16 @@ export function HomeView({ t, locale, results, guides, check }: HomeViewProps) {
             <Link href="/phone">{t("p02.tryPhone")}</Link>
           </p>
         </div>
-      </section>
-
-      <div className={styles.grid}>
-        <section className={styles.block} id="check" aria-labelledby="p02-check">
+        <section className={styles.checkCard} id="check" aria-labelledby="p02-check">
           <h2 id="p02-check" className={styles.heading}>{t("p02.check.title")}</h2>
           <p className={styles.text}>{t("p02.check.lead")}</p>
           <ReceiptCheck initial={check?.state} initialCode={check?.code} />
         </section>
+      </section>
 
-        <section className={styles.block} aria-labelledby="p02-results">
+      <div className={styles.grid}>
+
+        <section className={`${styles.block} ${styles.resultsBlock}`} aria-labelledby="p02-results">
           <h2 id="p02-results" className={styles.heading}>{t("p02.results.title")}</h2>
           {results.kind === "published" ? (
             <>
@@ -71,6 +71,23 @@ export function HomeView({ t, locale, results, guides, check }: HomeViewProps) {
                   </>
                 )}
               </p>
+              {results.categories && results.categories.length ? (
+                <ol className={styles.bars} aria-label={t("p02.results.title")}>
+                  {results.categories.map((item) => {
+                    const max = results.categories![0].count || 1;
+                    const label = CATEGORY_ROWS.find((row) => row.value === item.category)?.key;
+                    return (
+                      <li key={item.category} className={styles.bar}>
+                        <span className={styles.barLabel}>{label ? t(label) : item.category}</span>
+                        <span className={`${styles.barCount} eg-tnum`}>{formatNumber(item.count, tag)}</span>
+                        <span className={styles.barTrack} aria-hidden="true">
+                          <span className={styles.barFill} style={{ inlineSize: `${Math.max(4, Math.round((item.count / max) * 100))}%` }} />
+                        </span>
+                      </li>
+                    );
+                  })}
+                </ol>
+              ) : null}
               <p className={styles.meta}>
                 {results.publishedAt ? t("p02.results.published", { time: formatWatDateTime(results.publishedAt, locale) }) : null}{" "}
                 {t("p02.results.cutoff", { time: formatWatDateTime(results.cutoff, locale) })}
@@ -105,9 +122,16 @@ export function HomeView({ t, locale, results, guides, check }: HomeViewProps) {
       <section className={styles.how} aria-labelledby="p02-how">
         <h2 id="p02-how" className={styles.heading}>{t("p02.how.title")}</h2>
         <ol className={styles.steps}>
-          {(["1", "2", "3", "4"] as const).map((n) => (
+          {([
+            ["1", PenIcon],
+            ["2", FileIcon],
+            ["3", EyeIcon],
+            ["4", ListIcon],
+          ] as const).map(([n, Icon]) => (
             <li key={n}>
-              <span className={`${styles.stepNo} eg-tnum`} aria-hidden="true">{n}</span>
+              <span className={styles.stepDisc} aria-hidden="true">
+                <Icon size={24} />
+              </span>
               <span>{t(`p02.how.${n}`)}</span>
             </li>
           ))}

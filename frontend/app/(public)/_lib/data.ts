@@ -26,5 +26,27 @@ export function homeResults(result: ServerResult<PublicResultsResponse>): HomeRe
     publishedAt: source.published_at ?? null,
     cutoff: source.cutoff,
     organisations: snapshots.length,
+    categories: topCategories(source.by_state),
   };
+}
+
+/**
+ * The three largest categories summed across states (spec screen 32). A category with any
+ * suppressed cell is left out, so a small number hidden in one state is never implied by a sum.
+ */
+export function topCategories(byState: PublicResultsResponse["snapshots"][number]["by_state"]): Array<{ category: string; count: number }> {
+  const sums = new Map<string, number>();
+  const hidden = new Set<string>();
+  for (const state of byState) {
+    for (const [category, cell] of Object.entries(state.by_category)) {
+      if (!cell) continue;
+      if (cell.suppressed) hidden.add(category);
+      else sums.set(category, (sums.get(category) ?? 0) + cell.count);
+    }
+  }
+  return [...sums.entries()]
+    .filter(([category]) => !hidden.has(category))
+    .map(([category, count]) => ({ category, count }))
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 3);
 }

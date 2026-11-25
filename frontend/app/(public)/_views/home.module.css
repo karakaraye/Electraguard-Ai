@@ -284,3 +284,146 @@
     text-decoration-thickness: 2px;
   }
 }
+
+/* ---------- Redesign (spec screen 32) ---------- */
+
+/* Hero in two columns from 1024 px: the statement on the left, the receipt check as a card on the right. */
+.hero {
+  display: grid;
+  gap: var(--s-6);
+}
+
+.checkCard {
+  position: relative;
+  display: grid;
+  align-content: start;
+  gap: var(--s-3);
+  inline-size: 100%;
+  max-width: 34rem;
+  margin: 0 auto;
+  padding: var(--s-5);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-xl);
+  background: var(--paper-raised);
+}
+
+@media (min-width: 1024px) {
+  .hero {
+    grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+    align-items: start;
+    column-gap: var(--s-8);
+    padding-inline: max(var(--gutter), calc((100vw - 72rem) / 2));
+  }
+
+  .heroText {
+    margin: 0;
+  }
+
+  .checkCard {
+    margin: var(--s-4) 0 0;
+  }
+}
+
+/* Three category bars under the total. */
+.bars {
+  display: grid;
+  gap: var(--s-3);
+  margin: var(--s-2) 0;
+  padding: 0;
+  list-style: none;
+}
+
+.bar {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--s-1) var(--s-3);
+  font: var(--t-body);
+}
+
+.barCount {
+  font-weight: 700;
+}
+
+.barTrack {
+  grid-column: 1 / -1;
+  display: block;
+  height: 8px;
+  border-radius: 4px;
+  background: var(--sun-tint);
+}
+
+.barFill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--sun-strong);
+}
+
+/* How it works: icon discs joined by a sun line. */
+.stepDisc {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--sun-tint);
+  color: var(--ink);
+}
+
+.steps li {
+  position: relative;
+  grid-template-columns: 48px minmax(0, 1fr);
+}
+
+/* Phone: a vertical line between discs. */
+.steps li:not(:last-child)::before {
+  content: "";
+  position: absolute;
+  top: 48px;
+  bottom: calc(var(--s-4) * -1);
+  left: 23px;
+  width: 2px;
+  background: var(--sun);
+}
+
+@media (min-width: 900px) {
+  .steps li {
+    grid-template-columns: 1fr;
+  }
+
+  /* Desktop: a horizontal line from disc to disc. */
+  .steps li:not(:last-child)::before {
+    top: 23px;
+    bottom: auto;
+    left: 48px;
+    right: calc(var(--s-6) * -1);
+    width: auto;
+    height: 2px;
+  }
+}
+
+/* The check moved into the hero, so on desktop the results use the full width:
+   the total and its notes on the left, the category bars on the right. */
+@media (min-width: 900px) {
+  .grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .resultsBlock {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    column-gap: var(--s-8);
+  }
+
+  .resultsBlock > * {
+    grid-column: 1;
+  }
+
+  .resultsBlock > .bars {
+    grid-column: 2;
+    grid-row: 1 / span 6;
+    align-self: center;
+    margin: 0;
+  }
+}
