@@ -429,6 +429,8 @@ export function ObserverStateViewer() {
   useEffect(() => {
     setThemePreference(theme === "dark" ? "dark" : "light");
     document.documentElement.style.background = theme === "dark" ? "#111112" : "#ffffff";
+    // Sheets render beside the previewed shell, so the page root carries the theme too.
+    document.documentElement.dataset.theme = theme === "dark" ? "dark" : "light";
   }, [theme]);
 
   if ((lang && lang !== locale) || loading) return null;

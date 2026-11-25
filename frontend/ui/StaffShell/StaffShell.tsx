@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { preload } from "react-dom";
-import { useId, useState, type ComponentType, type ReactNode } from "react";
+import { useEffect, useId, useState, type ComponentType, type ReactNode } from "react";
 import { useT } from "../../lib/i18n/client";
 import { BrandMark } from "../BrandMark/BrandMark";
 import { MenuIcon, type IconProps } from "../icons";
@@ -63,6 +63,16 @@ export function StaffShell({
   preload("/fonts/noto-sans-latin.woff2", { as: "font", type: "font/woff2", crossOrigin: "anonymous" });
   const t = useT();
   const storedTheme = useThemePreference("system");
+  const resolvedTheme = theme ?? storedTheme;
+  // Dialogs may render beside the shell: give the page root the same theme.
+  useEffect(() => {
+    if (preview) return;
+    const root = document.documentElement;
+    root.dataset.theme = resolvedTheme;
+    return () => {
+      if (root.dataset.theme === resolvedTheme) delete root.dataset.theme;
+    };
+  }, [resolvedTheme, preview]);
   const Main = preview ? "div" : "main";
   const split = list !== undefined && detail !== undefined;
   const [moreOpen, setMoreOpen] = useState(false);
@@ -96,7 +106,7 @@ export function StaffShell({
   return (
     <div
       className={`${styles.shell} ${preview ? styles.preview : ""}`}
-      data-theme={theme ?? storedTheme}
+      data-theme={resolvedTheme}
       data-density="staff"
       data-testid={testId}
     >

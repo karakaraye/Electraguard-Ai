@@ -86,6 +86,16 @@ export function AppShell({
     if (preview) return;
     document.documentElement.style.fontSize = rootFontSize(textSize);
   }, [textSize, preview]);
+  // Sheets and dialogs may render beside the shell, not inside it: give the page root the same theme.
+  const resolvedTheme = theme ?? storedTheme;
+  useEffect(() => {
+    if (preview) return;
+    const root = document.documentElement;
+    root.dataset.theme = resolvedTheme;
+    return () => {
+      if (root.dataset.theme === resolvedTheme) delete root.dataset.theme;
+    };
+  }, [resolvedTheme, preview]);
   const isOffline = offline ?? browserOffline;
   const Root = preview ? "div" : "main";
   const shellRef = useRef<HTMLDivElement>(null);
@@ -147,7 +157,7 @@ export function AppShell({
     <div
       ref={shellRef}
       className={`${styles.shell} ${preview ? styles.preview : ""}`}
-      data-theme={theme ?? storedTheme}
+      data-theme={resolvedTheme}
       data-testid={testId}
       style={{ "--kb": `${keyboard}px` } as CSSProperties}
     >
