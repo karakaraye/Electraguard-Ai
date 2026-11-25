@@ -758,7 +758,8 @@
       "view": "Lee foto ahụ",
       "tooBig": "Foto a buru ibu. Were ya ọzọ site n'ebe dị anya ntakịrị.",
       "tooMany": "E gụwo foto dị ukwuu n’ime otu awa gara aga. Pịnye ọnụọgụ ndị ahụ site na mpempe akwụkwọ ahụ.",
-      "unavailable": "Ịgụ foto adịbeghị. Pịnye ọnụọgụ ndị ahụ site na mpempe akwụkwọ ahụ."
+      "unavailable": "Ịgụ foto adịbeghị. Pịnye ọnụọgụ ndị ahụ site na mpempe akwụkwọ ahụ.",
+      "frame": "Mee ka mpempe akwụkwọ niile banye n'ime okpokolo"
     },
     "numbers": {
       "title": "Pịnye kpọmkwem ihe mpempe akwụkwọ ahụ gosiri",
@@ -772,7 +773,9 @@
       "notNumber": "Jiri naanị ọnụọgụ, dịka 245.",
       "tooBig": "Ọnụọgụ ahụ karịrị maka otu ebe ntuli aka. Lelee ya ọzọ.",
       "checkThis": "Lelee ọnụọgụ a",
-      "required": "Pịnye ọnụọgụ dị na mpempe akwụkwọ ahụ. Pịnye 0 ma ọ bụrụ na mpempe akwụkwọ ahụ gosiri 0."
+      "required": "Pịnye ọnụọgụ dị na mpempe akwụkwọ ahụ. Pịnye 0 ma ọ bụrụ na mpempe akwụkwọ ahụ gosiri 0.",
+      "groupVoters": "Ndị ntuli aka na akwụkwọ ntuli aka",
+      "groupParties": "Votu maka otu ọ bụla"
     },
     "confirm": "Elelela m ọnụọgụ ọ bụla na mpempe akwụkwọ e dobere",
     "confirmError": "Pịa igbe ahụ mgbe i lelechara ọnụọgụ ọ bụla.",

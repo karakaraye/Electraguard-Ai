@@ -758,7 +758,8 @@
       "view": "Wo fọ́tò náà",
       "tooBig": "Fọ́tò yìí tóbi jù. Tún ya á láti ibi tó jìnnà díẹ̀.",
       "tooMany": "A ti ka fọ́tò púpọ̀ jù ní wákàtí kan sẹ́yìn. Tẹ àwọn nọ́mbà láti inú ìwé náà.",
-      "unavailable": "Kíka fọ́tò kò tíì sí. Tẹ àwọn nọ́mbà láti inú ìwé náà."
+      "unavailable": "Kíka fọ́tò kò tíì sí. Tẹ àwọn nọ́mbà láti inú ìwé náà.",
+      "frame": "Jẹ́ kí gbogbo ìwé wà nínú férémù"
     },
     "numbers": {
       "title": "Tẹ ohun tí ìwé náà fi hàn gẹ́lẹ́",
@@ -772,7 +773,9 @@
       "notNumber": "Lo nọ́mbà nìkan, bíi 245.",
       "tooBig": "Nọ́mbà yẹn ti pọ̀ jù fún ibùdó ìdìbò kan. Tún un ṣàyẹ̀wò.",
       "checkThis": "Ṣàyẹ̀wò nọ́mbà yìí",
-      "required": "Tẹ nọ́mbà tó wà lórí ìwé náà. Tẹ 0 tí ìwé náà bá fi 0 hàn."
+      "required": "Tẹ nọ́mbà tó wà lórí ìwé náà. Tẹ 0 tí ìwé náà bá fi 0 hàn.",
+      "groupVoters": "Àwọn olùdìbò àti ìwé ìbò",
+      "groupParties": "Ìbò fún ẹgbẹ́ kọ̀ọ̀kan"
     },
     "confirm": "Mo ti fi gbogbo nọ́mbà wé ìwé tí a lẹ̀ síta",
     "confirmError": "Fi àmì sí àpótí náà lẹ́yìn tí o bá ti ṣàyẹ̀wò gbogbo nọ́mbà.",

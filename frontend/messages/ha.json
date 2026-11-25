@@ -758,7 +758,8 @@
       "view": "Duba hoton",
       "tooBig": "Wannan hoto ya yi girma. Sake ɗaukarsa daga ɗan nesa.",
       "tooMany": "An karanta hotuna da yawa a cikin awa ɗaya da ta wuce. Rubuta lambobin daga takardar.",
-      "unavailable": "Karanta hotuna bai samu ba tukuna. Rubuta lambobin daga takardar."
+      "unavailable": "Karanta hotuna bai samu ba tukuna. Rubuta lambobin daga takardar.",
+      "frame": "Sa dukkan takardar cikin firam"
     },
     "numbers": {
       "title": "Rubuta daidai abin da ke kan takardar",
@@ -772,7 +773,9 @@
       "notNumber": "Yi amfani da lambobi kawai, kamar 245.",
       "tooBig": "Wannan lambar ta yi yawa ga rumfar zaɓe ɗaya. Ka sake dubawa.",
       "checkThis": "Duba wannan lamba",
-      "required": "Rubuta lambar da ke kan takardar. Rubuta 0 idan takardar ta nuna 0."
+      "required": "Rubuta lambar da ke kan takardar. Rubuta 0 idan takardar ta nuna 0.",
+      "groupVoters": "Masu zaɓe da ƙuri'u",
+      "groupParties": "Ƙuri'un kowace jam'iyya"
     },
     "confirm": "Na duba kowace lamba da takardar da aka liƙa",
     "confirmError": "Ka yi alama a akwatin bayan ka duba kowace lamba.",

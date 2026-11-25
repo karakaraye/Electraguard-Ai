@@ -758,7 +758,8 @@
       "view": "See the photo",
       "tooBig": "This photo too big. Snap am again small far.",
       "tooMany": "Dem don read too many photos for the last one hour. Type the numbers from the sheet.",
-      "unavailable": "To read photo never ready yet. Type the numbers from the sheet."
+      "unavailable": "To read photo never ready yet. Type the numbers from the sheet.",
+      "frame": "Make the whole sheet enter inside the frame"
     },
     "numbers": {
       "title": "Type exactly wetin dey the sheet",
@@ -772,7 +773,9 @@
       "notNumber": "Use only numbers, like 245.",
       "tooBig": "That number too big for one polling unit. Check am again.",
       "checkThis": "Check this number",
-      "required": "Type the number wey dey the sheet. Type 0 if the sheet show 0."
+      "required": "Type the number wey dey the sheet. Type 0 if the sheet show 0.",
+      "groupVoters": "Voters and ballot papers",
+      "groupParties": "Votes for each party"
     },
     "confirm": "I don check every number with the sheet wey dem paste",
     "confirmError": "Tick the box after you check every number.",

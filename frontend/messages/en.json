@@ -757,7 +757,8 @@
       "view": "See the photo",
       "tooBig": "This photo is too big. Take it again a little further away.",
       "tooMany": "Too many photos read in the last hour. Type the numbers from the sheet.",
-      "unavailable": "Reading photos is not available yet. Type the numbers from the sheet."
+      "unavailable": "Reading photos is not available yet. Type the numbers from the sheet.",
+      "frame": "Fit the whole sheet inside the frame"
     },
     "numbers": {
       "title": "Type exactly what the sheet shows",
@@ -771,7 +772,9 @@
       "notNumber": "Use numbers only, like 245.",
       "tooBig": "That number is too big for one polling unit. Check it again.",
       "checkThis": "Check this number",
-      "required": "Type the number on the sheet. Type 0 if the sheet shows 0."
+      "required": "Type the number on the sheet. Type 0 if the sheet shows 0.",
+      "groupVoters": "Voters and ballots",
+      "groupParties": "Votes for each party"
     },
     "confirm": "I checked every number against the posted sheet",
     "confirmError": "Tick the box after you check every number.",

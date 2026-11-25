@@ -128,9 +128,17 @@ export function ResultSheetView(props: ResultSheetViewProps) {
             </h2>
             <p className={styles.note}>{t("o16.photo.tip")}</p>
             {props.photoUrl ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img className={s.sheetPhoto} src={props.photoUrl} alt={t("o16.photo.alt")} data-testid="o16-preview" />
-            ) : null}
+              <div className={s.scanWrap} data-scanning={props.notice === "reading" || undefined}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img className={s.sheetPhoto} src={props.photoUrl} alt={t("o16.photo.alt")} data-testid="o16-preview" />
+              </div>
+            ) : (
+              <div className={s.sheetFrame} data-testid="o16-frame">
+                <span className={s.frameCorners} aria-hidden="true" />
+                <ImageIcon size={36} aria-hidden="true" />
+                <p>{t("o16.photo.frame")}</p>
+              </div>
+            )}
             <div className={styles.choices}>
               <Button variant={props.photoUrl ? "secondary" : "primary"} icon={<CameraIcon />} onClick={() => takeInput.current?.click()} data-testid="o16-take">
                 {props.photoUrl ? t("o16.photo.retake") : t("o16.photo.take")}
@@ -191,34 +199,46 @@ export function ResultSheetView(props: ResultSheetViewProps) {
             <span>{t("o16.photo.view")}</span>
           </button>
         ) : null}
-        <div className={s.numbers}>
-          {props.fields.map((field) => {
-            const confidence = props.suggested[field.id];
-            const isSuggested = confidence !== undefined;
-            return (
-              <Field
-                key={field.id}
-                label={
-                  <>
-                    {field.label}
-                    {isSuggested ? <span className={s.suggestedTag}>{t("ui.suggestion.label")}</span> : null}
-                  </>
-                }
-                hint={isSuggested && confidence < 0.75 ? <span className={s.checkTag}>{t("o16.numbers.checkThis")}</span> : undefined}
-                value={props.values[field.id] ?? ""}
-                onChange={(event) => props.onValue(field.id, event.target.value)}
-                onFocus={() => props.onTouch(field.id)}
-                inputMode="numeric"
-                pattern="[0-9]*"
-                autoComplete="off"
-                numeric
-                maxLength={6}
-                error={props.errors[field.id]}
-                data-testid={`o16-field-${field.id}`}
-              />
-            );
-          })}
-        </div>
+        {[
+          { key: "voters", title: t("o16.numbers.groupVoters"), fields: props.fields.filter((field) => !field.id.startsWith("votes.")) },
+          { key: "parties", title: t("o16.numbers.groupParties"), fields: props.fields.filter((field) => field.id.startsWith("votes.")) },
+        ]
+          .filter((group) => group.fields.length)
+          .map((group) => (
+            <section key={group.key} className={s.qCard} aria-labelledby={`o16-${group.key}`}>
+              <h2 className={s.answerLegend} id={`o16-${group.key}`}>
+                {group.title}
+              </h2>
+              <div className={s.numbers}>
+                {group.fields.map((field) => {
+                  const confidence = props.suggested[field.id];
+                  const isSuggested = confidence !== undefined;
+                  return (
+                    <Field
+                      key={field.id}
+                      label={
+                        <>
+                          {field.label}
+                          {isSuggested ? <span className={s.suggestedTag}>{t("ui.suggestion.label")}</span> : null}
+                        </>
+                      }
+                      hint={isSuggested && confidence < 0.75 ? <span className={s.checkTag}>{t("o16.numbers.checkThis")}</span> : undefined}
+                      value={props.values[field.id] ?? ""}
+                      onChange={(event) => props.onValue(field.id, event.target.value)}
+                      onFocus={() => props.onTouch(field.id)}
+                      inputMode="numeric"
+                      pattern="[0-9]*"
+                      autoComplete="off"
+                      numeric
+                      maxLength={6}
+                      error={props.errors[field.id]}
+                      data-testid={`o16-field-${field.id}`}
+                    />
+                  );
+                })}
+              </div>
+            </section>
+          ))}
         <label className={styles.check} data-testid="o16-confirm">
           <input type="checkbox" checked={props.confirmed} onChange={(event) => props.onConfirm(event.target.checked)} aria-invalid={props.confirmError || undefined} aria-describedby={props.confirmError ? "o16-confirm-error" : undefined} />
           <span>{t("o16.confirm")}</span>
