@@ -188,13 +188,22 @@ def queue(request):
     cursor = request.GET.get("cursor")
     boundary = None
     owner = str(request.user.public_id)
+    sort_by_due = "clock_state" in filters
     if cursor:
         try:
-            cursor_owner, cursor_filters, rank, danger, received, pk = signing.loads(cursor, salt=CURSOR)
-            when = aware_datetime(received)
-            if cursor_owner != owner or cursor_filters != filters or when is None:
-                raise ValueError
-            boundary = (rank, danger, when, str(UUID(pk)))
+            payload = signing.loads(cursor, salt=CURSOR)
+            if sort_by_due:
+                mode, cursor_owner, cursor_filters, due_str, pk = payload
+                due_when = aware_datetime(due_str)
+                if mode != "due" or cursor_owner != owner or cursor_filters != filters or due_when is None:
+                    raise ValueError
+                boundary = (due_when, str(UUID(pk)))
+            else:
+                cursor_owner, cursor_filters, rank, danger, received, pk = payload
+                when = aware_datetime(received)
+                if cursor_owner != owner or cursor_filters != filters or when is None:
+                    raise ValueError
+                boundary = (rank, danger, when, str(UUID(pk)))
         except (signing.BadSignature, ValueError, TypeError):
             problems["cursor"] = field("invalid", "Use the cursor returned for these filters.")
     if problems:
@@ -217,16 +226,17 @@ def queue(request):
     ).defer("description", "redacted_description", "redactions").prefetch_related(
         "clocks", Prefetch("review_events", queryset=report_events(request), to_attr="case_events")
     )
-    sort_by_due = "clock_state" in filters
     ordered = []
     for report in reports:
         item = queue_item(report, report.photo_count, report.case_events, report.video_count, report.audio_count)
         if not matches(item, filters):
             continue
         if sort_by_due:
-            due = (item.get("clock") or {}).get("due_at") or "9999-12-31T23:59:59+01:00"
-            key = (due, str(report.pk))
-            ordered.append((key, item))
+            due_str = (item.get("clock") or {}).get("due_at")
+            due_dt = aware_datetime(due_str) if due_str else datetime(9999, 12, 31, 23, 59, 59, tzinfo=dt_timezone.utc)
+            key = (due_dt, str(report.pk))
+            if boundary is None or key > boundary:
+                ordered.append((key, item))
         else:
             key = (-URGENCIES.index(item["urgency"]["level"]), not report.incident_details.get("danger_now", False),
                    report.created_at, str(report.pk))
@@ -235,9 +245,13 @@ def queue(request):
     ordered.sort(key=lambda row: row[0])
     page = ordered[:limit]
     next_cursor = None
-    if len(ordered) > limit and not sort_by_due:
-        rank, danger, received, pk = page[-1][0]
-        next_cursor = signing.dumps([owner, filters, rank, danger, received.isoformat(), pk], salt=CURSOR)
+    if len(ordered) > limit:
+        if sort_by_due:
+            due_dt, pk = page[-1][0]
+            next_cursor = signing.dumps(["due", owner, filters, due_dt.isoformat(), pk], salt=CURSOR)
+        else:
+            rank, danger, received, pk = page[-1][0]
+            next_cursor = signing.dumps([owner, filters, rank, danger, received.isoformat(), pk], salt=CURSOR)
     return JsonResponse({"items": [item for _, item in page], "counts": counts, "next_cursor": next_cursor})
 
 
