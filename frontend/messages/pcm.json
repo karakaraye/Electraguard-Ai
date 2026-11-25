@@ -1648,7 +1648,8 @@
       "confirmTitle": "Turn on hourly release?",
       "confirmBody": "Snapshots go publish by demsef every hour, with your name as di approver. You fit turn am off anytime.",
       "confirmOn": "Turn on",
-      "turnOff": "Turn off"
+      "turnOff": "Turn off",
+      "stale": "Dem don change di hourly release setting for another place. Reload dis page, then try again."
     },
     "notice": {
       "generated": "Preview don ready. Check am before you publish.",
@@ -1676,7 +1677,9 @@
       "empty": "No release yet.",
       "emptyBody": "Generate preview to make di first one.",
       "fingerprintNote": "Di fingerprint na di start of di audit-chain code wey dem save with each release. E dey help anybody check say dem no change di release.",
-      "loadMore": "Show more releases"
+      "loadMore": "Show more releases",
+      "selectHint": "Pick release to see wetin di public go see.",
+      "selected": "E dey show for under"
     },
     "detail": {
       "draftNote": "Dis na draft. Nothing dey public until you approve and publish am.",
@@ -1711,7 +1714,9 @@
       "transition": "Na only draft dem fit approve or throw away.",
       "tooRecent": "Di cutoff too near now. Pick earlier time.",
       "invalid": "Check di details and try again."
-    }
+    },
+    "retry": "Try again",
+    "cancel": "Cancel"
   },
   "s08": {
     "title": "Moderate discussion dem",
@@ -1784,27 +1789,131 @@
   },
   "s09": {
     "title": "[PCM draft] Observer code batches",
-    "subtitle": "[PCM draft] Batch generation, printable cards, and credential management",
-    "batches": "[PCM draft] Batches",
-    "createBatch": "[PCM draft] Create code batch",
-    "label": "[PCM draft] Batch label",
-    "count": "[PCM draft] Number of codes",
-    "printCards": "[PCM draft] Print code cards",
-    "printConfirm": "[PCM draft] Issue setup PINs and prepare printable cards",
-    "printNotice": "[PCM draft] Setup PINs are shown only once. Print or distribute immediately.",
-    "codesTable": "[PCM draft] Observer codes",
-    "searchCodes": "[PCM draft] Search codes",
+    "createBatch": "Create batch",
+    "printNotice": "Dem dey show setup PIN one time only.",
+    "codesTable": "Observer codes",
+    "searchCodes": "Search codes",
     "status": {
-      "unclaimed": "[PCM draft] Unclaimed",
-      "active": "[PCM draft] Active",
-      "locked": "[PCM draft] Locked",
-      "revoked": "[PCM draft] Revoked"
+      "unclaimed": "Never claim",
+      "active": "Active",
+      "locked": "Locked",
+      "revoked": "Revoked"
     },
     "actions": {
-      "revoke": "[PCM draft] Revoke code",
-      "reissue": "[PCM draft] Reissue code",
-      "resetPin": "[PCM draft] Reset PIN",
-      "reason": "[PCM draft] Reason"
+      "revoke": "Revoke",
+      "reissue": "Reissue",
+      "resetPin": "Reset PIN",
+      "revokeFor": "Revoke {code}",
+      "reissueFor": "Reissue {code}",
+      "resetPinFor": "Reset PIN for {code}"
+    },
+    "create": {
+      "title": "Create new batch",
+      "description": "Every code get setup PIN. Dem go show the PIN one time only, for the cards wey you go print next.",
+      "label": "Batch name",
+      "labelHint": "Reach 80 letters. Use the ward or training group name so say you fit find am later.",
+      "count": "How many codes",
+      "countHint": "From 1 reach 500.",
+      "submit": "Create batch",
+      "cancel": "Cancel",
+      "errors": {
+        "label": "Put name wey no pass 80 letters.",
+        "count": "Put full number from 1 reach 500."
+      }
+    },
+    "batchList": {
+      "title": "Batches",
+      "empty": "No batch dey yet. Create one make you fit give observer codes.",
+      "created": "{who} create am {when}",
+      "codes": "{count, plural, one {# code} other {# codes}}",
+      "unclaimed": "{count} never claim",
+      "active": "{count} dey active",
+      "revoked": "{count} don revoke",
+      "printed": "Printed {when}",
+      "notPrinted": "Dem never print am",
+      "print": "Print cards",
+      "printFor": "Print cards for {label}"
+    },
+    "cards": {
+      "heading": "{count, plural, one {# card} other {# cards}} ready to print",
+      "headingFor": "Card for {code}",
+      "noticeMore": "Print now. If you close this page, dem no fit show the PINs again. Reset PIN to get new one.",
+      "print": "Print",
+      "close": "Done",
+      "code": "Observer code",
+      "pin": "Setup PIN",
+      "expires": "PIN go expire {when}",
+      "how": "Put this code and PIN the first time wey you open ElectraGuard AI.",
+      "cutLine": "Cut along the dashed line",
+      "cutHere": "Cut here"
+    },
+    "searchPlaceholder": "OBS-",
+    "table": {
+      "columns": {
+        "code": "Observer code",
+        "batch": "Batch",
+        "status": "Status",
+        "activated": "Activated",
+        "lastActive": "Last active",
+        "actions": "Actions",
+        "activity": "Activity"
+      },
+      "never": "Not yet",
+      "replacedBy": "{code} don replace am",
+      "empty": "No observer code dey yet. Create batch to get some.",
+      "emptyFilter": "No code match. Try another search or status.",
+      "count": "{count, plural, one {# code} other {# codes}}",
+      "noBatch": "No batch",
+      "lastActiveOn": "Last time e work: {date}"
+    },
+    "filter": {
+      "label": "Show",
+      "all": "All"
+    },
+    "revoke": {
+      "title": "Revoke {code}?",
+      "body": "This one go log the observer out for every phone now now, and dem no fit use the code again. Reports wey don go dey safe.",
+      "confirm": "Revoke code"
+    },
+    "reissue": {
+      "title": "Reissue {code}?",
+      "body": "Dem go revoke the old code and make new code with new setup PIN. E dey count for the daily limit.",
+      "confirm": "Reissue code"
+    },
+    "resetPin": {
+      "title": "Reset PIN for {code}?",
+      "body": "The observer go log out, the code go go back to unclaimed and dem go show new setup PIN one time.",
+      "confirm": "Reset PIN"
+    },
+    "reason": {
+      "label": "Reason",
+      "hint": "Dem go write am for the audit log.",
+      "lost_phone": "Phone lost",
+      "left_programme": "Don leave the programme",
+      "suspected_misuse": "We suspect misuse",
+      "other": "Other"
+    },
+    "confirmPrint": {
+      "title": "Print cards for {label}?",
+      "body": "Print go make new setup PIN for the {count, plural, one {# code wey never claim} other {# codes wey never claim}} for this batch. The old PINs for those codes go stop work. Active and revoked codes no go change.",
+      "confirm": "Reset PINs and print"
+    },
+    "cancel": "Cancel",
+    "retry": "Try again",
+    "errors": {
+      "confirmation": "Confirm say make dem reset the setup PINs wey never claim, then try again.",
+      "rateLimited": "This organisation don reach the daily limit of 2,000 new codes. Try again tomorrow.",
+      "alreadyRevoked": "Dem don revoke this code before. We don refresh the list.",
+      "notFound": "We no see that code. We don refresh the list.",
+      "invalid": "Check the details and try again.",
+      "inProgress": "Dem still dey work on this request. Wait small and try again."
+    },
+    "notice": {
+      "created": "Batch don create. Print the cards now; dem no go show the setup PINs again.",
+      "revoked": "{code} don revoke.",
+      "reissued": "{code} don revoke. The new card dey below.",
+      "pinReset": "New setup PIN ready for {code}.",
+      "printed": "Cards for {label} ready. Dem dey show the setup PINs one time only."
     }
   },
   "s10": {

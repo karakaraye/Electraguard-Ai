@@ -1648,7 +1648,8 @@
       "confirmTitle": "Za a kunna fitarwa kowace awa?",
       "confirmBody": "Hotunan bayanai za su wallafu da kansu kowace awa, tare da sunanku a matsayin wanda ya amince. Kuna iya kashe shi a kowane lokaci.",
       "confirmOn": "Kunna",
-      "turnOff": "Kashe"
+      "turnOff": "Kashe",
+      "stale": "An canza saitin sakin kowace awa a wani wuri. Sake loda shafin, sannan a sake gwadawa."
     },
     "notice": {
       "generated": "Samfoti ya shirya. Ku duba shi kafin ku wallafa.",
@@ -1676,7 +1677,9 @@
       "empty": "Babu fitarwa tukuna.",
       "emptyBody": "Ƙirƙiri samfoti don yin na farko.",
       "fingerprintNote": "Alamar tabbatarwa ita ce farkon lambar sarkar bincike da ake ajiyewa tare da kowace fitarwa. Tana ba kowa damar tabbatar da cewa ba a canza fitarwar ba.",
-      "loadMore": "Ƙara nuna fitarwa"
+      "loadMore": "Ƙara nuna fitarwa",
+      "selectHint": "Zaɓi sakin da za ka ga abin da jama'a ke gani.",
+      "selected": "Ana nunawa a ƙasa"
     },
     "detail": {
       "draftNote": "Wannan daftari ne. Babu abin da ya zama na jama'a har sai kun amince kuma kun wallafa.",
@@ -1711,7 +1714,9 @@
       "transition": "Daftari kaɗai za a iya amincewa da shi ko a watsar.",
       "tooRecent": "Lokacin ƙarshe ya yi kusa sosai. Zaɓi lokacin da ya fi wannan farko.",
       "invalid": "Duba bayanan ku sake gwadawa."
-    }
+    },
+    "retry": "Sake gwadawa",
+    "cancel": "Soke"
   },
   "s08": {
     "title": "Sa ido kan tattaunawa",
@@ -1784,27 +1789,131 @@
   },
   "s09": {
     "title": "[HA draft] Observer code batches",
-    "subtitle": "[HA draft] Batch generation, printable cards, and credential management",
-    "batches": "[HA draft] Batches",
-    "createBatch": "[HA draft] Create code batch",
-    "label": "[HA draft] Batch label",
-    "count": "[HA draft] Number of codes",
-    "printCards": "[HA draft] Print code cards",
-    "printConfirm": "[HA draft] Issue setup PINs and prepare printable cards",
-    "printNotice": "[HA draft] Setup PINs are shown only once. Print or distribute immediately.",
-    "codesTable": "[HA draft] Observer codes",
-    "searchCodes": "[HA draft] Search codes",
+    "createBatch": "Ƙirƙiri rukuni",
+    "printNotice": "Ana nuna PIN na saitawa sau ɗaya kawai.",
+    "codesTable": "Lambobin masu sa ido",
+    "searchCodes": "Nemi lambobi",
     "status": {
-      "unclaimed": "[HA draft] Unclaimed",
-      "active": "[HA draft] Active",
-      "locked": "[HA draft] Locked",
-      "revoked": "[HA draft] Revoked"
+      "unclaimed": "Ba a karɓa ba",
+      "active": "Yana aiki",
+      "locked": "A kulle",
+      "revoked": "An soke"
     },
     "actions": {
-      "revoke": "[HA draft] Revoke code",
-      "reissue": "[HA draft] Reissue code",
-      "resetPin": "[HA draft] Reset PIN",
-      "reason": "[HA draft] Reason"
+      "revoke": "Soke",
+      "reissue": "Sake bayarwa",
+      "resetPin": "Sake saita PIN",
+      "revokeFor": "Soke {code}",
+      "reissueFor": "Sake bayar da {code}",
+      "resetPinFor": "Sake saita PIN na {code}"
+    },
+    "create": {
+      "title": "Ƙirƙiri sabon rukuni",
+      "description": "Kowace lamba tana zuwa da PIN na saitawa. Ana nuna PIN sau ɗaya kawai, a katunan da za ka buga nan gaba.",
+      "label": "Sunan rukuni",
+      "labelHint": "Har haruffa 80. Yi amfani da sunan mazaɓa ko ƙungiyar horo domin ka same shi daga baya.",
+      "count": "Adadin lambobi",
+      "countHint": "Daga 1 zuwa 500.",
+      "submit": "Ƙirƙiri rukuni",
+      "cancel": "Soke",
+      "errors": {
+        "label": "Shigar da suna wanda bai wuce haruffa 80 ba.",
+        "count": "Shigar da cikakken lamba daga 1 zuwa 500."
+      }
+    },
+    "batchList": {
+      "title": "Rukunoni",
+      "empty": "Babu rukuni tukuna. Ƙirƙiri ɗaya domin bayar da lambobin mai sa ido.",
+      "created": "{who} ya ƙirƙira a {when}",
+      "codes": "{count, plural, one {lamba #} other {lambobi #}}",
+      "unclaimed": "{count} ba a karɓa ba",
+      "active": "{count} suna aiki",
+      "revoked": "{count} an soke",
+      "printed": "An buga a {when}",
+      "notPrinted": "Ba a buga ba tukuna",
+      "print": "Buga katuna",
+      "printFor": "Buga katunan {label}"
+    },
+    "cards": {
+      "heading": "{count, plural, one {kati #} other {katuna #}} a shirye don bugawa",
+      "headingFor": "Katin {code}",
+      "noticeMore": "Buga yanzu. Idan ka rufe wannan shafi ba za a sake nuna PIN ba. Sake saita PIN domin samun sabo.",
+      "print": "Buga",
+      "close": "An gama",
+      "code": "Lambar mai sa ido",
+      "pin": "PIN na saitawa",
+      "expires": "PIN zai ƙare a {when}",
+      "how": "Shigar da wannan lamba da PIN a farkon buɗe ElectraGuard AI.",
+      "cutLine": "Yanke a layin da aka ɗigo",
+      "cutHere": "Yanke nan"
+    },
+    "searchPlaceholder": "OBS-",
+    "table": {
+      "columns": {
+        "code": "Lambar mai sa ido",
+        "batch": "Rukuni",
+        "status": "Matsayi",
+        "activated": "An kunna",
+        "lastActive": "Aiki na ƙarshe",
+        "actions": "Ayyuka",
+        "activity": "Ayyuka"
+      },
+      "never": "Ba tukuna",
+      "replacedBy": "An maye gurbinsa da {code}",
+      "empty": "Babu lambobin masu sa ido tukuna. Ƙirƙiri rukuni domin samun wasu.",
+      "emptyFilter": "Babu lambar da ta dace. Gwada wani bincike ko matsayi.",
+      "count": "{count, plural, one {lamba #} other {lambobi #}}",
+      "noBatch": "Babu rukuni",
+      "lastActiveOn": "Aiki na ƙarshe {date}"
+    },
+    "filter": {
+      "label": "Nuna",
+      "all": "Duka"
+    },
+    "revoke": {
+      "title": "A soke {code}?",
+      "body": "Wannan zai fitar da mai sa ido daga kowace waya nan take, kuma ba za a sake amfani da lambar ba. Rahotannin da aka riga aka aika suna nan.",
+      "confirm": "Soke lamba"
+    },
+    "reissue": {
+      "title": "A sake bayar da {code}?",
+      "body": "Za a soke tsohuwar lamba, a ƙirƙiri sabuwa mai sabon PIN na saitawa. Tana ƙirgawa cikin iyakar yau da kullum.",
+      "confirm": "Sake bayar da lamba"
+    },
+    "resetPin": {
+      "title": "A sake saita PIN na {code}?",
+      "body": "Za a fitar da mai sa ido, lambar za ta koma ba a karɓa ba, kuma za a nuna sabon PIN na saitawa sau ɗaya.",
+      "confirm": "Sake saita PIN"
+    },
+    "reason": {
+      "label": "Dalili",
+      "hint": "An rubuta a cikin tarihin bincike.",
+      "lost_phone": "Waya ta ɓace",
+      "left_programme": "Ya bar shirin",
+      "suspected_misuse": "Ana zargin amfani da ba daidai ba",
+      "other": "Wani dalili"
+    },
+    "confirmPrint": {
+      "title": "A buga katunan {label}?",
+      "body": "Bugawa zai ƙirƙiri sabbin PIN na saitawa ga {count, plural, one {lamba # da ba a karɓa ba} other {lambobi # da ba a karɓa ba}} a wannan rukuni. Tsoffin PIN na waɗannan lambobi za su daina aiki. Lambobin da ke aiki da waɗanda aka soke ba za su canza ba.",
+      "confirm": "Sake saita PIN a buga"
+    },
+    "cancel": "Soke",
+    "retry": "Sake gwadawa",
+    "errors": {
+      "confirmation": "Tabbatar cewa a sake saita PIN na saitawa da ba a karɓa ba, sannan a sake gwadawa.",
+      "rateLimited": "Wannan ƙungiya ta kai iyakar lambobi sabbi 2,000 a kowace rana. Sake gwadawa gobe.",
+      "alreadyRevoked": "An riga an soke wannan lamba. An sabunta jerin.",
+      "notFound": "Ba mu sami wannan lamba ba. An sabunta jerin.",
+      "invalid": "Duba bayanan ka sake gwadawa.",
+      "inProgress": "Ana kan sarrafa wannan buƙata. Jira ɗan lokaci ka sake gwadawa."
+    },
+    "notice": {
+      "created": "An ƙirƙiri rukuni. Buga katunan yanzu; ba za a sake nuna PIN na saitawa ba.",
+      "revoked": "An soke {code}.",
+      "reissued": "An soke {code}. Katin maye gurbinsa yana ƙasa.",
+      "pinReset": "Sabon PIN na saitawa a shirye yake don {code}.",
+      "printed": "Katunan {label} a shirye. Ana nuna PIN na saitawa sau ɗaya kawai."
     }
   },
   "s10": {

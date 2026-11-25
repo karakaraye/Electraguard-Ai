@@ -1648,7 +1648,8 @@
       "confirmTitle": "Gbanye mwepụta kwa awa?",
       "confirmBody": "Snapshots ga-apụta n'onwe ha kwa awa, ya na aha gị dị ka onye kwere. Ị nwere ike imechi ya oge ọ bụla.",
       "confirmOn": "Gbanye",
-      "turnOff": "Gbanyụọ"
+      "turnOff": "Gbanyụọ",
+      "stale": "Agbanweela ntọala mwepụta kwa elekere n'ebe ọzọ. Bugharịa peeji a, wee nwaa ọzọ."
     },
     "notice": {
       "generated": "Nlele mbụ dị njikere. Lelee ya tupu ị bipụta.",
@@ -1676,7 +1677,9 @@
       "empty": "Enwebeghị mwepụta.",
       "emptyBody": "Mepụta nlele mbụ iji mee nke mbụ.",
       "fingerprintNote": "Akara ịmata bụ mmalite koodu agbụ nyocha echekwara na mwepụta ọ bụla. Ọ na-enyere onye ọ bụla aka ịlele na e gbanweghị mwepụta ahụ.",
-      "loadMore": "Gosi mwepụta ndị ọzọ"
+      "loadMore": "Gosi mwepụta ndị ọzọ",
+      "selectHint": "Họrọ mwepụta ka ị hụ ihe ndị mmadụ na-ahụ.",
+      "selected": "Na-egosi n'okpuru"
     },
     "detail": {
       "draftNote": "Nke a bụ ndegharị. Ọ dịghị ihe bụ nke ọha ruo mgbe ị kwere ma bipụta ya.",
@@ -1711,7 +1714,9 @@
       "transition": "Naanị ndegharị ka a pụrụ ikwere ma ọ bụ ịtụfu.",
       "tooRecent": "Oge njedebe dị nso nke ukwuu. Họrọ oge ọzọ nke gara aga.",
       "invalid": "Lelee nkọwa ndị ahụ ma nwaa ọzọ."
-    }
+    },
+    "retry": "Nwaa ọzọ",
+    "cancel": "Kagbuo"
   },
   "s08": {
     "title": "Nlekọta mkparịta ụka",
@@ -1784,27 +1789,131 @@
   },
   "s09": {
     "title": "[IG draft] Observer code batches",
-    "subtitle": "[IG draft] Batch generation, printable cards, and credential management",
-    "batches": "[IG draft] Batches",
-    "createBatch": "[IG draft] Create code batch",
-    "label": "[IG draft] Batch label",
-    "count": "[IG draft] Number of codes",
-    "printCards": "[IG draft] Print code cards",
-    "printConfirm": "[IG draft] Issue setup PINs and prepare printable cards",
-    "printNotice": "[IG draft] Setup PINs are shown only once. Print or distribute immediately.",
-    "codesTable": "[IG draft] Observer codes",
-    "searchCodes": "[IG draft] Search codes",
+    "createBatch": "Mepụta ngwugwu",
+    "printNotice": "A na-egosi PIN nrụnye otu ugboro naanị.",
+    "codesTable": "Koodu ndị nlebanya",
+    "searchCodes": "Chọọ koodu",
     "status": {
-      "unclaimed": "[IG draft] Unclaimed",
-      "active": "[IG draft] Active",
-      "locked": "[IG draft] Locked",
-      "revoked": "[IG draft] Revoked"
+      "unclaimed": "Akwadobeghị",
+      "active": "Na-arụ ọrụ",
+      "locked": "Ekpọchiri",
+      "revoked": "A kagburu"
     },
     "actions": {
-      "revoke": "[IG draft] Revoke code",
-      "reissue": "[IG draft] Reissue code",
-      "resetPin": "[IG draft] Reset PIN",
-      "reason": "[IG draft] Reason"
+      "revoke": "Kagbuo",
+      "reissue": "Nye ọzọ",
+      "resetPin": "Tọgharịa PIN",
+      "revokeFor": "Kagbuo {code}",
+      "reissueFor": "Nye {code} ọzọ",
+      "resetPinFor": "Tọgharịa PIN nke {code}"
+    },
+    "create": {
+      "title": "Mepụta ngwugwu ọhụrụ",
+      "description": "Koodu ọ bụla nwere PIN nrụnye. A na-egosi PIN otu ugboro, na kaadị ị ga-ebipụta n'ọdịnihu.",
+      "label": "Aha ngwugwu",
+      "labelHint": "Ruo mkpụrụedemede 80. Jiri aha ward ma ọ bụ otu ọzụzụ ka ị chọta ya mgbe e mesịrị.",
+      "count": "Ọnụọgụ koodu",
+      "countHint": "Site na 1 ruo 500.",
+      "submit": "Mepụta ngwugwu",
+      "cancel": "Kagbuo",
+      "errors": {
+        "label": "Tinye aha na-ewebeghị mkpụrụedemede 80.",
+        "count": "Tinye ọnụọgụ zuru ezu site na 1 ruo 500."
+      }
+    },
+    "batchList": {
+      "title": "Ngwugwu",
+      "empty": "Enwebeghị ngwugwu. Mepụta otu iji nye koodu ndị nlebanya.",
+      "created": "{who} mepụtara ya na {when}",
+      "codes": "{count, plural, one {koodu #} other {koodu #}}",
+      "unclaimed": "{count} akwadobeghị",
+      "active": "{count} na-arụ ọrụ",
+      "revoked": "{count} ka a kagburu",
+      "printed": "E biputara na {when}",
+      "notPrinted": "E biputabeghị ya",
+      "print": "Bipụta kaadị",
+      "printFor": "Bipụta kaadị {label}"
+    },
+    "cards": {
+      "heading": "{count, plural, one {kaadị #} other {kaadị #}} dị njikere ibipụta",
+      "headingFor": "Kaadị {code}",
+      "noticeMore": "Bipụta ugbu a. Ma ọ bụrụ na ị emechie peeji a, agaghị egosi PIN ọzọ. Tọgharịa PIN iji nweta nke ọhụrụ.",
+      "print": "Bipụta",
+      "close": "Emechara",
+      "code": "Koodu onye nlebanya",
+      "pin": "PIN nrụnye",
+      "expires": "PIN ga-agwụ na {when}",
+      "how": "Tinye koodu a na PIN mgbe izizi i meghere ElectraGuard AI.",
+      "cutLine": "Bepụ n'akara ahịrị ahụ",
+      "cutHere": "Bepụ ebe a"
+    },
+    "searchPlaceholder": "OBS-",
+    "table": {
+      "columns": {
+        "code": "Koodu onye nlebanya",
+        "batch": "Ngwugwu",
+        "status": "Ọnọdụ",
+        "activated": "Emegidere ya",
+        "lastActive": "Oge ikpeazụ ọ rụrụ ọrụ",
+        "actions": "Omume",
+        "activity": "Ọrụ"
+      },
+      "never": "Ọ bụghị ma ugbu a",
+      "replacedBy": "{code} anọchiela ya",
+      "empty": "Enwebeghị koodu ndị nlebanya. Mepụta ngwugwu iji nweta ụfọdụ.",
+      "emptyFilter": "Ọ nweghị koodu kwekọrọ. Nwaa ọchụchọ ma ọ bụ ọnọdụ ọzọ.",
+      "count": "{count, plural, one {koodu #} other {koodu #}}",
+      "noBatch": "Enweghị ngwugwu",
+      "lastActiveOn": "Oge ikpeazụ ọ rụrụ ọrụ {date}"
+    },
+    "filter": {
+      "label": "Gosi",
+      "all": "Niile"
+    },
+    "revoke": {
+      "title": "Kagbuo {code}?",
+      "body": "Nke a ga-esi onye nlebanya pụọ na ekwentị niile ozugbo, a gaghịkwa eji koodu ahụ eme ihe ọzọ. A ga-edebe akụkọ e zigara.",
+      "confirm": "Kagbuo koodu"
+    },
+    "reissue": {
+      "title": "Nye {code} ọzọ?",
+      "body": "A ga-akagbu koodu ochie, mepụta koodu ọhụrụ nwere PIN nrụnye ọhụrụ. O na-agụnye n'oke kwa ụbọchị.",
+      "confirm": "Nye koodu ọzọ"
+    },
+    "resetPin": {
+      "title": "Tọgharịa PIN nke {code}?",
+      "body": "A ga-esi onye nlebanya pụọ, koodu ahụ ga-alaghachi n'akwadobeghị, a ga-egosikwa PIN nrụnye ọhụrụ otu ugboro.",
+      "confirm": "Tọgharịa PIN"
+    },
+    "reason": {
+      "label": "Ihe kpatara",
+      "hint": "E dere ya n'ihe ndekọ nyocha.",
+      "lost_phone": "Ekwentị furu efu",
+      "left_programme": "Hapụrụ mmemme ahụ",
+      "suspected_misuse": "A na-enyo enyo ojiji ọjọọ",
+      "other": "Ọzọ"
+    },
+    "confirmPrint": {
+      "title": "Bipụta kaadị {label}?",
+      "body": "Ibipụta ga-emepụta PIN nrụnye ọhụrụ maka {count, plural, one {koodu # akwadobeghị} other {koodu # akwadobeghị}} n'ime ngwugwu a. PIN ochie nke koodu ndị ahụ ga-akwụsị ịrụ ọrụ. Koodu na-arụ ọrụ na ndị a kagburu agaghị agbanwe.",
+      "confirm": "Tọgharịa PIN ma bipụta"
+    },
+    "cancel": "Kagbuo",
+    "retry": "Nwaa ọzọ",
+    "errors": {
+      "confirmation": "Kwenye na a ga-atọgharịa PIN nrụnye akwadobeghị, wee nwaa ọzọ.",
+      "rateLimited": "Òtù a ruru oke koodu ọhụrụ 2,000 kwa ụbọchị. Nwaa echi.",
+      "alreadyRevoked": "A kagburu koodu a mbụ. E mere ka ndepụta dị ọhụrụ.",
+      "notFound": "Anyị ahụghị koodu ahụ. E mere ka ndepụta dị ọhụrụ.",
+      "invalid": "Lelee nkọwa wee nwaa ọzọ.",
+      "inProgress": "A ka na-ahazi arịrịọ a. Chere obere wee nwaa ọzọ."
+    },
+    "notice": {
+      "created": "E mepụtara ngwugwu. Bipụta kaadị ugbu a; agaghị egosi PIN nrụnye ọzọ.",
+      "revoked": "A kagburu {code}.",
+      "reissued": "A kagburu {code}. Kaadị ọhụrụ dị n'okpuru.",
+      "pinReset": "PIN nrụnye ọhụrụ dị njikere maka {code}.",
+      "printed": "Kaadị {label} dị njikere. A na-egosi PIN nrụnye otu ugboro naanị."
     }
   },
   "s10": {

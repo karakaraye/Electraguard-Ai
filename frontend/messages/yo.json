@@ -1648,7 +1648,8 @@
       "confirmTitle": "Ṣé kí o tan ìtújáde wákàtí kọ̀ọ̀kan?",
       "confirmBody": "Àwọn àwòrán ìsọfúnni yóò máa jáde fúnra wọn ní wákàtí kọ̀ọ̀kan, pẹ̀lú orúkọ rẹ gẹ́gẹ́ bí olùfọwọ́sí. O lè pa á nígbàkigbà.",
       "confirmOn": "Tan án",
-      "turnOff": "Pa á"
+      "turnOff": "Pa á",
+      "stale": "A ti yí ètò ìtújáde wákàtí kọ̀ọ̀kan padà níbòmíràn. Tún ojú ewé yìí gbé jáde, lẹ́yìn náà gbìyànjú lẹ́ẹ̀kan sí i."
     },
     "notice": {
       "generated": "Àtúnyẹ̀wò ti ṣetán. Ṣàyẹ̀wò rẹ̀ kí o tó tẹ̀ ẹ́ jáde.",
@@ -1676,7 +1677,9 @@
       "empty": "Kò tíì sí ìtújáde kankan.",
       "emptyBody": "Ṣe àtúnyẹ̀wò láti ṣe èyí àkọ́kọ́.",
       "fingerprintNote": "Ìdámọ̀ ni ìbẹ̀rẹ̀ kóòdù ẹ̀wọ̀n àyẹ̀wò tí a tọ́jú pẹ̀lú ìtújáde kọ̀ọ̀kan. Ó jẹ́ kí ẹnikẹ́ni lè ṣàyẹ̀wò pé a kò yí ìtújáde náà padà.",
-      "loadMore": "Ṣí àwọn ìtújáde míì"
+      "loadMore": "Ṣí àwọn ìtújáde míì",
+      "selectHint": "Yan ìtújáde kan láti rí ohun tí gbogbo ènìyàn rí.",
+      "selected": "Ó ń hàn nísàlẹ̀"
     },
     "detail": {
       "draftNote": "Àkọsílẹ̀ ni èyí. Kò sí ohun tó di ti gbogbo ènìyàn títí o fi fọwọ́ sí i, tí o sì tẹ̀ ẹ́ jáde.",
@@ -1711,7 +1714,9 @@
       "transition": "Àkọsílẹ̀ nìkan ni a lè fọwọ́ sí tàbí pa tì.",
       "tooRecent": "Àkókò ìkẹyìn kò pẹ́ tó. Yan àkókò tó sẹ́yìn jù bẹ́ẹ̀ lọ.",
       "invalid": "Ṣàyẹ̀wò àwọn àlàyé náà kí o tún gbìyànjú."
-    }
+    },
+    "retry": "Gbìyànjú lẹ́ẹ̀kan sí i",
+    "cancel": "Fagilé"
   },
   "s08": {
     "title": "Ìṣàkóso ìjíròrò",
@@ -1784,27 +1789,131 @@
   },
   "s09": {
     "title": "[YO draft] Observer code batches",
-    "subtitle": "[YO draft] Batch generation, printable cards, and credential management",
-    "batches": "[YO draft] Batches",
-    "createBatch": "[YO draft] Create code batch",
-    "label": "[YO draft] Batch label",
-    "count": "[YO draft] Number of codes",
-    "printCards": "[YO draft] Print code cards",
-    "printConfirm": "[YO draft] Issue setup PINs and prepare printable cards",
-    "printNotice": "[YO draft] Setup PINs are shown only once. Print or distribute immediately.",
-    "codesTable": "[YO draft] Observer codes",
-    "searchCodes": "[YO draft] Search codes",
+    "createBatch": "Ṣẹ̀dá àpapọ̀",
+    "printNotice": "A máa ń fi PIN ìṣètò hàn lẹ́ẹ̀kan péré.",
+    "codesTable": "Àwọn kóòdù olùṣàkíyèsí",
+    "searchCodes": "Wá kóòdù",
     "status": {
-      "unclaimed": "[YO draft] Unclaimed",
-      "active": "[YO draft] Active",
-      "locked": "[YO draft] Locked",
-      "revoked": "[YO draft] Revoked"
+      "unclaimed": "Kò tíì gbà",
+      "active": "Ń ṣiṣẹ́",
+      "locked": "Ti tì",
+      "revoked": "Ti fagilé"
     },
     "actions": {
-      "revoke": "[YO draft] Revoke code",
-      "reissue": "[YO draft] Reissue code",
-      "resetPin": "[YO draft] Reset PIN",
-      "reason": "[YO draft] Reason"
+      "revoke": "Fagilé",
+      "reissue": "Tún fúnni",
+      "resetPin": "Tún PIN ṣe",
+      "revokeFor": "Fagilé {code}",
+      "reissueFor": "Tún {code} fúnni",
+      "resetPinFor": "Tún PIN {code} ṣe"
+    },
+    "create": {
+      "title": "Ṣẹ̀dá àpapọ̀ tuntun",
+      "description": "Kóòdù kọ̀ọ̀kan ní PIN ìṣètò. A máa fi àwọn PIN hàn lẹ́ẹ̀kan péré, lórí káàdì tí o máa tẹ̀ lẹ́yìn èyí.",
+      "label": "Orúkọ àpapọ̀",
+      "labelHint": "Kò ju àmì 80 lọ. Lo orúkọ wọ́ọ̀dù tàbí ẹgbẹ́ ìdánilẹ́kọ̀ọ́ kí o lè rí i lẹ́yìn náà.",
+      "count": "Iye kóòdù",
+      "countHint": "Láti 1 sí 500.",
+      "submit": "Ṣẹ̀dá àpapọ̀",
+      "cancel": "Fagilé",
+      "errors": {
+        "label": "Tẹ orúkọ tí kò ju àmì 80 lọ.",
+        "count": "Tẹ nọ́mbà odidi láti 1 sí 500."
+      }
+    },
+    "batchList": {
+      "title": "Àwọn àpapọ̀",
+      "empty": "Kò sí àpapọ̀ kankan. Ṣẹ̀dá ọ̀kan kí o lè fúnni ní kóòdù olùṣàkíyèsí.",
+      "created": "{who} ṣẹ̀dá rẹ̀ ní {when}",
+      "codes": "{count, plural, one {kóòdù #} other {kóòdù #}}",
+      "unclaimed": "{count} kò tíì gbà",
+      "active": "{count} ń ṣiṣẹ́",
+      "revoked": "{count} ti fagilé",
+      "printed": "A tẹ̀ ní {when}",
+      "notPrinted": "A kò tíì tẹ̀ ẹ́",
+      "print": "Tẹ káàdì",
+      "printFor": "Tẹ káàdì {label}"
+    },
+    "cards": {
+      "heading": "{count, plural, one {káàdì #} other {káàdì #}} ti ṣetán láti tẹ̀",
+      "headingFor": "Káàdì {code}",
+      "noticeMore": "Tẹ̀ ẹ́ báyìí. Tí o bá ti ìwé yìí, a kò lè fi àwọn PIN hàn mọ́. Tún PIN ṣe láti gba tuntun.",
+      "print": "Tẹ̀",
+      "close": "Parí",
+      "code": "Kóòdù olùṣàkíyèsí",
+      "pin": "PIN ìṣètò",
+      "expires": "PIN yóò parí ní {when}",
+      "how": "Tẹ kóòdù yìí àti PIN nígbà àkọ́kọ́ tí o bá ṣí ElectraGuard AI.",
+      "cutLine": "Gé e lórí ìlà tí a dá lẹ́nu",
+      "cutHere": "Gé níbí"
+    },
+    "searchPlaceholder": "OBS-",
+    "table": {
+      "columns": {
+        "code": "Kóòdù olùṣàkíyèsí",
+        "batch": "Àpapọ̀",
+        "status": "Ipò",
+        "activated": "A mú ṣiṣẹ́",
+        "lastActive": "Ìgbà ìkẹyìn tó ṣiṣẹ́",
+        "actions": "Ìgbésẹ̀",
+        "activity": "Ìṣiṣẹ́"
+      },
+      "never": "Kò tíì",
+      "replacedBy": "{code} ti gba ipò rẹ̀",
+      "empty": "Kò sí kóòdù olùṣàkíyèsí kankan. Ṣẹ̀dá àpapọ̀ láti ní àwọn kan.",
+      "emptyFilter": "Kò sí kóòdù tó bá a mu. Gbìyànjú ìwádìí tàbí ipò mìíràn.",
+      "count": "{count, plural, one {kóòdù #} other {kóòdù #}}",
+      "noBatch": "Kò sí àpapọ̀",
+      "lastActiveOn": "Ìgbà ìkẹyìn tó ṣiṣẹ́ {date}"
+    },
+    "filter": {
+      "label": "Fihàn",
+      "all": "Gbogbo"
+    },
+    "revoke": {
+      "title": "Fagilé {code}?",
+      "body": "Èyí yóò mú olùṣàkíyèsí jáde lórí gbogbo fóònù lójijì, a kò sì lè lo kóòdù náà mọ́. A máa pa àwọn ìròyìn tí a ti fi ránṣẹ́ mọ́.",
+      "confirm": "Fagilé kóòdù"
+    },
+    "reissue": {
+      "title": "Tún {code} fúnni?",
+      "body": "A ó fagilé kóòdù àtijọ́, a ó sì ṣẹ̀dá kóòdù tuntun pẹ̀lú PIN ìṣètò tuntun. Ó wà nínú ààlà ojoojúmọ́.",
+      "confirm": "Tún kóòdù fúnni"
+    },
+    "resetPin": {
+      "title": "Tún PIN {code} ṣe?",
+      "body": "A ó mú olùṣàkíyèsí jáde, kóòdù náà yóò padà sí àìtíì gbà, a ó sì fi PIN ìṣètò tuntun hàn lẹ́ẹ̀kan.",
+      "confirm": "Tún PIN ṣe"
+    },
+    "reason": {
+      "label": "Ìdí",
+      "hint": "A kọ ọ́ sínú àkọsílẹ̀ ìṣàyẹ̀wò.",
+      "lost_phone": "Fóònù sọnù",
+      "left_programme": "Ti kúrò nínú ètò náà",
+      "suspected_misuse": "A fura sí ìlòkúlò",
+      "other": "Òmíràn"
+    },
+    "confirmPrint": {
+      "title": "Tẹ káàdì {label}?",
+      "body": "Títẹ̀ yóò ṣẹ̀dá PIN ìṣètò tuntun fún {count, plural, one {kóòdù # tí kò tíì gbà} other {kóòdù # tí kò tíì gbà}} nínú àpapọ̀ yìí. Àwọn PIN àtijọ́ ti àwọn kóòdù náà yóò dáwọ́ ṣiṣẹ́. Àwọn kóòdù tó ń ṣiṣẹ́ àti èyí tí a fagilé kò ní yí padà.",
+      "confirm": "Tún PIN ṣe kí o tẹ̀"
+    },
+    "cancel": "Fagilé",
+    "retry": "Gbìyànjú lẹ́ẹ̀kan sí i",
+    "errors": {
+      "confirmation": "Jẹ́rìí sí i pé kí a tún PIN ìṣètò tí kò tíì gbà ṣe, lẹ́yìn náà gbìyànjú lẹ́ẹ̀kan sí i.",
+      "rateLimited": "Ètò yìí ti dé ààlà kóòdù tuntun 2,000 lójoojúmọ́. Gbìyànjú lọ́la.",
+      "alreadyRevoked": "A ti fagilé kóòdù yìí tẹ́lẹ̀. A ti ṣe àtúnṣe àtòkọ.",
+      "notFound": "A kò rí kóòdù yẹn. A ti ṣe àtúnṣe àtòkọ.",
+      "invalid": "Ṣàyẹ̀wò àwọn àlàyé kí o tún gbìyànjú.",
+      "inProgress": "A ṣì ń ṣe ìbéèrè yìí lọ́wọ́. Dúró díẹ̀ kí o tún gbìyànjú."
+    },
+    "notice": {
+      "created": "A ti ṣẹ̀dá àpapọ̀. Tẹ àwọn káàdì báyìí; a kò ní fi PIN ìṣètò hàn mọ́.",
+      "revoked": "A ti fagilé {code}.",
+      "reissued": "A ti fagilé {code}. Káàdì rẹ̀ tuntun wà nísàlẹ̀.",
+      "pinReset": "PIN ìṣètò tuntun ti ṣetán fún {code}.",
+      "printed": "Káàdì {label} ti ṣetán. A máa ń fi PIN ìṣètò hàn lẹ́ẹ̀kan péré."
     }
   },
   "s10": {

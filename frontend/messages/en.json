@@ -1647,7 +1647,8 @@
       "confirmTitle": "Turn on hourly release?",
       "confirmBody": "Snapshots will publish by themselves every hour, with your name recorded as approver. You can turn it off at any time.",
       "confirmOn": "Turn on",
-      "turnOff": "Turn off"
+      "turnOff": "Turn off",
+      "stale": "The hourly release setting was changed somewhere else. Reload this page, then try again."
     },
     "notice": {
       "generated": "Preview ready. Check it before you publish.",
@@ -1675,7 +1676,9 @@
       "empty": "No releases yet.",
       "emptyBody": "Generate a preview to make the first one.",
       "fingerprintNote": "The fingerprint is the start of the audit-chain code saved with each release. It lets anyone check that the release was not changed.",
-      "loadMore": "Load more releases"
+      "loadMore": "Load more releases",
+      "selectHint": "Select a release to see what the public sees.",
+      "selected": "Showing below"
     },
     "detail": {
       "draftNote": "This is a draft. Nothing is public until you approve and publish it.",
@@ -1710,7 +1713,9 @@
       "transition": "Only a draft can be approved or discarded.",
       "tooRecent": "The cutoff is too recent. Pick an earlier time.",
       "invalid": "Check the details and try again."
-    }
+    },
+    "retry": "Try again",
+    "cancel": "Cancel"
   },
   "s08": {
     "title": "Discussion moderation",
@@ -1783,14 +1788,8 @@
   },
   "s09": {
     "title": "Observer code batches",
-    "subtitle": "Batch generation, printable cards, and credential management",
-    "batches": "Batches",
-    "createBatch": "Create code batch",
-    "label": "Batch label",
-    "count": "Number of codes",
-    "printCards": "Print code cards",
-    "printConfirm": "Issue setup PINs and prepare printable cards",
-    "printNotice": "Setup PINs are shown only once. Print or distribute immediately.",
+    "createBatch": "Create batch",
+    "printNotice": "Setup PINs are shown only once.",
     "codesTable": "Observer codes",
     "searchCodes": "Search codes",
     "status": {
@@ -1800,10 +1799,120 @@
       "revoked": "Revoked"
     },
     "actions": {
-      "revoke": "Revoke code",
-      "reissue": "Reissue code",
+      "revoke": "Revoke",
+      "reissue": "Reissue",
       "resetPin": "Reset PIN",
-      "reason": "Reason"
+      "revokeFor": "Revoke {code}",
+      "reissueFor": "Reissue {code}",
+      "resetPinFor": "Reset the PIN for {code}"
+    },
+    "create": {
+      "title": "Create a batch",
+      "description": "Each code comes with a setup PIN. The PINs are shown once, on the cards you print next.",
+      "label": "Batch label",
+      "labelHint": "Up to 80 characters. Use the ward or training group so you can find it later.",
+      "count": "Number of codes",
+      "countHint": "From 1 to 500.",
+      "submit": "Create batch",
+      "cancel": "Cancel",
+      "errors": {
+        "label": "Enter a label of up to 80 characters.",
+        "count": "Enter a whole number from 1 to 500."
+      }
+    },
+    "batchList": {
+      "title": "Batches",
+      "empty": "No batches yet. Create one to issue observer codes.",
+      "created": "Created {when} by {who}",
+      "codes": "{count, plural, one {# code} other {# codes}}",
+      "unclaimed": "{count} unclaimed",
+      "active": "{count} active",
+      "revoked": "{count} revoked",
+      "printed": "Printed {when}",
+      "notPrinted": "Not printed yet",
+      "print": "Print cards",
+      "printFor": "Print cards for {label}"
+    },
+    "cards": {
+      "heading": "{count, plural, one {# card} other {# cards}} ready to print",
+      "headingFor": "Card for {code}",
+      "noticeMore": "Print now. Once you close this view the PINs cannot be shown again. Reset a PIN to get a new one.",
+      "print": "Print",
+      "close": "Done",
+      "code": "Observer code",
+      "pin": "Setup PIN",
+      "expires": "PIN expires {when}",
+      "how": "Enter this code and PIN the first time you open ElectraGuard AI.",
+      "cutLine": "Cut along the dashed line",
+      "cutHere": "Cut here"
+    },
+    "searchPlaceholder": "OBS-",
+    "table": {
+      "columns": {
+        "code": "Observer code",
+        "batch": "Batch",
+        "status": "Status",
+        "activated": "Activated",
+        "lastActive": "Last active",
+        "actions": "Actions",
+        "activity": "Activity"
+      },
+      "never": "Not yet",
+      "replacedBy": "Replaced by {code}",
+      "empty": "No observer codes yet. Create a batch to issue some.",
+      "emptyFilter": "No codes match. Try another search or status.",
+      "count": "{count, plural, one {# code} other {# codes}}",
+      "noBatch": "No batch",
+      "lastActiveOn": "Last active {date}"
+    },
+    "filter": {
+      "label": "Show",
+      "all": "All"
+    },
+    "revoke": {
+      "title": "Revoke {code}?",
+      "body": "This signs the observer out on every phone straight away and the code can never be used again. Reports already sent are kept.",
+      "confirm": "Revoke code"
+    },
+    "reissue": {
+      "title": "Reissue {code}?",
+      "body": "The old code is revoked and a new code with a new setup PIN is made. It counts toward the daily limit.",
+      "confirm": "Reissue code"
+    },
+    "resetPin": {
+      "title": "Reset the PIN for {code}?",
+      "body": "The observer is signed out, the code goes back to unclaimed and a new setup PIN is shown once.",
+      "confirm": "Reset PIN"
+    },
+    "reason": {
+      "label": "Reason",
+      "hint": "Recorded in the audit log.",
+      "lost_phone": "Lost phone",
+      "left_programme": "Left the programme",
+      "suspected_misuse": "Suspected misuse",
+      "other": "Other"
+    },
+    "confirmPrint": {
+      "title": "Print cards for {label}?",
+      "body": "Printing makes new setup PINs for the {count, plural, one {# unclaimed code} other {# unclaimed codes}} in this batch. Older PINs for those codes stop working. Active and revoked codes are not changed.",
+      "confirm": "Reset PINs and print"
+    },
+    "cancel": "Cancel",
+    "retry": "Try again",
+    "errors": {
+      "confirmation": "Confirm that the unclaimed setup PINs should be reset, then try again.",
+      "rateLimited": "This organisation has reached its daily limit of 2,000 new codes. Try again tomorrow.",
+      "alreadyRevoked": "This code is already revoked. The list has been refreshed.",
+      "notFound": "We could not find that code. The list has been refreshed.",
+      "invalid": "Check the details and try again.",
+      "inProgress": "This request is still being processed. Wait a moment and try again."
+    },
+    "notice": {
+      "created": "Batch created. Print the cards now; the setup PINs are not shown again.",
+      "revoked": "{code} is revoked.",
+      "reissued": "{code} is revoked. Its replacement card is ready below.",
+      "pinReset": "New setup PIN ready for {code}.",
+      "printed": "Cards ready for {label}. The setup PINs are shown only once."
     }
   },
   "s10": {
