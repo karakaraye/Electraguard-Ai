@@ -1,178 +1,223 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { api } from "../../../../lib/api/client";
-import type { Claim, ClaimMatchesResponse, Language, SeenOn } from "../../../../lib/api/types";
+import { useCallback, useEffect, useState } from "react";
+import { api, uuidv4 } from "../../../../lib/api/client";
+import { API_BASE } from "../../../../lib/api/contracts";
+import type { Claim, ClaimMatchesResponse, Language } from "../../../../lib/api/types";
 import { useT } from "../../../../lib/i18n/client";
-import { RumourView } from "../_views/RumourView";
+import { RumourView, type ClaimStatusFilter, type NewClaimFields } from "../_views/RumourView";
+
+type Failure = { status: number; error?: { code?: string } | null };
+
+/** A claim with a picture goes up as a form (the contract table lists JSON only), with the same CSRF and send key rules. */
+async function createWithImage(fields: NewClaimFields & { image: File }): Promise<{ ok: true; data: Claim } | ({ ok: false } & Failure)> {
+  const csrf = await api("AUTH-01", {});
+  if (!csrf.ok) return { ok: false, status: csrf.status, error: csrf.error };
+  const form = new FormData();
+  if (fields.text) form.set("text", fields.text);
+  form.set("seen_on", fields.seenOn);
+  form.set("language", fields.language);
+  form.set("image", fields.image);
+  try {
+    const response = await fetch(`${API_BASE}/rumours/claims`, {
+      method: "POST",
+      credentials: "same-origin",
+      headers: { Accept: "application/json", "X-CSRFToken": csrf.data.csrf_token, "Idempotency-Key": uuidv4() },
+      body: form,
+    });
+    const body = (await response.json().catch(() => null)) as (Claim & { error?: { code?: string } }) | null;
+    if (response.ok && body) return { ok: true, data: body };
+    return { ok: false, status: response.status, error: body?.error ?? null };
+  } catch {
+    return { ok: false, status: 0, error: { code: "network_error" } };
+  }
+}
 
 export default function RumoursPage() {
   const t = useT();
 
   const [claims, setClaims] = useState<Claim[]>([]);
-  const [selectedClaimId, setSelectedClaimId] = useState<string | null>(null);
-  const [matches, setMatches] = useState<ClaimMatchesResponse | null>(null);
+  const [nextCursor, setNextCursor] = useState<string | null>(null);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  /** Similar reports, kept with the claim they were fetched for so a new selection never shows old ones. */
+  const [matchesFor, setMatchesFor] = useState<{ id: string; data: ClaimMatchesResponse | null; error: string | null } | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [currentUser, setCurrentUser] = useState<string>("");
+  const [actionError, setActionError] = useState<string | null>(null);
+  const [createError, setCreateError] = useState<string | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
+  const [currentUser, setCurrentUser] = useState("");
+  const [filter, setFilter] = useState<ClaimStatusFilter>("all");
+  const [attempt, setAttempt] = useState(0);
 
-  // Get current user display name
+  const problem = useCallback(
+    (res: Failure): string => {
+      const code = res.error?.code;
+      if (code === "same_person_approval") return t("s06.errors.samePerson");
+      if (res.status === 403) return t("staff.forbidden");
+      if (res.status === 404) return t("staff.endpointNotReady");
+      if (code === "stale_version") return t("s06.errors.stale");
+      if (code === "invalid_transition") return t("s06.errors.transition");
+      if (code === "rate_limited") return t("s06.errors.rateLimited");
+      if (code === "payload_too_large") return t("s06.errors.imageSize");
+      if (code === "unsupported_media_type") return t("s06.errors.imageType");
+      if (code === "media_unreadable") return t("s06.errors.imageUnreadable");
+      if (res.status === 400 || res.status === 422 || code === "validation_failed" || code === "bad_request") return t("s06.errors.invalid");
+      return t("staff.networkError");
+    },
+    [t],
+  );
+
   useEffect(() => {
+    let cancelled = false;
     void (async () => {
       const res = await api("AUTH-07", {});
-      if (res.ok && res.data.authenticated && res.data.user) {
-        setCurrentUser(res.data.user.display_name || "");
-      }
+      if (!cancelled && res.ok && res.data.authenticated && res.data.user) setCurrentUser(res.data.user.display_name || "");
     })();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
-  // Fetch claims
   useEffect(() => {
     let cancelled = false;
     void (async () => {
-      try {
-        const res = await api("RUM-01.list", { query: {} });
-        if (cancelled) return;
-        if (!res.ok) {
-          if (res.status === 404) {
-            setError(t("staff.endpointNotReady"));
-          } else {
-            setError(res.error?.message || t("staff.networkError"));
-          }
-          return;
-        }
-
-        setClaims(res.data.items);
-        if (!selectedClaimId && res.data.items.length > 0) {
-          setSelectedClaimId(res.data.items[0].id);
-        }
-      } catch {
-        if (!cancelled) setError(t("staff.networkError"));
-      } finally {
-        if (!cancelled) setLoading(false);
+      setLoading(true);
+      setError(null);
+      const res = await api("RUM-01.list", { query: filter === "all" ? {} : { status: filter } });
+      if (cancelled) return;
+      setLoading(false);
+      if (!res.ok) {
+        setError(problem(res));
+        return;
       }
+      setClaims(res.data.items);
+      setNextCursor(res.data.next_cursor);
+      setSelectedId((current) => (current && res.data.items.some((c) => c.id === current) ? current : null));
     })();
     return () => {
       cancelled = true;
     };
-  }, [selectedClaimId, t]);
+  }, [filter, attempt, problem]);
 
-  // Fetch matches when selectedClaimId changes
   useEffect(() => {
-    if (!selectedClaimId) return;
+    if (!selectedId) return;
     let cancelled = false;
     void (async () => {
-      try {
-        const res = await api("RUM-02", { params: { id: selectedClaimId } });
-        if (!cancelled && res.ok) {
-          setMatches(res.data);
-        }
-      } catch {
-        // Ignored
-      }
+      const res = await api("RUM-02", { params: { id: selectedId } });
+      if (cancelled) return;
+      setMatchesFor(res.ok ? { id: selectedId, data: res.data, error: null } : { id: selectedId, data: null, error: t("s06.matches.error") });
     })();
     return () => {
       cancelled = true;
     };
-  }, [selectedClaimId]);
+  }, [selectedId, t]);
 
-  const selectedClaim = claims.find((c) => c.id === selectedClaimId) || null;
+  const selectedClaim = claims.find((c) => c.id === selectedId) ?? null;
+  const current = selectedId && matchesFor?.id === selectedId ? matchesFor : null;
+  const matches = current?.data ?? null;
+  const matchesError = current?.error ?? null;
+  const matchesLoading = Boolean(selectedId) && !current;
 
-  const refreshClaim = async (id: string) => {
-    try {
-      const res = await api("RUM-01.get", { params: { id } });
-      if (res.ok) {
-        setClaims(claims.map((c) => (c.id === id ? res.data : c)));
-      }
-    } catch {
-      // Ignored
+  const clearMessages = useCallback(() => {
+    setActionError(null);
+    setCreateError(null);
+    setNotice(null);
+  }, []);
+
+  const select = useCallback(
+    (id: string) => {
+      clearMessages();
+      setSelectedId(id);
+    },
+    [clearMessages],
+  );
+
+  async function loadMore() {
+    if (!nextCursor) return;
+    setLoadingMore(true);
+    const res = await api("RUM-01.list", { query: filter === "all" ? { cursor: nextCursor } : { status: filter, cursor: nextCursor } });
+    setLoadingMore(false);
+    if (!res.ok) {
+      setError(problem(res));
+      return;
     }
-  };
+    const known = new Set(claims.map((c) => c.id));
+    setClaims([...claims, ...res.data.items.filter((c) => !known.has(c.id))]);
+    setNextCursor(res.data.next_cursor);
+  }
 
-  const handleCreateClaim = async (text: string, seenOn: SeenOn, language: Language) => {
-    try {
-      const res = await api("RUM-01.create", {
-        body: { text, seen_on: seenOn, language },
-      });
-      if (res.ok) {
-        setClaims([res.data, ...claims]);
-        setSelectedClaimId(res.data.id);
-      }
-    } catch {
-      // Ignored
+  async function createClaim(fields: NewClaimFields): Promise<boolean> {
+    clearMessages();
+    const res = fields.image
+      ? await createWithImage({ ...fields, image: fields.image })
+      : await api("RUM-01.create", { body: { text: fields.text, seen_on: fields.seenOn, language: fields.language } });
+    if (!res.ok) {
+      setCreateError(problem(res));
+      return false;
     }
-  };
+    setNotice(t("s06.notice.created"));
+    if (filter !== "all" && filter !== "new") setFilter("all");
+    else setClaims((current) => [res.data, ...current.filter((c) => c.id !== res.data.id)]);
+    setSelectedId(res.data.id);
+    return true;
+  }
 
-  const handleSaveDraft = async (id: string, text: string, version: number) => {
-    try {
-      const res = await api("RUM-03.save_draft", {
-        params: { id },
-        body: { text, language: "en", version },
-      });
-      if (res.ok) {
-        refreshClaim(id);
-      }
-    } catch {
-      // Ignored
+  /** Every action returns the updated claim; the list row is replaced with it. */
+  async function change(
+    run: () => Promise<{ ok: true; data: Claim } | ({ ok: false } & Failure)>,
+    done: string,
+  ): Promise<boolean> {
+    clearMessages();
+    const res = await run();
+    if (!res.ok) {
+      setActionError(problem(res));
+      return false;
     }
-  };
+    setClaims((current) => current.map((c) => (c.id === res.data.id ? res.data : c)));
+    setNotice(done);
+    return true;
+  }
 
-  const handleApprove = async (id: string, version: number) => {
-    try {
-      const res = await api("RUM-03.approve", {
-        params: { id },
-        body: { version },
-      });
-      if (res.ok) {
-        refreshClaim(id);
-      }
-    } catch {
-      // Ignored
-    }
-  };
-
-  const handleReject = async (id: string, note: string, version: number) => {
-    try {
-      const res = await api("RUM-03.reject", {
-        params: { id },
-        body: { note, version },
-      });
-      if (res.ok) {
-        refreshClaim(id);
-      }
-    } catch {
-      // Ignored
-    }
-  };
-
-  const handleDismiss = async (id: string, note: string, version: number) => {
-    try {
-      const res = await api("RUM-03.dismiss", {
-        params: { id },
-        body: { note, version },
-      });
-      if (res.ok) {
-        refreshClaim(id);
-      }
-    } catch {
-      // Ignored
-    }
-  };
+  const saveDraft = (id: string, text: string, language: Language, version: number) =>
+    change(() => api("RUM-03.save_draft", { params: { id }, body: { text, language, version } }), t("s06.notice.saved"));
+  const approve = (id: string, version: number) =>
+    change(() => api("RUM-03.approve", { params: { id }, body: { version } }), t("s06.notice.approved"));
+  const reject = (id: string, note: string, version: number) =>
+    change(() => api("RUM-03.reject", { params: { id }, body: { note, version } }), t("s06.notice.rejected"));
+  const dismiss = (id: string, note: string, version: number) =>
+    change(() => api("RUM-03.dismiss", { params: { id }, body: { note, version } }), t("s06.notice.dismissed"));
 
   return (
     <RumourView
       claims={claims}
       selectedClaim={selectedClaim}
       matches={matches}
+      matchesLoading={matchesLoading}
+      matchesError={matchesError}
       loading={loading}
       error={error}
+      actionError={actionError}
+      createError={createError}
+      notice={notice}
       currentUserName={currentUser}
-      onSelectClaim={setSelectedClaimId}
-      onCreateClaim={handleCreateClaim}
-      onSaveDraft={handleSaveDraft}
-      onApprove={handleApprove}
-      onReject={handleReject}
-      onDismiss={handleDismiss}
+      statusFilter={filter}
+      hasMore={Boolean(nextCursor)}
+      loadingMore={loadingMore}
+      onStatusFilter={(value) => {
+        clearMessages();
+        setFilter(value);
+      }}
+      onLoadMore={() => void loadMore()}
+      onRetry={() => setAttempt((n) => n + 1)}
+      onSelectClaim={select}
+      onCreateClaim={createClaim}
+      onSaveDraft={saveDraft}
+      onApprove={approve}
+      onReject={reject}
+      onDismiss={dismiss}
+      onClearMessages={clearMessages}
     />
   );
 }
