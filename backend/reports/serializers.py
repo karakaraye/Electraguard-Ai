@@ -92,7 +92,11 @@ class ReviewEventSerializer(serializers.ModelSerializer):
         reply = getattr(event, "citizen_reply", None)
         if reply:
             return {**event.change, "note": safe_text(reply)}
-        if "note" in event.change and event.action == ReviewEvent.Action.RESPOND:
+        if isinstance(event.change, dict) and "note" in event.change and event.action in (
+            ReviewEvent.Action.RESPOND,
+            ReviewEvent.Action.MESSAGE,
+            ReviewEvent.Action.CREATE,
+        ):
             return {**event.change, "note": safe_text(event)}
         return event.change
 
