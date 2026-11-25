@@ -450,6 +450,7 @@ export const MORE_SCREENS: Record<string, Record<string, (t: Translate) => React
     ),
     "no-answer": () => <AskView {...askBase} question="Who will win?" state="answer" answer={{ status: "abstained", language: "en", fallback_language_used: false, passages: [] }} />,
     offline: () => <AskView {...askBase} offline />,
+    asking: () => <AskView {...askBase} question="What should I do if the polling unit opens late?" state="asking" />,
   },
   o20: {
     first: () => <SettingsView {...settingsBase} unsentCount={2} mediaLabel="3.4 MB" />,
