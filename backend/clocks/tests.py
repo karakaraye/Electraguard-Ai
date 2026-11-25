@@ -7,6 +7,7 @@ from django.utils import timezone
 
 from accounts.models import ObserverCode, Organisation, User
 from accounts.staff_sessions import VERIFIED
+from reports.incident_input import WAT
 from clocks.calculator import (
     clock_json,
     create_initial_clock,
@@ -275,8 +276,8 @@ class ReviewClocksTests(TestCase):
 
         # OPS-01 overview is org-scoped and excludes stopped clocks
         self.login_as(self.coordinator)
-        from_date = (now - timedelta(hours=1)).astimezone(timezone.get_current_timezone()).date().isoformat()
-        to_date = now.astimezone(timezone.get_current_timezone()).date().isoformat()
+        from_date = (now - timedelta(hours=1)).astimezone(WAT).date().isoformat()
+        to_date = now.astimezone(WAT).date().isoformat()
         ov = self.client.get(f"/api/v1/ops/overview?from={from_date}&to={to_date}").json()
         self.assertEqual(ov["overdue"]["urgent"], 1)
 
@@ -378,8 +379,8 @@ class ReviewClocksTests(TestCase):
 
         # OPS-01 overdue groups on the updated urgent level
         self.login_as(self.coordinator)
-        from_date = (now - timedelta(hours=1)).astimezone(timezone.get_current_timezone()).date().isoformat()
-        to_date = now.astimezone(timezone.get_current_timezone()).date().isoformat()
+        from_date = (now - timedelta(hours=1)).astimezone(WAT).date().isoformat()
+        to_date = now.astimezone(WAT).date().isoformat()
         ov = self.client.get(f"/api/v1/ops/overview?from={from_date}&to={to_date}").json()
         self.assertEqual(ov["overdue"]["urgent"], 1)
         self.assertEqual(ov["overdue"]["normal"], 0)
@@ -616,8 +617,8 @@ class ReviewClockApiIntegrationTests(TestCase):
         self.assertEqual(c_res.status_code, 404)
 
         self.login_as(other_coord)
-        from_date = (now - timedelta(hours=1)).astimezone(timezone.get_current_timezone()).date().isoformat()
-        to_date = now.astimezone(timezone.get_current_timezone()).date().isoformat()
+        from_date = (now - timedelta(hours=1)).astimezone(WAT).date().isoformat()
+        to_date = now.astimezone(WAT).date().isoformat()
         ov = self.client.get(f"/api/v1/ops/overview?from={from_date}&to={to_date}").json()
         self.assertEqual(ov["overdue"]["urgent"], 0)
 
