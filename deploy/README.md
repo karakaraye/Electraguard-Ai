@@ -19,6 +19,7 @@ docker compose -f deploy/compose.yaml config --quiet
 docker compose -f deploy/compose.yaml --profile maintenance build backend frontend
 docker compose -f deploy/compose.yaml up -d --wait postgres
 docker compose -f deploy/compose.yaml --profile maintenance run --rm migrate
+docker compose -f deploy/compose.yaml --profile maintenance run --rm backend python manage.py backfill_review_clocks
 docker compose -f deploy/compose.yaml up -d --wait backend frontend gateway
 ```
 
