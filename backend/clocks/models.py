@@ -24,6 +24,9 @@ class ReviewClock(OrganisationOwned):
     started_at = models.DateTimeField()
     due_at = models.DateTimeField()
     state = models.CharField(max_length=20, default=State.ON_TIME, choices=State.choices)
+    # The paused, paused_at, and paused_seconds fields are reserved for future intake-pause / hold features.
+    # Currently, review clocks run continuously from receipt to action or reply without pausing,
+    # so paused remains False and paused_seconds is 0.
     paused = models.BooleanField(default=False)
     paused_at = models.DateTimeField(null=True, blank=True)
     paused_seconds = models.PositiveIntegerField(default=0)

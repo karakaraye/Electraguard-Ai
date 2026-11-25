@@ -195,6 +195,8 @@ def stop_open_clocks(report, now=None):
 
 def update_clock_urgency(report, urgency_level, now=None):
     """Recomputes target_minutes and due_at from original started_at when urgency changes."""
+    if not urgency_level or str(urgency_level).lower() not in DEFAULT_TARGETS:
+        return
     if now is None:
         now = timezone.now()
     org = getattr(report, "organisation", None)
@@ -213,7 +215,11 @@ def update_clock_urgency(report, urgency_level, now=None):
         clock.due_at = clock.started_at + timedelta(minutes=target_minutes, seconds=clock.paused_seconds)
         state_info = compute_clock_state(clock, now=now)
         clock.state = state_info["state"]
-        clock.save(update_fields=["urgency", "target_minutes", "due_at", "state"])
+        update_fields = ["urgency", "target_minutes", "due_at", "state"]
+        if clock.state != ReviewClock.State.OVERDUE:
+            clock.notified_at = None
+            update_fields.append("notified_at")
+        clock.save(update_fields=update_fields)
 
 
 def recompute_org_open_clocks(organisation, now=None):
@@ -229,4 +235,8 @@ def recompute_org_open_clocks(organisation, now=None):
         clock.target_minutes = new_target
         clock.due_at = clock.started_at + timedelta(minutes=new_target, seconds=clock.paused_seconds)
         clock.state = compute_clock_state(clock, now=now)["state"]
-        clock.save(update_fields=["target_minutes", "due_at", "state"])
+        update_fields = ["target_minutes", "due_at", "state"]
+        if clock.state != ReviewClock.State.OVERDUE:
+            clock.notified_at = None
+            update_fields.append("notified_at")
+        clock.save(update_fields=update_fields)

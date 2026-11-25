@@ -620,3 +620,88 @@ class ReviewClockApiIntegrationTests(TestCase):
         to_date = now.astimezone(timezone.get_current_timezone()).date().isoformat()
         ov = self.client.get(f"/api/v1/ops/overview?from={from_date}&to={to_date}").json()
         self.assertEqual(ov["overdue"]["urgent"], 0)
+
+    def test_persist_report_atomic_rolls_back_on_clock_failure(self):
+        from unittest.mock import patch
+        from reports.v1_views import persist_report
+        initial_count = Report.objects.count()
+        values = {
+            "incident_details": {
+                "kind": "incident",
+                "area": {"polling_unit_name": "Test PU"},
+            },
+            "description": "Atomic test rollback description",
+        }
+        with patch("clocks.calculator.create_initial_clock", side_effect=RuntimeError("Simulated clock creation failure")):
+            with self.assertRaises(RuntimeError):
+                persist_report(None, self.org.pk, values)
+        self.assertEqual(Report.objects.count(), initial_count)
+        self.assertFalse(Report.objects.filter(description="Atomic test rollback description").exists())
+
+    def test_notified_at_reset_when_clock_no_longer_overdue(self):
+        from clocks.calculator import update_clock_urgency, recompute_org_open_clocks, create_initial_clock
+        now = timezone.now()
+        case = Report.objects.create(
+            organisation=self.org,
+            submission_key=uuid4(),
+            occurred_at=now - timedelta(minutes=30),
+            description="Urgent test case",
+            incident_details={"kind": "incident", "danger_now": True},
+        )
+        Report.objects.filter(pk=case.pk).update(created_at=now - timedelta(minutes=30))
+        case.refresh_from_db()
+        clock = create_initial_clock(case, now=now - timedelta(minutes=30))
+        clock.state = ReviewClock.State.OVERDUE
+        clock.notified_at = now - timedelta(minutes=10)
+        clock.save()
+
+        # Downgrade urgency from urgent (15m target) to low (480m target)
+        update_clock_urgency(case, "low", now=now)
+        clock.refresh_from_db()
+        self.assertEqual(clock.urgency, "low")
+        self.assertNotEqual(clock.state, ReviewClock.State.OVERDUE)
+        self.assertIsNone(clock.notified_at)
+
+        # Make it overdue again and test recompute_org_open_clocks
+        clock.state = ReviewClock.State.OVERDUE
+        clock.notified_at = now
+        clock.save()
+        self.org.review_targets = {"low": 1440}
+        self.org.save()
+        recompute_org_open_clocks(self.org, now=now)
+        clock.refresh_from_db()
+        self.assertNotEqual(clock.state, ReviewClock.State.OVERDUE)
+        self.assertIsNone(clock.notified_at)
+
+    def test_decide_suggestion_rejects_null_or_none_urgency(self):
+        from clocks.calculator import create_initial_clock
+        now = timezone.now()
+        case = Report.objects.create(
+            organisation=self.org,
+            assigned_reviewer=self.reviewer,
+            submission_key=uuid4(),
+            occurred_at=now,
+            description="Normal test case",
+            incident_details={"kind": "incident", "area": {"state_code": "KN", "lga_code": "KN-04"}},
+        )
+        create_initial_clock(case, now=now)
+        self.login_as(self.reviewer)
+        path = f"/api/v1/review/cases/{case.pk}/suggestions/urgency"
+
+        # Correct with null value -> 422
+        res1 = self.client.post(
+            path,
+            {"decision": "correct", "value": None, "version": case.version},
+            content_type="application/json",
+            HTTP_IDEMPOTENCY_KEY=str(uuid4()),
+        )
+        self.assertEqual(res1.status_code, 422, res1.content)
+
+        # Correct with "none" -> 422
+        res2 = self.client.post(
+            path,
+            {"decision": "correct", "value": "none", "version": case.version},
+            content_type="application/json",
+            HTTP_IDEMPOTENCY_KEY=str(uuid4()),
+        )
+        self.assertEqual(res2.status_code, 422, res2.content)

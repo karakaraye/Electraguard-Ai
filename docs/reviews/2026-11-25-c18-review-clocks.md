@@ -136,10 +136,15 @@ Branch `backend/c18-review-clocks`, on top of `backend/c17-emerging-alerts`. Bac
 
 ## Verification
 
-- **PostgreSQL 17 CI Suite (`https://github.com/karakaraye/Electraguard-Ai/actions/runs/45638447456`):**
-  - Backend: **310 tests ran, 0 failures, 1 skipped** (`OK (skipped=1)` in 118.912s).
-  - Frontend: `lint`, `typecheck`, and `build` passed.
-  - `clocks.tests` (15 tests across `ReviewClocksTests`, `ConcurrentSweepTests`, `ReviewClockApiIntegrationTests`): covers clock creation on observer/citizen/SMS/USSD intake, target calculations, triage urgency recomputation, pause/resume and `question_reply` clock lifecycle, `TransactionTestCase` 2-thread barrier concurrent sweep, signed `(due_at, pk)` cursor paging for `clock_state` filter, organisation isolation, OPS-01 overdue counters, `backfill_review_clocks`, and ADM-04 `review_targets` validation.
+- **PostgreSQL 17 CI Suite:**
+  - Full test suite verified green in GitHub Actions CI with `clocks` and `privacy` included.
+  - `clocks.tests` (18 tests across `ReviewClocksTests`, `ConcurrentSweepTests`, `ReviewClockApiIntegrationTests`): covers clock creation on observer/citizen/SMS/USSD intake, atomic rollback on clock failure, target calculations, triage urgency recomputation, `notified_at` reset when urgency/targets change out of overdue, pause/resume and `question_reply` clock lifecycle, `TransactionTestCase` 2-thread barrier concurrent sweep, signed `(due_at, pk)` cursor paging for `clock_state` filter, organisation isolation, OPS-01 overdue counters, `decide_suggestion` 422 rejection of null/none urgency, `backfill_review_clocks`, and ADM-04 `review_targets` validation.
+- **Round 2 Review Fixes:**
+  - Wrapped `persist_report` body in `with transaction.atomic():` so report creation, review event, initial triage, and clock creation commit atomically or roll back together.
+  - In `update_clock_urgency` and `recompute_org_open_clocks`, reset `notified_at = None` whenever a clock's recomputed state is not `OVERDUE`.
+  - Documented reserved `paused*` model fields in `ReviewClock`.
+  - Enforced 422 error rejection in `decide_suggestion` for null or `"none"` urgency.
+  - Documented backfill first-sweep overdue alert behaviour in `PRODUCTION.md` and `deploy/README.md`.
 
 ## Not done / Open
 

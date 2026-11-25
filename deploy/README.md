@@ -23,6 +23,8 @@ docker compose -f deploy/compose.yaml --profile maintenance run --rm backend pyt
 docker compose -f deploy/compose.yaml up -d --wait backend frontend gateway
 ```
 
+Note: when existing open reports created prior to C18 are past due, the backfill creates review clocks that will raise one overdue alert (`case.overdue`) per untouched old case on the first sweep.
+
 After migration, verify the sign-in page and authenticated HTTPS workflow from the intended private network. Check production cookie flags, unauthorised access, a maximum-size accepted photo, and report confirmation replay. Confirm no database or origin ports are reachable from client networks. Verify the worker starts separately with the `triage` profile and that manual review works while it is stopped.
 
 ## Video and voice-note worker

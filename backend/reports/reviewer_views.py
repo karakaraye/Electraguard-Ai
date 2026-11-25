@@ -530,6 +530,10 @@ def decide_suggestion(request, report, kind, data):
     if decision == "accept" and original is None:
         return error(409, "invalid_transition", "There is no ready suggestion to accept.")
     value = data.get("value")
+    if kind == "urgency":
+        target = value if decision == "correct" else original
+        if target is None or target == "none" or target not in URGENCIES:
+            return validation({"value": field("invalid_choice", "Choose a valid urgency level.")})
     if decision == "correct" and (
         not isinstance(value, str) or value not in (CATEGORIES if kind == "category" else URGENCIES) or value == original
     ):
