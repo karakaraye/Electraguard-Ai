@@ -1,6 +1,7 @@
 import type {
   CaseDetail,
   Claim,
+  Cluster,
   CodeBatch,
   CoverageResponse,
   LateMaterialsResponse,
@@ -218,6 +219,11 @@ export const FIXTURE_OVERVIEW: OverviewResponse = {
   by_lga: [
     { state_code: "KN", lga_code: "1901", lga_name: "Kano Municipal", count: 350, urgent: 15 },
     { state_code: "KN", lga_code: "1902", lga_name: "Fagge", count: 280, urgent: 10 },
+    { state_code: "LA", lga_code: "2420", lga_name: "Surulere", count: 214, urgent: 9 },
+    { state_code: "RI", lga_code: "3217", lga_name: "Obio/Akpor", count: 166, urgent: 4 },
+    { state_code: "EN", lga_code: "1406", lga_name: "Enugu North", count: 92, urgent: 2 },
+    { state_code: "FC", lga_code: "1502", lga_name: "Bwari", count: 81, urgent: 1 },
+    { state_code: "OY", lga_code: "3109", lga_name: "Ibadan North", count: 57, urgent: 0 },
   ],
   generated_at: "2026-12-05T12:00:00+01:00",
 };
@@ -244,14 +250,19 @@ export const FIXTURE_COVERAGE: CoverageResponse = {
       units_without: 85,
       no_answers: 1,
     },
+    { lga_code: "2420", lga_name: "Surulere", expected_units: 212, units_with_checklist: 201, units_without: 11, no_answers: 7 },
+    { lga_code: "3217", lga_name: "Obio/Akpor", expected_units: 318, units_with_checklist: 176, units_without: 142, no_answers: 12 },
   ],
-  most_no_answers: [],
+  most_no_answers: [
+    { polling_unit_code: "32-17-04-011", polling_unit_name: "Rumuokoro Model School II", no_count: 4, questions: ["secrecy_kept", "party_agents_present", "device_working", "priority_given"] },
+    { polling_unit_code: "24-20-02-006", polling_unit_name: "Itire Community Hall", no_count: 3, questions: ["opened_on_time", "materials_all_present", "officials_present"] },
+  ],
 };
 
 export const FIXTURE_LATE_MATERIALS: LateMaterialsResponse = {
   model_version: "v1.2",
   generated_at: "2026-12-05T10:00:00+01:00",
-  data_source: "official",
+  data_source: "synthetic",
   metrics: { mae_transit_hours: 1.2, evaluated_on: "2026-12-05" },
   rows: [
     {
@@ -636,3 +647,33 @@ export const FIXTURE_ASSIGNMENTS: AssignmentListResponse = {
           ][i % 3],
   })),
 };
+
+/** Screen 42 (S-05): two cluster warnings, one already reviewed. */
+export const FIXTURE_CLUSTERS: Cluster[] = [
+  {
+    id: "cl-1",
+    category: "intimidation_violence",
+    area: { state_code: "KN", state_name: "Kano", lga_code: "1901", lga_name: "Kano Municipal" } as Cluster["area"],
+    report_count: 9,
+    baseline: 1.5,
+    window_start: "2026-12-05T08:30:00+01:00",
+    window_end: "2026-12-05T09:30:00+01:00",
+    report_ids: [],
+    status: "open",
+    reviewed_by: null,
+    reviewed_at: null,
+  },
+  {
+    id: "cl-2",
+    category: "late_materials",
+    area: { state_code: "RI", state_name: "Rivers", lga_code: "3217", lga_name: "Obio/Akpor" } as Cluster["area"],
+    report_count: 14,
+    baseline: 4,
+    window_start: "2026-12-05T07:00:00+01:00",
+    window_end: "2026-12-05T08:00:00+01:00",
+    report_ids: [],
+    status: "reviewed",
+    reviewed_by: "A. Okafor",
+    reviewed_at: "2026-12-05T08:20:00+01:00",
+  },
+];

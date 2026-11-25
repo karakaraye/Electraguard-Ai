@@ -1389,27 +1389,36 @@
     },
     "clusters": {
       "title": "[IG draft] Cluster warnings",
-      "badge": "[IG draft] {count} reports in {window}m",
-      "baseline": "[IG draft] Baseline: {baseline}",
+      "badge": "Akụkọ {count} n'ime nkeji {window}",
+      "baseline": "Ihe a na-ahụkarị n'oge a: {baseline}",
       "reviewButton": "[IG draft] Mark reviewed",
       "reviewNote": "[IG draft] Review note (optional)",
       "reviewedBadge": "[IG draft] Reviewed",
       "settings": "[IG draft] Cluster thresholds",
       "windowMinutes": "[IG draft] Window (minutes)",
       "minReports": "[IG draft] Minimum reports",
-      "saveSettings": "[IG draft] Update thresholds"
+      "saveSettings": "[IG draft] Update thresholds",
+      "openCount": "{count} mepere emepe",
+      "reviewedBy": "{name} nyochara ya, {time}"
     },
     "coverage": {
       "title": "[IG draft] Coverage gaps",
       "expected": "[IG draft] {expected} expected polling units",
       "withChecklist": "[IG draft] {count} reported ({percent}%)",
       "withoutChecklist": "[IG draft] {count} missing",
-      "noAnswers": "[IG draft] Units with most 'No' answers"
+      "noAnswers": "[IG draft] Units with most 'No' answers",
+      "stage": "Nkebi",
+      "summary": "Ebe ntuli aka {reported} n'ime {expected} kọrọla ({percent}%). {missing} akọbeghị.",
+      "colExpected": "Ebe a na-atụ anya",
+      "colReported": "Kọrọla",
+      "colMissing": "Akọbeghị",
+      "colNo": "Azịza 'Mba'",
+      "noCount": "{count, plural, one {'Mba' #} other {Azịza 'Mba' #}}"
     },
     "lateMaterials": {
       "title": "[IG draft] Late materials risk",
       "subtitle": "[IG draft] Logistical prediction model",
-      "hours": "[IG draft] {hours}h predicted transit",
+      "hours": "Awa {hours}",
       "riskHigh": "[IG draft] High risk",
       "riskMedium": "[IG draft] Medium risk",
       "riskLow": "[IG draft] Low risk"
@@ -1424,7 +1433,28 @@
       "count": "[IG draft] {count} reports ({urgent} urgent)",
       "viewMap": "[IG draft] Map view (LGA level)",
       "viewTable": "[IG draft] Table view"
-    }
+    },
+    "filterDate": "Ụbọchị",
+    "updated": "Emelitere ya {time}",
+    "refresh": "Megharịa",
+    "totalsLabel": "Mkpokọta",
+    "notResult": "Nke a abụghị nsonaazụ.",
+    "empty": "Enweghị ihe maka ụbọchị a ugbu a.",
+    "lga": {
+      "lga": "LGA",
+      "reports": "Akụkọ",
+      "urgent": "Ngwa ngwa"
+    },
+    "late": {
+      "rank": "Ọkwa",
+      "risk": "Ihe egwu",
+      "place": "Wọọdụ",
+      "transit": "Oge njem a tụrụ anya",
+      "factors": "Ihe kpatara ya",
+      "model": "Ụdị {version}",
+      "error": "Njehie nkezi awa {hours} (enyochara {on})"
+    },
+    "syntheticNote": "Amụma ndị a si n'ụdị a zụrụ site na data njem nnwale, ọ bụghị ndekọ nnyefe INEC. Jiri ha mara ebe ị ga-ebu ụzọ lelee."
   },
   "s06": {
     "title": "[IG draft] Rumour desk",

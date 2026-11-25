@@ -1388,27 +1388,36 @@
     },
     "clusters": {
       "title": "Cluster warnings",
-      "badge": "{count} reports in {window}m",
-      "baseline": "Baseline: {baseline}",
+      "badge": "{count} reports in {window} min",
+      "baseline": "Usual for this window: {baseline}",
       "reviewButton": "Mark reviewed",
       "reviewNote": "Review note (optional)",
       "reviewedBadge": "Reviewed",
       "settings": "Cluster thresholds",
       "windowMinutes": "Window (minutes)",
       "minReports": "Minimum reports",
-      "saveSettings": "Update thresholds"
+      "saveSettings": "Update thresholds",
+      "openCount": "{count} open",
+      "reviewedBy": "Reviewed by {name}, {time}"
     },
     "coverage": {
       "title": "Coverage gaps",
       "expected": "{expected} expected polling units",
       "withChecklist": "{count} reported ({percent}%)",
       "withoutChecklist": "{count} missing",
-      "noAnswers": "Units with most 'No' answers"
+      "noAnswers": "Units with most 'No' answers",
+      "stage": "Stage",
+      "summary": "{reported} of {expected} polling units reported ({percent}%). {missing} missing.",
+      "colExpected": "Expected units",
+      "colReported": "Reported",
+      "colMissing": "Missing",
+      "colNo": "'No' answers",
+      "noCount": "{count, plural, one {# 'No'} other {# 'No' answers}}"
     },
     "lateMaterials": {
       "title": "Late materials risk",
       "subtitle": "Logistical prediction model",
-      "hours": "{hours}h predicted transit",
+      "hours": "{hours} h",
       "riskHigh": "High risk",
       "riskMedium": "Medium risk",
       "riskLow": "Low risk"
@@ -1423,7 +1432,28 @@
       "count": "{count} reports ({urgent} urgent)",
       "viewMap": "Map view (LGA level)",
       "viewTable": "Table view"
-    }
+    },
+    "filterDate": "Day",
+    "updated": "Updated {time}",
+    "refresh": "Refresh",
+    "totalsLabel": "Totals",
+    "notResult": "This is not a result.",
+    "empty": "Nothing for this day yet.",
+    "lga": {
+      "lga": "LGA",
+      "reports": "Reports",
+      "urgent": "Urgent"
+    },
+    "late": {
+      "rank": "Rank",
+      "risk": "Risk",
+      "place": "Ward",
+      "transit": "Predicted travel",
+      "factors": "Why",
+      "model": "Model {version}",
+      "error": "Average error {hours} h (checked {on})"
+    },
+    "syntheticNote": "These predictions come from a model trained on synthetic logistics data, not official INEC delivery records. Use them to decide where to look first."
   },
   "s06": {
     "title": "Rumour desk",

@@ -1389,27 +1389,36 @@
     },
     "clusters": {
       "title": "[YO draft] Cluster warnings",
-      "badge": "[YO draft] {count} reports in {window}m",
-      "baseline": "[YO draft] Baseline: {baseline}",
+      "badge": "Ìròyìn {count} láàárín ìṣẹ́jú {window}",
+      "baseline": "Ohun tí a sábà máa ń rí ní àkókò yìí: {baseline}",
       "reviewButton": "[YO draft] Mark reviewed",
       "reviewNote": "[YO draft] Review note (optional)",
       "reviewedBadge": "[YO draft] Reviewed",
       "settings": "[YO draft] Cluster thresholds",
       "windowMinutes": "[YO draft] Window (minutes)",
       "minReports": "[YO draft] Minimum reports",
-      "saveSettings": "[YO draft] Update thresholds"
+      "saveSettings": "[YO draft] Update thresholds",
+      "openCount": "{count} ṣí sílẹ̀",
+      "reviewedBy": "{name} ti ṣàyẹ̀wò rẹ̀, {time}"
     },
     "coverage": {
       "title": "[YO draft] Coverage gaps",
       "expected": "[YO draft] {expected} expected polling units",
       "withChecklist": "[YO draft] {count} reported ({percent}%)",
       "withoutChecklist": "[YO draft] {count} missing",
-      "noAnswers": "[YO draft] Units with most 'No' answers"
+      "noAnswers": "[YO draft] Units with most 'No' answers",
+      "stage": "Ìpele",
+      "summary": "Ibùdó ìdìbò {reported} nínú {expected} ló ti ròyìn ({percent}%). {missing} kò tíì ròyìn.",
+      "colExpected": "Ibùdó tí a ń retí",
+      "colReported": "Ti ròyìn",
+      "colMissing": "Kò tíì ròyìn",
+      "colNo": "Ìdáhùn 'Rárá'",
+      "noCount": "{count, plural, one {'Rárá' #} other {Ìdáhùn 'Rárá' #}}"
     },
     "lateMaterials": {
       "title": "[YO draft] Late materials risk",
       "subtitle": "[YO draft] Logistical prediction model",
-      "hours": "[YO draft] {hours}h predicted transit",
+      "hours": "Wákàtí {hours}",
       "riskHigh": "[YO draft] High risk",
       "riskMedium": "[YO draft] Medium risk",
       "riskLow": "[YO draft] Low risk"
@@ -1424,7 +1433,28 @@
       "count": "[YO draft] {count} reports ({urgent} urgent)",
       "viewMap": "[YO draft] Map view (LGA level)",
       "viewTable": "[YO draft] Table view"
-    }
+    },
+    "filterDate": "Ọjọ́",
+    "updated": "A ṣe àtúnṣe ní {time}",
+    "refresh": "Sọ di tuntun",
+    "totalsLabel": "Àpapọ̀",
+    "notResult": "Èyí kì í ṣe àbájáde.",
+    "empty": "Kò sí nǹkan fún ọjọ́ yìí síbẹ̀.",
+    "lga": {
+      "lga": "Ìjọba ìbílẹ̀",
+      "reports": "Ìròyìn",
+      "urgent": "Kánjúkánjú"
+    },
+    "late": {
+      "rank": "Ipò",
+      "risk": "Ewu",
+      "place": "Wọ́ọ̀dù",
+      "transit": "Àkókò ìrìnàjò tí a sọtẹ́lẹ̀",
+      "factors": "Ìdí",
+      "model": "Àwòṣe {version}",
+      "error": "Àṣìṣe àpapọ̀ wákàtí {hours} (a ṣàyẹ̀wò ní {on})"
+    },
+    "syntheticNote": "Àwọn àsọtẹ́lẹ̀ yìí wá láti inú àwòṣe tí a kọ́ pẹ̀lú dátà ìrìnnà àdánwò, kì í ṣe àkọsílẹ̀ ìfijíṣẹ́ INEC. Lò wọ́n láti mọ ibi tí o máa kọ́kọ́ wò."
   },
   "s06": {
     "title": "[YO draft] Rumour desk",

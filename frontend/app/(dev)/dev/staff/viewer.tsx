@@ -35,6 +35,7 @@ import {
   FIXTURE_BATCHES,
   FIXTURE_ASSIGNMENTS,
   FIXTURE_CASE_DETAIL,
+  FIXTURE_CLUSTERS,
   FIXTURE_CASE_IN_REVIEW,
   FIXTURE_CASE_MESSAGES,
   FIXTURE_CASE_RESULT_SHEET,
@@ -62,6 +63,9 @@ const S03_STATES = ["default", "in_review", "result_sheet", "pending_help", "clo
 
 /** Screen 41 (S-04) states. */
 const S04_STATES = ["default", "results", "loading", "empty", "error"] as const;
+
+/** Screen 42 (S-05) states. */
+const S05_STATES = ["default", "loading", "empty", "partial", "error"] as const;
 
 const S02_STATES = ["default", "loading", "empty", "empty_filtered", "error", "forbidden", "new", "more"] as const;
 
@@ -245,17 +249,30 @@ export function StaffStateViewer(): ReactElement {
           />
         );
 
-      case "s05":
+      case "s05": {
+        const sec = <T,>(data: T): { data: T | null; loading: boolean; error: string | null } =>
+          state === "loading" ? { data: null, loading: true, error: null }
+            : state === "error" ? { data: null, loading: false, error: t("staff.networkError") }
+              : { data, loading: false, error: null };
         return (
           <OpsView
-            overview={state === "empty" ? null : FIXTURE_OVERVIEW}
-            clusters={[]}
-            coverage={state === "empty" ? null : FIXTURE_COVERAGE}
-            lateMaterials={state === "empty" ? null : FIXTURE_LATE_MATERIALS}
-            loading={state === "loading"}
-            error={state === "error" ? "Operations data unavailable" : null}
+            key={state}
+            date="2026-12-05"
+            today="2026-12-05"
+            stage="voting"
+            overview={sec(state === "empty" ? { ...FIXTURE_OVERVIEW, by_lga: [], totals: { reports: 0, incidents_after_links: 0, urgent_open: 0, open_questions: 0, result_sheet_flags_open: 0, withdrawn: 0 } } : FIXTURE_OVERVIEW)}
+            clusters={sec(state === "empty" ? [] : FIXTURE_CLUSTERS)}
+            coverage={
+              state === "partial"
+                ? { data: null, loading: false, error: t("staff.endpointNotReady") }
+                : sec(state === "empty" ? { ...FIXTURE_COVERAGE, rows: [], most_no_answers: [] } : FIXTURE_COVERAGE)
+            }
+            lateMaterials={sec(state === "empty" ? { ...FIXTURE_LATE_MATERIALS, rows: [] } : FIXTURE_LATE_MATERIALS)}
+            onReviewCluster={() => {}}
+            onRefresh={() => {}}
           />
         );
+      }
 
       case "s06":
         return (
@@ -390,7 +407,7 @@ export function StaffStateViewer(): ReactElement {
         <div style={{ marginLeft: "auto", display: "flex", gap: "12px", alignItems: "center" }}>
           <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", alignItems: "center" }}>
             <span style={{ color: "var(--ink-2)" }}>State:</span>
-            {(screen === "s01" ? S01_STATES : screen === "s02" ? S02_STATES : screen === "s03" ? S03_STATES : screen === "s04" ? S04_STATES : (["default", "loading", "empty", "error"] as const)).map((st) => (
+            {(screen === "s01" ? S01_STATES : screen === "s02" ? S02_STATES : screen === "s03" ? S03_STATES : screen === "s04" ? S04_STATES : screen === "s05" ? S05_STATES : (["default", "loading", "empty", "error"] as const)).map((st) => (
               <Link
                 key={st}
                 href={`/dev/staff?screen=${screen}&state=${st}&theme=${theme}`}

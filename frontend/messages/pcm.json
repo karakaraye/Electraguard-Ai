@@ -1389,27 +1389,36 @@
     },
     "clusters": {
       "title": "[PCM draft] Cluster warnings",
-      "badge": "[PCM draft] {count} reports in {window}m",
-      "baseline": "[PCM draft] Baseline: {baseline}",
+      "badge": "{count} reports for {window} min",
+      "baseline": "Wetin we dey usually see for this time: {baseline}",
       "reviewButton": "[PCM draft] Mark reviewed",
       "reviewNote": "[PCM draft] Review note (optional)",
       "reviewedBadge": "[PCM draft] Reviewed",
       "settings": "[PCM draft] Cluster thresholds",
       "windowMinutes": "[PCM draft] Window (minutes)",
       "minReports": "[PCM draft] Minimum reports",
-      "saveSettings": "[PCM draft] Update thresholds"
+      "saveSettings": "[PCM draft] Update thresholds",
+      "openCount": "{count} open",
+      "reviewedBy": "{name} don review am, {time}"
     },
     "coverage": {
       "title": "[PCM draft] Coverage gaps",
       "expected": "[PCM draft] {expected} expected polling units",
       "withChecklist": "[PCM draft] {count} reported ({percent}%)",
       "withoutChecklist": "[PCM draft] {count} missing",
-      "noAnswers": "[PCM draft] Units with most 'No' answers"
+      "noAnswers": "[PCM draft] Units with most 'No' answers",
+      "stage": "Stage",
+      "summary": "{reported} of {expected} polling units don report ({percent}%). {missing} never report.",
+      "colExpected": "Units wey we expect",
+      "colReported": "Don report",
+      "colMissing": "Never report",
+      "colNo": "'No' answers",
+      "noCount": "{count, plural, one {# 'No'} other {# 'No' answers}}"
     },
     "lateMaterials": {
       "title": "[PCM draft] Late materials risk",
       "subtitle": "[PCM draft] Logistical prediction model",
-      "hours": "[PCM draft] {hours}h predicted transit",
+      "hours": "{hours} h",
       "riskHigh": "[PCM draft] High risk",
       "riskMedium": "[PCM draft] Medium risk",
       "riskLow": "[PCM draft] Low risk"
@@ -1424,7 +1433,28 @@
       "count": "[PCM draft] {count} reports ({urgent} urgent)",
       "viewMap": "[PCM draft] Map view (LGA level)",
       "viewTable": "[PCM draft] Table view"
-    }
+    },
+    "filterDate": "Day",
+    "updated": "Dem update am {time}",
+    "refresh": "Refresh",
+    "totalsLabel": "Total",
+    "notResult": "This no be result.",
+    "empty": "Nothing for this day yet.",
+    "lga": {
+      "lga": "LGA",
+      "reports": "Reports",
+      "urgent": "Urgent"
+    },
+    "late": {
+      "rank": "Rank",
+      "risk": "Risk",
+      "place": "Ward",
+      "transit": "How long e go take reach",
+      "factors": "Why",
+      "model": "Model {version}",
+      "error": "E fit miss by {hours} h on average (dem check am {on})"
+    },
+    "syntheticNote": "These predictions come from model wey dem train with practice logistics data, no be official INEC delivery record. Use am to know where to look first."
   },
   "s06": {
     "title": "[PCM draft] Rumour desk",

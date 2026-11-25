@@ -1389,27 +1389,36 @@
     },
     "clusters": {
       "title": "[HA draft] Cluster warnings",
-      "badge": "[HA draft] {count} reports in {window}m",
-      "baseline": "[HA draft] Baseline: {baseline}",
+      "badge": "Rahotanni {count} cikin mintuna {window}",
+      "baseline": "Abin da aka saba gani a wannan lokaci: {baseline}",
       "reviewButton": "[HA draft] Mark reviewed",
       "reviewNote": "[HA draft] Review note (optional)",
       "reviewedBadge": "[HA draft] Reviewed",
       "settings": "[HA draft] Cluster thresholds",
       "windowMinutes": "[HA draft] Window (minutes)",
       "minReports": "[HA draft] Minimum reports",
-      "saveSettings": "[HA draft] Update thresholds"
+      "saveSettings": "[HA draft] Update thresholds",
+      "openCount": "{count} a buɗe",
+      "reviewedBy": "{name} ya duba, {time}"
     },
     "coverage": {
       "title": "[HA draft] Coverage gaps",
       "expected": "[HA draft] {expected} expected polling units",
       "withChecklist": "[HA draft] {count} reported ({percent}%)",
       "withoutChecklist": "[HA draft] {count} missing",
-      "noAnswers": "[HA draft] Units with most 'No' answers"
+      "noAnswers": "[HA draft] Units with most 'No' answers",
+      "stage": "Mataki",
+      "summary": "Rumfunan zaɓe {reported} cikin {expected} sun aiko da rahoto ({percent}%). {missing} ba su aiko ba.",
+      "colExpected": "Rumfunan da ake sa rai",
+      "colReported": "Sun aiko",
+      "colMissing": "Ba su aiko ba",
+      "colNo": "Amsoshin 'A'a'",
+      "noCount": "{count, plural, one {'A'a' #} other {Amsoshin 'A'a' #}}"
     },
     "lateMaterials": {
       "title": "[HA draft] Late materials risk",
       "subtitle": "[HA draft] Logistical prediction model",
-      "hours": "[HA draft] {hours}h predicted transit",
+      "hours": "Awa {hours}",
       "riskHigh": "[HA draft] High risk",
       "riskMedium": "[HA draft] Medium risk",
       "riskLow": "[HA draft] Low risk"
@@ -1424,7 +1433,28 @@
       "count": "[HA draft] {count} reports ({urgent} urgent)",
       "viewMap": "[HA draft] Map view (LGA level)",
       "viewTable": "[HA draft] Table view"
-    }
+    },
+    "filterDate": "Rana",
+    "updated": "An sabunta {time}",
+    "refresh": "Sabunta",
+    "totalsLabel": "Jimla",
+    "notResult": "Wannan ba sakamako ba ne.",
+    "empty": "Babu komai na wannan rana tukuna.",
+    "lga": {
+      "lga": "Ƙaramar hukuma",
+      "reports": "Rahotanni",
+      "urgent": "Na gaggawa"
+    },
+    "late": {
+      "rank": "Matsayi",
+      "risk": "Haɗari",
+      "place": "Gunduma",
+      "transit": "Lokacin tafiya da ake hasashe",
+      "factors": "Dalili",
+      "model": "Samfuri {version}",
+      "error": "Matsakaicin kuskure awa {hours} (an duba {on})"
+    },
+    "syntheticNote": "Waɗannan hasashe sun fito ne daga samfurin da aka horar da bayanan sufuri na gwaji, ba bayanan isar da kaya na INEC ba. Yi amfani da su don sanin inda za a fara dubawa."
   },
   "s06": {
     "title": "[HA draft] Rumour desk",
