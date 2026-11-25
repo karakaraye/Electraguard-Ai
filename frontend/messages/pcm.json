@@ -2194,6 +2194,7 @@
       "home": "Home",
       "results": "Results",
       "ask": "Ask question",
+      "check": "Check am",
       "guide": "Guides",
       "phone": "Try SMS and USSD",
       "privacy": "Privacy"
@@ -2538,6 +2539,49 @@
       "title": "Dem don pause reporting",
       "body": "The observation organisation don pause new reports for now. If person dey for danger, call 112.",
       "action": "See reports wey dem don review"
+    }
+  },
+  "p08": {
+    "title": "Check rumour",
+    "heading": "Check rumour",
+    "lead": "Paste message wey you hear or see. If our reviewers don approve answer, we go show am here.",
+    "label": "Wetin you hear or see?",
+    "hint": "Paste or type the message. 5 to 500 letters.",
+    "check": "Check am",
+    "checking": "We dey check",
+    "tooShort": "Write at least 5 letters.",
+    "tooLong": "Use 500 letters or less.",
+    "invalid": "Check the message. E must be 5 to 500 letters.",
+    "checked": {
+      "title": "Answer wey dem approve"
+    },
+    "englishOnly": "Na English we show. We never get translation yet.",
+    "approvedOn": "Dem approve am on {date}",
+    "reviewers": "ElectraGuard reviewers don check am. Na not INEC statement.",
+    "support": "Observers report am for {states} states and {wards} wards.",
+    "fewer": "less than 5",
+    "notChecked": {
+      "title": "We never check this one yet."
+    },
+    "ask": "Ask our reviewers make dem check am",
+    "asking": "We dey send",
+    "queued": "Thank you. We don give our reviewers. Come check again later.",
+    "matched": "Other people don ask about this one too. Our reviewers don dey look am.",
+    "safety": {
+      "title": "If person dey danger, call 112 now.",
+      "call": "Call {number}",
+      "report": "Report wetin you see"
+    },
+    "error": {
+      "tooMany": "Too many checks. Try again after small time.",
+      "offline": "No network. Check your internet and try again.",
+      "unavailable": "Rumour check no dey work now.",
+      "failed": "Something go wrong. Try again."
+    },
+    "homeCard": {
+      "title": "You hear rumour?",
+      "body": "Check am against answers wey our reviewers approve.",
+      "link": "Check rumour"
     }
   }
 }

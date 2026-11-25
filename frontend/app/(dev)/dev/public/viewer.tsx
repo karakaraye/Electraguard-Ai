@@ -12,8 +12,11 @@ import { ResultsView } from "../../../(public)/_views/ResultsView";
 import { AskScreen } from "../../../(public)/ask/AskScreen";
 import { AskPageView } from "../../../(public)/ask/AskPageView";
 import { GuideDocumentView, GuideIndexView } from "../../../(public)/_views/GuideViews";
+import pageStyles from "../../../(public)/_views/page.module.css";
 import { PrivacyView } from "../../../(public)/_views/PrivacyView";
 import { PhoneSimulator, type PhoneSeed } from "../../../(public)/phone/PhoneSimulator";
+import { CheckView, type CheckState } from "../../../(public)/check/CheckView";
+import { CheckHeader } from "../../../(public)/check/CheckHeader";
 
 const cell = (count: number): Cell => ({ count, suppressed: false });
 
@@ -185,7 +188,49 @@ const PAGES = [
   { id: "guide-doc", label: "Guide Doc" },
   { id: "privacy", label: "Privacy" },
   { id: "phone", label: "Phone" },
+  { id: "check", label: "Check" },
 ] as const;
+
+const CHECK_STATES = [
+  "default", "typing", "checked", "checked_support", "checked_english_only", "not_checked", "queued",
+  "matched", "safety", "error_rate_limited", "error_network", "invalid",
+] as const;
+
+const CHECK_TEXT = "Is it true that voting has been moved to Sunday?";
+const CHECK_RESPONSE = {
+  text: "INEC has not changed the date of the election. Voting takes place on the date in the official timetable.",
+  approved_at: "2026-12-04T09:30:00+01:00",
+  language: "en",
+} as const;
+
+function checkPreview(state: string, locale: string): { text: string; problem: string | null; view: CheckState } {
+  switch (state) {
+    case "typing":
+      return { text: "Someone said the collation centre", problem: null, view: { kind: "idle" } };
+    case "checked":
+      return { text: CHECK_TEXT, problem: null, view: { kind: "checked", response: { ...CHECK_RESPONSE, language: locale } } };
+    case "checked_support":
+      return { text: CHECK_TEXT, problem: null, view: { kind: "checked", response: { ...CHECK_RESPONSE, language: locale, observer_support: { states: 7, wards: "fewer than 5" } } } };
+    case "checked_english_only":
+      return { text: CHECK_TEXT, problem: null, view: { kind: "checked", response: { ...CHECK_RESPONSE, language: "en" } } };
+    case "not_checked":
+      return { text: CHECK_TEXT, problem: null, view: { kind: "not_checked", ask: "idle" } };
+    case "queued":
+      return { text: CHECK_TEXT, problem: null, view: { kind: "not_checked", ask: "queued" } };
+    case "matched":
+      return { text: CHECK_TEXT, problem: null, view: { kind: "not_checked", ask: "matched" } };
+    case "safety":
+      return { text: "They are shooting at the polling unit", problem: null, view: { kind: "safety" } };
+    case "error_rate_limited":
+      return { text: CHECK_TEXT, problem: null, view: { kind: "error", reason: "too_many" } };
+    case "error_network":
+      return { text: CHECK_TEXT, problem: null, view: { kind: "error", reason: "offline" } };
+    case "invalid":
+      return { text: "Hi", problem: "invalid", view: { kind: "idle" } };
+    default:
+      return { text: "", problem: null, view: { kind: "idle" } };
+  }
+}
 
 export function PublicStateViewer(): ReactElement {
   const searchParams = useSearchParams();
@@ -320,6 +365,26 @@ export function PublicStateViewer(): ReactElement {
           />
         );
 
+      case "check": {
+        const preview = checkPreview(state, locale);
+        const english = state === "checked_english_only" ? (locale === "en" ? "ha" : locale) : locale;
+        return (
+          <div className={pageStyles.page}>
+            <CheckHeader t={t} />
+            <CheckView
+              key={`${state}-${english}`}
+              locale={english}
+              text={preview.text}
+              onText={() => {}}
+              problem={preview.problem === "invalid" ? t("p08.tooShort") : null}
+              state={preview.view}
+              onSubmit={(event) => event.preventDefault()}
+              onAsk={() => {}}
+            />
+          </div>
+        );
+      }
+
       case "privacy":
         return <PrivacyView t={t} locale={locale} />;
 
@@ -378,7 +443,7 @@ export function PublicStateViewer(): ReactElement {
         <div style={{ marginLeft: "auto", display: "flex", gap: "12px", alignItems: "center" }}>
           <div style={{ display: "flex", gap: "6px", alignItems: "center" }}>
             <span style={{ color: "var(--ink-2)" }}>State:</span>
-            {(["default", "empty", "error", "answered", "abstained", "offline"] as const).map((st) => (
+            {(page === "check" ? CHECK_STATES : (["default", "empty", "error", "answered", "abstained", "offline"] as const)).map((st) => (
               <Link
                 key={st}
                 href={`/dev/public?page=${page}&state=${st}&theme=${theme}&lang=${locale}`}

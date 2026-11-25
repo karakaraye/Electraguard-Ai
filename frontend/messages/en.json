@@ -2193,6 +2193,7 @@
       "home": "Home",
       "results": "Results",
       "ask": "Ask",
+      "check": "Check",
       "guide": "Guides",
       "phone": "Try SMS and USSD",
       "privacy": "Privacy"
@@ -2537,6 +2538,49 @@
       "title": "Reporting is paused",
       "body": "The observation organisation has paused new reports for now. If someone is in danger, call 112.",
       "action": "See reviewed reports"
+    }
+  },
+  "p08": {
+    "title": "Check a rumour",
+    "heading": "Check a rumour",
+    "lead": "Paste a message you heard or saw. If our reviewers have approved an answer, we show it here.",
+    "label": "What did you hear or see?",
+    "hint": "Paste or type the message. 5 to 500 characters.",
+    "check": "Check",
+    "checking": "Checking",
+    "tooShort": "Write at least 5 characters.",
+    "tooLong": "Use 500 characters or fewer.",
+    "invalid": "Check the message. It must be 5 to 500 characters.",
+    "checked": {
+      "title": "Approved answer"
+    },
+    "englishOnly": "Shown in English. A translation is not ready yet.",
+    "approvedOn": "Approved on {date}",
+    "reviewers": "Checked by ElectraGuard reviewers. Not an INEC statement.",
+    "support": "Observers reported this in {states} states and {wards} wards.",
+    "fewer": "fewer than 5",
+    "notChecked": {
+      "title": "We have not checked this yet."
+    },
+    "ask": "Ask our reviewers to check it",
+    "asking": "Sending",
+    "queued": "Thank you. We have passed it to our reviewers. Check again later.",
+    "matched": "Others have asked about this too. Our reviewers are already looking at it.",
+    "safety": {
+      "title": "If someone is in danger, call 112 now.",
+      "call": "Call {number}",
+      "report": "Report what you saw"
+    },
+    "error": {
+      "tooMany": "Too many checks. Try again in a few minutes.",
+      "offline": "No connection. Check your internet and try again.",
+      "unavailable": "Rumour check is not available right now.",
+      "failed": "Something went wrong. Try again."
+    },
+    "homeCard": {
+      "title": "Heard a rumour?",
+      "body": "Check it against answers our reviewers approved.",
+      "link": "Check a rumour"
     }
   }
 }

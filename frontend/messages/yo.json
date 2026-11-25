@@ -2194,6 +2194,7 @@
       "home": "Ilé",
       "results": "Àbájáde",
       "ask": "Béèrè",
+      "check": "Ṣàyẹ̀wò",
       "guide": "Ìtọ́sọ́nà",
       "phone": "Gbìyànjú SMS àti USSD",
       "privacy": "Àṣírí"
@@ -2538,6 +2539,49 @@
       "title": "A ti dá ìròyìn dúró",
       "body": "Àjọ alákíyèsí ti dá àwọn ìròyìn tuntun dúró fún ìgbà díẹ̀. Bí ẹnìkan bá wà nínú ewu, pe 112.",
       "action": "Wo àwọn ìròyìn tí a ti ṣàyẹ̀wò"
+    }
+  },
+  "p08": {
+    "title": "Ṣayẹwo ọ̀rọ̀ ẹnu",
+    "heading": "Ṣayẹwo ọ̀rọ̀ ẹnu",
+    "lead": "Lẹ ọ̀rọ̀ tí o gbọ́ tàbí tí o rí mọ́ ibí. Tí àwọn olùyẹ̀wò wa bá ti fọwọ́ sí ìdáhùn, a máa fi hàn níbí.",
+    "label": "Kí ni o gbọ́ tàbí tí o rí?",
+    "hint": "Lẹ̀ tàbí kọ ọ̀rọ̀ náà. Ọ̀rọ̀ 5 sí 500.",
+    "check": "Ṣayẹwo",
+    "checking": "À ń ṣayẹwo",
+    "tooShort": "Kọ ó kéré tán lẹ́tà 5.",
+    "tooLong": "Lo lẹ́tà 500 tàbí kéré sí i.",
+    "invalid": "Ṣayẹwo ọ̀rọ̀ náà. Ó gbọ́dọ̀ jẹ́ lẹ́tà 5 sí 500.",
+    "checked": {
+      "title": "Ìdáhùn tí a fọwọ́ sí"
+    },
+    "englishOnly": "A fi hàn ní èdè Gẹ̀ẹ́sì. Ìtumọ̀ kò tíì ṣetán.",
+    "approvedOn": "A fọwọ́ sí i ní {date}",
+    "reviewers": "Àwọn olùyẹ̀wò ElectraGuard ló ṣayẹwo rẹ̀. Kì í ṣe ọ̀rọ̀ INEC.",
+    "support": "Àwọn alábòójútó sọ èyí ní ìpínlẹ̀ {states} àti wọ́ọ̀dù {wards}.",
+    "fewer": "tí ó kéré sí 5",
+    "notChecked": {
+      "title": "A kò tíì ṣayẹwo èyí."
+    },
+    "ask": "Béèrè kí àwọn olùyẹ̀wò wa ṣayẹwo rẹ̀",
+    "asking": "À ń fi ránṣẹ́",
+    "queued": "O ṣeun. A ti fi ránṣẹ́ sí àwọn olùyẹ̀wò wa. Padà wá ṣayẹwo láìpẹ́.",
+    "matched": "Àwọn míì náà ti béèrè nípa èyí. Àwọn olùyẹ̀wò wa ti ń wò ó.",
+    "safety": {
+      "title": "Tí ẹnìkan bá wà nínú ewu, pe 112 báyìí.",
+      "call": "Pe {number}",
+      "report": "Ròyìn ohun tí o rí"
+    },
+    "error": {
+      "tooMany": "Ìṣàyẹ̀wò pọ̀ jù. Gbìyànjú lẹ́ẹ̀kan sí i láìpẹ́.",
+      "offline": "Kò sí ìkànnì. Ṣayẹwo íńtánẹ́ẹ̀tì rẹ kí o tún gbìyànjú.",
+      "unavailable": "Ṣíṣayẹwo ọ̀rọ̀ ẹnu kò sí lọ́wọ́lọ́wọ́.",
+      "failed": "Nǹkan kan ṣẹlẹ̀. Tún gbìyànjú."
+    },
+    "homeCard": {
+      "title": "Ǹjẹ́ o gbọ́ ọ̀rọ̀ ẹnu?",
+      "body": "Ṣayẹwo rẹ̀ pẹ̀lú àwọn ìdáhùn tí àwọn olùyẹ̀wò wa fọwọ́ sí.",
+      "link": "Ṣayẹwo ọ̀rọ̀ ẹnu"
     }
   }
 }

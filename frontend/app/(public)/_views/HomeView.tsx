@@ -142,6 +142,12 @@ export function HomeView({ t, locale, results, guides, check }: HomeViewProps) {
         <h2 id="p02-help" className={styles.heading}>{t("p02.help.title")}</h2>
         <ul className={styles.links}>
           <li>
+            <Link href="/check" data-testid="home-check-rumour">
+              <span className={styles.linkTitle}>{t("p08.homeCard.title")}</span>
+              <span className={styles.linkText}>{t("p08.homeCard.body")} {t("p08.homeCard.link")}</span>
+            </Link>
+          </li>
+          <li>
             <Link href="/ask">
               <span className={styles.linkTitle}>{t("p02.help.ask")}</span>
               <span className={styles.linkText}>{t("p02.help.askHint")}</span>

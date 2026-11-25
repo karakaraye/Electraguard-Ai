@@ -31,6 +31,7 @@ export type ContractId =
   | "MSG-01" | "MSG-02"
   | "DIS-01" | "DIS-02" | "DIS-03" | "DIS-04" | "DIS-05"
   | "ASK-01" | "GUIDE-01" | "RS-01"
+  | "CHK-01" | "CHK-02"
   | "Q-01" | "CASE-01" | "CASE-02" | "CASE-03" | "CASE-04" | "CASE-05"
   | "ASG-01" | "ASG-02"
   | "OPS-01" | "OPS-02" | "OPS-03" | "OPS-04"
@@ -198,6 +199,10 @@ export const OPERATIONS = {
   // GUIDE (approved documents rendered on P-05; the same set ASK-01 quotes)
   "GUIDE-01.list": { contract: "GUIDE-01", method: "GET", path: "/public/guides", callers: ALL, status: "NEW", idempotent: false },
   "GUIDE-01.get": { contract: "GUIDE-01", method: "GET", path: "/public/guides/{slug}", callers: ALL, status: "NEW", idempotent: false },
+
+  // CHK (P-08 public rumour check)
+  "CHK-01": { contract: "CHK-01", method: "GET", path: "/public/check", callers: ["public"], status: "NEW", idempotent: false },
+  "CHK-02": { contract: "CHK-02", method: "POST", path: "/public/check", callers: ["public"], status: "NEW", idempotent: true, body: "json" },
 } as const satisfies Record<string, OperationSpec>;
 
 export type OperationId = keyof typeof OPERATIONS;
@@ -348,6 +353,8 @@ export interface OperationTypes {
 
   "GUIDE-01.list": Io<undefined, T.GuideListResponse, { language?: T.Language }>;
   "GUIDE-01.get": Io<undefined, T.GuideDocument, { language?: T.Language }>;
+  "CHK-01": Io<undefined, T.CheckResponse, T.CheckQuery>;
+  "CHK-02": Io<T.CheckAskRequest, T.CheckAskResponse>;
 }
 
 /** Fails to compile if an operation has no types or a type entry has no operation. */

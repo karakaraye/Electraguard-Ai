@@ -2194,6 +2194,7 @@
       "home": "Ụlọ",
       "results": "Nsonaazụ",
       "ask": "Jụọ",
+      "check": "Lelee",
       "guide": "Ntụziaka",
       "phone": "Nwalee SMS na USSD",
       "privacy": "Nzuzo"
@@ -2538,6 +2539,49 @@
       "title": "Akwụsịrị ịkọ akụkọ",
       "body": "Otu ndị nleba anya akwụsịla akụkọ ọhụrụ ugbu a. Ọ bụrụ na mmadụ nọ n'ihe egwu, kpọọ 112.",
       "action": "Hụ akụkọ ndị enyochala"
+    }
+  },
+  "p08": {
+    "title": "Lelee asịrị",
+    "heading": "Lelee asịrị",
+    "lead": "Tinye ozi i nụrụ ma ọ bụ hụrụ. Ọ bụrụ na ndị nyocha anyị ekweela na azịza, anyị ga-egosi ya ebe a.",
+    "label": "Gịnị ka i nụrụ ma ọ bụ hụrụ?",
+    "hint": "Tinye ma ọ bụ dee ozi ahụ. Mkpụrụedemede 5 ruo 500.",
+    "check": "Lelee",
+    "checking": "Anyị na-elele",
+    "tooShort": "Dee opekata mpe mkpụrụedemede 5.",
+    "tooLong": "Jiri mkpụrụedemede 500 ma ọ bụ ihe pere mpe.",
+    "invalid": "Lelee ozi ahụ. O kwesịrị ịbụ mkpụrụedemede 5 ruo 500.",
+    "checked": {
+      "title": "Azịza ekwetara"
+    },
+    "englishOnly": "Egosiri ya n'asụsụ Bekee. Nsụgharị adịbeghị njikere.",
+    "approvedOn": "Ekwetara ya na {date}",
+    "reviewers": "Ndị nyocha ElectraGuard lelere ya. Ọ bụghị ngwa okwu INEC.",
+    "support": "Ndị na-ekiri kọrọ nke a n'steeti {states} na ward {wards}.",
+    "fewer": "ihe na-erughị 5",
+    "notChecked": {
+      "title": "Anyị elebeghị nke a anya."
+    },
+    "ask": "Rịọ ndị nyocha anyị ka ha lelee ya",
+    "asking": "Anyị na-ezipụ",
+    "queued": "Daalụ. Anyị enyela ndị nyocha anyị ya. Lelee ọzọ mgbe e mesịrị.",
+    "matched": "Ndị ọzọ jụkwara maka nke a. Ndị nyocha anyị na-elekwa ya anya.",
+    "safety": {
+      "title": "Ọ bụrụ na mmadụ nọ n'ihe egwu, kpọọ 112 ugbu a.",
+      "call": "Kpọọ {number}",
+      "report": "Kọọ ihe i hụrụ"
+    },
+    "error": {
+      "tooMany": "Nlele dị ọtụtụ. Nwaa ọzọ n'oge na-adịghị anya.",
+      "offline": "Enweghị njikọ. Lelee ịntanetị gị wee nwaa ọzọ.",
+      "unavailable": "Nlele asịrị adịghị ugbu a.",
+      "failed": "Ihe emezighị. Nwaa ọzọ."
+    },
+    "homeCard": {
+      "title": "I nụrụ asịrị?",
+      "body": "Lelee ya megide azịza ndị nyocha anyị kwadoro.",
+      "link": "Lelee asịrị"
     }
   }
 }

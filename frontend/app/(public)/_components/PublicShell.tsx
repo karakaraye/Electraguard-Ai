@@ -11,6 +11,7 @@ export const NAV = [
   { href: "/", key: "pub.nav.home" },
   { href: "/results", key: "pub.nav.results" },
   { href: "/ask", key: "pub.nav.ask" },
+  { href: "/check", key: "pub.nav.check" },
   { href: "/guide", key: "pub.nav.guide" },
   { href: "/phone", key: "pub.nav.phone" },
   { href: "/privacy", key: "pub.nav.privacy" },

@@ -2194,6 +2194,7 @@
       "home": "Gida",
       "results": "Sakamako",
       "ask": "Tambaya",
+      "check": "Duba",
       "guide": "Jagorori",
       "phone": "Gwada SMS da USSD",
       "privacy": "Sirri"
@@ -2538,6 +2539,49 @@
       "title": "An dakatar da rahoto",
       "body": "Ƙungiyar sa ido ta dakatar da sababbin rahotanni na ɗan lokaci. Idan wani yana cikin haɗari, kira 112.",
       "action": "Duba rahotannin da aka yi bita"
+    }
+  },
+  "p08": {
+    "title": "Duba jita-jita",
+    "heading": "Duba jita-jita",
+    "lead": "Liƙa saƙon da ka ji ko ka gani. Idan masu bitar mu sun amince da amsa, za mu nuna ta a nan.",
+    "label": "Me ka ji ko ka gani?",
+    "hint": "Liƙa ko rubuta saƙon. Haruffa 5 zuwa 500.",
+    "check": "Duba",
+    "checking": "Ana dubawa",
+    "tooShort": "Rubuta aƙalla haruffa 5.",
+    "tooLong": "Yi amfani da haruffa 500 ko ƙasa.",
+    "invalid": "Duba saƙon. Dole ne ya zama haruffa 5 zuwa 500.",
+    "checked": {
+      "title": "Amsar da aka amince da ita"
+    },
+    "englishOnly": "An nuna ta da Turanci. Fassara ba ta shirya ba tukuna.",
+    "approvedOn": "An amince a ranar {date}",
+    "reviewers": "Masu bitar ElectraGuard ne suka duba. Ba bayanin INEC ba ne.",
+    "support": "Masu sa ido sun ba da rahoton wannan a jihohi {states} da mazaɓu {wards}.",
+    "fewer": "ƙasa da 5",
+    "notChecked": {
+      "title": "Ba mu duba wannan ba tukuna."
+    },
+    "ask": "Roƙi masu bitar mu su duba shi",
+    "asking": "Ana aikawa",
+    "queued": "Na gode. Mun miƙa shi ga masu bitar mu. Ka sake dubawa daga baya.",
+    "matched": "Wasu ma sun yi tambaya game da wannan. Masu bitar mu suna duba shi tuni.",
+    "safety": {
+      "title": "Idan wani yana cikin haɗari, kira 112 yanzu.",
+      "call": "Kira {number}",
+      "report": "Kai rahoton abin da ka gani"
+    },
+    "error": {
+      "tooMany": "An yi bincike da yawa. Ka sake gwadawa nan da ƙanƙanin lokaci.",
+      "offline": "Babu haɗin intanet. Duba intanet ɗinka ka sake gwadawa.",
+      "unavailable": "Duba jita-jita ba ya aiki a yanzu.",
+      "failed": "Wani abu ya faru. Ka sake gwadawa."
+    },
+    "homeCard": {
+      "title": "Ka ji jita-jita?",
+      "body": "Ka duba ta da amsoshin da masu bitar mu suka amince da su.",
+      "link": "Duba jita-jita"
     }
   }
 }
