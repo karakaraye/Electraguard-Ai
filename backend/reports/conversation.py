@@ -184,6 +184,10 @@ def send(report, actor, role, data):
         record_change(report, actor, Action.RESPOND, change, "status")
     else:
         record_change(report, actor, Action.MESSAGE, change)
+        if role == "reviewer":
+            from clocks.calculator import stop_open_clocks
+
+            stop_open_clocks(report)
     return 201, {
         "message": messages(report, role)[-1],
         "status" if citizen else "report_status": STATES[report.status], "version": report.version,

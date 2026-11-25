@@ -439,3 +439,184 @@ class ConcurrentSweepTests(TransactionTestCase):
         self.assertIsNotNone(clock.notified_at)
         self.assertEqual(Alert.objects.filter(organisation=org, rule="review_clock_overdue").count(), 1)
         self.assertEqual(AuditEvent.objects.filter(organisation=org, action="case.overdue").count(), 1)
+
+
+class ReviewClockApiIntegrationTests(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        from accounts.models import Organisation, User
+
+        call_command("load_reference_areas", verbosity=0)
+        cls.org = Organisation.objects.create(name="Clock API Org")
+        cls.other_org = Organisation.objects.create(name="Clock API Other Org")
+        cls.reviewer = User.objects.create_user(
+            email="api.rev@example.com", password="pw", organisation=cls.org, role=User.Role.REVIEWER
+        )
+        cls.coordinator = User.objects.create_user(
+            email="api.coord@example.com", password="pw", organisation=cls.org, role=User.Role.COORDINATOR
+        )
+
+    def login_as(self, user):
+        from accounts.staff_sessions import VERIFIED
+        from staff.test_support import bind_staff_session
+
+        self.client.force_login(user)
+        session = self.client.session
+        session[VERIFIED] = True
+        session.save()
+        bind_staff_session(session, user)
+
+    def test_sms_and_ussd_intake_create_running_clock(self):
+        from phone_channels.handlers import handle_sms, handle_ussd
+
+        handle_sms(self.org, "+2348031112222", "sms-clk-1", "1234", "REPORT 4 Kano polling unit delayed")
+        sms_report = Report.objects.filter(organisation=self.org).latest("created_at")
+        sms_clock = ReviewClock.objects.get(report=sms_report, kind=ReviewClock.Kind.FIRST_ACTION)
+        self.assertIsNone(sms_clock.stopped_at)
+
+        handle_ussd(self.org, "+2348033334444", "ussd-clk-1", "*347*88#", "1*4*1*1*1*Ballot papers missing")
+        ussd_resp, _ = handle_ussd(self.org, "+2348033334444", "ussd-clk-1", "*347*88#", "1*4*1*1*1*Ballot papers missing*1")
+        self.assertIn("Received", ussd_resp, ussd_resp)
+        ussd_report = Report.objects.filter(organisation=self.org).exclude(pk=sms_report.pk).latest("created_at")
+        ussd_clock = ReviewClock.objects.get(report=ussd_report, kind=ReviewClock.Kind.FIRST_ACTION)
+        self.assertIsNone(ussd_clock.stopped_at)
+
+    def test_citizen_form_intake_creates_running_clock(self):
+        import base64
+        import secrets
+
+        secret = base64.urlsafe_b64encode(secrets.token_bytes(32)).rstrip(b"=").decode("ascii")
+        res = self.client.post(
+            "/api/v1/public/reports",
+            data={
+                "kind": "incident",
+                "language": "en",
+                "category_observer": "not_sure",
+                "danger_now": False,
+                "firsthand": True,
+                "description": "Long queue at ward 3 gate",
+                "occurred_at": (timezone.now() - timedelta(minutes=10)).isoformat(),
+                "receipt_secret": secret,
+                "place": {"ward_code": "SYN-KN-01-01"},
+            },
+            content_type="application/json",
+            HTTP_IDEMPOTENCY_KEY=str(uuid4()),
+        )
+        self.assertEqual(res.status_code, 201, res.content)
+        report = Report.objects.get(pk=res.json()["id"])
+        clock = ReviewClock.objects.get(report=report, kind=ReviewClock.Kind.FIRST_ACTION)
+        self.assertIsNone(clock.stopped_at)
+
+    def test_citizen_reply_starts_question_reply_clock_and_staff_message_stops_it(self):
+        import base64
+        import secrets
+        from accounts.models import User
+        from reports.v1_views import question_id
+
+        secret = base64.urlsafe_b64encode(secrets.token_bytes(32)).rstrip(b"=").decode("ascii")
+        res = self.client.post(
+            "/api/v1/public/reports",
+            data={
+                "kind": "incident",
+                "language": "en",
+                "category_observer": "not_sure",
+                "danger_now": False,
+                "firsthand": True,
+                "description": "Missing ink pad",
+                "occurred_at": (timezone.now() - timedelta(minutes=10)).isoformat(),
+                "receipt_secret": secret,
+                "place": {"ward_code": "SYN-KN-01-01"},
+            },
+            content_type="application/json",
+            HTTP_IDEMPOTENCY_KEY=str(uuid4()),
+        )
+        self.assertEqual(res.status_code, 201, res.content)
+        data = res.json()
+        report = Report.objects.get(pk=data["id"])
+        receipt_code = data["receipt_code"]
+
+        pub_reviewer = User.objects.create_user(
+            email="pub.rev@example.com", password="pw", organisation=report.organisation, role=User.Role.REVIEWER
+        )
+        report.assigned_reviewer = pub_reviewer
+        report.save(update_fields=["assigned_reviewer"])
+        self.login_as(pub_reviewer)
+        start_res = self.client.post(
+            f"/api/v1/review/cases/{report.pk}/actions",
+            {"action": "start", "version": report.version},
+            content_type="application/json",
+            HTTP_IDEMPOTENCY_KEY=str(uuid4()),
+        )
+        self.assertEqual(start_res.status_code, 200, start_res.content)
+        report.refresh_from_db()
+        ask_res = self.client.post(
+            f"/api/v1/review/cases/{report.pk}/actions",
+            {"action": "ask", "version": report.version, "question": "Which polling unit?"},
+            content_type="application/json",
+            HTTP_IDEMPOTENCY_KEY=str(uuid4()),
+        )
+        self.assertEqual(ask_res.status_code, 200, ask_res.content)
+        report.refresh_from_db()
+        ev = ReviewEvent.objects.filter(report=report, action=ReviewEvent.Action.REQUEST_CLARIFICATION).latest("version")
+        qid = question_id(report.pk, ev.version)
+
+        # Citizen replies -> starts question_reply clock
+        self.client.logout()
+        rep_res = self.client.post(
+            f"/api/v1/public/receipts/{receipt_code}/reply",
+            {"question_id": qid, "body": "Unit 004 at primary school"},
+            content_type="application/json",
+            HTTP_IDEMPOTENCY_KEY=str(uuid4()),
+            HTTP_X_RECEIPT_SECRET=secret,
+        )
+        self.assertEqual(rep_res.status_code, 201, rep_res.content)
+        qr_clock = ReviewClock.objects.get(report=report, kind=ReviewClock.Kind.QUESTION_REPLY)
+        self.assertIsNone(qr_clock.stopped_at)
+
+        # Staff sends message -> stops question_reply clock
+        self.login_as(pub_reviewer)
+        report.refresh_from_db()
+        msg_res = self.client.post(
+            f"/api/v1/reports/{report.pk}/messages",
+            {"kind": "message", "version": report.version, "body": "Thank you, noted."},
+            content_type="application/json",
+            HTTP_IDEMPOTENCY_KEY=str(uuid4()),
+        )
+        self.assertEqual(msg_res.status_code, 201, msg_res.content)
+        qr_clock.refresh_from_db()
+        self.assertIsNotNone(qr_clock.stopped_at)
+        self.assertEqual(qr_clock.state, ReviewClock.State.STOPPED)
+
+    def test_organisation_isolation_for_clocks(self):
+        from accounts.models import User
+        from clocks.calculator import create_initial_clock
+        now = timezone.now()
+        case_a = Report.objects.create(
+            organisation=self.org,
+            submission_key=uuid4(),
+            occurred_at=now - timedelta(hours=1),
+            description="Org A urgent case",
+            incident_details={"kind": "incident", "danger_now": True},
+        )
+        Report.objects.filter(pk=case_a.pk).update(created_at=now - timedelta(hours=1))
+        case_a.refresh_from_db()
+        create_initial_clock(case_a, now=now - timedelta(hours=1))
+        other_reviewer = User.objects.create_user(
+            email="rev.b@example.com", password="pw", organisation=self.other_org, role=User.Role.REVIEWER
+        )
+        other_coord = User.objects.create_user(
+            email="coord.b@example.com", password="pw", organisation=self.other_org, role=User.Role.COORDINATOR
+        )
+
+        self.login_as(other_reviewer)
+        q_res = self.client.get("/api/v1/review/queue")
+        self.assertEqual(q_res.status_code, 200)
+        self.assertNotIn(str(case_a.pk), [item["id"] for item in q_res.json()["items"]])
+        c_res = self.client.get(f"/api/v1/review/cases/{case_a.pk}")
+        self.assertEqual(c_res.status_code, 404)
+
+        self.login_as(other_coord)
+        from_date = (now - timedelta(hours=1)).astimezone(timezone.get_current_timezone()).date().isoformat()
+        to_date = now.astimezone(timezone.get_current_timezone()).date().isoformat()
+        ov = self.client.get(f"/api/v1/ops/overview?from={from_date}&to={to_date}").json()
+        self.assertEqual(ov["overdue"]["urgent"], 0)
