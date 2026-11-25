@@ -450,10 +450,15 @@ def _statistical_detection(organisation, now, wat_now, configured_categories):
             alerts_touched.append(warning)
 
     # 2. DRIFT only adds evidence to an already open, unreviewed warning (never opens one)
+    best_drift = {}
     for cand in drift_evidence:
-        lga, cat = cand["lga"], cand["category"]
-        if (lga, cat) in best_spikes:
+        key = (cand["lga"], cand["category"])
+        if key in best_spikes:
             continue
+        if key not in best_drift or cand["observed"] > best_drift[key]["observed"]:
+            best_drift[key] = cand
+
+    for (lga, cat), cand in best_drift.items():
         existing = ClusterWarning.objects.filter(
             organisation=organisation,
             lga_code=lga,
@@ -465,12 +470,31 @@ def _statistical_detection(organisation, now, wat_now, configured_categories):
             if len(combined_ids) > len(existing.report_ids):
                 lga_name = cand["area"].get("lga_name") or lga
                 existing.report_ids = combined_ids
-                existing.observed = len(combined_ids)
-                existing.window_end = now
-                existing.explanation = build_plain_explanation(
-                    cat, lga_name, existing.window_minutes, len(combined_ids), existing.expected
+                existing.total_reports = len(combined_ids)
+                existing.observed = cand["observed"]
+                existing.expected = round(cand["expected"], 2)
+                existing.p_value = cand["p_value"]
+                existing.q_value = cand["q_value"]
+                existing.window_minutes = cand["window_minutes"]
+                existing.baseline_kind = cand["baseline_kind"]
+                existing.baseline = round(cand["expected"], 2)
+                if existing.detector in (ClusterWarning.Detector.SPIKE, ClusterWarning.Detector.THRESHOLD):
+                    existing.detector = ClusterWarning.Detector.DRIFT
+                hours = max(1, round((now - existing.window_start).total_seconds() / 3600))
+                cat_display = cat.replace("_", " ")
+                exp_disp = round(cand["expected"], 1)
+                if exp_disp.is_integer():
+                    exp_disp = int(exp_disp)
+                existing.explanation = (
+                    f"{cand['observed']} {cat_display} reports in {lga_name} LGA across {hours} hours; "
+                    f"about {exp_disp} expected"
                 )
-                existing.save(update_fields=["report_ids", "observed", "window_end", "explanation"])
+                existing.window_end = now
+                existing.save(update_fields=[
+                    "report_ids", "total_reports", "observed", "expected", "p_value", "q_value",
+                    "window_minutes", "baseline_kind", "baseline", "detector",
+                    "explanation", "window_end",
+                ])
                 alerts_touched.append(existing)
 
     return alerts_touched
