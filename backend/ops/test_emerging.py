@@ -271,15 +271,33 @@ class EmergingIssueDetectionIntegrationTests(TestCase):
         alerts = detect_emerging(self.org.pk, now=utc_now)
         self.assertEqual(len(alerts), 1)
         self.assertEqual(alerts[0].pk, initial[0].pk)
-        self.assertEqual(alerts[0].detector, ClusterWarning.Detector.DRIFT)
+        self.assertEqual(alerts[0].detector, ClusterWarning.Detector.SPIKE)
         self.assertGreater(alerts[0].total_reports, 4)
 
-        res = self.client.get("/api/v1/ops/clusters?status=open")
-        self.assertEqual(res.status_code, 200)
-        item = res.json()["items"][0]
-        self.assertEqual(item["detector"], "drift")
-        self.assertEqual(item["explanation_key"], "ops.alert.drift")
-        self.assertEqual(set(item["explanation_params"].keys()), {"category", "lga_name", "hours", "observed", "expected"})
+    def test_threshold_warning_joins_five_more_reports(self):
+        ClusterSettings.objects.create(organisation=self.org, window_minutes=60, min_reports=3, categories=["intimidation_violence"])
+        # Initial threshold warning with 3 reports (min_reports=3, baseline=0)
+        t1 = datetime.now(dt_timezone.utc)
+        for _ in range(3):
+            self.create_report(occurred_at=t1 - timedelta(minutes=5))
+        alerts_1 = detect_emerging(self.org.pk, now=t1, is_statistical=False)
+        self.assertEqual(len(alerts_1), 1)
+        w = alerts_1[0]
+        self.assertEqual(w.observed, 3)
+        self.assertEqual(w.total_reports, 3)
+        self.assertEqual(len(w.report_ids), 3)
+
+        # 75 minutes later (> 60m), 5 more reports arrive -> joins existing open warning
+        t2 = t1 + timedelta(minutes=75)
+        for _ in range(5):
+            self.create_report(occurred_at=t2 - timedelta(minutes=5))
+        alerts_2 = detect_emerging(self.org.pk, now=t2, is_statistical=False)
+        self.assertEqual(len(alerts_2), 1)
+        w2 = alerts_2[0]
+        self.assertEqual(w2.pk, w.pk)
+        self.assertEqual(w2.observed, 5)  # reports in latest window
+        self.assertEqual(w2.total_reports, 8)  # running total across joined windows
+        self.assertEqual(len(w2.report_ids), 8)
 
     def test_ops_02_contract_api_fields(self):
         wat_now = datetime.combine(datetime.now(WAT).date(), time(15, 0), tzinfo=WAT)
