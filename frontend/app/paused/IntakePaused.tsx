@@ -2,6 +2,7 @@
 
 import { useT } from "../../lib/i18n/client";
 import { SystemPage } from "../_system/SystemPage";
+import { PausedSpot } from "../_system/spots";
 
 /** A pause sign: two upright bars. */
 function PauseIcon({ size = 24 }: { size?: number }) {
@@ -17,6 +18,7 @@ export function IntakePaused() {
   return (
     <SystemPage
       icon={PauseIcon}
+      spot={PausedSpot}
       title={t("sys.paused.title")}
       body={t("sys.paused.body")}
       action={{ label: t("sys.paused.action"), href: "/results" }}

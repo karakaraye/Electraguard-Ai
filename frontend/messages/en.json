@@ -292,7 +292,8 @@
       "clearTitle": "Delete these reports from this phone?",
       "clearBody": "They were never sent. If you delete them, they are gone for good. This cannot be undone.",
       "clearConfirm": "Delete reports"
-    }
+    },
+    "footer": "ElectraGuard AI by Cairn · Independent and nonpartisan"
   },
   "o04": {
     "title": "Home",
@@ -341,7 +342,8 @@
     "allReports": "See all my reports",
     "outboxTitle": "Waiting to send",
     "outboxOrder": "Reports send in the order you made them.",
-    "outboxLabel": "{count, plural, one {# report waiting to send} other {# reports waiting to send}}"
+    "outboxLabel": "{count, plural, one {# report waiting to send} other {# reports waiting to send}}",
+    "heroPaused": "New reports are paused. You can still write them. They will wait on this phone."
   },
   "incident": {
     "draftKept": "Your report is saved on this phone.",
@@ -394,7 +396,7 @@
   "o07": {
     "title": "Where did it happen?",
     "searchLabel": "Polling unit code or name",
-    "searchHint": "Example: 24-05-08-011",
+    "searchHint": "Example: KN-04-07-012",
     "orChoose": "Or choose step by step",
     "state": "State",
     "lga": "Local government area",
@@ -470,7 +472,7 @@
     "blur": "Blur faces",
     "blurHint": "Faces we can detect are blurred. Check before sending.",
     "locationRemoved": "Location removed",
-    "size": "{size} · about {time} to send now",
+    "size": "{size} · about {time} to send",
     "sizeOffline": "{size} · will send when you have network",
     "retake": "Retake",
     "remove": "Remove",
@@ -518,7 +520,8 @@
     "summaryTitle": "Your report",
     "sendOffline": "Save and send when online",
     "checkThis": "Check this",
-    "citizenNote": "You don't need an account. You'll get a receipt code."
+    "citizenNote": "You don't need an account. You'll get a receipt code.",
+    "savedServer": "Our server had a problem. Your report is safe on this phone. It will send by itself when the server is back."
   },
   "o12": {
     "title": "Report received",
@@ -620,7 +623,7 @@
       "button": "Withdraw this report",
       "title": "Withdraw this report?",
       "body": "Your text, photos, videos and voice notes will be deleted. Reviewers will only see that a report was withdrawn. This cannot be undone.",
-      "confirm": "Withdraw report",
+      "confirm": "Withdraw",
       "keep": "Keep it",
       "done": "You withdrew this report.",
       "tooLate": "Review has started, so this report can no longer be withdrawn. You can send a message to the reviewer instead.",
@@ -870,7 +873,8 @@
     "ready": "Answer ready.",
     "version": "version {version}",
     "openSourceNamed": "Open {title}",
-    "noGuides": "No guides are saved on this phone yet. They are saved when you open them with network."
+    "noGuides": "No guides are saved on this phone yet. They are saved when you open them with network.",
+    "answered": "From the approved guides"
   },
   "o20": {
     "title": "Settings",
@@ -895,7 +899,7 @@
       "title": "Sign out and clear this phone?",
       "body": "Drafts, saved reports and messages on this phone will be removed. Reports already received stay safe with the reviewers.",
       "unsentWarning": "{count, plural, one {# report is not sent yet. It will be lost.} other {# reports are not sent yet. They will be lost.}}",
-      "sendFirst": "Send them first",
+      "sendFirst": "{count, plural, one {Send it first} other {Send them first}}",
       "confirm": "Clear and sign out",
       "signedOut": "You are signed out.",
       "everywhere": "Sign out on every phone",
@@ -910,7 +914,8 @@
     "text": {
       "normal": "Normal",
       "large": "Large"
-    }
+    },
+    "themeSystem": "System"
   },
   "c01": {
     "title": "Report received",
@@ -933,7 +938,6 @@
     "checkStatus": "Check status",
     "another": "Report something else",
     "citizenLabel": "Citizen report, not from an accredited observer",
-    "testNumber": "test number",
     "secretMissing": "This file cannot be added from this phone."
   },
   "p01": {
@@ -2207,7 +2211,6 @@
     "report": "Report what you saw",
     "reportHint": "No account and no name. You get a receipt code to check it later.",
     "basicPhone": "No smartphone? Dial {ussd} or send an SMS to {shortCode}.",
-    "testNumber": "(test number)",
     "tryPhone": "Try it on the on-screen phone",
     "check": {
       "title": "Check a report",
@@ -2360,7 +2363,9 @@
     "error": {
       "title": "Guides could not be loaded.",
       "body": "Try again in a minute."
-    }
+    },
+    "chipEnglish": "English only",
+    "approvedShort": "Approved {date}"
   },
   "p06": {
     "title": "Privacy notice",

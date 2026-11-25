@@ -93,15 +93,8 @@
   cursor: pointer;
 }
 
-[data-theme="dark"] .control::-webkit-calendar-picker-indicator {
-  filter: invert(1);
-}
-
-@media (prefers-color-scheme: dark) {
-  [data-theme="system"] .control::-webkit-calendar-picker-indicator {
-    filter: invert(1);
-  }
-}
+/* The picker icon follows the control's colour-scheme (dark under a dark theme, set in tokens.css).
+   No filter here: inverting an icon the browser already draws light turns it dark again. */
 
 /* ---------- TextArea ---------- */
 

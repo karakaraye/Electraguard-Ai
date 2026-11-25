@@ -293,7 +293,8 @@
       "clearTitle": "You wan delete these reports from this phone?",
       "clearBody": "Dem never send at all. If you delete dem, dem don go for good. You no fit bring dem back.",
       "clearConfirm": "Delete reports"
-    }
+    },
+    "footer": "ElectraGuard AI by Cairn · E no dey for any party"
   },
   "o04": {
     "title": "Home",
@@ -342,7 +343,8 @@
     "allReports": "See all my reports",
     "outboxTitle": "E dey wait to send",
     "outboxOrder": "Reports go send one by one, as you make dem.",
-    "outboxLabel": "{count, plural, one {# report dey wait to send} other {# reports dey wait to send}}"
+    "outboxLabel": "{count, plural, one {# report dey wait to send} other {# reports dey wait to send}}",
+    "heroPaused": "New reports don stop. You fit still write dem. Dem go wait for this phone."
   },
   "incident": {
     "draftKept": "Your report dey saved for this phone.",
@@ -395,7 +397,7 @@
   "o07": {
     "title": "Where e happen?",
     "searchLabel": "Polling unit code or name",
-    "searchHint": "Example: 24-05-08-011",
+    "searchHint": "Example: KN-04-07-012",
     "orChoose": "Or choose am one by one",
     "state": "State",
     "lga": "Local government area",
@@ -471,7 +473,7 @@
     "blur": "Hide faces (blur)",
     "blurHint": "We blur the faces wey we fit see. Check before you send.",
     "locationRemoved": "We don remove location",
-    "size": "{size} · e go take about {time} to send now",
+    "size": "{size} · e go take about {time} to send",
     "sizeOffline": "{size} · e go send when network come",
     "retake": "Snap again",
     "remove": "Remove",
@@ -519,7 +521,8 @@
     "summaryTitle": "Your report",
     "sendOffline": "Keep am, send when network come",
     "checkThis": "Check am",
-    "citizenNote": "You no need account. You go get receipt code."
+    "citizenNote": "You no need account. You go get receipt code.",
+    "savedServer": "Our server get wahala. Your report dey safe for this phone. E go send by itself when server don correct."
   },
   "o12": {
     "title": "Dem don receive your report",
@@ -621,7 +624,7 @@
       "button": "Withdraw this report (comot am)",
       "title": "You wan withdraw this report?",
       "body": "Your writing, photos, videos and voice notes go delete. Reviewers go only see say person withdraw one report. You no fit bring am back.",
-      "confirm": "Withdraw report",
+      "confirm": "Withdraw",
       "keep": "Keep am",
       "done": "You don withdraw this report.",
       "tooLate": "Review don start, so you no fit withdraw this report again. You fit send message to the reviewer instead.",
@@ -871,7 +874,8 @@
     "ready": "Answer don ready.",
     "version": "version {version}",
     "openSourceNamed": "Open {title}",
-    "noGuides": "No guide dey saved for this phone yet. Dem go save when you open dem with network."
+    "noGuides": "No guide dey saved for this phone yet. Dem go save when you open dem with network.",
+    "answered": "From the approved guides"
   },
   "o20": {
     "title": "Settings",
@@ -896,7 +900,7 @@
       "title": "You wan sign out and clear this phone?",
       "body": "Drafts, saved reports and messages for this phone go comot. Reports wey dem don receive go still dey safe with the reviewers.",
       "unsentWarning": "{count, plural, one {# report never send. E go lost.} other {# reports never send. Dem go lost.}}",
-      "sendFirst": "Send dem first",
+      "sendFirst": "{count, plural, one {Send am first} other {Send dem first}}",
       "confirm": "Clear and sign out",
       "signedOut": "You don sign out.",
       "everywhere": "Sign out for every phone",
@@ -911,7 +915,8 @@
     "text": {
       "normal": "Normal",
       "large": "Big"
-    }
+    },
+    "themeSystem": "Phone"
   },
   "c01": {
     "title": "Dem don receive your report",
@@ -934,7 +939,6 @@
     "checkStatus": "Check status",
     "another": "Report another thing",
     "citizenLabel": "Citizen report. E no come from accredited observer.",
-    "testNumber": "test number",
     "secretMissing": "You no fit add this file from this phone."
   },
   "p01": {
@@ -2208,7 +2212,6 @@
     "report": "Report wetin you see",
     "reportHint": "No account, no name. You go get receipt code to check am later.",
     "basicPhone": "No smartphone? Dial {ussd} or send SMS go {shortCode}.",
-    "testNumber": "(test number)",
     "tryPhone": "Try am for the phone wey dey this screen",
     "check": {
       "title": "Check report",
@@ -2361,7 +2364,9 @@
     "error": {
       "title": "Guides no fit load.",
       "body": "Try again after one minute."
-    }
+    },
+    "chipEnglish": "English only",
+    "approvedShort": "Dem approve am {date}"
   },
   "p06": {
     "title": "Privacy notice",

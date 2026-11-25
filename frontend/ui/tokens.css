@@ -84,6 +84,10 @@
   --rule: #e6e1d5;
   --rule-control: #8a857a;
   --on-ink: #faf8f3;
+  /* Filled bars, banners and device bodies. Ink in light; a raised dark surface in dark, so a slab
+     never turns into a cream block. Text on it is --on-slab. */
+  --slab: #0e0d0b;
+  --on-slab: #faf8f3;
   --hero: #0e0d0b;
   /* Text on --hero. The hero stays dark in both themes, so these do not flip. */
   /* Colours that never flip with the theme: content on the white plus disc and on-ink buttons */
@@ -194,6 +198,8 @@
   --rule: #312e28;
   --rule-control: #7d776c;
   --on-ink: #121110;
+  --slab: #2b2823;
+  --on-slab: #f4f1ea;
   --hero: #26231e;
   --sun: #e3b060;
   --sun-strong: #f0c77e;
@@ -240,6 +246,8 @@
     --rule: #312e28;
     --rule-control: #7d776c;
     --on-ink: #121110;
+    --slab: #2b2823;
+    --on-slab: #f4f1ea;
     --hero: #26231e;
     --sun: #e3b060;
     --sun-strong: #f0c77e;
@@ -285,6 +293,8 @@
   --rule: #e6e1d5;
   --rule-control: #8a857a;
   --on-ink: #faf8f3;
+  --slab: #0e0d0b;
+  --on-slab: #faf8f3;
   --hero: #0e0d0b;
   --sun: #e3b060;
   --sun-strong: #c98f2e;
@@ -335,6 +345,21 @@
     --dur-exit: 0ms;
     --dur-tick: 0ms;
     --dur-scene: 0ms;
+  }
+}
+
+/* Native pickers and scrollbars inside a themed subtree draw in that theme (date and time icons) */
+[data-theme="dark"] :is(input, select, textarea) {
+  color-scheme: dark;
+}
+
+[data-theme="light"] :is(input, select, textarea) {
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  [data-theme="system"] :is(input, select, textarea) {
+    color-scheme: dark;
   }
 }
 

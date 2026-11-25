@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useId, useRef, type ReactNode } from "react";
+import { Children, Fragment, isValidElement, useEffect, useId, useRef, type ReactElement, type ReactNode } from "react";
 import { useT } from "../../lib/i18n/client";
+import { Button } from "../Button/Button";
 import { CloseIcon } from "../icons";
 import styles from "./Sheet.module.css";
 
@@ -12,7 +13,12 @@ export type SheetProps = {
   /** Short text under the title. */
   description?: ReactNode;
   children?: ReactNode;
-  /** Actions pinned to the bottom of the sheet. */
+  /**
+   * Actions pinned to the bottom of the sheet. One pattern everywhere: the secondary
+   * (Cancel, quiet or secondary Button) comes first, then the confirm button (primary or danger),
+   * side by side, wrapping onto two lines only when the labels need the room. The sheet enforces
+   * this order whatever order the caller writes the buttons in, so no screen can drift from it.
+   */
   footer?: ReactNode;
   /**
    * The phone's Back button closes the sheet before leaving the screen
@@ -23,6 +29,29 @@ export type SheetProps = {
 };
 
 const SHEET_STATE = "egSheet";
+
+/** Flattens fragments so the footer's buttons can be put in the one agreed order. */
+function flatten(node: ReactNode): ReactNode[] {
+  return Children.toArray(node).flatMap((child) =>
+    isValidElement(child) && child.type === Fragment ? flatten((child as ReactElement<{ children?: ReactNode }>).props.children) : [child],
+  );
+}
+
+/** 0 = secondary actions (Cancel), 1 = the confirm action. */
+function rank(child: ReactNode): number {
+  if (isValidElement(child) && child.type === Button) {
+    const variant = (child as ReactElement<{ variant?: string }>).props.variant;
+    return variant === "secondary" || variant === "quiet" ? 0 : 1;
+  }
+  return 1;
+}
+
+function orderFooter(footer: ReactNode): ReactNode[] {
+  return flatten(footer)
+    .map((child, index) => ({ child, index }))
+    .sort((a, b) => rank(a.child) - rank(b.child) || a.index - b.index)
+    .map(({ child }) => child);
+}
 
 /**
  * A closing sheet steps back out of its history entry one tick later, so that a sheet which
@@ -131,7 +160,7 @@ export function Sheet({
           ) : null}
           {children}
         </div>
-        {footer ? <div className={styles.footer}>{footer}</div> : null}
+        {footer ? <div className={styles.footer}>{orderFooter(footer)}</div> : null}
       </div>
     </dialog>
   );

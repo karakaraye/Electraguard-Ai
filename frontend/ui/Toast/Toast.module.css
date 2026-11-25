@@ -17,8 +17,8 @@
   max-width: 28rem;
   padding: 14px 16px;
   border-radius: var(--radius);
-  background: var(--ink);
-  color: var(--on-ink);
+  background: var(--slab);
+  color: var(--on-slab);
   box-shadow: var(--shadow-raised);
   font: var(--t-label);
   font-size: 0.9375rem;
@@ -49,6 +49,6 @@
 }
 
 .action:focus-visible {
-  outline: 3px solid var(--on-ink);
+  outline: 3px solid var(--on-slab);
   outline-offset: -3px;
 }

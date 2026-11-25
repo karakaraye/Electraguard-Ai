@@ -12,6 +12,8 @@ export type SystemAction = { label: string; href: string } | { label: string; on
 export interface SystemPageProps {
   /** The spot: an icon drawn in a large sun disc. Decorative. */
   icon: ComponentType<{ size?: number }>;
+  /** A spot illustration (ink and sun, no people). When given it replaces the icon disc. */
+  spot?: ComponentType<{ size?: number }>;
   tone?: "plain" | "danger";
   title: string;
   /** One sentence. */
@@ -27,7 +29,7 @@ export interface SystemPageProps {
  * out, access changed, intake paused and errors. One sentence and one action each; the
  * title takes focus so a screen reader announces where you are.
  */
-export function SystemPage({ icon: Icon, tone = "plain", title, body, action, secondary, "data-testid": testId = "system-page" }: SystemPageProps) {
+export function SystemPage({ icon: Icon, spot: Spot, tone = "plain", title, body, action, secondary, "data-testid": testId = "system-page" }: SystemPageProps) {
   const theme = useThemePreference("system");
   const heading = useRef<HTMLHeadingElement>(null);
   useEffect(() => {
@@ -41,9 +43,15 @@ export function SystemPage({ icon: Icon, tone = "plain", title, body, action, se
           <BrandMark size="md" />
         </div>
         <section className={styles.card} aria-labelledby="system-title">
-          <span className={styles.disc} data-tone={tone} aria-hidden="true">
-            <Icon size={40} />
-          </span>
+          {Spot ? (
+            <span className={styles.spot} aria-hidden="true">
+              <Spot size={132} />
+            </span>
+          ) : (
+            <span className={styles.disc} data-tone={tone} aria-hidden="true">
+              <Icon size={40} />
+            </span>
+          )}
           <h1 id="system-title" ref={heading} tabIndex={-1} className={styles.title}>
             {title}
           </h1>

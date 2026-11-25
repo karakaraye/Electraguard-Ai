@@ -293,7 +293,8 @@
       "clearTitle": "Ṣé kí a pa àwọn ìròyìn wọ̀nyí rẹ́ lórí fóònù yìí?",
       "clearBody": "A kò fi wọ́n ránṣẹ́ rí. Tí o bá pa wọ́n rẹ́, wọn yóò lọ pátápátá. A kò lè dá wọn padà.",
       "clearConfirm": "Pa àwọn ìròyìn rẹ́"
-    }
+    },
+    "footer": "ElectraGuard AI láti ọwọ́ Cairn · Aláìṣègbè, kì í ṣe ti ẹgbẹ́ òṣèlú"
   },
   "o04": {
     "title": "Ilé",
@@ -342,7 +343,8 @@
     "allReports": "Wo gbogbo ìròyìn mi",
     "outboxTitle": "Ń dúró de fífiránṣẹ́",
     "outboxOrder": "Àwọn ìròyìn ń lọ ní ọ̀nà tí o ṣe wọ́n.",
-    "outboxLabel": "{count, plural, one {Ìròyìn # ń dúró de fífiránṣẹ́} other {Ìròyìn # ń dúró de fífiránṣẹ́}}"
+    "outboxLabel": "{count, plural, one {Ìròyìn # ń dúró de fífiránṣẹ́} other {Ìròyìn # ń dúró de fífiránṣẹ́}}",
+    "heroPaused": "A ti dá ìròyìn tuntun dúró. O ṣì lè kọ wọ́n. Wọn yóò dúró sórí fóònù yìí."
   },
   "incident": {
     "draftKept": "A ti fi ìròyìn rẹ pamọ́ sórí fóònù yìí.",
@@ -395,7 +397,7 @@
   "o07": {
     "title": "Níbo ló ti ṣẹlẹ̀?",
     "searchLabel": "Kóòdù tàbí orúkọ ibùdó ìdìbò",
-    "searchHint": "Àpẹẹrẹ: 24-05-08-011",
+    "searchHint": "Àpẹẹrẹ: KN-04-07-012",
     "orChoose": "Tàbí yàn án ní ìgbésẹ̀-ìgbésẹ̀",
     "state": "Ìpínlẹ̀",
     "lga": "Ìjọba ìbílẹ̀",
@@ -471,7 +473,7 @@
     "blur": "Bo ojú àwọn ènìyàn",
     "blurHint": "À ń bo àwọn ojú tí a bá lè rí. Ṣàyẹ̀wò kí o tó fi ránṣẹ́.",
     "locationRemoved": "A ti yọ àmì ibi tí a ti yà á kúrò",
-    "size": "{size} · bíi {time} láti fi ránṣẹ́ báyìí",
+    "size": "{size} · bíi {time} láti fi ránṣẹ́",
     "sizeOffline": "{size} · yóò lọ nígbà tí o bá ní nẹ́tíwọ̀ọ̀kì",
     "retake": "Tún un ṣe",
     "remove": "Yọ ọ́ kúrò",
@@ -519,7 +521,8 @@
     "summaryTitle": "Ìròyìn rẹ",
     "sendOffline": "Fi pamọ́, kí o fi ránṣẹ́ nígbà tí nẹ́tíwọ̀ọ̀kì bá dé",
     "checkThis": "Ṣàyẹ̀wò èyí",
-    "citizenNote": "O kò nílò àkọọ́lẹ̀. Wàá gba kóòdù ìjẹ́rìísí."
+    "citizenNote": "O kò nílò àkọọ́lẹ̀. Wàá gba kóòdù ìjẹ́rìísí.",
+    "savedServer": "Ìṣòro kan wà ní ẹ̀rọ olùpèsè wa. Ìròyìn rẹ wà láìléwu lórí fóònù yìí. Yóò lọ fúnra rẹ̀ nígbà tí ẹ̀rọ náà bá padà."
   },
   "o12": {
     "title": "A ti gba ìròyìn náà",
@@ -871,7 +874,8 @@
     "ready": "Ìdáhùn ti wà.",
     "version": "ẹ̀dà {version}",
     "openSourceNamed": "Ṣí {title}",
-    "noGuides": "Kò sí ìtọ́sọ́nà kankan tí a fi pamọ́ sórí fóònù yìí síbẹ̀. A máa fi wọ́n pamọ́ nígbà tí o bá ṣí wọn pẹ̀lú nẹ́tíwọ̀ọ̀kì."
+    "noGuides": "Kò sí ìtọ́sọ́nà kankan tí a fi pamọ́ sórí fóònù yìí síbẹ̀. A máa fi wọ́n pamọ́ nígbà tí o bá ṣí wọn pẹ̀lú nẹ́tíwọ̀ọ̀kì.",
+    "answered": "Láti inú ìtọ́sọ́nà tí a fọwọ́ sí"
   },
   "o20": {
     "title": "Ètò",
@@ -896,7 +900,7 @@
       "title": "Ṣé o fẹ́ jáde kí o sì pa ohun gbogbo rẹ́ lórí fóònù yìí?",
       "body": "A ó pa àwọn ìròyìn tí o kò tíì parí, àwọn ìròyìn tí a fi pamọ́ àti àwọn ìfiránṣẹ́ lórí fóònù yìí rẹ́. Àwọn ìròyìn tí a ti gbà ṣì wà láìléwu lọ́dọ̀ àwọn olùyẹ̀wò.",
       "unsentWarning": "{count, plural, one {Ìròyìn # kò tíì lọ. Yóò sọnù.} other {Ìròyìn # kò tíì lọ. Wọn yóò sọnù.}}",
-      "sendFirst": "Kọ́kọ́ fi wọ́n ránṣẹ́",
+      "sendFirst": "{count, plural, one {Kọ́kọ́ fi í ránṣẹ́} other {Kọ́kọ́ fi wọ́n ránṣẹ́}}",
       "confirm": "Pa á rẹ́ kí o sì jáde",
       "signedOut": "O ti jáde.",
       "everywhere": "Jáde lórí gbogbo fóònù",
@@ -911,7 +915,8 @@
     "text": {
       "normal": "Déédé",
       "large": "Ńlá"
-    }
+    },
+    "themeSystem": "Ẹ̀rọ"
   },
   "c01": {
     "title": "A ti gba ìròyìn náà",
@@ -934,7 +939,6 @@
     "checkStatus": "Ṣàyẹ̀wò ipò",
     "another": "Ròyìn nǹkan míì",
     "citizenLabel": "Ìròyìn ọmọ ìlú, kì í ṣe láti ọ̀dọ̀ olùwòye tí a fọwọ́ sí",
-    "testNumber": "nọ́mbà àyẹ̀wò",
     "secretMissing": "A kò lè fi fáìlì yìí kún un láti inú fóònù yìí."
   },
   "p01": {
@@ -2208,7 +2212,6 @@
     "report": "Fi ohun tí o rí ránṣẹ́",
     "reportHint": "Kò sí àkọọ́lẹ̀, kò sí orúkọ. Wàá gba kóòdù ìjẹ́rìísí láti ṣàyẹ̀wò rẹ̀ lẹ́yìn náà.",
     "basicPhone": "Kò ní fóònù ìgbàlódé? Tẹ {ussd} tàbí fi SMS ránṣẹ́ sí {shortCode}.",
-    "testNumber": "(nọ́ńbà ìdánwò)",
     "tryPhone": "Gbìyànjú rẹ̀ lórí fóònù tó wà lójú ìbojú",
     "check": {
       "title": "Ṣàyẹ̀wò ìròyìn",
@@ -2361,7 +2364,9 @@
     "error": {
       "title": "A kò lè ṣí ìtọ́sọ́nà.",
       "body": "Tún gbìyànjú lẹ́yìn ìṣẹ́jú kan."
-    }
+    },
+    "chipEnglish": "Gẹ̀ẹ́sì nìkan",
+    "approvedShort": "A fọwọ́ sí i {date}"
   },
   "p06": {
     "title": "Ìkéde àṣírí",

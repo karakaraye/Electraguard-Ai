@@ -4,10 +4,12 @@ export type BackgroundArtProps = {
   /**
    * "hero": the full scene as a band across the top of the screen, in the page flow, with the
    * screen content below it on plain paper (welcome screens O-01, O-02, O-03 choose).
+   * "plate": the scene at full strength along the bottom of its (positioned, paint-contained)
+   * parent, with a paper fade only at the top edge. Used under the public home hero.
    * "soft": the same scene at low contrast, fixed to the bottom of the viewport and faded
    * toward the top, behind content that needs only a quiet background (O-04 empty, O-12).
    */
-  variant?: "hero" | "soft";
+  variant?: "hero" | "soft" | "plate";
   /**
    * Soft only. Keep the ground line above the pinned action area.
    * "actions" (default) clears one primary button; "none" sits on the viewport edge.

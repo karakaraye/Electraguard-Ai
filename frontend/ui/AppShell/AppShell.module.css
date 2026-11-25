@@ -169,13 +169,13 @@
   font: var(--t-small);
   font-weight: 600;
   line-height: 1.4;
-  color: var(--on-ink);
+  color: var(--on-slab);
 }
 
 .networkBar {
   margin: 0;
-  background: var(--ink);
-  border-bottom: 1px solid var(--ink);
+  background: var(--slab);
+  border-bottom: 1px solid var(--slab);
 }
 
 .networkInner svg {

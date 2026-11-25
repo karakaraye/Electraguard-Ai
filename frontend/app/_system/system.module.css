@@ -50,6 +50,17 @@
   color: var(--ink);
 }
 
+.spot {
+  display: grid;
+  place-items: center;
+  margin-bottom: var(--s-2);
+}
+
+.spot svg {
+  max-width: 100%;
+  height: auto;
+}
+
 .disc[data-tone="danger"] {
   background: var(--danger-bg);
   color: var(--danger);

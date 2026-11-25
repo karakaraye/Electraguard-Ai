@@ -164,8 +164,15 @@
 }
 
 .footer {
-  display: grid;
+  display: flex;
+  flex-wrap: wrap;
   gap: var(--s-2);
   padding: var(--s-3) var(--gutter) max(var(--s-3), env(safe-area-inset-bottom));
   border-top: 1px solid var(--rule);
+}
+
+/* Cancel then confirm, side by side; they wrap (Cancel on top) only when a label needs the room. */
+.footer > * {
+  flex: 1 1 9rem;
+  min-width: 0;
 }

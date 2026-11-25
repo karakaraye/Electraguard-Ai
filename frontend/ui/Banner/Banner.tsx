@@ -34,6 +34,7 @@ export function Banner({ tone, title, children, action, critical, onDismiss, "da
       data-testid={testId}
     >
       <span className={styles.shape}>
+        {/* Every error uses the red triangle (the danger shape); other tones keep their own shape. */}
         <StatusShape tone={tone} size={18} />
       </span>
       <div className={styles.body}>

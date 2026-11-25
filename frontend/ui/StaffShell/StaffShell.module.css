@@ -129,8 +129,12 @@
     overflow-y: auto;
   }
 
+  /* Preview (embedded, full-page captures): the rail stretches the whole height of the page. In the
+     live app it is sticky and one viewport tall, which covers the page the same way as you scroll. */
   .preview .side {
-    height: 100%;
+    height: auto;
+    min-height: 100%;
+    align-self: stretch;
     position: static;
   }
 

@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { useT } from "../lib/i18n/client";
 import { AlertIcon } from "../ui/icons";
 import { SystemPage } from "./_system/SystemPage";
+import { ErrorSpot } from "./_system/spots";
 
 /** Screen 50: the error boundary. Saved reports live on the phone, so they are safe whatever failed here. */
 export default function ErrorPage({ error }: { error: Error & { digest?: string }; reset: () => void }) {
@@ -15,6 +16,7 @@ export default function ErrorPage({ error }: { error: Error & { digest?: string 
   return (
     <SystemPage
       icon={AlertIcon}
+      spot={ErrorSpot}
       tone="danger"
       title={t("sys.error.title")}
       body={t("sys.error.body")}

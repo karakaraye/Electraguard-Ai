@@ -293,7 +293,8 @@
       "clearTitle": "A goge waɗannan rahotannin daga wannan wayar?",
       "clearBody": "Ba a taɓa aika su ba. Idan ka goge su, za su ɓace gaba ɗaya. Ba za a iya dawo da su ba.",
       "clearConfirm": "Goge rahotanni"
-    }
+    },
+    "footer": "ElectraGuard AI daga Cairn · Mai zaman kansa, ba na jam'iyya ba"
   },
   "o04": {
     "title": "Gida",
@@ -342,7 +343,8 @@
     "allReports": "Duba duk rahotannina",
     "outboxTitle": "Suna jiran aikawa",
     "outboxOrder": "Rahotanni suna aikuwa bisa tsarin da ka yi su.",
-    "outboxLabel": "{count, plural, one {Rahoto # yana jiran aikawa} other {Rahotanni # suna jiran aikawa}}"
+    "outboxLabel": "{count, plural, one {Rahoto # yana jiran aikawa} other {Rahotanni # suna jiran aikawa}}",
+    "heroPaused": "An dakatar da sababbin rahotanni. Har yanzu za ka iya rubuta su. Za su jira a kan wannan wayar."
   },
   "incident": {
     "draftKept": "An ajiye rahotonka a kan wannan wayar.",
@@ -395,7 +397,7 @@
   "o07": {
     "title": "A ina ya faru?",
     "searchLabel": "Lamba ko sunan rumfar zaɓe",
-    "searchHint": "Misali: 24-05-08-011",
+    "searchHint": "Misali: KN-04-07-012",
     "orChoose": "Ko ka zaɓa mataki-mataki",
     "state": "Jiha",
     "lga": "Ƙaramar hukuma",
@@ -471,7 +473,7 @@
     "blur": "Ɓoye fuskoki",
     "blurHint": "Muna ɓoye fuskokin da za mu iya gani. Ka duba kafin ka aika.",
     "locationRemoved": "An cire bayanin wuri",
-    "size": "{size} · zai ɗauki kusan {time} a aika yanzu",
+    "size": "{size} · zai ɗauki kusan {time} a aika",
     "sizeOffline": "{size} · za a aika idan ka samu sabis",
     "retake": "Sake ɗauka",
     "remove": "Cire",
@@ -519,7 +521,8 @@
     "summaryTitle": "Rahotonka",
     "sendOffline": "Ajiye, a aika idan sabis ya dawo",
     "checkThis": "Duba wannan",
-    "citizenNote": "Ba ka buƙatar asusu. Za ka sami lambar rasiti."
+    "citizenNote": "Ba ka buƙatar asusu. Za ka sami lambar rasiti.",
+    "savedServer": "Sabar mu ta samu matsala. Rahotonka yana lafiya a kan wannan wayar. Za a aika shi da kansa idan sabar ta dawo."
   },
   "o12": {
     "title": "An karɓi rahoto",
@@ -871,7 +874,8 @@
     "ready": "Amsar ta shirya.",
     "version": "sigar {version}",
     "openSourceNamed": "Buɗe {title}",
-    "noGuides": "Babu takardun bayani da aka ajiye a wannan wayar tukuna. Ana ajiye su idan ka buɗe su da sabis."
+    "noGuides": "Babu takardun bayani da aka ajiye a wannan wayar tukuna. Ana ajiye su idan ka buɗe su da sabis.",
+    "answered": "Daga jagororin da aka amince da su"
   },
   "o20": {
     "title": "Saituna",
@@ -896,7 +900,7 @@
       "title": "Fita ka share wannan wayar?",
       "body": "Za a cire rahotannin da ba a gama ba, rahotannin da aka ajiye da saƙonni daga wannan wayar. Rahotannin da aka riga aka karɓa suna nan lafiya wurin masu dubawa.",
       "unsentWarning": "{count, plural, one {Ba a aika rahoto # ba tukuna. Zai ɓace.} other {Ba a aika rahotanni # ba tukuna. Za su ɓace.}}",
-      "sendFirst": "Fara aika su",
+      "sendFirst": "{count, plural, one {Fara aika shi} other {Fara aika su}}",
       "confirm": "Share ka fita",
       "signedOut": "Ka fita.",
       "everywhere": "Fita a kowace waya",
@@ -911,7 +915,8 @@
     "text": {
       "normal": "Na yau da kullum",
       "large": "Babba"
-    }
+    },
+    "themeSystem": "Na'ura"
   },
   "c01": {
     "title": "An karɓi rahoto",
@@ -934,7 +939,6 @@
     "checkStatus": "Duba matsayi",
     "another": "Kai wani rahoto daban",
     "citizenLabel": "Rahoton ɗan ƙasa, ba daga mai sa ido da aka amince da shi ba",
-    "testNumber": "lambar gwaji",
     "secretMissing": "Ba za a iya ƙara wannan fayil daga wannan wayar ba."
   },
   "p01": {
@@ -2208,7 +2212,6 @@
     "report": "Kai rahoton abin da ka gani",
     "reportHint": "Babu asusu, babu suna. Za ka sami lambar rasiti don ka duba shi daga baya.",
     "basicPhone": "Ba ka da wayar zamani? Danna {ussd} ko aika SMS zuwa {shortCode}.",
-    "testNumber": "(lambar gwaji)",
     "tryPhone": "Gwada shi a wayar da ke kan allo",
     "check": {
       "title": "Duba rahoto",
@@ -2361,7 +2364,9 @@
     "error": {
       "title": "Ba a iya buɗe jagorori ba.",
       "body": "Sake gwadawa bayan minti ɗaya."
-    }
+    },
+    "chipEnglish": "Turanci kawai",
+    "approvedShort": "An amince {date}"
   },
   "p06": {
     "title": "Sanarwar sirri",

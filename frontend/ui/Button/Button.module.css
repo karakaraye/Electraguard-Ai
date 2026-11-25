@@ -66,7 +66,10 @@
   background: transparent;
   color: var(--ink);
   min-height: max(var(--control-h), var(--target-min));
-  padding: 0 var(--s-3);
+  /* No side padding or border: the text starts exactly on the column's left edge (the touch
+     target is widened by ::after). A block quiet button keeps its centred label. */
+  padding-inline: 0;
+  border-inline-width: 0;
   text-decoration: underline;
   text-decoration-thickness: 1px;
   text-underline-offset: 0.2em;

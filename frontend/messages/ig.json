@@ -293,7 +293,8 @@
       "clearTitle": "Hichapụ akụkọ ndị a na ekwentị a?",
       "clearBody": "E zigaghị ha. Ọ bụrụ na i hichapụ ha, ha ga-efu kpamkpam. A gaghị enwe ike iweghachi ha.",
       "clearConfirm": "Hichapụ akụkọ"
-    }
+    },
+    "footer": "ElectraGuard AI site na Cairn · Onwe ya, ọ bụghị nke otu ndọrọ ndọrọ ọchịchị"
   },
   "o04": {
     "title": "Mbido",
@@ -342,7 +343,8 @@
     "allReports": "Lee akụkọ m niile",
     "outboxTitle": "Na-eche iziga",
     "outboxOrder": "A na-eziga akụkọ n'usoro i si mee ha.",
-    "outboxLabel": "{count, plural, one {Akụkọ # na-eche iziga} other {Akụkọ # na-eche iziga}}"
+    "outboxLabel": "{count, plural, one {Akụkọ # na-eche iziga} other {Akụkọ # na-eche iziga}}",
+    "heroPaused": "Akwụsịla akụkọ ọhụrụ. Ị ka nwere ike ide ha. Ha ga-eche na ekwentị a."
   },
   "incident": {
     "draftKept": "Echekwara akụkọ gị na ekwentị a.",
@@ -395,7 +397,7 @@
   "o07": {
     "title": "Ebee ka o mere?",
     "searchLabel": "Koodu ma ọ bụ aha ebe ntuli aka",
-    "searchHint": "Ọmụmaatụ: 24-05-08-011",
+    "searchHint": "Ọmụmaatụ: KN-04-07-012",
     "orChoose": "Ma ọ bụ họrọ n'usoro",
     "state": "Steeti",
     "lga": "Ọchịchị ime obodo",
@@ -471,7 +473,7 @@
     "blur": "Zoo ihu ndị mmadụ",
     "blurHint": "Anyị na-ezo ihu ndị anyị nwere ike ịhụ. Lelee tupu i ziga.",
     "locationRemoved": "Ehichapụla ozi ebe",
-    "size": "{size} · ihe dị ka {time} iji ziga ugbu a",
+    "size": "{size} · ihe dị ka {time} iji ziga",
     "sizeOffline": "{size} · ọ ga-aga mgbe i nwere netwọk",
     "retake": "See ọzọ",
     "remove": "Hichapụ",
@@ -519,7 +521,8 @@
     "summaryTitle": "Akụkọ gị",
     "sendOffline": "Chekwaa ya, ziga mgbe netwọk dị",
     "checkThis": "Lelee nke a",
-    "citizenNote": "Ịchọghị akaụntụ. Ị ga-enweta koodu nnata."
+    "citizenNote": "Ịchọghị akaụntụ. Ị ga-enweta koodu nnata.",
+    "savedServer": "Sava anyị nwere nsogbu. Akụkọ gị dị nchebe na ekwentị a. Ọ ga-aga n'onwe ya mgbe sava ahụ dịghachiri."
   },
   "o12": {
     "title": "Anatala akụkọ",
@@ -871,7 +874,8 @@
     "ready": "Azịza adịla njikere.",
     "version": "ụdị {version}",
     "openSourceNamed": "Mepee {title}",
-    "noGuides": "Echekwabeghị ntuziaka ọ bụla na ekwentị a. A na-echekwa ha mgbe ị mepere ha na netwọk."
+    "noGuides": "Echekwabeghị ntuziaka ọ bụla na ekwentị a. A na-echekwa ha mgbe ị mepere ha na netwọk.",
+    "answered": "Site na ntụziaka a kwadoro"
   },
   "o20": {
     "title": "Ntọala",
@@ -896,7 +900,7 @@
       "title": "Pụọ ma hichapụ ekwentị a?",
       "body": "A ga-ehichapụ akụkọ ndị a na-ede, akụkọ echekwara na ozi dị na ekwentị a. Akụkọ e natala ga-anọ na nchekwa n'aka ndị nyocha.",
       "unsentWarning": "{count, plural, one {E zigabeghị akụkọ #. Ọ ga-efu.} other {E zigabeghị akụkọ #. Ha ga-efu.}}",
-      "sendFirst": "Buru ụzọ ziga ha",
+      "sendFirst": "{count, plural, one {Buru ụzọ ziga ya} other {Buru ụzọ ziga ha}}",
       "confirm": "Hichapụ ma pụọ",
       "signedOut": "Ị pụọla.",
       "everywhere": "Pụọ n'ekwentị niile",
@@ -911,7 +915,8 @@
     "text": {
       "normal": "Nkịtị",
       "large": "Buru ibu"
-    }
+    },
+    "themeSystem": "Ngwa"
   },
   "c01": {
     "title": "Anatala akụkọ",
@@ -934,7 +939,6 @@
     "checkStatus": "Lelee ọnọdụ",
     "another": "Kọọ ihe ọzọ",
     "citizenLabel": "Akụkọ nwa amaala, ọ bụghị nke onye nlebanya nwere ikike",
-    "testNumber": "nọmba nnwale",
     "secretMissing": "Enweghị ike itinye faịlụ a site na ekwentị a."
   },
   "p01": {
@@ -2208,7 +2212,6 @@
     "report": "Kọọ ihe ị hụrụ",
     "reportHint": "Enweghị akaụntụ, enweghị aha. Ị ga-enweta koodu nnata iji lelee ya emesịa.",
     "basicPhone": "Enweghị ekwentị smart? Pịa {ussd} ma ọ bụ ziga SMS na {shortCode}.",
-    "testNumber": "(nọmba nnwale)",
     "tryPhone": "Nwalee ya na ekwentị dị na ihuenyo",
     "check": {
       "title": "Lelee akụkọ",
@@ -2361,7 +2364,9 @@
     "error": {
       "title": "Enweghị ike ibulite ntụziaka.",
       "body": "Nwaa ọzọ mgbe otu nkeji gachara."
-    }
+    },
+    "chipEnglish": "Bekee naanị",
+    "approvedShort": "Ekwenyere {date}"
   },
   "p06": {
     "title": "Ọkwa nzuzo",

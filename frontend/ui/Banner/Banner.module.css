@@ -9,9 +9,9 @@
   border-radius: var(--radius-lg);
 }
 
-/* info: sun wash */
+/* info: a neutral ink-and-sun note. It never uses the in-review blue (that colour means "in review"). */
 .banner[data-tone="info"] {
-  color: var(--info);
+  color: var(--ink);
   background: var(--sun-wash);
   border-color: var(--sun-line);
   --badge-bg: var(--sun-wash);
@@ -35,16 +35,16 @@
   --badge-bg: var(--danger-bg);
 }
 
-/* wait and offline: ink fill, text in the on-ink colour */
+/* wait and offline: slab fill (ink in light, a raised dark surface in dark), text in the on-slab colour */
 .banner[data-tone="wait"] {
-  color: var(--on-ink);
-  background: var(--ink);
-  --badge-bg: var(--ink);
+  color: var(--on-slab);
+  background: var(--slab);
+  --badge-bg: var(--slab);
 }
 
 .banner[data-tone="wait"] .text,
 .banner[data-tone="wait"] .dismiss {
-  color: var(--on-ink);
+  color: var(--on-slab);
 }
 
 .shape {
@@ -107,8 +107,8 @@
 /* Actions on the ink-filled banner: outline in the on-ink colour so they stay visible
    in both themes (the banner's fill is --ink, so ink-coloured buttons would vanish). */
 .banner[data-tone="wait"] .action :is(a, button) {
-  color: var(--on-ink);
-  border-color: var(--on-ink);
+  color: var(--on-slab);
+  border-color: var(--on-slab);
   background: transparent;
 }
 .banner[data-tone="wait"] .action :is(a, button):focus-visible {
