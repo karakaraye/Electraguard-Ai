@@ -726,7 +726,18 @@
     },
     "answerInvalid": "Zaɓi ɗaya daga cikin amsoshin.",
     "unitRequired": "Zaɓi rumfar zaɓe da kake ciki. Mazaɓa kaɗai ba ta isa a nan ba.",
-    "unansweredHint": "Za ka iya aikawa yanzu ka cike sauran daga baya, ko ka koma ka amsa su."
+    "unansweredHint": "Za ka iya aikawa yanzu ka cike sauran daga baya, ko ka koma ka amsa su.",
+    "desc": {
+      "arrival": "Idan ka isa: rumfar zaɓenka da lokacin da ka isa.",
+      "opening": "Shin rumfar ta buɗe a kan lokaci, da kayan aiki, jami'ai da wakilai?",
+      "accreditation": "Na'urar, layin jira, da ko an fifita tsofaffi da masu nakasa.",
+      "voting": "Sirrin zaɓe, taimako ga masu bukata, da duk abin da ya dagula zaɓe.",
+      "closing": "Lokacin da aka rufe zaɓe, da ko an ƙirga a fili kuma an sa hannu.",
+      "results": "Ko an liƙa takardar sakamako inda jama'a za su gani."
+    },
+    "answerCount": "{count, plural, one {Amsa tambaya #} other {Amsa tambayoyi #}}",
+    "continueStage": "Ci gaba da wannan matakin",
+    "allDone": "Mun gode. An aika duk matakai."
   },
   "o16": {
     "title": "Duba takardar sakamako",

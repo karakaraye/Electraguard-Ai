@@ -356,6 +356,7 @@ export const MORE_SCREENS: Record<string, Record<string, (t: Translate) => React
       <ChecklistListView
         offline={false}
         onBack={noop}
+        unitLabel="Kantudu Primary School I, Kantudu, Dala"
         stages={[
           { slug: "arrival", state: "received", receivedAt: "2026-12-05T07:42:00+01:00", href: "#" },
           { slug: "opening", state: "onPhone", href: "#" },
@@ -364,6 +365,21 @@ export const MORE_SCREENS: Record<string, Record<string, (t: Translate) => React
           { slug: "closing", state: "notStarted", href: "#" },
           { slug: "results", state: "notStarted", href: "#" },
         ]}
+      />
+    ),
+    "list-not-started": () => (
+      <ChecklistListView
+        offline={false}
+        onBack={noop}
+        stages={(["arrival", "opening", "accreditation", "voting", "closing", "results"] as const).map((slug) => ({ slug, state: "notStarted" as const, href: "#" }))}
+      />
+    ),
+    "list-all-done": () => (
+      <ChecklistListView
+        offline={false}
+        onBack={noop}
+        unitLabel="Kantudu Primary School I, Kantudu, Dala"
+        stages={(["arrival", "opening", "accreditation", "voting", "closing", "results"] as const).map((slug, i) => ({ slug, state: "received" as const, receivedAt: `2026-12-05T${String(7 + i * 2).padStart(2, "0")}:42:00+01:00`, href: "#" }))}
       />
     ),
     opening: () => <StageFormView {...stageBase} answers={{ opened_on_time: "yes", materials_all_present: "no", materials_missing: ["result_sheets", "indelible_ink"] }} />,

@@ -726,7 +726,18 @@
     },
     "answerInvalid": "Choose one of the answers.",
     "unitRequired": "Choose the polling unit wey you dey. Ward alone no reach here.",
-    "unansweredHint": "You fit send now and fill the rest later, or go back and answer dem."
+    "unansweredHint": "You fit send now and fill the rest later, or go back and answer dem.",
+    "desc": {
+      "arrival": "When you reach: your polling unit and the time wey you reach.",
+      "opening": "The unit open on time? Materials, officials and agents dey?",
+      "accreditation": "The device, the line, and if old people and disabled voters go first.",
+      "voting": "Secret vote, help for people wey need am, and anything wey disturb voting.",
+      "closing": "When voting close, and if dem count for open and sign am.",
+      "results": "If dem paste the result sheet where people fit see am."
+    },
+    "answerCount": "{count, plural, one {Answer # question} other {Answer # questions}}",
+    "continueStage": "Continue this stage",
+    "allDone": "Thank you. All the stages don send."
   },
   "o16": {
     "title": "Check the result sheet",

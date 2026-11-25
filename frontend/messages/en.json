@@ -725,7 +725,18 @@
     },
     "answerInvalid": "Choose one of the answers.",
     "unitRequired": "Choose the polling unit you are at. A ward alone is not enough here.",
-    "unansweredHint": "You can send now and fill the rest later, or go back and answer them."
+    "unansweredHint": "You can send now and fill the rest later, or go back and answer them.",
+    "desc": {
+      "arrival": "When you get there: your polling unit and the time you arrived.",
+      "opening": "Did the unit open on time, with materials, officials and agents there?",
+      "accreditation": "The device, the queue, and whether elderly and disabled voters went first.",
+      "voting": "Secrecy, help for those who need it, and anything that disturbed voting.",
+      "closing": "When voting closed, and whether counting was public and signed.",
+      "results": "Whether the result sheet was posted where people can see it."
+    },
+    "answerCount": "{count, plural, one {Answer # question} other {Answer # questions}}",
+    "continueStage": "Continue this stage",
+    "allDone": "Thank you. All stages sent."
   },
   "o16": {
     "title": "Check the result sheet",

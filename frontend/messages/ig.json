@@ -726,7 +726,18 @@
     },
     "answerInvalid": "Họrọ otu n'ime azịza ndị ahụ.",
     "unitRequired": "Họrọ ebe ntuli aka ị nọ. Wọọdụ naanị ya ezughị ebe a.",
-    "unansweredHint": "Ị nwere ike iziga ugbu a ma mezie ndị fọrọ n’oge ọzọ, ma ọ bụ laghachi zaa ha."
+    "unansweredHint": "Ị nwere ike iziga ugbu a ma mezie ndị fọrọ n’oge ọzọ, ma ọ bụ laghachi zaa ha.",
+    "desc": {
+      "arrival": "Mgbe i rutere: ebe ntuli aka gị na oge i rutere.",
+      "opening": "Ebe ahụ ọ meghere n'oge, ya na ngwa ọrụ, ndị ọrụ na ndị nnọchiteanya?",
+      "accreditation": "Igwe ahụ, ahịrị, na ma ndị agadi na ndị nwere nkwarụ bu ụzọ.",
+      "voting": "Nzuzo ntuli aka, enyemaka maka ndị chọrọ ya, na ihe ọ bụla kpaghasịrị ntuli aka.",
+      "closing": "Mgbe ntuli aka mechiri, na ma a gụrụ ya n'ihu ọha ma bịanye aka.",
+      "results": "Ma a kwụnyere mpempe akwụkwọ nsonaazụ ebe mmadụ ga-ahụ ya."
+    },
+    "answerCount": "{count, plural, one {Zaa ajụjụ #} other {Zaa ajụjụ #}}",
+    "continueStage": "Gaa n'ihu na nkebi a",
+    "allDone": "Daalụ. E zigala nkebi niile."
   },
   "o16": {
     "title": "Lelee mpempe akwụkwọ nsonaazụ",

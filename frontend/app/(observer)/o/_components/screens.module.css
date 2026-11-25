@@ -1017,3 +1017,123 @@
   font: var(--t-label);
   font-size: var(--t-base-size);
 }
+
+/* ---------- Polling-day checklist (spec screen 22) ---------- */
+.dayHead {
+  display: grid;
+  gap: var(--s-2);
+}
+
+.dayArcCard {
+  padding: var(--s-4);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-xl);
+  background: var(--paper-raised);
+}
+
+.dayDone {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  margin: 0;
+  padding: var(--s-3) var(--s-4);
+  border-radius: var(--radius-lg);
+  background: var(--ok-bg);
+  color: var(--ok);
+  font: var(--t-label);
+  font-size: var(--t-base-size);
+}
+
+/* The six stages as a vertical timeline: done = green tick, next = sun disc, later = hollow. */
+.stageTimeline {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.stageItem {
+  position: relative;
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  gap: var(--s-3);
+  padding-bottom: var(--s-5);
+}
+
+.stageItem:not(:last-child)::before {
+  content: "";
+  position: absolute;
+  top: 30px;
+  bottom: 2px;
+  left: 13px;
+  width: 2px;
+  background: var(--rule-control);
+}
+
+.stageItem[data-position="done"]:not(:last-child)::before {
+  background: var(--ok);
+}
+
+.stageDot {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: 2px solid var(--rule-control);
+  border-radius: 50%;
+  background: var(--paper);
+}
+
+.stageItem[data-position="done"] .stageDot {
+  border-color: var(--ok);
+  background: var(--ok);
+  color: var(--paper);
+}
+
+.stageItem[data-position="next"] .stageDot {
+  border-color: var(--ink);
+  background: var(--sun);
+  box-shadow: 0 0 0 4px var(--sun-tint);
+}
+
+.stageBody {
+  display: grid;
+  justify-items: start;
+  gap: var(--s-1);
+  min-width: 0;
+}
+
+.stageLink {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-2);
+  inline-size: 100%;
+  min-height: 28px;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.stageLink svg {
+  flex: none;
+  color: var(--ink-2);
+}
+
+.stageLink:focus-visible {
+  outline: var(--focus-outline);
+  outline-offset: var(--focus-offset);
+}
+
+.stageItem[data-position="next"] .stageName {
+  font-weight: 700;
+}
+
+.stageGo {
+  margin-top: var(--s-2);
+}
+
+/* Waiting for Arrival: the later stages read as not yet open. */
+.stageItem[data-locked] .stageName,
+.stageItem[data-locked] .stageBody > span {
+  color: var(--ink-2);
+}

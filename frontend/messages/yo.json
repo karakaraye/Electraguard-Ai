@@ -726,7 +726,18 @@
     },
     "answerInvalid": "Yan ọ̀kan nínú àwọn ìdáhùn náà.",
     "unitRequired": "Yan ibùdó ìdìbò tí o wà. Wọ́ọ̀dù nìkan kò tó níbí.",
-    "unansweredHint": "O lè fi ránṣẹ́ báyìí kí o parí àwọn tó kù lẹ́yìn náà, tàbí kí o padà kí o dáhùn wọn."
+    "unansweredHint": "O lè fi ránṣẹ́ báyìí kí o parí àwọn tó kù lẹ́yìn náà, tàbí kí o padà kí o dáhùn wọn.",
+    "desc": {
+      "arrival": "Nígbà tí o bá dé: ibùdó ìdìbò rẹ àti àkókò tí o dé.",
+      "opening": "Ṣé ibùdó ṣí ní àkókò, pẹ̀lú àwọn ohun èlò, òṣìṣẹ́ àti aṣojú?",
+      "accreditation": "Ẹ̀rọ náà, ìlà, àti bóyá àwọn àgbàlagbà àti abirùn kọ́kọ́ dìbò.",
+      "voting": "Àṣírí ìdìbò, ìrànlọ́wọ́ fún àwọn tó nílò rẹ̀, àti ohunkóhun tó da ìdìbò rú.",
+      "closing": "Ìgbà tí ìdìbò parí, àti bóyá wọ́n ka ìbò ní gbangba tí wọ́n sì fọwọ́ sí i.",
+      "results": "Bóyá wọ́n lẹ ìwé èsì síbi tí àwọn ènìyàn ti lè rí i."
+    },
+    "answerCount": "{count, plural, one {Dáhùn ìbéèrè #} other {Dáhùn ìbéèrè #}}",
+    "continueStage": "Tẹ̀síwájú ìpele yìí",
+    "allDone": "A dúpẹ́. A ti fi gbogbo ìpele ránṣẹ́."
   },
   "o16": {
     "title": "Ṣàyẹ̀wò ìwé èsì",
