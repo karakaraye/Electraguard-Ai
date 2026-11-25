@@ -63,9 +63,10 @@ export interface AdminStaffViewProps {
 function formatDay(value: string, locale: Locale) {
   const tag = localeTags[locale];
   const supported = Intl.DateTimeFormat.supportedLocalesOf([tag]);
-  return new Intl.DateTimeFormat(supported.length ? tag : "en-NG", { dateStyle: "medium", timeZone: "Africa/Lagos" }).format(
-    new Date(`${value}T12:00:00+01:00`),
-  );
+  // ADM-03 sends a full WAT timestamp; a bare date is read as midday WAT.
+  const date = new Date(value.includes("T") ? value : `${value}T12:00:00+01:00`);
+  if (Number.isNaN(date.getTime())) return value;
+  return new Intl.DateTimeFormat(supported.length ? tag : "en-NG", { dateStyle: "medium", timeZone: "Africa/Lagos" }).format(date);
 }
 
 const statusTone: Record<"active" | "invited", StatusTone> = { active: "ok", invited: "wait" };

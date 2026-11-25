@@ -6,6 +6,15 @@ import { api } from "../../../../lib/api/client";
 import { useT } from "../../../../lib/i18n/client";
 import { SignInView, type SignInStep } from "../_views/SignInView";
 
+/** First section each role can open, in the staff navigation's order. */
+function staffHome(roles: readonly string[] | undefined): string {
+  if (!roles || roles.includes("reviewer")) return "/s/queue";
+  if (roles.includes("coordinator")) return "/s/assign";
+  if (roles.includes("moderator")) return "/s/discussions";
+  if (roles.includes("org_admin")) return "/s/admin/codes";
+  return "/s/queue";
+}
+
 function SignInContainer() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -97,7 +106,7 @@ function SignInContainer() {
         return;
       }
 
-      router.push("/s/queue");
+      router.push(staffHome(res.data.me?.user?.roles));
     } catch {
       setError(t("staff.networkError"));
     } finally {
@@ -124,7 +133,7 @@ function SignInContainer() {
         return;
       }
 
-      router.push("/s/queue");
+      router.push(staffHome(res.data.me?.user?.roles));
     } catch {
       setError(t("staff.networkError"));
     } finally {
@@ -152,10 +161,11 @@ function SignInContainer() {
         return;
       }
 
+      // An accepted invite leaves a half-signed-in session: the two-step code comes next either way.
       if (res.data.status === "totp_enrolment_required") {
         await startTotpEnrolment();
       } else {
-        router.push("/s/queue");
+        setStep("totp");
       }
     } catch {
       setError(t("staff.networkError"));
