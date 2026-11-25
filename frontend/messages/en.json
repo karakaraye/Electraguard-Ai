@@ -485,7 +485,8 @@
     "videoTooLong": "Choose a clip of 60 seconds or less.",
     "voiceTooLong": "Choose a voice note of 2 minutes or less.",
     "unreadable": "This file could not be opened. Try another one.",
-    "itemName": "{kind, select, photo {Photo} video {Video} other {Voice note}} {n}"
+    "itemName": "{kind, select, photo {Photo} video {Video} other {Voice note}} {n}",
+    "countOf": "{count} of {max} added"
   },
   "o11": {
     "title": "Check and send",

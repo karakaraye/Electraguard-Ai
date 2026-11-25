@@ -486,7 +486,8 @@
     "videoTooLong": "Họrọ vidiyo na-erughị sekọnd 60.",
     "voiceTooLong": "Họrọ ozi olu na-erughị nkeji 2.",
     "unreadable": "Enweghị ike imepe faịlụ a. Nwaa nke ọzọ.",
-    "itemName": "{kind, select, photo {Foto} video {Vidiyo} other {Ozi olu}} {n}"
+    "itemName": "{kind, select, photo {Foto} video {Vidiyo} other {Ozi olu}} {n}",
+    "countOf": "Agbakwunyela {count} n'ime {max}"
   },
   "o11": {
     "title": "Lelee wee ziga",

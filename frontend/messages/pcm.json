@@ -486,7 +486,8 @@
     "videoTooLong": "Choose video wey no pass 60 seconds.",
     "voiceTooLong": "Choose voice note wey no pass 2 minutes.",
     "unreadable": "We no fit open this file. Try another one.",
-    "itemName": "{kind, select, photo {Photo} video {Video} other {Voice note}} {n}"
+    "itemName": "{kind, select, photo {Photo} video {Video} other {Voice note}} {n}",
+    "countOf": "{count} of {max} don add"
   },
   "o11": {
     "title": "Check am and send",

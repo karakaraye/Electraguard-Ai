@@ -486,7 +486,8 @@
     "videoTooLong": "Zaɓi bidiyo da bai wuce daƙiƙa 60 ba.",
     "voiceTooLong": "Zaɓi saƙon murya da bai wuce mintuna 2 ba.",
     "unreadable": "Ba a iya buɗe wannan fayil ba. Ka gwada wani.",
-    "itemName": "{kind, select, photo {Hoto} video {Bidiyo} other {Saƙon murya}} {n}"
+    "itemName": "{kind, select, photo {Hoto} video {Bidiyo} other {Saƙon murya}} {n}",
+    "countOf": "An ƙara {count} cikin {max}"
   },
   "o11": {
     "title": "Duba ka aika",

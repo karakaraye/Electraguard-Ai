@@ -533,6 +533,8 @@ export type EvidenceViewProps = Common & {
 };
 
 const kindIcon = { photo: CameraIcon, video: VideoIcon, audio: MicIcon } as const;
+/** Attachments per report (contract: media_limit_reached). */
+export const MAX_ITEMS = 6;
 
 export function EvidenceView({ items, recorder, onPick, onBlur, onRetake, onRemove, notices, limitReached, estimate, onContinue, ...shell }: EvidenceViewProps) {
   const t = useT();
@@ -551,8 +553,10 @@ export function EvidenceView({ items, recorder, onPick, onBlur, onRetake, onRemo
         </Button>
       }
     >
-      <h1 className={styles.title}>{t("o10.title")}</h1>
-      <p className={styles.lead}>{t("o10.hint")}</p>
+      <div className={styles.evidenceTitle}>
+        <h1 className={styles.title}>{t("o10.title")}</h1>
+        <span className={styles.optionalChip}>{t("ui.optional")}</span>
+      </div>
       <div className={styles.tight} aria-live="assertive">
         {notices.map((notice) => (
           <Banner key={notice.key} tone={notice.tone} title={t(notice.key, notice.vars)} data-testid={`o10-notice-${notice.key}`} />
@@ -560,7 +564,7 @@ export function EvidenceView({ items, recorder, onPick, onBlur, onRetake, onRemo
       </div>
       <MediaCapture onPick={onPick} recorder={recorder} disabled={limitReached} />
       <p className={styles.meta} aria-live="polite" data-testid="o10-count">
-        {t("o10.count", { count: items.length })}
+        {items.length ? t("o10.countOf", { count: items.length, max: MAX_ITEMS }) : ""}
       </p>
       {items.length ? (
         <ul className={styles.items} data-testid="o10-items">
@@ -571,7 +575,7 @@ export function EvidenceView({ items, recorder, onPick, onBlur, onRetake, onRemo
             return (
               <li key={item.id} data-testid="o10-item">
                 <div className={styles.item} role="group" aria-label={`${item.name}, ${index + 1} / ${items.length}`}>
-                <span className={styles.thumb} aria-hidden="true">
+                <span className={styles.thumb} data-processing={item.processing || undefined} aria-hidden="true">
                   {item.previewUrl && item.kind === "photo" ? (
                     // eslint-disable-next-line @next/next/no-img-element -- a local blob: URL, never sent anywhere
                     <img src={item.previewUrl} alt="" />
@@ -584,39 +588,47 @@ export function EvidenceView({ items, recorder, onPick, onBlur, onRetake, onRemo
                       <p className={styles.meta}>{seconds === null ? t("o10.sizeOffline", { size }) : t("o10.size", { size, time: time(seconds) })}</p>
                       {item.kind !== "audio" ? (
                         <p className={styles.tag}>
-                          <CheckIcon size={16} strokeWidth={2.5} />
+                          <CheckIcon size={14} strokeWidth={2.5} />
                           {t("o10.locationRemoved")}
                         </p>
                       ) : null}
                       {item.kind !== "audio" ? (
                         <label className={styles.switch}>
+                          <span>{t("o10.blur")}</span>
                           <input
                             type="checkbox"
                             role="switch"
                             checked={item.blur}
                             onChange={(event) => onBlur(item.id, event.target.checked)}
+                            aria-describedby="o10-blur-note"
                             data-testid="o10-blur"
                           />
-                          <span>{t("o10.blur")}</span>
-                          <span className={styles.switchHint}>{t("o10.blurHint")}</span>
                         </label>
                       ) : null}
-                      <div className={styles.itemActions}>
-                        <Button variant="secondary" icon={<RetryIcon />} onClick={() => onRetake(item.id)} data-testid="o10-retake">
-                          {t("o10.retake")}
-                        </Button>
-                        <Button variant="quiet" icon={<TrashIcon />} onClick={() => setRemoving(item.id)} data-testid="o10-remove">
-                          {t("o10.remove")}
-                        </Button>
-                      </div>
                     </>
                   ) : null}
                 </div>
+                {!item.processing ? (
+                <div className={styles.itemActions}>
+                  <Button variant="quiet" icon={<RetryIcon />} onClick={() => onRetake(item.id)} data-testid="o10-retake">
+                    {t("o10.retake")}
+                  </Button>
+                  <Button variant="quiet" icon={<TrashIcon />} onClick={() => setRemoving(item.id)} data-testid="o10-remove">
+                    {t("o10.remove")}
+                  </Button>
+                </div>
+                ) : null}
                 </div>
               </li>
             );
           })}
         </ul>
+      ) : null}
+      {items.some((item) => item.kind !== "audio") ? (
+        <p className={styles.note} id="o10-blur-note" data-testid="o10-blur-note">
+          <ShieldCheckIcon />
+          <span>{t("o10.blurHint")}</span>
+        </p>
       ) : null}
       <Sheet
         open={removing !== null}

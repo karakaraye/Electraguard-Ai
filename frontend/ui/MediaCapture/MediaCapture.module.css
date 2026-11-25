@@ -59,8 +59,21 @@
   cursor: not-allowed;
 }
 
-.actionIcon {
-  margin-bottom: var(--s-1);
+/* Source icons sit in a 48 px sun disc, like the answers on the earlier steps. */
+.actionDisc {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  margin-bottom: var(--s-2);
+  border-radius: 50%;
+  background: var(--sun-tint);
+  color: var(--ink);
+}
+
+.action[aria-disabled="true"] .actionDisc {
+  background: var(--paper-2);
+  color: var(--ink-2);
 }
 
 .actionLabel {

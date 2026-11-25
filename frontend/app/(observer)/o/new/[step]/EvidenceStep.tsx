@@ -20,10 +20,9 @@ import {
   prepareVideo,
   type Prepared,
 } from "../../../../../ui/MediaCapture/process";
-import { EvidenceView, type EvidenceItem, type EvidenceViewProps } from "../../_views/IncidentViews";
+import { EvidenceView, type EvidenceItem, type EvidenceViewProps, MAX_ITEMS } from "../../_views/IncidentViews";
 
 /** Server limits per report (MED): 6 items, 60 MiB. */
-const MAX_ITEMS = 6;
 const MAX_REPORT_BYTES = 60 * 1024 * 1024;
 const MAX_LABEL: Record<MediaKind, string> = { photo: "2 MB", video: "25 MB", audio: "4 MB" };
 

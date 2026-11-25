@@ -631,9 +631,10 @@
   display: grid;
   grid-template-columns: 72px minmax(0, 1fr);
   gap: var(--s-3);
-  padding: var(--s-3);
+  padding: var(--s-3) var(--s-3) var(--s-2);
   border: 1px solid var(--rule);
-  border-radius: var(--radius);
+  border-radius: var(--radius-lg);
+  background: var(--paper-raised);
 }
 
 .thumb {
@@ -653,6 +654,34 @@
   object-fit: cover;
 }
 
+/* Preparing: a slow shimmer crosses the thumbnail (I-7). */
+.thumb[data-processing] {
+  position: relative;
+}
+
+.thumb[data-processing]::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(100deg, transparent 30%, rgb(255 255 255 / 0.45) 50%, transparent 70%);
+  transform: translateX(-100%);
+  animation: egShimmer 1.8s var(--ease-out) infinite;
+}
+
+@keyframes egShimmer {
+  to {
+    transform: translateX(100%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .thumb[data-processing]::after {
+    animation: none;
+    transform: none;
+    opacity: 0.4;
+  }
+}
+
 .itemBody {
   display: grid;
   gap: var(--s-1);
@@ -665,21 +694,27 @@
   font-size: var(--t-base-size);
 }
 
+/* "Location removed" as a small chip. */
 .tag {
   display: inline-flex;
   align-items: center;
+  justify-self: start;
   gap: var(--s-1);
-  margin: 0;
+  margin: var(--s-1) 0 0;
+  padding: 2px var(--s-2);
+  border-radius: var(--radius-pill);
+  background: var(--ok-bg);
   color: var(--ok);
   font: var(--t-small);
   font-weight: 600;
 }
 
+/* "Blur faces": label on the left, a real switch on the right. */
 .switch {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  gap: var(--s-1) var(--s-2);
+  display: flex;
   align-items: center;
+  justify-content: space-between;
+  gap: var(--s-3);
   min-height: var(--target-min);
   font: var(--t-label);
   font-size: 1rem;
@@ -687,22 +722,63 @@
 }
 
 .switch input {
-  width: 22px;
-  height: 22px;
+  position: relative;
+  flex: none;
+  width: 52px;
+  height: 32px;
+  min-height: 0;
   margin: 0;
-  accent-color: var(--ink);
+  border: 2px solid var(--rule-control);
+  border-radius: var(--radius-pill);
+  background: var(--paper-2);
+  appearance: none;
+  cursor: pointer;
+  transition: background-color var(--dur-fade) var(--ease-out), border-color var(--dur-fade) var(--ease-out);
 }
 
-.switchHint {
-  grid-column: 2;
-  color: var(--ink-2);
-  font: var(--t-small);
+.switch input::before {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--ink-2);
+  transition: transform var(--dur-fade) var(--ease-out);
 }
 
+.switch input:checked {
+  border-color: var(--ink);
+  background: var(--ink);
+}
+
+.switch input:checked::before {
+  background: var(--paper);
+  transform: translateX(20px);
+}
+
+.switch input:focus-visible {
+  outline: var(--focus-outline);
+  outline-offset: var(--focus-offset);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .switch input,
+  .switch input::before {
+    transition: none;
+  }
+}
+
+/* Retake and Remove side by side as quiet actions, so each item stays short. */
 .itemActions {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--s-2);
+  grid-column: 1 / -1;
+  justify-content: flex-end;
+  gap: 0 var(--s-2);
+  margin-top: calc(var(--s-2) * -1);
+  border-top: 1px solid var(--rule);
 }
 
 /* ---------- Check and send (O-11) ---------- */
@@ -1366,4 +1442,21 @@
   .todayCard {
     transition: none;
   }
+}
+
+/* ---------- Evidence title (spec screen 16) ---------- */
+.evidenceTitle {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-2) var(--s-3);
+}
+
+.optionalChip {
+  padding: 4px var(--s-3);
+  border: 1px solid var(--rule-control);
+  border-radius: var(--radius-pill);
+  color: var(--ink-2);
+  font: var(--t-small);
+  font-weight: 600;
 }

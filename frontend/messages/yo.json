@@ -486,7 +486,8 @@
     "videoTooLong": "Yan fídíò tí kò ju ìṣẹ́jú-àáyá 60 lọ.",
     "voiceTooLong": "Yan ohùn tí kò ju ìṣẹ́jú 2 lọ.",
     "unreadable": "A kò lè ṣí fáìlì yìí. Gbìyànjú òmíràn.",
-    "itemName": "{kind, select, photo {Fọ́tò} video {Fídíò} other {Ohùn}} {n}"
+    "itemName": "{kind, select, photo {Fọ́tò} video {Fídíò} other {Ohùn}} {n}",
+    "countOf": "A ti fi {count} nínú {max} kún un"
   },
   "o11": {
     "title": "Ṣàyẹ̀wò kí o sì fi ránṣẹ́",
