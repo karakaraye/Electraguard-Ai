@@ -383,3 +383,59 @@ class ReviewClocksTests(TestCase):
         ov = self.client.get(f"/api/v1/ops/overview?from={from_date}&to={to_date}").json()
         self.assertEqual(ov["overdue"]["urgent"], 1)
         self.assertEqual(ov["overdue"]["normal"], 0)
+
+
+from django.test import TransactionTestCase
+
+
+class ConcurrentSweepTests(TransactionTestCase):
+    def test_concurrent_sweep_barrier_notifies_once(self):
+        import threading
+        from django.db import connections
+        from accounts.models import Organisation
+        from clocks.calculator import create_initial_clock
+        from clocks.models import ReviewClock
+        from clocks.sweep import sweep_review_clocks
+        from reports.models import Report
+        from security.models import Alert
+        from staff.models import AuditEvent
+
+        org = Organisation.objects.create(name="Concurrent Org")
+        now = timezone.now()
+        report = Report.objects.create(
+            organisation=org,
+            submission_key=uuid4(),
+            occurred_at=now - timedelta(hours=2),
+            description="Overdue concurrent test",
+            incident_details={"kind": "incident", "danger_now": True},
+        )
+        Report.objects.filter(pk=report.pk).update(created_at=now - timedelta(hours=2))
+        report.refresh_from_db()
+        clock = create_initial_clock(report, now=now - timedelta(hours=2))
+
+        barrier = threading.Barrier(2)
+        errors = []
+        results = []
+
+        def worker():
+            try:
+                barrier.wait(timeout=10)
+                results.append(sweep_review_clocks(now=now))
+            except Exception as exc:
+                errors.append(exc)
+            finally:
+                connections.close_all()
+
+        t1 = threading.Thread(target=worker)
+        t2 = threading.Thread(target=worker)
+        t1.start()
+        t2.start()
+        t1.join(timeout=20)
+        t2.join(timeout=20)
+
+        self.assertEqual(errors, [])
+        self.assertEqual(sum(r["newly_overdue"] for r in results), 1)
+        clock.refresh_from_db()
+        self.assertIsNotNone(clock.notified_at)
+        self.assertEqual(Alert.objects.filter(organisation=org, rule="review_clock_overdue").count(), 1)
+        self.assertEqual(AuditEvent.objects.filter(organisation=org, action="case.overdue").count(), 1)
