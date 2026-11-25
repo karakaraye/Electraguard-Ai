@@ -186,6 +186,10 @@ def _fallback_threshold_detection(organisation, config, now, configured_categori
         existing = ClusterWarning.objects.filter(
             organisation=organisation, lga_code=lga, category=name, reviewed_at__isnull=True,
         ).order_by("-window_end").first()
+        if existing:
+            existing = ClusterWarning.objects.select_for_update().filter(
+                pk=existing.pk, reviewed_at__isnull=True
+            ).first()
 
         lga_name = areas[lga, name].get("lga_name") or lga
         if existing:
@@ -397,6 +401,14 @@ def _statistical_detection(organisation, now, wat_now, configured_categories):
             category=cat,
             reviewed_at__isnull=True,
         ).order_by("-window_end").first()
+        if existing:
+            existing = ClusterWarning.objects.select_for_update().filter(
+                pk=existing.pk, reviewed_at__isnull=True
+            ).first()
+        if existing:
+            existing = ClusterWarning.objects.select_for_update().filter(
+                pk=existing.pk, reviewed_at__isnull=True
+            ).first()
 
         lga_name = cand["area"].get("lga_name") or lga
         if existing:
@@ -465,6 +477,14 @@ def _statistical_detection(organisation, now, wat_now, configured_categories):
             category=cat,
             reviewed_at__isnull=True,
         ).order_by("-window_end").first()
+        if existing:
+            existing = ClusterWarning.objects.select_for_update().filter(
+                pk=existing.pk, reviewed_at__isnull=True
+            ).first()
+        if existing:
+            existing = ClusterWarning.objects.select_for_update().filter(
+                pk=existing.pk, reviewed_at__isnull=True
+            ).first()
         if existing:
             combined_ids = sorted(set(existing.report_ids) | set(cand["report_ids"]))
             if len(combined_ids) > len(existing.report_ids):
