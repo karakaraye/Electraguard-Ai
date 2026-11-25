@@ -388,6 +388,17 @@ export const MORE_SCREENS: Record<string, Record<string, (t: Translate) => React
   },
   o17: {
     filled: () => <MessagesView offline={false} rows={[rows[0], rows[3]]} load="ok" stale={false} onRetry={noop} onBack={noop} />,
+    preview: () => (
+      <MessagesView
+        offline={false}
+        rows={[rows[0], { ...rows[3], note: "Reviewer · 11:02: Thank you. Two other observers reported the same gate." }]}
+        load="ok"
+        stale={false}
+        onRetry={noop}
+        onBack={noop}
+      />
+    ),
+    loading: () => <MessagesView offline={false} rows={[]} load="loading" stale={false} onRetry={noop} onBack={noop} />,
     empty: () => <MessagesView offline={false} rows={[]} load="ok" stale={false} onRetry={noop} onBack={noop} />,
     offline: () => <MessagesView offline rows={[]} load="offline" stale={false} onRetry={noop} onBack={noop} />,
     unavailable: () => <MessagesView offline={false} rows={[]} load="unavailable" stale={false} onRetry={noop} onBack={noop} />,

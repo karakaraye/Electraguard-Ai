@@ -2,7 +2,7 @@
 
 /* O-14 Report detail: status, formal question, what was reported, attachments, conversation, withdraw. */
 
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import type { Category, MessageKind, QuestionState, ReportKind } from "../../../../lib/api/types";
 import { useLocale, useT } from "../../../../lib/i18n/client";
 import { AppShell, Banner, Button, ButtonLink, Sheet, StatusBadge, TextArea, UploadItem, UploadList, type ReportStatus, type StatusTone, type UploadState } from "../../../../ui";
@@ -118,6 +118,12 @@ export function ReportDetailView(props: ReportDetailViewProps) {
   const addInput = useRef<HTMLInputElement>(null);
   const attachInput = useRef<HTMLInputElement>(null);
   const { offline, load, source, receiptCode, status, kind, category } = props;
+  // Opened from Messages (#o14-conversation): scroll to the thread once it has loaded.
+  useEffect(() => {
+    if (props.conversation === "ok" && window.location.hash === "#o14-conversation") {
+      document.getElementById("o14-conversation")?.scrollIntoView({ block: "start" });
+    }
+  }, [props.conversation]);
   const meta = categoryMeta(category);
   const Pictogram = kind === "checklist" ? ChecklistPictogram : kind === "result_sheet" ? SheetPictogram : categoryPictograms[meta.pictogram];
   const label = kind === "checklist" ? t("o13.checklistStage", { stage: t(`o15.stage.${props.stage ?? "arrival"}`) }) : kind === "result_sheet" ? t("o13.resultSheet") : t(`o05.tile.${meta.tile}`);

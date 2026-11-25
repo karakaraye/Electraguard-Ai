@@ -775,7 +775,9 @@
     "empty": "Ozi adịghị. Mgbe onye nyocha degaara gị, ọ ga-apụta ebe a.",
     "loading": "A na-eweta ozi",
     "loadError": "Anyị enweghị ike iweta ozi gị. Nwaa ọzọ.",
-    "offline": "Enweghị netwọk. Ozi ọhụrụ ga-apụta mgbe i nwere netwọk."
+    "offline": "Enweghị netwọk. Ozi ọhụrụ ga-apụta mgbe i nwere netwọk.",
+    "groupQuestions": "Ajụjụ maka gị",
+    "groupUnread": "Ị gụbeghị"
   },
   "o18": {
     "title": "Mkparịta ụka",

@@ -1002,3 +1002,18 @@
   border-radius: var(--radius-lg);
   background: var(--paper-raised);
 }
+
+/* ---------- Messages (spec screen 21) ---------- */
+.messageGroup {
+  display: grid;
+  gap: var(--s-3);
+}
+
+.groupTitle {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  margin: 0;
+  font: var(--t-label);
+  font-size: var(--t-base-size);
+}

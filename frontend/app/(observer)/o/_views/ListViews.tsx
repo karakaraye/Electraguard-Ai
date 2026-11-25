@@ -9,7 +9,7 @@ import { formatWatTime } from "../../../../ui/format";
 import { categoryMeta } from "../_lib/categories";
 import { ChecklistPictogram, SheetPictogram } from "../_components/pictograms";
 import styles from "../_components/observer.module.css";
-import { FileIcon } from "../../../../ui/icons";
+import { FileIcon, MessageIcon } from "../../../../ui/icons";
 import s from "../_components/screens.module.css";
 
 export type ListRow = {
@@ -211,19 +211,51 @@ export function MessagesView({ offline, rows, load, stale, onRetry, onBack }: Me
         <h1 className={styles.title}>{t("o17.title")}</h1>
         <p className={styles.lead}>{t("o17.hint")}</p>
         {load === "loading" ? (
-          <p className={styles.meta}>{t("o17.loading")}</p>
+          <div className={s.skeletonList} aria-hidden="true" data-testid="o17-loading">
+            {[0, 1].map((index) => (
+              <div key={index} className={s.skeletonCard}>
+                <Skeleton lines={3} delay={0} />
+              </div>
+            ))}
+          </div>
         ) : load === "offline" && rows.length === 0 ? (
           <p className={styles.meta} data-testid="o17-offline">
             {t("o17.offline")}
           </p>
         ) : rows.length ? (
-          <ReportList label={t("o17.title")}>
-            {rows.map((row) => (
-              <Row key={row.key} row={row} />
-            ))}
-          </ReportList>
+          /* Questions first (they block the reviewer), then unread messages. */
+          [
+            { key: "questions", title: t("o17.groupQuestions"), rows: rows.filter((row) => row.status === "question") },
+            { key: "unread", title: t("o17.groupUnread"), rows: rows.filter((row) => row.status !== "question") },
+          ]
+            .filter((group) => group.rows.length)
+            .map((group) => (
+              <section key={group.key} className={s.messageGroup} aria-labelledby={`o17-${group.key}`} data-testid={`o17-group-${group.key}`}>
+                <h2 className={s.groupTitle} id={`o17-${group.key}`}>
+                  {group.title}
+                  <span className={`${s.segmentCount} ${s.tnum}`} data-attention={group.key === "questions" ? "" : undefined}>
+                    {group.rows.length}
+                  </span>
+                </h2>
+                <ReportList label={group.title}>
+                  {group.rows.map((row) => (
+                    <Row key={row.key} row={row} />
+                  ))}
+                </ReportList>
+              </section>
+            ))
         ) : load === "ok" ? (
-          <EmptyState title={t("o17.empty")} data-testid="o17-empty" />
+          <EmptyState
+            title={t("o17.empty")}
+            art={
+              <SunRings size={128}>
+                <span className={s.emptyDisc}>
+                  <MessageIcon size={30} aria-hidden="true" />
+                </span>
+              </SunRings>
+            }
+            data-testid="o17-empty"
+          />
         ) : null}
         <p className="eg-sr-only" role="status" aria-live="polite">
           {load === "ok" ? t("o13.resultCount", { count: rows.length }) : ""}

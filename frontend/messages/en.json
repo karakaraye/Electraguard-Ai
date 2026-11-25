@@ -774,7 +774,9 @@
     "empty": "No messages. When a reviewer writes to you, it will show here.",
     "loading": "Getting messages",
     "loadError": "We could not get your messages. Try again.",
-    "offline": "Offline. New messages will show when you have network."
+    "offline": "Offline. New messages will show when you have network.",
+    "groupQuestions": "Questions for you",
+    "groupUnread": "Unread"
   },
   "o18": {
     "title": "Discussions",

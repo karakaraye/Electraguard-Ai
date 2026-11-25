@@ -775,7 +775,9 @@
     "empty": "Kò sí ìfiránṣẹ́. Tí olùyẹ̀wò bá kọ̀wé sí ọ, yóò hàn níbí.",
     "loading": "À ń mú àwọn ìfiránṣẹ́ wá",
     "loadError": "A kò rí àwọn ìfiránṣẹ́ rẹ mú wá. Gbìyànjú lẹ́ẹ̀kan sí i.",
-    "offline": "Kò sí nẹ́tíwọ̀ọ̀kì. Àwọn ìfiránṣẹ́ tuntun yóò hàn nígbà tí o bá ní nẹ́tíwọ̀ọ̀kì."
+    "offline": "Kò sí nẹ́tíwọ̀ọ̀kì. Àwọn ìfiránṣẹ́ tuntun yóò hàn nígbà tí o bá ní nẹ́tíwọ̀ọ̀kì.",
+    "groupQuestions": "Àwọn ìbéèrè fún ọ",
+    "groupUnread": "O kò tíì kà"
   },
   "o18": {
     "title": "Àwọn ìjíròrò",

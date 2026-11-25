@@ -775,7 +775,9 @@
     "empty": "No message. When reviewer write you, e go show here.",
     "loading": "We dey bring messages",
     "loadError": "We no fit bring your messages. Try again.",
-    "offline": "No network. New messages go show when network come."
+    "offline": "No network. New messages go show when network come.",
+    "groupQuestions": "Questions wey dey for you",
+    "groupUnread": "You never read"
   },
   "o18": {
     "title": "Discussions",

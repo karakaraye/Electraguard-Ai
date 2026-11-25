@@ -775,7 +775,9 @@
     "empty": "Babu saƙo. Idan mai dubawa ya rubuto maka, zai bayyana a nan.",
     "loading": "Ana samo saƙonni",
     "loadError": "Ba mu iya samo saƙonninka ba. Sake gwadawa.",
-    "offline": "Babu sabis. Sababbin saƙonni za su bayyana idan ka samu sabis."
+    "offline": "Babu sabis. Sababbin saƙonni za su bayyana idan ka samu sabis.",
+    "groupQuestions": "Tambayoyi gare ka",
+    "groupUnread": "Ba a karanta ba"
   },
   "o18": {
     "title": "Tattaunawa",
