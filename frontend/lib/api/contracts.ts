@@ -370,18 +370,18 @@ export interface OperationTypes {
   "GUIDE-01.get": Io<undefined, T.GuideDocument, { language?: T.Language }>;
 
   // CHK
-  "CHK-01": Io<undefined, { result: string; response?: any; claim_ref?: string }, { q?: string; lang?: string }>;
+  "CHK-01": Io<undefined, { result: string; response?: Record<string, unknown>; claim_ref?: string }, { q?: string; lang?: string }>;
   "CHK-02": Io<{ text: string; lang: string; device_token: string }, { result: string; claim_ref: string }>;
 
   // NOT
   "NOT-01": Io<{ scope: { kind: string; code: string }; type: string; text: string; question_id?: string; expires_in_minutes?: number }, { id: string; status: string }>;
   "NOT-02.approve": Io<Record<string, unknown>, { status: string }>;
   "NOT-02.reject": Io<{ note: string }, { status: string }>;
-  "NOT-03.list": Io<undefined, { items: any[] }>;
-  "NOT-03.results": Io<undefined, { notice_id: string; status: string; wards: Record<string, any> }>;
-  "NOT-04": Io<undefined, { items: any[] }, { ward_code?: string; lga_code?: string }>;
+  "NOT-03.list": Io<undefined, { items: Record<string, unknown>[] }>;
+  "NOT-03.results": Io<undefined, { notice_id: string; status: string; wards: Record<string, unknown> }>;
+  "NOT-04": Io<undefined, { items: Record<string, unknown>[] }, { ward_code?: string; lga_code?: string }>;
   "NOT-05": Io<{ answer: "yes" | "no" | "not_seen"; answered_at: string }, { status: string }>;
-  "NOT-06": Io<undefined, { items: any[] }>;
+  "NOT-06": Io<undefined, { items: Record<string, unknown>[] }>;
 
   // AREA
   "AREA-01": Io<undefined, { lga_name: string; lga_code: string; updated_at: string; by_category: { category: string; count: number | "fewer than 5" }[] }, { lga_code?: string }>;
