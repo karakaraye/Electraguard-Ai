@@ -1011,7 +1011,12 @@
     "qrUnavailable": "Ba a iya nuna lambar QR ba. Ka rubuta maɓallin da ke ƙasa maimakon haka.",
     "codePaste": "Kana iya liƙa duka lambar.",
     "footer": "Don masu bita da masu gudanarwa na ƙungiyoyin sa ido. Masu sa ido suna shiga a manhajar da lambar mai sa ido.",
-    "strength": { "empty": "Yi amfani da aƙalla haruffa {min}.", "short": "Ya yi gajere: haruffa {count} cikin {min}.", "fair": "Ya isa tsawo. Kalmar sirri mai tsawo ta fi ƙarfi.", "strong": "Kalmar sirri mai ƙarfi." },
+    "strength": {
+      "empty": "Yi amfani da aƙalla haruffa {min}.",
+      "short": "Ya yi gajere: haruffa {count} cikin {min}.",
+      "fair": "Ya isa tsawo. Kalmar sirri mai tsawo ta fi ƙarfi.",
+      "strong": "Kalmar sirri mai ƙarfi."
+    },
     "title": "[HA draft] Staff sign-in",
     "subtitle": "[HA draft] Official election observation review portal",
     "emailLabel": "[HA draft] Email address",
@@ -1061,7 +1066,9 @@
       "category": "[HA draft] Category",
       "channel": "[HA draft] Channel",
       "hasEvidence": "[HA draft] Has media",
-      "clear": "[HA draft] Reset filters"
+      "clear": "[HA draft] Reset filters",
+      "label": "Matattarai",
+      "anyCategory": "Kowane rukuni"
     },
     "columns": {
       "urgency": "[HA draft] Urgency",
@@ -1070,7 +1077,8 @@
       "location": "[HA draft] Location",
       "occurred": "[HA draft] Occurred",
       "evidence": "[HA draft] Evidence",
-      "status": "[HA draft] Status"
+      "status": "[HA draft] Status",
+      "reasons": "Dalili"
     },
     "urgency": {
       "urgent": "[HA draft] Urgent",
@@ -1092,9 +1100,52 @@
       "citizen_report": "[HA draft] Citizen report",
       "sms_report": "[HA draft] SMS report"
     },
-    "empty": "[HA draft] No cases matching the current filters.",
+    "empty": "Babu shari'ar da ta dace da waɗannan matattarai.",
     "emptySubtitle": "[HA draft] New reports assigned to you will appear here.",
-    "loadMore": "[HA draft] Load more cases"
+    "loadMore": "[HA draft] Load more cases",
+    "tabsLabel": "Shari'o'i bisa matsayi",
+    "caption": "Shari'o'in da ke jiran bita",
+    "simulated": "Na gwaji",
+    "noPlace": "Ba a bayar da wuri ba",
+    "keys": "J da K suna motsawa tsakanin shari'o'i. Enter yana buɗe ɗaya.",
+    "moreReasons": "+{count}",
+    "newCases": "{count, plural, one {Sabuwar shari'a #} other {Sababbin shari'o'i #}}",
+    "channel": {
+      "app": "Manhajar mai sa ido",
+      "citizen": "Shafin ɗan ƙasa",
+      "sms": "SMS",
+      "ussd": "USSD"
+    },
+    "views": {
+      "title": "Ra'ayoyin da aka adana",
+      "save": "Adana wannan ra'ayi",
+      "name": "Sunan ra'ayi",
+      "saveConfirm": "Adana",
+      "remove": "Cire ra'ayin {name}"
+    },
+    "evidence": {
+      "photo": "{count, plural, one {Hoto #} other {Hotuna #}}",
+      "video": "{count, plural, one {Bidiyo #} other {Bidiyoyi #}}",
+      "audio": "{count, plural, one {Saƙon murya #} other {Saƙonnin murya #}}",
+      "none": "Babu"
+    },
+    "flags": {
+      "duplicate": "Zai iya zama kwafin wani rahoto",
+      "resultSheet": "{count, plural, one {Binciken takardar sakamako # bai yi nasara ba} other {Binciken takardar sakamako # bai yi nasara ba}}",
+      "names": "Rubutun zai iya ƙunsar sunaye",
+      "question": "Ana jiran amsar tambaya",
+      "unread": "{count, plural, one {Saƙo # da ba a karanta ba} other {Saƙonni # da ba a karanta ba}}"
+    },
+    "preview": {
+      "title": "Duban shari'a",
+      "place": "Wuri",
+      "notGiven": "Ba a bayar ba",
+      "received": "An karɓa",
+      "open": "Buɗe shari'a"
+    },
+    "tabs": {
+      "question": "Tambayoyi"
+    }
   },
   "s03": {
     "title": "[HA draft] Case review",
@@ -1668,7 +1719,9 @@
   "p07": {
     "banner": "Wayar gwaji ce. Ana yi wa rahotannin da aka yi a nan alama, kuma ba a taɓa ƙirga su a sakamakon jama’a ba.",
     "keyboard": "Kana iya amfani da madannai a nan: lambobi, * da #, Enter don Kira ko To, Escape don Ƙarewa.",
-    "more": { "title": "Wasu saƙonnin da za ka iya aikawa" },
+    "more": {
+      "title": "Wasu saƙonnin da za ka iya aikawa"
+    },
     "title": "Gwada kai rahoto ta SMS da USSD",
     "lead": "Yi amfani da wannan wayar da ke kan allo don gwada ElectraGuard kamar yadda ƙaramar waya ke yi. Tana aiki a tsarin da ainihin SMS da USSD ke amfani da shi.",
     "deviceLabel": "Ƙaramar waya ta gwaji",

@@ -1,266 +1,164 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { api } from "../../../../lib/api/client";
-import type {
-  CaseDetail,
-  Category,
-  Channel,
-  Outcome,
-  QueueResponse,
-  ReportStatus,
-  Urgency,
-} from "../../../../lib/api/types";
+import type { QueueItem, QueueQuery, QueueResponse, ReportStatus } from "../../../../lib/api/types";
 import { useT } from "../../../../lib/i18n/client";
-import { QueueSplit } from "../_components/QueueSplit";
-import { CaseView } from "../_views/CaseView";
-import { QueueView, type QueueFilters } from "../_views/QueueView";
+import {
+  EMPTY_QUEUE_FILTERS,
+  QueueTableView,
+  type QueueTableFilters,
+  type SavedQueueView,
+} from "../_views/QueueTableView";
+
+/** How often the queue checks for new cases. New ones wait behind a pill; rows never jump (I-18). */
+const POLL_MS = 30_000;
+const VIEWS_KEY = "eg.s02.savedViews";
+
+function toQuery(filters: QueueTableFilters, cursor?: string): QueueQuery {
+  return {
+    status: filters.status === "all" ? undefined : [filters.status as ReportStatus],
+    urgency: filters.urgency.length ? filters.urgency : undefined,
+    category: filters.category ? [filters.category] : undefined,
+    channel: filters.channel.length ? filters.channel : undefined,
+    has_evidence: filters.hasEvidence || undefined,
+    cursor,
+  };
+}
+
+function readViews(): SavedQueueView[] {
+  try {
+    const raw = window.localStorage.getItem(VIEWS_KEY);
+    const parsed = raw ? (JSON.parse(raw) as SavedQueueView[]) : [];
+    return Array.isArray(parsed) ? parsed.filter((v) => v && typeof v.name === "string" && v.filters) : [];
+  } catch {
+    return [];
+  }
+}
+
+function writeViews(views: SavedQueueView[]) {
+  try {
+    window.localStorage.setItem(VIEWS_KEY, JSON.stringify(views));
+  } catch {
+    // Saved views are a convenience on this browser only; the queue works without them.
+  }
+}
 
 export default function QueuePage() {
   const router = useRouter();
   const t = useT();
 
-  const [queueData, setQueueData] = useState<QueueResponse | null>(null);
+  const [filters, setFilters] = useState<QueueTableFilters>(EMPTY_QUEUE_FILTERS);
+  const [data, setData] = useState<QueueResponse | null>(null);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [filters, setFilters] = useState<QueueFilters>({});
+  const [pending, setPending] = useState<QueueItem[]>([]);
+  const [views, setViews] = useState<SavedQueueView[]>([]);
+  const [attempt, setAttempt] = useState(0);
+  const known = useRef(new Set<string>());
 
-  // Split view selected case state
-  const [selectedCaseId, setSelectedCaseId] = useState<string | null>(null);
-  const [caseDetail, setCaseDetail] = useState<CaseDetail | null>(null);
-  const [caseLoading, setCaseLoading] = useState(false);
-  const [caseError, setCaseError] = useState<string | null>(null);
+  const problem = useCallback(
+    (res: { status: number }) =>
+      res.status === 403 ? t("staff.forbidden") : res.status === 404 ? t("staff.endpointNotReady") : t("staff.networkError"),
+    [t],
+  );
 
-  // Fetch queue
+  useEffect(() => {
+    const id = window.setTimeout(() => setViews(readViews()), 0);
+    return () => window.clearTimeout(id);
+  }, []);
+
+  // First page for the current filters.
   useEffect(() => {
     let cancelled = false;
     void (async () => {
-      try {
-        const res = await api("Q-01", {
-          query: {
-            urgency: filters.urgency ? [filters.urgency as Urgency] : undefined,
-            status: filters.status ? [filters.status as ReportStatus] : undefined,
-            category: filters.category ? [filters.category as Category] : undefined,
-            channel: filters.channel ? [filters.channel as Channel] : undefined,
-            has_evidence: filters.hasEvidence,
-          },
-        });
-
-        if (cancelled) return;
-        if (!res.ok) {
-          if (res.status === 404) {
-            setError(t("staff.endpointNotReady"));
-          } else {
-            setError(res.error?.message || t("staff.networkError"));
-          }
-          return;
-        }
-
-        setQueueData(res.data);
-        if (!selectedCaseId && res.data.items.length > 0) {
-          setSelectedCaseId(res.data.items[0].id);
-        }
-      } catch {
-        if (!cancelled) setError(t("staff.networkError"));
-      } finally {
-        if (!cancelled) setLoading(false);
+      setLoading(true);
+      setError(null);
+      setPending([]);
+      const res = await api("Q-01", { query: toQuery(filters) });
+      if (cancelled) return;
+      setLoading(false);
+      if (!res.ok) {
+        setError(problem(res));
+        return;
       }
+      known.current = new Set(res.data.items.map((item) => item.id));
+      setData(res.data);
     })();
-
     return () => {
       cancelled = true;
     };
-  }, [filters, selectedCaseId, t]);
+  }, [filters, attempt, problem]);
 
-  // Load selected case detail
+  // Look for new cases without moving the rows the reviewer is reading.
   useEffect(() => {
-    if (!selectedCaseId) {
+    if (!data) return;
+    const id = window.setInterval(async () => {
+      if (document.visibilityState !== "visible") return;
+      const res = await api("Q-01", { query: toQuery(filters) });
+      if (!res.ok) return;
+      const fresh = res.data.items.filter((item) => !known.current.has(item.id));
+      if (fresh.length) {
+        setPending((current) => {
+          const ids = new Set(current.map((item) => item.id));
+          return [...current, ...fresh.filter((item) => !ids.has(item.id))];
+        });
+      }
+    }, POLL_MS);
+    return () => window.clearInterval(id);
+  }, [data, filters]);
+
+  async function loadMore() {
+    if (!data?.next_cursor || loadingMore) return;
+    setLoadingMore(true);
+    const res = await api("Q-01", { query: toQuery(filters, data.next_cursor) });
+    setLoadingMore(false);
+    if (!res.ok) {
+      setError(problem(res));
       return;
     }
-    let cancelled = false;
-    void (async () => {
-      setCaseLoading(true);
-      try {
-        const res = await api("CASE-01", { params: { id: selectedCaseId } });
-        if (cancelled) return;
-        if (!res.ok) {
-          if (res.status === 404) {
-            setCaseError(t("staff.endpointNotReady"));
-          } else {
-            setCaseError(res.error?.message || t("staff.networkError"));
-          }
-          return;
-        }
-        setCaseDetail(res.data);
-      } catch {
-        if (!cancelled) setCaseError(t("staff.networkError"));
-      } finally {
-        if (!cancelled) setCaseLoading(false);
-      }
-    })();
+    const more = res.data.items.filter((item) => !known.current.has(item.id));
+    more.forEach((item) => known.current.add(item.id));
+    setData({ ...data, items: [...data.items, ...more], next_cursor: res.data.next_cursor, counts: res.data.counts });
+  }
 
-    return () => {
-      cancelled = true;
-    };
-  }, [selectedCaseId, t]);
+  function showNew() {
+    if (!data || pending.length === 0) return;
+    pending.forEach((item) => known.current.add(item.id));
+    setData({ ...data, items: [...pending, ...data.items] });
+    setPending([]);
+  }
 
-  const refreshCase = async (id: string) => {
-    try {
-      const res = await api("CASE-01", { params: { id } });
-      if (res.ok) setCaseDetail(res.data);
-    } catch {
-      // Ignored
-    }
-  };
+  function saveView(name: string) {
+    const next = [...views.filter((v) => v.name !== name), { name, filters }];
+    setViews(next);
+    writeViews(next);
+  }
 
-  // Case actions
-  const handleStartReview = async () => {
-    if (!caseDetail) return;
-    try {
-      const res = await api("CASE-02", {
-        params: { id: caseDetail.id },
-        body: { action: "start", version: caseDetail.version },
-      });
-      if (res.ok) {
-        refreshCase(caseDetail.id);
-      }
-    } catch {
-      // Ignored
-    }
-  };
+  function removeView(name: string) {
+    const next = views.filter((v) => v.name !== name);
+    setViews(next);
+    writeViews(next);
+  }
 
-  const handleAskQuestion = async (question: string) => {
-    if (!caseDetail) return;
-    try {
-      const res = await api("CASE-02", {
-        params: { id: caseDetail.id },
-        body: { action: "ask", question, version: caseDetail.version },
-      });
-      if (res.ok) {
-        refreshCase(caseDetail.id);
-      }
-    } catch {
-      // Ignored
-    }
-  };
-
-  const handleCloseCase = async (outcome: Outcome, rationale: string, expectedMediaIds: string[]) => {
-    if (!caseDetail) return;
-    try {
-      const res = await api("CASE-02", {
-        params: { id: caseDetail.id },
-        body: {
-          action: "close",
-          outcome,
-          rationale,
-          expected_media_ids: expectedMediaIds,
-          version: caseDetail.version,
-        },
-      });
-      if (res.ok) {
-        refreshCase(caseDetail.id);
-      }
-    } catch {
-      // Ignored
-    }
-  };
-
-  const handleAcceptSuggestion = async (type: "category" | "urgency") => {
-    if (!caseDetail) return;
-    try {
-      const res = await api("CASE-03", {
-        params: { id: caseDetail.id, type },
-        body: { decision: "accept", version: caseDetail.version },
-      });
-      if (res.ok) {
-        refreshCase(caseDetail.id);
-      }
-    } catch {
-      // Ignored
-    }
-  };
-
-  const handleCorrectSuggestion = async (type: "category" | "urgency", value: string) => {
-    if (!caseDetail) return;
-    try {
-      const res = await api("CASE-03", {
-        params: { id: caseDetail.id, type },
-        body: {
-          decision: "correct",
-          value: value as Category & Urgency,
-          version: caseDetail.version,
-        },
-      });
-      if (res.ok) {
-        refreshCase(caseDetail.id);
-      }
-    } catch {
-      // Ignored
-    }
-  };
-
-  const handleDuplicateDecision = async (otherId: string, decision: "link" | "keep_separate") => {
-    if (!caseDetail) return;
-    try {
-      const res = await api("CASE-04", {
-        params: { id: caseDetail.id, other_id: otherId },
-        body: { decision, version: caseDetail.version },
-      });
-      if (res.ok) {
-        refreshCase(caseDetail.id);
-      }
-    } catch {
-      // Ignored
-    }
-  };
-
-  const handleSaveRedaction = async (spans: Array<{ start: number; end: number }>) => {
-    if (!caseDetail) return;
-    try {
-      const res = await api("CASE-05", {
-        params: { id: caseDetail.id },
-        body: { spans, version: caseDetail.version },
-      });
-      if (res.ok) {
-        refreshCase(caseDetail.id);
-      }
-    } catch {
-      // Ignored
-    }
-  };
-
-  const listView = (
-    <QueueView
-      data={queueData}
+  return (
+    <QueueTableView
+      data={data}
       loading={loading}
+      loadingMore={loadingMore}
       error={error}
-      selectedId={selectedCaseId}
       filters={filters}
-      onFilterChange={setFilters}
-      onSelectCase={(id) => {
-        setSelectedCaseId(id);
-        if (typeof window !== "undefined" && window.innerWidth < 900) {
-          router.push(`/s/cases/${id}`);
-        }
-      }}
+      onFiltersChange={setFilters}
+      onLoadMore={() => void loadMore()}
+      onRetry={() => setAttempt((n) => n + 1)}
+      newCount={pending.length}
+      onShowNew={showNew}
+      savedViews={views}
+      onSaveView={saveView}
+      onRemoveView={removeView}
+      onOpenCase={(id) => router.push(`/s/cases/${id}`)}
     />
   );
-
-  const detailView = (
-    <CaseView
-      caseData={caseDetail}
-      loading={caseLoading}
-      error={caseError}
-      onStartReview={handleStartReview}
-      onAskQuestion={handleAskQuestion}
-      onCloseCase={handleCloseCase}
-      onAcceptSuggestion={handleAcceptSuggestion}
-      onCorrectSuggestion={handleCorrectSuggestion}
-      onDuplicateDecision={handleDuplicateDecision}
-      onSaveRedaction={handleSaveRedaction}
-    />
-  );
-
-  return <QueueSplit list={listView} detail={detailView} focus="list" />;
 }

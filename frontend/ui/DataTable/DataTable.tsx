@@ -28,8 +28,10 @@ export type DataTableProps<Row> = {
   columns: Column<Row>[];
   rows: Row[];
   rowKey: (row: Row) => string;
-  /** Makes rows focusable; Enter opens. Arrow keys move between rows. */
+  /** Makes rows focusable; Enter opens. Arrow keys (and J/K) move between rows. */
   onRowActivate?: (row: Row) => void;
+  /** Called when a row gains focus, for a preview beside the table. */
+  onRowFocus?: (row: Row) => void;
   /** Key of the selected row (open case). */
   selectedKey?: string;
   initialSort?: SortState;
@@ -49,6 +51,7 @@ export function DataTable<Row>({
   rows,
   rowKey,
   onRowActivate,
+  onRowFocus,
   selectedKey,
   initialSort = null,
   emptyText,
@@ -90,6 +93,7 @@ export function DataTable<Row>({
       if (!rowsEls?.length) return;
       rowsEls[Math.max(0, Math.min(rowsEls.length - 1, next))].focus();
     };
+    if (event.altKey || event.ctrlKey || event.metaKey) return;
     switch (event.key) {
       case "Enter":
       case " ":
@@ -97,10 +101,12 @@ export function DataTable<Row>({
         onRowActivate?.(row);
         break;
       case "ArrowDown":
+      case "j":
         event.preventDefault();
         focusRow(index + 1);
         break;
       case "ArrowUp":
+      case "k":
         event.preventDefault();
         focusRow(index - 1);
         break;
@@ -179,6 +185,8 @@ export function DataTable<Row>({
                   aria-selected={onRowActivate ? selectedKey === key : undefined}
                   onClick={onRowActivate ? () => onRowActivate(row) : undefined}
                   onKeyDown={onRowActivate ? (event) => onRowKey(event, row, index) : undefined}
+                  onFocus={onRowFocus ? () => onRowFocus(row) : undefined}
+                  data-row-key={key}
                 >
                   {columns.map((column) => {
                     const content = column.render ? column.render(row) : (defaultValue(row, column.key) as ReactNode);

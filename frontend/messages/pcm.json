@@ -1011,7 +1011,12 @@
     "qrUnavailable": "The QR code no show. Type the key wey dey below instead.",
     "codePaste": "You fit paste the whole code.",
     "footer": "Na for reviewers and coordinators of observation organisation. Observers dey sign in for the app with their observer code.",
-    "strength": { "empty": "Use at least {min} characters.", "short": "E too short: {count} of {min} characters.", "fair": "E long reach. Longer password strong pass.", "strong": "Strong password." },
+    "strength": {
+      "empty": "Use at least {min} characters.",
+      "short": "E too short: {count} of {min} characters.",
+      "fair": "E long reach. Longer password strong pass.",
+      "strong": "Strong password."
+    },
     "title": "[PCM draft] Staff sign-in",
     "subtitle": "[PCM draft] Official election observation review portal",
     "emailLabel": "[PCM draft] Email address",
@@ -1061,7 +1066,9 @@
       "category": "[PCM draft] Category",
       "channel": "[PCM draft] Channel",
       "hasEvidence": "[PCM draft] Has media",
-      "clear": "[PCM draft] Reset filters"
+      "clear": "[PCM draft] Reset filters",
+      "label": "Filters",
+      "anyCategory": "Any category"
     },
     "columns": {
       "urgency": "[PCM draft] Urgency",
@@ -1070,7 +1077,8 @@
       "location": "[PCM draft] Location",
       "occurred": "[PCM draft] Occurred",
       "evidence": "[PCM draft] Evidence",
-      "status": "[PCM draft] Status"
+      "status": "[PCM draft] Status",
+      "reasons": "Why"
     },
     "urgency": {
       "urgent": "[PCM draft] Urgent",
@@ -1092,9 +1100,52 @@
       "citizen_report": "[PCM draft] Citizen report",
       "sms_report": "[PCM draft] SMS report"
     },
-    "empty": "[PCM draft] No cases matching the current filters.",
+    "empty": "No case match these filters.",
     "emptySubtitle": "[PCM draft] New reports assigned to you will appear here.",
-    "loadMore": "[PCM draft] Load more cases"
+    "loadMore": "[PCM draft] Load more cases",
+    "tabsLabel": "Cases by status",
+    "caption": "Cases wey dey the review queue",
+    "simulated": "Practice",
+    "noPlace": "Dem no give place",
+    "keys": "J and K dey move from one case to another. Enter dey open am.",
+    "moreReasons": "+{count}",
+    "newCases": "{count, plural, one {# new case} other {# new cases}}",
+    "channel": {
+      "app": "Observer app",
+      "citizen": "Citizen website",
+      "sms": "SMS",
+      "ussd": "USSD"
+    },
+    "views": {
+      "title": "Views wey you save",
+      "save": "Save this view",
+      "name": "Name for the view",
+      "saveConfirm": "Save",
+      "remove": "Remove the view {name}"
+    },
+    "evidence": {
+      "photo": "{count, plural, one {# photo} other {# photos}}",
+      "video": "{count, plural, one {# video} other {# videos}}",
+      "audio": "{count, plural, one {# voice note} other {# voice notes}}",
+      "none": "None"
+    },
+    "flags": {
+      "duplicate": "E fit be the same as another report",
+      "resultSheet": "{count, plural, one {# result sheet check fail} other {# result sheet checks fail}}",
+      "names": "The text fit get people name",
+      "question": "E dey wait for answer to one question",
+      "unread": "{count, plural, one {# message wey you never read} other {# messages wey you never read}}"
+    },
+    "preview": {
+      "title": "Quick look at the case",
+      "place": "Place",
+      "notGiven": "Dem no give am",
+      "received": "Received",
+      "open": "Open the case"
+    },
+    "tabs": {
+      "question": "Questions"
+    }
   },
   "s03": {
     "title": "[PCM draft] Case review",
@@ -1668,7 +1719,9 @@
   "p07": {
     "banner": "Na practice phone. Report wey you make here go get mark, and dem no go ever count am for public result.",
     "keyboard": "You fit use your keyboard here: number dem, * and #, Enter for Call or OK, Escape for End.",
-    "more": { "title": "Other message wey you fit send" },
+    "more": {
+      "title": "Other message wey you fit send"
+    },
     "title": "Try report by SMS and USSD",
     "lead": "Use this phone wey dey screen to try ElectraGuard the way small phone dey do am. Na the same system with real SMS and USSD.",
     "deviceLabel": "Small phone for practice",

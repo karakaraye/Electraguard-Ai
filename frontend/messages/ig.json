@@ -1011,7 +1011,12 @@
     "qrUnavailable": "Enweghị ike igosi koodu QR. Pịnye igodo dị n'okpuru kama.",
     "codePaste": "Ị nwere ike ịmado koodu ahụ niile.",
     "footer": "Maka ndị nyocha na ndị nhazi nke otu ndị nleba anya. Ndị nleba anya na-abanye n'ngwa ahụ site na koodu onye nleba anya ha.",
-    "strength": { "empty": "Jiri opekata mpe mkpụrụedemede {min}.", "short": "Ọ dị mkpụmkpụ: mkpụrụedemede {count} n'ime {min}.", "fair": "O zuru ogologo. Okwuntughe ka ogologo siri ike karịa.", "strong": "Okwuntughe siri ike." },
+    "strength": {
+      "empty": "Jiri opekata mpe mkpụrụedemede {min}.",
+      "short": "Ọ dị mkpụmkpụ: mkpụrụedemede {count} n'ime {min}.",
+      "fair": "O zuru ogologo. Okwuntughe ka ogologo siri ike karịa.",
+      "strong": "Okwuntughe siri ike."
+    },
     "title": "[IG draft] Staff sign-in",
     "subtitle": "[IG draft] Official election observation review portal",
     "emailLabel": "[IG draft] Email address",
@@ -1061,7 +1066,9 @@
       "category": "[IG draft] Category",
       "channel": "[IG draft] Channel",
       "hasEvidence": "[IG draft] Has media",
-      "clear": "[IG draft] Reset filters"
+      "clear": "[IG draft] Reset filters",
+      "label": "Nzacha",
+      "anyCategory": "Ụdị ọ bụla"
     },
     "columns": {
       "urgency": "[IG draft] Urgency",
@@ -1070,7 +1077,8 @@
       "location": "[IG draft] Location",
       "occurred": "[IG draft] Occurred",
       "evidence": "[IG draft] Evidence",
-      "status": "[IG draft] Status"
+      "status": "[IG draft] Status",
+      "reasons": "Ihe kpatara ya"
     },
     "urgency": {
       "urgent": "[IG draft] Urgent",
@@ -1092,9 +1100,52 @@
       "citizen_report": "[IG draft] Citizen report",
       "sms_report": "[IG draft] SMS report"
     },
-    "empty": "[IG draft] No cases matching the current filters.",
+    "empty": "Enweghị okwu dabara na nzacha ndị a.",
     "emptySubtitle": "[IG draft] New reports assigned to you will appear here.",
-    "loadMore": "[IG draft] Load more cases"
+    "loadMore": "[IG draft] Load more cases",
+    "tabsLabel": "Okwu dịka ọnọdụ ha si dị",
+    "caption": "Okwu ndị na-eche nyocha",
+    "simulated": "Nnwale",
+    "noPlace": "Enyeghị ebe",
+    "keys": "J na K na-aga n'etiti okwu. Enter na-emeghe otu.",
+    "moreReasons": "+{count}",
+    "newCases": "{count, plural, one {Okwu ọhụrụ #} other {Okwu ọhụrụ #}}",
+    "channel": {
+      "app": "Ngwa onye nleba anya",
+      "citizen": "Weebụsaịtị nwa amaala",
+      "sms": "SMS",
+      "ussd": "USSD"
+    },
+    "views": {
+      "title": "Echiche ndị echekwara",
+      "save": "Chekwaa echiche a",
+      "name": "Aha echiche",
+      "saveConfirm": "Chekwaa",
+      "remove": "Wepụ echiche {name}"
+    },
+    "evidence": {
+      "photo": "{count, plural, one {Foto #} other {Foto #}}",
+      "video": "{count, plural, one {Vidiyo #} other {Vidiyo #}}",
+      "audio": "{count, plural, one {Ozi olu #} other {Ozi olu #}}",
+      "none": "Ọ dịghị"
+    },
+    "flags": {
+      "duplicate": "Ọ nwere ike ịbụ otu ihe ahụ dị ka akụkọ ọzọ",
+      "resultSheet": "{count, plural, one {Nlele mpempe akwụkwọ nsonaazụ # dara} other {Nlele mpempe akwụkwọ nsonaazụ # dara}}",
+      "names": "Ederede ahụ nwere ike inwe aha mmadụ",
+      "question": "Ọ na-eche azịza ajụjụ",
+      "unread": "{count, plural, one {Ozi # a gụghị} other {Ozi # a gụghị}}"
+    },
+    "preview": {
+      "title": "Nlele ngwa ngwa nke okwu",
+      "place": "Ebe",
+      "notGiven": "Enyeghị ya",
+      "received": "Anatara ya",
+      "open": "Mepee okwu"
+    },
+    "tabs": {
+      "question": "Ajụjụ"
+    }
   },
   "s03": {
     "title": "[IG draft] Case review",
@@ -1668,7 +1719,9 @@
   "p07": {
     "banner": "Ekwentị nnwale. A na-aka akara akụkọ e mere ebe a, a gaghị agụnye ha na nsonaazụ ọha.",
     "keyboard": "Ị nwere ike iji keyboard gị ebe a: ọnụọgụ, * na #, Enter maka Kpọọ ma ọ bụ Ọ dị mma, Escape maka Kwụsị.",
-    "more": { "title": "Ozi ndị ọzọ ị nwere ike iziga" },
+    "more": {
+      "title": "Ozi ndị ọzọ ị nwere ike iziga"
+    },
     "title": "Nwalee ịkọ akụkọ site na SMS na USSD",
     "lead": "Jiri ekwentị a dị na ihuenyo nwalee ElectraGuard dịka obere ekwentị si eme ya. Ọ na-eji otu usoro ahụ dị ka SMS na USSD n'ezie.",
     "deviceLabel": "Obere ekwentị nnwale",

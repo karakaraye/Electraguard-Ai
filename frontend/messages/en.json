@@ -1010,7 +1010,12 @@
     "qrUnavailable": "The QR code could not be shown. Type the key below instead.",
     "codePaste": "You can paste the whole code.",
     "footer": "For reviewers and coordinators of observation organisations. Observers sign in on the app with their observer code.",
-    "strength": { "empty": "Use at least {min} characters.", "short": "Too short: {count} of {min} characters.", "fair": "Long enough. A longer password is stronger.", "strong": "Strong password." },
+    "strength": {
+      "empty": "Use at least {min} characters.",
+      "short": "Too short: {count} of {min} characters.",
+      "fair": "Long enough. A longer password is stronger.",
+      "strong": "Strong password."
+    },
     "title": "Staff sign-in",
     "subtitle": "Official election observation review portal",
     "emailLabel": "Email address",
@@ -1060,7 +1065,9 @@
       "category": "Category",
       "channel": "Channel",
       "hasEvidence": "Has media",
-      "clear": "Reset filters"
+      "clear": "Reset filters",
+      "label": "Filters",
+      "anyCategory": "Any category"
     },
     "columns": {
       "urgency": "Urgency",
@@ -1069,7 +1076,8 @@
       "location": "Location",
       "occurred": "Occurred",
       "evidence": "Evidence",
-      "status": "Status"
+      "status": "Status",
+      "reasons": "Why"
     },
     "urgency": {
       "urgent": "Urgent",
@@ -1091,9 +1099,52 @@
       "citizen_report": "Citizen report",
       "sms_report": "SMS report"
     },
-    "empty": "No cases matching the current filters.",
+    "empty": "No cases match these filters.",
     "emptySubtitle": "New reports assigned to you will appear here.",
-    "loadMore": "Load more cases"
+    "loadMore": "Load more cases",
+    "tabsLabel": "Cases by status",
+    "caption": "Cases in the review queue",
+    "simulated": "Simulated",
+    "noPlace": "No place given",
+    "keys": "J and K move between cases. Enter opens one.",
+    "moreReasons": "+{count}",
+    "newCases": "{count, plural, one {# new case} other {# new cases}}",
+    "channel": {
+      "app": "Observer app",
+      "citizen": "Citizen web",
+      "sms": "SMS",
+      "ussd": "USSD"
+    },
+    "views": {
+      "title": "Saved views",
+      "save": "Save this view",
+      "name": "View name",
+      "saveConfirm": "Save",
+      "remove": "Remove saved view {name}"
+    },
+    "evidence": {
+      "photo": "{count, plural, one {# photo} other {# photos}}",
+      "video": "{count, plural, one {# video} other {# videos}}",
+      "audio": "{count, plural, one {# voice note} other {# voice notes}}",
+      "none": "None"
+    },
+    "flags": {
+      "duplicate": "May be a duplicate of another report",
+      "resultSheet": "{count, plural, one {# result sheet check failed} other {# result sheet checks failed}}",
+      "names": "The text may contain names",
+      "question": "Waiting for an answer to a question",
+      "unread": "{count, plural, one {# unread message} other {# unread messages}}"
+    },
+    "preview": {
+      "title": "Case preview",
+      "place": "Place",
+      "notGiven": "Not given",
+      "received": "Received",
+      "open": "Open case"
+    },
+    "tabs": {
+      "question": "Questions"
+    }
   },
   "s03": {
     "title": "Case review",
@@ -1667,7 +1718,9 @@
   "p07": {
     "banner": "Simulated phone. Reports made here are marked and never counted in public results.",
     "keyboard": "You can use your keyboard here: numbers, * and #, Enter for Call or OK, Escape for End.",
-    "more": { "title": "More messages you can send" },
+    "more": {
+      "title": "More messages you can send"
+    },
     "title": "Try reporting by SMS and USSD",
     "lead": "Use this on-screen phone to try ElectraGuard the way a basic phone does. It runs on the same system as real SMS and USSD.",
     "deviceLabel": "Simulated basic phone",

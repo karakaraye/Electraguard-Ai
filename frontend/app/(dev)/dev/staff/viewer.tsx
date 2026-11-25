@@ -18,7 +18,7 @@ import {
   UsersIcon,
 } from "../../../../ui/icons";
 import { SignInView, type SignInStep } from "../../../(staff)/s/_views/SignInView";
-import { QueueView } from "../../../(staff)/s/_views/QueueView";
+import { EMPTY_QUEUE_FILTERS, QueueTableView } from "../../../(staff)/s/_views/QueueTableView";
 import { CaseView } from "../../../(staff)/s/_views/CaseView";
 import { AssignView } from "../../../(staff)/s/_views/AssignView";
 import { OpsView } from "../../../(staff)/s/_views/OpsView";
@@ -40,7 +40,8 @@ import {
   FIXTURE_LATE_MATERIALS,
   FIXTURE_OVERVIEW,
   FIXTURE_QUEUE_ITEM,
-  FIXTURE_QUEUE_RESPONSE,
+  FIXTURE_QUEUE_ITEMS,
+  FIXTURE_QUEUE_PAGE,
   FIXTURE_SETTINGS,
   FIXTURE_SNAPSHOT_RECORD,
   FIXTURE_STAFF_ACCOUNT,
@@ -51,6 +52,9 @@ const S01_STATES = [
   "default", "loading", "invalid_credentials", "account_locked", "rate_limited",
   "totp", "totp_typing", "totp_invalid", "enrol", "invite", "invite_short", "invite_fair", "invite_strong", "invite_invalid",
 ] as const;
+
+/** Screen 39 (S-02) states. */
+const S02_STATES = ["default", "loading", "empty", "empty_filtered", "error", "forbidden", "new", "more"] as const;
 
 function signInStep(state: string): SignInStep {
   if (state.startsWith("totp")) return "totp";
@@ -137,12 +141,28 @@ export function StaffStateViewer(): ReactElement {
 
       case "s02":
         return (
-          <QueueView
-            data={state === "empty" ? { items: [], next_cursor: null, counts: {} } : FIXTURE_QUEUE_RESPONSE}
+          <QueueTableView
+            key={state}
+            data={
+              state === "empty" || state === "empty_filtered"
+                ? { items: [], next_cursor: null, counts: {} }
+                : state === "loading" || state === "error" || state === "forbidden"
+                  ? null
+                  : { ...FIXTURE_QUEUE_PAGE, next_cursor: state === "more" ? "c2" : null }
+            }
             loading={state === "loading"}
-            error={state === "error" ? "Failed to load triage queue" : null}
-            filters={{}}
-            onFilterChange={() => {}}
+            error={state === "error" ? t("staff.networkError") : state === "forbidden" ? t("staff.forbidden") : null}
+            filters={state === "empty_filtered" ? { ...EMPTY_QUEUE_FILTERS, urgency: ["urgent"], channel: ["ussd"] } : EMPTY_QUEUE_FILTERS}
+            onFiltersChange={() => {}}
+            onLoadMore={() => {}}
+            onRetry={() => {}}
+            newCount={state === "new" ? 3 : 0}
+            onShowNew={() => {}}
+            savedViews={[{ name: "Urgent in Kano", filters: { ...EMPTY_QUEUE_FILTERS, urgency: ["urgent"] } }]}
+            onSaveView={() => {}}
+            onRemoveView={() => {}}
+            onOpenCase={() => {}}
+            initialPreviewId={state === "default" || state === "new" || state === "more" ? FIXTURE_QUEUE_ITEMS[0].id : undefined}
           />
         );
 
@@ -346,7 +366,7 @@ export function StaffStateViewer(): ReactElement {
         <div style={{ marginLeft: "auto", display: "flex", gap: "12px", alignItems: "center" }}>
           <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", alignItems: "center" }}>
             <span style={{ color: "var(--ink-2)" }}>State:</span>
-            {(screen === "s01" ? S01_STATES : (["default", "loading", "empty", "error"] as const)).map((st) => (
+            {(screen === "s01" ? S01_STATES : screen === "s02" ? S02_STATES : (["default", "loading", "empty", "error"] as const)).map((st) => (
               <Link
                 key={st}
                 href={`/dev/staff?screen=${screen}&state=${st}&theme=${theme}`}

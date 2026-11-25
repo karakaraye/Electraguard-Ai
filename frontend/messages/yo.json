@@ -1011,7 +1011,12 @@
     "qrUnavailable": "A kò lè fi kóòdù QR hàn. Tẹ kọ́kọ́rọ́ ìsàlẹ̀ dípò rẹ̀.",
     "codePaste": "O lè lẹ gbogbo kóòdù náà mọ́ ibẹ̀.",
     "footer": "Fún àwọn olùṣàyẹ̀wò àti olùṣètò àwọn àjọ alákíyèsí. Àwọn alákíyèsí máa ń wọlé sí áàpù pẹ̀lú kóòdù alákíyèsí wọn.",
-    "strength": { "empty": "Lo ó kéré tán àmì {min}.", "short": "Ó kúrú jù: àmì {count} nínú {min}.", "fair": "Ó gùn tó. Ọ̀rọ̀ aṣínà tó gùn jù lọ lágbára jù.", "strong": "Ọ̀rọ̀ aṣínà tó lágbára." },
+    "strength": {
+      "empty": "Lo ó kéré tán àmì {min}.",
+      "short": "Ó kúrú jù: àmì {count} nínú {min}.",
+      "fair": "Ó gùn tó. Ọ̀rọ̀ aṣínà tó gùn jù lọ lágbára jù.",
+      "strong": "Ọ̀rọ̀ aṣínà tó lágbára."
+    },
     "title": "[YO draft] Staff sign-in",
     "subtitle": "[YO draft] Official election observation review portal",
     "emailLabel": "[YO draft] Email address",
@@ -1061,7 +1066,9 @@
       "category": "[YO draft] Category",
       "channel": "[YO draft] Channel",
       "hasEvidence": "[YO draft] Has media",
-      "clear": "[YO draft] Reset filters"
+      "clear": "[YO draft] Reset filters",
+      "label": "Àwọn àlẹ̀mọ́",
+      "anyCategory": "Ẹ̀ka èyíkéyìí"
     },
     "columns": {
       "urgency": "[YO draft] Urgency",
@@ -1070,7 +1077,8 @@
       "location": "[YO draft] Location",
       "occurred": "[YO draft] Occurred",
       "evidence": "[YO draft] Evidence",
-      "status": "[YO draft] Status"
+      "status": "[YO draft] Status",
+      "reasons": "Ìdí"
     },
     "urgency": {
       "urgent": "[YO draft] Urgent",
@@ -1092,9 +1100,52 @@
       "citizen_report": "[YO draft] Citizen report",
       "sms_report": "[YO draft] SMS report"
     },
-    "empty": "[YO draft] No cases matching the current filters.",
+    "empty": "Kò sí ẹjọ́ tó bá àwọn àlẹ̀mọ́ yìí mu.",
     "emptySubtitle": "[YO draft] New reports assigned to you will appear here.",
-    "loadMore": "[YO draft] Load more cases"
+    "loadMore": "[YO draft] Load more cases",
+    "tabsLabel": "Àwọn ẹjọ́ bí ipò wọn ṣe rí",
+    "caption": "Àwọn ẹjọ́ tó ń dúró de àyẹ̀wò",
+    "simulated": "Àdánwò",
+    "noPlace": "A kò fún wa ní ibi",
+    "keys": "J àti K máa ń lọ láti ẹjọ́ kan sí òmíràn. Enter máa ń ṣí ọ̀kan.",
+    "moreReasons": "+{count}",
+    "newCases": "{count, plural, one {Ẹjọ́ tuntun #} other {Ẹjọ́ tuntun #}}",
+    "channel": {
+      "app": "Áàpù alákíyèsí",
+      "citizen": "Ojú òpó ará ìlú",
+      "sms": "SMS",
+      "ussd": "USSD"
+    },
+    "views": {
+      "title": "Àwọn ìwò tí a fipamọ́",
+      "save": "Fi ìwò yìí pamọ́",
+      "name": "Orúkọ ìwò",
+      "saveConfirm": "Fipamọ́",
+      "remove": "Yọ ìwò {name} kúrò"
+    },
+    "evidence": {
+      "photo": "{count, plural, one {Fọ́tò #} other {Fọ́tò #}}",
+      "video": "{count, plural, one {Fídíò #} other {Fídíò #}}",
+      "audio": "{count, plural, one {Ohùn tí a gbà sílẹ̀ #} other {Ohùn tí a gbà sílẹ̀ #}}",
+      "none": "Kò sí"
+    },
+    "flags": {
+      "duplicate": "Ó lè jẹ́ ẹ̀dà ìròyìn míì",
+      "resultSheet": "{count, plural, one {Àyẹ̀wò ìwé èsì # kùnà} other {Àyẹ̀wò ìwé èsì # kùnà}}",
+      "names": "Ọ̀rọ̀ náà lè ní orúkọ ènìyàn nínú",
+      "question": "Ó ń dúró de ìdáhùn ìbéèrè kan",
+      "unread": "{count, plural, one {Ọ̀rọ̀ # tí a kò tíì kà} other {Ọ̀rọ̀ # tí a kò tíì kà}}"
+    },
+    "preview": {
+      "title": "Àyẹ̀wò ṣókí ẹjọ́",
+      "place": "Ibi",
+      "notGiven": "A kò fún wa",
+      "received": "A gbà á",
+      "open": "Ṣí ẹjọ́"
+    },
+    "tabs": {
+      "question": "Ìbéèrè"
+    }
   },
   "s03": {
     "title": "[YO draft] Case review",
@@ -1668,7 +1719,9 @@
   "p07": {
     "banner": "Fóònù àdánwò ni. A máa ń sàmì sí àwọn ìròyìn tí a ṣe níbí, a kò sì ní kà wọ́n mọ́ àbájáde gbangba.",
     "keyboard": "O lè lo kíbọ́ọ̀dù rẹ níbí: àwọn nọ́ńbà, * àti #, Enter fún Pè tàbí Ó dáa, Escape fún Parí.",
-    "more": { "title": "Àwọn ọ̀rọ̀ míì tí o lè fi ránṣẹ́" },
+    "more": {
+      "title": "Àwọn ọ̀rọ̀ míì tí o lè fi ránṣẹ́"
+    },
     "title": "Gbìyànjú fífi ìròyìn ránṣẹ́ pẹ̀lú SMS àti USSD",
     "lead": "Lo fóònù tó wà lójú ìbojú yìí láti gbìyànjú ElectraGuard bí fóònù kékeré ṣe ń ṣe é. Ó ń lo ètò kan náà pẹ̀lú SMS àti USSD gidi.",
     "deviceLabel": "Fóònù kékeré ìdánwò",

@@ -407,3 +407,110 @@ export const FIXTURE_ALERT: SecurityAlert = {
   last_seen_at: "2026-12-05T07:38:00+01:00",
   detector: "rules",
 };
+
+/** Screen 39 (S-02): a morning queue from the synthetic test institutions, newest urgency first. */
+function queueRow(
+  n: number,
+  patch: Partial<QueueItem> & Pick<QueueItem, "receipt_code" | "urgency" | "category" | "area" | "occurred_at">,
+): QueueItem {
+  return {
+    id: `rep-1${String(n).padStart(2, "0")}`,
+    kind: "incident",
+    channel: "app",
+    status: "received",
+    received_at: patch.occurred_at ?? "2026-12-05T09:00:00+01:00",
+    media_counts: { photo: 0, video: 0, audio: 0 },
+    has_open_question: false,
+    unread_messages: 0,
+    flags: { possible_duplicate: false, result_sheet_flags: 0, possible_names: false },
+    last_activity_at: patch.occurred_at ?? "2026-12-05T09:00:00+01:00",
+    ...patch,
+  };
+}
+
+const area = (state_code: string, state_name: string, lga_name: string, ward_name: string | null, polling_unit_name: string | null = null) => ({
+  state_code, state_name, lga_code: null, lga_name, ward_code: null, ward_name, polling_unit_code: null, polling_unit_name,
+});
+
+export const FIXTURE_QUEUE_ITEMS: QueueItem[] = [
+  queueRow(1, {
+    receipt_code: "EG-4H7Q-92KD",
+    urgency: { level: "urgent", source: "suggested", reasons: ["danger_reported", "seen_firsthand", "video"] },
+    category: { value: "intimidation_violence", source: "observer" },
+    area: area("KN", "Kano", "Kano Municipal", "Zango", "Zango Primary School I"),
+    occurred_at: "2026-12-05T08:41:00+01:00",
+    received_at: "2026-12-05T08:43:00+01:00",
+    media_counts: { photo: 1, video: 1, audio: 0 },
+    flags: { possible_duplicate: true, result_sheet_flags: 0, possible_names: true },
+  }),
+  queueRow(2, {
+    receipt_code: "EG-9M2C-61TA",
+    status: "in_review",
+    urgency: { level: "urgent", source: "corrected", reasons: ["vote_buying", "photo"] },
+    category: { value: "vote_buying", source: "suggested" },
+    area: area("LA", "Lagos", "Surulere", "Itire"),
+    occurred_at: "2026-12-05T08:30:00+01:00",
+    media_counts: { photo: 3, video: 0, audio: 0 },
+  }),
+  queueRow(3, {
+    receipt_code: "EG-2P8R-07LW",
+    channel: "sms",
+    urgency: { level: "high", source: "suggested", reasons: ["cluster", "sms_report"] },
+    category: { value: "late_materials", source: "observer" },
+    area: area("RI", "Rivers", "Obio/Akpor", null),
+    occurred_at: "2026-12-05T08:12:00+01:00",
+  }),
+  queueRow(4, {
+    receipt_code: "EG-6T4N-38QE",
+    status: "question",
+    kind: "result_sheet",
+    urgency: { level: "high", source: "suggested", reasons: ["result_sheet_flag"] },
+    category: { value: "not_sure", source: "observer" },
+    area: area("EN", "Enugu", "Enugu North", "Ogui Urban"),
+    occurred_at: "2026-12-05T07:58:00+01:00",
+    media_counts: { photo: 2, video: 0, audio: 0 },
+    has_open_question: true,
+    unread_messages: 1,
+    flags: { possible_duplicate: false, result_sheet_flags: 2, possible_names: false },
+  }),
+  queueRow(5, {
+    receipt_code: "EG-8K1D-54VB",
+    channel: "citizen",
+    urgency: { level: "normal", source: "suggested", reasons: ["told_by_someone", "citizen_report"] },
+    category: { value: "misinformation", source: "suggested" },
+    area: area("FC", "FCT", "Bwari", "Kubwa"),
+    occurred_at: "2026-12-05T07:44:00+01:00",
+  }),
+  queueRow(6, {
+    receipt_code: "EG-3W9F-20HC",
+    urgency: { level: "normal", source: "suggested", reasons: ["seen_firsthand", "audio"] },
+    category: { value: "access_barrier", source: "observer" },
+    area: area("OY", "Oyo", "Ibadan North", "Agbowo"),
+    occurred_at: "2026-12-05T07:31:00+01:00",
+    media_counts: { photo: 0, video: 0, audio: 1 },
+  }),
+  queueRow(7, {
+    receipt_code: "EG-5B6J-83XR",
+    channel: "ussd",
+    simulated: true,
+    urgency: { level: "low", source: "suggested", reasons: [] },
+    category: { value: "queues_crowding", source: "observer" },
+    area: area("KD", "Kaduna", "Kaduna North", null),
+    occurred_at: "2026-12-05T07:20:00+01:00",
+  }),
+  queueRow(8, {
+    receipt_code: "EG-7C3V-46MP",
+    status: "closed",
+    urgency: { level: "low", source: "suggested", reasons: ["seen_firsthand"] },
+    category: { value: "good_practice", source: "observer" },
+    area: area("AN", "Anambra", "Awka South", "Amawbia"),
+    occurred_at: "2026-12-05T07:05:00+01:00",
+    media_counts: { photo: 1, video: 0, audio: 0 },
+  }),
+];
+
+export const FIXTURE_QUEUE_PAGE: QueueResponse = {
+  items: FIXTURE_QUEUE_ITEMS,
+  next_cursor: null,
+  counts: { received: 38, in_review: 12, question: 5, closed: 141, withdrawn: 2 },
+};
