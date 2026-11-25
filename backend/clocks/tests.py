@@ -323,3 +323,25 @@ class ReviewClocksTests(TestCase):
         )
         self.assertEqual(bad.status_code, 422)
         self.assertEqual(bad.json()["error"]["fields"]["review_targets"]["code"], "field_invalid")
+
+    def test_q01_clock_state_paging_with_cursor(self):
+        now = timezone.now()
+        c1 = self.create_case(urgency="urgent", created_at=now - timedelta(hours=3))
+        c2 = self.create_case(urgency="urgent", created_at=now - timedelta(hours=2))
+        c3 = self.create_case(urgency="urgent", created_at=now - timedelta(hours=1))
+
+        self.login_as(self.reviewer)
+        page1 = self.client.get("/api/v1/review/queue?clock_state=overdue&limit=2")
+        self.assertEqual(page1.status_code, 200, page1.content)
+        d1 = page1.json()
+        self.assertEqual(len(d1["items"]), 2)
+        self.assertIsNotNone(d1["next_cursor"])
+
+        page2 = self.client.get(f"/api/v1/review/queue?clock_state=overdue&limit=2&cursor={d1['next_cursor']}")
+        self.assertEqual(page2.status_code, 200, page2.content)
+        d2 = page2.json()
+        self.assertEqual(len(d2["items"]), 1)
+        self.assertIsNone(d2["next_cursor"])
+
+        ids = [item["id"] for item in d1["items"]] + [item["id"] for item in d2["items"]]
+        self.assertEqual(ids, [str(c1.pk), str(c2.pk), str(c3.pk)])
