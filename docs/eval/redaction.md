@@ -1,44 +1,220 @@
 # Redaction Evaluation (C16)
 
-Evaluated on 310 unique synthetic items across 5 languages (`en`, `pcm`, `ha`, `yo`, `ig`), including 50 negative (clean election text) items and edge-case formats, using **strict exact span matching**.
+Evaluated on 300 hand-written synthetic items across 5 languages (`en`, `pcm`, `ha`, `yo`, `ig`), including 75+ negative ordinary-election items (15+ per language) and all C16-4/C16-5 edge cases, scored with **strict exact span matching** (`start`, `end`, and `kind`).
 
 ## Overall Results
 
-- **Overall Recall:** 99.1% (649/655)
-- **Overall Precision:** 100.0% (649/649)
+- **Overall Recall:** 77.0% (331/430)
+- **Overall Precision:** 79.8% (331/415)
 
 ## Per-Kind Breakdown
 
 | Kind | TP | FP | FN | Recall | Precision | Target Recall |
 |---|---|---|---|---|---|---|
-| account | 50 | 0 | 0 | 100.0% | 100.0% | ≥ 95% |
-| address | 110 | 0 | 0 | 100.0% | 100.0% | — |
-| bvn | 50 | 0 | 0 | 100.0% | 100.0% | ≥ 95% |
-| email | 70 | 0 | 0 | 100.0% | 100.0% | ≥ 95% |
-| name | 144 | 0 | 6 | 96.0% | 100.0% | ≥ 85% |
-| nin | 55 | 0 | 0 | 100.0% | 100.0% | ≥ 95% |
-| phone | 115 | 0 | 0 | 100.0% | 100.0% | ≥ 95% |
-| vin | 55 | 0 | 0 | 100.0% | 100.0% | ≥ 95% |
+| account | 35 | 0 | 5 | 87.5% | 100.0% | ≥ 95% |
+| address | 59 | 1 | 1 | 98.3% | 98.3% | — |
+| bvn | 20 | 0 | 0 | 100.0% | 100.0% | ≥ 95% |
+| email | 40 | 0 | 0 | 100.0% | 100.0% | ≥ 95% |
+| name | 40 | 81 | 91 | 30.5% | 33.1% | ≥ 85% |
+| nin | 23 | 0 | 2 | 92.0% | 100.0% | ≥ 95% |
+| phone | 84 | 0 | 0 | 100.0% | 100.0% | ≥ 95% |
+| vin | 30 | 2 | 0 | 100.0% | 93.8% | ≥ 95% |
 
 ## Per-Language Breakdown
 
 | Language | TP | FP | FN | Recall | Precision |
 |---|---|---|---|---|---|
-| en | 139 | 0 | 1 | 99.3% | 100.0% |
-| pcm | 124 | 0 | 1 | 99.2% | 100.0% |
-| ha | 128 | 0 | 2 | 98.5% | 100.0% |
-| yo | 130 | 0 | 0 | 100.0% | 100.0% |
-| ig | 128 | 0 | 2 | 98.5% | 100.0% |
+| en | 66 | 17 | 20 | 76.7% | 79.5% |
+| pcm | 65 | 18 | 21 | 75.6% | 78.3% |
+| ha | 66 | 17 | 20 | 76.7% | 79.5% |
+| yo | 67 | 16 | 19 | 77.9% | 80.7% |
+| ig | 67 | 16 | 19 | 77.9% | 80.7% |
 
-## Misses (False Negatives: 6)
+## Full Miss List (False Negatives: 99)
 
-- `RED-045` (en, name): `Samuel Ogunleye` in "Witness Samuel Ogunleye stayed at 88 Aba Road; reached on 0818.222.1100."
-- `RED-121` (pcm, name): `Samuel Ogunleye` in "My guy Samuel Ogunleye phone na +234 803 987 6543, e dey 88 Aba Road."
-- `RED-143` (ha, name): `Samuel Ogunleye` in "Shaida Samuel Ogunleye ya ba da BVN 33445566778 da waya 0818.222.1100."
-- `RED-170` (ha, name): `Samuel Ogunleye` in "Mai jefa kuri'a Samuel Ogunleye ya nuna VIN XY98765432109876543 a rumfar zabe."
-- `RED-277` (ig, name): `Samuel Ogunleye` in "Onye aka ebe Samuel Ogunleye nwere BVN 22334455667 na ekwenti 0818.222.1100."
-- `RED-304` (ig, name): `Samuel Ogunleye` in "Onye ntuli aka Samuel Ogunleye gosiri VIN XY98765432109876543 n'ebe a."
+- `RED-016` (en, name): `Mrs Adaeze Okafor` in "Witness Mrs Adaeze Okafor called 0803 123 4567 from the gate."
+- `RED-017` (en, name): `Dr. Chinedu Eze` in "Please reach Dr. Chinedu Eze at chinedu.eze@civics.ng urgently."
+- `RED-020` (en, account): `0123456789` in "Voter 0123456789 is my account was overheard near the booth."
+- `RED-023` (en, name): `Alhaji Musa Bello` in "Thugs led by Alhaji Musa Bello blocked 22 Ahmadu Bello Way."
+- `RED-024` (en, name): `Mr. Babatunde Fashola` in "Transfer made to a/c 2098765432 by Mr. Babatunde Fashola."
+- `RED-025` (en, name): `Amina Danjuma` in "NIN 1234-5678-901 verified for Amina Danjuma at 09:40."
+- `RED-028` (en, name): `Chief Emeka Nwosu` in "Party agent Chief Emeka Nwosu offered cash via account number 3011223344."
+- `RED-031` (en, name): `Hajiya Fatima Usman` in "BVN 33445566778 collected by Hajiya Fatima Usman near the fence."
+- `RED-034` (en, name): `Barr. Sadiq Abubakar` in "Barr. Sadiq Abubakar documented the protest; mail sadiq.legal@ng.org."
+- `RED-035` (en, name): `Ngozi Eze` in "Suspicious transfer to acct 4055667788 reported by Ngozi Eze."
+- `RED-037` (en, name): `Pastor Samuel Ogunleye` in "Pastor Samuel Ogunleye spoke with 0909 444 3322 during counting."
+- `RED-042` (en, name): `Mrs. Funke Adebayo` in "Mrs. Funke Adebayo reported BVN 5566-7788-990 harvesting."
+- `RED-046` (en, name): `Comrade Bamidele Ogundipe` in "Comrade Bamidele Ogundipe gave phone 0805 678 9012."
+- `RED-050` (en, name): `Prof. Yakubu Gowon` in "Prof. Yakubu Gowon or 0813-456-7890 can confirm."
+- `RED-051` (en, name): `Engr. Halima Lawal` in "Engr. Halima Lawal emailed halima.l@civics.ng."
+- `RED-053` (en, name): `Mama Ngozi` in "Mama Ngozi reported snatching at 88 Aba Road."
+- `RED-055` (en, name): `Hon. Tajudeen Abbas` in "Dial 0902  333  4455 and ask for Hon. Tajudeen Abbas."
+- `RED-057` (en, name): `Oba Adeyemi` in "Oba Adeyemi sent representative 0806 111 2233."
+- `RED-059` (en, name): `Toluwani Ojo` in "Toluwani Ojo lives at 15 Bode Thomas Street."
+- `RED-060` (en, name): `Uchechukwu Okoro` in "Uchechukwu Okoro called 0814 555 6677 after polls closed."
+- `RED-076` (pcm, name): `Mrs Adaeze Okafor` in "Abeg call Mrs Adaeze Okafor for 0803 123 4569, wahala dey."
+- `RED-080` (pcm, account): `0123456790` in "0123456790 is my account na wetin e shout."
+- `RED-081` (pcm, nin): `12345678902` in "Dem collect voter NIN 12345678902 and PVC AB12345678901234568."
+- `RED-083` (pcm, name): `Alhaji Musa Bello` in "Alhaji Musa Bello boys block 22 Ahmadu Bello Way."
+- `RED-083` (pcm, address): `22 Ahmadu Bello Way` in "Alhaji Musa Bello boys block 22 Ahmadu Bello Way."
+- `RED-084` (pcm, name): `Mr. Babatunde Fashola` in "Cash enter a/c 2098765433 wey Mr. Babatunde Fashola get."
+- `RED-085` (pcm, name): `Amina Danjuma` in "NIN 1234-5678-902 belong to Amina Danjuma for unit."
+- `RED-088` (pcm, name): `Chief Emeka Nwosu` in "Chief Emeka Nwosu share money with account number 3011223345."
+- `RED-091` (pcm, name): `Hajiya Fatima Usman` in "Hajiya Fatima Usman dey collect BVN 33445566779 for back."
+- `RED-094` (pcm, name): `Barr. Sadiq Abubakar` in "Barr. Sadiq Abubakar write everything; mail sadiq.p@ng.org."
+- `RED-095` (pcm, name): `Ngozi Eze` in "Money enter acct 4055667789 wey Ngozi Eze see."
+- `RED-097` (pcm, name): `Pastor Samuel Ogunleye` in "Pastor Samuel Ogunleye call 0909 444 3323 for help."
+- `RED-102` (pcm, name): `Mrs. Funke Adebayo` in "Mrs. Funke Adebayo catch dem with BVN 5566-7788-991."
+- `RED-106` (pcm, name): `Comrade Bamidele Ogundipe` in "Comrade Bamidele Ogundipe drop number 0805 678 9013."
+- `RED-110` (pcm, name): `Prof. Yakubu Gowon` in "Prof. Yakubu Gowon number na 0813-456-7891."
+- `RED-111` (pcm, name): `Engr. Halima Lawal` in "Engr. Halima Lawal send mail go halima.p@civics.ng."
+- `RED-113` (pcm, name): `Mama Ngozi` in "Mama Ngozi shout say thugs dey 88 Aba Road."
+- `RED-115` (pcm, name): `Hon. Tajudeen Abbas` in "Dial 0902  333  4456 ask for Hon. Tajudeen Abbas."
+- `RED-117` (pcm, name): `Oba Adeyemi` in "Oba Adeyemi send person with 0806 111 2234."
+- `RED-119` (pcm, name): `Toluwani Ojo` in "Toluwani Ojo stay 15 Bode Thomas Street."
+- `RED-120` (pcm, name): `Uchechukwu Okoro` in "Uchechukwu Okoro dial 0814 555 6678 after counting."
+- `RED-136` (ha, name): `Mrs Adaeze Okafor` in "Wakili Mrs Adaeze Okafor ya kira 0803 123 4570 daga kofa."
+- `RED-140` (ha, account): `0123456791` in "0123456791 is my account ya fada da karfi."
+- `RED-141` (ha, nin): `12345678903` in "An karbi NIN 12345678903 da PVC AB12345678901234569."
+- `RED-143` (ha, name): `Alhaji Musa Bello` in "Alhaji Musa Bello ya rufe 22 Ahmadu Bello Way."
+- `RED-144` (ha, name): `Mr. Babatunde Fashola` in "An tura a/c 2098765434 ga Mr. Babatunde Fashola."
+- `RED-145` (ha, name): `Amina Danjuma` in "NIN 1234-5678-903 na Amina Danjuma ya fito."
+- `RED-148` (ha, name): `Chief Emeka Nwosu` in "Chief Emeka Nwosu ya raba kudi da account number 3011223346."
+- `RED-151` (ha, name): `Hajiya Fatima Usman` in "Hajiya Fatima Usman tana tattara BVN 33445566780."
+- `RED-154` (ha, name): `Barr. Sadiq Abubakar` in "Barr. Sadiq Abubakar ya rubuta; imel sadiq.h@ng.org."
+- `RED-155` (ha, name): `Ngozi Eze` in "Kudi sun shiga acct 4055667790 in ji Ngozi Eze."
+- `RED-157` (ha, name): `Pastor Samuel Ogunleye` in "Pastor Samuel Ogunleye ya kira 0909 444 3324."
+- `RED-162` (ha, name): `Mrs. Funke Adebayo` in "Mrs. Funke Adebayo ta ga BVN 5566-7788-992."
+- `RED-166` (ha, name): `Comrade Bamidele Ogundipe` in "Comrade Bamidele Ogundipe lambar sa 0805 678 9014."
+- `RED-170` (ha, name): `Prof. Yakubu Gowon` in "Prof. Yakubu Gowon ko 0813-456-7892."
+- `RED-171` (ha, name): `Engr. Halima Lawal` in "Engr. Halima Lawal ta aika halima.h@civics.ng."
+- `RED-173` (ha, name): `Mama Ngozi` in "Mama Ngozi ta ga rikici a 88 Aba Road."
+- `RED-175` (ha, name): `Hon. Tajudeen Abbas` in "Kira 0902  333  4457 ka nemi Hon. Tajudeen Abbas."
+- `RED-177` (ha, name): `Oba Adeyemi` in "Oba Adeyemi ya aiko 0806 111 2235."
+- `RED-179` (ha, name): `Toluwani Ojo` in "Toluwani Ojo yana 15 Bode Thomas Street."
+- `RED-180` (ha, name): `Uchechukwu Okoro` in "Uchechukwu Okoro ya kira 0814 555 6679."
+- `RED-196` (yo, name): `Mrs Adaeze Okafor` in "Oluwoye Mrs Adaeze Okafor pe 0803 123 4571 ni enu ona."
+- `RED-200` (yo, account): `0123456792` in "0123456792 is my account ni o wi."
+- `RED-203` (yo, name): `Alhaji Musa Bello` in "Alhaji Musa Bello di 22 Ahmadu Bello Way."
+- `RED-204` (yo, name): `Mr. Babatunde Fashola` in "Owo wo a/c 2098765435 fun Mr. Babatunde Fashola."
+- `RED-205` (yo, name): `Amina Danjuma` in "NIN 1234-5678-904 ti Amina Danjuma wa nibe."
+- `RED-208` (yo, name): `Chief Emeka Nwosu` in "Chief Emeka Nwosu pin owo pelu account number 3011223347."
+- `RED-211` (yo, name): `Hajiya Fatima Usman` in "Hajiya Fatima Usman n gba BVN 33445566781."
+- `RED-214` (yo, name): `Barr. Sadiq Abubakar` in "Barr. Sadiq Abubakar ko sile; imeeli sadiq.y@ng.org."
+- `RED-215` (yo, name): `Ngozi Eze` in "Owo wo acct 4055667791 gege bi Ngozi Eze se so."
+- `RED-217` (yo, name): `Pastor Samuel Ogunleye` in "Pastor Samuel Ogunleye pe 0909 444 3325."
+- `RED-222` (yo, name): `Mrs. Funke Adebayo` in "Mrs. Funke Adebayo ri BVN 5566-7788-993."
+- `RED-226` (yo, name): `Comrade Bamidele Ogundipe` in "Comrade Bamidele Ogundipe fi 0805 678 9015 sile."
+- `RED-230` (yo, name): `Prof. Yakubu Gowon` in "Prof. Yakubu Gowon tabi 0813-456-7893."
+- `RED-231` (yo, name): `Engr. Halima Lawal` in "Engr. Halima Lawal ran halima.y@civics.ng."
+- `RED-233` (yo, name): `Mama Ngozi` in "Mama Ngozi ri ija ni 88 Aba Road."
+- `RED-235` (yo, name): `Hon. Tajudeen Abbas` in "Pe 0902  333  4458 fun Hon. Tajudeen Abbas."
+- `RED-237` (yo, name): `Oba Adeyemi` in "Oba Adeyemi ran 0806 111 2236."
+- `RED-239` (yo, name): `Toluwani Ojo` in "Toluwani Ojo wa ni 15 Bode Thomas Street."
+- `RED-240` (yo, name): `Uchechukwu Okoro` in "Uchechukwu Okoro pe 0814 555 6680."
+- `RED-256` (ig, name): `Mrs Adaeze Okafor` in "Onye nleba anya Mrs Adaeze Okafor kporo 0803 123 4572."
+- `RED-260` (ig, account): `0123456793` in "0123456793 is my account ka o kwuru."
+- `RED-263` (ig, name): `Alhaji Musa Bello` in "Alhaji Musa Bello mechiri 22 Ahmadu Bello Way."
+- `RED-264` (ig, name): `Mr. Babatunde Fashola` in "Ego bara a/c 2098765436 nke Mr. Babatunde Fashola."
+- `RED-265` (ig, name): `Amina Danjuma` in "NIN 1234-5678-905 nke Amina Danjuma putara."
+- `RED-268` (ig, name): `Chief Emeka Nwosu` in "Chief Emeka Nwosu kesara ego na account number 3011223348."
+- `RED-271` (ig, name): `Hajiya Fatima Usman` in "Hajiya Fatima Usman na-anakota BVN 33445566782."
+- `RED-274` (ig, name): `Barr. Sadiq Abubakar` in "Barr. Sadiq Abubakar dere ya; imel sadiq.i@ng.org."
+- `RED-275` (ig, name): `Ngozi Eze` in "Ego bara acct 4055667792 dika Ngozi Eze kwuru."
+- `RED-277` (ig, name): `Pastor Samuel Ogunleye` in "Pastor Samuel Ogunleye kporo 0909 444 3326."
+- `RED-282` (ig, name): `Mrs. Funke Adebayo` in "Mrs. Funke Adebayo huru BVN 5566-7788-994."
+- `RED-286` (ig, name): `Comrade Bamidele Ogundipe` in "Comrade Bamidele Ogundipe hapuru 0805 678 9016."
+- `RED-290` (ig, name): `Prof. Yakubu Gowon` in "Prof. Yakubu Gowon ma obu 0813-456-7894."
+- `RED-291` (ig, name): `Engr. Halima Lawal` in "Engr. Halima Lawal zigara halima.i@civics.ng."
+- `RED-293` (ig, name): `Mama Ngozi` in "Mama Ngozi huru ogu na 88 Aba Road."
+- `RED-295` (ig, name): `Hon. Tajudeen Abbas` in "Kpoo 0902  333  4459 jua maka Hon. Tajudeen Abbas."
+- `RED-297` (ig, name): `Oba Adeyemi` in "Oba Adeyemi zigara 0806 111 2237."
+- `RED-299` (ig, name): `Toluwani Ojo` in "Toluwani Ojo bi na 15 Bode Thomas Street."
+- `RED-300` (ig, name): `Uchechukwu Okoro` in "Uchechukwu Okoro kporo 0814 555 6681."
 
-## False Positives (0)
+## Full False Positive List (84)
 
-- None.
+- `RED-016` (en, name): `Adaeze Okafor` in "Witness Mrs Adaeze Okafor called 0803 123 4567 from the gate."
+- `RED-017` (en, name): `Chinedu` in "Please reach Dr. Chinedu Eze at chinedu.eze@civics.ng urgently."
+- `RED-023` (en, name): `Musa Bello` in "Thugs led by Alhaji Musa Bello blocked 22 Ahmadu Bello Way."
+- `RED-024` (en, name): `Babatunde Fashola` in "Transfer made to a/c 2098765432 by Mr. Babatunde Fashola."
+- `RED-025` (en, name): `Danjuma` in "NIN 1234-5678-901 verified for Amina Danjuma at 09:40."
+- `RED-028` (en, name): `Emeka Nwosu` in "Party agent Chief Emeka Nwosu offered cash via account number 3011223344."
+- `RED-031` (en, name): `Fatima Usman` in "BVN 33445566778 collected by Hajiya Fatima Usman near the fence."
+- `RED-034` (en, name): `Sadiq Abubakar` in "Barr. Sadiq Abubakar documented the protest; mail sadiq.legal@ng.org."
+- `RED-035` (en, name): `Ngozi` in "Suspicious transfer to acct 4055667788 reported by Ngozi Eze."
+- `RED-037` (en, name): `Samuel Ogunleye` in "Pastor Samuel Ogunleye spoke with 0909 444 3322 during counting."
+- `RED-042` (en, name): `Funke Adebayo` in "Mrs. Funke Adebayo reported BVN 5566-7788-990 harvesting."
+- `RED-046` (en, name): `Bamidele Ogundipe` in "Comrade Bamidele Ogundipe gave phone 0805 678 9012."
+- `RED-050` (en, name): `Yakubu Gowon` in "Prof. Yakubu Gowon or 0813-456-7890 can confirm."
+- `RED-051` (en, name): `Halima Lawal` in "Engr. Halima Lawal emailed halima.l@civics.ng."
+- `RED-053` (en, name): `Ngozi` in "Mama Ngozi reported snatching at 88 Aba Road."
+- `RED-055` (en, name): `Tajudeen Abbas` in "Dial 0902  333  4455 and ask for Hon. Tajudeen Abbas."
+- `RED-057` (en, name): `Adeyemi` in "Oba Adeyemi sent representative 0806 111 2233."
+- `RED-076` (pcm, name): `Adaeze Okafor` in "Abeg call Mrs Adaeze Okafor for 0803 123 4569, wahala dey."
+- `RED-081` (pcm, vin): `voter NIN 12345678902` in "Dem collect voter NIN 12345678902 and PVC AB12345678901234568."
+- `RED-083` (pcm, name): `Musa Bello` in "Alhaji Musa Bello boys block 22 Ahmadu Bello Way."
+- `RED-083` (pcm, address): `block 22 Ahmadu Bello Way` in "Alhaji Musa Bello boys block 22 Ahmadu Bello Way."
+- `RED-084` (pcm, name): `Babatunde Fashola` in "Cash enter a/c 2098765433 wey Mr. Babatunde Fashola get."
+- `RED-085` (pcm, name): `Danjuma` in "NIN 1234-5678-902 belong to Amina Danjuma for unit."
+- `RED-088` (pcm, name): `Emeka Nwosu` in "Chief Emeka Nwosu share money with account number 3011223345."
+- `RED-091` (pcm, name): `Fatima Usman` in "Hajiya Fatima Usman dey collect BVN 33445566779 for back."
+- `RED-094` (pcm, name): `Sadiq Abubakar` in "Barr. Sadiq Abubakar write everything; mail sadiq.p@ng.org."
+- `RED-095` (pcm, name): `Ngozi` in "Money enter acct 4055667789 wey Ngozi Eze see."
+- `RED-097` (pcm, name): `Samuel Ogunleye` in "Pastor Samuel Ogunleye call 0909 444 3323 for help."
+- `RED-102` (pcm, name): `Funke Adebayo` in "Mrs. Funke Adebayo catch dem with BVN 5566-7788-991."
+- `RED-106` (pcm, name): `Bamidele Ogundipe` in "Comrade Bamidele Ogundipe drop number 0805 678 9013."
+- `RED-110` (pcm, name): `Yakubu Gowon` in "Prof. Yakubu Gowon number na 0813-456-7891."
+- `RED-111` (pcm, name): `Halima Lawal` in "Engr. Halima Lawal send mail go halima.p@civics.ng."
+- `RED-113` (pcm, name): `Ngozi` in "Mama Ngozi shout say thugs dey 88 Aba Road."
+- `RED-115` (pcm, name): `Tajudeen Abbas` in "Dial 0902  333  4456 ask for Hon. Tajudeen Abbas."
+- `RED-117` (pcm, name): `Adeyemi` in "Oba Adeyemi send person with 0806 111 2234."
+- `RED-136` (ha, name): `Adaeze Okafor` in "Wakili Mrs Adaeze Okafor ya kira 0803 123 4570 daga kofa."
+- `RED-141` (ha, vin): `karbi NIN 12345678903` in "An karbi NIN 12345678903 da PVC AB12345678901234569."
+- `RED-143` (ha, name): `Musa Bello` in "Alhaji Musa Bello ya rufe 22 Ahmadu Bello Way."
+- `RED-144` (ha, name): `Babatunde Fashola` in "An tura a/c 2098765434 ga Mr. Babatunde Fashola."
+- `RED-145` (ha, name): `Danjuma` in "NIN 1234-5678-903 na Amina Danjuma ya fito."
+- `RED-148` (ha, name): `Emeka Nwosu` in "Chief Emeka Nwosu ya raba kudi da account number 3011223346."
+- `RED-151` (ha, name): `Fatima Usman` in "Hajiya Fatima Usman tana tattara BVN 33445566780."
+- `RED-154` (ha, name): `Sadiq Abubakar` in "Barr. Sadiq Abubakar ya rubuta; imel sadiq.h@ng.org."
+- `RED-155` (ha, name): `Ngozi` in "Kudi sun shiga acct 4055667790 in ji Ngozi Eze."
+- `RED-157` (ha, name): `Samuel Ogunleye` in "Pastor Samuel Ogunleye ya kira 0909 444 3324."
+- `RED-162` (ha, name): `Funke Adebayo` in "Mrs. Funke Adebayo ta ga BVN 5566-7788-992."
+- `RED-166` (ha, name): `Bamidele Ogundipe` in "Comrade Bamidele Ogundipe lambar sa 0805 678 9014."
+- `RED-170` (ha, name): `Yakubu Gowon` in "Prof. Yakubu Gowon ko 0813-456-7892."
+- `RED-171` (ha, name): `Halima Lawal` in "Engr. Halima Lawal ta aika halima.h@civics.ng."
+- `RED-173` (ha, name): `Ngozi` in "Mama Ngozi ta ga rikici a 88 Aba Road."
+- `RED-175` (ha, name): `Tajudeen Abbas` in "Kira 0902  333  4457 ka nemi Hon. Tajudeen Abbas."
+- `RED-177` (ha, name): `Adeyemi` in "Oba Adeyemi ya aiko 0806 111 2235."
+- `RED-196` (yo, name): `Adaeze Okafor` in "Oluwoye Mrs Adaeze Okafor pe 0803 123 4571 ni enu ona."
+- `RED-203` (yo, name): `Musa Bello` in "Alhaji Musa Bello di 22 Ahmadu Bello Way."
+- `RED-204` (yo, name): `Babatunde Fashola` in "Owo wo a/c 2098765435 fun Mr. Babatunde Fashola."
+- `RED-205` (yo, name): `Danjuma` in "NIN 1234-5678-904 ti Amina Danjuma wa nibe."
+- `RED-208` (yo, name): `Emeka Nwosu` in "Chief Emeka Nwosu pin owo pelu account number 3011223347."
+- `RED-211` (yo, name): `Fatima Usman` in "Hajiya Fatima Usman n gba BVN 33445566781."
+- `RED-214` (yo, name): `Sadiq Abubakar` in "Barr. Sadiq Abubakar ko sile; imeeli sadiq.y@ng.org."
+- `RED-215` (yo, name): `Ngozi` in "Owo wo acct 4055667791 gege bi Ngozi Eze se so."
+- `RED-217` (yo, name): `Samuel Ogunleye` in "Pastor Samuel Ogunleye pe 0909 444 3325."
+- `RED-222` (yo, name): `Funke Adebayo` in "Mrs. Funke Adebayo ri BVN 5566-7788-993."
+- `RED-226` (yo, name): `Bamidele Ogundipe` in "Comrade Bamidele Ogundipe fi 0805 678 9015 sile."
+- `RED-230` (yo, name): `Yakubu Gowon` in "Prof. Yakubu Gowon tabi 0813-456-7893."
+- `RED-231` (yo, name): `Halima Lawal` in "Engr. Halima Lawal ran halima.y@civics.ng."
+- `RED-233` (yo, name): `Ngozi` in "Mama Ngozi ri ija ni 88 Aba Road."
+- `RED-235` (yo, name): `Tajudeen Abbas` in "Pe 0902  333  4458 fun Hon. Tajudeen Abbas."
+- `RED-237` (yo, name): `Adeyemi` in "Oba Adeyemi ran 0806 111 2236."
+- `RED-256` (ig, name): `Adaeze Okafor` in "Onye nleba anya Mrs Adaeze Okafor kporo 0803 123 4572."
+- `RED-263` (ig, name): `Musa Bello` in "Alhaji Musa Bello mechiri 22 Ahmadu Bello Way."
+- `RED-264` (ig, name): `Babatunde Fashola` in "Ego bara a/c 2098765436 nke Mr. Babatunde Fashola."
+- `RED-265` (ig, name): `Danjuma` in "NIN 1234-5678-905 nke Amina Danjuma putara."
+- `RED-268` (ig, name): `Emeka Nwosu` in "Chief Emeka Nwosu kesara ego na account number 3011223348."
+- `RED-271` (ig, name): `Fatima Usman` in "Hajiya Fatima Usman na-anakota BVN 33445566782."
+- `RED-274` (ig, name): `Sadiq Abubakar` in "Barr. Sadiq Abubakar dere ya; imel sadiq.i@ng.org."
+- `RED-275` (ig, name): `Ngozi` in "Ego bara acct 4055667792 dika Ngozi Eze kwuru."
+- `RED-277` (ig, name): `Samuel Ogunleye` in "Pastor Samuel Ogunleye kporo 0909 444 3326."
+- `RED-282` (ig, name): `Funke Adebayo` in "Mrs. Funke Adebayo huru BVN 5566-7788-994."
+- `RED-286` (ig, name): `Bamidele Ogundipe` in "Comrade Bamidele Ogundipe hapuru 0805 678 9016."
+- `RED-290` (ig, name): `Yakubu Gowon` in "Prof. Yakubu Gowon ma obu 0813-456-7894."
+- `RED-291` (ig, name): `Halima Lawal` in "Engr. Halima Lawal zigara halima.i@civics.ng."
+- `RED-293` (ig, name): `Ngozi` in "Mama Ngozi huru ogu na 88 Aba Road."
+- `RED-295` (ig, name): `Tajudeen Abbas` in "Kpoo 0902  333  4459 jua maka Hon. Tajudeen Abbas."
+- `RED-297` (ig, name): `Adeyemi` in "Oba Adeyemi zigara 0806 111 2237."
