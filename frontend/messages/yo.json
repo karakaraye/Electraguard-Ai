@@ -339,7 +339,10 @@
     "fix": "Tún un ṣe",
     "purpose": "Ròyìn ohun tí o rí ní ibùdó ìdìbò rẹ. Gbogbo ìròyìn ń ràn wá lọ́wọ́ láti kọ́ Nàìjíríà tó dára jù.",
     "tasks": "Ohun tí o lè ṣe",
-    "allReports": "Wo gbogbo ìròyìn mi"
+    "allReports": "Wo gbogbo ìròyìn mi",
+    "outboxTitle": "Ń dúró de fífiránṣẹ́",
+    "outboxOrder": "Àwọn ìròyìn ń lọ ní ọ̀nà tí o ṣe wọ́n.",
+    "outboxLabel": "{count, plural, one {Ìròyìn # ń dúró de fífiránṣẹ́} other {Ìròyìn # ń dúró de fífiránṣẹ́}}"
   },
   "incident": {
     "draftKept": "A ti fi ìròyìn rẹ pamọ́ sórí fóònù yìí.",

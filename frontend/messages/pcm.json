@@ -339,7 +339,10 @@
     "fix": "Fix am",
     "purpose": "Report wetin you see for your polling unit. Every report dey help build better Naija.",
     "tasks": "Wetin you fit do",
-    "allReports": "See all my reports"
+    "allReports": "See all my reports",
+    "outboxTitle": "E dey wait to send",
+    "outboxOrder": "Reports go send one by one, as you make dem.",
+    "outboxLabel": "{count, plural, one {# report dey wait to send} other {# reports dey wait to send}}"
   },
   "incident": {
     "draftKept": "Your report dey saved for this phone.",

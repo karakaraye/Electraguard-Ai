@@ -339,7 +339,10 @@
     "fix": "Mezie ya",
     "purpose": "Kọọ ihe ị hụrụ n'ebe ntuli aka gị. Akụkọ ọ bụla na-enyere aka iwulite Naịjirịa ka mma.",
     "tasks": "Ihe ị nwere ike ime",
-    "allReports": "Lee akụkọ m niile"
+    "allReports": "Lee akụkọ m niile",
+    "outboxTitle": "Na-eche iziga",
+    "outboxOrder": "A na-eziga akụkọ n'usoro i si mee ha.",
+    "outboxLabel": "{count, plural, one {Akụkọ # na-eche iziga} other {Akụkọ # na-eche iziga}}"
   },
   "incident": {
     "draftKept": "Echekwara akụkọ gị na ekwentị a.",

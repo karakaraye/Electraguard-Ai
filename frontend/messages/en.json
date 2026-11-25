@@ -338,7 +338,10 @@
     "fix": "Fix it",
     "purpose": "Report what you see at your polling unit. Every report helps build a better Nigeria.",
     "tasks": "What you can do",
-    "allReports": "See all my reports"
+    "allReports": "See all my reports",
+    "outboxTitle": "Waiting to send",
+    "outboxOrder": "Reports send in the order you made them.",
+    "outboxLabel": "{count, plural, one {# report waiting to send} other {# reports waiting to send}}"
   },
   "incident": {
     "draftKept": "Your report is saved on this phone.",

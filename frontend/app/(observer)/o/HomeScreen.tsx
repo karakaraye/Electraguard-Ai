@@ -19,6 +19,7 @@ import { useFocusTitle, useNetwork } from "./_lib/network";
 import { updateFromMe, useObserverSession } from "./_lib/session";
 import { HomeView, type HomeRow } from "./_views/HomeView";
 import { STAGES, useChecklistDay, watDay } from "./_lib/checklist";
+import { OUTBOX_BADGE } from "./_lib/status";
 
 function takeFlag(key: string): boolean {
   try {
@@ -191,6 +192,17 @@ export function HomeScreen() {
       }}
       onSendWaiting={() => void adoptWaitingItems(session.code).then(() => sendNow())}
       onDeleteWaiting={() => void removeItems(waiting.map((item) => item.id))}
+      outbox={[...unsent, ...attention]
+        .sort((a, b) => a.created_at - b.created_at)
+        .map((item) => ({
+          id: item.id,
+          category: item.summary.category_observer,
+          createdAt: item.created_at,
+          status: OUTBOX_BADGE[item.state],
+          // Only reports the server has never seen can be deleted; one being sent or unconfirmed may already be there.
+          deletable: item.state === "queued" || item.state === "needs_attention",
+        }))}
+      onDeleteQueued={(id) => void removeItems([id])}
     />
   );
 }

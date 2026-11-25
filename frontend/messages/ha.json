@@ -339,7 +339,10 @@
     "fix": "Gyara shi",
     "purpose": "Ka ba da rahoton abin da ka gani a rumfar zaɓenka. Kowane rahoto yana taimakawa wajen gina Najeriya mafi kyau.",
     "tasks": "Abin da za ka iya yi",
-    "allReports": "Duba duk rahotannina"
+    "allReports": "Duba duk rahotannina",
+    "outboxTitle": "Suna jiran aikawa",
+    "outboxOrder": "Rahotanni suna aikuwa bisa tsarin da ka yi su.",
+    "outboxLabel": "{count, plural, one {Rahoto # yana jiran aikawa} other {Rahotanni # suna jiran aikawa}}"
   },
   "incident": {
     "draftKept": "An ajiye rahotonka a kan wannan wayar.",

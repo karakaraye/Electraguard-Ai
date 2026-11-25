@@ -7,9 +7,9 @@ import Link from "next/link";
 import { useState, type ComponentType } from "react";
 import { useLocale, useT } from "../../../../lib/i18n/client";
 import type { Category } from "../../../../lib/api/types";
-import { AppShell, Banner, Button, ButtonLink, DayArc, HeroCard, LanguageSwitcher, ReportList, ReportRow, Sheet, type ReportStatus } from "../../../../ui";
+import { AppShell, Banner, Button, ButtonLink, DayArc, HeroCard, LanguageSwitcher, OutboxBadge, ReportList, ReportRow, Sheet, StatusBadge, type ReportStatus } from "../../../../ui";
 import { formatWatDateTime } from "../../../../ui/format";
-import { categoryPictograms, ChevronRightIcon, type IconProps } from "../../../../ui/icons";
+import { AlertIcon, categoryPictograms, ChevronRightIcon, FileIcon, GearIcon, HelpIcon, InfoIcon, MessageIcon, ShieldCheckIcon, SignOutIcon, UsersIcon, type IconProps } from "../../../../ui/icons";
 import { AppBarTitle } from "../_components/AppBarTitle";
 import { AskPictogram, DiscussionsPictogram, MessagesPictogram } from "../_components/pictograms";
 import styles from "../_components/observer.module.css";
@@ -51,12 +51,18 @@ export type HomeViewProps = {
   onFix: () => void;
   onSendWaiting: () => void;
   onDeleteWaiting: () => void;
+  /** Reports on this phone that are not received yet, oldest first (the outbox, D4). */
+  outbox?: Array<{ id: string; category: Category | null; createdAt: number; status: ReportStatus; deletable: boolean }>;
+  onDeleteQueued?: (id: string) => void;
 };
 
 export function HomeView(props: HomeViewProps) {
   const t = useT();
   const { locale } = useLocale();
   const [menu, setMenu] = useState(false);
+  const [outboxOpen, setOutboxOpen] = useState(false);
+  const [deleting, setDeleting] = useState<string | null>(null);
+  const outbox = props.outbox ?? [];
   const {
     code,
     offline,
@@ -148,6 +154,17 @@ export function HomeView(props: HomeViewProps) {
       title={<AppBarTitle />}
       hideBack
       onMenu={() => setMenu(true)}
+      end={
+        outbox.length ? (
+          <OutboxBadge
+            count={outbox.length}
+            state={outbox.some((item) => item.status === "sending") ? "sending" : outbox.some((item) => item.status === "needs-attention") ? "failed" : "waiting"}
+            onClick={() => setOutboxOpen(true)}
+            label={t("o04.outboxLabel", { count: outbox.length })}
+            data-testid="o04-outbox-badge"
+          />
+        ) : undefined
+      }
       offline={offline}
       queuedCount={queuedCount}
       banner={hasBanner ? banners : undefined}
@@ -262,8 +279,71 @@ export function HomeView(props: HomeViewProps) {
       </div>
 
       <Sheet open={menu} onClose={() => setMenu(false)} title={t("ui.menu")} data-testid="o04-menu">
-        <ObserverMenu />
+        <ObserverMenu code={code} unitLabel={props.checklist.unitLabel} />
         <LanguageSwitcher variant="compact" />
+      </Sheet>
+
+      <Sheet
+        open={outboxOpen}
+        onClose={() => {
+          setOutboxOpen(false);
+          setDeleting(null);
+        }}
+        title={deleting ? t("common.discard.title") : t("o04.outboxTitle")}
+        description={<p style={{ margin: 0 }}>{deleting ? t("o14.deleteLocal.note") : t("o04.outboxOrder")}</p>}
+        footer={
+          deleting ? (
+            <>
+              <Button variant="secondary" block onClick={() => setDeleting(null)} data-testid="o04-outbox-keep">
+                {t("common.discard.keep")}
+              </Button>
+              <Button
+                variant="danger"
+                block
+                onClick={() => {
+                  props.onDeleteQueued?.(deleting);
+                  setDeleting(null);
+                }}
+                data-testid="o04-outbox-confirm"
+              >
+                {t("common.discard.confirm")}
+              </Button>
+            </>
+          ) : outbox.length ? (
+            <Button block disabled={offline} onClick={props.onSendNow} data-testid="o04-outbox-send">
+              {t("o04.sendNow")}
+            </Button>
+          ) : undefined
+        }
+        data-testid="o04-outbox"
+      >
+        {/* Deleting asks inside the same sheet: two sheets swapping would race on the Back history entry. */}
+        <ul className={s.outboxList}>
+          {outbox
+            .filter((item) => !deleting || item.id === deleting)
+            .map((item) => {
+              const meta = categoryMeta(item.category);
+              const Pictogram = categoryPictograms[meta.pictogram];
+              return (
+                <li key={item.id} className={s.outboxItem} data-testid="o04-outbox-item">
+                  <span className={s.outboxDisc} aria-hidden="true">
+                    <Pictogram size={24} />
+                  </span>
+                  <span className={s.outboxText}>
+                    <span className={s.outboxName}>{t(`o05.tile.${meta.tile}`)}</span>
+                    <span className={`${styles.meta} eg-tnum`}>{formatWatDateTime(item.createdAt, locale)}</span>
+                    <StatusBadge status={item.status} />
+                    {!deleting && item.deletable && props.onDeleteQueued ? (
+                      <Button variant="quiet" className={s.outboxDelete} onClick={() => setDeleting(item.id)} data-testid="o04-outbox-delete">
+                        {t("o14.deleteLocal.button")}
+                      </Button>
+                    ) : null}
+                  </span>
+                </li>
+              );
+            })}
+        </ul>
+        {offline && !deleting ? <p className={styles.note}>{t("ui.network.offline")}</p> : null}
       </Sheet>
     </AppShell>
   );
@@ -306,25 +386,44 @@ function QuickTile({
   );
 }
 
-/** The top-bar menu on every observer screen that has one: Settings, Messages, Discussions, Ask. */
-export function ObserverMenu() {
+/** The top-bar menu: who is signed in, every place in the app, the 112 line and sign out (spec screen 28). */
+export function ObserverMenu({ code, unitLabel }: { code?: string; unitLabel?: string | null }) {
   const t = useT();
-  const links: Array<{ href: string; key: string }> = [
-    { href: "/o/settings", key: "o20.title" },
-    { href: "/o/reports", key: "o13.title" },
-    { href: "/o/messages", key: "o17.title" },
-    { href: "/o/discussions", key: "o18.title" },
-    { href: "/o/ask", key: "o04.ask" },
+  const links: Array<{ href: string; key: string; icon: ComponentType<IconProps>; testId: string }> = [
+    { href: "/o/settings", key: "o20.title", icon: GearIcon, testId: "settings" },
+    { href: "/o/reports", key: "o13.title", icon: FileIcon, testId: "reports" },
+    { href: "/o/messages", key: "o17.title", icon: MessageIcon, testId: "messages" },
+    { href: "/o/ask", key: "o04.ask", icon: HelpIcon, testId: "ask" },
+    { href: "/o/discussions", key: "o18.title", icon: UsersIcon, testId: "discussions" },
+    { href: "/guide", key: "pub.nav.guide", icon: InfoIcon, testId: "guide" },
+    { href: "/o/start?view=notice&from=settings", key: "o20.privacy", icon: ShieldCheckIcon, testId: "privacy" },
   ];
   return (
-    <ul className={s.menuList}>
-      {links.map((link) => (
-        <li key={link.href}>
-          <Link href={link.href} className={s.menuLink} data-testid={`menu-${link.href.split("/").pop()}`}>
-            {t(link.key)}
-          </Link>
-        </li>
-      ))}
-    </ul>
+    <div className={s.menu}>
+      {code ? (
+        <p className={s.menuWho} data-testid="menu-who">
+          <span className="eg-tnum">{t("o04.signedInAs", { code })}</span>
+          {unitLabel ? <span className={styles.meta}>{unitLabel}</span> : null}
+        </p>
+      ) : null}
+      <ul className={s.menuList}>
+        {links.map((link) => (
+          <li key={link.href}>
+            <Link href={link.href} className={s.menuLink} data-testid={`menu-${link.testId}`}>
+              <link.icon size={22} aria-hidden="true" />
+              <span>{t(link.key)}</span>
+            </Link>
+          </li>
+        ))}
+      </ul>
+      <p className={s.menu112} data-testid="menu-112">
+        <AlertIcon size={20} aria-hidden="true" />
+        <span>{t("o02.line4")}</span>
+      </p>
+      <Link href="/o/settings#sign-out" className={s.menuLink} data-testid="menu-sign-out">
+        <SignOutIcon size={22} aria-hidden="true" />
+        <span>{t("o20.signOut.button")}</span>
+      </Link>
+    </div>
   );
 }

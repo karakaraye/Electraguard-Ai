@@ -3,6 +3,7 @@
 /* O-20 Settings: language, change PIN, privacy notice, what waits on this phone, sign out, clear this phone. */
 
 import Link from "next/link";
+import { useEffect } from "react";
 import { useLocale, useT } from "../../../../lib/i18n/client";
 import { localeNames } from "../../../../lib/i18n/config";
 import { AppShell, Banner, Button, Field, LanguageSwitcher, SegmentedControl, Sheet, setTextSize, setThemePreference, useTextSize, useThemePreference, type TextSize, type ThemePreference } from "../../../../ui";
@@ -49,6 +50,10 @@ export function SettingsView(props: SettingsViewProps) {
   const theme = useThemePreference("light");
   const textSize = useTextSize();
   const vibration = useVibration();
+  // From the menu's Sign out (#sign-out): bring the sign-out choices into view.
+  useEffect(() => {
+    if (window.location.hash === "#sign-out") document.getElementById("sign-out")?.scrollIntoView({ block: "start" });
+  }, []);
   return (
     <AppShell title={t("o20.title")} onBack={props.onBack} offline={offline} banner={props.signedOutNotice ? <Banner tone="ok" title={t("o20.signOut.signedOut")} /> : undefined} data-testid="o20">
       <div className={styles.screen}>
@@ -174,7 +179,7 @@ export function SettingsView(props: SettingsViewProps) {
           </li>
         </ul>
 
-        <div className={s.signOut}>
+        <div className={s.signOut} id="sign-out">
           <Button variant="secondary" block loading={props.busy === "signOut"} onClick={() => props.onSignOut(false)} data-testid="o20-sign-out">
             {t("o20.signOut.button")}
           </Button>

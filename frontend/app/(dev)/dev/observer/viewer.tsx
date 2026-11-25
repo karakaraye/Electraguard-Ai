@@ -283,6 +283,21 @@ export const SCREENS: Record<string, Record<string, (t: Translate) => ReactEleme
     "intake-paused": () => <HomeView {...homeBase} intakePaused rows={homeRows} />,
     "waiting-code": () => <HomeView {...homeBase} waitingCodeCount={2} needsAttentionCount={1} rows={homeRows} />,
     "network-back": () => <HomeView {...homeBase} networkBack pinSaved rows={homeRows} />,
+    outbox: () => (
+      <HomeView
+        {...homeBase}
+        unsentCount={3}
+        queuedCount={3}
+        rows={homeRows}
+        checklist={{ ...homeBase.checklist, unitLabel: "Kantudu Primary School I, Kantudu, Dala" }}
+        outbox={[
+          { id: "a", category: "intimidation_violence", createdAt: Date.parse("2026-12-05T09:05:00+01:00"), status: "sending", deletable: false },
+          { id: "b", category: "queues_crowding", createdAt: Date.parse("2026-12-05T09:40:00+01:00"), status: "on-phone", deletable: true },
+          { id: "c", category: "access_barrier", createdAt: Date.parse("2026-12-05T10:12:00+01:00"), status: "needs-attention", deletable: true },
+        ]}
+        onDeleteQueued={noop}
+      />
+    ),
   },
   o05: {
     first: () => <CategoryView {...shell} value={null} access={[]} error={false} onChange={noop} onAccess={noop} onContinue={noop} />,
