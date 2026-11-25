@@ -207,10 +207,14 @@ export function CaseView({
                 at: event.created_at,
                 change: humanise(event.action),
                 detail: Object.keys(event.change).length
-                  ? Object.entries(event.change).map(([key, val]) => `${humanise(key)}: ${typeof val === "string" ? humanise(val) : JSON.stringify(val)}`).join(" · ")
+                  ? Object.entries(event.change)
+                      .filter(([, val]) => val !== null && val !== "")
+                      .map(([key, val]) => `${humanise(key)}: ${changeValue(val)}`)
+                      .join(" · ") || undefined
                   : undefined,
               }))}
-              chain={c.history.chain_intact ? "intact" : "broken"}
+              // The server sends null when it has not checked this case's chain: never show that as tampering.
+              chain={c.history.chain_intact === true ? "intact" : c.history.chain_intact === false ? "broken" : "unknown"}
             />
           </div>
         </section>
@@ -220,6 +224,13 @@ export function CaseView({
 }
 
 /** Audit actions arrive as codes ("suggestion_accepted"); show them as words. */
+/** Codes ("in_review") read as words; anything else (emails, references) is shown exactly as sent. */
+function changeValue(val: unknown): string {
+  if (typeof val === "string") return /^[a-z][a-z_]*$/.test(val) ? humanise(val) : val;
+  if (typeof val === "number" || typeof val === "boolean") return String(val);
+  return JSON.stringify(val);
+}
+
 function humanise(code: string): string {
   const words = code.replace(/_/g, " ").trim();
   return words.charAt(0).toUpperCase() + words.slice(1);
