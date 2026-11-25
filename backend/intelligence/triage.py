@@ -146,3 +146,7 @@ def write_suggestions(report, job):
     job.method_version = VERSIONS["category"]
     job.attempted_at = timezone.now()
     job.save(update_fields=["status", "attempted_at", "suggestions", "method_version"])
+    from clocks.calculator import resolve_urgency, update_clock_urgency
+
+    report.triage = job
+    update_clock_urgency(report, resolve_urgency(report))

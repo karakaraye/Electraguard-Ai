@@ -345,3 +345,41 @@ class ReviewClocksTests(TestCase):
 
         ids = [item["id"] for item in d1["items"]] + [item["id"] for item in d2["items"]]
         self.assertEqual(ids, [str(c1.pk), str(c2.pk), str(c3.pk)])
+
+    def test_clock_follows_triage_urgency_update(self):
+        from unittest.mock import MagicMock, patch
+        import numpy as np
+        from intelligence.triage import write_suggestions
+        from reports.models import Triage
+
+        now = timezone.now()
+        report = self.create_case(urgency="normal", created_at=now - timedelta(minutes=20))
+        clock = ReviewClock.objects.get(report=report, kind=ReviewClock.Kind.FIRST_ACTION)
+        self.assertEqual(clock.target_minutes, 240)
+        self.assertEqual(clock.urgency, "normal")
+
+        job, _ = Triage.objects.get_or_create(report=report, organisation=self.org)
+        fake_models = MagicMock()
+        fake_models.category.classes_ = ["intimidation_violence"]
+        fake_models.category.predict_proba.return_value = np.array([[0.95]])
+        fake_models.abstain = 0.5
+        fake_models.severity.predict_proba.return_value = np.array([[0.1, 0.9]])
+        fake_models.urgency_threshold = 0.5
+
+        with patch("intelligence.triage.incident_models", return_value=fake_models), \
+             patch("intelligence.triage.suggest_duplicates"), \
+             patch("intelligence.triage.suggest_cluster", return_value=False):
+            write_suggestions(report, job)
+
+        clock.refresh_from_db()
+        self.assertEqual(clock.urgency, "urgent")
+        self.assertEqual(clock.target_minutes, 15)
+        self.assertEqual(clock.due_at, clock.started_at + timedelta(minutes=15))
+
+        # OPS-01 overdue groups on the updated urgent level
+        self.login_as(self.coordinator)
+        from_date = (now - timedelta(hours=1)).astimezone(timezone.get_current_timezone()).date().isoformat()
+        to_date = now.astimezone(timezone.get_current_timezone()).date().isoformat()
+        ov = self.client.get(f"/api/v1/ops/overview?from={from_date}&to={to_date}").json()
+        self.assertEqual(ov["overdue"]["urgent"], 1)
+        self.assertEqual(ov["overdue"]["normal"], 0)
