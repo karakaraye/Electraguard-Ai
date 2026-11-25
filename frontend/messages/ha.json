@@ -1172,7 +1172,10 @@
       "addSpan": "[HA draft] Add redaction span",
       "clearSpans": "[HA draft] Clear all redactions",
       "save": "[HA draft] Save redactions",
-      "preview": "[HA draft] Redacted preview:"
+      "preview": "[HA draft] Redacted preview:",
+      "mode": "Ɓoye sunaye",
+      "selected": "An zaɓa: “{text}”",
+      "count": "{count, plural, =0 {Ba a ɓoye komai ba tukuna} one {An ɓoye sashe #} other {An ɓoye sassa #}}"
     },
     "details": {
       "category": "[HA draft] Category: {category}",
@@ -1181,17 +1184,43 @@
       "location": "[HA draft] Location",
       "occurredAt": "[HA draft] Occurred: {time}",
       "receivedAt": "[HA draft] Received: {time}",
-      "skew": "[HA draft] Phone clock skew: {seconds}s"
+      "skew": "[HA draft] Phone clock skew: {seconds}s",
+      "title": "Bayanai",
+      "categoryGiven": "Rukunin da aka bayar",
+      "dangerNow": "Haɗari yanzu",
+      "seenFirsthand": "An gani da ido",
+      "place": "Wuri",
+      "occurred": "Lokacin da ya faru",
+      "saved": "An adana a waya",
+      "received": "An karɓa",
+      "yes": "Ee",
+      "no": "A'a",
+      "unknown": "Ba a bayar ba",
+      "skewWarn": "Agogon wayar ya yi kuskure da mintuna {minutes}. Duba lokutan."
     },
     "evidence": {
       "title": "[HA draft] Evidence & integrity",
       "sha256": "[HA draft] SHA-256 verified",
       "exifRemoved": "[HA draft] EXIF stripped",
       "blurred": "[HA draft] Faces blurred",
-      "unblur": "[HA draft] View unblurred (recorded in audit)",
+      "unblur": "Duba ba tare da ɓoyewa ba",
       "transcript": "[HA draft] Audio transcript",
-      "pendingUpload": "[HA draft] Pending upload: {received} of {total} bytes received",
-      "noEvidence": "[HA draft] No media attachments submitted."
+      "pendingUpload": "Har yanzu yana zuwa: {received} cikin {total}",
+      "noEvidence": "[HA draft] No media attachments submitted.",
+      "sha256No": "Ba a tabbatar da SHA-256 ba",
+      "exifNo": "Ba a cire EXIF ba",
+      "blurredNo": "Ba a ɓoye fuskoki ba",
+      "unblurReason": "Me yasa kake buƙatar ganin sa ba tare da ɓoyewa ba?",
+      "unblurHint": "Za a rubuta dalilinka a cikin bayanan bincike.",
+      "unblurConfirm": "Duba ba tare da ɓoyewa ba",
+      "unblurUnavailable": "Fayil ɗin da ba a ɓoye ba baya nan kuma. Ana ajiye shi ne kawai yayin da ake sarrafa fayil ɗin.",
+      "unblurShown": "Ana nuna fayil ɗin da ba a ɓoye ba. An rubuta wannan kallo.",
+      "unblurredAlt": "Hoton shaida da ba a ɓoye ba",
+      "kind": {
+        "photo": "Hoto",
+        "video": "Bidiyo",
+        "audio": "Saƙon murya"
+      }
     },
     "suggestions": {
       "title": "[HA draft] AI suggestions",
@@ -1201,7 +1230,12 @@
       "accept": "[HA draft] Accept suggestion",
       "correct": "[HA draft] Correct suggestion",
       "correctLabel": "[HA draft] Choose correction",
-      "saveCorrection": "[HA draft] Apply correction"
+      "saveCorrection": "[HA draft] Apply correction",
+      "pending": "Ana shirya shawarwari.",
+      "failed": "Ba a iya bayar da shawara ba. Yanke hukunci daga rahoton.",
+      "abstained": "Babu shawara: ba a da tabbaci sosai.",
+      "confirmAccept": "Saita {field} zuwa “{value}”?",
+      "names": "Rubutun zai iya ƙunsar sunaye. Ɓoye su kafin a raba."
     },
     "duplicates": {
       "title": "[HA draft] Duplicate candidates",
@@ -1210,7 +1244,11 @@
       "link": "[HA draft] Link as duplicate",
       "keepSeparate": "[HA draft] Keep separate",
       "linked": "[HA draft] Linked",
-      "inaccessible": "[HA draft] Report from another organisation (metadata only)"
+      "inaccessible": "[HA draft] Report from another organisation (metadata only)",
+      "notice": "Rahotannin da za su iya zama kwafi, an same su ta hanyar daidaitawa. Mutum ne ke yanke hukunci.",
+      "thisCase": "Wannan rahoto",
+      "confirmLink": "Tabbatar da haɗawa",
+      "keptSeparate": "An bar su daban"
     },
     "resultSheet": {
       "title": "[HA draft] Result sheet consistency check",
@@ -1220,14 +1258,19 @@
       "accreditedExceeds": "[HA draft] Accredited voters exceed registered voters",
       "sumDiffers": "[HA draft] Party votes plus rejected votes differs from accredited count",
       "roundNumbers": "[HA draft] Unusually round numbers",
-      "benignCauses": "[HA draft] Possible benign causes: copy error, unreadable digit"
+      "benignCauses": "[HA draft] Possible benign causes: copy error, unreadable digit",
+      "identical": "Daidai yake da takardar wata rumfar zaɓe",
+      "digitSwap": "Lambobi biyu za su iya musanya wuri",
+      "noFlags": "Ba a sami matsala ba."
     },
     "conversation": {
       "title": "[HA draft] Observer conversation",
       "send": "[HA draft] Send message",
       "placeholder": "[HA draft] Type a message to the observer...",
       "markRead": "[HA draft] Mark messages read",
-      "noMessages": "[HA draft] No messages yet."
+      "noMessages": "[HA draft] No messages yet.",
+      "formal": "Tambaya ta hukuma",
+      "label": "Saƙo ga mai rahoto"
     },
     "actions": {
       "title": "[HA draft] Case actions",
@@ -1246,12 +1289,40 @@
       "rationaleLabel": "[HA draft] Internal rationale",
       "rationaleHint": "[HA draft] Explain why this case was corroborated, closed or dismissed. Never shown to reporters.",
       "expectedMediaLabel": "[HA draft] Confirm evidence considered in this closure",
-      "submitClose": "[HA draft] Confirm closure"
+      "submitClose": "[HA draft] Confirm closure",
+      "considered": "{count, plural, =0 {Na duba duka rahoton (babu fayil)} one {Na duba duk shaidar (fayil #)} other {Na duba duk shaidar (fayiloli #)}}"
     },
     "history": {
       "title": "[HA draft] Audit trail",
       "chainIntact": "[HA draft] Hash chain intact",
       "chainBroken": "[HA draft] Hash chain broken!"
+    },
+    "columns": {
+      "report": "Rahoto",
+      "help": "Taimako",
+      "decision": "Hukunci"
+    },
+    "simulated": "Rahoton gwaji",
+    "translationView": {
+      "original": "Na asali",
+      "english": "Turanci (na'ura)",
+      "pending": "Ana shirya fassarar na'ura.",
+      "failed": "Fassarar na'ura ta kasa. Karanta na asali."
+    },
+    "decision": {
+      "status": "Matsayi",
+      "outcome": "Sakamako: {outcome}",
+      "openQuestion": "Tambayar da ke jiran amsa",
+      "askedAt": "An tambaya {time}",
+      "nothing": "Babu aikin da ke buɗe a wannan shari'a."
+    },
+    "errors": {
+      "stale": "Wani ya canza wannan shari'a. Sake lodawa don ganin sabon sigar.",
+      "invalid": "Wannan aikin ba zai yiwu ba kuma. Shari'ar ta ci gaba.",
+      "evidence": "Sabuwar shaida ta zo. Duba ta kafin ka rufe shari'ar.",
+      "validation": "Duba filayen ka sake gwadawa.",
+      "reload": "Sake lodawa",
+      "notFound": "Ba a sami wannan shari'a ba."
     }
   },
   "s04": {

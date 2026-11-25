@@ -1172,7 +1172,10 @@
       "addSpan": "[IG draft] Add redaction span",
       "clearSpans": "[IG draft] Clear all redactions",
       "save": "[IG draft] Save redactions",
-      "preview": "[IG draft] Redacted preview:"
+      "preview": "[IG draft] Redacted preview:",
+      "mode": "Zoo aha",
+      "selected": "Ihe ị họọrọ: “{text}”",
+      "count": "{count, plural, =0 {Ọ dịbeghị ihe ezoro} one {Ezoola akụkụ #} other {Ezoola akụkụ #}}"
     },
     "details": {
       "category": "[IG draft] Category: {category}",
@@ -1181,17 +1184,43 @@
       "location": "[IG draft] Location",
       "occurredAt": "[IG draft] Occurred: {time}",
       "receivedAt": "[IG draft] Received: {time}",
-      "skew": "[IG draft] Phone clock skew: {seconds}s"
+      "skew": "[IG draft] Phone clock skew: {seconds}s",
+      "title": "Nkọwa",
+      "categoryGiven": "Ụdị e nyere",
+      "dangerNow": "Ihe egwu ugbu a",
+      "seenFirsthand": "Hụrụ ya n'anya",
+      "place": "Ebe",
+      "occurred": "Mgbe o mere",
+      "saved": "Mgbe e chekwara ya na ekwentị",
+      "received": "Mgbe anatara ya",
+      "yes": "Ee",
+      "no": "Mba",
+      "unknown": "Enyeghị ya",
+      "skewWarn": "Elekere ekwentị ahụ dị iche site na nkeji {minutes}. Lelee oge ndị ahụ."
     },
     "evidence": {
       "title": "[IG draft] Evidence & integrity",
       "sha256": "[IG draft] SHA-256 verified",
       "exifRemoved": "[IG draft] EXIF stripped",
       "blurred": "[IG draft] Faces blurred",
-      "unblur": "[IG draft] View unblurred (recorded in audit)",
+      "unblur": "Lee ya na-ezoghị",
       "transcript": "[IG draft] Audio transcript",
-      "pendingUpload": "[IG draft] Pending upload: {received} of {total} bytes received",
-      "noEvidence": "[IG draft] No media attachments submitted."
+      "pendingUpload": "Ọ ka na-abịa: {received} n'ime {total}",
+      "noEvidence": "[IG draft] No media attachments submitted.",
+      "sha256No": "Anwapụtaghị SHA-256",
+      "exifNo": "Ewepụghị EXIF",
+      "blurredNo": "Ezoghị ihu",
+      "unblurReason": "Gịnị mere ị ga-eji hụ ya na-ezoghị?",
+      "unblurHint": "A ga-edekọ ihe kpatara gị n'ime ndekọ nyocha.",
+      "unblurConfirm": "Lee ya na-ezoghị",
+      "unblurUnavailable": "Faịlụ ahụ na-ezoghị adịghịzi. A na-edebe ya naanị mgbe a na-arụ ọrụ na faịlụ ahụ.",
+      "unblurShown": "Nke a bụ faịlụ na-ezoghị. Edekọla nlele a.",
+      "unblurredAlt": "Foto ihe akaebe na-ezoghị",
+      "kind": {
+        "photo": "Foto",
+        "video": "Vidiyo",
+        "audio": "Ozi olu"
+      }
     },
     "suggestions": {
       "title": "[IG draft] AI suggestions",
@@ -1201,7 +1230,12 @@
       "accept": "[IG draft] Accept suggestion",
       "correct": "[IG draft] Correct suggestion",
       "correctLabel": "[IG draft] Choose correction",
-      "saveCorrection": "[IG draft] Apply correction"
+      "saveCorrection": "[IG draft] Apply correction",
+      "pending": "A na-akwado ndụmọdụ.",
+      "failed": "Enweghị ike inye ndụmọdụ. Kpebie site na akụkọ ahụ.",
+      "abstained": "Enweghị ndụmọdụ: o doghị anya nke ọma.",
+      "confirmAccept": "Mee ka {field} bụrụ “{value}”?",
+      "names": "Ederede ahụ nwere ike inwe aha mmadụ. Zoo ha tupu e kesaa ya."
     },
     "duplicates": {
       "title": "[IG draft] Duplicate candidates",
@@ -1210,7 +1244,11 @@
       "link": "[IG draft] Link as duplicate",
       "keepSeparate": "[IG draft] Keep separate",
       "linked": "[IG draft] Linked",
-      "inaccessible": "[IG draft] Report from another organisation (metadata only)"
+      "inaccessible": "[IG draft] Report from another organisation (metadata only)",
+      "notice": "Akụkọ ndị nwere ike ịbụ otu, nke nhazi chọtara. Mmadụ na-ekpebi.",
+      "thisCase": "Akụkọ a",
+      "confirmLink": "Kwado na ha bụ otu",
+      "keptSeparate": "Edebere ha iche iche"
     },
     "resultSheet": {
       "title": "[IG draft] Result sheet consistency check",
@@ -1220,14 +1258,19 @@
       "accreditedExceeds": "[IG draft] Accredited voters exceed registered voters",
       "sumDiffers": "[IG draft] Party votes plus rejected votes differs from accredited count",
       "roundNumbers": "[IG draft] Unusually round numbers",
-      "benignCauses": "[IG draft] Possible benign causes: copy error, unreadable digit"
+      "benignCauses": "[IG draft] Possible benign causes: copy error, unreadable digit",
+      "identical": "Ọ dị ka mpempe akwụkwọ ebe ntuli aka ọzọ kpọmkwem",
+      "digitSwap": "Ọnụọgụ abụọ nwere ike ịgbanwe ọnọdụ",
+      "noFlags": "Achọtaghị nsogbu ọ bụla."
     },
     "conversation": {
       "title": "[IG draft] Observer conversation",
       "send": "[IG draft] Send message",
       "placeholder": "[IG draft] Type a message to the observer...",
       "markRead": "[IG draft] Mark messages read",
-      "noMessages": "[IG draft] No messages yet."
+      "noMessages": "[IG draft] No messages yet.",
+      "formal": "Ajụjụ ọrụ",
+      "label": "Ozi nye onye kọrọ akụkọ"
     },
     "actions": {
       "title": "[IG draft] Case actions",
@@ -1246,12 +1289,40 @@
       "rationaleLabel": "[IG draft] Internal rationale",
       "rationaleHint": "[IG draft] Explain why this case was corroborated, closed or dismissed. Never shown to reporters.",
       "expectedMediaLabel": "[IG draft] Confirm evidence considered in this closure",
-      "submitClose": "[IG draft] Confirm closure"
+      "submitClose": "[IG draft] Confirm closure",
+      "considered": "{count, plural, =0 {Eleela m akụkọ ahụ niile (enweghị faịlụ)} one {Eleela m ihe akaebe niile (faịlụ #)} other {Eleela m ihe akaebe niile (faịlụ #)}}"
     },
     "history": {
       "title": "[IG draft] Audit trail",
       "chainIntact": "[IG draft] Hash chain intact",
       "chainBroken": "[IG draft] Hash chain broken!"
+    },
+    "columns": {
+      "report": "Akụkọ",
+      "help": "Enyemaka",
+      "decision": "Mkpebi"
+    },
+    "simulated": "Akụkọ nnwale",
+    "translationView": {
+      "original": "Nke mbụ",
+      "english": "Bekee (igwe)",
+      "pending": "Igwe na-akwado ntụgharị ahụ.",
+      "failed": "Ntụgharị igwe dara. Gụọ nke mbụ."
+    },
+    "decision": {
+      "status": "Ọnọdụ",
+      "outcome": "Nsonaazụ: {outcome}",
+      "openQuestion": "Ajụjụ na-eche azịza",
+      "askedAt": "A jụrụ ya {time}",
+      "nothing": "Ọ dịghị ọrụ mepere emepe n'okwu a."
+    },
+    "errors": {
+      "stale": "Onye ọzọ gbanwere okwu a. Bugharịa ya ka ị hụ ụdị kachasị ọhụrụ.",
+      "invalid": "Ọrụ ahụ agaghị ekwe omume ọzọ. Okwu ahụ agaala n'ihu.",
+      "evidence": "Ihe akaebe ọhụrụ abịala. Lelee ya tupu ị mechie okwu ahụ.",
+      "validation": "Lelee ebe ndị ahụ ma nwaa ọzọ.",
+      "reload": "Bugharịa",
+      "notFound": "Achọtaghị okwu a."
     }
   },
   "s04": {

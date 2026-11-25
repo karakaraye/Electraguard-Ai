@@ -1172,7 +1172,10 @@
       "addSpan": "[YO draft] Add redaction span",
       "clearSpans": "[YO draft] Clear all redactions",
       "save": "[YO draft] Save redactions",
-      "preview": "[YO draft] Redacted preview:"
+      "preview": "[YO draft] Redacted preview:",
+      "mode": "Fi orúkọ pamọ́",
+      "selected": "Ohun tí o yàn: “{text}”",
+      "count": "{count, plural, =0 {A kò tíì fi nǹkan pamọ́} one {A ti fi apá # pamọ́} other {A ti fi apá # pamọ́}}"
     },
     "details": {
       "category": "[YO draft] Category: {category}",
@@ -1181,17 +1184,43 @@
       "location": "[YO draft] Location",
       "occurredAt": "[YO draft] Occurred: {time}",
       "receivedAt": "[YO draft] Received: {time}",
-      "skew": "[YO draft] Phone clock skew: {seconds}s"
+      "skew": "[YO draft] Phone clock skew: {seconds}s",
+      "title": "Àlàyé",
+      "categoryGiven": "Ẹ̀ka tí a fún",
+      "dangerNow": "Ewu báyìí",
+      "seenFirsthand": "Wọ́n rí i fúnra wọn",
+      "place": "Ibi",
+      "occurred": "Ìgbà tó ṣẹlẹ̀",
+      "saved": "Ìgbà tí a fi pamọ́ sórí fóònù",
+      "received": "Ìgbà tí a gbà á",
+      "yes": "Bẹ́ẹ̀ni",
+      "no": "Rárá",
+      "unknown": "A kò fún wa",
+      "skewWarn": "Aago fóònù náà yàtọ̀ ní ìṣẹ́jú {minutes}. Ṣàyẹ̀wò àwọn àkókò."
     },
     "evidence": {
       "title": "[YO draft] Evidence & integrity",
       "sha256": "[YO draft] SHA-256 verified",
       "exifRemoved": "[YO draft] EXIF stripped",
       "blurred": "[YO draft] Faces blurred",
-      "unblur": "[YO draft] View unblurred (recorded in audit)",
+      "unblur": "Wo láìsí ìbòjú",
       "transcript": "[YO draft] Audio transcript",
-      "pendingUpload": "[YO draft] Pending upload: {received} of {total} bytes received",
-      "noEvidence": "[YO draft] No media attachments submitted."
+      "pendingUpload": "Ó ṣì ń bọ̀: {received} nínú {total}",
+      "noEvidence": "[YO draft] No media attachments submitted.",
+      "sha256No": "A kò tíì jẹ́rìí SHA-256",
+      "exifNo": "A kò tíì yọ EXIF",
+      "blurredNo": "A kò bo ojú",
+      "unblurReason": "Kí ló dé tí o fi nílò láti rí i láìsí ìbòjú?",
+      "unblurHint": "A máa kọ ìdí rẹ sínú àkọsílẹ̀ àyẹ̀wò.",
+      "unblurConfirm": "Wo láìsí ìbòjú",
+      "unblurUnavailable": "Fáìlì tí kò ní ìbòjú kò sí mọ́. A máa ń pa á mọ́ nígbà tí a ń ṣiṣẹ́ lórí fáìlì náà nìkan.",
+      "unblurShown": "Fáìlì tí kò ní ìbòjú ni èyí. A ti kọ ìwò yìí sílẹ̀.",
+      "unblurredAlt": "Fọ́tò ẹ̀rí tí kò ní ìbòjú",
+      "kind": {
+        "photo": "Fọ́tò",
+        "video": "Fídíò",
+        "audio": "Ohùn tí a gbà sílẹ̀"
+      }
     },
     "suggestions": {
       "title": "[YO draft] AI suggestions",
@@ -1201,7 +1230,12 @@
       "accept": "[YO draft] Accept suggestion",
       "correct": "[YO draft] Correct suggestion",
       "correctLabel": "[YO draft] Choose correction",
-      "saveCorrection": "[YO draft] Apply correction"
+      "saveCorrection": "[YO draft] Apply correction",
+      "pending": "À ń pèsè àwọn àbá.",
+      "failed": "A kò lè ṣe àbá. Pinnu láti inú ìròyìn náà.",
+      "abstained": "Kò sí àbá: kò dá wa lójú tó.",
+      "confirmAccept": "Ṣé kí {field} jẹ́ “{value}”?",
+      "names": "Ọ̀rọ̀ náà lè ní orúkọ ènìyàn. Fi wọ́n pamọ́ kí o tó pín in."
     },
     "duplicates": {
       "title": "[YO draft] Duplicate candidates",
@@ -1210,7 +1244,11 @@
       "link": "[YO draft] Link as duplicate",
       "keepSeparate": "[YO draft] Keep separate",
       "linked": "[YO draft] Linked",
-      "inaccessible": "[YO draft] Report from another organisation (metadata only)"
+      "inaccessible": "[YO draft] Report from another organisation (metadata only)",
+      "notice": "Àwọn ìròyìn tó lè jọra, tí ìbámu rí. Ènìyàn ló ń pinnu.",
+      "thisCase": "Ìròyìn yìí",
+      "confirmLink": "Jẹ́rìí pé wọ́n jọ ni",
+      "keptSeparate": "Wọ́n wà lọ́tọ̀ọ̀tọ̀"
     },
     "resultSheet": {
       "title": "[YO draft] Result sheet consistency check",
@@ -1220,14 +1258,19 @@
       "accreditedExceeds": "[YO draft] Accredited voters exceed registered voters",
       "sumDiffers": "[YO draft] Party votes plus rejected votes differs from accredited count",
       "roundNumbers": "[YO draft] Unusually round numbers",
-      "benignCauses": "[YO draft] Possible benign causes: copy error, unreadable digit"
+      "benignCauses": "[YO draft] Possible benign causes: copy error, unreadable digit",
+      "identical": "Ó jọ ìwé ibùdó ìdìbò míì gẹ́lẹ́",
+      "digitSwap": "Nọ́ńbà méjì lè ti pààrọ̀ ipò",
+      "noFlags": "A kò rí ìṣòro kankan."
     },
     "conversation": {
       "title": "[YO draft] Observer conversation",
       "send": "[YO draft] Send message",
       "placeholder": "[YO draft] Type a message to the observer...",
       "markRead": "[YO draft] Mark messages read",
-      "noMessages": "[YO draft] No messages yet."
+      "noMessages": "[YO draft] No messages yet.",
+      "formal": "Ìbéèrè àṣẹ",
+      "label": "Ọ̀rọ̀ sí ẹni tó ròyìn"
     },
     "actions": {
       "title": "[YO draft] Case actions",
@@ -1246,12 +1289,40 @@
       "rationaleLabel": "[YO draft] Internal rationale",
       "rationaleHint": "[YO draft] Explain why this case was corroborated, closed or dismissed. Never shown to reporters.",
       "expectedMediaLabel": "[YO draft] Confirm evidence considered in this closure",
-      "submitClose": "[YO draft] Confirm closure"
+      "submitClose": "[YO draft] Confirm closure",
+      "considered": "{count, plural, =0 {Mo ti ṣàyẹ̀wò gbogbo ìròyìn náà (kò sí fáìlì)} one {Mo ti ṣàyẹ̀wò gbogbo ẹ̀rí (fáìlì #)} other {Mo ti ṣàyẹ̀wò gbogbo ẹ̀rí (fáìlì #)}}"
     },
     "history": {
       "title": "[YO draft] Audit trail",
       "chainIntact": "[YO draft] Hash chain intact",
       "chainBroken": "[YO draft] Hash chain broken!"
+    },
+    "columns": {
+      "report": "Ìròyìn",
+      "help": "Ìrànlọ́wọ́",
+      "decision": "Ìpinnu"
+    },
+    "simulated": "Ìròyìn àdánwò",
+    "translationView": {
+      "original": "Àtilẹ̀wá",
+      "english": "Gẹ̀ẹ́sì (ẹ̀rọ)",
+      "pending": "Ẹ̀rọ ń pèsè ìtumọ̀ náà.",
+      "failed": "Ìtumọ̀ ẹ̀rọ kùnà. Ka àtilẹ̀wá."
+    },
+    "decision": {
+      "status": "Ipò",
+      "outcome": "Àbájáde: {outcome}",
+      "openQuestion": "Ìbéèrè tó ń dúró de ìdáhùn",
+      "askedAt": "A béèrè ní {time}",
+      "nothing": "Kò sí iṣẹ́ tó ṣí sílẹ̀ lórí ẹjọ́ yìí."
+    },
+    "errors": {
+      "stale": "Ẹlòmíì ti yí ẹjọ́ yìí padà. Tún un gbé wá láti rí èyí tó kẹ́yìn.",
+      "invalid": "Iṣẹ́ yẹn kò ṣeé ṣe mọ́. Ẹjọ́ náà ti tẹ̀síwájú.",
+      "evidence": "Ẹ̀rí tuntun dé. Ṣàyẹ̀wò rẹ̀ kí o tó pa ẹjọ́ náà.",
+      "validation": "Ṣàyẹ̀wò àwọn àyè kí o sì tún gbìyànjú.",
+      "reload": "Tún gbé e wá",
+      "notFound": "A kò rí ẹjọ́ yìí."
     }
   },
   "s04": {

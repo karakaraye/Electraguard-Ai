@@ -4,6 +4,7 @@ import type {
   CodeBatch,
   CoverageResponse,
   LateMaterialsResponse,
+  Message,
   ModerationFlag,
   OrganisationSettings,
   OverviewResponse,
@@ -513,4 +514,91 @@ export const FIXTURE_QUEUE_PAGE: QueueResponse = {
   items: FIXTURE_QUEUE_ITEMS,
   next_cursor: null,
   counts: { received: 38, in_review: 12, question: 5, closed: 141, withdrawn: 2 },
+};
+
+/** Screen 40 (S-03): the same Kano case part-way through review, with help and a conversation. */
+export const FIXTURE_CASE_IN_REVIEW: CaseDetail = {
+  ...FIXTURE_CASE_DETAIL,
+  receipt_code: "EG-4H7Q-92KD",
+  status: "in_review",
+  version: 5,
+  reporter: { type: "observer", label: "OBS-KN-0417", accredited: true },
+  times: { ...FIXTURE_CASE_DETAIL.times, clock_skew_seconds: 420 },
+  media: [
+    { ...FIXTURE_CASE_DETAIL.media[0], blurred: true },
+    {
+      id: "med-2",
+      kind: "audio",
+      status: "ready",
+      size_bytes: 310000,
+      duration_ms: 41000,
+      blurred: false,
+      exif_removed: true,
+      sha256: "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",
+      original_sha256: "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",
+      integrity_verified: true,
+      transcript: { text: "Men with sticks came in at about twenty to nine and told people in the queue to go home.", language: "en", method: "local_asr" },
+      created_at: "2026-12-05T08:17:00+01:00",
+    },
+  ],
+  pending_uploads: [{ id: "up-3", kind: "video", size_bytes: 8_400_000, received_bytes: 5_100_000 }],
+  suggestions: {
+    ...FIXTURE_CASE_DETAIL.suggestions,
+    category: { value: "intimidation_violence", confidence: "high", reasons: ["Weapons mentioned", "Voters sent away"], decision: null, corrected_value: null },
+    urgency: { value: "urgent", confidence: "medium", reasons: ["Danger reported now", "Seen firsthand"], decision: "accepted", corrected_value: null },
+  },
+  duplicates: [
+    {
+      report_id: "rep-204",
+      receipt_code: "EG-2X7M-55RD",
+      score: 0.82,
+      decision: "pending",
+      accessible: true,
+      summary: { category: "intimidation_violence", ward_name: "Zango", occurred_at: "2026-12-05T08:38:00+01:00", channel: "sms" },
+    } as CaseDetail["duplicates"][number],
+  ],
+  name_check: { possible_names: true },
+  open_question: { id: "q-1", body: "How many people with sticks did you see, and are they still there?", asked_at: "2026-12-05T08:52:00+01:00" } as CaseDetail["open_question"],
+  allowed_actions: ["ask", "close", "redact"],
+  history: {
+    chain_intact: true,
+    events: [
+      { id: "ev-1", version: 1, action: "received", actor_label: "System", created_at: "2026-12-05T08:16:30+01:00", change: {} },
+      { id: "ev-2", version: 3, action: "start", actor_label: "F. Musa (Reviewer)", created_at: "2026-12-05T08:48:00+01:00", change: {} },
+      { id: "ev-3", version: 4, action: "suggestion_accepted", actor_label: "F. Musa (Reviewer)", created_at: "2026-12-05T08:49:00+01:00", change: { urgency: "urgent" } },
+      { id: "ev-4", version: 5, action: "ask", actor_label: "F. Musa (Reviewer)", created_at: "2026-12-05T08:52:00+01:00", change: {} },
+    ],
+  },
+};
+
+export const FIXTURE_CASE_MESSAGES: Message[] = [
+  {
+    id: "m-1", kind: "formal_question", author: "reviewer", author_label: "F. Musa (Reviewer)",
+    body: "How many people with sticks did you see, and are they still there?", attachment: null,
+    question_state: "open", reply_to: null, created_at: "2026-12-05T08:52:00+01:00", read: true,
+  },
+  {
+    id: "m-2", kind: "message", author: "observer", author_label: "OBS-KN-0417",
+    body: "I am outside the gate now. Voting has stopped.", attachment: null,
+    question_state: null, reply_to: null, created_at: "2026-12-05T08:55:00+01:00", read: false,
+  },
+];
+
+/** A result sheet with two failed checks, for the flags box and its fixed disclaimer. */
+export const FIXTURE_CASE_RESULT_SHEET: CaseDetail = {
+  ...FIXTURE_CASE_DETAIL,
+  receipt_code: "EG-6T4N-38QE",
+  kind: "result_sheet",
+  status: "question",
+  language: "en",
+  original: { description: "Sheet photographed at the polling unit after counting.", redacted_description: null, redactions: [] },
+  translation: { ...FIXTURE_CASE_DETAIL.translation, status: "not_needed", text: null },
+  category_observer: "not_sure",
+  danger_now: false,
+  result_sheet_flags: [
+    { type: "accredited_exceeds_registered", explanation_key: "rs.flag.accredited_exceeds_registered", values: { accredited: 812, registered: 790 }, benign_causes_keys: ["rs.benign.copy_error", "rs.benign.unread_digit"] },
+    { type: "votes_plus_rejected_differs", explanation_key: "rs.flag.sum_differs", values: { accredited: 812, sum: 821 }, benign_causes_keys: ["rs.benign.copy_error", "rs.benign.unread_digit"] },
+  ],
+  suggestions: { ...FIXTURE_CASE_DETAIL.suggestions, abstained: true },
+  allowed_actions: ["ask", "close"],
 };

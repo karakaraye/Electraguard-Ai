@@ -34,6 +34,9 @@ import {
   FIXTURE_ALERT,
   FIXTURE_BATCHES,
   FIXTURE_CASE_DETAIL,
+  FIXTURE_CASE_IN_REVIEW,
+  FIXTURE_CASE_MESSAGES,
+  FIXTURE_CASE_RESULT_SHEET,
   FIXTURE_CLAIM,
   FIXTURE_COVERAGE,
   FIXTURE_FLAG,
@@ -54,6 +57,9 @@ const S01_STATES = [
 ] as const;
 
 /** Screen 39 (S-02) states. */
+/** Screen 40 (S-03) states. */
+const S03_STATES = ["default", "in_review", "result_sheet", "pending_help", "closed", "loading", "error", "stale_version", "invalid_transition", "closure_evidence_changed", "validation"] as const;
+
 const S02_STATES = ["default", "loading", "empty", "empty_filtered", "error", "forbidden", "new", "more"] as const;
 
 function signInStep(state: string): SignInStep {
@@ -169,9 +175,33 @@ export function StaffStateViewer(): ReactElement {
       case "s03":
         return (
           <CaseView
-            caseData={state === "empty" ? null : FIXTURE_CASE_DETAIL}
+            key={state}
+            caseData={
+              state === "loading" || state === "error"
+                ? null
+                : state === "default"
+                  ? { ...FIXTURE_CASE_DETAIL, allowed_actions: ["start", "redact"] }
+                  : state === "result_sheet"
+                    ? FIXTURE_CASE_RESULT_SHEET
+                    : state === "closed"
+                      ? { ...FIXTURE_CASE_IN_REVIEW, status: "closed", outcome: "corroborated", allowed_actions: [], open_question: null }
+                      : state === "pending_help"
+                        ? { ...FIXTURE_CASE_IN_REVIEW, suggestions: { ...FIXTURE_CASE_IN_REVIEW.suggestions, status: "pending" }, duplicates: [] }
+                        : FIXTURE_CASE_IN_REVIEW
+            }
             loading={state === "loading"}
-            error={state === "error" ? "Case not found" : null}
+            error={state === "error" ? t("staff.networkError") : null}
+            messages={state === "default" ? [] : FIXTURE_CASE_MESSAGES}
+            conflict={
+              state === "stale_version" ? "stale_version"
+                : state === "invalid_transition" ? "invalid_transition"
+                  : state === "closure_evidence_changed" ? "closure_evidence_changed"
+                    : state === "validation" ? "validation"
+                      : null
+            }
+            onReload={() => {}}
+            onSendMessage={() => {}}
+            onViewUnblurred={async () => ({ error: "unavailable" })}
           />
         );
 
@@ -366,7 +396,7 @@ export function StaffStateViewer(): ReactElement {
         <div style={{ marginLeft: "auto", display: "flex", gap: "12px", alignItems: "center" }}>
           <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", alignItems: "center" }}>
             <span style={{ color: "var(--ink-2)" }}>State:</span>
-            {(screen === "s01" ? S01_STATES : screen === "s02" ? S02_STATES : (["default", "loading", "empty", "error"] as const)).map((st) => (
+            {(screen === "s01" ? S01_STATES : screen === "s02" ? S02_STATES : screen === "s03" ? S03_STATES : (["default", "loading", "empty", "error"] as const)).map((st) => (
               <Link
                 key={st}
                 href={`/dev/staff?screen=${screen}&state=${st}&theme=${theme}`}

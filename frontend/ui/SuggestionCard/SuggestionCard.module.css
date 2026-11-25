@@ -67,6 +67,31 @@
   font-weight: 600;
 }
 
+/* Confidence as a word and a three-step bar: low one, medium two, high three. */
+.confidenceRow {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+}
+
+.bar {
+  display: inline-grid;
+  grid-template-columns: repeat(3, 20px);
+  gap: 3px;
+}
+
+.bar span {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--rule);
+}
+
+.bar[data-level="low"] span:nth-child(-n + 1),
+.bar[data-level="medium"] span:nth-child(-n + 2),
+.bar[data-level="high"] span {
+  background: var(--info-solid);
+}
+
 .reasons {
   padding-top: var(--s-2);
   border-top: 1px solid var(--rule);

@@ -1171,7 +1171,10 @@
       "addSpan": "Add redaction span",
       "clearSpans": "Clear all redactions",
       "save": "Save redactions",
-      "preview": "Redacted preview:"
+      "preview": "Redacted preview:",
+      "mode": "Hide names",
+      "selected": "Selected: “{text}”",
+      "count": "{count, plural, =0 {Nothing hidden yet} one {# part hidden} other {# parts hidden}}"
     },
     "details": {
       "category": "Category: {category}",
@@ -1180,17 +1183,43 @@
       "location": "Location",
       "occurredAt": "Occurred: {time}",
       "receivedAt": "Received: {time}",
-      "skew": "Phone clock skew: {seconds}s"
+      "skew": "Phone clock skew: {seconds}s",
+      "title": "Details",
+      "categoryGiven": "Category given",
+      "dangerNow": "Danger now",
+      "seenFirsthand": "Seen firsthand",
+      "place": "Place",
+      "occurred": "Occurred",
+      "saved": "Saved on the phone",
+      "received": "Received",
+      "yes": "Yes",
+      "no": "No",
+      "unknown": "Not given",
+      "skewWarn": "The phone clock was {minutes} minutes off. Check the times."
     },
     "evidence": {
       "title": "Evidence & integrity",
       "sha256": "SHA-256 verified",
       "exifRemoved": "EXIF stripped",
       "blurred": "Faces blurred",
-      "unblur": "View unblurred (recorded in audit)",
+      "unblur": "View unblurred",
       "transcript": "Audio transcript",
-      "pendingUpload": "Pending upload: {received} of {total} bytes received",
-      "noEvidence": "No media attachments submitted."
+      "pendingUpload": "Still arriving: {received} of {total}",
+      "noEvidence": "No media attachments submitted.",
+      "sha256No": "SHA-256 not verified",
+      "exifNo": "EXIF not stripped",
+      "blurredNo": "Faces not blurred",
+      "unblurReason": "Why do you need to see it unblurred?",
+      "unblurHint": "Your reason is recorded in the audit trail.",
+      "unblurConfirm": "View unblurred",
+      "unblurUnavailable": "The unblurred file is no longer available. It is kept only while the file is being processed.",
+      "unblurShown": "Showing the unblurred file. This view is recorded.",
+      "unblurredAlt": "Unblurred evidence photo",
+      "kind": {
+        "photo": "Photo",
+        "video": "Video",
+        "audio": "Voice note"
+      }
     },
     "suggestions": {
       "title": "AI suggestions",
@@ -1200,7 +1229,12 @@
       "accept": "Accept suggestion",
       "correct": "Correct suggestion",
       "correctLabel": "Choose correction",
-      "saveCorrection": "Apply correction"
+      "saveCorrection": "Apply correction",
+      "pending": "Suggestions are being prepared.",
+      "failed": "No suggestion could be made. Decide from the report.",
+      "abstained": "No suggestion: not confident enough.",
+      "confirmAccept": "Set the {field} to “{value}”?",
+      "names": "The text may contain names. Hide them before it is shared."
     },
     "duplicates": {
       "title": "Duplicate candidates",
@@ -1209,7 +1243,11 @@
       "link": "Link as duplicate",
       "keepSeparate": "Keep separate",
       "linked": "Linked",
-      "inaccessible": "Report from another organisation (metadata only)"
+      "inaccessible": "Report from another organisation (metadata only)",
+      "notice": "Possible duplicates found by matching. A person decides.",
+      "thisCase": "This report",
+      "confirmLink": "Confirm link",
+      "keptSeparate": "Kept separate"
     },
     "resultSheet": {
       "title": "Result sheet consistency check",
@@ -1219,14 +1257,19 @@
       "accreditedExceeds": "Accredited voters exceed registered voters",
       "sumDiffers": "Party votes plus rejected votes differs from accredited count",
       "roundNumbers": "Unusually round numbers",
-      "benignCauses": "Possible benign causes: copy error, unreadable digit"
+      "benignCauses": "Possible benign causes: copy error, unreadable digit",
+      "identical": "Identical to another polling unit's sheet",
+      "digitSwap": "Two digits may be swapped",
+      "noFlags": "No consistency problems found."
     },
     "conversation": {
       "title": "Observer conversation",
       "send": "Send message",
       "placeholder": "Type a message to the observer...",
       "markRead": "Mark messages read",
-      "noMessages": "No messages yet."
+      "noMessages": "No messages yet.",
+      "formal": "Formal question",
+      "label": "Message to the reporter"
     },
     "actions": {
       "title": "Case actions",
@@ -1245,12 +1288,40 @@
       "rationaleLabel": "Internal rationale",
       "rationaleHint": "Explain why this case was corroborated, closed or dismissed. Never shown to reporters.",
       "expectedMediaLabel": "Confirm evidence considered in this closure",
-      "submitClose": "Confirm closure"
+      "submitClose": "Confirm closure",
+      "considered": "{count, plural, =0 {I considered the whole report (no files)} one {I considered all the evidence (# file)} other {I considered all the evidence (# files)}}"
     },
     "history": {
       "title": "Audit trail",
       "chainIntact": "Hash chain intact",
       "chainBroken": "Hash chain broken!"
+    },
+    "columns": {
+      "report": "Report",
+      "help": "Help",
+      "decision": "Decision"
+    },
+    "simulated": "Simulated report",
+    "translationView": {
+      "original": "Original",
+      "english": "English (machine)",
+      "pending": "The machine translation is being prepared.",
+      "failed": "The machine translation failed. Read the original."
+    },
+    "decision": {
+      "status": "Status",
+      "outcome": "Outcome: {outcome}",
+      "openQuestion": "Question waiting for an answer",
+      "askedAt": "Asked {time}",
+      "nothing": "No action is open on this case."
+    },
+    "errors": {
+      "stale": "Someone else changed this case. Reload it to see the latest version.",
+      "invalid": "That action is no longer possible. The case has moved on.",
+      "evidence": "New evidence arrived. Check it before you close the case.",
+      "validation": "Check the fields and try again.",
+      "reload": "Reload",
+      "notFound": "This case was not found."
     }
   },
   "s04": {

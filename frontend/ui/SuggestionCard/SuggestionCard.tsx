@@ -59,7 +59,14 @@ export function SuggestionCard({
       </p>
       {state === "corrected" && correctedValue ? <p className={styles.value}>{correctedValue}</p> : null}
 
-      <p className={styles.confidence}>{t("ui.suggestion.confidence", { level: confidence })}</p>
+      <div className={styles.confidenceRow}>
+        <p className={styles.confidence}>{t("ui.suggestion.confidence", { level: confidence })}</p>
+        <span className={styles.bar} data-level={confidence} aria-hidden="true">
+          <span />
+          <span />
+          <span />
+        </span>
+      </div>
 
       {reasons.length ? (
         <div className={styles.reasons}>

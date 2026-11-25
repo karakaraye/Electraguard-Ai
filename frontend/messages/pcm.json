@@ -1172,7 +1172,10 @@
       "addSpan": "[PCM draft] Add redaction span",
       "clearSpans": "[PCM draft] Clear all redactions",
       "save": "[PCM draft] Save redactions",
-      "preview": "[PCM draft] Redacted preview:"
+      "preview": "[PCM draft] Redacted preview:",
+      "mode": "Hide names",
+      "selected": "Wetin you select: “{text}”",
+      "count": "{count, plural, =0 {Nothing hide yet} one {# part don hide} other {# parts don hide}}"
     },
     "details": {
       "category": "[PCM draft] Category: {category}",
@@ -1181,17 +1184,43 @@
       "location": "[PCM draft] Location",
       "occurredAt": "[PCM draft] Occurred: {time}",
       "receivedAt": "[PCM draft] Received: {time}",
-      "skew": "[PCM draft] Phone clock skew: {seconds}s"
+      "skew": "[PCM draft] Phone clock skew: {seconds}s",
+      "title": "Details",
+      "categoryGiven": "Category wey dem give",
+      "dangerNow": "Danger now",
+      "seenFirsthand": "Dem see am with their eye",
+      "place": "Place",
+      "occurred": "When e happen",
+      "saved": "When dem save am for phone",
+      "received": "When we receive am",
+      "yes": "Yes",
+      "no": "No",
+      "unknown": "Dem no give am",
+      "skewWarn": "The phone clock dey off by {minutes} minutes. Check the times."
     },
     "evidence": {
       "title": "[PCM draft] Evidence & integrity",
       "sha256": "[PCM draft] SHA-256 verified",
       "exifRemoved": "[PCM draft] EXIF stripped",
       "blurred": "[PCM draft] Faces blurred",
-      "unblur": "[PCM draft] View unblurred (recorded in audit)",
+      "unblur": "See am without blur",
       "transcript": "[PCM draft] Audio transcript",
-      "pendingUpload": "[PCM draft] Pending upload: {received} of {total} bytes received",
-      "noEvidence": "[PCM draft] No media attachments submitted."
+      "pendingUpload": "E still dey come: {received} of {total}",
+      "noEvidence": "[PCM draft] No media attachments submitted.",
+      "sha256No": "SHA-256 never verify",
+      "exifNo": "EXIF never comot",
+      "blurredNo": "Faces never blur",
+      "unblurReason": "Why you need to see am without blur?",
+      "unblurHint": "We go write your reason for the audit record.",
+      "unblurConfirm": "See am without blur",
+      "unblurUnavailable": "The file wey no get blur no dey again. We dey keep am only while we dey process the file.",
+      "unblurShown": "Na the file wey no get blur be this. We don record say you see am.",
+      "unblurredAlt": "Evidence photo wey no get blur",
+      "kind": {
+        "photo": "Photo",
+        "video": "Video",
+        "audio": "Voice note"
+      }
     },
     "suggestions": {
       "title": "[PCM draft] AI suggestions",
@@ -1201,7 +1230,12 @@
       "accept": "[PCM draft] Accept suggestion",
       "correct": "[PCM draft] Correct suggestion",
       "correctLabel": "[PCM draft] Choose correction",
-      "saveCorrection": "[PCM draft] Apply correction"
+      "saveCorrection": "[PCM draft] Apply correction",
+      "pending": "Suggestions dey come.",
+      "failed": "No suggestion fit come. Decide from the report.",
+      "abstained": "No suggestion: the machine no sure reach.",
+      "confirmAccept": "Make the {field} be “{value}”?",
+      "names": "The text fit get people name. Hide them before you share am."
     },
     "duplicates": {
       "title": "[PCM draft] Duplicate candidates",
@@ -1210,7 +1244,11 @@
       "link": "[PCM draft] Link as duplicate",
       "keepSeparate": "[PCM draft] Keep separate",
       "linked": "[PCM draft] Linked",
-      "inaccessible": "[PCM draft] Report from another organisation (metadata only)"
+      "inaccessible": "[PCM draft] Report from another organisation (metadata only)",
+      "notice": "Reports wey fit be the same, wey matching find. Na person go decide.",
+      "thisCase": "This report",
+      "confirmLink": "Confirm say na the same",
+      "keptSeparate": "Dem keep am separate"
     },
     "resultSheet": {
       "title": "[PCM draft] Result sheet consistency check",
@@ -1220,14 +1258,19 @@
       "accreditedExceeds": "[PCM draft] Accredited voters exceed registered voters",
       "sumDiffers": "[PCM draft] Party votes plus rejected votes differs from accredited count",
       "roundNumbers": "[PCM draft] Unusually round numbers",
-      "benignCauses": "[PCM draft] Possible benign causes: copy error, unreadable digit"
+      "benignCauses": "[PCM draft] Possible benign causes: copy error, unreadable digit",
+      "identical": "E be like another polling unit sheet exactly",
+      "digitSwap": "Two digits fit don swap",
+      "noFlags": "We no see any problem."
     },
     "conversation": {
       "title": "[PCM draft] Observer conversation",
       "send": "[PCM draft] Send message",
       "placeholder": "[PCM draft] Type a message to the observer...",
       "markRead": "[PCM draft] Mark messages read",
-      "noMessages": "[PCM draft] No messages yet."
+      "noMessages": "[PCM draft] No messages yet.",
+      "formal": "Formal question",
+      "label": "Message to the person wey report"
     },
     "actions": {
       "title": "[PCM draft] Case actions",
@@ -1246,12 +1289,40 @@
       "rationaleLabel": "[PCM draft] Internal rationale",
       "rationaleHint": "[PCM draft] Explain why this case was corroborated, closed or dismissed. Never shown to reporters.",
       "expectedMediaLabel": "[PCM draft] Confirm evidence considered in this closure",
-      "submitClose": "[PCM draft] Confirm closure"
+      "submitClose": "[PCM draft] Confirm closure",
+      "considered": "{count, plural, =0 {I don check the whole report (no file)} one {I don check all the evidence (# file)} other {I don check all the evidence (# files)}}"
     },
     "history": {
       "title": "[PCM draft] Audit trail",
       "chainIntact": "[PCM draft] Hash chain intact",
       "chainBroken": "[PCM draft] Hash chain broken!"
+    },
+    "columns": {
+      "report": "Report",
+      "help": "Help",
+      "decision": "Decision"
+    },
+    "simulated": "Practice report",
+    "translationView": {
+      "original": "Original",
+      "english": "English (machine)",
+      "pending": "Machine dey prepare the translation.",
+      "failed": "Machine translation fail. Read the original."
+    },
+    "decision": {
+      "status": "Status",
+      "outcome": "Outcome: {outcome}",
+      "openQuestion": "Question wey dey wait for answer",
+      "askedAt": "Dem ask am {time}",
+      "nothing": "No action dey open for this case."
+    },
+    "errors": {
+      "stale": "Another person don change this case. Reload am to see the latest one.",
+      "invalid": "That action no fit happen again. The case don move.",
+      "evidence": "New evidence don land. Check am before you close the case.",
+      "validation": "Check the fields and try again.",
+      "reload": "Reload",
+      "notFound": "We no find this case."
     }
   },
   "s04": {
