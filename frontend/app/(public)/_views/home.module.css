@@ -16,6 +16,7 @@
 }
 
 .heroText {
+  position: relative;
   display: grid;
   justify-items: start;
   gap: var(--s-4);

@@ -17,5 +17,5 @@ export default async function GuideIndexPage() {
     : result.status === 404
       ? { kind: "ok" as const, data: { language: locale, documents: [] } }
       : { kind: "error" as const };
-  return <GuideIndexView t={t} state={state} />;
+  return <GuideIndexView t={t} locale={locale} state={state} />;
 }

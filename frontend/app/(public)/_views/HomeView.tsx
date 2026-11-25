@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { Translate } from "../../../lib/i18n";
 import type { Cell, GuideSummary } from "../../../lib/api/types";
-import { SMS_SHORT_CODE, SMS_SHORT_CODE_IS_TEST } from "../../../lib/config";
+import { SMS_SHORT_CODE } from "../../../lib/config";
 import { ButtonLink } from "../../../ui/Button/Button";
 import { BackgroundArt } from "../../../ui/BackgroundArt/BackgroundArt";
 import { ArrowRightIcon, EyeIcon, FileIcon, ListIcon, PenIcon } from "../../../ui/icons";
@@ -32,7 +32,7 @@ export function HomeView({ t, locale, results, guides, check }: HomeViewProps) {
   return (
     <div className={styles.home}>
       <section className={styles.hero} aria-labelledby="p02-title">
-        <BackgroundArt clear="none" data-testid="home-art" />
+        <BackgroundArt variant="plate" data-testid="home-art" />
         <div className={styles.heroText}>
           <h1 id="p02-title" className={styles.title}>{t("p02.heading")}</h1>
           <p className={styles.lead}>{t("p02.lead")}</p>
@@ -44,7 +44,7 @@ export function HomeView({ t, locale, results, guides, check }: HomeViewProps) {
           </div>
           <p className={styles.basic}>
             {t("p02.basicPhone", { ussd: USSD_SERVICE_CODE, shortCode: SMS_SHORT_CODE })}
-            {SMS_SHORT_CODE_IS_TEST ? ` ${t("p02.testNumber")}` : ""}{" "}
+            {" "}
             <Link href="/phone">{t("p02.tryPhone")}</Link>
           </p>
         </div>

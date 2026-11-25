@@ -186,8 +186,15 @@
     max-width: none;
   }
 
+  /* The contents card spans many rows. Row gaps would add up across the empty rows it spans
+     (a huge gap before the last block), so spacing is margin on each block instead. */
+  .article {
+    row-gap: 0;
+  }
+
   .article > * {
     grid-column: 1;
+    margin-block-end: var(--s-6);
   }
 
   .article > .toc {

@@ -10,16 +10,17 @@ import { PublicShell } from "../../../(public)/_components/PublicShell";
 import { HomeView } from "../../../(public)/_views/HomeView";
 import { ResultsView } from "../../../(public)/_views/ResultsView";
 import { AskScreen } from "../../../(public)/ask/AskScreen";
+import { AskPageView } from "../../../(public)/ask/AskPageView";
 import { GuideDocumentView, GuideIndexView } from "../../../(public)/_views/GuideViews";
 import { PrivacyView } from "../../../(public)/_views/PrivacyView";
 import { PhoneSimulator, type PhoneSeed } from "../../../(public)/phone/PhoneSimulator";
 
 const cell = (count: number): Cell => ({ count, suppressed: false });
 
-const FIXTURE_GUIDES: Array<GuideSummary & { fallback_language_used: boolean }> = [
-  { document_id: "voting-rights", title: "Your rights at the polling unit", slug: "voting-rights", version: "2026.1", language: "en", fallback_language_used: false },
-  { document_id: "late-opening", title: "What to do if opening is delayed", slug: "late-opening", version: "2026.1", language: "en", fallback_language_used: false },
-  { document_id: "counting-rules", title: "Official vote-counting procedure", slug: "counting-rules", version: "2026.1", language: "en", fallback_language_used: false },
+const FIXTURE_GUIDES: Array<GuideSummary & { fallback_language_used: boolean; approved_on: string }> = [
+  { document_id: "voting-rights", title: "Your rights at the polling unit", slug: "voting-rights", version: "2026.1", language: "en", fallback_language_used: false, approved_on: "2026-11-20" },
+  { document_id: "late-opening", title: "What to do if opening is delayed", slug: "late-opening", version: "2026.1", language: "en", fallback_language_used: true, approved_on: "2026-11-18" },
+  { document_id: "counting-rules", title: "Official vote-counting procedure", slug: "counting-rules", version: "2026.1", language: "en", fallback_language_used: false, approved_on: "2026-11-12" },
 ];
 
 const FIXTURE_DOC: GuideDocument = {
@@ -33,7 +34,7 @@ const FIXTURE_DOC: GuideDocument = {
   sections: [
     {
       id: "rights",
-      heading: "Voter Rights",
+      heading: "Voter rights",
       body: `Every registered voter has the right to cast a ballot in secret and without intimidation.
 
 - Arrive at your designated polling unit before accreditation ends.
@@ -82,44 +83,47 @@ const FIXTURE_RESULTS: PublicResultsResponse = {
         {
           state_code: "KAN",
           state_name: "Kano",
-          total: cell(215),
+          total: cell(410),
           by_category: {
-            late_materials: cell(70),
-            equipment_failure: cell(55),
-            queues_crowding: cell(45),
-            intimidation_violence: cell(25),
-            vote_buying: cell(12),
+            late_materials: cell(130),
+            equipment_failure: cell(100),
+            queues_crowding: cell(85),
+            intimidation_violence: cell(45),
+            vote_buying: cell(20),
+            access_barrier: cell(30),
           },
         },
         {
           state_code: "LA",
           state_name: "Lagos",
-          total: cell(340),
+          total: cell(520),
           by_category: {
-            late_materials: cell(110),
-            equipment_failure: cell(90),
-            queues_crowding: cell(85),
-            intimidation_violence: cell(30),
-            vote_buying: cell(15),
+            late_materials: cell(160),
+            equipment_failure: cell(130),
+            queues_crowding: cell(120),
+            intimidation_violence: cell(50),
+            vote_buying: cell(25),
+            access_barrier: cell(35),
           },
         },
         {
           state_code: "RI",
           state_name: "Rivers",
-          total: cell(185),
+          total: cell(310),
           by_category: {
-            late_materials: cell(50),
-            equipment_failure: cell(45),
-            queues_crowding: cell(40),
-            intimidation_violence: cell(35),
-            vote_buying: cell(10),
+            late_materials: cell(90),
+            equipment_failure: cell(75),
+            queues_crowding: cell(70),
+            intimidation_violence: cell(40),
+            vote_buying: cell(15),
+            access_barrier: cell(20),
           },
         },
       ],
       outcomes: [
         { outcome: "corroborated", count: 810, share_percent: 65.3, suppressed: false },
-        { outcome: "insufficient_evidence", count: 95, share_percent: 7.7, suppressed: false },
-        { outcome: "out_of_scope", count: 35, share_percent: 2.8, suppressed: false },
+        { outcome: "insufficient_evidence", count: 330, share_percent: 26.6, suppressed: false },
+        { outcome: "out_of_scope", count: 100, share_percent: 8.1, suppressed: false },
       ],
       timeline: [
         { hour_start: "2026-12-05T08:00:00+01:00", count: cell(180) },
@@ -219,9 +223,9 @@ export function PublicStateViewer(): ReactElement {
                       cutoff: "2026-12-05T13:00:00+01:00",
                       organisations: 4,
                       categories: [
-                        { category: "late_materials", count: 412 },
-                        { category: "queues_crowding", count: 318 },
-                        { category: "equipment_failure", count: 207 },
+                        { category: "late_materials", count: 380 },
+                        { category: "equipment_failure", count: 305 },
+                        { category: "queues_crowding", count: 275 },
                       ],
                     }
             }
@@ -246,6 +250,7 @@ export function PublicStateViewer(): ReactElement {
 
       case "ask":
         return (
+          <AskPageView t={t}>
           <AskScreen
             initial={
               state === "answered"
@@ -280,12 +285,14 @@ export function PublicStateViewer(): ReactElement {
             }
             initialQuestion={state === "answered" ? "What should I do if the polling unit opens late?" : ""}
           />
+          </AskPageView>
         );
 
       case "guide":
         return (
           <GuideIndexView
             t={t}
+            locale={locale}
             state={
               state === "error"
                 ? { kind: "error" }
@@ -340,6 +347,7 @@ export function PublicStateViewer(): ReactElement {
     >
       {/* Dev Bar */}
       <div
+        data-dev-bar
         style={{
           background: "var(--paper)",
           color: "var(--ink)",

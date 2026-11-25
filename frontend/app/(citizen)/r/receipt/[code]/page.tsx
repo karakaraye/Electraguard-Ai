@@ -5,7 +5,7 @@ import { Suspense, useEffect, useRef } from "react";
 import { del } from "../../../../../lib/drafts/db";
 import { kick, retryMedia, useOutbox, type ReceivedEntry } from "../../../../../lib/outbox";
 import { saveReceived } from "../../../../../lib/outbox/store";
-import { SMS_SHORT_CODE, SMS_SHORT_CODE_IS_TEST } from "../../../../../lib/config";
+import { SMS_SHORT_CODE } from "../../../../../lib/config";
 import { useFocusTitle, useNetwork } from "../../../../(observer)/o/_lib/network";
 import { CitizenReceiptView } from "../../../../(observer)/o/_views/CitizenViews";
 import { PendingView, type ReceiptItem } from "../../../../(observer)/o/_views/ReceiptView";
@@ -83,7 +83,7 @@ function CitizenReceipt() {
         }
       }}
       shortCode={SMS_SHORT_CODE}
-      shortCodeIsTest={SMS_SHORT_CODE_IS_TEST}
+      shortCodeIsTest={false}
       items={items}
       onRetry={(id) => item && void retryMedia(item.id, id)}
       onCheckStatus={() => router.push(`/status?code=${encodeURIComponent(receipt.receipt_code)}`)}
