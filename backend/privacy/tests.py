@@ -485,12 +485,16 @@ class RedactionTests(TestCase):
         self.assertEqual(remaining, 0)
 
     def test_guard_no_raw_pii_across_staff_endpoints(self):
+        from datetime import timedelta
+        from accounts.staff_sessions import VERIFIED
+        from ops.models import ClusterWarning
         from reports.models import MediaItem
         from reports.v1_views import persist_report
-        from staff.models import AuditEvent
+        from staff.test_support import bind_staff_session
 
-        raw_phone = "08098765432"
-        raw_name = "Babatunde Fashola"
+        raw_phone = "0803 123 4567"
+        raw_name = "Mrs Adaeze Okafor"
+        raw_name_core = "Adaeze Okafor"
         values = {
             "occurred_at": timezone.now(),
             "description": f"Incident reported by {raw_name} on {raw_phone}.",
@@ -504,32 +508,42 @@ class RedactionTests(TestCase):
         report.assigned_reviewer = self.reviewer_a
         report.save(update_fields=["assigned_reviewer"])
 
-        # Add CitizenReply & ReviewEvent with note
-        ev = ReviewEvent.objects.create(
+        # Observer MESSAGE
+        ReviewEvent.objects.create(
+            report=report,
+            organisation=self.org_a,
+            actor=self.observer,
+            action=ReviewEvent.Action.MESSAGE,
+            version=report.version + 1,
+            change={"author": "observer", "note": f"Observer message from {raw_name} ({raw_phone})"},
+        )
+        # Formal question + Observer RESPOND
+        ReviewEvent.objects.create(
             report=report,
             organisation=self.org_a,
             actor=self.reviewer_a,
             action=ReviewEvent.Action.REQUEST_CLARIFICATION,
-            version=report.version + 1,
-            change={"note": "Please clarify"},
+            version=report.version + 2,
+            change={"author": "reviewer", "note": "Please clarify"},
         )
         ev_resp = ReviewEvent.objects.create(
             report=report,
             organisation=self.org_a,
             actor=None,
             action=ReviewEvent.Action.RESPOND,
-            version=report.version + 2,
-            change={"note": f"Reply from {raw_name} ({raw_phone})"},
+            version=report.version + 3,
+            change={"author": "observer", "note": f"Reply from {raw_name} ({raw_phone})"},
         )
+        # Citizen reply WITHOUT auto_redacted_body filled in
         CitizenReply.objects.create(
             report=report,
             organisation=self.org_a,
             question_id=str(uuid4()),
             event=ev_resp,
-            body=f"Reply from {raw_name} ({raw_phone})",
-            auto_redacted_body=redact(f"Reply from {raw_name} ({raw_phone})", self.org_a).text,
+            body=f"Citizen reply from {raw_name} ({raw_phone})",
+            auto_redacted_body="",
         )
-        # Add MediaItem transcript
+        # Transcript
         MediaItem.objects.create(
             organisation=self.org_a,
             report=report,
@@ -542,8 +556,7 @@ class RedactionTests(TestCase):
             transcript=f"Audio by {raw_name} phone {raw_phone}",
             transcript_status="ready",
         )
-        # Add Discussion post
-        from datetime import timedelta
+        # Discussion post (flagged so it appears in moderation list)
         disc = Discussion.objects.create(
             organisation=self.org_a,
             title="Ward 1",
@@ -553,26 +566,66 @@ class RedactionTests(TestCase):
         )
         code_obj = ObserverCode.objects.get(user=self.observer)
         member = Membership.objects.create(discussion=disc, observer=code_obj, state="member")
-        Post.objects.create(
+        post = Post.objects.create(
             discussion=disc,
             author=member,
             body=f"Discussion post by {raw_name} {raw_phone}",
             auto_redacted_body=redact(f"Discussion post by {raw_name} {raw_phone}", self.org_a).text,
+            name_check=True,
         )
 
-        # Check all staff endpoints
-        self.client.force_login(self.reviewer_a)
-        staff_urls = [
-            "/api/v1/review/queue",
-            f"/api/v1/review/cases/{report.pk}",
-            f"/api/v1/reports/{report.pk}/messages",
-            "/api/review/",
-            f"/api/review/{report.pk}",
-            f"/api/v1/discussions/{disc.pk}/posts",
+        coordinator = User.objects.create_user(
+            email="coord.guard@example.com", password="pw", organisation=self.org_a, role=User.Role.COORDINATOR
+        )
+        moderator_user = User.objects.create_user(
+            email="mod.guard@example.com", password="pw", organisation=self.org_a, role=User.Role.MODERATOR
+        )
+        org_admin = User.objects.create_user(
+            email="admin.guard@example.com", password="pw", organisation=self.org_a, role=User.Role.ORG_ADMIN
+        )
+        ClusterWarning.objects.create(
+            organisation=self.org_a, category="intimidation_violence",
+            area={"state_code": "LA", "lga_code": "LA-01", "lga_name": "Ikeja"},
+            lga_code="LA-01", report_ids=[str(report.pk)], baseline=0.5,
+            window_start=timezone.now() - timedelta(hours=1), window_end=timezone.now(),
+        )
+
+        def login_staff(user):
+            self.client.force_login(user)
+            session = self.client.session
+            session[VERIFIED] = True
+            session.save()
+            bind_staff_session(session, user)
+
+        role_urls = [
+            (self.reviewer_a, [
+                "/api/v1/review/queue",
+                f"/api/v1/review/cases/{report.pk}",
+                f"/api/v1/reports/{report.pk}/messages",
+                "/api/review",
+                f"/api/review/{report.pk}",
+            ]),
+            (moderator_user, [
+                "/api/v1/discussions",
+                f"/api/v1/discussions/{disc.pk}",
+                "/api/v1/moderation/flags",
+            ]),
+            (coordinator, [
+                "/api/v1/ops/overview",
+                "/api/v1/ops/clusters",
+                "/api/v1/publish/snapshots",
+            ]),
+            (org_admin, [
+                "/api/v1/audit/export",
+            ]),
         ]
-        for url in staff_urls:
-            resp = self.client.get(url)
-            if resp.status_code == 200:
-                text = resp.content.decode("utf-8")
+
+        for user, urls in role_urls:
+            login_staff(user)
+            for url in urls:
+                resp = self.client.get(url)
+                raw_bytes = b"".join(resp.streaming_content) if hasattr(resp, "streaming_content") else resp.content
+                self.assertEqual(resp.status_code, 200, f"{url} returned {resp.status_code}: {raw_bytes[:200]}")
+                text = raw_bytes.decode("utf-8")
                 self.assertNotIn(raw_phone, text, f"PII phone leaked at {url}")
-                self.assertNotIn(raw_name, text, f"PII name leaked at {url}")
+                self.assertNotIn(raw_name_core, text, f"PII name leaked at {url}")
