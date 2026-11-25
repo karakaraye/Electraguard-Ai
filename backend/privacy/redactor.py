@@ -464,6 +464,8 @@ def safe_text(obj: Any, organisation: Any = None) -> str:
 
     # ReviewEvent (note in change)
     if hasattr(obj, "change") and isinstance(obj.change, dict):
+        if obj.change.get("auto_redacted_body"):
+            return obj.change["auto_redacted_body"]
         note = obj.change.get("note")
         return redact(str(note), org).text if note else ""
 

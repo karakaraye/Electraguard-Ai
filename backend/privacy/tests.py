@@ -654,3 +654,66 @@ class RedactionTests(TestCase):
                 text = raw_bytes.decode("utf-8")
                 self.assertNotIn(raw_phone, text, f"PII phone leaked at {url}")
                 self.assertNotIn(raw_name_core, text, f"PII name leaked at {url}")
+
+    def test_checklist_note_and_reviewer_notes_redacted(self):
+        from accounts.staff_sessions import VERIFIED
+        from reports.models import ReviewEvent
+        from reports.v1_views import persist_report
+        from staff.test_support import bind_staff_session
+
+        values = {
+            "kind": "checklist",
+            "occurred_at": timezone.now(),
+            "description": "Ballot box issue",
+            "structured_details": {"kind": "checklist", "note": "Call Mr Chukwu on 08031234567"},
+            "incident_details": {
+                "kind": "checklist",
+                "area": {"state_code": "LA", "lga_code": "LA-01", "lga_name": "Ikeja"},
+                "category_observer": "intimidation_violence",
+            },
+        }
+        _, _, report = persist_report(self.observer, self.org_a.pk, values, code="OBS-987654")
+        report.assigned_reviewer = self.reviewer_a
+        report.save(update_fields=["assigned_reviewer"])
+        # Ensure checklist note is redacted when read via case detail
+        self.client.force_login(self.reviewer_a)
+        session = self.client.session
+        session[VERIFIED] = True
+        session.save()
+        bind_staff_session(session, self.reviewer_a)
+
+        case_resp = self.client.get(f"/api/v1/review/cases/{report.pk}")
+        self.assertEqual(case_resp.status_code, 200)
+        case_data = case_resp.json()
+        self.assertNotIn("08031234567", str(case_data["checklist"]))
+        self.assertIn("[PHONE_", str(case_data["checklist"]))
+
+        # Reviewer starts review then asks for clarification with PII in question
+        from uuid import uuid4
+        start_resp = self.client.post(
+            f"/api/v1/review/cases/{report.pk}/actions",
+            data={"action": "start", "version": report.version},
+            content_type="application/json",
+            HTTP_IDEMPOTENCY_KEY=str(uuid4()),
+        )
+        self.assertEqual(start_resp.status_code, 200, start_resp.content)
+        report.refresh_from_db()
+
+        ask_resp = self.client.post(
+            f"/api/v1/review/cases/{report.pk}/actions",
+            data={"action": "ask", "version": report.version, "question": "Did Musa Bello 08098765432 sign the sheet?"},
+            content_type="application/json",
+            HTTP_IDEMPOTENCY_KEY=str(uuid4()),
+        )
+        self.assertEqual(ask_resp.status_code, 200, ask_resp.content)
+        ev = ReviewEvent.objects.filter(report=report, action=ReviewEvent.Action.REQUEST_CLARIFICATION).latest("created_at")
+        self.assertNotIn("08098765432", ev.change.get("auto_redacted_body", ""))
+        self.assertIn("[PHONE_", ev.change.get("auto_redacted_body", ""))
+
+        # Case history & conversation must not leak raw PII
+        case_resp2 = self.client.get(f"/api/v1/review/cases/{report.pk}")
+        self.assertEqual(case_resp2.status_code, 200)
+        self.assertNotIn("08098765432", case_resp2.content.decode("utf-8"))
+        conv_resp = self.client.get(f"/api/v1/reports/{report.pk}/messages")
+        self.assertEqual(conv_resp.status_code, 200)
+        self.assertNotIn("08098765432", conv_resp.content.decode("utf-8"))

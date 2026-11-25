@@ -269,7 +269,7 @@ def conversation(report, events):
         elif event.action == Action.REQUEST_CLARIFICATION:
             messages.append({
                 "id": question_id(report.pk, event.version), "kind": "formal_question", "author": "reviewer",
-                "author_label": "Reviewer", "body": event.change["note"], "attachment": None,
+                "author_label": "Reviewer", "body": safe_text(event, report.organisation_id), "attachment": None,
                 "question_state": "closed_unanswered", "reply_to": None, "created_at": wat(event.created_at), "read": True,
             })
     if messages and report.status == Status.NEEDS_CLARIFICATION:
@@ -339,8 +339,16 @@ def case(request, reference):
             "occurred_at": row["occurred_at"], "device_saved_at": details.get("device_saved_at"),
             "received_at": row["received_at"], "clock_skew_seconds": None,
         },
-        "checklist": report.structured_details if report.kind == "checklist" else None,
-        "result_sheet": report.structured_details if report.kind == "result_sheet" else None, "media": media,
+        "checklist": (
+            {**report.structured_details, "note": safe_text({"note": report.structured_details.get("note"), "auto_redacted_body": report.structured_details.get("auto_redacted_note")}, report.organisation_id)}
+            if report.kind == "checklist" and isinstance(report.structured_details, dict) and report.structured_details.get("note")
+            else (report.structured_details if report.kind == "checklist" else None)
+        ),
+        "result_sheet": (
+            {**report.structured_details, "note": safe_text({"note": report.structured_details.get("note"), "auto_redacted_body": report.structured_details.get("auto_redacted_note")}, report.organisation_id)}
+            if report.kind == "result_sheet" and isinstance(report.structured_details, dict) and report.structured_details.get("note")
+            else (report.structured_details if report.kind == "result_sheet" else None)
+        ), "media": media,
         "pending_uploads": [
             {"id": str(upload.pk), "kind": upload.kind, "size_bytes": upload.size_bytes, "received_bytes": upload.received_bytes}
             for upload in pending
@@ -356,7 +364,9 @@ def case(request, reference):
                     "Observer" if event.actor_id == report.observer_id else event.actor.get_full_name() or event.actor.role.title()
                 )), "created_at": wat(event.created_at), "change": (
                     {**event.change, "note": safe_text(event, report.organisation_id)}
-                    if isinstance(event.change, dict) and "note" in event.change and event.action in (Action.RESPOND, Action.MESSAGE)
+                    if isinstance(event.change, dict) and "note" in event.change and event.action in (
+                        Action.RESPOND, Action.MESSAGE, Action.REQUEST_CLARIFICATION, Action.CLOSE
+                    )
                     else event.change
                 ),
             } for event in events
@@ -426,7 +436,11 @@ def apply_action(request, report, data):
         if problem:
             problems[name] = problem
         else:
+            from privacy.redactor import redact as auto_redact
+            n_res = auto_redact(text, report.organisation_id)
             change["note"] = text
+            change["auto_redacted_body"] = n_res.text
+            change["auto_redactions"] = n_res.spans
     if action == "close":
         outcome = data.get("outcome")
         if outcome not in Report.Outcome.values:

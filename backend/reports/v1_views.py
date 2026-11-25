@@ -194,6 +194,14 @@ def persist_report(actor, organisation, values, *, code="", secret_digest="", **
         res = redact(desc, organisation)
         values["auto_redacted_description"] = res.text
         values["auto_redactions"] = res.spans
+    structured = values.get("structured_details")
+    if isinstance(structured, dict) and structured.get("note"):
+        s_res = redact(structured["note"], organisation)
+        values["structured_details"] = {
+            **structured,
+            "auto_redacted_note": s_res.text,
+            "auto_redactions": s_res.spans,
+        }
     while True:
         reference = receipt()
         try:
