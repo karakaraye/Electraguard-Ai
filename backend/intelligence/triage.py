@@ -7,6 +7,7 @@ from django.db.models import Q
 from django.utils import timezone
 
 from reports.models import Report, Triage, TriageMatch
+from privacy.redactor import safe_text
 
 from .learning import incident_models
 
@@ -55,7 +56,7 @@ def active_reports(report):
 
 
 def visible_description(report):
-    return report.redacted_description if report.redacted_description is not None else report.description
+    return safe_text(report)
 
 
 def suggest_duplicates(report, area):
@@ -145,3 +146,7 @@ def write_suggestions(report, job):
     job.method_version = VERSIONS["category"]
     job.attempted_at = timezone.now()
     job.save(update_fields=["status", "attempted_at", "suggestions", "method_version"])
+    from clocks.calculator import resolve_urgency, update_clock_urgency
+
+    report.triage = job
+    update_clock_urgency(report, resolve_urgency(report))

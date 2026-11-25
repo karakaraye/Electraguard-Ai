@@ -1,6 +1,7 @@
 from django.utils import timezone
 
 from accounts.observer_auth import wat
+from privacy.redactor import safe_text
 
 from .media_storage import all_keys, schedule_delete, staging_key
 from .models import UploadSession
@@ -53,7 +54,7 @@ def describe_transcript(media):
     if media.kind != "audio" or media.status != "ready":
         return None
     return {
-        "status": media.transcript_status or "unavailable", "text": media.transcript,
+        "status": media.transcript_status or "unavailable", "text": safe_text(media),
         "language": media.transcript_language or None, "method": media.transcript_method or None,
         "machine_generated": True,
     }

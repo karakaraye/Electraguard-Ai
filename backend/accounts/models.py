@@ -12,6 +12,16 @@ def default_party_labels():
     return ["A", "B", "C", "D", "E"]
 
 
+def default_review_targets():
+    return {
+        "urgent": 15,
+        "high": 60,
+        "normal": 240,
+        "low": 480,
+        "question_reply": 120,
+    }
+
+
 class Organisation(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     name = models.CharField(max_length=160)
@@ -20,6 +30,7 @@ class Organisation(models.Model):
     coverage_state_codes = models.JSONField(default=list)
     coverage_lga_codes = models.JSONField(default=list)
     party_labels = models.JSONField(default=default_party_labels)
+    review_targets = models.JSONField(default=default_review_targets)
 
     election_day = models.DateField(null=True, blank=True)
     public_delay_minutes = models.PositiveSmallIntegerField(default=60)

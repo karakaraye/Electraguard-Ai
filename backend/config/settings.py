@@ -58,6 +58,8 @@ INSTALLED_APPS = [
     "ops",
     "intelligence",
     "phone_channels",
+    "privacy",
+    "clocks",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
@@ -67,6 +69,7 @@ INSTALLED_APPS = [
     "reference",
     "approved_answers",
     "discussions",
+    "notices",
 ]
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -138,3 +141,5 @@ TRANSCRIBER = ""
 
 if os.getenv("PUBLIC_INTAKE_ORGANISATION_ID"):
     PUBLIC_INTAKE_ORGANISATION_ID = UUID(os.environ["PUBLIC_INTAKE_ORGANISATION_ID"])
+
+COMMUNITY_MATCH_THRESHOLD = float(os.getenv("COMMUNITY_MATCH_THRESHOLD", "0.35"))

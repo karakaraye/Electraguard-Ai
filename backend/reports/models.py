@@ -44,6 +44,8 @@ class Report(OrganisationOwned):
     review_suggestions = models.JSONField(default=dict)
     redacted_description = models.TextField(null=True)
     redactions = models.JSONField(default=list)
+    auto_redacted_description = models.TextField(null=True, blank=True)
+    auto_redactions = models.JSONField(default=list, blank=True)
     withdrawn_at = models.DateTimeField(null=True)
     status = models.CharField(max_length=24, choices=Status.choices, default=Status.SUBMITTED)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -270,6 +272,8 @@ class CitizenReply(OrganisationOwned):
     event = models.OneToOneField(ReviewEvent, related_name="citizen_reply", on_delete=models.CASCADE)
     question_id = models.UUIDField()
     body = models.CharField(max_length=2000)
+    auto_redacted_body = models.CharField(max_length=2000, blank=True, default="")
+    auto_redactions = models.JSONField(default=list, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
 

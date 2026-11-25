@@ -14,7 +14,10 @@ from reports.v1_views import question_id
 
 from .intake import create_report, paused
 from .models import Callback, OutboundSMS, PhoneLanguage, PhoneReporter
-from .text import CATEGORIES, KEYWORDS, LABELS, LANGUAGES, LANGUAGE_REPLY, MENUS, ascii_text, help_text
+from .text import (
+    CATEGORIES, CHECK_MATCHED_REPLY, CHECK_QUEUED_REPLY, CHECK_SAFETY_REPLY,
+    KEYWORDS, LABELS, LANGUAGES, LANGUAGE_REPLY, MENUS, ascii_text, help_text,
+)
 
 PAUSED = "Reporting is paused. Please try later."
 LIMIT = "Too many messages. Please try later."
@@ -82,8 +85,12 @@ def sms_command(organisation, phone_hash, text, simulated, actor):
     language = preference.language if preference else "en"
     parts = text.strip().split(maxsplit=1)
     keyword, arguments = (parts + ["", ""])[:2]
-    index = next((words.index(ascii_text(keyword).upper()) for words in KEYWORDS.values()
-                  if ascii_text(keyword).upper() in words), None)
+    kw = ascii_text(keyword).upper()
+    if kw == "CHECK":
+        index = 4
+    else:
+        index = next((words.index(kw) for words in KEYWORDS.values()
+                      if kw in words), None)
     args = arguments.split(maxsplit=1)
     if index == 0 and len(args) == 2 and args[0] in "0123456789" and len(args[0]) == 1:
         category, description = args
@@ -117,6 +124,23 @@ def sms_command(organisation, phone_hash, text, simulated, actor):
             defaults={"language": language, "expires_at": timezone.now() + timedelta(days=30)},
         )
         return LANGUAGE_REPLY[language]
+    if index == 4:
+        query_text = arguments.strip()
+        if not query_text:
+            return help_text(language)
+        if paused(organisation):
+            return PAUSED
+        from rumours.public_views import check_rumour, submit_rumour_check
+        chk = check_rumour(query_text, language, organisation)
+        if chk.get("result") == "safety":
+            return CHECK_SAFETY_REPLY.get(language, CHECK_SAFETY_REPLY["en"])[:160]
+        if chk.get("result") == "checked":
+            resp_text = (chk.get("response") or {}).get("text", "")
+            tpl = CHECK_MATCHED_REPLY.get(language, CHECK_MATCHED_REPLY["en"])
+            reply = tpl.format(text=resp_text)
+            return reply[:160]
+        submit_rumour_check(query_text, language, organisation, source="sms")
+        return CHECK_QUEUED_REPLY.get(language, CHECK_QUEUED_REPLY["en"])[:160]
     return help_text(language)
 
 

@@ -11,6 +11,7 @@ from django.db.models.functions import Coalesce
 from django.utils import timezone
 
 from .models import Report, Triage, TriageMatch
+from privacy.redactor import safe_text
 
 METHOD_VERSION = "local-lexical-v1"
 WINDOW = timedelta(minutes=90)
@@ -80,10 +81,10 @@ def duplicate_score(time_gap, location, words, other_location, other_words):
 
 def shortlist(report):
     location = set(tokens(report.location))
-    words = tokens(report.redacted_description if report.redacted_description is not None else report.description)
+    words = tokens(safe_text(report))
     candidates = Report.objects.filter(
         organisation_id=report.organisation_id, occurred_at__range=(report.occurred_at - WINDOW, report.occurred_at + WINDOW),
-    ).exclude(pk=report.pk).exclude(status=Report.Status.WITHDRAWN).annotate(safe_description=Coalesce("redacted_description", "description", output_field=TextField())).values_list("reference", "occurred_at", "location", "safe_description")
+    ).exclude(pk=report.pk).exclude(status=Report.Status.WITHDRAWN).annotate(safe_description=Coalesce("redacted_description", "auto_redacted_description", "description", output_field=TextField())).values_list("reference", "occurred_at", "location", "safe_description")
     pairs = []
     for reference, occurred_at, label, description in candidates.iterator():
         score = duplicate_score(
@@ -112,8 +113,8 @@ def process_next():
     job.attempted_at = timezone.now()
     try:
         with transaction.atomic():
-            report = Report.objects.only("reference", "occurred_at", "location", "description", "redacted_description", "organisation_id").get(pk=job.report_id, organisation_id=job.organisation_id)
-            category = categorize(report.redacted_description if report.redacted_description is not None else report.description)
+            report = Report.objects.only("reference", "occurred_at", "location", "description", "redacted_description", "auto_redacted_description", "organisation_id").get(pk=job.report_id, organisation_id=job.organisation_id)
+            category = categorize(safe_text(report))
             for first, second, score in shortlist(report):
                 # A withdrawal may have won after the shortlist read.
                 active = Report.objects.filter(

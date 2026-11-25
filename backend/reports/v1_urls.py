@@ -30,6 +30,8 @@ urlpatterns = [
     path("review/cases/<uuid:reference>/actions", review.actions),
     path("review/cases/<uuid:reference>/suggestions/<str:kind>", review.suggestion),
     path("review/cases/<uuid:reference>/redaction", review.redact),
+    path("review/cases/<uuid:reference>/original", review.original),
+    path("cases/<uuid:reference>/original", review.original),
     path("public/reports", public.submit),
     path("public/receipts/<str:receipt_code>", public.receipt_status),
     path("public/receipts/<str:receipt_code>/conversation", public.conversation),

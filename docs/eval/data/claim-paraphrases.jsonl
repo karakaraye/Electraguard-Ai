@@ -1,0 +1,150 @@
+{"id": "en-pos-01", "lang": "en", "query": "Is it true that the new voting app was cancelled?", "target_claim_id": "CLM-0004"}
+{"id": "en-pos-02", "lang": "en", "query": "They are saying ballot photo will get you cash reward", "target_claim_id": "CLM-0012"}
+{"id": "en-pos-03", "lang": "en", "query": "Did voting get postponed to next week in Delta LGA-1?", "target_claim_id": "CLM-0006"}
+{"id": "en-pos-04", "lang": "en", "query": "Election materials arrived late by two hours in Ogun LGA-1", "target_claim_id": "CLM-0001"}
+{"id": "en-pos-05", "lang": "en", "query": "People claiming results collation in Sokoto LGA-2 has been cancelled", "target_claim_id": "CLM-0007"}
+{"id": "en-pos-06", "lang": "en", "query": "Is there a glitch with the new voting application?", "target_claim_id": "CLM-0002"}
+{"id": "en-pos-07", "lang": "en", "query": "Heard election delayed in Osun LGA-1 because materials came 2 hours late", "target_claim_id": "CLM-0003"}
+{"id": "en-pos-08", "lang": "en", "query": "Social media post says low voter turnout in Kaduna LGA-1 means election was rigged", "target_claim_id": "CLM-0008"}
+{"id": "en-pos-09", "lang": "en", "query": "Is the voter register missing in Kano LGA-1?", "target_claim_id": "CLM-0005"}
+{"id": "en-pos-10", "lang": "en", "query": "Post claims late delivery in Plateau LGA-2 compromised the entire election", "target_claim_id": "CLM-0009"}
+{"id": "en-pos-11", "lang": "en", "query": "They announced that voting in Rivers LGA-1 has moved to next week", "target_claim_id": "CLM-0018"}
+{"id": "en-pos-12", "lang": "en", "query": "Observer checklist confirmed polling unit in Rivers LGA-2 opened on time", "target_claim_id": "CLM-0019"}
+{"id": "en-pos-13", "lang": "en", "query": "Is it true collation of results in Oyo LGA-3 is cancelled?", "target_claim_id": "CLM-0015"}
+{"id": "en-pos-14", "lang": "en", "query": "Somebody said the polling booth in Plateau LGA-3 had serious problems", "target_claim_id": "CLM-0016"}
+{"id": "en-pos-15", "lang": "en", "query": "Heard voter register issue reported in Cross River LGA-3", "target_claim_id": "CLM-0017"}
+{"id": "en-pos-16", "lang": "en", "query": "Polling unit in Kaduna LGA-3 was opened on schedule according to observers", "target_claim_id": "CLM-0020"}
+{"id": "en-pos-17", "lang": "en", "query": "Did results collation run into problems in Rivers LGA-2?", "target_claim_id": "CLM-0022"}
+{"id": "en-pos-18", "lang": "en", "query": "Voting shifted to next week in Kaduna LGA-1 according to a broadcast", "target_claim_id": "CLM-0024"}
+{"id": "en-pos-19", "lang": "en", "query": "Low voter turnout in Sokoto LGA-2 proves voting was fraudulent", "target_claim_id": "CLM-0010"}
+{"id": "en-pos-20", "lang": "en", "query": "Is the whole election compromised because of one late delivery in Kano LGA-1?", "target_claim_id": "CLM-0013"}
+{"id": "en-neg-01", "lang": "en", "query": "What time do polling units close today across Nigeria?", "target_claim_id": null}
+{"id": "en-neg-02", "lang": "en", "query": "Where can I find my registered polling unit address?", "target_claim_id": null}
+{"id": "en-neg-03", "lang": "en", "query": "Can I bring my own pen to mark the ballot paper?", "target_claim_id": null}
+{"id": "en-neg-04", "lang": "en", "query": "How many accredited observers are allowed at each polling station?", "target_claim_id": null}
+{"id": "en-neg-05", "lang": "en", "query": "What should an elderly voter do if the queue is too long?", "target_claim_id": null}
+{"id": "en-neg-06", "lang": "en", "query": "Are commercial vehicles allowed on the road after 2pm?", "target_claim_id": null}
+{"id": "en-neg-07", "lang": "en", "query": "Does the bimodal voter accreditation system require internet?", "target_claim_id": null}
+{"id": "en-neg-08", "lang": "en", "query": "Who is eligible to assist a visually impaired voter?", "target_claim_id": null}
+{"id": "en-neg-09", "lang": "en", "query": "Where do party agents submit their formal protest letters?", "target_claim_id": null}
+{"id": "en-neg-10", "lang": "en", "query": "What is the official toll-free citizen hotline for general inquiries?", "target_claim_id": null}
+{"id": "pcm-pos-01", "lang": "pcm", "query": "Dem say voting app don cancel make everybody stay for house", "target_claim_id": "CLM-0004"}
+{"id": "pcm-pos-02", "lang": "pcm", "query": "If person snap ballot paper dem go give am money true true?", "target_claim_id": "CLM-0012"}
+{"id": "pcm-pos-03", "lang": "pcm", "query": "Abi dem don shift election for Delta LGA-1 enter next week?", "target_claim_id": "CLM-0006"}
+{"id": "pcm-pos-04", "lang": "pcm", "query": "Kayan zabe reached Ogun LGA-1 two hours late observer talk so", "target_claim_id": "CLM-0001"}
+{"id": "pcm-pos-05", "lang": "pcm", "query": "Dem talk say collation for Sokoto LGA-2 no dey hold again", "target_claim_id": "CLM-0007"}
+{"id": "pcm-pos-06", "lang": "pcm", "query": "Wetin happen to the new voting app dem say problem dey", "target_claim_id": "CLM-0002"}
+{"id": "pcm-pos-07", "lang": "pcm", "query": "Materials for Osun LGA-1 reach two hours late na true?", "target_claim_id": "CLM-0003"}
+{"id": "pcm-pos-08", "lang": "pcm", "query": "People dey circulate say low turnout for Kaduna LGA-1 mean say dem don rig election", "target_claim_id": "CLM-0008"}
+{"id": "pcm-pos-09", "lang": "pcm", "query": "My broda talk say voter register for Kano LGA-1 get k-leg", "target_claim_id": "CLM-0005"}
+{"id": "pcm-pos-10", "lang": "pcm", "query": "Because delivery late for Plateau LGA-2 dem say election don spoil finish", "target_claim_id": "CLM-0009"}
+{"id": "pcm-pos-11", "lang": "pcm", "query": "Dem say voting for Rivers LGA-1 don shift go next week o", "target_claim_id": "CLM-0018"}
+{"id": "pcm-pos-12", "lang": "pcm", "query": "Polling unit for Rivers LGA-2 open well well as checklist talk", "target_claim_id": "CLM-0019"}
+{"id": "pcm-pos-13", "lang": "pcm", "query": "Collation of results for Oyo LGA-3 don cancel make we stay home?", "target_claim_id": "CLM-0015"}
+{"id": "pcm-pos-14", "lang": "pcm", "query": "My cousin say polling unit for Plateau LGA-3 get issue wey nobody know", "target_claim_id": "CLM-0016"}
+{"id": "pcm-pos-15", "lang": "pcm", "query": "Wetin dey sup with voter register for Cross River LGA-3?", "target_claim_id": "CLM-0017"}
+{"id": "pcm-pos-16", "lang": "pcm", "query": "Polling unit for Kaduna LGA-3 open normal on schedule", "target_claim_id": "CLM-0020"}
+{"id": "pcm-pos-17", "lang": "pcm", "query": "I hear say wahala dey for results collation for Rivers LGA-2", "target_claim_id": "CLM-0022"}
+{"id": "pcm-pos-18", "lang": "pcm", "query": "Voting don move to next week for Kaduna LGA-1 make una share am", "target_claim_id": "CLM-0024"}
+{"id": "pcm-pos-19", "lang": "pcm", "query": "Low turnout for Sokoto LGA-2 show say dem don compromise everything", "target_claim_id": "CLM-0010"}
+{"id": "pcm-pos-20", "lang": "pcm", "query": "Kano LGA-1 delivery delay mean say election process don scatter?", "target_claim_id": "CLM-0013"}
+{"id": "pcm-neg-01", "lang": "pcm", "query": "Wetin person go do if him permanent voter card break?", "target_claim_id": null}
+{"id": "pcm-neg-02", "lang": "pcm", "query": "Which time counting of votes dey start after voting finish?", "target_claim_id": null}
+{"id": "pcm-neg-03", "lang": "pcm", "query": "Shey pregnant woman fit vote first before other people?", "target_claim_id": null}
+{"id": "pcm-neg-04", "lang": "pcm", "query": "How many party agents fit stand inside polling unit?", "target_claim_id": null}
+{"id": "pcm-neg-05", "lang": "pcm", "query": "Where observer fit report if rain start to fall for polling booth?", "target_claim_id": null}
+{"id": "pcm-neg-06", "lang": "pcm", "query": "Water bottle and food dey allowed inside queue?", "target_claim_id": null}
+{"id": "pcm-neg-07", "lang": "pcm", "query": "Which number person fit call to ask direction to polling center?", "target_claim_id": null}
+{"id": "pcm-neg-08", "lang": "pcm", "query": "If light off during vote count wetin be procedure?", "target_claim_id": null}
+{"id": "pcm-neg-09", "lang": "pcm", "query": "Police officer get right to check voter ballot paper?", "target_claim_id": null}
+{"id": "pcm-neg-10", "lang": "pcm", "query": "How person fit check election result summary for him phone?", "target_claim_id": null}
+{"id": "ha-pos-01", "lang": "ha", "query": "Gaskiya ne an soke sabon manhajar zabe a zauna a gida?", "target_claim_id": "CLM-0004"}
+{"id": "ha-pos-02", "lang": "ha", "query": "Ana cewa duk wanda ya dauki hoton takardar zabe zai sami kudi", "target_claim_id": "CLM-0012"}
+{"id": "ha-pos-03", "lang": "ha", "query": "An dage zabe zuwa mako mai zuwa a Delta LGA-1?", "target_claim_id": "CLM-0006"}
+{"id": "ha-pos-04", "lang": "ha", "query": "Kayan zabe sun makara da awanni biyu a Ogun LGA-1", "target_claim_id": "CLM-0001"}
+{"id": "ha-pos-05", "lang": "ha", "query": "Labari ya bazu cewa an soke tattara sakamako a Sokoto LGA-2", "target_claim_id": "CLM-0007"}
+{"id": "ha-pos-06", "lang": "ha", "query": "Akwai matsala da sabon manhajar kada kuri'a?", "target_claim_id": "CLM-0002"}
+{"id": "ha-pos-07", "lang": "ha", "query": "Kayan zabe a Osun LGA-1 sun isa awanni biyu a makare", "target_claim_id": "CLM-0003"}
+{"id": "ha-pos-08", "lang": "ha", "query": "Karancin fitowar jama'a a Kaduna LGA-1 yana nufin an tafka magudi", "target_claim_id": "CLM-0008"}
+{"id": "ha-pos-09", "lang": "ha", "query": "Dan uwana ya ce rajistar masu zabe a Kano LGA-1 tana da matsala", "target_claim_id": "CLM-0005"}
+{"id": "ha-pos-10", "lang": "ha", "query": "Jinkirin kayan zabe a Plateau LGA-2 yana nufin an lalata zaben?", "target_claim_id": "CLM-0009"}
+{"id": "ha-pos-11", "lang": "ha", "query": "An mayar da kada kuri'a zuwa mako mai zuwa a Rivers LGA-1", "target_claim_id": "CLM-0018"}
+{"id": "ha-pos-12", "lang": "ha", "query": "Wurin zabe a Rivers LGA-2 ya bude akan lokaci kamar yadda aka ruwaito", "target_claim_id": "CLM-0019"}
+{"id": "ha-pos-13", "lang": "ha", "query": "Gaskiya ne an dakatar da tattara sakamako a Oyo LGA-3?", "target_claim_id": "CLM-0015"}
+{"id": "ha-pos-14", "lang": "ha", "query": "Wani ya ce akwai matsala a rumfar zabe ta Plateau LGA-3", "target_claim_id": "CLM-0016"}
+{"id": "ha-pos-15", "lang": "ha", "query": "Akwai korafi kan rajistar masu zabe a Cross River LGA-3", "target_claim_id": "CLM-0017"}
+{"id": "ha-pos-16", "lang": "ha", "query": "Rumfar zabe a Kaduna LGA-3 ta bude cikin tsari akan lokaci", "target_claim_id": "CLM-0020"}
+{"id": "ha-pos-17", "lang": "ha", "query": "An sami matsala wajen tattara sakamakon zabe a Rivers LGA-2", "target_claim_id": "CLM-0022"}
+{"id": "ha-pos-18", "lang": "ha", "query": "An matsar da zaben Kaduna LGA-1 zuwa mako mai zuwa", "target_claim_id": "CLM-0024"}
+{"id": "ha-pos-19", "lang": "ha", "query": "Karancin masu zabe a Sokoto LGA-2 ya tabbatar an cuce zabe", "target_claim_id": "CLM-0010"}
+{"id": "ha-pos-20", "lang": "ha", "query": "Jinkirin isar kaya a Kano LGA-1 ya shafi sahihancin zaben?", "target_claim_id": "CLM-0013"}
+{"id": "ha-neg-01", "lang": "ha", "query": "Wane lokaci ake kammala tantance masu zabe a yau?", "target_claim_id": null}
+{"id": "ha-neg-02", "lang": "ha", "query": "Ta yaya zan iya duba sunana a jerin masu kada kuri'a?", "target_claim_id": null}
+{"id": "ha-neg-03", "lang": "ha", "query": "Shin an yarda a shiga rumfar zabe da wayar salula?", "target_claim_id": null}
+{"id": "ha-neg-04", "lang": "ha", "query": "Masu bukata ta musamman suna da fifiko a layin zabe?", "target_claim_id": null}
+{"id": "ha-neg-05", "lang": "ha", "query": "Su waye ke da alhakin sa hannu a takardar sakamako?", "target_claim_id": null}
+{"id": "ha-neg-06", "lang": "ha", "query": "Ina zan kai korafi idan jami'in zabe bai zo ba?", "target_claim_id": null}
+{"id": "ha-neg-07", "lang": "ha", "query": "Mene ne ka'idar bayyana sakamakon zabe a rumfa?", "target_claim_id": null}
+{"id": "ha-neg-08", "lang": "ha", "query": "Yara kanana za su iya bin iyayensu zuwa wurin kada kuri'a?", "target_claim_id": null}
+{"id": "ha-neg-09", "lang": "ha", "query": "Yaushe za a rufe hanyoyin mota a ranar zabe?", "target_claim_id": null}
+{"id": "ha-neg-10", "lang": "ha", "query": "Akwai lambar waya ta gaggawa domin neman taimako?", "target_claim_id": null}
+{"id": "yo-pos-01", "lang": "yo", "query": "Se ooto ni pe a ti fagile ohun elo ibo tuntun ki a joko si ile?", "target_claim_id": "CLM-0004"}
+{"id": "yo-pos-02", "lang": "yo", "query": "Won ni enikeni to ba ya foto iwe ibo re yoo gba owo", "target_claim_id": "CLM-0012"}
+{"id": "yo-pos-03", "lang": "yo", "query": "Nje won ti sun ibo si ose to n bo ni Delta LGA-1?", "target_claim_id": "CLM-0006"}
+{"id": "yo-pos-04", "lang": "yo", "query": "Awon ohun elo ibo de Ogun LGA-1 ni wakati meji leyin akoko", "target_claim_id": "CLM-0001"}
+{"id": "yo-pos-05", "lang": "yo", "query": "Iroyin n so pe a ti fagile kika esi ibo ni Sokoto LGA-2", "target_claim_id": "CLM-0007"}
+{"id": "yo-pos-06", "lang": "yo", "query": "Mo gbo pe awon isoro wa pelu ohun elo iforukosile ibo", "target_claim_id": "CLM-0002"}
+{"id": "yo-pos-07", "lang": "yo", "query": "Ohun elo fun Osun LGA-1 de ni wakati meji leyin akoko ti a foju sun", "target_claim_id": "CLM-0003"}
+{"id": "yo-pos-08", "lang": "yo", "query": "Awon eniyan kankan ni airode opo oludibo ni Kaduna LGA-1 fihan pe won ti ja ibo", "target_claim_id": "CLM-0008"}
+{"id": "yo-pos-09", "lang": "yo", "query": "Ara ile mi so pe iwe oruko oludibo ni Kano LGA-1 ni awon aseyori ti ko ye", "target_claim_id": "CLM-0005"}
+{"id": "yo-pos-10", "lang": "yo", "query": "Idaduro ohun elo ni Plateau LGA-2 tumo si pe gbogbo eto ibo ti baje", "target_claim_id": "CLM-0009"}
+{"id": "yo-pos-11", "lang": "yo", "query": "A ti sun ibo ni Rivers LGA-1 si ose to n bo", "target_claim_id": "CLM-0018"}
+{"id": "yo-pos-12", "lang": "yo", "query": "Awon oluso ri pe ibudo ibo ni Rivers LGA-2 bere ni akoko gege bi ilana", "target_claim_id": "CLM-0019"}
+{"id": "yo-pos-13", "lang": "yo", "query": "Nje a ti fagile kika esi ibo ni Oyo LGA-3 ki a ma wa?", "target_claim_id": "CLM-0015"}
+{"id": "yo-pos-14", "lang": "yo", "query": "Enikan so pe ibudo ibo ni Plateau LGA-3 ni awon isoro pataki", "target_claim_id": "CLM-0016"}
+{"id": "yo-pos-15", "lang": "yo", "query": "Mo gbo pe isoro wa pelu akojopo oruko oludibo ni Cross River LGA-3", "target_claim_id": "CLM-0017"}
+{"id": "yo-pos-16", "lang": "yo", "query": "Ibudo ibo ni Kaduna LGA-3 bere ni asiko to to lai si idaduro", "target_claim_id": "CLM-0020"}
+{"id": "yo-pos-17", "lang": "yo", "query": "Isoro sele nibi ti a ti n ko esi ibo jo ni Rivers LGA-2", "target_claim_id": "CLM-0022"}
+{"id": "yo-pos-18", "lang": "yo", "query": "A gbo pe ibo Kaduna LGA-1 ti di ose to n bo", "target_claim_id": "CLM-0024"}
+{"id": "yo-pos-19", "lang": "yo", "query": "Airode oludibo to po ni Sokoto LGA-2 fi han pe eto ibo ko se dede", "target_claim_id": "CLM-0010"}
+{"id": "yo-pos-20", "lang": "yo", "query": "Idaduro ohun elo eyo kan ni Kano LGA-1 ba gbogbo eto ibo je?", "target_claim_id": "CLM-0013"}
+{"id": "yo-neg-01", "lang": "yo", "query": "Akoko wo ni ibudo ibo yoo tilekun ni irole oni?", "target_claim_id": null}
+{"id": "yo-neg-02", "lang": "yo", "query": "Bawo ni mo se le mo adiresi ibudo ibo ti mo foruko sile si?", "target_claim_id": null}
+{"id": "yo-neg-03", "lang": "yo", "query": "Nje a gba alaboyun laaye lati dibo ni kutukutu lai duro ninu ila?", "target_claim_id": null}
+{"id": "yo-neg-04", "lang": "yo", "query": "Awon wo ni o le ba afoju tabi alailagbara te iwe ibo?", "target_claim_id": null}
+{"id": "yo-neg-05", "lang": "yo", "query": "Nibo ni asoju egbe oselu ti le gba iwe esi ibo?", "target_claim_id": null}
+{"id": "yo-neg-06", "lang": "yo", "query": "Se a le lo kaadi idanimo miran yato si kaadi ibo?", "target_claim_id": null}
+{"id": "yo-neg-07", "lang": "yo", "query": "Bawo ni eto idibo se ri fun awon to n sise oluso?", "target_claim_id": null}
+{"id": "yo-neg-08", "lang": "yo", "query": "Elo ni iye awon asoju egbe ti a gba laaye ni ibudo ibo?", "target_claim_id": null}
+{"id": "yo-neg-09", "lang": "yo", "query": "Bawo ni a se n se kika ibo leyin ti idibo ba pari?", "target_claim_id": null}
+{"id": "yo-neg-10", "lang": "yo", "query": "Nje nomba gbankogbi wa fun ibeere lori eto idibo?", "target_claim_id": null}
+{"id": "ig-pos-01", "lang": "ig", "query": "Ọ bụ eziokwu na a kagbuola ngwa ọhụrụ e ji eme ntuli aka ka anyị nọrọ n'ụlọ?", "target_claim_id": "CLM-0004"}
+{"id": "ig-pos-02", "lang": "ig", "query": "A na-ekwu na onye ọ bụla sere foto akwụkwọ vootu ya ga-enweta ego", "target_claim_id": "CLM-0012"}
+{"id": "ig-pos-03", "lang": "ig", "query": "A kpaliri ntuli aka na Delta LGA-1 gaa n'izu na-abịa?", "target_claim_id": "CLM-0006"}
+{"id": "ig-pos-04", "lang": "ig", "query": "Ngwa ntuli aka maka Ogun LGA-1 biara awa abuo n'azụ oge", "target_claim_id": "CLM-0001"}
+{"id": "ig-pos-05", "lang": "ig", "query": "Akụkọ na-efe na a kagbuola nchịkọta nsonaazụ na Sokoto LGA-2", "target_claim_id": "CLM-0007"}
+{"id": "ig-pos-06", "lang": "ig", "query": "Anụrụ m na nsogbu dị na ngwa ọhụrụ e ji eme ntuli aka", "target_claim_id": "CLM-0002"}
+{"id": "ig-pos-07", "lang": "ig", "query": "Ngwa maka Osun LGA-1 rutere awa abuo na mbubreyo dịka ndị nleba anya kwuru", "target_claim_id": "CLM-0003"}
+{"id": "ig-pos-08", "lang": "ig", "query": "Ọnụ ọgụgụ dị ala nke ndị bịara vootu na Kaduna LGA-1 pụtara na a ghọgburu ntuli aka", "target_claim_id": "CLM-0008"}
+{"id": "ig-pos-09", "lang": "ig", "query": "Nwanne m nwoke kwuru na akwụkwọ ndebanye aha ndị na-eme vootu na Kano LGA-1 nwere nsogbu", "target_claim_id": "CLM-0005"}
+{"id": "ig-pos-10", "lang": "ig", "query": "Otu mbubreyo n'ibutara ngwa na Plateau LGA-2 pụtara na usoro ntuli aka mebiri?", "target_claim_id": "CLM-0009"}
+{"id": "ig-pos-11", "lang": "ig", "query": "A kpaliri vootu na Rivers LGA-1 gaa n'izu na-abịa gbasara ozi a", "target_claim_id": "CLM-0018"}
+{"id": "ig-pos-12", "lang": "ig", "query": "Ebe a na-eme ntuli aka na Rivers LGA-2 mepere n'oge kwesịrị ekwesị", "target_claim_id": "CLM-0019"}
+{"id": "ig-pos-13", "lang": "ig", "query": "Ọ bụ eziokwu na a kagbuola nchịkọta nsonaazụ na Oyo LGA-3?", "target_claim_id": "CLM-0015"}
+{"id": "ig-pos-14", "lang": "ig", "query": "Onye ikwu m kwuru na ebe ntuli aka na Plateau LGA-3 nwere nnukwu nsogbu", "target_claim_id": "CLM-0016"}
+{"id": "ig-pos-15", "lang": "ig", "query": "Anụrụ m na ndebanye aha ndị na-eme ntuli aka na Cross River LGA-3 nwere nsogbu", "target_claim_id": "CLM-0017"}
+{"id": "ig-pos-16", "lang": "ig", "query": "Ebe ntuli aka na Kaduna LGA-3 mepere n'usoro kwesịrị ekwesị", "target_claim_id": "CLM-0020"}
+{"id": "ig-pos-17", "lang": "ig", "query": "Nsogbu batara na nchịkọta nsonaazụ ntuli aka na Rivers LGA-2", "target_claim_id": "CLM-0022"}
+{"id": "ig-pos-18", "lang": "ig", "query": "A kpaliri ntuli aka na Kaduna LGA-1 gaa n'izu ọzọ", "target_claim_id": "CLM-0024"}
+{"id": "ig-pos-19", "lang": "ig", "query": "Ndị mmadụ adịghị ọtụtụ na Sokoto LGA-2 na-egosi na e mebiri vootu ahụ", "target_claim_id": "CLM-0010"}
+{"id": "ig-pos-20", "lang": "ig", "query": "Mbubreyo n'ibutara ngwa na Kano LGA-1 pụtara na ntuli aka ahụ abaghị uru?", "target_claim_id": "CLM-0013"}
+{"id": "ig-neg-01", "lang": "ig", "query": "Kedu oge a ga-emechi ebe ntuli aka taa?", "target_claim_id": null}
+{"id": "ig-neg-02", "lang": "ig", "query": "Kedu otu m ga-esi chọta nọmba ebe ntuli aka m?", "target_claim_id": null}
+{"id": "ig-neg-03", "lang": "ig", "query": "A na-ekwe ka nwanyị dị ime buru ụzọ mee vootu tupu ndị ọzọ?", "target_claim_id": null}
+{"id": "ig-neg-04", "lang": "ig", "query": "Olee ndị nwere ikike inyere onye kpuru ìsì aka ịtụ vootu?", "target_claim_id": null}
+{"id": "ig-neg-05", "lang": "ig", "query": "Ebee ka ndị nnọchiteanya otu ndọrọndọrọ ọchịchị na-anata akwụkwọ nsonaazụ?", "target_claim_id": null}
+{"id": "ig-neg-06", "lang": "ig", "query": "Enwere ike iji kaadị ọzọ mee vootu ma e wezụga PVC?", "target_claim_id": null}
+{"id": "ig-neg-07", "lang": "ig", "query": "Kedu iwu dị maka igwe na-enyocha akara aka na ihu?", "target_claim_id": null}
+{"id": "ig-neg-08", "lang": "ig", "query": "Ole ndị nnọchiteanya ka a na-anabata n'otu ebe ntuli aka?", "target_claim_id": null}
+{"id": "ig-neg-09", "lang": "ig", "query": "Kedu otu a na-esi gụọ akwụkwọ vootu ma ntuli aka gachaa?", "target_claim_id": null}
+{"id": "ig-neg-10", "lang": "ig", "query": "Enwere akara ekwentị a ga-akpọ maka enyemaka izugbe?", "target_claim_id": null}

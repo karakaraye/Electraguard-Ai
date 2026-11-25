@@ -1,0 +1,308 @@
+{"id": "RED-001", "lang": "en", "text": "Election forms delivered to ward collation centre at 08:15.", "spans": []}
+{"id": "RED-002", "lang": "en", "text": "Returning officer was chosen by the accreditation committee.", "spans": []}
+{"id": "RED-003", "lang": "en", "text": "Chief Imam prayed for peaceful voting before accreditation started.", "spans": []}
+{"id": "RED-004", "lang": "en", "text": "14 observers were on the way to the polling unit.", "spans": []}
+{"id": "RED-005", "lang": "en", "text": "100 voters waited on the expressway near the main gate.", "spans": []}
+{"id": "RED-006", "lang": "en", "text": "Account of votes 0012345678 recorded at closing.", "spans": []}
+{"id": "RED-007", "lang": "en", "text": "Ballot boxes numbered 12345678901 arrived. NIN registration centre closed.", "spans": []}
+{"id": "RED-008", "lang": "en", "text": "Observers gathered at 10 Ward Road before accreditation.", "spans": []}
+{"id": "RED-009", "lang": "en", "text": "Polling materials at 5 Polling Street and 8 Collation Avenue.", "spans": []}
+{"id": "RED-010", "lang": "en", "text": "Sensitive items musa not be left unattended during sorting.", "spans": []}
+{"id": "RED-011", "lang": "en", "text": "BVAS machine 456789012 failed to read thumbprints twice.", "spans": []}
+{"id": "RED-012", "lang": "en", "text": "Result sheet EC8A was pasted on the wall at Unit 004.", "spans": []}
+{"id": "RED-013", "lang": "en", "text": "Security personnel arrived at 12 LGA Drive before noon.", "spans": []}
+{"id": "RED-014", "lang": "en", "text": "Queues moved smoothly after 200 voters were accredited.", "spans": []}
+{"id": "RED-015", "lang": "en", "text": "Presiding officer announced final tallies under floodlights.", "spans": []}
+{"id": "RED-016", "lang": "en", "text": "Witness Mrs Adaeze Okafor called 0803 123 4567 from the gate.", "spans": [{"start": 8, "end": 25, "kind": "name"}, {"start": 33, "end": 46, "kind": "phone"}]}
+{"id": "RED-017", "lang": "en", "text": "Please reach Dr. Chinedu Eze at chinedu.eze@civics.ng urgently.", "spans": [{"start": 13, "end": 28, "kind": "name"}, {"start": 32, "end": 53, "kind": "email"}]}
+{"id": "RED-018", "lang": "en", "text": "BVN: 2234 5678 901 was written on a torn slip at 10 Adeola Road.", "spans": [{"start": 5, "end": 18, "kind": "bvn"}, {"start": 49, "end": 63, "kind": "address"}]}
+{"id": "RED-019", "lang": "en", "text": "Send inducement alert to account no 0123 456 789 immediately.", "spans": [{"start": 36, "end": 48, "kind": "account"}]}
+{"id": "RED-020", "lang": "en", "text": "Voter 0123456789 is my account was overheard near the booth.", "spans": [{"start": 6, "end": 16, "kind": "account"}]}
+{"id": "RED-021", "lang": "en", "text": "NIN of the voter is 12345678901 and PVC AB12345678901234567 was seized.", "spans": [{"start": 20, "end": 31, "kind": "nin"}, {"start": 40, "end": 59, "kind": "vin"}]}
+{"id": "RED-022", "lang": "en", "text": "Call (0803) 987 6543 or email kano.watch@mail.ng about the fight.", "spans": [{"start": 5, "end": 20, "kind": "phone"}, {"start": 30, "end": 48, "kind": "email"}]}
+{"id": "RED-023", "lang": "en", "text": "Thugs led by Alhaji Musa Bello blocked 22 Ahmadu Bello Way.", "spans": [{"start": 13, "end": 30, "kind": "name"}, {"start": 39, "end": 58, "kind": "address"}]}
+{"id": "RED-024", "lang": "en", "text": "Transfer made to a/c 2098765432 by Mr. Babatunde Fashola.", "spans": [{"start": 21, "end": 31, "kind": "account"}, {"start": 35, "end": 56, "kind": "name"}]}
+{"id": "RED-025", "lang": "en", "text": "NIN 1234-5678-901 verified for Amina Danjuma at 09:40.", "spans": [{"start": 4, "end": 17, "kind": "nin"}, {"start": 31, "end": 44, "kind": "name"}]}
+{"id": "RED-026", "lang": "en", "text": "PVC XY98 7654 3210 9876 543 rejected at reader two.", "spans": [{"start": 4, "end": 27, "kind": "vin"}]}
+{"id": "RED-027", "lang": "en", "text": "Observer Oluwaseun Adeyemi lives at 14 Broad Street; dial 0701-555-0192.", "spans": [{"start": 9, "end": 26, "kind": "name"}, {"start": 36, "end": 51, "kind": "address"}, {"start": 58, "end": 71, "kind": "phone"}]}
+{"id": "RED-028", "lang": "en", "text": "Party agent Chief Emeka Nwosu offered cash via account number 3011223344.", "spans": [{"start": 12, "end": 29, "kind": "name"}, {"start": 62, "end": 72, "kind": "account"}]}
+{"id": "RED-029", "lang": "en", "text": "Emergency at Plot 8 Allen Avenue: contact +234 805 222 1100.", "spans": [{"start": 13, "end": 32, "kind": "address"}, {"start": 42, "end": 59, "kind": "phone"}]}
+{"id": "RED-030", "lang": "en", "text": "Send photos to ward4.lead@watch.org.ng before collation closes.", "spans": [{"start": 15, "end": 38, "kind": "email"}]}
+{"id": "RED-031", "lang": "en", "text": "BVN 33445566778 collected by Hajiya Fatima Usman near the fence.", "spans": [{"start": 4, "end": 15, "kind": "bvn"}, {"start": 29, "end": 48, "kind": "name"}]}
+{"id": "RED-032", "lang": "en", "text": "Voter card 90F5B12345678901234 belonged to Kelechi Iheanacho.", "spans": [{"start": 11, "end": 30, "kind": "vin"}, {"start": 43, "end": 60, "kind": "name"}]}
+{"id": "RED-033", "lang": "en", "text": "Call 0803  123  4568 if ballot boxes leave 7B Herbert Macaulay Road.", "spans": [{"start": 5, "end": 20, "kind": "phone"}, {"start": 43, "end": 67, "kind": "address"}]}
+{"id": "RED-034", "lang": "en", "text": "Barr. Sadiq Abubakar documented the protest; mail sadiq.legal@ng.org.", "spans": [{"start": 0, "end": 20, "kind": "name"}, {"start": 50, "end": 68, "kind": "email"}]}
+{"id": "RED-035", "lang": "en", "text": "Suspicious transfer to acct 4055667788 reported by Ngozi Eze.", "spans": [{"start": 28, "end": 38, "kind": "account"}, {"start": 51, "end": 60, "kind": "name"}]}
+{"id": "RED-036", "lang": "en", "text": "NIMC 45678901234 slip found outside 19 Zik Avenue.", "spans": [{"start": 5, "end": 16, "kind": "nin"}, {"start": 36, "end": 49, "kind": "address"}]}
+{"id": "RED-037", "lang": "en", "text": "Pastor Samuel Ogunleye spoke with 0909 444 3322 during counting.", "spans": [{"start": 0, "end": 22, "kind": "name"}, {"start": 34, "end": 47, "kind": "phone"}]}
+{"id": "RED-038", "lang": "en", "text": "VIN KN04A11223344556677 was photographed by Ibrahim Garba.", "spans": [{"start": 4, "end": 23, "kind": "vin"}, {"start": 44, "end": 57, "kind": "name"}]}
+{"id": "RED-039", "lang": "en", "text": "Contact tunde.ade@outlook.com or +2348123456789 for backup.", "spans": [{"start": 8, "end": 29, "kind": "email"}, {"start": 33, "end": 47, "kind": "phone"}]}
+{"id": "RED-040", "lang": "en", "text": "Yusuf Abdullahi stays at 32 Yakubu Gowon Crescent.", "spans": [{"start": 0, "end": 15, "kind": "name"}, {"start": 25, "end": 49, "kind": "address"}]}
+{"id": "RED-041", "lang": "en", "text": "Bribery recorded on a/c 5066-7788-99 at midday.", "spans": [{"start": 24, "end": 36, "kind": "account"}]}
+{"id": "RED-042", "lang": "en", "text": "Mrs. Funke Adebayo reported BVN 5566-7788-990 harvesting.", "spans": [{"start": 0, "end": 18, "kind": "name"}, {"start": 32, "end": 45, "kind": "bvn"}]}
+{"id": "RED-043", "lang": "en", "text": "Call 0818.222.1100 near 5 Zoo Road.", "spans": [{"start": 5, "end": 18, "kind": "phone"}, {"start": 24, "end": 34, "kind": "address"}]}
+{"id": "RED-044", "lang": "en", "text": "Chukwuma Soludo arrived at 11 Independence Layout with observers.", "spans": [{"start": 0, "end": 15, "kind": "name"}, {"start": 27, "end": 49, "kind": "address"}]}
+{"id": "RED-045", "lang": "en", "text": "Email ngozi.eze@mail.ng and quote NIN 77889900112.", "spans": [{"start": 6, "end": 23, "kind": "email"}, {"start": 38, "end": 49, "kind": "nin"}]}
+{"id": "RED-046", "lang": "en", "text": "Comrade Bamidele Ogundipe gave phone 0805 678 9012.", "spans": [{"start": 0, "end": 25, "kind": "name"}, {"start": 37, "end": 50, "kind": "phone"}]}
+{"id": "RED-047", "lang": "en", "text": "PVC LG19C99887766554433 left on the table by Zikora Nnamdi.", "spans": [{"start": 4, "end": 23, "kind": "vin"}, {"start": 45, "end": 58, "kind": "name"}]}
+{"id": "RED-048", "lang": "en", "text": "Dantata Kure waited at 44 Awolowo Way.", "spans": [{"start": 0, "end": 12, "kind": "name"}, {"start": 23, "end": 37, "kind": "address"}]}
+{"id": "RED-049", "lang": "en", "text": "Account 6077889900 used to pay youths on 07089991122.", "spans": [{"start": 8, "end": 18, "kind": "account"}, {"start": 41, "end": 52, "kind": "phone"}]}
+{"id": "RED-050", "lang": "en", "text": "Prof. Yakubu Gowon or 0813-456-7890 can confirm.", "spans": [{"start": 0, "end": 18, "kind": "name"}, {"start": 22, "end": 35, "kind": "phone"}]}
+{"id": "RED-051", "lang": "en", "text": "Engr. Halima Lawal emailed halima.l@civics.ng.", "spans": [{"start": 0, "end": 18, "kind": "name"}, {"start": 27, "end": 45, "kind": "email"}]}
+{"id": "RED-052", "lang": "en", "text": "BVN 66778899001 and phone (+234) 802 333 4455 leaked on paper.", "spans": [{"start": 4, "end": 15, "kind": "bvn"}, {"start": 26, "end": 45, "kind": "phone"}]}
+{"id": "RED-053", "lang": "en", "text": "Mama Ngozi reported snatching at 88 Aba Road.", "spans": [{"start": 0, "end": 10, "kind": "name"}, {"start": 33, "end": 44, "kind": "address"}]}
+{"id": "RED-054", "lang": "en", "text": "VIN RV02D44556677889900 belonged to Suleiman Bello.", "spans": [{"start": 4, "end": 23, "kind": "vin"}, {"start": 36, "end": 50, "kind": "name"}]}
+{"id": "RED-055", "lang": "en", "text": "Dial 0902  333  4455 and ask for Hon. Tajudeen Abbas.", "spans": [{"start": 5, "end": 20, "kind": "phone"}, {"start": 33, "end": 52, "kind": "name"}]}
+{"id": "RED-056", "lang": "en", "text": "NIN 88990011223 and account 7088990011 written on wall.", "spans": [{"start": 4, "end": 15, "kind": "nin"}, {"start": 28, "end": 38, "kind": "account"}]}
+{"id": "RED-057", "lang": "en", "text": "Oba Adeyemi sent representative 0806 111 2233.", "spans": [{"start": 0, "end": 11, "kind": "name"}, {"start": 32, "end": 45, "kind": "phone"}]}
+{"id": "RED-058", "lang": "en", "text": "aisha.bello22@yahoo.com received threats from 0807 222 3344.", "spans": [{"start": 0, "end": 23, "kind": "email"}, {"start": 46, "end": 59, "kind": "phone"}]}
+{"id": "RED-059", "lang": "en", "text": "Toluwani Ojo lives at 15 Bode Thomas Street.", "spans": [{"start": 0, "end": 12, "kind": "name"}, {"start": 22, "end": 43, "kind": "address"}]}
+{"id": "RED-060", "lang": "en", "text": "Uchechukwu Okoro called 0814 555 6677 after polls closed.", "spans": [{"start": 0, "end": 16, "kind": "name"}, {"start": 24, "end": 37, "kind": "phone"}]}
+{"id": "RED-061", "lang": "pcm", "text": "Election forms don reach collation centre since morning.", "spans": []}
+{"id": "RED-062", "lang": "pcm", "text": "Dem don choose returning officer for the ward already.", "spans": []}
+{"id": "RED-063", "lang": "pcm", "text": "Chief Imam pray make voting go well without wahala.", "spans": []}
+{"id": "RED-064", "lang": "pcm", "text": "14 observers dey on the way go the polling unit.", "spans": []}
+{"id": "RED-065", "lang": "pcm", "text": "100 voters stand for expressway dey wait for INEC.", "spans": []}
+{"id": "RED-066", "lang": "pcm", "text": "Account of votes 0012345678 na wetin dem write for board.", "spans": []}
+{"id": "RED-067", "lang": "pcm", "text": "Ballot box number 12345678901 don land. NIN office close today.", "spans": []}
+{"id": "RED-068", "lang": "pcm", "text": "People gather for 10 Ward Road before accreditation start.", "spans": []}
+{"id": "RED-069", "lang": "pcm", "text": "Materials dey 5 Polling Street and 8 Collation Avenue.", "spans": []}
+{"id": "RED-070", "lang": "pcm", "text": "All sensitive materials musa stay inside the ballot box.", "spans": []}
+{"id": "RED-071", "lang": "pcm", "text": "BVAS machine 987654321 hang two times before afternoon.", "spans": []}
+{"id": "RED-072", "lang": "pcm", "text": "Queue long well well for PU 004 but everybody calm.", "spans": []}
+{"id": "RED-073", "lang": "pcm", "text": "Result sheet don paste for wall make everybody see.", "spans": []}
+{"id": "RED-074", "lang": "pcm", "text": "Police people dey 12 LGA Drive dey watch everywhere.", "spans": []}
+{"id": "RED-075", "lang": "pcm", "text": "After 200 people vote, counting start sharp sharp.", "spans": []}
+{"id": "RED-076", "lang": "pcm", "text": "Abeg call Mrs Adaeze Okafor for 0803 123 4569, wahala dey.", "spans": [{"start": 10, "end": 27, "kind": "name"}, {"start": 32, "end": 45, "kind": "phone"}]}
+{"id": "RED-077", "lang": "pcm", "text": "Send mail go pcm.obs@watch.ng from 0703 444 5566.", "spans": [{"start": 13, "end": 29, "kind": "email"}, {"start": 35, "end": 48, "kind": "phone"}]}
+{"id": "RED-078", "lang": "pcm", "text": "One boy write BVN: 2234 5678 902 for 10 Adeola Road.", "spans": [{"start": 19, "end": 32, "kind": "bvn"}, {"start": 37, "end": 51, "kind": "address"}]}
+{"id": "RED-079", "lang": "pcm", "text": "Dem send money enter account no 0123 456 790 sharp sharp.", "spans": [{"start": 32, "end": 44, "kind": "account"}]}
+{"id": "RED-080", "lang": "pcm", "text": "0123456790 is my account na wetin e shout.", "spans": [{"start": 0, "end": 10, "kind": "account"}]}
+{"id": "RED-081", "lang": "pcm", "text": "Dem collect voter NIN 12345678902 and PVC AB12345678901234568.", "spans": [{"start": 22, "end": 33, "kind": "nin"}, {"start": 42, "end": 61, "kind": "vin"}]}
+{"id": "RED-082", "lang": "pcm", "text": "Dial (0803) 987 6544 or mail delta.watch@mail.ng.", "spans": [{"start": 5, "end": 20, "kind": "phone"}, {"start": 29, "end": 48, "kind": "email"}]}
+{"id": "RED-083", "lang": "pcm", "text": "Alhaji Musa Bello boys block 22 Ahmadu Bello Way.", "spans": [{"start": 0, "end": 17, "kind": "name"}, {"start": 29, "end": 48, "kind": "address"}]}
+{"id": "RED-084", "lang": "pcm", "text": "Cash enter a/c 2098765433 wey Mr. Babatunde Fashola get.", "spans": [{"start": 15, "end": 25, "kind": "account"}, {"start": 30, "end": 51, "kind": "name"}]}
+{"id": "RED-085", "lang": "pcm", "text": "NIN 1234-5678-902 belong to Amina Danjuma for unit.", "spans": [{"start": 4, "end": 17, "kind": "nin"}, {"start": 28, "end": 41, "kind": "name"}]}
+{"id": "RED-086", "lang": "pcm", "text": "PVC XY98 7654 3210 9876 544 no gree scan for machine.", "spans": [{"start": 4, "end": 27, "kind": "vin"}]}
+{"id": "RED-087", "lang": "pcm", "text": "Oluwaseun Adeyemi dey stay 14 Broad Street; call 0701-555-0193.", "spans": [{"start": 0, "end": 17, "kind": "name"}, {"start": 27, "end": 42, "kind": "address"}, {"start": 49, "end": 62, "kind": "phone"}]}
+{"id": "RED-088", "lang": "pcm", "text": "Chief Emeka Nwosu share money with account number 3011223345.", "spans": [{"start": 0, "end": 17, "kind": "name"}, {"start": 50, "end": 60, "kind": "account"}]}
+{"id": "RED-089", "lang": "pcm", "text": "Fire dey near Plot 8 Allen Avenue; call +234 805 222 1101.", "spans": [{"start": 14, "end": 33, "kind": "address"}, {"start": 40, "end": 57, "kind": "phone"}]}
+{"id": "RED-090", "lang": "pcm", "text": "Send picture go rivers.lead@watch.org.ng quick quick.", "spans": [{"start": 16, "end": 40, "kind": "email"}]}
+{"id": "RED-091", "lang": "pcm", "text": "Hajiya Fatima Usman dey collect BVN 33445566779 for back.", "spans": [{"start": 0, "end": 19, "kind": "name"}, {"start": 36, "end": 47, "kind": "bvn"}]}
+{"id": "RED-092", "lang": "pcm", "text": "Card 90F5B12345678901235 na for Kelechi Iheanacho.", "spans": [{"start": 5, "end": 24, "kind": "vin"}, {"start": 32, "end": 49, "kind": "name"}]}
+{"id": "RED-093", "lang": "pcm", "text": "Call 0803  123  4560 if dem carry box pass 7B Herbert Macaulay Road.", "spans": [{"start": 5, "end": 20, "kind": "phone"}, {"start": 43, "end": 67, "kind": "address"}]}
+{"id": "RED-094", "lang": "pcm", "text": "Barr. Sadiq Abubakar write everything; mail sadiq.p@ng.org.", "spans": [{"start": 0, "end": 20, "kind": "name"}, {"start": 44, "end": 58, "kind": "email"}]}
+{"id": "RED-095", "lang": "pcm", "text": "Money enter acct 4055667789 wey Ngozi Eze see.", "spans": [{"start": 17, "end": 27, "kind": "account"}, {"start": 32, "end": 41, "kind": "name"}]}
+{"id": "RED-096", "lang": "pcm", "text": "NIMC 45678901235 paper fall near 19 Zik Avenue.", "spans": [{"start": 5, "end": 16, "kind": "nin"}, {"start": 33, "end": 46, "kind": "address"}]}
+{"id": "RED-097", "lang": "pcm", "text": "Pastor Samuel Ogunleye call 0909 444 3323 for help.", "spans": [{"start": 0, "end": 22, "kind": "name"}, {"start": 28, "end": 41, "kind": "phone"}]}
+{"id": "RED-098", "lang": "pcm", "text": "VIN KN04A11223344556678 na wetin Ibrahim Garba snap.", "spans": [{"start": 4, "end": 23, "kind": "vin"}, {"start": 33, "end": 46, "kind": "name"}]}
+{"id": "RED-099", "lang": "pcm", "text": "Reach tunde.p@outlook.com or +2348123456780 now.", "spans": [{"start": 6, "end": 25, "kind": "email"}, {"start": 29, "end": 43, "kind": "phone"}]}
+{"id": "RED-100", "lang": "pcm", "text": "Yusuf Abdullahi house dey 32 Yakubu Gowon Crescent.", "spans": [{"start": 0, "end": 15, "kind": "name"}, {"start": 26, "end": 50, "kind": "address"}]}
+{"id": "RED-101", "lang": "pcm", "text": "Dem pay thugs via a/c 5066-7788-90 for afternoon.", "spans": [{"start": 22, "end": 34, "kind": "account"}]}
+{"id": "RED-102", "lang": "pcm", "text": "Mrs. Funke Adebayo catch dem with BVN 5566-7788-991.", "spans": [{"start": 0, "end": 18, "kind": "name"}, {"start": 38, "end": 51, "kind": "bvn"}]}
+{"id": "RED-103", "lang": "pcm", "text": "Ring 0818.222.1101 around 5 Zoo Road.", "spans": [{"start": 5, "end": 18, "kind": "phone"}, {"start": 26, "end": 36, "kind": "address"}]}
+{"id": "RED-104", "lang": "pcm", "text": "Chukwuma Soludo reach 11 Independence Layout.", "spans": [{"start": 0, "end": 15, "kind": "name"}, {"start": 22, "end": 44, "kind": "address"}]}
+{"id": "RED-105", "lang": "pcm", "text": "Mail ngozi.p@mail.ng with NIN 77889900113 inside.", "spans": [{"start": 5, "end": 20, "kind": "email"}, {"start": 30, "end": 41, "kind": "nin"}]}
+{"id": "RED-106", "lang": "pcm", "text": "Comrade Bamidele Ogundipe drop number 0805 678 9013.", "spans": [{"start": 0, "end": 25, "kind": "name"}, {"start": 38, "end": 51, "kind": "phone"}]}
+{"id": "RED-107", "lang": "pcm", "text": "PVC LG19C99887766554434 don lost for Zikora Nnamdi hand.", "spans": [{"start": 4, "end": 23, "kind": "vin"}, {"start": 37, "end": 50, "kind": "name"}]}
+{"id": "RED-108", "lang": "pcm", "text": "Dantata Kure dey wait for 44 Awolowo Way.", "spans": [{"start": 0, "end": 12, "kind": "name"}, {"start": 26, "end": 40, "kind": "address"}]}
+{"id": "RED-109", "lang": "pcm", "text": "Account 6077889901 pay boys on 07089991123.", "spans": [{"start": 8, "end": 18, "kind": "account"}, {"start": 31, "end": 42, "kind": "phone"}]}
+{"id": "RED-110", "lang": "pcm", "text": "Prof. Yakubu Gowon number na 0813-456-7891.", "spans": [{"start": 0, "end": 18, "kind": "name"}, {"start": 29, "end": 42, "kind": "phone"}]}
+{"id": "RED-111", "lang": "pcm", "text": "Engr. Halima Lawal send mail go halima.p@civics.ng.", "spans": [{"start": 0, "end": 18, "kind": "name"}, {"start": 32, "end": 50, "kind": "email"}]}
+{"id": "RED-112", "lang": "pcm", "text": "BVN 66778899002 and phone (+234) 802 333 4456 dey outside.", "spans": [{"start": 4, "end": 15, "kind": "bvn"}, {"start": 26, "end": 45, "kind": "phone"}]}
+{"id": "RED-113", "lang": "pcm", "text": "Mama Ngozi shout say thugs dey 88 Aba Road.", "spans": [{"start": 0, "end": 10, "kind": "name"}, {"start": 31, "end": 42, "kind": "address"}]}
+{"id": "RED-114", "lang": "pcm", "text": "VIN RV02D44556677889901 na Suleiman Bello own.", "spans": [{"start": 4, "end": 23, "kind": "vin"}, {"start": 27, "end": 41, "kind": "name"}]}
+{"id": "RED-115", "lang": "pcm", "text": "Dial 0902  333  4456 ask for Hon. Tajudeen Abbas.", "spans": [{"start": 5, "end": 20, "kind": "phone"}, {"start": 29, "end": 48, "kind": "name"}]}
+{"id": "RED-116", "lang": "pcm", "text": "NIN 88990011224 and account 7088990012 dey paper.", "spans": [{"start": 4, "end": 15, "kind": "nin"}, {"start": 28, "end": 38, "kind": "account"}]}
+{"id": "RED-117", "lang": "pcm", "text": "Oba Adeyemi send person with 0806 111 2234.", "spans": [{"start": 0, "end": 11, "kind": "name"}, {"start": 29, "end": 42, "kind": "phone"}]}
+{"id": "RED-118", "lang": "pcm", "text": "aisha.p22@yahoo.com get threat from 0807 222 3345.", "spans": [{"start": 0, "end": 19, "kind": "email"}, {"start": 36, "end": 49, "kind": "phone"}]}
+{"id": "RED-119", "lang": "pcm", "text": "Toluwani Ojo stay 15 Bode Thomas Street.", "spans": [{"start": 0, "end": 12, "kind": "name"}, {"start": 18, "end": 39, "kind": "address"}]}
+{"id": "RED-120", "lang": "pcm", "text": "Uchechukwu Okoro dial 0814 555 6678 after counting.", "spans": [{"start": 0, "end": 16, "kind": "name"}, {"start": 22, "end": 35, "kind": "phone"}]}
+{"id": "RED-121", "lang": "ha", "text": "An kawo takardun zabe zuwa cibiyar tattara sakamako.", "spans": []}
+{"id": "RED-122", "lang": "ha", "text": "Kwamitin ya zabi jami'in zabe domin kula da akwati.", "spans": []}
+{"id": "RED-123", "lang": "ha", "text": "Babban Liman ya yi addu'a domin zaman lafiya kafin zabe.", "spans": []}
+{"id": "RED-124", "lang": "ha", "text": "Masu sa ido 14 suna kan hanya zuwa rumfar zabe.", "spans": []}
+{"id": "RED-125", "lang": "ha", "text": "Masu jefa kuri'a 100 sun jira a kan babbar hanya.", "spans": []}
+{"id": "RED-126", "lang": "ha", "text": "Account of votes 0012345678 aka rubuta a takarda.", "spans": []}
+{"id": "RED-127", "lang": "ha", "text": "Akwati mai lamba 12345678901 ya iso. Ofishin NIN ya rufe.", "spans": []}
+{"id": "RED-128", "lang": "ha", "text": "Masu zabe sun taru a 10 Ward Road da safe.", "spans": []}
+{"id": "RED-129", "lang": "ha", "text": "Kayan aiki suna 5 Polling Street da 8 Collation Avenue.", "spans": []}
+{"id": "RED-130", "lang": "ha", "text": "Na'urar BVAS ta tsaya sau biyu da rana.", "spans": []}
+{"id": "RED-131", "lang": "ha", "text": "Layin masu zabe yana da tsawo amma komai na tafiya lafiya.", "spans": []}
+{"id": "RED-132", "lang": "ha", "text": "An fara tantance masu zabe da karfe takwas na safe.", "spans": []}
+{"id": "RED-133", "lang": "ha", "text": "Jami'an tsaro suna nan a 12 LGA Drive suna kula.", "spans": []}
+{"id": "RED-134", "lang": "ha", "text": "An manna sakamakon zabe a jikin bango domin kowa ya gani.", "spans": []}
+{"id": "RED-135", "lang": "ha", "text": "Kuri'u 200 aka kirga kafin karfe biyar na yamma.", "spans": []}
+{"id": "RED-136", "lang": "ha", "text": "Wakili Mrs Adaeze Okafor ya kira 0803 123 4570 daga kofa.", "spans": [{"start": 7, "end": 24, "kind": "name"}, {"start": 33, "end": 46, "kind": "phone"}]}
+{"id": "RED-137", "lang": "ha", "text": "Aika sako zuwa kano.ha@watch.ng ta 0703 444 5567.", "spans": [{"start": 15, "end": 31, "kind": "email"}, {"start": 35, "end": 48, "kind": "phone"}]}
+{"id": "RED-138", "lang": "ha", "text": "An rubuta BVN: 2234 5678 903 a 10 Adeola Road.", "spans": [{"start": 15, "end": 28, "kind": "bvn"}, {"start": 31, "end": 45, "kind": "address"}]}
+{"id": "RED-139", "lang": "ha", "text": "An tura kudi zuwa account no 0123 456 791 nan take.", "spans": [{"start": 29, "end": 41, "kind": "account"}]}
+{"id": "RED-140", "lang": "ha", "text": "0123456791 is my account ya fada da karfi.", "spans": [{"start": 0, "end": 10, "kind": "account"}]}
+{"id": "RED-141", "lang": "ha", "text": "An karbi NIN 12345678903 da PVC AB12345678901234569.", "spans": [{"start": 13, "end": 24, "kind": "nin"}, {"start": 32, "end": 51, "kind": "vin"}]}
+{"id": "RED-142", "lang": "ha", "text": "Kira (0803) 987 6545 ko zaria.watch@mail.ng.", "spans": [{"start": 5, "end": 20, "kind": "phone"}, {"start": 24, "end": 43, "kind": "email"}]}
+{"id": "RED-143", "lang": "ha", "text": "Alhaji Musa Bello ya rufe 22 Ahmadu Bello Way.", "spans": [{"start": 0, "end": 17, "kind": "name"}, {"start": 26, "end": 45, "kind": "address"}]}
+{"id": "RED-144", "lang": "ha", "text": "An tura a/c 2098765434 ga Mr. Babatunde Fashola.", "spans": [{"start": 12, "end": 22, "kind": "account"}, {"start": 26, "end": 47, "kind": "name"}]}
+{"id": "RED-145", "lang": "ha", "text": "NIN 1234-5678-903 na Amina Danjuma ya fito.", "spans": [{"start": 4, "end": 17, "kind": "nin"}, {"start": 21, "end": 34, "kind": "name"}]}
+{"id": "RED-146", "lang": "ha", "text": "PVC XY98 7654 3210 9876 545 ya ki aiki a na'ura.", "spans": [{"start": 4, "end": 27, "kind": "vin"}]}
+{"id": "RED-147", "lang": "ha", "text": "Oluwaseun Adeyemi yana 14 Broad Street; kira 0701-555-0194.", "spans": [{"start": 0, "end": 17, "kind": "name"}, {"start": 23, "end": 38, "kind": "address"}, {"start": 45, "end": 58, "kind": "phone"}]}
+{"id": "RED-148", "lang": "ha", "text": "Chief Emeka Nwosu ya raba kudi da account number 3011223346.", "spans": [{"start": 0, "end": 17, "kind": "name"}, {"start": 49, "end": 59, "kind": "account"}]}
+{"id": "RED-149", "lang": "ha", "text": "Matsala a Plot 8 Allen Avenue; kira +234 805 222 1102.", "spans": [{"start": 10, "end": 29, "kind": "address"}, {"start": 36, "end": 53, "kind": "phone"}]}
+{"id": "RED-150", "lang": "ha", "text": "Aika hoto zuwa sokoto.lead@watch.org.ng yanzu.", "spans": [{"start": 15, "end": 39, "kind": "email"}]}
+{"id": "RED-151", "lang": "ha", "text": "Hajiya Fatima Usman tana tattara BVN 33445566780.", "spans": [{"start": 0, "end": 19, "kind": "name"}, {"start": 37, "end": 48, "kind": "bvn"}]}
+{"id": "RED-152", "lang": "ha", "text": "Katin 90F5B12345678901236 na Kelechi Iheanacho ne.", "spans": [{"start": 6, "end": 25, "kind": "vin"}, {"start": 29, "end": 46, "kind": "name"}]}
+{"id": "RED-153", "lang": "ha", "text": "Kira 0803  123  4561 kusa da 7B Herbert Macaulay Road.", "spans": [{"start": 5, "end": 20, "kind": "phone"}, {"start": 29, "end": 53, "kind": "address"}]}
+{"id": "RED-154", "lang": "ha", "text": "Barr. Sadiq Abubakar ya rubuta; imel sadiq.h@ng.org.", "spans": [{"start": 0, "end": 20, "kind": "name"}, {"start": 37, "end": 51, "kind": "email"}]}
+{"id": "RED-155", "lang": "ha", "text": "Kudi sun shiga acct 4055667790 in ji Ngozi Eze.", "spans": [{"start": 20, "end": 30, "kind": "account"}, {"start": 37, "end": 46, "kind": "name"}]}
+{"id": "RED-156", "lang": "ha", "text": "NIMC 45678901236 ya fadi a 19 Zik Avenue.", "spans": [{"start": 5, "end": 16, "kind": "nin"}, {"start": 27, "end": 40, "kind": "address"}]}
+{"id": "RED-157", "lang": "ha", "text": "Pastor Samuel Ogunleye ya kira 0909 444 3324.", "spans": [{"start": 0, "end": 22, "kind": "name"}, {"start": 31, "end": 44, "kind": "phone"}]}
+{"id": "RED-158", "lang": "ha", "text": "VIN KN04A11223344556679 ne Ibrahim Garba ya dauka.", "spans": [{"start": 4, "end": 23, "kind": "vin"}, {"start": 27, "end": 40, "kind": "name"}]}
+{"id": "RED-159", "lang": "ha", "text": "Tuntubi tunde.h@outlook.com ko +2348123456781.", "spans": [{"start": 8, "end": 27, "kind": "email"}, {"start": 31, "end": 45, "kind": "phone"}]}
+{"id": "RED-160", "lang": "ha", "text": "Yusuf Abdullahi yana zaune a 32 Yakubu Gowon Crescent.", "spans": [{"start": 0, "end": 15, "kind": "name"}, {"start": 29, "end": 53, "kind": "address"}]}
+{"id": "RED-161", "lang": "ha", "text": "An biya ta a/c 5066-7788-91 da rana.", "spans": [{"start": 15, "end": 27, "kind": "account"}]}
+{"id": "RED-162", "lang": "ha", "text": "Mrs. Funke Adebayo ta ga BVN 5566-7788-992.", "spans": [{"start": 0, "end": 18, "kind": "name"}, {"start": 29, "end": 42, "kind": "bvn"}]}
+{"id": "RED-163", "lang": "ha", "text": "Kira 0818.222.1102 a 5 Zoo Road.", "spans": [{"start": 5, "end": 18, "kind": "phone"}, {"start": 21, "end": 31, "kind": "address"}]}
+{"id": "RED-164", "lang": "ha", "text": "Chukwuma Soludo ya isa 11 Independence Layout.", "spans": [{"start": 0, "end": 15, "kind": "name"}, {"start": 23, "end": 45, "kind": "address"}]}
+{"id": "RED-165", "lang": "ha", "text": "Imel ngozi.h@mail.ng tare da NIN 77889900114.", "spans": [{"start": 5, "end": 20, "kind": "email"}, {"start": 33, "end": 44, "kind": "nin"}]}
+{"id": "RED-166", "lang": "ha", "text": "Comrade Bamidele Ogundipe lambar sa 0805 678 9014.", "spans": [{"start": 0, "end": 25, "kind": "name"}, {"start": 36, "end": 49, "kind": "phone"}]}
+{"id": "RED-167", "lang": "ha", "text": "PVC LG19C99887766554435 ya bata a hannun Zikora Nnamdi.", "spans": [{"start": 4, "end": 23, "kind": "vin"}, {"start": 41, "end": 54, "kind": "name"}]}
+{"id": "RED-168", "lang": "ha", "text": "Dantata Kure yana jira a 44 Awolowo Way.", "spans": [{"start": 0, "end": 12, "kind": "name"}, {"start": 25, "end": 39, "kind": "address"}]}
+{"id": "RED-169", "lang": "ha", "text": "Account 6077889902 ya tura wa 07089991124.", "spans": [{"start": 8, "end": 18, "kind": "account"}, {"start": 30, "end": 41, "kind": "phone"}]}
+{"id": "RED-170", "lang": "ha", "text": "Prof. Yakubu Gowon ko 0813-456-7892.", "spans": [{"start": 0, "end": 18, "kind": "name"}, {"start": 22, "end": 35, "kind": "phone"}]}
+{"id": "RED-171", "lang": "ha", "text": "Engr. Halima Lawal ta aika halima.h@civics.ng.", "spans": [{"start": 0, "end": 18, "kind": "name"}, {"start": 27, "end": 45, "kind": "email"}]}
+{"id": "RED-172", "lang": "ha", "text": "BVN 66778899003 da waya (+234) 802 333 4457.", "spans": [{"start": 4, "end": 15, "kind": "bvn"}, {"start": 24, "end": 43, "kind": "phone"}]}
+{"id": "RED-173", "lang": "ha", "text": "Mama Ngozi ta ga rikici a 88 Aba Road.", "spans": [{"start": 0, "end": 10, "kind": "name"}, {"start": 26, "end": 37, "kind": "address"}]}
+{"id": "RED-174", "lang": "ha", "text": "VIN RV02D44556677889902 na Suleiman Bello ne.", "spans": [{"start": 4, "end": 23, "kind": "vin"}, {"start": 27, "end": 41, "kind": "name"}]}
+{"id": "RED-175", "lang": "ha", "text": "Kira 0902  333  4457 ka nemi Hon. Tajudeen Abbas.", "spans": [{"start": 5, "end": 20, "kind": "phone"}, {"start": 29, "end": 48, "kind": "name"}]}
+{"id": "RED-176", "lang": "ha", "text": "NIN 88990011225 da account 7088990013.", "spans": [{"start": 4, "end": 15, "kind": "nin"}, {"start": 27, "end": 37, "kind": "account"}]}
+{"id": "RED-177", "lang": "ha", "text": "Oba Adeyemi ya aiko 0806 111 2235.", "spans": [{"start": 0, "end": 11, "kind": "name"}, {"start": 20, "end": 33, "kind": "phone"}]}
+{"id": "RED-178", "lang": "ha", "text": "aisha.h22@yahoo.com ta samu sako daga 0807 222 3346.", "spans": [{"start": 0, "end": 19, "kind": "email"}, {"start": 38, "end": 51, "kind": "phone"}]}
+{"id": "RED-179", "lang": "ha", "text": "Toluwani Ojo yana 15 Bode Thomas Street.", "spans": [{"start": 0, "end": 12, "kind": "name"}, {"start": 18, "end": 39, "kind": "address"}]}
+{"id": "RED-180", "lang": "ha", "text": "Uchechukwu Okoro ya kira 0814 555 6679.", "spans": [{"start": 0, "end": 16, "kind": "name"}, {"start": 25, "end": 38, "kind": "phone"}]}
+{"id": "RED-181", "lang": "yo", "text": "Awon iwe idibo ti de ibudo ikojopo ni aaro.", "spans": []}
+{"id": "RED-182", "lang": "yo", "text": "Igbimo yan oludari idibo fun gbogbo awon ibudo.", "spans": []}
+{"id": "RED-183", "lang": "yo", "text": "Chief Imam gbadura fun alafia ki idibo to bere.", "spans": []}
+{"id": "RED-184", "lang": "yo", "text": "Awon oluwoye 14 wa lori ona si ibudo idibo.", "spans": []}
+{"id": "RED-185", "lang": "yo", "text": "Awon oludibo 100 duro ni opopona nla ti o wa nitosi.", "spans": []}
+{"id": "RED-186", "lang": "yo", "text": "Account of votes 0012345678 ni won ko sile.", "spans": []}
+{"id": "RED-187", "lang": "yo", "text": "Apoti ibo 12345678901 ti de. Ile-ise NIN ti ti.", "spans": []}
+{"id": "RED-188", "lang": "yo", "text": "Awon eniyan pejo ni 10 Ward Road ni aaro.", "spans": []}
+{"id": "RED-189", "lang": "yo", "text": "Awon ohun elo wa ni 5 Polling Street ati 8 Collation Avenue.", "spans": []}
+{"id": "RED-190", "lang": "yo", "text": "Ero BVAS dawo duro leemeji ni osan.", "spans": []}
+{"id": "RED-191", "lang": "yo", "text": "Ila awon oludibo gun sugbon eto naa n lo ni irorun.", "spans": []}
+{"id": "RED-192", "lang": "yo", "text": "Awon olopa wa ni 12 LGA Drive lati daabo bo ibudo.", "spans": []}
+{"id": "RED-193", "lang": "yo", "text": "A ti le esi idibo si ogiri fun gbogbo eniyan lati ri.", "spans": []}
+{"id": "RED-194", "lang": "yo", "text": "Awon osise bere kika ibo ni deede agogo marun.", "spans": []}
+{"id": "RED-195", "lang": "yo", "text": "Gbogbo iwe esi wa ni aabo ni ibudo idibo.", "spans": []}
+{"id": "RED-196", "lang": "yo", "text": "Oluwoye Mrs Adaeze Okafor pe 0803 123 4571 ni enu ona.", "spans": [{"start": 8, "end": 25, "kind": "name"}, {"start": 29, "end": 42, "kind": "phone"}]}
+{"id": "RED-197", "lang": "yo", "text": "Fi imeeli ranse si lagos.yo@watch.ng tabi 0703 444 5568.", "spans": [{"start": 19, "end": 36, "kind": "email"}, {"start": 42, "end": 55, "kind": "phone"}]}
+{"id": "RED-198", "lang": "yo", "text": "Won ko BVN: 2234 5678 904 ni 10 Adeola Road.", "spans": [{"start": 12, "end": 25, "kind": "bvn"}, {"start": 29, "end": 43, "kind": "address"}]}
+{"id": "RED-199", "lang": "yo", "text": "Won fi owo ranse si account no 0123 456 792.", "spans": [{"start": 31, "end": 43, "kind": "account"}]}
+{"id": "RED-200", "lang": "yo", "text": "0123456792 is my account ni o wi.", "spans": [{"start": 0, "end": 10, "kind": "account"}]}
+{"id": "RED-201", "lang": "yo", "text": "Won gba NIN 12345678904 ati PVC AB12345678901234570.", "spans": [{"start": 12, "end": 23, "kind": "nin"}, {"start": 32, "end": 51, "kind": "vin"}]}
+{"id": "RED-202", "lang": "yo", "text": "Pe (0803) 987 6546 tabi ibadan.watch@mail.ng.", "spans": [{"start": 3, "end": 18, "kind": "phone"}, {"start": 24, "end": 44, "kind": "email"}]}
+{"id": "RED-203", "lang": "yo", "text": "Alhaji Musa Bello di 22 Ahmadu Bello Way.", "spans": [{"start": 0, "end": 17, "kind": "name"}, {"start": 21, "end": 40, "kind": "address"}]}
+{"id": "RED-204", "lang": "yo", "text": "Owo wo a/c 2098765435 fun Mr. Babatunde Fashola.", "spans": [{"start": 11, "end": 21, "kind": "account"}, {"start": 26, "end": 47, "kind": "name"}]}
+{"id": "RED-205", "lang": "yo", "text": "NIN 1234-5678-904 ti Amina Danjuma wa nibe.", "spans": [{"start": 4, "end": 17, "kind": "nin"}, {"start": 21, "end": 34, "kind": "name"}]}
+{"id": "RED-206", "lang": "yo", "text": "PVC XY98 7654 3210 9876 546 ko sise lori ero.", "spans": [{"start": 4, "end": 27, "kind": "vin"}]}
+{"id": "RED-207", "lang": "yo", "text": "Oluwaseun Adeyemi n gbe ni 14 Broad Street; pe 0701-555-0195.", "spans": [{"start": 0, "end": 17, "kind": "name"}, {"start": 27, "end": 42, "kind": "address"}, {"start": 47, "end": 60, "kind": "phone"}]}
+{"id": "RED-208", "lang": "yo", "text": "Chief Emeka Nwosu pin owo pelu account number 3011223347.", "spans": [{"start": 0, "end": 17, "kind": "name"}, {"start": 46, "end": 56, "kind": "account"}]}
+{"id": "RED-209", "lang": "yo", "text": "Wahala ni Plot 8 Allen Avenue; pe +234 805 222 1103.", "spans": [{"start": 10, "end": 29, "kind": "address"}, {"start": 34, "end": 51, "kind": "phone"}]}
+{"id": "RED-210", "lang": "yo", "text": "Fi aworan ranse si osun.lead@watch.org.ng.", "spans": [{"start": 19, "end": 41, "kind": "email"}]}
+{"id": "RED-211", "lang": "yo", "text": "Hajiya Fatima Usman n gba BVN 33445566781.", "spans": [{"start": 0, "end": 19, "kind": "name"}, {"start": 30, "end": 41, "kind": "bvn"}]}
+{"id": "RED-212", "lang": "yo", "text": "Kaadi 90F5B12345678901237 je ti Kelechi Iheanacho.", "spans": [{"start": 6, "end": 25, "kind": "vin"}, {"start": 32, "end": 49, "kind": "name"}]}
+{"id": "RED-213", "lang": "yo", "text": "Pe 0803  123  4562 nitosi 7B Herbert Macaulay Road.", "spans": [{"start": 3, "end": 18, "kind": "phone"}, {"start": 26, "end": 50, "kind": "address"}]}
+{"id": "RED-214", "lang": "yo", "text": "Barr. Sadiq Abubakar ko sile; imeeli sadiq.y@ng.org.", "spans": [{"start": 0, "end": 20, "kind": "name"}, {"start": 37, "end": 51, "kind": "email"}]}
+{"id": "RED-215", "lang": "yo", "text": "Owo wo acct 4055667791 gege bi Ngozi Eze se so.", "spans": [{"start": 12, "end": 22, "kind": "account"}, {"start": 31, "end": 40, "kind": "name"}]}
+{"id": "RED-216", "lang": "yo", "text": "NIMC 45678901237 wa ni 19 Zik Avenue.", "spans": [{"start": 5, "end": 16, "kind": "nin"}, {"start": 23, "end": 36, "kind": "address"}]}
+{"id": "RED-217", "lang": "yo", "text": "Pastor Samuel Ogunleye pe 0909 444 3325.", "spans": [{"start": 0, "end": 22, "kind": "name"}, {"start": 26, "end": 39, "kind": "phone"}]}
+{"id": "RED-218", "lang": "yo", "text": "VIN KN04A11223344556680 ni Ibrahim Garba ya.", "spans": [{"start": 4, "end": 23, "kind": "vin"}, {"start": 27, "end": 40, "kind": "name"}]}
+{"id": "RED-219", "lang": "yo", "text": "Kan si tunde.y@outlook.com tabi +2348123456782.", "spans": [{"start": 7, "end": 26, "kind": "email"}, {"start": 32, "end": 46, "kind": "phone"}]}
+{"id": "RED-220", "lang": "yo", "text": "Yusuf Abdullahi n gbe ni 32 Yakubu Gowon Crescent.", "spans": [{"start": 0, "end": 15, "kind": "name"}, {"start": 25, "end": 49, "kind": "address"}]}
+{"id": "RED-221", "lang": "yo", "text": "Won san owo si a/c 5066-7788-92.", "spans": [{"start": 19, "end": 31, "kind": "account"}]}
+{"id": "RED-222", "lang": "yo", "text": "Mrs. Funke Adebayo ri BVN 5566-7788-993.", "spans": [{"start": 0, "end": 18, "kind": "name"}, {"start": 26, "end": 39, "kind": "bvn"}]}
+{"id": "RED-223", "lang": "yo", "text": "Pe 0818.222.1103 ni 5 Zoo Road.", "spans": [{"start": 3, "end": 16, "kind": "phone"}, {"start": 20, "end": 30, "kind": "address"}]}
+{"id": "RED-224", "lang": "yo", "text": "Chukwuma Soludo de 11 Independence Layout.", "spans": [{"start": 0, "end": 15, "kind": "name"}, {"start": 19, "end": 41, "kind": "address"}]}
+{"id": "RED-225", "lang": "yo", "text": "Imeeli ngozi.y@mail.ng pelu NIN 77889900115.", "spans": [{"start": 7, "end": 22, "kind": "email"}, {"start": 32, "end": 43, "kind": "nin"}]}
+{"id": "RED-226", "lang": "yo", "text": "Comrade Bamidele Ogundipe fi 0805 678 9015 sile.", "spans": [{"start": 0, "end": 25, "kind": "name"}, {"start": 29, "end": 42, "kind": "phone"}]}
+{"id": "RED-227", "lang": "yo", "text": "PVC LG19C99887766554436 sonu lowo Zikora Nnamdi.", "spans": [{"start": 4, "end": 23, "kind": "vin"}, {"start": 34, "end": 47, "kind": "name"}]}
+{"id": "RED-228", "lang": "yo", "text": "Dantata Kure duro ni 44 Awolowo Way.", "spans": [{"start": 0, "end": 12, "kind": "name"}, {"start": 21, "end": 35, "kind": "address"}]}
+{"id": "RED-229", "lang": "yo", "text": "Account 6077889903 san fun 07089991125.", "spans": [{"start": 8, "end": 18, "kind": "account"}, {"start": 27, "end": 38, "kind": "phone"}]}
+{"id": "RED-230", "lang": "yo", "text": "Prof. Yakubu Gowon tabi 0813-456-7893.", "spans": [{"start": 0, "end": 18, "kind": "name"}, {"start": 24, "end": 37, "kind": "phone"}]}
+{"id": "RED-231", "lang": "yo", "text": "Engr. Halima Lawal ran halima.y@civics.ng.", "spans": [{"start": 0, "end": 18, "kind": "name"}, {"start": 23, "end": 41, "kind": "email"}]}
+{"id": "RED-232", "lang": "yo", "text": "BVN 66778899004 ati (+234) 802 333 4458.", "spans": [{"start": 4, "end": 15, "kind": "bvn"}, {"start": 20, "end": 39, "kind": "phone"}]}
+{"id": "RED-233", "lang": "yo", "text": "Mama Ngozi ri ija ni 88 Aba Road.", "spans": [{"start": 0, "end": 10, "kind": "name"}, {"start": 21, "end": 32, "kind": "address"}]}
+{"id": "RED-234", "lang": "yo", "text": "VIN RV02D44556677889903 ni Suleiman Bello ni.", "spans": [{"start": 4, "end": 23, "kind": "vin"}, {"start": 27, "end": 41, "kind": "name"}]}
+{"id": "RED-235", "lang": "yo", "text": "Pe 0902  333  4458 fun Hon. Tajudeen Abbas.", "spans": [{"start": 3, "end": 18, "kind": "phone"}, {"start": 23, "end": 42, "kind": "name"}]}
+{"id": "RED-236", "lang": "yo", "text": "NIN 88990011226 ati account 7088990014.", "spans": [{"start": 4, "end": 15, "kind": "nin"}, {"start": 28, "end": 38, "kind": "account"}]}
+{"id": "RED-237", "lang": "yo", "text": "Oba Adeyemi ran 0806 111 2236.", "spans": [{"start": 0, "end": 11, "kind": "name"}, {"start": 16, "end": 29, "kind": "phone"}]}
+{"id": "RED-238", "lang": "yo", "text": "aisha.y22@yahoo.com gba ihalemo lati 0807 222 3347.", "spans": [{"start": 0, "end": 19, "kind": "email"}, {"start": 37, "end": 50, "kind": "phone"}]}
+{"id": "RED-239", "lang": "yo", "text": "Toluwani Ojo wa ni 15 Bode Thomas Street.", "spans": [{"start": 0, "end": 12, "kind": "name"}, {"start": 19, "end": 40, "kind": "address"}]}
+{"id": "RED-240", "lang": "yo", "text": "Uchechukwu Okoro pe 0814 555 6680.", "spans": [{"start": 0, "end": 16, "kind": "name"}, {"start": 20, "end": 33, "kind": "phone"}]}
+{"id": "RED-241", "lang": "ig", "text": "Ewetala akwukwo ntuli aka n'ebe nchikota nke ubochi taa.", "spans": []}
+{"id": "RED-242", "lang": "ig", "text": "Komitii ahoputala onye isi ntuli aka maka mpaghara a.", "spans": []}
+{"id": "RED-243", "lang": "ig", "text": "Chief Imam kpere ekpere maka udo tupu e bido.", "spans": []}
+{"id": "RED-244", "lang": "ig", "text": "Ndi nleba anya 14 no n'uzo na-aga ebe ntuli aka.", "spans": []}
+{"id": "RED-245", "lang": "ig", "text": "Ndi ntuli aka 100 kwuru n'okporo uzo ukwu na-eche.", "spans": []}
+{"id": "RED-246", "lang": "ig", "text": "Account of votes 0012345678 ka e dere n'akwukwo.", "spans": []}
+{"id": "RED-247", "lang": "ig", "text": "Igbe votu 12345678901 erutela. Ofeesi NIN emechiela.", "spans": []}
+{"id": "RED-248", "lang": "ig", "text": "Ndi mmadu zukoro na 10 Ward Road n'ututu.", "spans": []}
+{"id": "RED-249", "lang": "ig", "text": "Ngwa oru di na 5 Polling Street na 8 Collation Avenue.", "spans": []}
+{"id": "RED-250", "lang": "ig", "text": "Igwe BVAS kwusiri ugboro abuo n'ehihie.", "spans": []}
+{"id": "RED-251", "lang": "ig", "text": "Ahiri ndi mmadu di ogologo mana ihe niile na-aga nke oma.", "spans": []}
+{"id": "RED-252", "lang": "ig", "text": "Ndi uwe ojii no na 12 LGA Drive iji hu na udo di.", "spans": []}
+{"id": "RED-253", "lang": "ig", "text": "E biputala nsonaazu ntuli aka n'ahu aja.", "spans": []}
+{"id": "RED-254", "lang": "ig", "text": "E bidoro iguta votu n'elekere ise nke mgbede.", "spans": []}
+{"id": "RED-255", "lang": "ig", "text": "Akwukwo nsonaazu niile di n'udo n'ebe a.", "spans": []}
+{"id": "RED-256", "lang": "ig", "text": "Onye nleba anya Mrs Adaeze Okafor kporo 0803 123 4572.", "spans": [{"start": 16, "end": 33, "kind": "name"}, {"start": 40, "end": 53, "kind": "phone"}]}
+{"id": "RED-257", "lang": "ig", "text": "Ziga ozi na enugu.ig@watch.ng ma obu 0703 444 5569.", "spans": [{"start": 12, "end": 29, "kind": "email"}, {"start": 37, "end": 50, "kind": "phone"}]}
+{"id": "RED-258", "lang": "ig", "text": "E dere BVN: 2234 5678 905 na 10 Adeola Road.", "spans": [{"start": 12, "end": 25, "kind": "bvn"}, {"start": 29, "end": 43, "kind": "address"}]}
+{"id": "RED-259", "lang": "ig", "text": "E zigara ego na account no 0123 456 793.", "spans": [{"start": 27, "end": 39, "kind": "account"}]}
+{"id": "RED-260", "lang": "ig", "text": "0123456793 is my account ka o kwuru.", "spans": [{"start": 0, "end": 10, "kind": "account"}]}
+{"id": "RED-261", "lang": "ig", "text": "Ha napuru NIN 12345678905 na PVC AB12345678901234571.", "spans": [{"start": 14, "end": 25, "kind": "nin"}, {"start": 33, "end": 52, "kind": "vin"}]}
+{"id": "RED-262", "lang": "ig", "text": "Kpoo (0803) 987 6547 ma obu aba.watch@mail.ng.", "spans": [{"start": 5, "end": 20, "kind": "phone"}, {"start": 28, "end": 45, "kind": "email"}]}
+{"id": "RED-263", "lang": "ig", "text": "Alhaji Musa Bello mechiri 22 Ahmadu Bello Way.", "spans": [{"start": 0, "end": 17, "kind": "name"}, {"start": 26, "end": 45, "kind": "address"}]}
+{"id": "RED-264", "lang": "ig", "text": "Ego bara a/c 2098765436 nke Mr. Babatunde Fashola.", "spans": [{"start": 13, "end": 23, "kind": "account"}, {"start": 28, "end": 49, "kind": "name"}]}
+{"id": "RED-265", "lang": "ig", "text": "NIN 1234-5678-905 nke Amina Danjuma putara.", "spans": [{"start": 4, "end": 17, "kind": "nin"}, {"start": 22, "end": 35, "kind": "name"}]}
+{"id": "RED-266", "lang": "ig", "text": "PVC XY98 7654 3210 9876 547 juri iru oru.", "spans": [{"start": 4, "end": 27, "kind": "vin"}]}
+{"id": "RED-267", "lang": "ig", "text": "Oluwaseun Adeyemi bi na 14 Broad Street; kpoo 0701-555-0196.", "spans": [{"start": 0, "end": 17, "kind": "name"}, {"start": 24, "end": 39, "kind": "address"}, {"start": 46, "end": 59, "kind": "phone"}]}
+{"id": "RED-268", "lang": "ig", "text": "Chief Emeka Nwosu kesara ego na account number 3011223348.", "spans": [{"start": 0, "end": 17, "kind": "name"}, {"start": 47, "end": 57, "kind": "account"}]}
+{"id": "RED-269", "lang": "ig", "text": "Nsogbu na Plot 8 Allen Avenue; kpoo +234 805 222 1104.", "spans": [{"start": 10, "end": 29, "kind": "address"}, {"start": 36, "end": 53, "kind": "phone"}]}
+{"id": "RED-270", "lang": "ig", "text": "Ziga foto na imo.lead@watch.org.ng.", "spans": [{"start": 13, "end": 34, "kind": "email"}]}
+{"id": "RED-271", "lang": "ig", "text": "Hajiya Fatima Usman na-anakota BVN 33445566782.", "spans": [{"start": 0, "end": 19, "kind": "name"}, {"start": 35, "end": 46, "kind": "bvn"}]}
+{"id": "RED-272", "lang": "ig", "text": "Kaadi 90F5B12345678901238 bu nke Kelechi Iheanacho.", "spans": [{"start": 6, "end": 25, "kind": "vin"}, {"start": 33, "end": 50, "kind": "name"}]}
+{"id": "RED-273", "lang": "ig", "text": "Kpoo 0803  123  4563 nso 7B Herbert Macaulay Road.", "spans": [{"start": 5, "end": 20, "kind": "phone"}, {"start": 25, "end": 49, "kind": "address"}]}
+{"id": "RED-274", "lang": "ig", "text": "Barr. Sadiq Abubakar dere ya; imel sadiq.i@ng.org.", "spans": [{"start": 0, "end": 20, "kind": "name"}, {"start": 35, "end": 49, "kind": "email"}]}
+{"id": "RED-275", "lang": "ig", "text": "Ego bara acct 4055667792 dika Ngozi Eze kwuru.", "spans": [{"start": 14, "end": 24, "kind": "account"}, {"start": 30, "end": 39, "kind": "name"}]}
+{"id": "RED-276", "lang": "ig", "text": "NIMC 45678901238 dara na 19 Zik Avenue.", "spans": [{"start": 5, "end": 16, "kind": "nin"}, {"start": 25, "end": 38, "kind": "address"}]}
+{"id": "RED-277", "lang": "ig", "text": "Pastor Samuel Ogunleye kporo 0909 444 3326.", "spans": [{"start": 0, "end": 22, "kind": "name"}, {"start": 29, "end": 42, "kind": "phone"}]}
+{"id": "RED-278", "lang": "ig", "text": "VIN KN04A11223344556681 ka Ibrahim Garba sere.", "spans": [{"start": 4, "end": 23, "kind": "vin"}, {"start": 27, "end": 40, "kind": "name"}]}
+{"id": "RED-279", "lang": "ig", "text": "Kpoturu tunde.i@outlook.com ma obu +2348123456783.", "spans": [{"start": 8, "end": 27, "kind": "email"}, {"start": 35, "end": 49, "kind": "phone"}]}
+{"id": "RED-280", "lang": "ig", "text": "Yusuf Abdullahi bi na 32 Yakubu Gowon Crescent.", "spans": [{"start": 0, "end": 15, "kind": "name"}, {"start": 22, "end": 46, "kind": "address"}]}
+{"id": "RED-281", "lang": "ig", "text": "A kwuru ugwo na a/c 5066-7788-93.", "spans": [{"start": 20, "end": 32, "kind": "account"}]}
+{"id": "RED-282", "lang": "ig", "text": "Mrs. Funke Adebayo huru BVN 5566-7788-994.", "spans": [{"start": 0, "end": 18, "kind": "name"}, {"start": 28, "end": 41, "kind": "bvn"}]}
+{"id": "RED-283", "lang": "ig", "text": "Kpoo 0818.222.1104 na 5 Zoo Road.", "spans": [{"start": 5, "end": 18, "kind": "phone"}, {"start": 22, "end": 32, "kind": "address"}]}
+{"id": "RED-284", "lang": "ig", "text": "Chukwuma Soludo ruru 11 Independence Layout.", "spans": [{"start": 0, "end": 15, "kind": "name"}, {"start": 21, "end": 43, "kind": "address"}]}
+{"id": "RED-285", "lang": "ig", "text": "Imel ngozi.i@mail.ng na NIN 77889900116.", "spans": [{"start": 5, "end": 20, "kind": "email"}, {"start": 28, "end": 39, "kind": "nin"}]}
+{"id": "RED-286", "lang": "ig", "text": "Comrade Bamidele Ogundipe hapuru 0805 678 9016.", "spans": [{"start": 0, "end": 25, "kind": "name"}, {"start": 33, "end": 46, "kind": "phone"}]}
+{"id": "RED-287", "lang": "ig", "text": "PVC LG19C99887766554437 furu n'aka Zikora Nnamdi.", "spans": [{"start": 4, "end": 23, "kind": "vin"}, {"start": 35, "end": 48, "kind": "name"}]}
+{"id": "RED-288", "lang": "ig", "text": "Dantata Kure na-eche na 44 Awolowo Way.", "spans": [{"start": 0, "end": 12, "kind": "name"}, {"start": 24, "end": 38, "kind": "address"}]}
+{"id": "RED-289", "lang": "ig", "text": "Account 6077889904 kwuru 07089991126.", "spans": [{"start": 8, "end": 18, "kind": "account"}, {"start": 25, "end": 36, "kind": "phone"}]}
+{"id": "RED-290", "lang": "ig", "text": "Prof. Yakubu Gowon ma obu 0813-456-7894.", "spans": [{"start": 0, "end": 18, "kind": "name"}, {"start": 26, "end": 39, "kind": "phone"}]}
+{"id": "RED-291", "lang": "ig", "text": "Engr. Halima Lawal zigara halima.i@civics.ng.", "spans": [{"start": 0, "end": 18, "kind": "name"}, {"start": 26, "end": 44, "kind": "email"}]}
+{"id": "RED-292", "lang": "ig", "text": "BVN 66778899005 na (+234) 802 333 4459.", "spans": [{"start": 4, "end": 15, "kind": "bvn"}, {"start": 19, "end": 38, "kind": "phone"}]}
+{"id": "RED-293", "lang": "ig", "text": "Mama Ngozi huru ogu na 88 Aba Road.", "spans": [{"start": 0, "end": 10, "kind": "name"}, {"start": 23, "end": 34, "kind": "address"}]}
+{"id": "RED-294", "lang": "ig", "text": "VIN RV02D44556677889904 bu nke Suleiman Bello.", "spans": [{"start": 4, "end": 23, "kind": "vin"}, {"start": 31, "end": 45, "kind": "name"}]}
+{"id": "RED-295", "lang": "ig", "text": "Kpoo 0902  333  4459 jua maka Hon. Tajudeen Abbas.", "spans": [{"start": 5, "end": 20, "kind": "phone"}, {"start": 30, "end": 49, "kind": "name"}]}
+{"id": "RED-296", "lang": "ig", "text": "NIN 88990011227 na account 7088990015.", "spans": [{"start": 4, "end": 15, "kind": "nin"}, {"start": 27, "end": 37, "kind": "account"}]}
+{"id": "RED-297", "lang": "ig", "text": "Oba Adeyemi zigara 0806 111 2237.", "spans": [{"start": 0, "end": 11, "kind": "name"}, {"start": 19, "end": 32, "kind": "phone"}]}
+{"id": "RED-298", "lang": "ig", "text": "aisha.i22@yahoo.com natara iyi egwu site na 0807 222 3348.", "spans": [{"start": 0, "end": 19, "kind": "email"}, {"start": 44, "end": 57, "kind": "phone"}]}
+{"id": "RED-299", "lang": "ig", "text": "Toluwani Ojo bi na 15 Bode Thomas Street.", "spans": [{"start": 0, "end": 12, "kind": "name"}, {"start": 19, "end": 40, "kind": "address"}]}
+{"id": "RED-300", "lang": "ig", "text": "Uchechukwu Okoro kporo 0814 555 6681.", "spans": [{"start": 0, "end": 16, "kind": "name"}, {"start": 23, "end": 36, "kind": "phone"}]}
+{"id": "RED-301", "lang": "en", "text": "PVC collection: 2 voters at PU 012 had no cards", "spans": []}
+{"id": "RED-302", "lang": "en", "text": "The PVC of 3 voters at ward 5 was seized", "spans": []}
+{"id": "RED-303", "lang": "en", "text": "VIN checks: 12 out of 300 voters", "spans": []}
+{"id": "RED-304", "lang": "en", "text": "All voters were asked to hold up their PVC before joining the queue.", "spans": []}
+{"id": "RED-305", "lang": "en", "text": "INEC officials confirmed that PVC distribution ended on Friday.", "spans": []}
+{"id": "RED-306", "lang": "en", "text": "The presiding officer announced that voters without PVC cannot vote today.", "spans": []}
+{"id": "RED-307", "lang": "en", "text": "VIN verification took less than two minutes per citizen at this polling unit.", "spans": []}
+{"id": "RED-308", "lang": "en", "text": "Security officers inspected every PVC at the entrance gate.", "spans": []}

@@ -14,6 +14,7 @@ from staff.access import COORDINATORS
 from staff.audit import authorize, record
 from staff.fields import category, invalid, is_incident, text_field
 
+from .emerging import detect_emerging
 from .models import ClusterSettings, ClusterWarning
 
 
@@ -28,51 +29,80 @@ def config_json(config):
     }
 
 
-@transaction.atomic
 def detect(org_id, now):
-    organisation = Organisation.objects.select_for_update(no_key=True).get(pk=org_id)
-    config = configuration(organisation)
-    interval = timedelta(minutes=config.window_minutes)
-    start = now - interval
-    categories = config.categories or CATEGORIES
-    reports = Report.objects.filter(
-        organisation=organisation, occurred_at__gte=start - 7 * interval, occurred_at__lt=now,
-    ).exclude(status=Report.Status.WITHDRAWN)
-    recent, baseline, areas = defaultdict(list), Counter(), {}
-    for report in reports.iterator():
-        details = report.incident_details
-        area = details.get("area") or {}
-        name = category(report)["value"]
-        if not is_incident(details, getattr(report, "kind", "incident")) or name not in categories or not area.get("lga_code"):
-            continue
-        key = (area["lga_code"], name)
-        if report.occurred_at >= start:
-            recent[key].append(str(report.pk))
-            areas[key] = {field: area.get(field) for field in ("state_code", "state_name", "lga_code", "lga_name")}
-        else:
-            baseline[key] += 1
-    for (lga, name), ids in sorted(recent.items()):
-        average = baseline[lga, name] / 7
-        if len(ids) < config.min_reports or len(ids) < 2 * average:
-            continue
-        previous = ClusterWarning.objects.filter(
-            organisation=organisation, lga_code=lga, category=name, window_end__gt=start,
-        ).exists()
-        if previous:
-            continue
-        warning = ClusterWarning.objects.create(
-            organisation=organisation, category=name, area=areas[lga, name], lga_code=lga,
-            report_ids=sorted(ids), baseline=round(average, 2), window_start=start, window_end=now,
-        )
-        record(org_id, "create_cluster_warning", "cluster_warning", warning.pk)
+    return detect_emerging(org_id, now)
 
 
 def warning_json(warning):
+    detector = getattr(warning, "detector", None) or "threshold"
+    baseline_kind = getattr(warning, "baseline_kind", None)
+    if detector == "threshold" or baseline_kind == "threshold":
+        baseline_str = None
+    elif not baseline_kind:
+        baseline_str = "same_area_earlier"
+    else:
+        baseline_str = str(baseline_kind)
+
+    observed = getattr(warning, "observed", None) or len(warning.report_ids)
+    total_reports = getattr(warning, "total_reports", 0) or len(warning.report_ids)
+    expected = getattr(warning, "expected", None)
+    if expected is None:
+        expected = getattr(warning, "baseline", 0.0)
+    expected = round(float(expected), 2)
+
+    p_val = getattr(warning, "p_value", None)
+    p_val = round(float(p_val), 4) if p_val is not None else None
+    q_val = getattr(warning, "q_value", None)
+    q_val = round(float(q_val), 4) if q_val is not None else None
+
+    win_min = getattr(warning, "window_minutes", None) or 60
+    lga_name = (warning.area or {}).get("lga_name") or warning.lga_code
+
+    explanation = getattr(warning, "explanation", "") or ""
+    if not explanation:
+        cat_display = warning.category.replace("_", " ")
+        exp_disp = round(expected, 1)
+        if exp_disp.is_integer():
+            exp_disp = int(exp_disp)
+        explanation = f"{observed} {cat_display} reports in {lga_name} LGA in the last {win_min} minutes; about {exp_disp} expected"
+
     return {
-        "id": str(warning.pk), "category": warning.category, "area": warning.area,
-        "report_count": len(warning.report_ids), "baseline": warning.baseline,
-        "window_start": wat(warning.window_start), "window_end": wat(warning.window_end),
-        "report_ids": warning.report_ids, "status": "reviewed" if warning.reviewed_at else "open",
+        "id": str(warning.pk),
+        "category": warning.category,
+        "area": warning.area,
+        "trigger": getattr(warning, "trigger", "reports") or "reports",
+        "report_count": len(warning.report_ids),
+        "detector": detector,
+        "observed": observed,
+        "total_reports": total_reports,
+        "expected": expected,
+        "p_value": p_val,
+        "q_value": q_val,
+        "window_minutes": win_min,
+        "baseline": baseline_str,
+        "explanation": explanation,
+        "explanation_key": f"ops.alert.{detector}",
+        "explanation_params": (
+            {
+                "category": warning.category,
+                "lga_name": lga_name,
+                "hours": max(1, round((warning.window_end - warning.window_start).total_seconds() / 3600)),
+                "observed": observed,
+                "expected": expected,
+            }
+            if detector == "drift"
+            else {
+                "count": observed,
+                "category": warning.category,
+                "lga_name": lga_name,
+                "window_minutes": win_min,
+                "expected": expected,
+            }
+        ),
+        "window_start": wat(warning.window_start),
+        "window_end": wat(warning.window_end),
+        "report_ids": warning.report_ids,
+        "status": "reviewed" if warning.reviewed_at else "open",
         "reviewed_by": warning.reviewed_by or None,
         "reviewed_at": wat(warning.reviewed_at) if warning.reviewed_at else None,
     }

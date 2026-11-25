@@ -26,6 +26,9 @@ def serialize(organisation):
             "state_codes": organisation.coverage_state_codes,
             "lga_codes": organisation.coverage_lga_codes,
         },
+        "review_targets": organisation.review_targets or {
+            "urgent": 15, "high": 60, "normal": 240, "low": 480, "question_reply": 120,
+        },
         "simulator_enabled": organisation.simulator_enabled,
         "updated_by": organisation.settings_updated_by or None,
         "updated_at": wat(organisation.settings_updated_at) if organisation.settings_updated_at else None,
@@ -75,6 +78,13 @@ def validate_settings(data):
                      len(set(value)) == len(value))
         elif field == "coverage_area":
             valid = coverage_values(value) is not None
+        elif field == "review_targets":
+            allowed_keys = {"urgent", "high", "normal", "low", "question_reply"}
+            if isinstance(value, dict) and value and set(value) <= allowed_keys:
+                valid = all(type(v) is int and 5 <= v <= 1440 for v in value.values())
+            if not valid:
+                errors[field] = {"code": "field_invalid", "message": "Enter review targets between 5 and 1440 minutes."}
+                continue
         if valid:
             changes[field] = value
         else:
@@ -116,12 +126,20 @@ def patch_settings(request, data):
         return error(409, "invalid_transition", "Party labels cannot change after a result sheet exists.")
     if area := changes.pop("coverage_area", None):
         changes.update(coverage_state_codes=area["state_codes"], coverage_lga_codes=area["lga_codes"])
+    targets_changed = False
+    if partial_targets := changes.pop("review_targets", None):
+        merged = {**(organisation.review_targets or {"urgent": 15, "high": 60, "normal": 240, "low": 480, "question_reply": 120}), **partial_targets}
+        changes["review_targets"] = merged
+        targets_changed = True
     for field, value in changes.items():
         setattr(organisation, field, value)
     organisation.settings_version += 1
     organisation.settings_updated_by = (request.user.get_full_name() or request.user.email)[:254]
     organisation.settings_updated_at = timezone.now()
     organisation.save()
+    if targets_changed:
+        from clocks.calculator import recompute_org_open_clocks
+        recompute_org_open_clocks(organisation)
     record(
         organisation.pk, "update_settings", "organisation", organisation.pk, actor=request.user,
         version=organisation.settings_version, content=serialize(organisation),

@@ -2,6 +2,8 @@ from rest_framework import serializers
 
 from accounts.organisations import org_scope
 
+from privacy.redactor import safe_text
+
 from . import capabilities
 from .models import Evidence, Report, ReviewEvent
 
@@ -17,7 +19,9 @@ class ReportSerializer(serializers.ModelSerializer):
 
     def to_representation(self, report):
         result = super().to_representation(report)
-        if report.redacted_description is not None:
+        if self.context.get("staff") or isinstance(self, ReviewCaseSerializer):
+            result["description"] = safe_text(report)
+        elif report.redacted_description is not None:
             result["description"] = report.redacted_description
         return result
     polling_unit_code = serializers.CharField(max_length=32, allow_blank=True, default="")
@@ -86,7 +90,15 @@ class ReviewEventSerializer(serializers.ModelSerializer):
 
     def get_change(self, event):
         reply = getattr(event, "citizen_reply", None)
-        return {**event.change, "note": reply.body} if reply else event.change
+        if reply:
+            return {**event.change, "note": safe_text(reply)}
+        if isinstance(event.change, dict) and "note" in event.change and event.action in (
+            ReviewEvent.Action.RESPOND,
+            ReviewEvent.Action.MESSAGE,
+            ReviewEvent.Action.CREATE,
+        ):
+            return {**event.change, "note": safe_text(event)}
+        return event.change
 
     def get_actor(self, event):
         if event.actor_id is None:

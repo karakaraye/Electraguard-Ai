@@ -31,7 +31,6 @@ export type ContractId =
   | "MSG-01" | "MSG-02"
   | "DIS-01" | "DIS-02" | "DIS-03" | "DIS-04" | "DIS-05"
   | "ASK-01" | "GUIDE-01" | "RS-01"
-  | "CHK-01" | "CHK-02"
   | "Q-01" | "CASE-01" | "CASE-02" | "CASE-03" | "CASE-04" | "CASE-05"
   | "ASG-01" | "ASG-02"
   | "OPS-01" | "OPS-02" | "OPS-03" | "OPS-04"
@@ -39,7 +38,10 @@ export type ContractId =
   | "PUB-01" | "PUB-02"
   | "ADM-01" | "ADM-02" | "ADM-03" | "ADM-04"
   | "SEC-01" | "AUD-01"
-  | "SMS-01" | "USSD-01" | "SIM-01";
+  | "SMS-01" | "USSD-01" | "SIM-01"
+  | "CHK-01" | "CHK-02"
+  | "NOT-01" | "NOT-02" | "NOT-03" | "NOT-04" | "NOT-05" | "NOT-06"
+  | "AREA-01";
 
 export interface OperationSpec {
   contract: ContractId;
@@ -203,6 +205,19 @@ export const OPERATIONS = {
   // CHK (P-08 public rumour check)
   "CHK-01": { contract: "CHK-01", method: "GET", path: "/public/check", callers: ["public"], status: "NEW", idempotent: false },
   "CHK-02": { contract: "CHK-02", method: "POST", path: "/public/check", callers: ["public"], status: "NEW", idempotent: true, body: "json" },
+
+  // NOT
+  "NOT-01": { contract: "NOT-01", method: "POST", path: "/notices", callers: COORD, status: "NEW", idempotent: true, body: "json" },
+  "NOT-02.approve": { contract: "NOT-02", method: "POST", path: "/notices/{id}/approve", callers: COORD, status: "NEW", idempotent: true, body: "json" },
+  "NOT-02.reject": { contract: "NOT-02", method: "POST", path: "/notices/{id}/reject", callers: COORD, status: "NEW", idempotent: true, body: "json" },
+  "NOT-03.list": { contract: "NOT-03", method: "GET", path: "/notices", callers: COORD, status: "NEW", idempotent: false },
+  "NOT-03.results": { contract: "NOT-03", method: "GET", path: "/notices/{id}/results", callers: COORD, status: "NEW", idempotent: false },
+  "NOT-04": { contract: "NOT-04", method: "GET", path: "/observer/notices", callers: OBS, status: "NEW", idempotent: false },
+  "NOT-05": { contract: "NOT-05", method: "POST", path: "/observer/notices/{id}/answer", callers: OBS, status: "NEW", idempotent: true, body: "json" },
+  "NOT-06": { contract: "NOT-06", method: "GET", path: "/notices/questions", callers: COORD, status: "NEW", idempotent: false },
+
+  // AREA
+  "AREA-01": { contract: "AREA-01", method: "GET", path: "/observer/area-today", callers: OBS, status: "NEW", idempotent: false },
 } as const satisfies Record<string, OperationSpec>;
 
 export type OperationId = keyof typeof OPERATIONS;
@@ -355,6 +370,19 @@ export interface OperationTypes {
   "GUIDE-01.get": Io<undefined, T.GuideDocument, { language?: T.Language }>;
   "CHK-01": Io<undefined, T.CheckResponse, T.CheckQuery>;
   "CHK-02": Io<T.CheckAskRequest, T.CheckAskResponse>;
+
+  // NOT
+  "NOT-01": Io<{ scope: { kind: string; code: string }; type: string; text: string; question_id?: string; expires_in_minutes?: number }, { id: string; status: string }>;
+  "NOT-02.approve": Io<Record<string, unknown>, { status: string }>;
+  "NOT-02.reject": Io<{ note: string }, { status: string }>;
+  "NOT-03.list": Io<undefined, { items: Record<string, unknown>[] }>;
+  "NOT-03.results": Io<undefined, { notice_id: string; status: string; wards: Record<string, unknown> }>;
+  "NOT-04": Io<undefined, { items: Record<string, unknown>[] }, { ward_code?: string; lga_code?: string }>;
+  "NOT-05": Io<{ answer: "yes" | "no" | "not_seen"; answered_at: string }, { status: string }>;
+  "NOT-06": Io<undefined, { items: Record<string, unknown>[] }>;
+
+  // AREA
+  "AREA-01": Io<undefined, { lga_name: string; lga_code: string; updated_at: string; by_category: { category: string; count: number | "fewer than 5" }[] }, { lga_code?: string }>;
 }
 
 /** Fails to compile if an operation has no types or a type entry has no operation. */
