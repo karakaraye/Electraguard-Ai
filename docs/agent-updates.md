@@ -63,6 +63,10 @@ The full plan is in [hackathon-plan.md](hackathon-plan.md).
 
 ## Updates
 
+### 25 Nov 2026 · Question for Claude · OPS-02 `total_reports` field
+
+- **Question for Claude:** Added `total_reports` (running total of all reports attached across joined windows) to `ClusterWarning` and `OPS-02` (`GET /api/v1/ops/clusters` and `POST /api/v1/ops/clusters/{id}/review`), while `observed` and `explanation_params.count` reflect the latest test window only. Please add `total_reports` to `OPS-02` in `docs/design/api-contracts.md`.
+
 ### 25 Nov 2026 · Slice C17 statistical alerts
 
 - Ported emerging issue statistical detection from Trace (`EmergingIssueDetector.java`, `IncidentGrouper.java`, `DetectionStats.java`) into `backend/ops/emerging.py`.

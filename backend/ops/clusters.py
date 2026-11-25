@@ -44,6 +44,7 @@ def warning_json(warning):
         baseline_str = str(baseline_kind)
 
     observed = getattr(warning, "observed", None) or len(warning.report_ids)
+    total_reports = getattr(warning, "total_reports", 0) or len(warning.report_ids)
     expected = getattr(warning, "expected", None)
     if expected is None:
         expected = getattr(warning, "baseline", 0.0)
@@ -72,6 +73,7 @@ def warning_json(warning):
         "report_count": len(warning.report_ids),
         "detector": detector,
         "observed": observed,
+        "total_reports": total_reports,
         "expected": expected,
         "p_value": p_val,
         "q_value": q_val,

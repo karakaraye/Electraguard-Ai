@@ -210,6 +210,7 @@ def _fallback_threshold_detection(organisation, config, now, configured_categori
                 baseline=round(average, 2),
                 expected=round(average, 2),
                 observed=len(ids),
+                total_reports=len(ids),
                 detector=ClusterWarning.Detector.THRESHOLD,
                 window_minutes=config.window_minutes,
                 baseline_kind=ClusterWarning.BaselineKind.THRESHOLD,
@@ -401,7 +402,8 @@ def _statistical_detection(organisation, now, wat_now, configured_categories):
         if existing:
             combined_ids = sorted(set(existing.report_ids) | set(cand["report_ids"]))
             existing.report_ids = combined_ids
-            existing.observed = len(combined_ids)
+            existing.total_reports = len(combined_ids)
+            existing.observed = cand["observed"]
             existing.expected = round(cand["expected"], 2)
             existing.p_value = cand["p_value"]
             existing.q_value = cand["q_value"]
@@ -410,11 +412,11 @@ def _statistical_detection(organisation, now, wat_now, configured_categories):
             existing.baseline_kind = cand["baseline_kind"]
             existing.baseline = round(cand["expected"], 2)
             existing.explanation = build_plain_explanation(
-                cat, lga_name, cand["window_minutes"], len(combined_ids), cand["expected"]
+                cat, lga_name, cand["window_minutes"], cand["observed"], cand["expected"]
             )
             existing.window_end = now
             existing.save(update_fields=[
-                "report_ids", "observed", "expected", "p_value", "q_value",
+                "report_ids", "total_reports", "observed", "expected", "p_value", "q_value",
                 "detector", "window_minutes", "baseline_kind", "baseline",
                 "explanation", "window_end",
             ])
@@ -433,6 +435,7 @@ def _statistical_detection(organisation, now, wat_now, configured_categories):
                 baseline=round(cand["expected"], 2),
                 expected=round(cand["expected"], 2),
                 observed=cand["observed"],
+                total_reports=len(cand["report_ids"]),
                 p_value=cand["p_value"],
                 q_value=cand["q_value"],
                 detector=ClusterWarning.Detector.SPIKE,
