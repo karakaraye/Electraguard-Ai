@@ -8,6 +8,8 @@ import { useLocale, useT } from "../../../lib/i18n/client";
 import { localeTags } from "../../../lib/i18n";
 import { Button } from "../../../ui/Button/Button";
 import { TextArea } from "../../../ui/Field/TextArea";
+import { DictationCorner, DictationStatus, useDictation } from "../../../ui/DictationButton/DictationButton";
+import { FileIcon } from "../../../ui/icons";
 import { StatusShape } from "../../../ui/StatusBadge/StatusBadge";
 import styles from "./ask.module.css";
 
@@ -37,6 +39,7 @@ export function AskScreen({ initial = { kind: "idle" }, initialQuestion = "" }: 
   const [state, setState] = useState<AskState>(initial);
   const answerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  const dictation = useDictation(localeTags[locale], (text) => setQuestion((current) => (current ? `${current} ${text}` : text).slice(0, MAX)));
 
   async function submit(event: FormEvent) {
     event.preventDefault();
@@ -81,8 +84,10 @@ export function AskScreen({ initial = { kind: "idle" }, initialQuestion = "" }: 
           onChange={(event) => setQuestion(event.target.value)}
           maxLength={MAX}
           rows={3}
+          adornment={<DictationCorner dictation={dictation} />}
           data-testid="ask-question"
         />
+        <DictationStatus dictation={dictation} />
         <div className={styles.submit}>
           <Button type="submit" loading={state.kind === "asking"} loadingLabel={t("p04.asking")} data-testid="ask-submit">
             {t("p04.ask")}
@@ -90,6 +95,14 @@ export function AskScreen({ initial = { kind: "idle" }, initialQuestion = "" }: 
         </div>
       </form>
 
+      {state.kind === "asking" ? (
+        <p className={styles.thinking} data-testid="ask-thinking">
+          <span aria-hidden="true" />
+          <span aria-hidden="true" />
+          <span aria-hidden="true" />
+          <span className="eg-sr-only">{t("p04.asking")}</span>
+        </p>
+      ) : null}
       <div ref={answerRef} tabIndex={-1} className={styles.answer} aria-live="polite" data-testid="ask-answer">
         {state.kind === "answered" ? (
           <section aria-labelledby="p04-answer">
@@ -103,7 +116,10 @@ export function AskScreen({ initial = { kind: "idle" }, initialQuestion = "" }: 
                       <p>{passage.text}</p>
                     </blockquote>
                     <figcaption className={styles.source}>
-                      <span className={styles.sourceTitle}>{t("p04.source", { title: passage.source.title, section: passage.source.section })}</span>
+                      <span className={styles.sourceTitle}>
+                        <FileIcon size={20} aria-hidden="true" />
+                        {t("p04.source", { title: passage.source.title, section: passage.source.section })}
+                      </span>
                       <span className={styles.version}>{t("p04.version", { version: passage.source.version })}</span>
                       {passage.source.url.startsWith("/") ? (
                         <Link href={passage.source.url} className={styles.sourceLink}>

@@ -16,9 +16,9 @@ export default async function AskPage() {
       <header className={styles.header}>
         <h1 className={styles.title}>{t("p04.heading")}</h1>
         <p className={styles.lead}>{t("p04.lead")}</p>
+        <p className={styles.small}>{t("p04.note")}</p>
       </header>
       <AskScreen />
-      <p className={styles.small}>{t("p04.note")}</p>
     </div>
   );
 }

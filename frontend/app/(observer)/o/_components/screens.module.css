@@ -688,17 +688,29 @@
 
 /* ---------- Ask (O-19) ---------- */
 
-/* The answer: the guide's own words with a sun edge, then the source as a card inside. */
+/* The answer: the guide's own words, set apart by a hairline on all four sides and a sun
+   opening quote mark (never a side stripe, O-19), then the source as a card inside. */
 .quote {
+  position: relative;
   display: grid;
   gap: var(--s-3);
   margin: 0;
-  padding: var(--s-4);
+  padding: var(--s-5) var(--s-4) var(--s-4) var(--s-7);
   border: 1px solid var(--rule);
-  border-left: 4px solid var(--sun-strong);
   border-radius: var(--radius-lg);
   background: var(--paper-raised);
   animation: egAnswerIn var(--dur-fade) var(--ease-out);
+}
+
+.quote::before {
+  content: "\201C";
+  position: absolute;
+  inset-inline-start: var(--s-3);
+  top: var(--s-2);
+  font: var(--t-display);
+  font-size: 3rem;
+  line-height: 1;
+  color: var(--sun-strong);
 }
 
 @keyframes egAnswerIn {
