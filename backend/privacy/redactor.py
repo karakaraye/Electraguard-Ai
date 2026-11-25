@@ -162,18 +162,34 @@ class RedactionResult(NamedTuple):
 
 def org_secret_key(organisation: Any) -> bytes:
     if organisation is None:
-        org_id = "default"
-    elif hasattr(organisation, "id"):
-        org_id = str(organisation.id)
-    elif hasattr(organisation, "pk"):
-        org_id = str(organisation.pk)
-    else:
-        org_id = str(organisation)
+        raise ValueError("An organisation is required for redaction.")
 
-    master = getattr(settings, "REDACTION_MASTER_KEY", None) or getattr(settings, "SECRET_KEY", "electraguard-secret-key-32chars")
-    if isinstance(master, str):
-        master = master.encode("utf-8")
-    return hmac.new(master, f"electraguard:org:{org_id}".encode("utf-8"), hashlib.sha256).digest()
+    if isinstance(organisation, bytes):
+        if len(organisation) < 16:
+            raise ValueError("Organisation secret bytes must be at least 16 bytes.")
+        return organisation
+
+    if hasattr(organisation, "discussion") and getattr(organisation, "discussion_id", None):
+        org_id = organisation.discussion.organisation_id
+    elif hasattr(organisation, "report") and getattr(organisation, "report_id", None):
+        org_id = organisation.report.organisation_id
+    elif hasattr(organisation, "organisation_id") and organisation.organisation_id is not None:
+        org_id = organisation.organisation_id
+    elif hasattr(organisation, "pk") and organisation.__class__.__name__ == "Organisation":
+        org_id = organisation.pk
+    elif isinstance(organisation, str) and organisation:
+        org_id = organisation
+    elif hasattr(organisation, "hex"):  # UUID
+        org_id = organisation
+    else:
+        raise ValueError("Cannot resolve organisation for redaction.")
+
+    from privacy.models import OrganisationSecret
+    obj, _ = OrganisationSecret.objects.get_or_create(
+        organisation_id=org_id,
+        defaults={"secret": os.urandom(32)},
+    )
+    return bytes(obj.secret)
 
 
 def normalize_value(kind: str, value: str) -> str:
@@ -420,7 +436,13 @@ def safe_text(obj: Any, organisation: Any = None) -> str:
     if isinstance(obj, str):
         return redact(obj, organisation).text
 
-    org = getattr(obj, "organisation_id", None) or getattr(obj, "organisation", None) or organisation
+    org = (
+        getattr(obj, "organisation_id", None)
+        or getattr(obj, "organisation", None)
+        or (obj.discussion.organisation_id if hasattr(obj, "discussion") and getattr(obj, "discussion_id", None) else None)
+        or (obj.report.organisation_id if hasattr(obj, "report") and getattr(obj, "report_id", None) else None)
+        or organisation
+    )
 
     # Report or report-like object
     if hasattr(obj, "description"):

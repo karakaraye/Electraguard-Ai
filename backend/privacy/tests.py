@@ -101,13 +101,29 @@ class RedactionTests(TestCase):
         self.assertIn("[ADDRESS_", res.text)
 
     def test_per_organisation_token_isolation(self):
+        from privacy.models import OrganisationSecret
+
         number = "08023334444"
         res_a = redact(number, self.org_a)
+        res_a2 = redact("+234 802 333 4444", self.org_a)
         res_b = redact(number, self.org_b)
-        # Both format as [PHONE_xxxx] but with different HMAC suffixes
+        # Same token within org, different across orgs
+        self.assertEqual(res_a.text, res_a2.text)
         self.assertTrue(res_a.text.startswith("[PHONE_"))
         self.assertTrue(res_b.text.startswith("[PHONE_"))
         self.assertNotEqual(res_a.text, res_b.text)
+
+        # Stored 32-byte random secret per org
+        sec_a = OrganisationSecret.objects.get(organisation=self.org_a)
+        sec_b = OrganisationSecret.objects.get(organisation=self.org_b)
+        self.assertEqual(len(bytes(sec_a.secret)), 32)
+        self.assertNotEqual(bytes(sec_a.secret), bytes(sec_b.secret))
+
+        # Missing organisation raises ValueError (no "default" fallback)
+        with self.assertRaises(ValueError):
+            redact(number, None)
+        with self.assertRaises(ValueError):
+            safe_text(Post(body=number))
 
     def test_existing_tokens_are_not_re_redacted(self):
         already_redacted = "Report by [NAME_3f9a] calling [PHONE_12ab] about an issue."
@@ -186,6 +202,7 @@ class RedactionTests(TestCase):
 
     def test_safe_text_helper_precedence(self):
         report = Report(
+            organisation=self.org_a,
             description="Raw description",
             auto_redacted_description="Auto redacted description",
             redacted_description="Manual redacted description",

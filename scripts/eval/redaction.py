@@ -26,12 +26,13 @@ def score():
     misses = []
     false_positives = []
 
+    eval_secret = b"eval-fixed-32-byte-secret-key!!!"
     for item in items:
         lang = item["lang"]
         text = item["text"]
         gold = {(s["start"], s["end"], s["kind"]) for s in item["spans"]}
 
-        res = redact(text, "eval-org")
+        res = redact(text, eval_secret)
         pred = {(s["original_start"], s["original_end"], s["kind"]) for s in res.spans}
 
         for g in sorted(gold):
