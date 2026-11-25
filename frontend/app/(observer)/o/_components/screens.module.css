@@ -1284,3 +1284,29 @@
     top: 50%;
   }
 }
+
+/* ---------- Discussions (spec screen 25) ---------- */
+.joinedCard {
+  padding: 0 var(--s-3);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  background: var(--paper-raised);
+}
+
+.joinedCard > li:last-child > a {
+  border-bottom: 0;
+}
+
+/* The moderator's posts read as guidance: sun-tinted. */
+.bubbleMod {
+  background: var(--sun-tint);
+}
+
+.bubble[data-hidden] {
+  background: none;
+  border: 1px dashed var(--rule-control);
+}
+
+.bubble .postActions {
+  margin: 0 calc(var(--s-3) * -1) calc(var(--s-2) * -1);
+}
