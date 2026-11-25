@@ -1547,3 +1547,71 @@
   border-radius: var(--radius-lg);
   background: var(--paper-raised);
 }
+
+/* ---------- Check a report (spec screen 31) ---------- */
+.codeChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.codeChip {
+  display: inline-flex;
+  align-items: stretch;
+  border: 1px solid var(--rule-control);
+  border-radius: var(--radius-pill);
+  background: var(--paper-raised);
+  overflow: hidden;
+}
+
+.codeChipMain,
+.codeChipRemove {
+  display: inline-grid;
+  place-items: center;
+  min-height: 48px;
+  border: 0;
+  background: none;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.codeChipMain {
+  padding: 0 var(--s-3) 0 var(--s-4);
+  font: var(--t-label);
+  font-size: var(--t-base-size);
+  letter-spacing: 0.02em;
+}
+
+.codeChipRemove {
+  min-width: 44px;
+  border-left: 1px solid var(--rule);
+  color: var(--ink-2);
+}
+
+.codeChipMain:focus-visible,
+.codeChipRemove:focus-visible {
+  outline: var(--focus-outline);
+  outline-offset: -3px;
+}
+
+.codeChipMain:disabled {
+  color: var(--ink-2);
+  cursor: default;
+}
+
+.journeyDate {
+  color: var(--ink-2);
+  font: var(--t-small);
+}
+
+/* The result as a raised card instead of a rule. */
+.result {
+  padding: var(--s-5) var(--s-4);
+  border: 1px solid var(--rule);
+  border-top: 1px solid var(--rule);
+  border-radius: var(--radius-xl);
+  background: var(--paper-raised);
+}
