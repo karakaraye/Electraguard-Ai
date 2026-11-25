@@ -21,37 +21,33 @@ EMAIL_PATTERN = re.compile(
     r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b"
 )
 
-# NIN: 11 digits anywhere within 30 chars of NIN or NIMC
+# NIN: 11 digits in same sentence after NIN or NIMC, within 30 chars
 NIN_PREFIX_PATTERN = re.compile(
-    r"(?i)\b(?:nin|nimc)\b[^\n]{0,30}?(?<!\d)(\d{11})(?!\d)"
-)
-NIN_SUFFIX_PATTERN = re.compile(
-    r"(?i)(?<!\d)(\d{11})(?!\d)[^\n]{0,30}?\b(?:nin|nimc)\b"
+    r"(?i)\b(?:nin|nimc)\b[^.\n!?]{0,30}?(?<!\d)(\d{11})(?!\d)"
 )
 
-# BVN: 11 digits anywhere within 30 chars of BVN
+# BVN: 11 digits in same sentence after BVN, within 30 chars
 BVN_PREFIX_PATTERN = re.compile(
-    r"(?i)\bbvn\b[^\n]{0,30}?(?<!\d)(\d{11})(?!\d)"
-)
-BVN_SUFFIX_PATTERN = re.compile(
-    r"(?i)(?<!\d)(\d{11})(?!\d)[^\n]{0,30}?\bbvn\b"
+    r"(?i)\bbvn\b[^.\n!?]{0,30}?(?<!\d)(\d{11})(?!\d)"
 )
 
 # VIN / Voter card number: 19 alphanumeric characters (with at least 1 digit) within 30 chars of VIN or PVC, or starting with 90F5
 VIN_PREFIX_PATTERN = re.compile(
-    r"(?i)\b(?:vin|pvc)\b[^\n]{0,30}?(?<![A-Za-z0-9])(?=[A-Za-z0-9]*\d)([A-Za-z0-9]{19})(?![A-Za-z0-9])"
+    r"(?i)\b(?:vin|pvc)\b[^.\n!?]{0,30}?(?<![A-Za-z0-9])(?=[A-Za-z0-9]*\d)([A-Za-z0-9]{19})(?![A-Za-z0-9])"
 )
 VIN_SUFFIX_PATTERN = re.compile(
-    r"(?i)(?<![A-Za-z0-9])(?=[A-Za-z0-9]*\d)([A-Za-z0-9]{19})(?![A-Za-z0-9])[^\n]{0,30}?\b(?:vin|pvc)\b"
+    r"(?i)(?<![A-Za-z0-9])(?=[A-Za-z0-9]*\d)([A-Za-z0-9]{19})(?![A-Za-z0-9])[^.\n!?]{0,30}?\b(?:vin|pvc)\b"
 )
 VIN_STANDARD_PATTERN = re.compile(
     r"(?i)\b(90F5[A-Za-z0-9]{15})\b"
 )
 
-# Account number: 10 digits after account, acct, a/c, or nuban
+# Account number: 10 digits immediately following account phrase within 15 chars
 ACCOUNT_PREFIX_PATTERN = re.compile(
-    r"(?i)(?:\ba/c\b|\b(?:account|acct|nuban)\b)[^\n\d]{0,25}(?<!\d)(\d{10})(?!\d)"
+    r"(?i)(?:\baccount\s+(?:no\.?|number)\b|\ba/c\b|\b(?:account|acct|nuban)\b)(?:[:=\-\s]{0,5}(?:is|no\.?|number|na)?[:=\-\s]{0,5})(?<!\d)(\d{10})(?!\d)"
 )
+
+OFFICIAL_PLACE_WORDS: Set[str] = {"ward", "unit", "polling", "lga", "collation"}
 
 # House Address: Numbered address with capitalised street name + street word, or PO Box
 STREET_WORDS = (
@@ -240,26 +236,24 @@ def find_candidate_spans(text: str, secret: bytes) -> List[Tuple[int, int, str, 
         val = m.group(1)
         candidates.append((m.start(1), m.end(1), "account", val, token_for("account", val, secret)))
 
-    for m in NIN_SUFFIX_PATTERN.finditer(text):
-        val = m.group(1)
-        candidates.append((m.start(1), m.end(1), "nin", val, token_for("nin", val, secret)))
-    for m in BVN_SUFFIX_PATTERN.finditer(text):
-        val = m.group(1)
-        candidates.append((m.start(1), m.end(1), "bvn", val, token_for("bvn", val, secret)))
     for m in VIN_SUFFIX_PATTERN.finditer(text):
         val = m.group(1)
         candidates.append((m.start(1), m.end(1), "vin", val, token_for("vin", val, secret)))
 
-    # 8. Address
+    # 8. Address (exclude official/place words like Ward, Unit, Polling, LGA, Collation)
     for m in ADDRESS_NUMBERED_PATTERN.finditer(text):
         val = m.group()
-        candidates.append((m.start(), m.end(), "address", val, token_for("address", val, secret)))
+        tokens_lower = {w.lower().strip(".,") for w in val.split()}
+        if not (tokens_lower & OFFICIAL_PLACE_WORDS):
+            candidates.append((m.start(), m.end(), "address", val, token_for("address", val, secret)))
     for m in ADDRESS_PO_BOX_PATTERN.finditer(text):
         val = m.group()
         candidates.append((m.start(), m.end(), "address", val, token_for("address", val, secret)))
     for m in RESIDENCE_CUE_PATTERN.finditer(text):
         val = m.group(1)
-        candidates.append((m.start(1), m.end(1), "address", val, token_for("address", val, secret)))
+        tokens_lower = {w.lower().strip(".,") for w in val.split()}
+        if not (tokens_lower & OFFICIAL_PLACE_WORDS):
+            candidates.append((m.start(1), m.end(1), "address", val, token_for("address", val, secret)))
 
     # 9. Personal Names
     # 9a. Cued names

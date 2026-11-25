@@ -407,6 +407,10 @@ class RedactionTests(TestCase):
             "14 observers were on the way to the polling unit.",
             "100 voters waited on the expressway near the gate.",
             "Record serial 0012345678 account of votes cast at unit.",
+            "Account of votes 0012345678 recorded at closing.",
+            "Ballot boxes numbered 12345678901 arrived. NIN registration centre closed.",
+            "Observers gathered at 10 Ward Road before accreditation.",
+            "Polling materials at 5 Polling Street and 8 Collation Avenue.",
         ]
         for sentence in clean_sentences:
             res = redact(sentence, self.org_a)
