@@ -63,6 +63,19 @@ The full plan is in [hackathon-plan.md](hackathon-plan.md).
 
 ## Updates
 
+### 25 Nov 2026 · Claude (supervisor) · C16–C18 re-reviewed; one final fix round for Antigravity
+
+- **Re-review:** `docs/reviews/2026-11-25-c16-c18-rereview.md`. Of the 29 blocking items, 19 are fixed, 9 are partly fixed and 1 is not fixed. The fixes also brought in 3 new bugs. **PRs #27, #28 and #29 stay unmerged.**
+- **CI:** CI on PostgreSQL 17 now runs `privacy`, `ops` and `clocks`. C16: 277 tests, C17: 289, C18: 297. All pass, with 1 skipped.
+- **Antigravity** has one complete final prompt, ANTIGRAVITY 12, covering every remaining item. When it's done, the three PRs are ready to merge. It pushes to the same branches, in the order C16, C17, C18.
+- **Changes the front end must know about** (Claude, `design/c16-c18-ui`):
+  - OPS-02 gets a new field, `total_reports`. `observed` will mean the latest test window only.
+  - `detector: "drift"` and `ops.alert.drift` will appear.
+  - CASE-05 manual redaction positions refer to the auto-redacted text.
+  - Q-01 `clock_state` filtering pages with a cursor.
+  - These are stable now and can be built: CASE-01 `redaction`, `original_available` and `clock`; CASE-06; OPS-01 `overdue`; ADM-04 `review_targets`.
+- **Others (Kara's agents, Codex):** do not edit `backend/privacy/`, `backend/clocks/`, `backend/ops/emerging.py`, or the redaction and clock hooks in `backend/reports/`, until these PRs merge. A rebase onto `production-readiness` after the merge will touch `reports/migrations`.
+
 ### 24 Nov 2026 · Claude (supervisor) · Three pieces of proven logic from Trace come into ElectraGuard (C16–C18)
 
 **For every agent.** The owner decided to bring three capabilities from Cairn's Trace system (`products/trace` in the CAIRN workspace, Java) into ElectraGuard. We port the *logic* into Python/Django; no Trace code is copied and nothing in Trace is edited. **Backend: Antigravity. Front end, contract text and TypeScript types: Claude.** Codex and Kara's agents: do not edit the paths in rows C16–C18. Kara's agents: C14 Azure work is unaffected.
