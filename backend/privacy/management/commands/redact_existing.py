@@ -61,6 +61,37 @@ class Command(BaseCommand):
             report_count += len(to_update)
             self.stdout.write(f"  Processed {report_count}/{total_reports} reports.")
 
+        # 1b. Existing manual redactions (built before C16, verify and redact remaining PII)
+        manual_report_count = 0
+        manual_base = (
+            Report.objects.filter(redacted_description__isnull=False)
+            .exclude(redacted_description="")
+            .order_by("pk")
+        )
+        total_manual = manual_base.count()
+        if total_manual:
+            self.stdout.write(f"Found {total_manual} reports with existing manual redactions to verify.")
+            last_pk = None
+            while True:
+                qs = manual_base.filter(pk__gt=last_pk) if last_pk is not None else manual_base
+                batch = list(qs[:batch_size])
+                if not batch:
+                    break
+
+                to_update = []
+                for report in batch:
+                    res = redact(report.redacted_description, report.organisation_id)
+                    if res.text != report.redacted_description:
+                        report.redacted_description = res.text
+                        to_update.append(report)
+                    last_pk = report.pk
+
+                if to_update and not dry_run:
+                    with transaction.atomic():
+                        Report.objects.bulk_update(to_update, ["redacted_description"])
+                manual_report_count += len(to_update)
+            self.stdout.write(f"  Updated {manual_report_count} manual redaction records.")
+
         # 2. Citizen Replies (keyset pagination on pk)
         reply_count = 0
         reply_base = (

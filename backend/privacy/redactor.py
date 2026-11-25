@@ -31,15 +31,15 @@ BVN_PREFIX_PATTERN = re.compile(
     r"(?i)\bbvn\b[^.\n!?]{0,30}?(?<!\d)(\d(?:[ -]?\d){10})(?!\d)"
 )
 
-# VIN / Voter card number: 19 alphanumeric characters (single spaces/dashes allowed) within 30 chars of VIN or PVC, or starting with 90F5
+# VIN / Voter card number: 19 alphanumeric characters (single spaces/dashes allowed between groups of 2-6 chars) within 30 chars of VIN or PVC, or starting with 90F5
 VIN_PREFIX_PATTERN = re.compile(
-    r"(?i)\b(?:vin|pvc)\b[^.\n!?]{0,30}?(?<![A-Za-z0-9])([A-Za-z0-9](?:[ -]?[A-Za-z0-9]){18})(?![A-Za-z0-9])"
+    r"(?i)\b(?:vin|pvc)\b[^.\n!?]{0,30}?(?<![A-Za-z0-9])([A-Za-z0-9]{19}|[A-Za-z0-9]{2,6}(?:[ -][A-Za-z0-9]{2,6}){1,8})(?![A-Za-z0-9])"
 )
 VIN_SUFFIX_PATTERN = re.compile(
-    r"(?i)(?<![A-Za-z0-9])([A-Za-z0-9](?:[ -]?[A-Za-z0-9]){18})(?![A-Za-z0-9])[^.\n!?]{0,30}?\b(?:vin|pvc)\b"
+    r"(?i)(?<![A-Za-z0-9])([A-Za-z0-9]{19}|[A-Za-z0-9]{2,6}(?:[ -][A-Za-z0-9]{2,6}){1,8})(?![A-Za-z0-9])[^.\n!?]{0,30}?\b(?:vin|pvc)\b"
 )
 VIN_STANDARD_PATTERN = re.compile(
-    r"(?i)\b(90F5(?:[ -]?[A-Za-z0-9]){15})\b"
+    r"(?i)\b(90F5(?:[A-Za-z0-9]{15}|(?:[ -][A-Za-z0-9]{2,6}){1,8}))\b"
 )
 
 # Account number: 10 digits (single spaces/dashes allowed) immediately following account phrase within 15 chars
@@ -72,7 +72,7 @@ TITLE_WORDS = (
     r"Otunba|Oba|Deacon|Deaconess|Evangelist|Evang|Apostle|Bishop|Imam|Ustaz|Sheikh|"
     r"Hon|Honourable|Honorable|Comrade|Comr|Senator|Sen|Gen|Col|Capt|Major|Sgt|Cpl|"
     r"Insp|Inspector|Oga|Mama|Papa|Baba|Madam|Sister|Brother|Uncle|Aunty|"
-    r"Mazi|Nwanyi|Ichie|Igwe|Eze|Dọkịta|Dokita|Arakunrin|Iyaafin|Omidan|Oloye|Sarki|Waziri|Magaji"
+    r"Mazi|Nwanyi|Ichie|Igwe|Dọkịta|Dokita|Arakunrin|Iyaafin|Omidan|Oloye|Sarki|Waziri|Magaji"
 )
 TITLE_NAME_PATTERN = re.compile(
     rf"\b(?:(?:{TITLE_WORDS})\.?\s+){{1,2}}([A-ZÀ-ÿ][a-zA-ZÀ-ÿ]*(?:\s+[A-ZÀ-ÿ][a-zA-ZÀ-ÿ]*){{0,2}})\b"
@@ -214,6 +214,55 @@ def token_for(kind: str, value: str, secret: bytes) -> str:
     return f"[{kind.upper()}_{suffix}]"
 
 
+def extract_valid_vin(text: str, start_pos: int, raw_match: str) -> Optional[Tuple[int, int, str]]:
+    clean = re.sub(r"[\s-]", "", raw_match)
+    if len(clean) == 19 and sum(c.isdigit() for c in clean) >= 8:
+        return (start_pos, start_pos + len(raw_match), raw_match)
+    if len(clean) > 19:
+        parts = re.split(r"([ -]+)", raw_match)
+        cur_chars = 0
+        cur_len = 0
+        cur_val = []
+        for part in parts:
+            if not re.fullmatch(r"[ -]+", part):
+                cur_chars += len(part)
+            cur_len += len(part)
+            cur_val.append(part)
+            if cur_chars == 19:
+                cand = "".join(cur_val)
+                cand_clean = re.sub(r"[\s-]", "", cand)
+                if sum(c.isdigit() for c in cand_clean) >= 8:
+                    return (start_pos, start_pos + cur_len, cand)
+            elif cur_chars > 19:
+                break
+    return None
+
+
+def extract_valid_vin_suffix(text: str, start_pos: int, raw_match: str) -> Optional[Tuple[int, int, str]]:
+    clean = re.sub(r"[\s-]", "", raw_match)
+    if len(clean) == 19 and sum(c.isdigit() for c in clean) >= 8:
+        return (start_pos, start_pos + len(raw_match), raw_match)
+    if len(clean) > 19:
+        parts = re.split(r"([ -]+)", raw_match)
+        cur_chars = 0
+        cur_len = 0
+        cur_val = []
+        for part in reversed(parts):
+            if not re.fullmatch(r"[ -]+", part):
+                cur_chars += len(part)
+            cur_len += len(part)
+            cur_val.append(part)
+            if cur_chars == 19:
+                cand = "".join(reversed(cur_val))
+                cand_clean = re.sub(r"[\s-]", "", cand)
+                if sum(c.isdigit() for c in cand_clean) >= 8:
+                    offset = len(raw_match) - cur_len
+                    return (start_pos + offset, start_pos + len(raw_match), cand)
+            elif cur_chars > 19:
+                break
+    return None
+
+
 def find_candidate_spans(text: str, secret: bytes) -> List[Tuple[int, int, str, str, str]]:
     """
     Finds all candidate redaction spans: (start, end, kind, original_value, token).
@@ -243,20 +292,24 @@ def find_candidate_spans(text: str, secret: bytes) -> List[Tuple[int, int, str, 
         val = m.group(1)
         candidates.append((m.start(1), m.end(1), "bvn", val, token_for("bvn", val, secret)))
     for m in VIN_PREFIX_PATTERN.finditer(text):
-        val = m.group(1)
-        if any(c.isdigit() for c in val):
-            candidates.append((m.start(1), m.end(1), "vin", val, token_for("vin", val, secret)))
+        extracted = extract_valid_vin(text, m.start(1), m.group(1))
+        if extracted:
+            s_pos, e_pos, val = extracted
+            candidates.append((s_pos, e_pos, "vin", val, token_for("vin", val, secret)))
     for m in VIN_STANDARD_PATTERN.finditer(text):
-        val = m.group(1)
-        candidates.append((m.start(1), m.end(1), "vin", val, token_for("vin", val, secret)))
+        extracted = extract_valid_vin(text, m.start(1), m.group(1))
+        if extracted:
+            s_pos, e_pos, val = extracted
+            candidates.append((s_pos, e_pos, "vin", val, token_for("vin", val, secret)))
     for m in ACCOUNT_PREFIX_PATTERN.finditer(text):
         val = m.group(1)
         candidates.append((m.start(1), m.end(1), "account", val, token_for("account", val, secret)))
 
     for m in VIN_SUFFIX_PATTERN.finditer(text):
-        val = m.group(1)
-        if any(c.isdigit() for c in val):
-            candidates.append((m.start(1), m.end(1), "vin", val, token_for("vin", val, secret)))
+        extracted = extract_valid_vin_suffix(text, m.start(1), m.group(1))
+        if extracted:
+            s_pos, e_pos, val = extracted
+            candidates.append((s_pos, e_pos, "vin", val, token_for("vin", val, secret)))
 
     # 8. Address (exclude official/place words like Ward, Unit, Polling, LGA, Collation)
     for m in ADDRESS_NUMBERED_PATTERN.finditer(text):
@@ -447,7 +500,7 @@ def safe_text(obj: Any, organisation: Any = None) -> str:
     # Report or report-like object
     if hasattr(obj, "description"):
         if getattr(obj, "redacted_description", None):
-            return obj.redacted_description
+            return redact(obj.redacted_description, org).text
         if getattr(obj, "auto_redacted_description", None):
             return obj.auto_redacted_description
         return redact(obj.description, org).text if obj.description else ""

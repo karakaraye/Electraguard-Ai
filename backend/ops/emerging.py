@@ -131,7 +131,7 @@ def _notify_coordinator_once(organisation, warning, lga_name, now):
 
 
 @transaction.atomic
-def detect_emerging(org_id, now=None):
+def detect_emerging(org_id, now=None, *, is_statistical=None):
     """Evaluates report series for unusual volumes using Poisson tests, BH FDR control, and CUSUM drift."""
     if now is None:
         now = timezone.now()
@@ -141,7 +141,7 @@ def detect_emerging(org_id, now=None):
     config = ClusterSettings.objects.filter(organisation=organisation).first() or ClusterSettings(organisation=organisation)
     configured_categories = set(config.categories or CATEGORIES)
 
-    if wat_now.hour < 9:
+    if is_statistical is False or (is_statistical is None and wat_now.hour < 9):
         return _fallback_threshold_detection(organisation, config, now, configured_categories)
 
     return _statistical_detection(organisation, now, wat_now, configured_categories)
@@ -195,12 +195,13 @@ def _fallback_threshold_detection(organisation, config, now, configured_categori
         if existing:
             combined_ids = sorted(set(existing.report_ids) | set(ids))
             existing.report_ids = combined_ids
-            existing.observed = len(combined_ids)
+            existing.total_reports = len(combined_ids)
+            existing.observed = len(ids)
             existing.expected = round(average, 2)
             existing.baseline = round(average, 2)
             existing.window_end = now
-            existing.explanation = build_plain_explanation(name, lga_name, config.window_minutes, len(combined_ids), average)
-            existing.save(update_fields=["report_ids", "observed", "expected", "baseline", "window_end", "explanation"])
+            existing.explanation = build_plain_explanation(name, lga_name, config.window_minutes, len(ids), average)
+            existing.save(update_fields=["report_ids", "total_reports", "observed", "expected", "baseline", "window_end", "explanation"])
             _notify_coordinator_once(organisation, existing, lga_name, now)
             alerts_created.append(existing)
         else:
@@ -249,13 +250,14 @@ def _statistical_detection(organisation, now, wat_now, configured_categories):
 
     from reference.models import AreaDataset
 
-    for states_data in AreaDataset.objects.values_list("states", flat=True).iterator(chunk_size=1):
-        for st in (states_data or {}).values():
-            st_code = st.get("state_code")
-            if st_code:
-                for lga_item in st.get("lgas", []):
-                    if lga_item.get("lga_code"):
-                        state_known_lgas[st_code].add(lga_item["lga_code"])
+    current_dataset = AreaDataset.objects.order_by("-version").first()
+    states_data = current_dataset.states if current_dataset else {}
+    for st in (states_data or {}).values():
+        st_code = st.get("state_code")
+        if st_code:
+            for lga_item in st.get("lgas", []):
+                if lga_item.get("lga_code"):
+                    state_known_lgas[st_code].add(lga_item["lga_code"])
 
     for r in reports:
         details = r.incident_details or {}
@@ -498,33 +500,11 @@ def _statistical_detection(organisation, now, wat_now, configured_categories):
         if existing:
             combined_ids = sorted(set(existing.report_ids) | set(cand["report_ids"]))
             if len(combined_ids) > len(existing.report_ids):
-                lga_name = cand["area"].get("lga_name") or lga
+                # Drift adds evidence only; do not overwrite detector, p_value, q_value with non-significant values
                 existing.report_ids = combined_ids
                 existing.total_reports = len(combined_ids)
-                existing.observed = cand["observed"]
-                existing.expected = round(cand["expected"], 2)
-                existing.p_value = cand["p_value"]
-                existing.q_value = cand["q_value"]
-                existing.window_minutes = cand["window_minutes"]
-                existing.baseline_kind = cand["baseline_kind"]
-                existing.baseline = round(cand["expected"], 2)
-                if existing.detector in (ClusterWarning.Detector.SPIKE, ClusterWarning.Detector.THRESHOLD):
-                    existing.detector = ClusterWarning.Detector.DRIFT
-                hours = max(1, round((now - existing.window_start).total_seconds() / 3600))
-                cat_display = cat.replace("_", " ")
-                exp_disp = round(cand["expected"], 1)
-                if exp_disp.is_integer():
-                    exp_disp = int(exp_disp)
-                existing.explanation = (
-                    f"{cand['observed']} {cat_display} reports in {lga_name} LGA across {hours} hours; "
-                    f"about {exp_disp} expected"
-                )
                 existing.window_end = now
-                existing.save(update_fields=[
-                    "report_ids", "total_reports", "observed", "expected", "p_value", "q_value",
-                    "window_minutes", "baseline_kind", "baseline", "detector",
-                    "explanation", "window_end",
-                ])
+                existing.save(update_fields=["report_ids", "total_reports", "window_end"])
                 alerts_touched.append(existing)
 
     return alerts_touched

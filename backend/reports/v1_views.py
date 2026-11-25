@@ -213,22 +213,22 @@ def persist_report(actor, organisation, values, *, code="", secret_digest="", **
                     location=(area.get("polling_unit_name") or area.get("ward_name") or area.get("lga_name") or "")[:160],
                     polling_unit_code=(area.get("polling_unit_code") or ""), **values,
                 )
+                ReviewEvent.objects.create(
+                    report=report, organisation_id=report.organisation_id, actor=actor,
+                    version=0, action=ReviewEvent.Action.CREATE, change={"to_status": "received", **{
+                        key: details[key] for key in ("channel", "simulated") if key in details
+                    }},
+                )
+                Triage.objects.create(
+                    report=report, organisation_id=report.organisation_id, method_version=METHOD_VERSION,
+                )
+                from clocks.calculator import create_initial_clock
+                create_initial_clock(report)
             break
         except IntegrityError as exc:
             if getattr(getattr(exc.__cause__, "diag", None), "constraint_name", None) != "reports_report_receipt_code_key":
                 raise
 
-    ReviewEvent.objects.create(
-        report=report, organisation_id=report.organisation_id, actor=actor,
-        version=0, action=ReviewEvent.Action.CREATE, change={"to_status": "received", **{
-            key: details[key] for key in ("channel", "simulated") if key in details
-        }},
-    )
-    Triage.objects.create(
-        report=report, organisation_id=report.organisation_id, method_version=METHOD_VERSION,
-    )
-    from clocks.calculator import create_initial_clock
-    create_initial_clock(report)
     return 201, {
         **identity(report), "version": report.version,
         **({"channel": "citizen"} if report.observer_id is None else {}),

@@ -186,12 +186,22 @@ def run_evaluation():
 
     step_wat = datetime.combine(surge_day, time(9, 0), tzinfo=WAT)
     end_wat = datetime.combine(surge_day, time(17, 0), tzinfo=WAT)
+    opened_at = {}
     while step_wat <= end_wat:
         print(f"Step {step_wat.strftime('%H:%M')}", flush=True)
         now_utc = step_wat.astimezone(dt_timezone.utc)
+        # Mark warnings reviewed 30 minutes after opening, as a coordinator would
+        for pk, t_open in list(opened_at.items()):
+            if now_utc >= t_open + timedelta(minutes=30):
+                ClusterWarning.objects.filter(pk=pk, reviewed_at__isnull=True).update(reviewed_at=now_utc)
+
         with transaction.atomic():
             _fallback_threshold_detection(org_old, config_old, now_utc, configured_cats)
             _statistical_detection(org_new, now_utc, step_wat, configured_cats)
+
+        for w in ClusterWarning.objects.filter(reviewed_at__isnull=True):
+            if w.pk not in opened_at:
+                opened_at[w.pk] = now_utc
 
         for idx, s in enumerate(surges):
             if now_utc < s["start"] or now_utc > s["end"] + timedelta(minutes=60):
@@ -246,11 +256,22 @@ def run_evaluation():
 
         q_step = datetime.combine(q_day, time(9, 0), tzinfo=WAT)
         q_end = datetime.combine(q_day, time(17, 0), tzinfo=WAT)
+        q_opened_at = {}
         while q_step <= q_end:
             now_utc = q_step.astimezone(dt_timezone.utc)
+            # Mark warnings reviewed 30 minutes after opening, as a coordinator would
+            for pk, t_open in list(q_opened_at.items()):
+                if now_utc >= t_open + timedelta(minutes=30):
+                    ClusterWarning.objects.filter(pk=pk, reviewed_at__isnull=True).update(reviewed_at=now_utc)
+
             with transaction.atomic():
                 _fallback_threshold_detection(q_old, q_cfg, now_utc, configured_cats)
                 _statistical_detection(q_new, now_utc, q_step, configured_cats)
+
+            for w in ClusterWarning.objects.filter(reviewed_at__isnull=True):
+                if w.pk not in q_opened_at:
+                    q_opened_at[w.pk] = now_utc
+
             q_step += timedelta(minutes=10)
 
         old_false_alarms += ClusterWarning.objects.filter(organisation=q_old).count()
@@ -294,7 +315,7 @@ def run_evaluation():
             if better_fa
             else f"- **False alarms:** The new statistical detector was **not** better on false alarms ({new_fa_hr:.2f}/hr vs {old_fa_hr:.2f}/hr for the old threshold) because testing both 30m and 60m windows across ~{len(all_lgas) * len(EVAL_CATEGORIES)} series with `observed >= 3` still admits Poisson tail spikes under `q <= 0.05`."
         ),
-        f"- **Detection:** New detector caught {len(new_detected)}/20 surges (median {new_med_ttd:.1f} min) vs {len(old_detected)}/20 (median {old_med_ttd:.1f} min) for the old threshold.",
+        f"- **Detection:** The new detector catches {len(new_detected)} of 20 surges against {len(old_detected)} of 20 for the threshold, with a median time to detect of {new_med_ttd:.0f} minutes against {old_med_ttd:.0f}.",
         "",
     ]
     REPORT_PATH.parent.mkdir(parents=True, exist_ok=True)

@@ -298,3 +298,11 @@
 {"id": "RED-298", "lang": "ig", "text": "aisha.i22@yahoo.com natara iyi egwu site na 0807 222 3348.", "spans": [{"start": 0, "end": 19, "kind": "email"}, {"start": 44, "end": 57, "kind": "phone"}]}
 {"id": "RED-299", "lang": "ig", "text": "Toluwani Ojo bi na 15 Bode Thomas Street.", "spans": [{"start": 0, "end": 12, "kind": "name"}, {"start": 19, "end": 40, "kind": "address"}]}
 {"id": "RED-300", "lang": "ig", "text": "Uchechukwu Okoro kporo 0814 555 6681.", "spans": [{"start": 0, "end": 16, "kind": "name"}, {"start": 23, "end": 36, "kind": "phone"}]}
+{"id": "RED-301", "lang": "en", "text": "PVC collection: 2 voters at PU 012 had no cards", "spans": []}
+{"id": "RED-302", "lang": "en", "text": "The PVC of 3 voters at ward 5 was seized", "spans": []}
+{"id": "RED-303", "lang": "en", "text": "VIN checks: 12 out of 300 voters", "spans": []}
+{"id": "RED-304", "lang": "en", "text": "All voters were asked to hold up their PVC before joining the queue.", "spans": []}
+{"id": "RED-305", "lang": "en", "text": "INEC officials confirmed that PVC distribution ended on Friday.", "spans": []}
+{"id": "RED-306", "lang": "en", "text": "The presiding officer announced that voters without PVC cannot vote today.", "spans": []}
+{"id": "RED-307", "lang": "en", "text": "VIN verification took less than two minutes per citizen at this polling unit.", "spans": []}
+{"id": "RED-308", "lang": "en", "text": "Security officers inspected every PVC at the entrance gate.", "spans": []}

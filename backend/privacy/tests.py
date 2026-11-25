@@ -428,10 +428,24 @@ class RedactionTests(TestCase):
             "Ballot boxes numbered 12345678901 arrived. NIN registration centre closed.",
             "Observers gathered at 10 Ward Road before accreditation.",
             "Polling materials at 5 Polling Street and 8 Collation Avenue.",
+            # PVC/VIN negative sentences without card numbers
+            "PVC collection: 2 voters at PU 012 had no cards",
+            "The PVC of 3 voters at ward 5 was seized",
+            "VIN checks: 12 out of 300 voters",
+            "All voters were asked to hold up their PVC before joining the queue.",
+            "INEC officials confirmed that PVC distribution ended on Friday.",
+            "The presiding officer announced that voters without PVC cannot vote today.",
+            "VIN verification took less than two minutes per citizen at this polling unit.",
+            "Security officers inspected every PVC at the entrance gate.",
         ]
         for sentence in clean_sentences:
             res = redact(sentence, self.org_a)
             self.assertEqual(res.spans, [], f"False positive in: {sentence} -> {res.text}")
+
+        # Name with surname Eze (should not leave Eze unredacted)
+        res_eze = redact("Dr. Chinedu Eze arrived at the unit.", self.org_a)
+        self.assertNotIn("Chinedu", res_eze.text)
+        self.assertNotIn("Eze", res_eze.text)
 
         # Recall gaps check
         recall_cases = [
@@ -615,6 +629,22 @@ class RedactionTests(TestCase):
             window_start=timezone.now() - timedelta(hours=1), window_end=timezone.now(),
         )
 
+        from discussions.models import Flag
+        from publicdata.models import Snapshot
+
+        Flag.objects.create(
+            post=post,
+            member=member,
+            reason="Check discussion post",
+        )
+        Snapshot.objects.create(
+            organisation=self.org_a,
+            created_by=coordinator,
+            cutoff=timezone.now(),
+            preview={"title": "Election Summary", "summary": "Safe summary data"},
+            excluded=[],
+        )
+
         def login_staff(user):
             self.client.force_login(user)
             session = self.client.session
@@ -717,3 +747,95 @@ class RedactionTests(TestCase):
         conv_resp = self.client.get(f"/api/v1/reports/{report.pk}/messages")
         self.assertEqual(conv_resp.status_code, 200)
         self.assertNotIn("08098765432", conv_resp.content.decode("utf-8"))
+
+    def test_case_05_rejects_cutting_through_existing_token(self):
+        from reports.v1_views import persist_report
+
+        values = {
+            "occurred_at": timezone.now(),
+            "description": "Witness phone 08031234567 reported disruption.",
+            "incident_details": {"kind": "incident", "area": {"polling_unit_name": "PU 1"}},
+        }
+        _, _, report = persist_report(None, self.org_a.pk, values)
+        report.assigned_reviewer = self.reviewer_a
+        report.save(update_fields=["assigned_reviewer"])
+
+        # Auto-redacted description has a token like [PHONE_xxxx]
+        self.assertIn("[PHONE_", report.auto_redacted_description)
+        tok_idx = report.auto_redacted_description.index("[PHONE_")
+
+        self.client.force_login(self.reviewer_a)
+        # Try to submit a span that cuts into the token (e.g. starting inside the token)
+        res = self.client.post(
+            f"/api/v1/review/cases/{report.pk}/redaction",
+            {"spans": [{"start": tok_idx + 1, "end": tok_idx + 5}], "version": report.version},
+            content_type="application/json",
+            HTTP_IDEMPOTENCY_KEY=str(uuid4()),
+        )
+        self.assertEqual(res.status_code, 422)
+        err = res.json()["error"]["fields"]["spans.0"]
+        self.assertEqual(err["code"], "field_invalid")
+
+    def test_backfill_updates_pre_c16_manual_redaction(self):
+        from django.core.management import call_command
+
+        report = Report.objects.create(
+            organisation=self.org_a,
+            observer=self.observer,
+            submission_key=uuid4(),
+            occurred_at=timezone.now(),
+            description="Witness phone 0803 123 4567 reported incident.",
+            auto_redacted_description="Witness phone [PHONE_a1b2] reported incident.",
+            redacted_description="Manual note with unredacted phone 0803 123 4567.",
+        )
+        call_command("redact_existing")
+        report.refresh_from_db()
+        self.assertNotIn("0803 123 4567", report.redacted_description)
+        self.assertIn("[PHONE_", report.redacted_description)
+
+    def test_case_06_audit_export_shows_reason(self):
+        import json
+        from reports.v1_views import persist_report
+        from accounts.staff_sessions import VERIFIED
+        from staff.test_support import bind_staff_session
+
+        values = {
+            "occurred_at": timezone.now(),
+            "description": "Secret unredacted info here.",
+            "incident_details": {"kind": "incident", "area": {"polling_unit_name": "PU 1"}},
+        }
+        _, _, report = persist_report(None, self.org_a.pk, values)
+        report.assigned_reviewer = self.reviewer_a
+        report.save(update_fields=["assigned_reviewer"])
+
+        # Reviewer accesses original with reason
+        self.client.force_login(self.reviewer_a)
+        session = self.client.session
+        session[VERIFIED] = True
+        session.save()
+        bind_staff_session(session, self.reviewer_a)
+
+        orig_res = self.client.post(
+            f"/api/v1/review/cases/{report.pk}/original",
+            {"reason": "Investigating voter intimidation report"},
+            content_type="application/json",
+        )
+        self.assertEqual(orig_res.status_code, 200)
+
+        # Org admin exports audit
+        org_admin = User.objects.create_user(
+            email="admin.export.reason@example.com", password="pw", organisation=self.org_a, role=User.Role.ORG_ADMIN
+        )
+        self.client.force_login(org_admin)
+        session = self.client.session
+        session[VERIFIED] = True
+        session.save()
+        bind_staff_session(session, org_admin)
+
+        res = self.client.get("/api/v1/audit/export?format=jsonl")
+        self.assertEqual(res.status_code, 200)
+        lines = [json.loads(line) for line in b"".join(res.streaming_content).decode().splitlines() if line.strip()]
+        orig_events = [ev for ev in lines if ev.get("action") == "case.original_viewed"]
+        self.assertTrue(orig_events)
+        self.assertEqual(orig_events[0]["reason"], "Investigating voter intimidation report")
+        self.assertNotIn("Secret unredacted info", b"".join(res.streaming_content).decode())

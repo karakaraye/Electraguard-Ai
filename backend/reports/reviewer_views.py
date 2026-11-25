@@ -339,6 +339,11 @@ def case(request, reference):
         or report.auto_redactions
         or (report.auto_redacted_description and report.auto_redacted_description != report.description)
     )
+    raw_redactions = report.redactions or report.auto_redactions or []
+    cleaned_redactions = [
+        {k: v for k, v in r.items() if k not in ("original_start", "original_end")}
+        for r in raw_redactions
+    ]
     return JsonResponse({
         "id": row["id"], "receipt_code": row["receipt_code"], "kind": row["kind"], "channel": row["channel"],
         "status": row["status"], "outcome": row["outcome"], "version": report.version,
@@ -356,8 +361,11 @@ def case(request, reference):
         },
         "language": details.get("language"),
         "original": {
-            "description": safe_desc, "redacted_description": report.redacted_description or report.auto_redacted_description,
-            "redactions": report.redactions or report.auto_redactions, "original_available": original_available,
+            "description": safe_desc,
+            "auto_redacted_description": report.auto_redacted_description or safe_desc,
+            "redacted_description": report.redacted_description or report.auto_redacted_description,
+            "redactions": cleaned_redactions,
+            "original_available": original_available,
         },
         "translation": {"status": "unavailable", "text": None},
         "category_observer": details.get("category_observer"), "access_barrier_details": details.get("access_barrier_details", []),
@@ -522,6 +530,10 @@ def decide_suggestion(request, report, kind, data):
     if decision == "accept" and original is None:
         return error(409, "invalid_transition", "There is no ready suggestion to accept.")
     value = data.get("value")
+    if kind == "urgency":
+        target = value if decision == "correct" else original
+        if target is None or target == "none" or target not in URGENCIES:
+            return validation({"value": field("invalid_choice", "Choose a valid urgency level.")})
     if decision == "correct" and (
         not isinstance(value, str) or value not in (CATEGORIES if kind == "category" else URGENCIES) or value == original
     ):
@@ -567,8 +579,15 @@ def apply_redaction(request, report, data):
         else:
             intervals.append((start, end, index))
     intervals.sort()
+    from privacy.redactor import EXISTING_TOKEN_PATTERN
+    token_spans = [(m.start(), m.end()) for m in EXISTING_TOKEN_PATTERN.finditer(base_text)]
+
     chunks, previous = [], 0
     for start, end, index in intervals:
+        for t_start, t_end in token_spans:
+            if max(start, t_start) < min(end, t_end):
+                problems[f"spans.{index}"] = field("field_invalid", "Redaction span must not cut through an existing token.")
+                break
         if start < previous:
             problems[f"spans.{index}.start"] = field("invalid", "Redaction spans must not overlap.")
         chunks.extend((base_text[previous:start], "[name removed]"))
