@@ -409,7 +409,10 @@
     "searchNeedsState": "Choose your state below first. Then you can search its polling units.",
     "listDownloadingNoPercent": "Downloading the polling-unit list",
     "listMissingKept": "Your answers are kept. Come back when you have network.",
-    "unknownUnitNeedsList": "Available after the list downloads."
+    "unknownUnitNeedsList": "Available after the list downloads.",
+    "todayTitle": "Your polling unit today",
+    "byArea": "Choose by state, LGA and ward",
+    "stateFirst": "Choose your state first. Then you can search its polling units."
   },
   "o08": {
     "title": "When did it happen?",

@@ -3,34 +3,9 @@
   gap: var(--s-5);
 }
 
-.divider {
-  display: flex;
-  align-items: center;
-  gap: var(--s-3);
-  margin: 0;
-  color: var(--ink-2);
-  font: var(--t-label);
-  font-size: var(--t-base-size);
-  letter-spacing: var(--t-label-tracking);
-}
-
-.divider::before,
-.divider::after {
-  content: "";
-  flex: 1;
-  height: 1px;
-  background: var(--rule);
-}
-
 .drill {
   display: grid;
   gap: var(--s-4);
-}
-
-@media (min-width: 720px) {
-  .drill {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
 }
 
 .unknown {
@@ -119,4 +94,108 @@
   color: var(--danger);
   font: var(--t-small);
   font-weight: 600;
+}
+
+/* ---------- Search first (spec screen 13) ---------- */
+
+.searchBlock {
+  display: grid;
+  gap: var(--s-2);
+}
+
+/* Downloading a state's list: a thin sun line under the search field (I-5). */
+.progress {
+  display: grid;
+  gap: var(--s-2);
+}
+
+.track {
+  position: relative;
+  display: block;
+  height: 4px;
+  overflow: hidden;
+  border-radius: 2px;
+  background: var(--sun-tint);
+}
+
+.bar {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: var(--sun-strong);
+  transform-origin: left center;
+  transition: transform var(--dur-fade) var(--ease-out);
+}
+
+.bar[data-indeterminate] {
+  transform: scaleX(0.3);
+  animation: egListSlide 1.4s var(--ease-out) infinite;
+}
+
+@keyframes egListSlide {
+  from {
+    transform: translateX(-100%) scaleX(0.3);
+  }
+  to {
+    transform: translateX(340%) scaleX(0.3);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bar,
+  .bar[data-indeterminate] {
+    transition: none;
+    animation: none;
+  }
+}
+
+.progressText {
+  color: var(--ink-2);
+  font: var(--t-small);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Quiet links that open the area sheet. Full-width rows so they stay 56 px targets. */
+.links {
+  display: grid;
+  border-block: 1px solid var(--rule);
+}
+
+.link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-3);
+  min-height: var(--target-min);
+  padding: var(--s-3) 0;
+  border: 0;
+  background: none;
+  color: var(--ink);
+  font: var(--t-label);
+  font-size: var(--t-base-size);
+  text-align: start;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.link + .link {
+  border-top: 1px solid var(--rule);
+}
+
+.link svg {
+  flex: none;
+  color: var(--ink-2);
+}
+
+.link:focus-visible {
+  outline: var(--focus-outline);
+  outline-offset: var(--focus-offset);
+}
+
+.drill + .unknown {
+  margin-top: var(--s-4);
 }

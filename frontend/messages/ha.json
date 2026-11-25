@@ -410,7 +410,10 @@
     "searchNeedsState": "Da farko ka zaɓi jiharka a ƙasa. Sai ka nemi rumfunan zaɓenta.",
     "listDownloadingNoPercent": "Ana sauke jerin rumfunan zaɓe",
     "listMissingKept": "An ajiye abin da ka rubuta. Ka dawo idan ka samu sabis.",
-    "unknownUnitNeedsList": "Za a iya zaɓa bayan jerin ya sauka."
+    "unknownUnitNeedsList": "Za a iya zaɓa bayan jerin ya sauka.",
+    "todayTitle": "Rumfar zaɓenka ta yau",
+    "byArea": "Zaɓa ta jiha, ƙaramar hukuma da mazaɓa",
+    "stateFirst": "Da farko ka zaɓi jiharka. Sai ka nemi rumfunan zaɓenta."
   },
   "o08": {
     "title": "Yaushe ya faru?",

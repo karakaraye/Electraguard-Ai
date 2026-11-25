@@ -410,7 +410,10 @@
     "searchNeedsState": "Buru ụzọ họrọ steeti gị n'okpuru. Mgbe ahụ ị nwere ike ịchọ ebe ntuli aka ya.",
     "listDownloadingNoPercent": "A na-ebudata ndepụta ebe ntuli aka",
     "listMissingKept": "Echekwara ihe i dere. Laghachi mgbe i nwere netwọk.",
-    "unknownUnitNeedsList": "Ọ ga-adị mgbe ndepụta ahụ budatara."
+    "unknownUnitNeedsList": "Ọ ga-adị mgbe ndepụta ahụ budatara.",
+    "todayTitle": "Ebe ntuli aka gị taa",
+    "byArea": "Họrọ site na steeti, ọchịchị ime obodo na wọọdụ",
+    "stateFirst": "Buru ụzọ họrọ steeti gị. Mgbe ahụ ị nwere ike ịchọ ebe ntuli aka ya."
   },
   "o08": {
     "title": "Olee mgbe o mere?",

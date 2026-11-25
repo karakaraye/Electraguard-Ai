@@ -298,6 +298,8 @@ export const SCREENS: Record<string, Record<string, (t: Translate) => ReactEleme
   o07: {
     empty: () => where({}),
     selected: () => where({ summary: FIXTURE_PLACE }, { value: unitValue }),
+    today: () => where({ useToday: { label: FIXTURE_PLACE, code: unitValue.polling_unit_code, selected: false, onUse: noop } }),
+    "today-selected": () => where({ summary: FIXTURE_PLACE, useToday: { label: FIXTURE_PLACE, code: unitValue.polling_unit_code, selected: true, onUse: noop } }, { value: unitValue }),
     "ward-only": () => where({ summary: "Kantudu, Dala" }, { value: { ...unitValue, polling_unit_code: null, unknown_unit: true } }),
     error: () => where({ error: true }),
     downloading: () => where({}, { areas: {}, value: { ...unitValue, lga_code: null, ward_code: null, polling_unit_code: null, state_code: "LA" }, status: { kind: "downloading", percent: 42 } }),

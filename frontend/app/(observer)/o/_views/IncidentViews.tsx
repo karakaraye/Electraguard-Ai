@@ -277,7 +277,8 @@ export type WhereViewProps = Common & {
   picker: Omit<PollingUnitPickerProps, "error">;
   summary: string | null;
   error: boolean;
-  useToday?: { label: string; onUse: () => void } | null;
+  /** The unit the Arrival stage recorded today, pinned above the search. */
+  useToday?: { label: string; code: string; selected: boolean; onUse: () => void } | null;
   onContinue: () => void;
 };
 
@@ -295,16 +296,32 @@ export function WhereView({ picker, summary, error, useToday, onContinue, ...she
       }
     >
       <h1 className={styles.title}>{t("o07.title")}</h1>
-      {useToday ? (
-        <Button variant="secondary" block icon={<PlaceIcon />} onClick={useToday.onUse} data-testid="o07-use-today">
-          {t("o07.useToday", { unit: useToday.label })}
-        </Button>
-      ) : null}
-      <PollingUnitPicker {...picker} error={error ? t("o07.error") : undefined} selected={summary ? t("o07.selected", { place: summary }) : ""} />
-      <p className={styles.note}>
+      <p className={`${styles.note} ${styles.noGps}`}>
         <PlaceIcon />
         <span>{t("o07.noGps")}</span>
       </p>
+      {useToday ? (
+        <button
+          type="button"
+          className={styles.todayCard}
+          aria-pressed={useToday.selected}
+          onClick={useToday.onUse}
+          data-testid="o07-use-today"
+        >
+          <span className={styles.todayDisc} aria-hidden="true">
+            <PlaceIcon size={24} />
+          </span>
+          <span className={styles.todayText}>
+            <span className={styles.todayEyebrow}>{t("o07.todayTitle")}</span>
+            <span className={styles.todayName}>{useToday.label}</span>
+            <span className={styles.todayCode}>{useToday.code}</span>
+          </span>
+          <span className={styles.todayTick} aria-hidden="true">
+            {useToday.selected ? <CheckIcon size={18} /> : null}
+          </span>
+        </button>
+      ) : null}
+      <PollingUnitPicker {...picker} error={error ? t("o07.error") : undefined} selected={summary ? t("o07.selected", { place: summary }) : ""} />
     </StepShell>
   );
 }

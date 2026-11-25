@@ -410,7 +410,10 @@
     "searchNeedsState": "Choose your state below first. Then you fit search im polling units.",
     "listDownloadingNoPercent": "E dey download the polling-unit list",
     "listMissingKept": "We keep wetin you don write. Come back when network dey.",
-    "unknownUnitNeedsList": "You fit use am after the list don download."
+    "unknownUnitNeedsList": "You fit use am after the list don download.",
+    "todayTitle": "Your polling unit for today",
+    "byArea": "Choose am by state, LGA and ward",
+    "stateFirst": "Choose your state first. Then you fit search im polling units."
   },
   "o08": {
     "title": "When e happen?",

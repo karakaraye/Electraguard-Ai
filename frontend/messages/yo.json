@@ -410,7 +410,10 @@
     "searchNeedsState": "Kọ́kọ́ yan ìpínlẹ̀ rẹ nísàlẹ̀. Lẹ́yìn náà o lè wá àwọn ibùdó ìdìbò rẹ̀.",
     "listDownloadingNoPercent": "À ń gba àkójọ àwọn ibùdó ìdìbò sílẹ̀",
     "listMissingKept": "A ti pa ohun tí o kọ mọ́. Padà wá nígbà tí o bá ní nẹ́tíwọ̀ọ̀kì.",
-    "unknownUnitNeedsList": "O lè lò ó lẹ́yìn tí àkójọ náà bá ti gbà sílẹ̀."
+    "unknownUnitNeedsList": "O lè lò ó lẹ́yìn tí àkójọ náà bá ti gbà sílẹ̀.",
+    "todayTitle": "Ibùdó ìdìbò rẹ ti òní",
+    "byArea": "Yàn án nípa ìpínlẹ̀, ìjọba ìbílẹ̀ àti wọ́ọ̀dù",
+    "stateFirst": "Kọ́kọ́ yan ìpínlẹ̀ rẹ. Lẹ́yìn náà o lè wá àwọn ibùdó ìdìbò rẹ̀."
   },
   "o08": {
     "title": "Ìgbà wo ló ṣẹlẹ̀?",
