@@ -224,8 +224,8 @@ def _fallback_threshold_detection(organisation, config, now, configured_categori
 
 
 def _statistical_detection(organisation, now, wat_now, configured_categories):
-    # Election day starts at 06:00 WAT
-    election_start_wat = datetime.combine(wat_now.date(), time(6, 0), tzinfo=WAT)
+    # Election day starts at 07:00 WAT
+    election_start_wat = datetime.combine(wat_now.date(), time(7, 0), tzinfo=WAT)
     if election_start_wat > wat_now:
         election_start_wat = wat_now - timedelta(hours=3)
     election_start_utc = election_start_wat.astimezone(dt_timezone.utc)
@@ -269,7 +269,7 @@ def _statistical_detection(organisation, now, wat_now, configured_categories):
     tested_series = []
     windows_to_test = [30, 60]
 
-    # Completed hours since 06:00 WAT (exclude partial current hour for CUSUM)
+    # Completed hours since 07:00 WAT (exclude partial current hour for CUSUM)
     completed_hours = max(0, int((now - election_start_utc).total_seconds() // 3600))
 
     for win_min in windows_to_test:
