@@ -1002,7 +1002,11 @@
     "save": "[IG draft] Save changes",
     "cancel": "[IG draft] Cancel",
     "confirm": "[IG draft] Confirm",
-    "backToQueue": "[IG draft] Back to queue"
+    "backToQueue": "[IG draft] Back to queue",
+    "shell": {
+      "more": "Ndị ọzọ",
+      "moreTitle": "Ngalaba ndị ọzọ"
+    }
   },
   "s01": {
     "enrolScan": "Nyochaa koodu a site na ngwa nkwenye gị.",
@@ -1459,76 +1463,324 @@
   "s06": {
     "title": "[IG draft] Rumour desk",
     "subtitle": "[IG draft] Track online claims, match with field observations, draft responses",
-    "newClaim": "[IG draft] Log new claim",
-    "claimText": "[IG draft] Claim text",
-    "source": "[IG draft] Seen on",
-    "image": "[IG draft] Upload screenshot/image",
-    "claimsList": "[IG draft] Active claims",
-    "harmLevel": "[IG draft] Harm risk: {level}",
-    "checkWorthiness": "[IG draft] Check-worthiness: {level}",
+    "newClaim": "Dee asịrị ọhụrụ",
+    "claimText": "Ihe e kwuru",
+    "source": "Ebe ị hụrụ ya",
+    "image": "Foto ihuenyo ma ọ bụ foto (nhọrọ)",
+    "claimsList": "Asịrị",
     "imageGuide": {
-      "title": "[IG draft] Image verification guide",
-      "notice": "[IG draft] Guidance only. Always verify with human judgment.",
-      "reverseSearch": "[IG draft] Run reverse image search",
-      "checkDate": "[IG draft] Verify date against claim timestamp",
-      "lookEdits": "[IG draft] Inspect for image manipulations",
-      "compression": "[IG draft] Compression artifact hint: {hint}"
+      "title": "Lelee foto ahụ",
+      "notice": "Ndumọdụ naanị. Usoro ndị a anaghị ekpebi ma foto ahụ bụ eziokwu.",
+      "reverseSearch": "Chọọ foto ahụ n'ịntanet ịmata ebe ọ buru ụzọ pụta.",
+      "checkDate": "Tụnyere ụbọchị foto ahụ na ụbọchị asịrị ahụ kwuru.",
+      "lookEdits": "Chọọ ihe ịrịba ama na e deghari foto ahụ.",
+      "compression": "Ntụnye aka nkụcha: {hint}",
+      "checkSource": "Lelee onye buru ụzọ bipụta ya, na mgbe.",
+      "metaYes": "Faịlụ ahụ nwere nkọwa zoro ezo. Anyị wepụrụ ha.",
+      "metaNo": "Faịlụ ahụ enweghị nkọwa zoro ezo."
     },
     "matches": {
-      "title": "[IG draft] Matched field observations",
-      "corroboratedOnly": "[IG draft] Only closed corroborated reports shown",
-      "pastClaims": "[IG draft] Past verified claims"
+      "title": "Akụkọ ebe a na-ele dabara",
+      "pastClaims": "[IG draft] Past verified claims",
+      "note": "Sistemu na-atụ aro dabere n'okwu ndị yiri ibe ha. A na-egosi naanị akụkọ emechiri nke ihe akaebe kwadoro. Gị onwe gị na-ekpebi ihe ọ pụtara.",
+      "none": "Enwebeghị akụkọ kwadoro dabara na asịrị a.",
+      "similar": "{percent}% yiri ya",
+      "error": "Enweghị ike ibunye akụkọ dabara.",
+      "occurred": "O mere {time}"
     },
     "response": {
-      "title": "[IG draft] Public response draft",
-      "textLabel": "[IG draft] Response text",
-      "saveDraft": "[IG draft] Save draft",
-      "approve": "[IG draft] Approve response",
-      "reject": "[IG draft] Reject draft",
-      "dismiss": "[IG draft] Dismiss claim",
-      "draftedBy": "[IG draft] Drafted by {name} at {time}",
-      "approvedBy": "[IG draft] Approved by {name} at {time}",
+      "title": "Azịza maka ọha mmadụ",
+      "textLabel": "Ederede azịza",
+      "saveDraft": "Chekwaa ndegharị",
+      "approve": "Kwere azịza",
+      "reject": "Ziga azụ",
+      "dismiss": "Setịpụ asịrị",
+      "draftedBy": "{name} dere ndegharị, {time}",
+      "approvedBy": "{name} kwere ya, {time}",
       "secondPersonNotice": "[IG draft] Another coordinator must approve a response you drafted.",
-      "rejectNote": "[IG draft] Rejection note"
-    }
+      "intro": "Dee azịza dị mkpụmkpụ nke bụ eziokwu. Onye nhazi nke abụọ aghaghị ikwere ya tupu e jiri ya.",
+      "languageLabel": "Asụsụ azịza",
+      "sentBack": "Eziga ya azụ: {note}",
+      "none": "E debeghị azịza ọ bụla.",
+      "dismissedLock": "E setịpụla asịrị a, enweghị ike ịgbanwe ya ọzọ.",
+      "approvedNote": "E kwerela azịza a. Ichekwa ndegharị ọhụrụ ga-anọchi ya ma ọ ga-achọ nkwenye ọzọ.",
+      "unsaved": "I nwere mgbanwe ị chekwabeghị. Buru ụzọ chekwaa ndegharị."
+    },
+    "count": "{count, plural, =0 {Enweghị asịrị} one {Asịrị #} other {Asịrị #}}",
+    "filter": {
+      "label": "Gosi",
+      "all": "Asịrị niile"
+    },
+    "status": {
+      "new": "Ọhụrụ",
+      "matched": "Ọ chọrọ azịza",
+      "response_draft": "E dere azịza",
+      "response_approved": "Ekwere azịza",
+      "dismissed": "E setịpụla ya"
+    },
+    "columns": {
+      "claim": "Asịrị",
+      "harm": "Mmebi",
+      "check": "Mkpa nyocha",
+      "seenOn": "Ebe e hụrụ ya",
+      "status": "Ọkwa",
+      "logged": "Mgbe e dere ya"
+    },
+    "table": {
+      "caption": "Asịrị ndị ngalaba asịrị dere"
+    },
+    "suggestedNote": "Sistemu na-atụ aro mmebi na mkpa nyocha. Gị onwe gị na-ekpebi.",
+    "empty": {
+      "title": "Enwebeghị asịrị.",
+      "body": "Dee asịrị ị hụrụ ka e lee ya megide akụkọ sitere n'ebe a na-ele.",
+      "filtered": "Enweghị asịrị nwere ọkwa a.",
+      "select": "Họrọ asịrị iji hụ akụkọ dabara na ya ma dee azịza."
+    },
+    "back": "Laghachi na asịrị",
+    "loadMore": "Gosi asịrị ndị ọzọ",
+    "new": {
+      "intro": "Dee ihe e kwuru, ma ọ bụ tinye foto ihuenyo. Hapụ aha na nọmba ekwentị."
+    },
+    "claimTextHint": "Detuo okwu ndị ahụ otú e dere ma ọ bụ kwuo ha.",
+    "seenOn": {
+      "whatsapp": "WhatsApp",
+      "facebook": "Facebook",
+      "x": "X (Twitter)",
+      "tiktok": "TikTok",
+      "sms": "Ozi ederede",
+      "radio": "Redio",
+      "in_person": "Ihu na ihu",
+      "other": "Ebe ọzọ"
+    },
+    "language": "Asụsụ asịrị ahụ",
+    "lang": {
+      "en": "English",
+      "pcm": "Naijá",
+      "ha": "Hausa",
+      "yo": "Yorùbá",
+      "ig": "Igbo"
+    },
+    "imageHint": "JPEG, PNG ma ọ bụ WebP, na-adịghị karịa 5 MB.",
+    "imageChoose": "Họrọ foto",
+    "imageRemove": "Wepụ foto",
+    "needTextOrImage": "Dee asịrị ahụ ma ọ bụ tinye foto.",
+    "saveClaim": "Dee asịrị",
+    "errors": {
+      "stale": "Onye ọzọ agbanwela asịrị a. Bughachi ndepụta ahụ, mgbe ahụ nwaa ọzọ.",
+      "transition": "Enweghị ike ime nke a n'ọkwa asịrị ahụ nọ ugbu a.",
+      "samePerson": "Onye nhazi ọzọ aghaghị ikwere nke a.",
+      "invalid": "Lelee ederede ahụ ma nwaa ọzọ.",
+      "rateLimited": "Asịrị dị ọtụtụ n'ime awa gara aga. Nwaa ọzọ mgbe e mesịrị.",
+      "imageType": "Jiri foto JPEG, PNG ma ọ bụ WebP.",
+      "imageSize": "Foto ahụ aghaghị ịbụ 5 MB ma ọ bụ nke pere mpe.",
+      "imageUnreadable": "Anyị enweghị ike ịgụ foto ahụ. Nwaa nke ọzọ."
+    },
+    "notice": {
+      "created": "E dere asịrị ahụ.",
+      "saved": "Echekwara ndegharị ahụ.",
+      "approved": "Ekwere azịza ahụ.",
+      "rejected": "Eziga azịza ahụ azụ nye onye dere ya.",
+      "dismissed": "E setịpụla asịrị ahụ."
+    },
+    "detail": {
+      "seenOn": "E hụrụ ya na {source}, n'asụsụ {language}",
+      "loggedBy": "{name} dere ya, {time}",
+      "imageAttached": "A tụnyere foto ({width} na {height} pixel).",
+      "noText": "Enweghị ederede, foto naanị."
+    },
+    "harm": {
+      "high": "Mmebi: dị elu",
+      "medium": "Mmebi: etiti",
+      "low": "Mmebi: obere"
+    },
+    "check": {
+      "high": "Mkpa nyocha: dị elu",
+      "medium": "Mkpa nyocha: etiti",
+      "low": "Mkpa nyocha: obere"
+    },
+    "harmReasons": {
+      "title": "Ihe mere eji tụọ mmebi otú a",
+      "violence_claim": "Ọ na-ekwu maka ime ihe ike.",
+      "location_specific": "Ọ na-akpọ aha ebe.",
+      "election_day": "E hụrụ ya n'ụbọchị ntuli aka."
+    },
+    "pastClaims": {
+      "title": "Asịrị mbụ yiri nke a",
+      "none": "Enweghị asịrị mbụ yiri nke a.",
+      "reply": "Azịza anyị kwere",
+      "noReply": "Ekwereghị azịza ọ bụla."
+    },
+    "approve": {
+      "title": "Kwere azịza a?",
+      "body": "I na-ekwere azịza {name} dere. A ga-edekọ aha gị."
+    },
+    "reject": {
+      "title": "Ziga azịza a azụ?",
+      "body": "Gwa onye dere ya ihe ọ ga-agbanwe. A ga-edebe ihe odide ahụ n'ndekọ.",
+      "noteLabel": "Ihe odide nye onye dere ya"
+    },
+    "dismiss": {
+      "title": "Setịpụ asịrị a?",
+      "body": "Jiri nke a mgbe asịrị ahụ achọghị azịza. Enweghị ike ịgbanwe asịrị e setịpụrụ.",
+      "noteLabel": "Gịnị mere eji setịpụ ya?"
+    },
+    "noteHint": "Mkpụrụ edemede 1 ruo 500."
   },
   "s07": {
     "title": "[IG draft] Publish snapshots",
     "subtitle": "[IG draft] Public aggregated releases with statistical privacy suppression",
-    "createTitle": "[IG draft] Create new snapshot",
-    "cutoffLabel": "[IG draft] Cutoff time",
-    "cutoffHint": "[IG draft] Must be at least 60 minutes in the past.",
-    "createButton": "[IG draft] Generate preview",
-    "scheduleTitle": "[IG draft] Automatic hourly release",
-    "scheduleHint": "[IG draft] Builds and publishes a snapshot every hour if checks pass.",
-    "scheduleOn": "[IG draft] Hourly publishing is active",
-    "scheduleOff": "[IG draft] Hourly publishing is paused",
-    "snapshotsList": "[IG draft] Snapshot history",
-    "previewTitle": "[IG draft] Snapshot preview (exact public data)",
-    "suppressionNotice": "[IG draft] Counts below 5 are suppressed with 'fewer than 5'. Primary and secondary suppression applied.",
-    "excludedTitle": "[IG draft] Excluded from snapshot",
-    "excludedNotClosed": "[IG draft] {count} not yet closed",
-    "excludedWithdrawn": "[IG draft] {count} withdrawn",
-    "excludedAfterCutoff": "[IG draft] {count} after cutoff",
-    "approvePublish": "[IG draft] Approve and publish",
-    "discard": "[IG draft] Discard draft"
+    "createTitle": "Lelee mwepụta ọhụrụ",
+    "cutoffLabel": "Oge njedebe (Oge Ọdịda Anyanwụ Afrịka)",
+    "cutoffHint": "A gaghị etinye akụkọ emechiri mgbe oge a gachara. Họrọ oge gafere opekata mpe nkeji {minutes}, ma ọ bụ hapụ ya efu iji jiri oge ikpeazụ e kwere.",
+    "createButton": "Mepụta nlele mbụ",
+    "scheduleTitle": "Mwepụta kwa awa",
+    "scheduleHint": "Mgbe ọ na-adị n'ọkụ, a na-emepụta ma bipụta snapshot kwa awa ma ọ bụrụ na nyocha agafe. A na-edekọ aha gị dị ka onye kwere.",
+    "scheduleOn": "Na-adị n'ọkụ",
+    "scheduleOff": "Gbanyụrụ",
+    "snapshotsList": "Mwepụta",
+    "previewTitle": "Nlele mwepụta",
+    "approvePublish": "Kwere ma bipụta",
+    "discard": "Tufuo ndegharị",
+    "cutoffTooRecent": "Họrọ oge gafere opekata mpe nkeji {minutes}.",
+    "cutoffInvalid": "Tinye ụbọchị na oge ziri ezi.",
+    "scheduleUnknown": "A naghị egosi ntọala ugbu a ebe a. Họrọ n'ọkụ ma ọ bụ gbanyụọ iji hazie ya.",
+    "schedule": {
+      "confirmTitle": "Gbanye mwepụta kwa awa?",
+      "confirmBody": "Snapshots ga-apụta n'onwe ha kwa awa, ya na aha gị dị ka onye kwere. Ị nwere ike imechi ya oge ọ bụla.",
+      "confirmOn": "Gbanye",
+      "turnOff": "Gbanyụọ"
+    },
+    "notice": {
+      "generated": "Nlele mbụ dị njikere. Lelee ya tupu ị bipụta.",
+      "scheduleOn": "Mwepụta kwa awa na-adị n'ọkụ.",
+      "scheduleOff": "Mwepụta kwa awa agbanyụọla.",
+      "published": "E bipụtala ya. Peeji nsonaazụ ọha na-egosi mwepụta a ugbu a.",
+      "discarded": "E tufuola ndegharị ahụ."
+    },
+    "columns": {
+      "cutoff": "Oge njedebe",
+      "status": "Ọkwa",
+      "total": "Akụkọ",
+      "fingerprint": "Akara ịmata",
+      "by": "Onye kwadebere",
+      "published": "E bipụtara"
+    },
+    "status": {
+      "draft": "Ndegharị",
+      "published": "E bipụtara",
+      "discarded": "E tufuru",
+      "superseded": "E nọchiri ya"
+    },
+    "history": {
+      "caption": "Mwepụta, nke ọhụrụ buru ụzọ",
+      "empty": "Enwebeghị mwepụta.",
+      "emptyBody": "Mepụta nlele mbụ iji mee nke mbụ.",
+      "fingerprintNote": "Akara ịmata bụ mmalite koodu agbụ nyocha echekwara na mwepụta ọ bụla. Ọ na-enyere onye ọ bụla aka ịlele na e gbanweghị mwepụta ahụ.",
+      "loadMore": "Gosi mwepụta ndị ọzọ"
+    },
+    "detail": {
+      "draftNote": "Nke a bụ ndegharị. Ọ dịghị ihe bụ nke ọha ruo mgbe ị kwere ma bipụta ya.",
+      "publishedNote": "E bipụtara {time}.",
+      "discardedNote": "E tufuru ndegharị a. Ọ bụbeghị nke ọha.",
+      "supersededNote": "Mwepụta ọhụrụ nọchiri nke a na peeji ọha.",
+      "by": "{name} kwadebere ya, oge njedebe {cutoff}"
+    },
+    "preview": {
+      "title": "Ihe ọha ga-ahụ",
+      "note": "Nke a bụ peeji nsonaazụ ọha site na mwepụta a. A na-ezo ọnụọgụ dị n'okpuru 5 ebe a otú ọ ga-adị n'ịntanet.",
+      "label": "Nlele peeji nsonaazụ ọha"
+    },
+    "exclusions": {
+      "title": "Ihe e hapụrụ na mwepụta a",
+      "note": "A gụghị akụkọ ndị a na nlele mbụ.",
+      "notClosed": "{count, plural, one {Akụkọ # emebeghị} other {Akụkọ # emebeghị}}",
+      "withdrawn": "{count, plural, one {Akụkọ # onye nlere wepụrụ} other {Akụkọ # onye nlere wepụrụ}}",
+      "afterCutoff": "{count, plural, one {Akụkọ # bịara mgbe oge njedebe gasịrị} other {Akụkọ # bịara mgbe oge njedebe gasịrị}}",
+      "otherKinds": "{count, plural, one {Ihe # nke ụdị ọzọ, ma ọ bụ nke na-enweghị steeti} other {Ihe # nke ụdị ọzọ, ma ọ bụ nke na-enweghị steeti}}"
+    },
+    "publish": {
+      "confirmTitle": "Bipụta mwepụta a?",
+      "confirmBody": "Onye ọ bụla pụrụ ịhụ ọnụọgụ ndị a na peeji nsonaazụ ọha ozugbo ị kweere. Ọ ga-anọchi mwepụta nke a na-egosi ebe ahụ ugbu a. Enweghị ike ịkagbu ya, mana mwepụta ọhụrụ nwere ike ịnọchi ya."
+    },
+    "discardConfirm": {
+      "title": "Tufuo ndegharị a?",
+      "body": "Ndegharị ahụ ga-anọ n'akụkọ ihe mere dị ka nke e tufuru. Ọ bụbeghị nke ọha, ị gaghị enwe ike ibipụta ya ma emechaa."
+    },
+    "errors": {
+      "stale": "Mwepụta a agbanwela. Bughachi ndepụta ahụ, mgbe ahụ nwaa ọzọ.",
+      "transition": "Naanị ndegharị ka a pụrụ ikwere ma ọ bụ ịtụfu.",
+      "tooRecent": "Oge njedebe dị nso nke ukwuu. Họrọ oge ọzọ nke gara aga.",
+      "invalid": "Lelee nkọwa ndị ahụ ma nwaa ọzọ."
+    }
   },
   "s08": {
-    "title": "[IG draft] Discussion moderation",
-    "subtitle": "[IG draft] Community oversight and safety for observer forums",
-    "flagsInbox": "[IG draft] Reported posts ({count})",
-    "flaggedBy": "[IG draft] Flagged {count} times",
-    "reasons": "[IG draft] Reasons: {reasons}",
-    "nameCheckAlert": "[IG draft] Possible personal name detected",
-    "hidePost": "[IG draft] Hide post",
-    "unhidePost": "[IG draft] Unhide post",
-    "hideReason": "[IG draft] Reason for hiding",
-    "removeMember": "[IG draft] Remove member from forum",
-    "closeDiscussion": "[IG draft] Close discussion",
-    "createDiscussion": "[IG draft] Create new discussion",
-    "topic": "[IG draft] Discussion topic",
-    "wardLga": "[IG draft] Ward or LGA scope",
-    "inviteCodes": "[IG draft] Invite observer codes"
+    "title": "Nlekọta mkparịta ụka",
+    "subtitle": "Ihe ndị nlere anya ma ọ bụ sistem kara akara ka a lelee",
+    "flagsInbox": "Ihe e dere e kara akara: {count}",
+    "flaggedBy": "E kara ya akara ugboro {count}",
+    "nameCheckAlert": "Ọ nwere ike ịbụ na aha mmadụ dị na ya",
+    "hidePost": "Zoo ihe e dere",
+    "unhidePost": "Gosipụta ya ọzọ",
+    "hideReason": "Ihe kpatara",
+    "removeMember": "Wepụ onye otu",
+    "closeDiscussion": "Mechie mkparịta ụka",
+    "createDiscussion": "Mepụta mkparịta ụka",
+    "topic": "Isiokwu mkparịta ụka",
+    "refresh": "Mee ka ọ dị ọhụrụ",
+    "loadMore": "Gosi ọzọ",
+    "emptyTitle": "Enweghị ihe e kara akara ugbu a.",
+    "emptyBody": "Ihe e dere ga-apụta ebe a ma ọ bụrụ na ndị nlere anya kara ya akara, ma ọ bụ ọ pụrụ ịkpọ aha mmadụ.",
+    "reasonsLabel": "Ihe mere e kara akara",
+    "reason_names_a_person": "Ọ na-akpọ aha mmadụ",
+    "reason_too_specific_location": "Ebe ahụ doro anya nke ukwuu",
+    "reason_abusive": "Mkparị",
+    "reason_other": "Ọzọ",
+    "reason_off_topic": "Ọ bụghị isiokwu",
+    "author": "{code} dere ya",
+    "hiddenBadge": "E zoro ya",
+    "hiddenFor": "Ihe mere e zoro ya: {reason}",
+    "hiddenBodyLabel": "Ihe e dere mbụ. Ndị nlekọta naanị ga-ahụ ya.",
+    "cancel": "Kagbuo",
+    "hideTitle": "Zoo ihe e dere a",
+    "hideBody": "Ndị nlere anya agaghị ahụkwa ya. Ị nwere ike igosipụta ya ọzọ ma emechaa.",
+    "hideNote": "Ndetu",
+    "hideNoteHint": "Ọ bụghị mkpa. A ga-edebe ya na ndekọ nyocha. Ọ gaghị agafe mkpụrụedemede 500.",
+    "hideConfirm": "Zoo ihe e dere",
+    "removeTitle": "Wepụ onye otu a",
+    "removeBody": "{code} agaghị abanye na mkparịta ụka a ọzọ. Mkparịta ụka ndị ọzọ agaghị agbanwe.",
+    "removeReason": "Ihe kpatara",
+    "removeReasonHint": "Ọ dị mkpa. A ga-edebe ya na ndekọ nyocha. Ọ gaghị agafe mkpụrụedemede 500.",
+    "removeConfirm": "Wepụ onye otu",
+    "closeTitle": "Mechie mkparịta ụka a",
+    "closeBody": "Onye ọ bụla agaghị edetu ma ọ bụ banye mgbe e mechiri ya, e nweghịkwa ike imeghe ya ọzọ. Ihe e dere nke e kara akara ga-apụ n'ime ndepụta a.",
+    "closeConfirm": "Mechie mkparịta ụka",
+    "createLead": "Ndị nlere anya na-abanye site n'ọkpụkpọ oku, ya mere tinye koodu ha n'okpuru.",
+    "titleLabel": "Isiokwu",
+    "titleHint": "Mkpụrụedemede 3 ruo 120.",
+    "topicHint": "Ọ bụghị mkpa. Ọ gaghị agafe mkpụrụedemede 500.",
+    "areaLabel": "Mpaghara",
+    "state": "Steeti",
+    "lga": "LGA",
+    "ward": "Wọọdụ",
+    "wholeLga": "LGA dum",
+    "areaLoading": "Mpaghara na-abata...",
+    "invites": "Kpọọ koodu ndị nlere anya",
+    "invitesHint": "Ọ bụghị mkpa. Koodu otu n'ahịrị ọ bụla, ọ gaghị agafe 200.",
+    "createSubmit": "Mepụta mkparịta ụka",
+    "noticeHidden": "E zoro ihe e dere ahụ.",
+    "noticeUnhidden": "Ihe e dere ahụ pụtara ọzọ.",
+    "noticeRemoved": "E wepụrụ {code} na mkparịta ụka ahụ.",
+    "noticeClosed": "E mechiri mkparịta ụka ahụ.",
+    "noticeCreated": "E mepụtara mkparịta ụka ahụ. E kpọrọ: {invited}.",
+    "noticeNotFound": "E nweghị ike ịchọta koodu ndị a: {codes}.",
+    "errClosed": "E mechiela mkparịta ụka a.",
+    "errNotFound": "Ihe e dere ma ọ bụ onye otu ahụ adịghịzi. Mee ka ndepụta ahụ dị ọhụrụ.",
+    "errInvalid": "Lelee ihe i dere, wee nwaa ọzọ.",
+    "errArea": "Amaghị mpaghara ahụ. Họrọ ya site na ndepụta ahụ.",
+    "valTitle": "Dee isiokwu mkpụrụedemede 3 ruo 120.",
+    "valReason": "Dee ihe kpatara.",
+    "valArea": "Họrọ steeti na LGA.",
+    "valInvites": "Tinye koodu ndị nlere anya na-agafeghị 200."
   },
   "s09": {
     "title": "[IG draft] Observer code batches",
@@ -1557,49 +1809,269 @@
   },
   "s10": {
     "title": "[IG draft] Staff accounts",
-    "subtitle": "[IG draft] Manage staff access, roles, and two-factor credentials",
-    "staffList": "[IG draft] Staff members ({count})",
-    "createStaff": "[IG draft] Add staff member",
-    "displayName": "[IG draft] Display name",
-    "email": "[IG draft] Email address",
-    "roles": "[IG draft] Assigned roles",
-    "roleAdminAlone": "[IG draft] Admin role cannot be combined with reviewer, coordinator, or moderator.",
-    "inviteUrl": "[IG draft] One-time invitation link",
-    "copyInvite": "[IG draft] Copy link",
-    "reset2fa": "[IG draft] Reset 2FA",
-    "offboard": "[IG draft] Offboard staff",
-    "offboardReason": "[IG draft] Offboarding reason",
-    "offboardWarning": "[IG draft] Any open cases assigned to this user will be returned to the unassigned queue."
+    "staffList": "{count, plural, one {onye ọrụ #} other {ndị ọrụ #}}",
+    "createStaff": "Tinye onye ọrụ",
+    "reset2fa": "Tọgharịa 2FA",
+    "offboard": "Wepụ",
+    "retry": "Nwaa ọzọ",
+    "cancel": "Kagbuo",
+    "filter": {
+      "label": "Gosi",
+      "all": "Ha niile",
+      "active": "Na-arụ ọrụ",
+      "invited": "Akpọrọ ha",
+      "offboarded": "Ewepụla ha"
+    },
+    "empty": "Enwebeghị akaụntụ ndị ọrụ.",
+    "emptyFilter": "Ọ dịghị akaụntụ kwekọrọ na nzacha a.",
+    "caption": "Akaụntụ ndị ọrụ",
+    "columns": {
+      "name": "Aha",
+      "roles": "Ọrụ ha na-arụ",
+      "twofa": "Koodu nzọụkwụ abụọ",
+      "lastSignIn": "Nbanye ikpeazụ",
+      "status": "Onọdụ",
+      "actions": "Ihe a ga-eme"
+    },
+    "status": {
+      "active": "Na-arụ ọrụ",
+      "invited": "Akpọrọ ya",
+      "offboarded": "Ewepụla ya"
+    },
+    "twofa": {
+      "on": "Edebere ya",
+      "off": "Edebeghị ya"
+    },
+    "neverSignedIn": "Anọbeghị",
+    "you": "Gị",
+    "reset2faFor": "Tọgharịa 2FA nke {name}",
+    "offboardFor": "Wepụ {name}",
+    "selfNote": "Ị pụghị iwepụ akaụntụ nke gị.",
+    "create": {
+      "title": "Tinye onye ọrụ",
+      "description": "Ha ga-enweta njikọ otu ugboro iji họrọ okwuntughe ma debe koodu nzọụkwụ abụọ.",
+      "email": "Adreesị ozi ịntanetị",
+      "name": "Aha a ga-egosi",
+      "nameHint": "Mkpụrụedemede 2 ruo 60.",
+      "roles": "Ọrụ ha na-arụ",
+      "rolesHint": "Họrọ opekata mpe otu. Enweghị ike ijikọ onye nlekọta na ọrụ ọzọ.",
+      "submit": "Meghee akaụntụ"
+    },
+    "invite": {
+      "title": "Njikọ ịkpọ òkù otu ugboro",
+      "body": "Nyefee {name} njikọ a. Ọ na-arụ ọrụ otu ugboro, a gaghị egosikwa ya ọzọ ma ị mechie nke a. Ọ ga-agwụ {when}.",
+      "label": "Njikọ ịkpọ òkù",
+      "copy": "Detuo njikọ",
+      "copied": "Edetuola ya",
+      "copyFailed": "Enweghị ike idetuo ya. Họrọ njikọ ahụ detuo ya n'aka.",
+      "done": "Edetuola m ya"
+    },
+    "reset": {
+      "title": "Tọgharịa koodu nzọụkwụ abụọ nke {name}?",
+      "body": "A ga-ewepụ {name} n'ebe niile, ọ ga-edebekwa koodu nzọụkwụ abụọ ọhụrụ mgbe ọ banyere ọzọ. Okwuntughe adịghị agbanwe.",
+      "confirm": "Tọgharịa 2FA",
+      "done": "Atọgharịala koodu nzọụkwụ abụọ nke {name}."
+    },
+    "offboardDialog": {
+      "title": "Wepụ {name}?",
+      "body": "{name} ga-efunahụ ohere ozugbo, a ga-ewepụkwa ya n'ebe niile. Okwu ndị e nyere ya ga-alaghachi na ndepụta nke enweghị onye na-elekọta. Enweghị ike ịmeghachi nke a.",
+      "reason": "Ihe kpatara ya",
+      "reasons": {
+        "access_ended": "Achọghị ohere ọzọ",
+        "role_changed": "Ọrụ agbanweela",
+        "credential_risk": "Ozi nbanye nwere ike ịnọ n'ihe ize ndụ"
+      },
+      "confirm": "Wepụ",
+      "done": "Ewepụla {name}."
+    },
+    "errors": {
+      "lastAdmin": "Opekata mpe otu onye nlekọta na-arụ ọrụ ga-fọdụrịrị. Buru ụzọ tinye onye nlekọta ọzọ.",
+      "stale": "Akaụntụ a gbanwere mgbe ị na-ele ya. Emelitela ndepụta. Lelee ya nwaa ọzọ.",
+      "duplicate": "Akaụntụ adịlarị maka ozi ịntanetị a.",
+      "invalidEmail": "Tinye adreesị ozi ịntanetị ziri ezi.",
+      "invalidName": "Jiri mkpụrụedemede 2 ruo 60.",
+      "invalidRoles": "Họrọ opekata mpe otu ọrụ.",
+      "selfOffboard": "Ị pụghị iwepụ akaụntụ nke gị.",
+      "alreadyOffboarded": "Ewepụlarị akaụntụ a.",
+      "invalid": "Ụfọdụ ozi adịghị anabata. Lelee ha nwaa ọzọ."
+    }
   },
   "s11": {
     "title": "[IG draft] Organisation settings",
-    "subtitle": "[IG draft] Intake control, data retention, and election parameters",
-    "intakePause": "[IG draft] Pause report intake",
-    "intakePauseHint": "[IG draft] Temporarily stop accepting new reports from observers and citizens.",
-    "retention": "[IG draft] Data retention period",
-    "retentionDays": "[IG draft] {days} days",
-    "retentionConfirm": "[IG draft] Shortening retention will delete older records at next purge.",
-    "electionDay": "[IG draft] Election day",
-    "publicDelay": "[IG draft] Public snapshot delay",
-    "delayMinutes": "[IG draft] {minutes} minutes",
-    "partyLabels": "[IG draft] Party labels on result sheets",
-    "saveSettings": "[IG draft] Save organisation settings",
-    "auditExport": "[IG draft] Export audit log"
+    "retry": "Nwaa ọzọ",
+    "cancel": "Kagbuo",
+    "saved": "Echekwara ya.",
+    "intakeCard": {
+      "title": "Ịnabata akụkọ",
+      "open": "Na-anabata akụkọ",
+      "paused": "Akwụsịla ịnabata",
+      "hint": "Ịkwụsị na-egbochi ụmụ amaala na ndị nlere anya izipu akụkọ ọhụrụ. Akụkọ ndị e nwetaworo agbanweghị.",
+      "switch": "Kwụsị ịnabata akụkọ",
+      "banner": "Akwụsịla ịnabata akụkọ. Anaghị anabata akụkọ ọhụrụ.",
+      "pauseTitle": "Kwụsị ịnabata akụkọ?",
+      "pauseBody": "Ọ dịghị onye ga-ezipụ akụkọ ọhụrụ ruo mgbe ị malitere ọzọ. Akụkọ ndị e nwetaworo agbanweghị.",
+      "pauseConfirm": "Kwụsị ịnabata",
+      "resumeTitle": "Malitegharịa ịnabata akụkọ?",
+      "resumeBody": "Ụmụ amaala na ndị nlere anya nwere ike izipụ akụkọ ozugbo.",
+      "resumeConfirm": "Malitegharịa ịnabata"
+    },
+    "simCard": {
+      "title": "Igwe ọzụzụ",
+      "hint": "Ọ na-ekwe ndị ọrụ nwaa SMS na USSD site n'ozi nnwale. Gbanyụọ ya maka ntuli aka n'ezie.",
+      "switch": "Igwe ọzụzụ",
+      "on": "Agbanyela",
+      "off": "Agbanyụọla"
+    },
+    "retentionCard": {
+      "title": "Ogologo oge idebe ndekọ",
+      "label": "Debe ndekọ maka (ụbọchị)",
+      "hint": "Site na ụbọchị 30 ruo 730. A na-ehichapụ ndekọ karịrị nke a n'ihichapụ na-esote.",
+      "save": "Chekwa oge idebe",
+      "error": "Tinye ọnụọgụ zuru ezu site na 30 ruo 730.",
+      "confirmTitle": "Hichapụ ndekọ ochie?",
+      "confirmBody": "Idebe ndekọ ụbọchị {days} kama {current} ga-ehichapụ {count, plural, one {ndekọ #} other {ndekọ #}} ruo mgbe ebighị ebi n'ihichapụ na-esote. Enweghị ike ịmeghachi ya.",
+      "confirmUnknown": "Idebe ndekọ ụbọchị {days} kama {current} ga-ehichapụ ndekọ ochie ruo mgbe ebighị ebi n'ihichapụ na-esote. Sava anọghị agwa ọnụọgụ ha. Enweghị ike ịmeghachi ya.",
+      "confirm": "Mee ya mkpụmkpụ hichapụ"
+    },
+    "scheduleCard": {
+      "title": "Ụbọchị ntuli aka na igbu oge n'ihu ọha",
+      "electionDay": "Ụbọchị ntuli aka",
+      "electionDayHint": "Ọ bụghị ihe a ghaghị ime. Hapụ ya efu ruo mgbe a ga-ahọpụta ụbọchị.",
+      "delay": "Igbu oge n'ihu ọha (nkeji)",
+      "delayHint": "Ọnụọgụgụ ọha na-eji naanị akụkọ ndị toro otu nke a. Site na nkeji 60 ruo 1,440.",
+      "delayError": "Tinye ọnụọgụ zuru ezu site na 60 ruo 1,440.",
+      "save": "Chekwa ụbọchị na igbu oge"
+    },
+    "partiesCard": {
+      "title": "Akara otu ndọrọ ndọrọ ọchịchị",
+      "label": "Akara",
+      "hint": "Mkpụrụedemede ndị a na-egosi na akwụkwọ nsonaazụ, dịka A, B, C. Jiri akara 2 ruo 12 dị iche, mkpụrụedemede ukwu 1 ruo 3 nke ọ bụla, kewaa ha site na kọma.",
+      "save": "Chekwa akara otu",
+      "error": "Jiri akara 2 ruo 12 dị iche, mkpụrụedemede 1 ruo 3 nke ọ bụla, kewaa ha site na kọma.",
+      "locked": "Akpọchiri ya. E nweelarị akwụkwọ nsonaazụ, ya mere enweghị ike ịgbanwe akara ndị a."
+    },
+    "auditCard": {
+      "title": "Wepụta ndekọ nyocha",
+      "hint": "Budata ndekọ onye mere gịnị, n'usoro. Otu mwepụta nwere ike ịgbado ụbọchị 92.",
+      "format": "Ụdị faịlụ",
+      "from": "Site na",
+      "to": "Ruo",
+      "download": "Budata",
+      "rangeError": "Họrọ ụbọchị ebe Site na adịghị agafe Ruo, ma oghere ahụ adịghị agafe ụbọchị 92.",
+      "rateLimited": "Mwepụta dị ọtụtụ n'awa a. Nwaa ọzọ ma emechaa.",
+      "started": "Mbudata amalitela."
+    },
+    "meta": {
+      "version": "Ụdị {version}",
+      "updatedBy": "{name} gbanwere ya ikpeazụ na {when}",
+      "updated": "Agbanwere ya ikpeazụ na {when}",
+      "never": "Agbanweghị ya kemgbe ntọala."
+    },
+    "errors": {
+      "stale": "Ntọala ndị a gbanwere mgbe ị na-edezi. Ebugharịrị ha. Lelee ha nwaa ọzọ.",
+      "invalid": "Otu n'ime ọnụọgụgụ anabataghị. Lelee ọnụọgụgụ ndị ahụ nwaa ọzọ."
+    }
   },
   "s12": {
     "title": "[IG draft] Security & audit monitoring",
-    "subtitle": "[IG draft] Security rule alerts and cryptographic audit chain verification",
-    "alerts": "[IG draft] Security alerts",
-    "severity": "[IG draft] Severity",
-    "detector": "[IG draft] Detector",
-    "updateStatus": "[IG draft] Update status",
-    "auditVerify": "[IG draft] Audit hash chain verification",
-    "chainStatus": "[IG draft] Chain integrity",
-    "eventsChecked": "[IG draft] {count} events verified",
-    "headHash": "[IG draft] Chain head hash: {hash}",
-    "brokenEvent": "[IG draft] First broken event: {id}",
-    "verifyNow": "[IG draft] Run verification check",
-    "exportLog": "[IG draft] Export audit log (JSONL/CSV)"
+    "subtitle": "Ịdọ aka ná ntị nke iwu nchekwa anyị welitere, na nlele na e gbanweghị ndekọ nyocha.",
+    "alertsTitle": "Ịdọ aka ná ntị",
+    "alertsHint": "Mepee ịdọ aka ná ntị, dee ihe ị chọpụtara, wee nabata ya ma ọ bụ mechie ya.",
+    "tableCaption": "Ịdọ aka ná ntị nchekwa, nke kacha ọhụrụ buru ụzọ",
+    "filterLabel": "Ọnọdụ",
+    "status": {
+      "open": "Mepere emepe",
+      "acknowledged": "Anabatara",
+      "resolved": "Edozila",
+      "false_positive": "Ọkwa ụgha"
+    },
+    "severity": {
+      "high": "Elu",
+      "medium": "Etiti",
+      "low": "Dị ala"
+    },
+    "detector": {
+      "rules": "Iwu",
+      "model": "Ụdị"
+    },
+    "col": {
+      "severity": "Ọkwa ịdị njọ",
+      "rule": "Iwu",
+      "detector": "Onye chọpụtara",
+      "status": "Ọnọdụ",
+      "lastSeen": "Ahụrụ ikpeazụ",
+      "action": "Ihe a ga-eme"
+    },
+    "rule": {
+      "repeated_failed_pins": "PIN ezighi ezi ugboro ugboro",
+      "repeated_failed_staff_sign_in": "Nbanye ndị ọrụ dara ugboro ugboro",
+      "unusual_download_volume": "Nbudata karịrị oke",
+      "new_network_sign_in": "Nbanye si netwọk ọhụrụ",
+      "intake_burst": "Akụkọ abata ọtụtụ na mberede",
+      "receipt_enumeration": "A na-eche koodu akwụkwọ nnata",
+      "staff_offboarded_with_cases": "Onye ọrụ hapụrụ ka nwere okwu",
+      "anomaly": "Ihe na-abụghị ihe nkịtị"
+    },
+    "subject": {
+      "observer_code": "Koodu onye na-ele anya",
+      "staff": "Akaụntụ onye ọrụ",
+      "staff_account": "Akaụntụ onye ọrụ",
+      "network": "Netwọk",
+      "receipt_lookup": "Nlele akwụkwọ nnata",
+      "intake_source": "Isi mmalite akụkọ",
+      "organisation": "Òtù"
+    },
+    "detail": {
+      "failures": "Mbọ dara",
+      "window_minutes": "Oge (nkeji)",
+      "distinct_networks": "Netwọk dị iche iche",
+      "reports": "Akụkọ",
+      "distinct_items": "Ihe dị iche iche",
+      "network": "Ntụaka netwọk",
+      "permanent": "Ekpuchiri ya kpamkpam"
+    },
+    "detailsTitle": "Ihe e hụrụ",
+    "firstSeen": "Ahụrụ nke mbụ",
+    "lastSeen": "Ahụrụ ikpeazụ",
+    "update": "Melite",
+    "updateTitle": "Melite ịdọ aka ná ntị",
+    "newStatus": "Ọnọdụ ọhụrụ",
+    "noteLabel": "Ihe edere",
+    "noteHint": "Ihe ị chọpụtara ma ọ bụ mere. A na-edebe ya na ndekọ nyocha.",
+    "save": "Chekwaa mmelite",
+    "updated": "E melitela ịdọ aka ná ntị.",
+    "staleVersion": "Otu onye gbanwere ịdọ aka ná ntị a mgbe ị mepere ya. E bugharịrị ya ọzọ; lelee ya ma gbalịa ọzọ.",
+    "empty": {
+      "open": "Enweghị ịdọ aka ná ntị mepere emepe.",
+      "acknowledged": "Enweghị ịdọ aka ná ntị anabatara.",
+      "resolved": "Enweghị ịdọ aka ná ntị edozila.",
+      "false_positive": "Enweghị ịdọ aka ná ntị e kwuru na ọ bụ ụgha."
+    },
+    "loadMore": "Gosi ịdọ aka ná ntị ndị ọzọ",
+    "verifyTitle": "Lelee yinye ndekọ nyocha",
+    "verifyHint": "A na-elele hash nke ihe niile merenụ site na nke mbụ ruo nke ikpeazụ. Ọ nweghị ihe a na-agbanwe.",
+    "verifyRun": "Mee nlele",
+    "verifyRunning": "A na-elele…",
+    "verifyNever": "Emebeghị ya. Mee nlele ka ị hụ nsonaazụ.",
+    "verifyOk": "Ahụla ihe merenụ {count} · yinye ahụghị mmebi",
+    "verifyIntact": "Yinye zuru ezu",
+    "verifyBroken": "Yinye gbajiri",
+    "verifyBrokenTitle": "Yinye ndekọ nyocha gbajiri",
+    "verifyBrokenEvent": "Ihe merenụ mbụ gbajiri",
+    "verifyBrokenText": "Ihe merenụ {count} tupu nke a dị mma. Agbanwela ndekọ ọ bụla. Gwa onye nchịkwa gị ugbu a.",
+    "headHash": "Hash ikpeazụ",
+    "headEvents": "Ọnụ ọgụgụ ihe merenụ n'yinye",
+    "checkedAt": "E lelere {time}",
+    "exportTitle": "Wepụta ndekọ nyocha",
+    "exportHint": "Otu ahịrị maka ihe merenụ ọ bụla yana hash ya, ka e wee lelee faịlụ ahụ n'ebe ọzọ. Ruo ụbọchị 92. Ndị nchịkwa naanị, e na-edekwa mwepụta ọ bụla.",
+    "exportFrom": "Site na",
+    "exportTo": "Ruo",
+    "exportFormat": "Ụdị",
+    "exportJsonl": "JSONL (otu ihe merenụ n'ahịrị)",
+    "exportCsv": "CSV (maka spreadsheet)",
+    "exportRun": "Wepụta",
+    "exportDone": "E budatara faịlụ ahụ.",
+    "exportRange": "Họrọ ụbọchị ndị na-adịghị karịa 92 n'etiti, ka “Site na” buru ụzọ."
   },
   "pub": {
     "homeLink": "Ibe mbụ ElectraGuard AI",
@@ -1924,6 +2396,34 @@
     "disabled": {
       "title": "Agbanyụla ekwentị nnwale.",
       "body": "Otu nlebanya agbanyụla ya ugbu a. Ị ka nwere ike ịkọ akụkọ na weebụsaịtị a."
+    }
+  },
+  "sys": {
+    "home": "Gaa na ibe mbụ",
+    "notFound": {
+      "title": "Anyị ahụghị ibe ahụ",
+      "body": "Njikọ ahụ nwere ike ịbụ nke ochie ma ọ bụ e dehiere ya. Ọ dịghị ihe ị chekwara gbanwere."
+    },
+    "error": {
+      "title": "Ibe a akwụsịla ịrụ ọrụ",
+      "body": "Ihe adịghị mma mere. Akụkọ gị ndị echekwara dị mma.",
+      "reload": "Bugharịa"
+    },
+    "session": {
+      "title": "Anyị wepụrụ gị",
+      "body": "Oge gị agwụla, ya mere anyị wepụrụ gị ka akụkọ wee dị nchebe. Banye ọzọ ka ị gaa n'ihu.",
+      "staff": "Banye ọzọ",
+      "observer": "Mepee ngwa onye nleba anya"
+    },
+    "access": {
+      "title": "Ohere gị agbanweela",
+      "body": "Ibe a anọghịzi gị oghe. Onye nhazi nwere ike ịgbanwe ọrụ gị ma ọ bụ bugharịa okwu ahụ.",
+      "action": "Gaa na ndepụta nyocha"
+    },
+    "paused": {
+      "title": "Akwụsịrị ịkọ akụkọ",
+      "body": "Otu ndị nleba anya akwụsịla akụkọ ọhụrụ ugbu a. Ọ bụrụ na mmadụ nọ n'ihe egwu, kpọọ 112.",
+      "action": "Hụ akụkọ ndị enyochala"
     }
   }
 }

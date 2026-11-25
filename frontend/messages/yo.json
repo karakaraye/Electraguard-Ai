@@ -1002,7 +1002,11 @@
     "save": "[YO draft] Save changes",
     "cancel": "[YO draft] Cancel",
     "confirm": "[YO draft] Confirm",
-    "backToQueue": "[YO draft] Back to queue"
+    "backToQueue": "[YO draft] Back to queue",
+    "shell": {
+      "more": "Àwọn míì",
+      "moreTitle": "Àwọn ìpín míì"
+    }
   },
   "s01": {
     "enrolScan": "Ṣàyẹ̀wò kóòdù yìí pẹ̀lú áàpù ìjẹ́rìísí rẹ.",
@@ -1459,76 +1463,324 @@
   "s06": {
     "title": "[YO draft] Rumour desk",
     "subtitle": "[YO draft] Track online claims, match with field observations, draft responses",
-    "newClaim": "[YO draft] Log new claim",
-    "claimText": "[YO draft] Claim text",
-    "source": "[YO draft] Seen on",
-    "image": "[YO draft] Upload screenshot/image",
-    "claimsList": "[YO draft] Active claims",
-    "harmLevel": "[YO draft] Harm risk: {level}",
-    "checkWorthiness": "[YO draft] Check-worthiness: {level}",
+    "newClaim": "Kọ àhesọ tuntun sílẹ̀",
+    "claimText": "Ohun tí wọ́n sọ",
+    "source": "Níbi tí o ti rí i",
+    "image": "Àwòrán ojú ìbòjú tàbí fọ́tò (àṣàyàn)",
+    "claimsList": "Àhesọ",
     "imageGuide": {
-      "title": "[YO draft] Image verification guide",
-      "notice": "[YO draft] Guidance only. Always verify with human judgment.",
-      "reverseSearch": "[YO draft] Run reverse image search",
-      "checkDate": "[YO draft] Verify date against claim timestamp",
-      "lookEdits": "[YO draft] Inspect for image manipulations",
-      "compression": "[YO draft] Compression artifact hint: {hint}"
+      "title": "Ṣàyẹ̀wò àwòrán náà",
+      "notice": "Ìtọ́ni nìkan ni. Àwọn ìgbésẹ̀ yìí kò pinnu bóyá àwòrán náà jẹ́ òótọ́.",
+      "reverseSearch": "Wá àwòrán náà lórí íńtánẹ́ẹ̀tì láti mọ ibi tí ó ti kọ́kọ́ hàn.",
+      "checkDate": "Fi ọjọ́ àwòrán náà wé ọjọ́ tí àhesọ náà sọ.",
+      "lookEdits": "Wá àmì tó fi hàn pé a ṣàtúnṣe àwòrán náà.",
+      "compression": "Àbá ìkọ́nú: {hint}",
+      "checkSource": "Wo ẹni tó kọ́kọ́ gbé e jáde, àti ìgbà wo.",
+      "metaYes": "Fáìlì náà ní àwọn ìsọfúnni tí a fi pamọ́. A ti yọ wọ́n kúrò.",
+      "metaNo": "Fáìlì náà kò ní ìsọfúnni tí a fi pamọ́."
     },
     "matches": {
-      "title": "[YO draft] Matched field observations",
-      "corroboratedOnly": "[YO draft] Only closed corroborated reports shown",
-      "pastClaims": "[YO draft] Past verified claims"
+      "title": "Àwọn ìròyìn tó bá a mu",
+      "pastClaims": "[YO draft] Past verified claims",
+      "note": "Ètò kọ̀ǹpútà ló dá a mọ̀ nípa ọ̀rọ̀ tó jọra. Àwọn ìròyìn tí a ti ti, tí ẹ̀rí sì fi ìdí wọn múlẹ̀ nìkan ni a fi hàn. Ìwọ ni o pinnu ohun tí ó túmọ̀ sí.",
+      "none": "Kò tíì sí ìròyìn tí a fi ìdí rẹ̀ múlẹ̀ tó bá àhesọ yìí mu.",
+      "similar": "{percent}% jọra",
+      "error": "A kò lè gbé àwọn ìròyìn tó bá a mu wá.",
+      "occurred": "Ó ṣẹlẹ̀ {time}"
     },
     "response": {
-      "title": "[YO draft] Public response draft",
-      "textLabel": "[YO draft] Response text",
-      "saveDraft": "[YO draft] Save draft",
-      "approve": "[YO draft] Approve response",
-      "reject": "[YO draft] Reject draft",
-      "dismiss": "[YO draft] Dismiss claim",
-      "draftedBy": "[YO draft] Drafted by {name} at {time}",
-      "approvedBy": "[YO draft] Approved by {name} at {time}",
+      "title": "Ìdáhùn fún gbogbo ènìyàn",
+      "textLabel": "Ọ̀rọ̀ ìdáhùn",
+      "saveDraft": "Fi àkọsílẹ̀ pamọ́",
+      "approve": "Fọwọ́ sí ìdáhùn",
+      "reject": "Dá padà",
+      "dismiss": "Pa àhesọ tì",
+      "draftedBy": "{name} ló kọ àkọsílẹ̀, {time}",
+      "approvedBy": "{name} ló fọwọ́ sí i, {time}",
       "secondPersonNotice": "[YO draft] Another coordinator must approve a response you drafted.",
-      "rejectNote": "[YO draft] Rejection note"
-    }
+      "intro": "Kọ ìdáhùn kúkúrú tó jẹ́ òótọ́. Olùṣọ̀kan kejì gbọ́dọ̀ fọwọ́ sí i kí a tó lò ó.",
+      "languageLabel": "Èdè ìdáhùn",
+      "sentBack": "A dá a padà: {note}",
+      "none": "A kò tíì kọ ìdáhùn kankan.",
+      "dismissedLock": "A ti pa àhesọ yìí tì, a kò sì lè yí i padà mọ́.",
+      "approvedNote": "A ti fọwọ́ sí ìdáhùn yìí. Tí o bá fi àkọsílẹ̀ tuntun pamọ́, yóò rọ́pò rẹ̀, yóò sì nílò ìfọwọ́sí lẹ́ẹ̀kan sí i.",
+      "unsaved": "O ní àyípadà tí o kò tíì fi pamọ́. Kọ́kọ́ fi àkọsílẹ̀ pamọ́."
+    },
+    "count": "{count, plural, =0 {Kò sí àhesọ} one {Àhesọ #} other {Àhesọ #}}",
+    "filter": {
+      "label": "Fi hàn",
+      "all": "Gbogbo àhesọ"
+    },
+    "status": {
+      "new": "Tuntun",
+      "matched": "Ó nílò ìdáhùn",
+      "response_draft": "A ti kọ ìdáhùn sílẹ̀",
+      "response_approved": "A ti fọwọ́ sí ìdáhùn",
+      "dismissed": "A ti pa á tì"
+    },
+    "columns": {
+      "claim": "Àhesọ",
+      "harm": "Ìpalára",
+      "check": "Pàtàkì àyẹ̀wò",
+      "seenOn": "Níbi tí a ti rí i",
+      "status": "Ipò",
+      "logged": "Ìgbà tí a kọ ọ́"
+    },
+    "table": {
+      "caption": "Àwọn àhesọ tí ìpín àhesọ kọ sílẹ̀"
+    },
+    "suggestedNote": "Ètò kọ̀ǹpútà ló dá àbá ìpalára àti pàtàkì àyẹ̀wò. Ìwọ ni o ṣe ìpinnu.",
+    "empty": {
+      "title": "Kò tíì sí àhesọ kankan.",
+      "body": "Kọ àhesọ tí o rí sílẹ̀ kí a lè fi wé ìròyìn láti ibi ìdìbò.",
+      "filtered": "Kò sí àhesọ tó ní ipò yìí.",
+      "select": "Yan àhesọ kan láti rí àwọn ìròyìn tó bá a mu àti láti kọ ìdáhùn."
+    },
+    "back": "Padà sí àwọn àhesọ",
+    "loadMore": "Ṣí àwọn àhesọ míì",
+    "new": {
+      "intro": "Kọ ohun tí wọ́n sọ, tàbí fi àwòrán ojú ìbòjú kún un. Má fi orúkọ tàbí nọ́ńbà fóònù sí i."
+    },
+    "claimTextHint": "Ṣe àdàkọ ọ̀rọ̀ náà bí wọ́n ṣe kọ ọ́ tàbí sọ ọ́.",
+    "seenOn": {
+      "whatsapp": "WhatsApp",
+      "facebook": "Facebook",
+      "x": "X (Twitter)",
+      "tiktok": "TikTok",
+      "sms": "Ọ̀rọ̀ orí fóònù",
+      "radio": "Rédíò",
+      "in_person": "Ní ojúkorojú",
+      "other": "Ibòmíràn"
+    },
+    "language": "Èdè àhesọ náà",
+    "lang": {
+      "en": "English",
+      "pcm": "Naijá",
+      "ha": "Hausa",
+      "yo": "Yorùbá",
+      "ig": "Igbo"
+    },
+    "imageHint": "JPEG, PNG tàbí WebP, tí kò ju 5 MB lọ.",
+    "imageChoose": "Yan àwòrán",
+    "imageRemove": "Yọ àwòrán kúrò",
+    "needTextOrImage": "Kọ àhesọ náà tàbí fi àwòrán kún un.",
+    "saveClaim": "Kọ àhesọ sílẹ̀",
+    "errors": {
+      "stale": "Ẹlòmíì ti yí àhesọ yìí padà. Tún àtòjọ náà gbé wá, lẹ́yìn náà gbìyànjú lẹ́ẹ̀kan sí i.",
+      "transition": "A kò lè ṣe èyí ní ipò tí àhesọ náà wà báyìí.",
+      "samePerson": "Olùṣọ̀kan míì gbọ́dọ̀ fọwọ́ sí èyí.",
+      "invalid": "Ṣàyẹ̀wò ọ̀rọ̀ náà kí o tún gbìyànjú.",
+      "rateLimited": "Àhesọ pọ̀ jù láàrin wákàtí tó kọjá. Gbìyànjú lẹ́yìn ìgbà díẹ̀.",
+      "imageType": "Lo àwòrán JPEG, PNG tàbí WebP.",
+      "imageSize": "Àwòrán náà kò gbọ́dọ̀ tóbi ju 5 MB lọ.",
+      "imageUnreadable": "A kò lè ka àwòrán yẹn. Gbìyànjú òmíràn."
+    },
+    "notice": {
+      "created": "A ti kọ àhesọ náà sílẹ̀.",
+      "saved": "A ti fi àkọsílẹ̀ náà pamọ́.",
+      "approved": "A ti fọwọ́ sí ìdáhùn náà.",
+      "rejected": "A ti dá ìdáhùn náà padà fún òǹkọ̀wé.",
+      "dismissed": "A ti pa àhesọ náà tì."
+    },
+    "detail": {
+      "seenOn": "A rí i lórí {source}, ní èdè {language}",
+      "loggedBy": "{name} ló kọ ọ́, {time}",
+      "imageAttached": "Àwòrán kan wà níbẹ̀ ({width} nípasẹ̀ {height} pixel).",
+      "noText": "Kò sí ọ̀rọ̀, àwòrán nìkan."
+    },
+    "harm": {
+      "high": "Ìpalára: ga",
+      "medium": "Ìpalára: àárín",
+      "low": "Ìpalára: kékeré"
+    },
+    "check": {
+      "high": "Pàtàkì àyẹ̀wò: ga",
+      "medium": "Pàtàkì àyẹ̀wò: àárín",
+      "low": "Pàtàkì àyẹ̀wò: kékeré"
+    },
+    "harmReasons": {
+      "title": "Ìdí tí a fi díwọ̀n ìpalára báyìí",
+      "violence_claim": "Ó mẹ́nu ìwà ipá.",
+      "location_specific": "Ó dárúkọ ibì kan.",
+      "election_day": "A rí i ní ọjọ́ ìdìbò."
+    },
+    "pastClaims": {
+      "title": "Àwọn àhesọ ìṣáájú tó jọra",
+      "none": "Kò sí àhesọ ìṣáájú tó jọ èyí.",
+      "reply": "Ìdáhùn tí a fọwọ́ sí",
+      "noReply": "A kò fọwọ́ sí ìdáhùn kankan."
+    },
+    "approve": {
+      "title": "Ṣé kí o fọwọ́ sí ìdáhùn yìí?",
+      "body": "O ń fọwọ́ sí ìdáhùn tí {name} kọ. A ó ṣe àkọsílẹ̀ orúkọ rẹ."
+    },
+    "reject": {
+      "title": "Ṣé kí o dá ìdáhùn yìí padà?",
+      "body": "Sọ fún òǹkọ̀wé ohun tí yóò yí padà. A ó tọ́jú àkọsílẹ̀ náà.",
+      "noteLabel": "Àkíyèsí fún òǹkọ̀wé"
+    },
+    "dismiss": {
+      "title": "Ṣé kí o pa àhesọ yìí tì?",
+      "body": "Lo èyí nígbà tí àhesọ náà kò nílò ìdáhùn. A kò lè yí àhesọ tí a pa tì padà.",
+      "noteLabel": "Kí ló fà á tí a fi pa á tì?"
+    },
+    "noteHint": "Ọ̀rọ̀ 1 sí 500."
   },
   "s07": {
     "title": "[YO draft] Publish snapshots",
     "subtitle": "[YO draft] Public aggregated releases with statistical privacy suppression",
-    "createTitle": "[YO draft] Create new snapshot",
-    "cutoffLabel": "[YO draft] Cutoff time",
-    "cutoffHint": "[YO draft] Must be at least 60 minutes in the past.",
-    "createButton": "[YO draft] Generate preview",
-    "scheduleTitle": "[YO draft] Automatic hourly release",
-    "scheduleHint": "[YO draft] Builds and publishes a snapshot every hour if checks pass.",
-    "scheduleOn": "[YO draft] Hourly publishing is active",
-    "scheduleOff": "[YO draft] Hourly publishing is paused",
-    "snapshotsList": "[YO draft] Snapshot history",
-    "previewTitle": "[YO draft] Snapshot preview (exact public data)",
-    "suppressionNotice": "[YO draft] Counts below 5 are suppressed with 'fewer than 5'. Primary and secondary suppression applied.",
-    "excludedTitle": "[YO draft] Excluded from snapshot",
-    "excludedNotClosed": "[YO draft] {count} not yet closed",
-    "excludedWithdrawn": "[YO draft] {count} withdrawn",
-    "excludedAfterCutoff": "[YO draft] {count} after cutoff",
-    "approvePublish": "[YO draft] Approve and publish",
-    "discard": "[YO draft] Discard draft"
+    "createTitle": "Wo ìtújáde tuntun ṣáájú",
+    "cutoffLabel": "Àkókò ìkẹyìn (Àkókò Ìwọ̀-oòrùn Áfíríkà)",
+    "cutoffHint": "A kò ní fi àwọn ìròyìn tí a ti lẹ́yìn àkókò yìí kún un. Yan àkókò tí ó kéré tán ti lé ní ìṣẹ́jú {minutes}, tàbí fi sílẹ̀ lófo láti lo àkókò tó pẹ́ jù tí a gbà láàyè.",
+    "createButton": "Ṣe àtúnyẹ̀wò ṣáájú",
+    "scheduleTitle": "Ìtújáde ní wákàtí kọ̀ọ̀kan",
+    "scheduleHint": "Tí ó bá wà ní títàn, a óò ṣe àti tẹ̀ àwòrán ìsọfúnni jáde ní wákàtí kọ̀ọ̀kan tí àwọn àyẹ̀wò bá kọjá. A ó kọ orúkọ rẹ sílẹ̀ gẹ́gẹ́ bí olùfọwọ́sí.",
+    "scheduleOn": "Wà ní títàn",
+    "scheduleOff": "Wà ní pípa",
+    "snapshotsList": "Àwọn ìtújáde",
+    "previewTitle": "Àtúnyẹ̀wò ìtújáde",
+    "approvePublish": "Fọwọ́ sí i kí o sì tẹ̀ ẹ́ jáde",
+    "discard": "Pa àkọsílẹ̀ tì",
+    "cutoffTooRecent": "Yan àkókò tí ó kéré tán ti lé ní ìṣẹ́jú {minutes}.",
+    "cutoffInvalid": "Tẹ ọjọ́ àti àkókò tó tọ́ sí i.",
+    "scheduleUnknown": "A kò fi ètò lọ́wọ́lọ́wọ́ hàn níbí. Yan títàn tàbí pípa láti ṣe é.",
+    "schedule": {
+      "confirmTitle": "Ṣé kí o tan ìtújáde wákàtí kọ̀ọ̀kan?",
+      "confirmBody": "Àwọn àwòrán ìsọfúnni yóò máa jáde fúnra wọn ní wákàtí kọ̀ọ̀kan, pẹ̀lú orúkọ rẹ gẹ́gẹ́ bí olùfọwọ́sí. O lè pa á nígbàkigbà.",
+      "confirmOn": "Tan án",
+      "turnOff": "Pa á"
+    },
+    "notice": {
+      "generated": "Àtúnyẹ̀wò ti ṣetán. Ṣàyẹ̀wò rẹ̀ kí o tó tẹ̀ ẹ́ jáde.",
+      "scheduleOn": "Ìtújáde wákàtí kọ̀ọ̀kan ti wà ní títàn.",
+      "scheduleOff": "Ìtújáde wákàtí kọ̀ọ̀kan ti wà ní pípa.",
+      "published": "A ti tẹ̀ ẹ́ jáde. Ojú-ìwé àbájáde ti gbogbo ènìyàn ń fi ìtújáde yìí hàn báyìí.",
+      "discarded": "A ti pa àkọsílẹ̀ náà tì."
+    },
+    "columns": {
+      "cutoff": "Àkókò ìkẹyìn",
+      "status": "Ipò",
+      "total": "Àwọn ìròyìn",
+      "fingerprint": "Ìdámọ̀",
+      "by": "Ẹni tó pèsè",
+      "published": "A tẹ̀ jáde"
+    },
+    "status": {
+      "draft": "Àkọsílẹ̀",
+      "published": "A tẹ̀ jáde",
+      "discarded": "A pa tì",
+      "superseded": "A ti rọ́pò rẹ̀"
+    },
+    "history": {
+      "caption": "Àwọn ìtújáde, tuntun ní àkọ́kọ́",
+      "empty": "Kò tíì sí ìtújáde kankan.",
+      "emptyBody": "Ṣe àtúnyẹ̀wò láti ṣe èyí àkọ́kọ́.",
+      "fingerprintNote": "Ìdámọ̀ ni ìbẹ̀rẹ̀ kóòdù ẹ̀wọ̀n àyẹ̀wò tí a tọ́jú pẹ̀lú ìtújáde kọ̀ọ̀kan. Ó jẹ́ kí ẹnikẹ́ni lè ṣàyẹ̀wò pé a kò yí ìtújáde náà padà.",
+      "loadMore": "Ṣí àwọn ìtújáde míì"
+    },
+    "detail": {
+      "draftNote": "Àkọsílẹ̀ ni èyí. Kò sí ohun tó di ti gbogbo ènìyàn títí o fi fọwọ́ sí i, tí o sì tẹ̀ ẹ́ jáde.",
+      "publishedNote": "A tẹ̀ ẹ́ jáde {time}.",
+      "discardedNote": "A ti pa àkọsílẹ̀ yìí tì. Kò jẹ́ ti gbogbo ènìyàn rí.",
+      "supersededNote": "Ìtújáde tuntun ti rọ́pò èyí lórí ojú-ìwé gbogbo ènìyàn.",
+      "by": "{name} ló pèsè rẹ̀, àkókò ìkẹyìn {cutoff}"
+    },
+    "preview": {
+      "title": "Ohun tí gbogbo ènìyàn yóò rí",
+      "note": "Ojú-ìwé àbájáde ti gbogbo ènìyàn ni èyí, láti ọwọ́ ìtújáde yìí. A fi iye tó kéré ju 5 pamọ́ níbí gẹ́gẹ́ bí yóò ṣe rí lórí íńtánẹ́ẹ̀tì.",
+      "label": "Àtúnyẹ̀wò ojú-ìwé àbájáde gbogbo ènìyàn"
+    },
+    "exclusions": {
+      "title": "Ohun tí a fi sílẹ̀ nínú ìtújáde yìí",
+      "note": "A kò ka àwọn ìròyìn wọ̀nyí nínú àtúnyẹ̀wò náà.",
+      "notClosed": "{count, plural, one {Ìròyìn # kò tíì parí} other {Ìròyìn # kò tíì parí}}",
+      "withdrawn": "{count, plural, one {Ìròyìn # tí olùṣàkíyèsí yọ kúrò} other {Ìròyìn # tí olùṣàkíyèsí yọ kúrò}}",
+      "afterCutoff": "{count, plural, one {Ìròyìn # tó dé lẹ́yìn àkókò ìkẹyìn} other {Ìròyìn # tó dé lẹ́yìn àkókò ìkẹyìn}}",
+      "otherKinds": "{count, plural, one {Ohun # ti irú míì, tàbí tí kò ní ìpínlẹ̀} other {Ohun # ti irú míì, tàbí tí kò ní ìpínlẹ̀}}"
+    },
+    "publish": {
+      "confirmTitle": "Ṣé kí o tẹ ìtújáde yìí jáde?",
+      "confirmBody": "Ẹnikẹ́ni lè rí àwọn iye wọ̀nyí lórí ojú-ìwé àbájáde gbogbo ènìyàn lẹ́yìn tí o bá fọwọ́ sí i. Yóò rọ́pò ìtújáde tí ó wà níbẹ̀ báyìí. A kò lè yí i padà, ṣùgbọ́n ìtújáde tuntun lè rọ́pò rẹ̀."
+    },
+    "discardConfirm": {
+      "title": "Ṣé kí o pa àkọsílẹ̀ yìí tì?",
+      "body": "Àkọsílẹ̀ náà yóò wà nínú ìtàn gẹ́gẹ́ bí èyí tí a pa tì. Kò jẹ́ ti gbogbo ènìyàn rí, o kò sì lè tẹ̀ ẹ́ jáde lẹ́yìn náà."
+    },
+    "errors": {
+      "stale": "Ìtújáde yìí ti yí padà. Tún àtòjọ náà gbé wá, lẹ́yìn náà gbìyànjú lẹ́ẹ̀kan sí i.",
+      "transition": "Àkọsílẹ̀ nìkan ni a lè fọwọ́ sí tàbí pa tì.",
+      "tooRecent": "Àkókò ìkẹyìn kò pẹ́ tó. Yan àkókò tó sẹ́yìn jù bẹ́ẹ̀ lọ.",
+      "invalid": "Ṣàyẹ̀wò àwọn àlàyé náà kí o tún gbìyànjú."
+    }
   },
   "s08": {
-    "title": "[YO draft] Discussion moderation",
-    "subtitle": "[YO draft] Community oversight and safety for observer forums",
-    "flagsInbox": "[YO draft] Reported posts ({count})",
-    "flaggedBy": "[YO draft] Flagged {count} times",
-    "reasons": "[YO draft] Reasons: {reasons}",
-    "nameCheckAlert": "[YO draft] Possible personal name detected",
-    "hidePost": "[YO draft] Hide post",
-    "unhidePost": "[YO draft] Unhide post",
-    "hideReason": "[YO draft] Reason for hiding",
-    "removeMember": "[YO draft] Remove member from forum",
-    "closeDiscussion": "[YO draft] Close discussion",
-    "createDiscussion": "[YO draft] Create new discussion",
-    "topic": "[YO draft] Discussion topic",
-    "wardLga": "[YO draft] Ward or LGA scope",
-    "inviteCodes": "[YO draft] Invite observer codes"
+    "title": "Ìṣàkóso ìjíròrò",
+    "subtitle": "Àwọn ọ̀rọ̀ tí àwọn olùṣàkíyèsí tàbí ètò sàmì sí fún àyẹ̀wò",
+    "flagsInbox": "Àwọn ọ̀rọ̀ tí a sàmì sí: {count}",
+    "flaggedBy": "A sàmì sí i ní ìgbà {count}",
+    "nameCheckAlert": "A rí ohun tí ó lè jẹ́ orúkọ ẹnìkan",
+    "hidePost": "Fi ọ̀rọ̀ pamọ́",
+    "unhidePost": "Ṣàfihàn ọ̀rọ̀ náà padà",
+    "hideReason": "Ìdí",
+    "removeMember": "Yọ ọmọ ẹgbẹ́ kúrò",
+    "closeDiscussion": "Ti ìjíròrò pa",
+    "createDiscussion": "Ṣẹ̀dá ìjíròrò",
+    "topic": "Kókó ọ̀rọ̀",
+    "refresh": "Ṣàtúnṣe àkójọ",
+    "loadMore": "Ṣàfihàn jù bẹ́ẹ̀ lọ",
+    "emptyTitle": "Kò sí ọ̀rọ̀ tí a sàmì sí lọ́wọ́lọ́wọ́.",
+    "emptyBody": "Ọ̀rọ̀ yóò hàn níbí tí àwọn olùṣàkíyèsí bá sàmì sí i, tàbí tí ó bá lè dárúkọ ẹnìkan.",
+    "reasonsLabel": "Àwọn ìdí tí a fi fún",
+    "reason_names_a_person": "Ó dárúkọ ẹnìkan",
+    "reason_too_specific_location": "Ibi tí ó pàtó jù",
+    "reason_abusive": "Ìkọlù pẹ̀lú ọ̀rọ̀ ìbànújẹ́",
+    "reason_other": "Òmíràn",
+    "reason_off_topic": "Kò bá kókó ọ̀rọ̀ mu",
+    "author": "{code} ló kọ ọ́",
+    "hiddenBadge": "A ti fi pamọ́",
+    "hiddenFor": "Ìdí tí a fi fi pamọ́: {reason}",
+    "hiddenBodyLabel": "Ọ̀rọ̀ àkọ́kọ́. Àwọn olùṣàkóso nìkan ni ó lè rí i.",
+    "cancel": "Fagilé",
+    "hideTitle": "Fi ọ̀rọ̀ yìí pamọ́",
+    "hideBody": "Àwọn olùṣàkíyèsí kò ní rí i mọ́. O lè ṣàfihàn rẹ̀ padà nígbà míràn.",
+    "hideNote": "Àkọsílẹ̀",
+    "hideNoteHint": "Kò pọn dandan. A máa pamọ́ rẹ̀ sínú ìwé ìṣàyẹ̀wò. Kò ju ọ̀rọ̀ 500 lọ.",
+    "hideConfirm": "Fi ọ̀rọ̀ pamọ́",
+    "removeTitle": "Yọ ọmọ ẹgbẹ́ yìí kúrò",
+    "removeBody": "{code} kò ní lè wọ ìjíròrò yìí mọ́. Àwọn ìjíròrò yòókù kò yí padà.",
+    "removeReason": "Ìdí",
+    "removeReasonHint": "Ó pọn dandan. A máa pamọ́ rẹ̀ sínú ìwé ìṣàyẹ̀wò. Kò ju ọ̀rọ̀ 500 lọ.",
+    "removeConfirm": "Yọ ọmọ ẹgbẹ́ kúrò",
+    "closeTitle": "Ti ìjíròrò yìí pa",
+    "closeBody": "Kò sí ẹni tí ó lè kọ ọ̀rọ̀ tàbí darapọ̀ lẹ́yìn tí a bá ti pa á, a kò sì lè tún ṣí i. Àwọn ọ̀rọ̀ rẹ̀ tí a sàmì sí yóò kúrò nínú àkójọ yìí.",
+    "closeConfirm": "Ti ìjíròrò pa",
+    "createLead": "Àwọn olùṣàkíyèsí máa ń darapọ̀ nípasẹ̀ ìpè, nítorí náà fi kóòdù wọn sí ìsàlẹ̀.",
+    "titleLabel": "Àkọlé",
+    "titleHint": "Ọ̀rọ̀ 3 sí 120.",
+    "topicHint": "Kò pọn dandan. Kò ju ọ̀rọ̀ 500 lọ.",
+    "areaLabel": "Agbègbè",
+    "state": "Ìpínlẹ̀",
+    "lga": "Ìjọba ìbílẹ̀",
+    "ward": "Wọ́ọ̀dù",
+    "wholeLga": "Gbogbo ìjọba ìbílẹ̀",
+    "areaLoading": "Àwọn agbègbè ń gbé jáde...",
+    "invites": "Pe àwọn kóòdù olùṣàkíyèsí",
+    "invitesHint": "Kò pọn dandan. Kóòdù kan lórí ìlà kọ̀ọ̀kan, kò ju 200 lọ.",
+    "createSubmit": "Ṣẹ̀dá ìjíròrò",
+    "noticeHidden": "A ti fi ọ̀rọ̀ náà pamọ́.",
+    "noticeUnhidden": "Ọ̀rọ̀ náà tún hàn.",
+    "noticeRemoved": "A ti yọ {code} kúrò nínú ìjíròrò náà.",
+    "noticeClosed": "A ti ti ìjíròrò náà pa.",
+    "noticeCreated": "A ti ṣẹ̀dá ìjíròrò náà. A ti pè: {invited}.",
+    "noticeNotFound": "A kò rí àwọn kóòdù wọ̀nyí: {codes}.",
+    "errClosed": "A ti ti ìjíròrò yìí pa tẹ́lẹ̀.",
+    "errNotFound": "Ọ̀rọ̀ tàbí ọmọ ẹgbẹ́ náà kò sí mọ́. Ṣàtúnṣe àkójọ náà.",
+    "errInvalid": "Ṣàyẹ̀wò ọ̀rọ̀ tí o kọ, kí o tún gbìyànjú.",
+    "errArea": "A kò mọ agbègbè yẹn. Yàn án láti inú àwọn àkójọ náà.",
+    "valTitle": "Kọ àkọlé tí ó jẹ́ ọ̀rọ̀ 3 sí 120.",
+    "valReason": "Kọ ìdí.",
+    "valArea": "Yàn ìpínlẹ̀ àti ìjọba ìbílẹ̀.",
+    "valInvites": "Kọ kóòdù olùṣàkíyèsí tí kò ju 200 lọ."
   },
   "s09": {
     "title": "[YO draft] Observer code batches",
@@ -1557,49 +1809,269 @@
   },
   "s10": {
     "title": "[YO draft] Staff accounts",
-    "subtitle": "[YO draft] Manage staff access, roles, and two-factor credentials",
-    "staffList": "[YO draft] Staff members ({count})",
-    "createStaff": "[YO draft] Add staff member",
-    "displayName": "[YO draft] Display name",
-    "email": "[YO draft] Email address",
-    "roles": "[YO draft] Assigned roles",
-    "roleAdminAlone": "[YO draft] Admin role cannot be combined with reviewer, coordinator, or moderator.",
-    "inviteUrl": "[YO draft] One-time invitation link",
-    "copyInvite": "[YO draft] Copy link",
-    "reset2fa": "[YO draft] Reset 2FA",
-    "offboard": "[YO draft] Offboard staff",
-    "offboardReason": "[YO draft] Offboarding reason",
-    "offboardWarning": "[YO draft] Any open cases assigned to this user will be returned to the unassigned queue."
+    "staffList": "{count, plural, one {òṣìṣẹ́ #} other {òṣìṣẹ́ #}}",
+    "createStaff": "Fi òṣìṣẹ́ kún",
+    "reset2fa": "Tún 2FA ṣètò",
+    "offboard": "Yọ kúrò",
+    "retry": "Gbìyànjú lẹ́ẹ̀kan sí i",
+    "cancel": "Fagilé",
+    "filter": {
+      "label": "Fi hàn",
+      "all": "Gbogbo",
+      "active": "Tó ń ṣiṣẹ́",
+      "invited": "A ti pè",
+      "offboarded": "A ti yọ kúrò"
+    },
+    "empty": "Kò tíì sí àkọọ́lẹ̀ òṣìṣẹ́.",
+    "emptyFilter": "Kò sí àkọọ́lẹ̀ tó bá àyẹ̀wò yìí mu.",
+    "caption": "Àkọọ́lẹ̀ àwọn òṣìṣẹ́",
+    "columns": {
+      "name": "Orúkọ",
+      "roles": "Iṣẹ́ tí wọ́n ń ṣe",
+      "twofa": "Kóòdù ìgbésẹ̀ méjì",
+      "lastSignIn": "Ìwọlé ìkẹyìn",
+      "status": "Ipò",
+      "actions": "Ìgbésẹ̀"
+    },
+    "status": {
+      "active": "Ń ṣiṣẹ́",
+      "invited": "A ti pè",
+      "offboarded": "A ti yọ kúrò"
+    },
+    "twofa": {
+      "on": "A ti ṣètò",
+      "off": "A kò tíì ṣètò"
+    },
+    "neverSignedIn": "Kò tíì wọlé",
+    "you": "Ìwọ",
+    "reset2faFor": "Tún 2FA ṣètò fún {name}",
+    "offboardFor": "Yọ {name} kúrò",
+    "selfNote": "O kò lè yọ àkọọ́lẹ̀ ara rẹ kúrò.",
+    "create": {
+      "title": "Fi òṣìṣẹ́ kún",
+      "description": "Wọn yóò gba ọ̀nà ìsopọ̀ ẹ̀ẹ̀kan láti yan ọ̀rọ̀ aṣínà àti láti ṣètò kóòdù ìgbésẹ̀ méjì.",
+      "email": "Àdírẹ́sì ìmeèlì",
+      "name": "Orúkọ tí a ó fi hàn",
+      "nameHint": "Ọ̀rọ̀ 2 sí 60.",
+      "roles": "Iṣẹ́ tí wọ́n ń ṣe",
+      "rolesHint": "Yan ó kéré tán ọ̀kan. A kò lè so alákòóso pọ̀ mọ́ iṣẹ́ mìíràn.",
+      "submit": "Ṣí àkọọ́lẹ̀"
+    },
+    "invite": {
+      "title": "Ọ̀nà ìkésíni ẹ̀ẹ̀kan",
+      "body": "Fún {name} ní ọ̀nà ìsopọ̀ yìí. Ó ṣiṣẹ́ lẹ́ẹ̀kan péré, a kò sì ní tún fi í hàn lẹ́yìn tí o bá pa èyí dé. Yóò parí ní {when}.",
+      "label": "Ọ̀nà ìkésíni",
+      "copy": "Dà ọ̀nà ìsopọ̀ kọ",
+      "copied": "A ti dà kọ",
+      "copyFailed": "A kò lè dà á kọ. Yan ọ̀nà ìsopọ̀ náà kí o sì dà á kọ pẹ̀lú ọwọ́.",
+      "done": "Mo ti dà á kọ"
+    },
+    "reset": {
+      "title": "Tún kóòdù ìgbésẹ̀ méjì ti {name} ṣètò?",
+      "body": "A ó mú {name} jáde níbi gbogbo, ó sì gbọ́dọ̀ ṣètò kóòdù ìgbésẹ̀ méjì tuntun nígbà ìwọlé tó kàn. Ọ̀rọ̀ aṣínà kò yípadà.",
+      "confirm": "Tún 2FA ṣètò",
+      "done": "A ti tún kóòdù ìgbésẹ̀ méjì ti {name} ṣètò."
+    },
+    "offboardDialog": {
+      "title": "Yọ {name} kúrò?",
+      "body": "{name} yóò pàdánù àyè lẹ́sẹ̀kẹsẹ̀, a ó sì mú un jáde níbi gbogbo. Àwọn ẹjọ́ tí a fún un yóò padà sí àtòjọ àwọn tí kò tíì ní olùṣàkóso. A kò lè yí èyí padà.",
+      "reason": "Ìdí",
+      "reasons": {
+        "access_ended": "A kò nílò àyè mọ́",
+        "role_changed": "Iṣẹ́ ti yípadà",
+        "credential_risk": "Àwọn ìwífún ìwọlé lè wà nínú ewu"
+      },
+      "confirm": "Yọ kúrò",
+      "done": "A ti yọ {name} kúrò."
+    },
+    "errors": {
+      "lastAdmin": "Alákòóso kan tó ń ṣiṣẹ́ gbọ́dọ̀ wà. Kọ́kọ́ fi alákòóso mìíràn kún.",
+      "stale": "Àkọọ́lẹ̀ yìí yípadà bí o ṣe ń wò ó. A ti sọ àtòjọ di tuntun. Ṣàyẹ̀wò rẹ̀ kí o tún gbìyànjú.",
+      "duplicate": "Àkọọ́lẹ̀ ti wà fún ìmeèlì yìí.",
+      "invalidEmail": "Tẹ àdírẹ́sì ìmeèlì tó tọ́ sí i.",
+      "invalidName": "Lo ọ̀rọ̀ 2 sí 60.",
+      "invalidRoles": "Yan ó kéré tán iṣẹ́ kan.",
+      "selfOffboard": "O kò lè yọ àkọọ́lẹ̀ ara rẹ kúrò.",
+      "alreadyOffboarded": "A ti yọ àkọọ́lẹ̀ yìí kúrò tẹ́lẹ̀.",
+      "invalid": "Àwọn ìwífún kan kò tọ̀nà. Ṣàyẹ̀wò wọn kí o tún gbìyànjú."
+    }
   },
   "s11": {
     "title": "[YO draft] Organisation settings",
-    "subtitle": "[YO draft] Intake control, data retention, and election parameters",
-    "intakePause": "[YO draft] Pause report intake",
-    "intakePauseHint": "[YO draft] Temporarily stop accepting new reports from observers and citizens.",
-    "retention": "[YO draft] Data retention period",
-    "retentionDays": "[YO draft] {days} days",
-    "retentionConfirm": "[YO draft] Shortening retention will delete older records at next purge.",
-    "electionDay": "[YO draft] Election day",
-    "publicDelay": "[YO draft] Public snapshot delay",
-    "delayMinutes": "[YO draft] {minutes} minutes",
-    "partyLabels": "[YO draft] Party labels on result sheets",
-    "saveSettings": "[YO draft] Save organisation settings",
-    "auditExport": "[YO draft] Export audit log"
+    "retry": "Gbìyànjú lẹ́ẹ̀kan sí i",
+    "cancel": "Fagilé",
+    "saved": "A ti fi pamọ́.",
+    "intakeCard": {
+      "title": "Gbígba ìròyìn",
+      "open": "À ń gba ìròyìn",
+      "paused": "A ti dá gbígbà dúró",
+      "hint": "Dídá a dúró máa ń dá àwọn ará ìlú àti àwọn alákiyèsí dúró láti fi ìròyìn tuntun ránṣẹ́. Àwọn ìròyìn tó ti dé kò ní yípadà.",
+      "switch": "Dá gbígba ìròyìn dúró",
+      "banner": "A ti dá gbígba ìròyìn dúró. A kò gba ìròyìn tuntun.",
+      "pauseTitle": "Dá gbígba ìròyìn dúró?",
+      "pauseBody": "Ẹnikẹ́ni kò lè fi ìròyìn tuntun ránṣẹ́ títí o fi tún bẹ̀rẹ̀. Àwọn ìròyìn tó ti dé kò ní yípadà.",
+      "pauseConfirm": "Dá gbígbà dúró",
+      "resumeTitle": "Tún bẹ̀rẹ̀ gbígba ìròyìn?",
+      "resumeBody": "Àwọn ará ìlú àti àwọn alákiyèsí lè fi ìròyìn ránṣẹ́ lẹ́ẹ̀kan sí i lẹ́sẹ̀kẹsẹ̀.",
+      "resumeConfirm": "Tún bẹ̀rẹ̀ gbígbà"
+    },
+    "simCard": {
+      "title": "Ẹ̀rọ àdánwò",
+      "hint": "Ó jẹ́ kí àwọn òṣìṣẹ́ dán SMS àti USSD wò pẹ̀lú ìfiránṣẹ́ àdánwò. Pa á fún ìdìbò gidi.",
+      "switch": "Ẹ̀rọ àdánwò",
+      "on": "Wà ní títàn",
+      "off": "Wà ní pípa"
+    },
+    "retentionCard": {
+      "title": "Bí a ṣe ń tọ́jú ìwé ìròyìn pẹ́ tó",
+      "label": "Tọ́jú ìwé fún (ọjọ́)",
+      "hint": "Láti ọjọ́ 30 sí 730. A máa pa àwọn ìwé tó dàgbà ju èyí lọ rẹ́ nígbà ìmọ́tótó tó kàn.",
+      "save": "Fi àkókò ìtọ́jú pamọ́",
+      "error": "Tẹ nọ́ńbà odidi láti 30 sí 730.",
+      "confirmTitle": "Pa àwọn ìwé àtijọ́ rẹ́?",
+      "confirmBody": "Títọ́jú ìwé fún ọjọ́ {days} dípò {current} yóò pa {count, plural, one {ìwé #} other {ìwé #}} rẹ́ títí láé nígbà ìmọ́tótó tó kàn. A kò lè dá wọn padà.",
+      "confirmUnknown": "Títọ́jú ìwé fún ọjọ́ {days} dípò {current} yóò pa àwọn ìwé àtijọ́ rẹ́ títí láé nígbà ìmọ́tótó tó kàn. Ẹ̀rọ olùpèsè kò sọ iye wọn. A kò lè dá wọn padà.",
+      "confirm": "Dín kù kí o sì parẹ́"
+    },
+    "scheduleCard": {
+      "title": "Ọjọ́ ìdìbò àti ìdádúró fún gbogbo ènìyàn",
+      "electionDay": "Ọjọ́ ìdìbò",
+      "electionDayHint": "Kò pọn dandan. Fi sílẹ̀ ní òfo títí a ó fi dá ọjọ́ náà mọ̀.",
+      "delay": "Ìdádúró fún gbogbo ènìyàn (ìṣẹ́jú)",
+      "delayHint": "Àwọn nọ́ńbà tí gbogbo ènìyàn ń rí ń lo àwọn ìròyìn tó dàgbà tó èyí nìkan. Láti ìṣẹ́jú 60 sí 1,440.",
+      "delayError": "Tẹ nọ́ńbà odidi láti 60 sí 1,440.",
+      "save": "Fi ọjọ́ àti ìdádúró pamọ́"
+    },
+    "partiesCard": {
+      "title": "Àmì àwọn ẹgbẹ́ olóṣèlú",
+      "label": "Àwọn àmì",
+      "hint": "Àwọn lẹ́tà tí a fi hàn lórí ìwé èsì, bíi A, B, C. Lo àmì 2 sí 12 tó yàtọ̀, lẹ́tà ńlá 1 sí 3 ọ̀kọ̀ọ̀kan, kí o sì yà wọ́n sọ́tọ̀ pẹ̀lú kọ̀mà.",
+      "save": "Fi àwọn àmì ẹgbẹ́ pamọ́",
+      "error": "Lo àmì 2 sí 12 tó yàtọ̀, lẹ́tà 1 sí 3 ọ̀kọ̀ọ̀kan, kí o sì yà wọ́n sọ́tọ̀ pẹ̀lú kọ̀mà.",
+      "locked": "A ti tì í. Ìwé èsì ti dé, nítorí náà a kò lè yí àwọn àmì padà mọ́."
+    },
+    "auditCard": {
+      "title": "Kó àkọsílẹ̀ ìṣàyẹ̀wò jáde",
+      "hint": "Ṣe ìgbàsílẹ̀ àkọsílẹ̀ ẹni tó ṣe ohun tó ṣe, lẹ́sẹẹsẹ. Ìkójáde kan lè bo ọjọ́ 92.",
+      "format": "Irú fáìlì",
+      "from": "Láti",
+      "to": "Dé",
+      "download": "Gbà sílẹ̀",
+      "rangeError": "Yan ọjọ́ tí Láti kò ju Dé lọ, tí àlàfo rẹ̀ kò sì ju ọjọ́ 92 lọ.",
+      "rateLimited": "Ìkójáde pọ̀jù ní wákàtí yìí. Gbìyànjú lẹ́yìn náà.",
+      "started": "Ìgbàsílẹ̀ ti bẹ̀rẹ̀."
+    },
+    "meta": {
+      "version": "Ẹ̀dà {version}",
+      "updatedBy": "{name} yí i padà kẹ́yìn ní {when}",
+      "updated": "A yí i padà kẹ́yìn ní {when}",
+      "never": "A kò tíì yí i padà láti ìgbà ìṣètò."
+    },
+    "errors": {
+      "stale": "Àwọn ètò yìí yípadà bí ò ń ṣàtúnṣe. A ti gbé wọn wá lẹ́ẹ̀kan sí i. Ṣàyẹ̀wò wọn kí o tún gbìyànjú.",
+      "invalid": "Ọ̀kan nínú àwọn iye náà kò gbà. Ṣàyẹ̀wò àwọn nọ́ńbà kí o tún gbìyànjú."
+    }
   },
   "s12": {
     "title": "[YO draft] Security & audit monitoring",
-    "subtitle": "[YO draft] Security rule alerts and cryptographic audit chain verification",
-    "alerts": "[YO draft] Security alerts",
-    "severity": "[YO draft] Severity",
-    "detector": "[YO draft] Detector",
-    "updateStatus": "[YO draft] Update status",
-    "auditVerify": "[YO draft] Audit hash chain verification",
-    "chainStatus": "[YO draft] Chain integrity",
-    "eventsChecked": "[YO draft] {count} events verified",
-    "headHash": "[YO draft] Chain head hash: {hash}",
-    "brokenEvent": "[YO draft] First broken event: {id}",
-    "verifyNow": "[YO draft] Run verification check",
-    "exportLog": "[YO draft] Export audit log (JSONL/CSV)"
+    "subtitle": "Àwọn ìkìlọ̀ tí àwọn òfin ààbò wa gbé jáde, àti àyẹ̀wò pé a kò yí àkọsílẹ̀ ìṣàyẹ̀wò padà.",
+    "alertsTitle": "Àwọn ìkìlọ̀",
+    "alertsHint": "Ṣí ìkìlọ̀, kọ ohun tí o rí, lẹ́yìn náà gbà á tàbí ti í.",
+    "tableCaption": "Àwọn ìkìlọ̀ ààbò, tuntun jùlọ lákọ̀ọ́kọ́",
+    "filterLabel": "Ipò",
+    "status": {
+      "open": "Ṣí sílẹ̀",
+      "acknowledged": "A ti gbà",
+      "resolved": "A ti yanjú",
+      "false_positive": "Ìkìlọ̀ èké"
+    },
+    "severity": {
+      "high": "Gíga",
+      "medium": "Àárín",
+      "low": "Kékeré"
+    },
+    "detector": {
+      "rules": "Àwọn òfin",
+      "model": "Àwòṣe"
+    },
+    "col": {
+      "severity": "Bí ó ti pọ̀ tó",
+      "rule": "Òfin",
+      "detector": "Ẹni tó rí i",
+      "status": "Ipò",
+      "lastSeen": "Ìgbà tó kẹ́yìn",
+      "action": "Ìgbésẹ̀"
+    },
+    "rule": {
+      "repeated_failed_pins": "PIN tí kò tọ́ léraléra",
+      "repeated_failed_staff_sign_in": "Ìwọlé òṣìṣẹ́ kùnà léraléra",
+      "unusual_download_volume": "Ìgbàsílẹ̀ tó pọ̀ jù",
+      "new_network_sign_in": "Ìwọlé láti nẹ́tíwọ́kì tuntun",
+      "intake_burst": "Ìròyìn pọ̀ lójijì",
+      "receipt_enumeration": "A ń fojú díwọ̀n kóòdù ìwé ẹ̀rí",
+      "staff_offboarded_with_cases": "Òṣìṣẹ́ tó ti lọ ṣì ní àwọn ẹjọ́",
+      "anomaly": "Ìṣẹ̀lẹ̀ àìdáa"
+    },
+    "subject": {
+      "observer_code": "Kóòdù olùfojúsí",
+      "staff": "Àkántì òṣìṣẹ́",
+      "staff_account": "Àkántì òṣìṣẹ́",
+      "network": "Nẹ́tíwọ́kì",
+      "receipt_lookup": "Àyẹ̀wò ìwé ẹ̀rí",
+      "intake_source": "Orísun ìròyìn",
+      "organisation": "Àjọ"
+    },
+    "detail": {
+      "failures": "Ìgbìyànjú tó kùnà",
+      "window_minutes": "Àkókò (ìṣẹ́jú)",
+      "distinct_networks": "Nẹ́tíwọ́kì yàtọ̀",
+      "reports": "Àwọn ìròyìn",
+      "distinct_items": "Àwọn nǹkan yàtọ̀",
+      "network": "Àmì nẹ́tíwọ́kì",
+      "permanent": "A ti tì í pátápátá"
+    },
+    "detailsTitle": "Ohun tí a rí",
+    "firstSeen": "Ìgbà àkọ́kọ́",
+    "lastSeen": "Ìgbà tó kẹ́yìn",
+    "update": "Ṣàtúnṣe",
+    "updateTitle": "Ṣàtúnṣe ìkìlọ̀",
+    "newStatus": "Ipò tuntun",
+    "noteLabel": "Àkọsílẹ̀",
+    "noteHint": "Ohun tí o rí tàbí tí o ṣe. A ó fi pamọ́ sínú àkọsílẹ̀ ìṣàyẹ̀wò.",
+    "save": "Fi àtúnṣe pamọ́",
+    "updated": "A ti ṣàtúnṣe ìkìlọ̀.",
+    "staleVersion": "Ẹnìkan ti yí ìkìlọ̀ yìí padà nígbà tí o ṣí i. A ti tún un kà; wò ó, kí o tún gbìyànjú.",
+    "empty": {
+      "open": "Kò sí ìkìlọ̀ tó ṣí sílẹ̀.",
+      "acknowledged": "Kò sí ìkìlọ̀ tí a ti gbà.",
+      "resolved": "Kò sí ìkìlọ̀ tí a ti yanjú.",
+      "false_positive": "Kò sí ìkìlọ̀ tí a samisi bí èké."
+    },
+    "loadMore": "Fi àwọn ìkìlọ̀ sí i hàn",
+    "verifyTitle": "Ṣàyẹ̀wò ẹ̀wọ̀n ìṣàyẹ̀wò",
+    "verifyHint": "Ó tún ṣàyẹ̀wò hash ìṣẹ̀lẹ̀ kọ̀ọ̀kan láti àkọ́kọ́ dé ìkẹyìn. Kò sí ohun tí a yí padà.",
+    "verifyRun": "Ṣe àyẹ̀wò",
+    "verifyRunning": "À ń ṣàyẹ̀wò…",
+    "verifyNever": "A kò tíì ṣe é. Ṣe àyẹ̀wò láti rí èsì.",
+    "verifyOk": "A ti jẹ́rìí ìṣẹ̀lẹ̀ {count} · ẹ̀wọ̀n kò bàjẹ́",
+    "verifyIntact": "Ẹ̀wọ̀n kò bàjẹ́",
+    "verifyBroken": "Ẹ̀wọ̀n ti já",
+    "verifyBrokenTitle": "Ẹ̀wọ̀n ìṣàyẹ̀wò ti já",
+    "verifyBrokenEvent": "Ìṣẹ̀lẹ̀ àkọ́kọ́ tó já",
+    "verifyBrokenText": "Ìṣẹ̀lẹ̀ {count} ṣáájú èyí wà dáadáa. Má ṣe àtúnṣe àkọsílẹ̀ kankan. Sọ fún alábòójútó rẹ báyìí.",
+    "headHash": "Hash ìkẹyìn",
+    "headEvents": "Iye ìṣẹ̀lẹ̀ nínú ẹ̀wọ̀n",
+    "checkedAt": "A ṣàyẹ̀wò {time}",
+    "exportTitle": "Kó àkọsílẹ̀ ìṣàyẹ̀wò jáde",
+    "exportHint": "Ìlà kan fún ìṣẹ̀lẹ̀ kọ̀ọ̀kan pẹ̀lú hash rẹ̀, kí a lè ṣàyẹ̀wò fáìlì náà níbòmíràn. Títí dé ọjọ́ 92. Àwọn alábòójútó nìkan, a sì ń kọ gbogbo ìkójáde sílẹ̀.",
+    "exportFrom": "Láti",
+    "exportTo": "Dé",
+    "exportFormat": "Ọ̀nà",
+    "exportJsonl": "JSONL (ìṣẹ̀lẹ̀ kan ní ìlà kan)",
+    "exportCsv": "CSV (fún sípírẹ́dṣíìtì)",
+    "exportRun": "Kó jáde",
+    "exportDone": "A ti gba fáìlì náà sílẹ̀.",
+    "exportRange": "Yan ọjọ́ tí kò ju 92 sí ara wọn, kí “Láti” sì wà níwájú."
   },
   "pub": {
     "homeLink": "Ojú-ìwé àkọ́kọ́ ElectraGuard AI",
@@ -1924,6 +2396,34 @@
     "disabled": {
       "title": "A ti pa fóònù ìdánwò.",
       "body": "Àjọ olùwòye ti pa á fún ìgbà díẹ̀. O ṣì lè fi ìròyìn ránṣẹ́ lórí ojú-òpó yìí."
+    }
+  },
+  "sys": {
+    "home": "Lọ sí ojú-ìwé àkọ́kọ́",
+    "notFound": {
+      "title": "A kò rí ojú-ìwé yẹn",
+      "body": "Ìjápọ̀ náà lè ti pẹ́ tàbí kí wọ́n ti tẹ̀ ẹ́ ní àṣìṣe. Kò sí ohun tí o fipamọ́ tó yí padà."
+    },
+    "error": {
+      "title": "Ojú-ìwé yìí dá iṣẹ́ dúró",
+      "body": "Nǹkan kan kò lọ dáadáa. Àwọn ìròyìn rẹ tí o fipamọ́ wà láìléwu.",
+      "reload": "Tún gbé e wá"
+    },
+    "session": {
+      "title": "A ti mú ọ jáde",
+      "body": "Àkókò rẹ ti parí, nítorí náà a mú ọ jáde kí àwọn ìròyìn lè wà láìléwu. Tún wọlé láti tẹ̀síwájú.",
+      "staff": "Tún wọlé",
+      "observer": "Ṣí áàpù alákíyèsí"
+    },
+    "access": {
+      "title": "Àyè rẹ ti yí padà",
+      "body": "Ojú-ìwé yìí kò ṣí sílẹ̀ fún ọ mọ́. Olùṣètò lè ti yí ipa rẹ padà tàbí kó ti gbé ẹjọ́ náà lọ.",
+      "action": "Lọ sí àtòjọ àyẹ̀wò"
+    },
+    "paused": {
+      "title": "A ti dá ìròyìn dúró",
+      "body": "Àjọ alákíyèsí ti dá àwọn ìròyìn tuntun dúró fún ìgbà díẹ̀. Bí ẹnìkan bá wà nínú ewu, pe 112.",
+      "action": "Wo àwọn ìròyìn tí a ti ṣàyẹ̀wò"
     }
   }
 }

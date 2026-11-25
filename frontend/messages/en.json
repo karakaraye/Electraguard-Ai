@@ -1001,7 +1001,11 @@
     "save": "Save changes",
     "cancel": "Cancel",
     "confirm": "Confirm",
-    "backToQueue": "Back to queue"
+    "backToQueue": "Back to queue",
+    "shell": {
+      "more": "More",
+      "moreTitle": "More sections"
+    }
   },
   "s01": {
     "enrolScan": "Scan this code with your authenticator app.",
@@ -1458,76 +1462,324 @@
   "s06": {
     "title": "Rumour desk",
     "subtitle": "Track online claims, match with field observations, draft responses",
-    "newClaim": "Log new claim",
-    "claimText": "Claim text",
+    "newClaim": "Log a claim",
+    "claimText": "What was said",
     "source": "Seen on",
-    "image": "Upload screenshot/image",
-    "claimsList": "Active claims",
-    "harmLevel": "Harm risk: {level}",
-    "checkWorthiness": "Check-worthiness: {level}",
+    "image": "Screenshot or photo (optional)",
+    "claimsList": "Claims",
     "imageGuide": {
-      "title": "Image verification guide",
-      "notice": "Guidance only. Always verify with human judgment.",
-      "reverseSearch": "Run reverse image search",
-      "checkDate": "Verify date against claim timestamp",
-      "lookEdits": "Inspect for image manipulations",
-      "compression": "Compression artifact hint: {hint}"
+      "title": "Check the image",
+      "notice": "A guide only. These steps do not decide whether an image is real.",
+      "reverseSearch": "Search for the image online to find where it first appeared.",
+      "checkDate": "Compare the date of the image with the date in the claim.",
+      "lookEdits": "Look for signs the image was edited.",
+      "compression": "Compression hint: {hint}",
+      "checkSource": "Check who posted it first, and when.",
+      "metaYes": "The file had hidden details. We removed them.",
+      "metaNo": "The file had no hidden details."
     },
     "matches": {
-      "title": "Matched field observations",
-      "corroboratedOnly": "Only closed corroborated reports shown",
-      "pastClaims": "Past verified claims"
+      "title": "Field reports that match",
+      "pastClaims": "Past verified claims",
+      "note": "Suggested by matching words. Only closed reports confirmed by evidence are shown. You decide what it means.",
+      "none": "No confirmed field report matches this claim yet.",
+      "similar": "{percent}% similar",
+      "error": "Could not load matching reports.",
+      "occurred": "Happened {time}"
     },
     "response": {
-      "title": "Public response draft",
-      "textLabel": "Response text",
+      "title": "Reply for the public",
+      "textLabel": "Reply text",
       "saveDraft": "Save draft",
-      "approve": "Approve response",
-      "reject": "Reject draft",
+      "approve": "Approve reply",
+      "reject": "Send back",
       "dismiss": "Dismiss claim",
-      "draftedBy": "Drafted by {name} at {time}",
-      "approvedBy": "Approved by {name} at {time}",
+      "draftedBy": "Drafted by {name}, {time}",
+      "approvedBy": "Approved by {name}, {time}",
       "secondPersonNotice": "Another coordinator must approve a response you drafted.",
-      "rejectNote": "Rejection note"
-    }
+      "intro": "Write a short, factual reply. A second coordinator must approve it before it is used.",
+      "languageLabel": "Reply language",
+      "sentBack": "Sent back: {note}",
+      "none": "No reply has been drafted yet.",
+      "dismissedLock": "This claim was dismissed and can no longer be changed.",
+      "approvedNote": "This reply is approved. Saving a new draft replaces it and needs approval again.",
+      "unsaved": "You have changes you have not saved. Save the draft first."
+    },
+    "count": "{count, plural, =0 {No claims} one {# claim} other {# claims}}",
+    "filter": {
+      "label": "Show",
+      "all": "All claims"
+    },
+    "status": {
+      "new": "New",
+      "matched": "Needs a reply",
+      "response_draft": "Reply drafted",
+      "response_approved": "Reply approved",
+      "dismissed": "Dismissed"
+    },
+    "columns": {
+      "claim": "Claim",
+      "harm": "Harm",
+      "check": "Check priority",
+      "seenOn": "Seen on",
+      "status": "Status",
+      "logged": "Logged"
+    },
+    "table": {
+      "caption": "Claims logged by the rumour desk"
+    },
+    "suggestedNote": "Harm and check priority are suggested by the system. You decide.",
+    "empty": {
+      "title": "No claims yet.",
+      "body": "Log a claim you have seen to check it against field reports.",
+      "filtered": "No claims with this status.",
+      "select": "Choose a claim to see matching reports and write a reply."
+    },
+    "back": "Back to claims",
+    "loadMore": "Load more claims",
+    "new": {
+      "intro": "Type what was said, or add a screenshot. Leave out names and phone numbers."
+    },
+    "claimTextHint": "Copy the words as they were written or spoken.",
+    "seenOn": {
+      "whatsapp": "WhatsApp",
+      "facebook": "Facebook",
+      "x": "X (Twitter)",
+      "tiktok": "TikTok",
+      "sms": "Text message",
+      "radio": "Radio",
+      "in_person": "In person",
+      "other": "Somewhere else"
+    },
+    "language": "Language of the claim",
+    "lang": {
+      "en": "English",
+      "pcm": "Naijá",
+      "ha": "Hausa",
+      "yo": "Yorùbá",
+      "ig": "Igbo"
+    },
+    "imageHint": "JPEG, PNG or WebP, 5 MB or less.",
+    "imageChoose": "Choose an image",
+    "imageRemove": "Remove image",
+    "needTextOrImage": "Type the claim or add an image.",
+    "saveClaim": "Log claim",
+    "errors": {
+      "stale": "Someone else changed this claim. Reload the list, then try again.",
+      "transition": "This cannot be done for the claim's current status.",
+      "samePerson": "Another coordinator must approve this.",
+      "invalid": "Check the text and try again.",
+      "rateLimited": "Too many claims in the last hour. Try again later.",
+      "imageType": "Use a JPEG, PNG or WebP image.",
+      "imageSize": "The image must be 5 MB or smaller.",
+      "imageUnreadable": "We could not read that image. Try another."
+    },
+    "notice": {
+      "created": "Claim logged.",
+      "saved": "Draft saved.",
+      "approved": "Reply approved.",
+      "rejected": "Reply sent back to the writer.",
+      "dismissed": "Claim dismissed."
+    },
+    "detail": {
+      "seenOn": "Seen on {source}, in {language}",
+      "loggedBy": "Logged by {name}, {time}",
+      "imageAttached": "An image is attached ({width} by {height} pixels).",
+      "noText": "No text, image only."
+    },
+    "harm": {
+      "high": "Harm: high",
+      "medium": "Harm: medium",
+      "low": "Harm: low"
+    },
+    "check": {
+      "high": "Check priority: high",
+      "medium": "Check priority: medium",
+      "low": "Check priority: low"
+    },
+    "harmReasons": {
+      "title": "Why harm was rated this way",
+      "violence_claim": "It mentions violence.",
+      "location_specific": "It names a place.",
+      "election_day": "It was seen on election day."
+    },
+    "pastClaims": {
+      "title": "Earlier claims that look similar",
+      "none": "No earlier claim looks similar.",
+      "reply": "Reply we approved",
+      "noReply": "No reply was approved."
+    },
+    "approve": {
+      "title": "Approve this reply?",
+      "body": "You are approving the reply drafted by {name}. Your name will be recorded."
+    },
+    "reject": {
+      "title": "Send this reply back?",
+      "body": "Tell the writer what to change. The note is kept on the record.",
+      "noteLabel": "Note to the writer"
+    },
+    "dismiss": {
+      "title": "Dismiss this claim?",
+      "body": "Use this when the claim needs no reply. A dismissed claim cannot be changed.",
+      "noteLabel": "Why is it dismissed?"
+    },
+    "noteHint": "1 to 500 characters."
   },
   "s07": {
     "title": "Publish snapshots",
     "subtitle": "Public aggregated releases with statistical privacy suppression",
-    "createTitle": "Create new snapshot",
-    "cutoffLabel": "Cutoff time",
-    "cutoffHint": "Must be at least 60 minutes in the past.",
+    "createTitle": "Preview a new release",
+    "cutoffLabel": "Cutoff time (West Africa Time)",
+    "cutoffHint": "Reports that closed after this time are left out. Pick a time at least {minutes} minutes ago, or leave it empty to use the latest time allowed.",
     "createButton": "Generate preview",
-    "scheduleTitle": "Automatic hourly release",
-    "scheduleHint": "Builds and publishes a snapshot every hour if checks pass.",
-    "scheduleOn": "Hourly publishing is active",
-    "scheduleOff": "Hourly publishing is paused",
-    "snapshotsList": "Snapshot history",
-    "previewTitle": "Snapshot preview (exact public data)",
-    "suppressionNotice": "Counts below 5 are suppressed with 'fewer than 5'. Primary and secondary suppression applied.",
-    "excludedTitle": "Excluded from snapshot",
-    "excludedNotClosed": "{count} not yet closed",
-    "excludedWithdrawn": "{count} withdrawn",
-    "excludedAfterCutoff": "{count} after cutoff",
+    "scheduleTitle": "Hourly release",
+    "scheduleHint": "When on, a snapshot is built and published every hour if the checks pass. Your name is recorded as the approver.",
+    "scheduleOn": "On",
+    "scheduleOff": "Off",
+    "snapshotsList": "Releases",
+    "previewTitle": "Release preview",
     "approvePublish": "Approve and publish",
-    "discard": "Discard draft"
+    "discard": "Discard draft",
+    "cutoffTooRecent": "Pick a time at least {minutes} minutes ago.",
+    "cutoffInvalid": "Enter a valid date and time.",
+    "scheduleUnknown": "The current setting is not shown here. Choose on or off to set it.",
+    "schedule": {
+      "confirmTitle": "Turn on hourly release?",
+      "confirmBody": "Snapshots will publish by themselves every hour, with your name recorded as approver. You can turn it off at any time.",
+      "confirmOn": "Turn on",
+      "turnOff": "Turn off"
+    },
+    "notice": {
+      "generated": "Preview ready. Check it before you publish.",
+      "scheduleOn": "Hourly release is on.",
+      "scheduleOff": "Hourly release is off.",
+      "published": "Published. The public results page now shows this release.",
+      "discarded": "Draft discarded."
+    },
+    "columns": {
+      "cutoff": "Cutoff",
+      "status": "Status",
+      "total": "Reports",
+      "fingerprint": "Fingerprint",
+      "by": "Prepared by",
+      "published": "Published"
+    },
+    "status": {
+      "draft": "Draft",
+      "published": "Published",
+      "discarded": "Discarded",
+      "superseded": "Replaced"
+    },
+    "history": {
+      "caption": "Releases, newest first",
+      "empty": "No releases yet.",
+      "emptyBody": "Generate a preview to make the first one.",
+      "fingerprintNote": "The fingerprint is the start of the audit-chain code saved with each release. It lets anyone check that the release was not changed.",
+      "loadMore": "Load more releases"
+    },
+    "detail": {
+      "draftNote": "This is a draft. Nothing is public until you approve and publish it.",
+      "publishedNote": "Published {time}.",
+      "discardedNote": "This draft was discarded. It was never public.",
+      "supersededNote": "A newer release replaced this one on the public page.",
+      "by": "Prepared by {name}, cutoff {cutoff}"
+    },
+    "preview": {
+      "title": "What the public will see",
+      "note": "This is the public results page drawn from this release. Counts below 5 are hidden here exactly as they will be online.",
+      "label": "Public results page preview"
+    },
+    "exclusions": {
+      "title": "Left out of this release",
+      "note": "These reports are not counted in the preview.",
+      "notClosed": "{count, plural, one {# report not closed yet} other {# reports not closed yet}}",
+      "withdrawn": "{count, plural, one {# report withdrawn by the observer} other {# reports withdrawn by the observer}}",
+      "afterCutoff": "{count, plural, one {# report that came after the cutoff} other {# reports that came after the cutoff}}",
+      "otherKinds": "{count, plural, one {# item of another kind, or with no state} other {# items of another kind, or with no state}}"
+    },
+    "publish": {
+      "confirmTitle": "Publish this release?",
+      "confirmBody": "Anyone can see these totals on the public results page once you approve. It replaces the release now shown there. This cannot be undone, but a newer release can replace it."
+    },
+    "discardConfirm": {
+      "title": "Discard this draft?",
+      "body": "The draft stays in the history as discarded. It was never public, and you cannot publish it later."
+    },
+    "errors": {
+      "stale": "This release changed. Reload the list, then try again.",
+      "transition": "Only a draft can be approved or discarded.",
+      "tooRecent": "The cutoff is too recent. Pick an earlier time.",
+      "invalid": "Check the details and try again."
+    }
   },
   "s08": {
     "title": "Discussion moderation",
-    "subtitle": "Community oversight and safety for observer forums",
-    "flagsInbox": "Reported posts ({count})",
-    "flaggedBy": "Flagged {count} times",
-    "reasons": "Reasons: {reasons}",
+    "subtitle": "Posts that observers or the system flagged for a check",
+    "flagsInbox": "{count, plural, one {# flagged post} other {# flagged posts}}",
+    "flaggedBy": "{count, plural, one {Flagged once} other {Flagged # times}}",
     "nameCheckAlert": "Possible personal name detected",
     "hidePost": "Hide post",
     "unhidePost": "Unhide post",
-    "hideReason": "Reason for hiding",
-    "removeMember": "Remove member from forum",
+    "hideReason": "Reason",
+    "removeMember": "Remove member",
     "closeDiscussion": "Close discussion",
-    "createDiscussion": "Create new discussion",
-    "topic": "Discussion topic",
-    "wardLga": "Ward or LGA scope",
-    "inviteCodes": "Invite observer codes"
+    "createDiscussion": "Create discussion",
+    "topic": "Topic",
+    "refresh": "Refresh",
+    "loadMore": "Load more",
+    "emptyTitle": "No flagged posts right now.",
+    "emptyBody": "A post appears here when observers flag it, or when it may name a person.",
+    "reasonsLabel": "Reasons given",
+    "reason_names_a_person": "Names a person",
+    "reason_too_specific_location": "Place too specific",
+    "reason_abusive": "Abusive",
+    "reason_other": "Other",
+    "reason_off_topic": "Off topic",
+    "author": "Posted by {code}",
+    "hiddenBadge": "Hidden",
+    "hiddenFor": "Hidden for: {reason}",
+    "hiddenBodyLabel": "Original text. Only moderators can see it.",
+    "cancel": "Cancel",
+    "hideTitle": "Hide this post",
+    "hideBody": "Observers will no longer see it. You can unhide it later.",
+    "hideNote": "Note",
+    "hideNoteHint": "Optional. Kept in the audit trail. Up to 500 characters.",
+    "hideConfirm": "Hide post",
+    "removeTitle": "Remove this member",
+    "removeBody": "{code} will lose access to this discussion. Other discussions are not affected.",
+    "removeReason": "Reason",
+    "removeReasonHint": "Required. Kept in the audit trail. Up to 500 characters.",
+    "removeConfirm": "Remove member",
+    "closeTitle": "Close this discussion",
+    "closeBody": "Nobody can post or join once it is closed, and it cannot be reopened. Its flagged posts leave this list.",
+    "closeConfirm": "Close discussion",
+    "createLead": "Observers join by invitation, so add their codes below.",
+    "titleLabel": "Title",
+    "titleHint": "3 to 120 characters.",
+    "topicHint": "Optional. Up to 500 characters.",
+    "areaLabel": "Area",
+    "state": "State",
+    "lga": "LGA",
+    "ward": "Ward",
+    "wholeLga": "Whole LGA",
+    "areaLoading": "Loading areas...",
+    "invites": "Invite observer codes",
+    "invitesHint": "Optional. One code per line, up to 200.",
+    "createSubmit": "Create discussion",
+    "noticeHidden": "Post hidden.",
+    "noticeUnhidden": "Post is visible again.",
+    "noticeRemoved": "{code} was removed from the discussion.",
+    "noticeClosed": "Discussion closed.",
+    "noticeCreated": "Discussion created. Invited: {invited}.",
+    "noticeNotFound": "These codes were not found: {codes}.",
+    "errClosed": "This discussion has already closed.",
+    "errNotFound": "That post or member is no longer there. Refresh the list.",
+    "errInvalid": "Check the text you entered and try again.",
+    "errArea": "That area is not recognised. Choose it from the lists.",
+    "valTitle": "Enter a title of 3 to 120 characters.",
+    "valReason": "Enter a reason.",
+    "valArea": "Choose a state and an LGA.",
+    "valInvites": "Enter at most 200 observer codes."
   },
   "s09": {
     "title": "Observer code batches",
@@ -1556,49 +1808,269 @@
   },
   "s10": {
     "title": "Staff accounts",
-    "subtitle": "Manage staff access, roles, and two-factor credentials",
-    "staffList": "Staff members ({count})",
+    "staffList": "{count, plural, one {# staff member} other {# staff members}}",
     "createStaff": "Add staff member",
-    "displayName": "Display name",
-    "email": "Email address",
-    "roles": "Assigned roles",
-    "roleAdminAlone": "Admin role cannot be combined with reviewer, coordinator, or moderator.",
-    "inviteUrl": "One-time invitation link",
-    "copyInvite": "Copy link",
     "reset2fa": "Reset 2FA",
-    "offboard": "Offboard staff",
-    "offboardReason": "Offboarding reason",
-    "offboardWarning": "Any open cases assigned to this user will be returned to the unassigned queue."
+    "offboard": "Offboard",
+    "retry": "Try again",
+    "cancel": "Cancel",
+    "filter": {
+      "label": "Show",
+      "all": "All",
+      "active": "Active",
+      "invited": "Invited",
+      "offboarded": "Offboarded"
+    },
+    "empty": "No staff accounts yet.",
+    "emptyFilter": "No staff accounts match this filter.",
+    "caption": "Staff accounts",
+    "columns": {
+      "name": "Name",
+      "roles": "Roles",
+      "twofa": "Two-step code",
+      "lastSignIn": "Last sign-in",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "status": {
+      "active": "Active",
+      "invited": "Invited",
+      "offboarded": "Offboarded"
+    },
+    "twofa": {
+      "on": "Set up",
+      "off": "Not set up"
+    },
+    "neverSignedIn": "Not yet",
+    "you": "You",
+    "reset2faFor": "Reset 2FA for {name}",
+    "offboardFor": "Offboard {name}",
+    "selfNote": "You cannot offboard your own account.",
+    "create": {
+      "title": "Add a staff member",
+      "description": "They get a one-time link to choose a password and set up a two-step code.",
+      "email": "Email address",
+      "name": "Display name",
+      "nameHint": "2 to 60 characters.",
+      "roles": "Roles",
+      "rolesHint": "Choose at least one. Admin cannot be combined with another role.",
+      "submit": "Create account"
+    },
+    "invite": {
+      "title": "One-time invite link",
+      "body": "Give this link to {name}. It works once and cannot be shown again after you close this. It expires {when}.",
+      "label": "Invite link",
+      "copy": "Copy link",
+      "copied": "Copied",
+      "copyFailed": "Could not copy. Select the link and copy it by hand.",
+      "done": "I have copied it"
+    },
+    "reset": {
+      "title": "Reset the two-step code for {name}?",
+      "body": "{name} is signed out everywhere and must set up a new two-step code at the next sign-in. The password stays the same.",
+      "confirm": "Reset 2FA",
+      "done": "Two-step code reset for {name}."
+    },
+    "offboardDialog": {
+      "title": "Offboard {name}?",
+      "body": "{name} loses access at once and is signed out everywhere. Open cases assigned to them go back to the unassigned list. This cannot be undone.",
+      "reason": "Reason",
+      "reasons": {
+        "access_ended": "Access is no longer needed",
+        "role_changed": "Role changed",
+        "credential_risk": "Sign-in details may be at risk"
+      },
+      "confirm": "Offboard",
+      "done": "{name} has been offboarded."
+    },
+    "errors": {
+      "lastAdmin": "Keep at least one active organisation admin. Add another admin first.",
+      "stale": "This account changed while you were looking at it. The list has been refreshed. Check it and try again.",
+      "duplicate": "This email already has an account.",
+      "invalidEmail": "Enter a valid email address.",
+      "invalidName": "Use 2 to 60 characters.",
+      "invalidRoles": "Choose at least one role.",
+      "selfOffboard": "You cannot offboard your own account.",
+      "alreadyOffboarded": "This account is already offboarded.",
+      "invalid": "Some details are not allowed. Check them and try again."
+    }
   },
   "s11": {
     "title": "Organisation settings",
-    "subtitle": "Intake control, data retention, and election parameters",
-    "intakePause": "Pause report intake",
-    "intakePauseHint": "Temporarily stop accepting new reports from observers and citizens.",
-    "retention": "Data retention period",
-    "retentionDays": "{days} days",
-    "retentionConfirm": "Shortening retention will delete older records at next purge.",
-    "electionDay": "Election day",
-    "publicDelay": "Public snapshot delay",
-    "delayMinutes": "{minutes} minutes",
-    "partyLabels": "Party labels on result sheets",
-    "saveSettings": "Save organisation settings",
-    "auditExport": "Export audit log"
+    "retry": "Try again",
+    "cancel": "Cancel",
+    "saved": "Saved.",
+    "intakeCard": {
+      "title": "Report intake",
+      "open": "Receiving reports",
+      "paused": "Intake paused",
+      "hint": "Pausing stops citizens and observers from sending new reports. Reports already received are not affected.",
+      "switch": "Pause report intake",
+      "banner": "Report intake is paused. New reports are not being accepted.",
+      "pauseTitle": "Pause report intake?",
+      "pauseBody": "Nobody can send a new report until you resume. Reports already received are not affected.",
+      "pauseConfirm": "Pause intake",
+      "resumeTitle": "Resume report intake?",
+      "resumeBody": "Citizens and observers can send reports again straight away.",
+      "resumeConfirm": "Resume intake"
+    },
+    "simCard": {
+      "title": "Practice simulator",
+      "hint": "Lets staff try the SMS and USSD channels with test messages. Turn it off for the live election.",
+      "switch": "Practice simulator",
+      "on": "On",
+      "off": "Off"
+    },
+    "retentionCard": {
+      "title": "Data retention",
+      "label": "Keep records for (days)",
+      "hint": "From 30 to 730 days. Records older than this are deleted at the next purge.",
+      "save": "Save retention",
+      "error": "Enter a whole number from 30 to 730.",
+      "confirmTitle": "Delete older records?",
+      "confirmBody": "Keeping records for {days} days instead of {current} will permanently delete {count, plural, one {# record} other {# records}} at the next purge. This cannot be undone.",
+      "confirmUnknown": "Keeping records for {days} days instead of {current} will permanently delete the older records at the next purge. The server did not say how many. This cannot be undone.",
+      "confirm": "Shorten and delete"
+    },
+    "scheduleCard": {
+      "title": "Election day and public delay",
+      "electionDay": "Election day",
+      "electionDayHint": "Optional. Leave empty until the date is fixed.",
+      "delay": "Public delay (minutes)",
+      "delayHint": "Public figures only use reports at least this old. From 60 to 1,440 minutes.",
+      "delayError": "Enter a whole number from 60 to 1,440.",
+      "save": "Save date and delay"
+    },
+    "partiesCard": {
+      "title": "Party labels",
+      "label": "Labels",
+      "hint": "Letters shown on result sheets, for example A, B, C. Use 2 to 12 different labels of 1 to 3 capital letters, separated by commas.",
+      "save": "Save party labels",
+      "error": "Use 2 to 12 different labels of 1 to 3 letters, separated by commas.",
+      "locked": "Locked. A result sheet has already been reported, so the labels can no longer change."
+    },
+    "auditCard": {
+      "title": "Export audit log",
+      "hint": "Download the record of who did what, in order. One export covers up to 92 days.",
+      "format": "File type",
+      "from": "From",
+      "to": "To",
+      "download": "Download",
+      "rangeError": "Choose dates where From is not after To and the gap is at most 92 days.",
+      "rateLimited": "Too many exports this hour. Try again later.",
+      "started": "The download has started."
+    },
+    "meta": {
+      "version": "Version {version}",
+      "updatedBy": "Last changed by {name} on {when}",
+      "updated": "Last changed {when}",
+      "never": "Not changed since setup."
+    },
+    "errors": {
+      "stale": "These settings changed while you were editing. They have been reloaded. Check them and try again.",
+      "invalid": "One of the values is not allowed. Check the numbers and try again."
+    }
   },
   "s12": {
     "title": "Security & audit monitoring",
-    "subtitle": "Security rule alerts and cryptographic audit chain verification",
-    "alerts": "Security alerts",
-    "severity": "Severity",
-    "detector": "Detector",
-    "updateStatus": "Update status",
-    "auditVerify": "Audit hash chain verification",
-    "chainStatus": "Chain integrity",
-    "eventsChecked": "{count} events verified",
-    "headHash": "Chain head hash: {hash}",
-    "brokenEvent": "First broken event: {id}",
-    "verifyNow": "Run verification check",
-    "exportLog": "Export audit log (JSONL/CSV)"
+    "subtitle": "Alerts raised by our security rules, and a check that the audit log has not been changed.",
+    "alertsTitle": "Alerts",
+    "alertsHint": "Open an alert, write what you found, then acknowledge or close it.",
+    "tableCaption": "Security alerts, newest first",
+    "filterLabel": "Status",
+    "status": {
+      "open": "Open",
+      "acknowledged": "Acknowledged",
+      "resolved": "Resolved",
+      "false_positive": "False alarm"
+    },
+    "severity": {
+      "high": "High",
+      "medium": "Medium",
+      "low": "Low"
+    },
+    "detector": {
+      "rules": "Rules",
+      "model": "Model"
+    },
+    "col": {
+      "severity": "Severity",
+      "rule": "Rule",
+      "detector": "Detected by",
+      "status": "Status",
+      "lastSeen": "Last seen",
+      "action": "Action"
+    },
+    "rule": {
+      "repeated_failed_pins": "Repeated wrong PINs",
+      "repeated_failed_staff_sign_in": "Repeated failed staff sign-ins",
+      "unusual_download_volume": "Unusual number of downloads",
+      "new_network_sign_in": "Sign-in from a new network",
+      "intake_burst": "Sudden burst of reports",
+      "receipt_enumeration": "Receipt codes being guessed",
+      "staff_offboarded_with_cases": "Offboarded staff still hold cases",
+      "anomaly": "Unusual activity"
+    },
+    "subject": {
+      "observer_code": "Observer code",
+      "staff": "Staff account",
+      "staff_account": "Staff account",
+      "network": "Network",
+      "receipt_lookup": "Receipt lookup",
+      "intake_source": "Report source",
+      "organisation": "Organisation"
+    },
+    "detail": {
+      "failures": "Failed tries",
+      "window_minutes": "Window (minutes)",
+      "distinct_networks": "Different networks",
+      "reports": "Reports",
+      "distinct_items": "Different items",
+      "network": "Network reference",
+      "permanent": "Locked for good"
+    },
+    "detailsTitle": "What was seen",
+    "firstSeen": "First seen",
+    "lastSeen": "Last seen",
+    "update": "Update",
+    "updateTitle": "Update alert",
+    "newStatus": "New status",
+    "noteLabel": "Note",
+    "noteHint": "What you found or did. Kept in the audit log.",
+    "save": "Save update",
+    "updated": "Alert updated.",
+    "staleVersion": "Someone changed this alert while you had it open. It was reloaded; check it and try again.",
+    "empty": {
+      "open": "No open alerts.",
+      "acknowledged": "No acknowledged alerts.",
+      "resolved": "No resolved alerts.",
+      "false_positive": "No alerts marked as false alarms."
+    },
+    "loadMore": "Show more alerts",
+    "verifyTitle": "Verify audit chain",
+    "verifyHint": "Re-checks every event's hash from the first to the last. Nothing is changed.",
+    "verifyRun": "Run check",
+    "verifyRunning": "Checking…",
+    "verifyNever": "Not run yet. Run the check to see the result.",
+    "verifyOk": "{count} events verified · chain intact",
+    "verifyIntact": "Chain intact",
+    "verifyBroken": "Chain broken",
+    "verifyBrokenTitle": "The audit chain is broken",
+    "verifyBrokenEvent": "First broken event",
+    "verifyBrokenText": "{count} events before this one are fine. Do not edit records. Tell your administrator now.",
+    "headHash": "Head hash",
+    "headEvents": "Events in chain",
+    "checkedAt": "Checked {time}",
+    "exportTitle": "Export audit log",
+    "exportHint": "One row per event with its hashes, so the file can be checked elsewhere. Up to 92 days. Administrators only, and each export is itself logged.",
+    "exportFrom": "From",
+    "exportTo": "To",
+    "exportFormat": "Format",
+    "exportJsonl": "JSONL (one event per line)",
+    "exportCsv": "CSV (for spreadsheets)",
+    "exportRun": "Export",
+    "exportDone": "Export downloaded.",
+    "exportRange": "Pick dates at most 92 days apart, with From first."
   },
   "pub": {
     "homeLink": "ElectraGuard AI home",
@@ -1923,6 +2395,34 @@
     "disabled": {
       "title": "The phone simulator is switched off.",
       "body": "The observation organisation has turned it off for now. You can still report on this website."
+    }
+  },
+  "sys": {
+    "home": "Go to the home page",
+    "notFound": {
+      "title": "We could not find that page",
+      "body": "The link may be old or mistyped. Nothing you saved has changed."
+    },
+    "error": {
+      "title": "This page stopped working",
+      "body": "Something went wrong. Your saved reports are safe.",
+      "reload": "Reload"
+    },
+    "session": {
+      "title": "You were signed out",
+      "body": "Your session ended, so we signed you out to keep reports safe. Sign in again to carry on.",
+      "staff": "Sign in again",
+      "observer": "Open the observer app"
+    },
+    "access": {
+      "title": "Your access changed",
+      "body": "This page is no longer open to you. A coordinator may have changed your role or moved the case.",
+      "action": "Go to the review queue"
+    },
+    "paused": {
+      "title": "Reporting is paused",
+      "body": "The observation organisation has paused new reports for now. If someone is in danger, call 112.",
+      "action": "See reviewed reports"
     }
   }
 }

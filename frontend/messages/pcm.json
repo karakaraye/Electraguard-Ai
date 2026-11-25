@@ -1002,7 +1002,11 @@
     "save": "[PCM draft] Save changes",
     "cancel": "[PCM draft] Cancel",
     "confirm": "[PCM draft] Confirm",
-    "backToQueue": "[PCM draft] Back to queue"
+    "backToQueue": "[PCM draft] Back to queue",
+    "shell": {
+      "more": "Oda ones",
+      "moreTitle": "Oda sections"
+    }
   },
   "s01": {
     "enrolScan": "Scan this code with your authenticator app.",
@@ -1459,76 +1463,324 @@
   "s06": {
     "title": "[PCM draft] Rumour desk",
     "subtitle": "[PCM draft] Track online claims, match with field observations, draft responses",
-    "newClaim": "[PCM draft] Log new claim",
-    "claimText": "[PCM draft] Claim text",
-    "source": "[PCM draft] Seen on",
-    "image": "[PCM draft] Upload screenshot/image",
-    "claimsList": "[PCM draft] Active claims",
-    "harmLevel": "[PCM draft] Harm risk: {level}",
-    "checkWorthiness": "[PCM draft] Check-worthiness: {level}",
+    "newClaim": "Write down one claim",
+    "claimText": "Wetin dem talk",
+    "source": "Where you see am",
+    "image": "Screenshot or photo (if you get am)",
+    "claimsList": "Claims",
     "imageGuide": {
-      "title": "[PCM draft] Image verification guide",
-      "notice": "[PCM draft] Guidance only. Always verify with human judgment.",
-      "reverseSearch": "[PCM draft] Run reverse image search",
-      "checkDate": "[PCM draft] Verify date against claim timestamp",
-      "lookEdits": "[PCM draft] Inspect for image manipulations",
-      "compression": "[PCM draft] Compression artifact hint: {hint}"
+      "title": "Check di image",
+      "notice": "Na guide only. Dis steps no dey decide if image real.",
+      "reverseSearch": "Search di image online to see where e first show.",
+      "checkDate": "Compare di date of di image with di date for di claim.",
+      "lookEdits": "Look for signs say dem edit di image.",
+      "compression": "Compression hint: {hint}",
+      "checkSource": "Check who first post am, and when.",
+      "metaYes": "Di file get hidden details. We don remove dem.",
+      "metaNo": "Di file no get hidden details."
     },
     "matches": {
-      "title": "[PCM draft] Matched field observations",
-      "corroboratedOnly": "[PCM draft] Only closed corroborated reports shown",
-      "pastClaims": "[PCM draft] Past verified claims"
+      "title": "Field reports wey match",
+      "pastClaims": "[PCM draft] Past verified claims",
+      "note": "System suggest dem by words wey match. Na only closed reports wey evidence confirm dey show. Na you go decide wetin e mean.",
+      "none": "No confirmed field report match dis claim yet.",
+      "similar": "{percent}% like am",
+      "error": "We no fit load di reports wey match.",
+      "occurred": "E happen {time}"
     },
     "response": {
-      "title": "[PCM draft] Public response draft",
-      "textLabel": "[PCM draft] Response text",
-      "saveDraft": "[PCM draft] Save draft",
-      "approve": "[PCM draft] Approve response",
-      "reject": "[PCM draft] Reject draft",
-      "dismiss": "[PCM draft] Dismiss claim",
-      "draftedBy": "[PCM draft] Drafted by {name} at {time}",
-      "approvedBy": "[PCM draft] Approved by {name} at {time}",
+      "title": "Reply for di public",
+      "textLabel": "Reply text",
+      "saveDraft": "Save draft",
+      "approve": "Approve reply",
+      "reject": "Send am back",
+      "dismiss": "Drop di claim",
+      "draftedBy": "{name} draft am, {time}",
+      "approvedBy": "{name} approve am, {time}",
       "secondPersonNotice": "[PCM draft] Another coordinator must approve a response you drafted.",
-      "rejectNote": "[PCM draft] Rejection note"
-    }
+      "intro": "Write short reply wey be true. Another coordinator must approve am before dem use am.",
+      "languageLabel": "Language of di reply",
+      "sentBack": "Dem send am back: {note}",
+      "none": "Dem never draft any reply.",
+      "dismissedLock": "Dem don drop dis claim, so no change fit happen again.",
+      "approvedNote": "Dis reply don approve. If you save new draft, e go replace am and dem go need approve am again.",
+      "unsaved": "You get changes wey you never save. Save di draft first."
+    },
+    "count": "{count, plural, =0 {No claim} one {# claim} other {# claims}}",
+    "filter": {
+      "label": "Show",
+      "all": "All claims"
+    },
+    "status": {
+      "new": "New",
+      "matched": "E need reply",
+      "response_draft": "Dem don draft reply",
+      "response_approved": "Dem don approve reply",
+      "dismissed": "Dem don drop am"
+    },
+    "columns": {
+      "claim": "Claim",
+      "harm": "Harm",
+      "check": "Check priority",
+      "seenOn": "Where dem see am",
+      "status": "Status",
+      "logged": "When dem write am"
+    },
+    "table": {
+      "caption": "Claims wey the rumour desk write down"
+    },
+    "suggestedNote": "Di system suggest di harm and check priority. Na you go decide.",
+    "empty": {
+      "title": "No claim yet.",
+      "body": "Write down claim wey you see so you fit check am against field reports.",
+      "filtered": "No claim dey with this status.",
+      "select": "Pick one claim to see di reports wey match am and write reply."
+    },
+    "back": "Go back to claims",
+    "loadMore": "Show more claims",
+    "new": {
+      "intro": "Write wetin dem talk, or add screenshot. No put names or phone numbers."
+    },
+    "claimTextHint": "Copy di words as dem write or talk dem.",
+    "seenOn": {
+      "whatsapp": "WhatsApp",
+      "facebook": "Facebook",
+      "x": "X (Twitter)",
+      "tiktok": "TikTok",
+      "sms": "Text message",
+      "radio": "Radio",
+      "in_person": "Person to person",
+      "other": "Another place"
+    },
+    "language": "Language of di claim",
+    "lang": {
+      "en": "English",
+      "pcm": "Naijá",
+      "ha": "Hausa",
+      "yo": "Yorùbá",
+      "ig": "Igbo"
+    },
+    "imageHint": "JPEG, PNG or WebP, 5 MB or less.",
+    "imageChoose": "Pick image",
+    "imageRemove": "Comot image",
+    "needTextOrImage": "Write di claim or add image.",
+    "saveClaim": "Write di claim down",
+    "errors": {
+      "stale": "Another person don change dis claim. Reload di list, then try again.",
+      "transition": "You no fit do dis one for di status wey di claim dey now.",
+      "samePerson": "Another coordinator must approve dis one.",
+      "invalid": "Check di text and try again.",
+      "rateLimited": "Too many claims for di last hour. Try again later.",
+      "imageType": "Use JPEG, PNG or WebP image.",
+      "imageSize": "Di image must no pass 5 MB.",
+      "imageUnreadable": "We no fit read dat image. Try another one."
+    },
+    "notice": {
+      "created": "Dem don write di claim.",
+      "saved": "Dem don save di draft.",
+      "approved": "Dem don approve di reply.",
+      "rejected": "Dem don send di reply go back to di writer.",
+      "dismissed": "Dem don drop di claim."
+    },
+    "detail": {
+      "seenOn": "Dem see am for {source}, for {language}",
+      "loggedBy": "{name} write am, {time}",
+      "imageAttached": "Image dey attach ({width} by {height} pixels).",
+      "noText": "No text, na only image."
+    },
+    "harm": {
+      "high": "Harm: high",
+      "medium": "Harm: middle",
+      "low": "Harm: small"
+    },
+    "check": {
+      "high": "Check priority: high",
+      "medium": "Check priority: middle",
+      "low": "Check priority: small"
+    },
+    "harmReasons": {
+      "title": "Why dem rate harm so",
+      "violence_claim": "E talk about violence.",
+      "location_specific": "E name one place.",
+      "election_day": "Dem see am for election day."
+    },
+    "pastClaims": {
+      "title": "Old claims wey look like dis one",
+      "none": "No old claim look like dis one.",
+      "reply": "Reply wey we approve",
+      "noReply": "We no approve any reply."
+    },
+    "approve": {
+      "title": "Approve dis reply?",
+      "body": "You dey approve di reply wey {name} draft. Dem go record your name."
+    },
+    "reject": {
+      "title": "Send dis reply go back?",
+      "body": "Tell di writer wetin to change. Dem go keep di note for record.",
+      "noteLabel": "Note to di writer"
+    },
+    "dismiss": {
+      "title": "Drop dis claim?",
+      "body": "Use am when di claim no need reply. Dem no fit change claim wey dem don drop.",
+      "noteLabel": "Why you drop am?"
+    },
+    "noteHint": "1 to 500 characters."
   },
   "s07": {
     "title": "[PCM draft] Publish snapshots",
     "subtitle": "[PCM draft] Public aggregated releases with statistical privacy suppression",
-    "createTitle": "[PCM draft] Create new snapshot",
-    "cutoffLabel": "[PCM draft] Cutoff time",
-    "cutoffHint": "[PCM draft] Must be at least 60 minutes in the past.",
-    "createButton": "[PCM draft] Generate preview",
-    "scheduleTitle": "[PCM draft] Automatic hourly release",
-    "scheduleHint": "[PCM draft] Builds and publishes a snapshot every hour if checks pass.",
-    "scheduleOn": "[PCM draft] Hourly publishing is active",
-    "scheduleOff": "[PCM draft] Hourly publishing is paused",
-    "snapshotsList": "[PCM draft] Snapshot history",
-    "previewTitle": "[PCM draft] Snapshot preview (exact public data)",
-    "suppressionNotice": "[PCM draft] Counts below 5 are suppressed with 'fewer than 5'. Primary and secondary suppression applied.",
-    "excludedTitle": "[PCM draft] Excluded from snapshot",
-    "excludedNotClosed": "[PCM draft] {count} not yet closed",
-    "excludedWithdrawn": "[PCM draft] {count} withdrawn",
-    "excludedAfterCutoff": "[PCM draft] {count} after cutoff",
-    "approvePublish": "[PCM draft] Approve and publish",
-    "discard": "[PCM draft] Discard draft"
+    "createTitle": "Preview new release",
+    "cutoffLabel": "Cutoff time (West Africa Time)",
+    "cutoffHint": "Reports wey close after dis time no go enter. Pick time wey pass at least {minutes} minutes, or leave am empty make we use di latest time wey dem allow.",
+    "createButton": "Generate preview",
+    "scheduleTitle": "Release every hour",
+    "scheduleHint": "If e dey on, dem go build and publish snapshot every hour if di checks pass. Dem go record your name as di approver.",
+    "scheduleOn": "On",
+    "scheduleOff": "Off",
+    "snapshotsList": "Releases",
+    "previewTitle": "Release preview",
+    "approvePublish": "Approve and publish",
+    "discard": "Throw draft away",
+    "cutoffTooRecent": "Pick time wey pass at least {minutes} minutes.",
+    "cutoffInvalid": "Put correct date and time.",
+    "scheduleUnknown": "We no dey show di setting wey dey now. Choose on or off to set am.",
+    "schedule": {
+      "confirmTitle": "Turn on hourly release?",
+      "confirmBody": "Snapshots go publish by demsef every hour, with your name as di approver. You fit turn am off anytime.",
+      "confirmOn": "Turn on",
+      "turnOff": "Turn off"
+    },
+    "notice": {
+      "generated": "Preview don ready. Check am before you publish.",
+      "scheduleOn": "Hourly release don on.",
+      "scheduleOff": "Hourly release don off.",
+      "published": "Dem don publish am. Di public results page dey show dis release now.",
+      "discarded": "Dem don throw di draft away."
+    },
+    "columns": {
+      "cutoff": "Cutoff",
+      "status": "Status",
+      "total": "Reports",
+      "fingerprint": "Fingerprint",
+      "by": "Who prepare am",
+      "published": "Published"
+    },
+    "status": {
+      "draft": "Draft",
+      "published": "Published",
+      "discarded": "Dem throw am away",
+      "superseded": "Another one don replace am"
+    },
+    "history": {
+      "caption": "Releases, di newest first",
+      "empty": "No release yet.",
+      "emptyBody": "Generate preview to make di first one.",
+      "fingerprintNote": "Di fingerprint na di start of di audit-chain code wey dem save with each release. E dey help anybody check say dem no change di release.",
+      "loadMore": "Show more releases"
+    },
+    "detail": {
+      "draftNote": "Dis na draft. Nothing dey public until you approve and publish am.",
+      "publishedNote": "Dem publish am {time}.",
+      "discardedNote": "Dem throw dis draft away. E never dey public.",
+      "supersededNote": "Newer release don replace dis one for di public page.",
+      "by": "{name} prepare am, cutoff {cutoff}"
+    },
+    "preview": {
+      "title": "Wetin di public go see",
+      "note": "Dis na di public results page wey dem draw from dis release. Counts wey small pass 5 dey hide here just as dem go hide online.",
+      "label": "Preview of di public results page"
+    },
+    "exclusions": {
+      "title": "Wetin dem comot from dis release",
+      "note": "Dem no count dis reports for di preview.",
+      "notClosed": "{count, plural, one {# report never close yet} other {# reports never close yet}}",
+      "withdrawn": "{count, plural, one {# report wey observer comot} other {# reports wey observer comot}}",
+      "afterCutoff": "{count, plural, one {# report wey come after di cutoff} other {# reports wey come after di cutoff}}",
+      "otherKinds": "{count, plural, one {# item wey no be incident report, or wey no get state} other {# items wey no be incident report, or wey no get state}}"
+    },
+    "publish": {
+      "confirmTitle": "Publish dis release?",
+      "confirmBody": "Anybody fit see dis totals for di public results page once you approve. E go replace di release wey dey show there now. You no fit undo am, but newer release fit replace am."
+    },
+    "discardConfirm": {
+      "title": "Throw dis draft away?",
+      "body": "Di draft go stay for history as discarded. E never dey public, and you no fit publish am later."
+    },
+    "errors": {
+      "stale": "Dis release don change. Reload di list, then try again.",
+      "transition": "Na only draft dem fit approve or throw away.",
+      "tooRecent": "Di cutoff too near now. Pick earlier time.",
+      "invalid": "Check di details and try again."
+    }
   },
   "s08": {
-    "title": "[PCM draft] Discussion moderation",
-    "subtitle": "[PCM draft] Community oversight and safety for observer forums",
-    "flagsInbox": "[PCM draft] Reported posts ({count})",
-    "flaggedBy": "[PCM draft] Flagged {count} times",
-    "reasons": "[PCM draft] Reasons: {reasons}",
-    "nameCheckAlert": "[PCM draft] Possible personal name detected",
-    "hidePost": "[PCM draft] Hide post",
-    "unhidePost": "[PCM draft] Unhide post",
-    "hideReason": "[PCM draft] Reason for hiding",
-    "removeMember": "[PCM draft] Remove member from forum",
-    "closeDiscussion": "[PCM draft] Close discussion",
-    "createDiscussion": "[PCM draft] Create new discussion",
-    "topic": "[PCM draft] Discussion topic",
-    "wardLga": "[PCM draft] Ward or LGA scope",
-    "inviteCodes": "[PCM draft] Invite observer codes"
+    "title": "Moderate discussion dem",
+    "subtitle": "Posts wey observers or di system mark make person check dem",
+    "flagsInbox": "{count, plural, one {# post wey dem mark} other {# posts wey dem mark}}",
+    "flaggedBy": "{count, plural, one {Dem mark am one time} other {Dem mark am # times}}",
+    "nameCheckAlert": "E fit get person name inside",
+    "hidePost": "Hide post",
+    "unhidePost": "Show post again",
+    "hideReason": "Reason",
+    "removeMember": "Comot member",
+    "closeDiscussion": "Close di discussion",
+    "createDiscussion": "Start new discussion",
+    "topic": "Wetin dem go talk",
+    "refresh": "Refresh am",
+    "loadMore": "Show more",
+    "emptyTitle": "No flagged post dey now.",
+    "emptyBody": "Any post wey observers mark, or wey fit carry person name, go show here.",
+    "reasonsLabel": "Reasons wey dem give",
+    "reason_names_a_person": "E call person name",
+    "reason_too_specific_location": "Di place too clear",
+    "reason_abusive": "E dey abuse",
+    "reason_other": "Another thing",
+    "reason_off_topic": "E no follow topic",
+    "author": "{code} post am",
+    "hiddenBadge": "Dem don hide am",
+    "hiddenFor": "Why dem hide am: {reason}",
+    "hiddenBodyLabel": "Original text. Na only moderators fit see am.",
+    "cancel": "No be now",
+    "hideTitle": "Hide dis post",
+    "hideBody": "Observers no go see am again. You fit show am again later.",
+    "hideNote": "Note",
+    "hideNoteHint": "If you wan. Dem go keep am for audit record. E no pass 500 characters.",
+    "hideConfirm": "Hide post",
+    "removeTitle": "Comot dis member",
+    "removeBody": "{code} no go fit enter dis discussion again. Other discussions no go change.",
+    "removeReason": "Reason",
+    "removeReasonHint": "Must write am. Dem go keep am for audit record. E no pass 500 characters.",
+    "removeConfirm": "Comot member",
+    "closeTitle": "Close dis discussion",
+    "closeBody": "Nobody fit post or join once e don close, and you no fit open am again. Di flagged posts go comot from dis list.",
+    "closeConfirm": "Close discussion",
+    "createLead": "Observers go join by invitation, so put dia codes below.",
+    "titleLabel": "Title",
+    "titleHint": "3 to 120 characters.",
+    "topicHint": "If you wan. E no pass 500 characters.",
+    "areaLabel": "Area",
+    "state": "State",
+    "lga": "LGA",
+    "ward": "Ward",
+    "wholeLga": "Whole LGA",
+    "areaLoading": "Areas dey load...",
+    "invites": "Invite observer codes",
+    "invitesHint": "If you wan. One code for each line, no pass 200.",
+    "createSubmit": "Start discussion",
+    "noticeHidden": "Dem don hide di post.",
+    "noticeUnhidden": "Di post don show again.",
+    "noticeRemoved": "Dem don comot {code} from di discussion.",
+    "noticeClosed": "Dem don close di discussion.",
+    "noticeCreated": "Discussion don start. Dem don invite: {invited}.",
+    "noticeNotFound": "Dem no see dis codes: {codes}.",
+    "errClosed": "Dem don close dis discussion.",
+    "errNotFound": "Dat post or member no dey again. Refresh di list.",
+    "errInvalid": "Check wetin you write, den try again.",
+    "errArea": "We no know dat area. Pick am from di lists.",
+    "valTitle": "Write title wey be 3 to 120 characters.",
+    "valReason": "Write di reason.",
+    "valArea": "Choose state and LGA.",
+    "valInvites": "No put more than 200 observer codes."
   },
   "s09": {
     "title": "[PCM draft] Observer code batches",
@@ -1557,49 +1809,269 @@
   },
   "s10": {
     "title": "[PCM draft] Staff accounts",
-    "subtitle": "[PCM draft] Manage staff access, roles, and two-factor credentials",
-    "staffList": "[PCM draft] Staff members ({count})",
-    "createStaff": "[PCM draft] Add staff member",
-    "displayName": "[PCM draft] Display name",
-    "email": "[PCM draft] Email address",
-    "roles": "[PCM draft] Assigned roles",
-    "roleAdminAlone": "[PCM draft] Admin role cannot be combined with reviewer, coordinator, or moderator.",
-    "inviteUrl": "[PCM draft] One-time invitation link",
-    "copyInvite": "[PCM draft] Copy link",
-    "reset2fa": "[PCM draft] Reset 2FA",
-    "offboard": "[PCM draft] Offboard staff",
-    "offboardReason": "[PCM draft] Offboarding reason",
-    "offboardWarning": "[PCM draft] Any open cases assigned to this user will be returned to the unassigned queue."
+    "staffList": "{count, plural, one {# staff} other {# staff}}",
+    "createStaff": "Add staff",
+    "reset2fa": "Reset 2FA",
+    "offboard": "Offboard",
+    "retry": "Try again",
+    "cancel": "Cancel",
+    "filter": {
+      "label": "Show",
+      "all": "All",
+      "active": "Active",
+      "invited": "Dem don invite",
+      "offboarded": "Dem don comot"
+    },
+    "empty": "No staff account dey yet.",
+    "emptyFilter": "No staff account match this one.",
+    "caption": "Staff accounts",
+    "columns": {
+      "name": "Name",
+      "roles": "Work role",
+      "twofa": "Two-step code",
+      "lastSignIn": "Last sign-in",
+      "status": "Status",
+      "actions": "Wetin you fit do"
+    },
+    "status": {
+      "active": "Active",
+      "invited": "Dem don invite",
+      "offboarded": "Don comot"
+    },
+    "twofa": {
+      "on": "Don set am",
+      "off": "No set am yet"
+    },
+    "neverSignedIn": "Never yet",
+    "you": "You",
+    "reset2faFor": "Reset 2FA for {name}",
+    "offboardFor": "Offboard {name}",
+    "selfNote": "You no fit offboard your own account.",
+    "create": {
+      "title": "Add one staff",
+      "description": "Dem go get one link wey work once, to choose password and set two-step code.",
+      "email": "Email address",
+      "name": "Name wey go show",
+      "nameHint": "2 to 60 letters.",
+      "roles": "Work role",
+      "rolesHint": "Choose at least one. Admin no fit join another role.",
+      "submit": "Create account"
+    },
+    "invite": {
+      "title": "Invite link wey work once",
+      "body": "Give {name} this link. E work once, and you no go see am again after you close this. E go expire {when}.",
+      "label": "Invite link",
+      "copy": "Copy link",
+      "copied": "E don copy",
+      "copyFailed": "We no fit copy am. Select the link and copy am with your hand.",
+      "done": "I don copy am"
+    },
+    "reset": {
+      "title": "Reset two-step code for {name}?",
+      "body": "{name} go comot everywhere and e go set new two-step code when e sign in next time. The password no change.",
+      "confirm": "Reset 2FA",
+      "done": "We don reset two-step code for {name}."
+    },
+    "offboardDialog": {
+      "title": "Offboard {name}?",
+      "body": "{name} go lose access sharp-sharp and e go comot everywhere. Open cases wey dem give am go go back to the list of cases wey nobody carry. You no fit undo this.",
+      "reason": "Reason",
+      "reasons": {
+        "access_ended": "E no need access again",
+        "role_changed": "Work role don change",
+        "credential_risk": "Sign-in details fit dey danger"
+      },
+      "confirm": "Offboard",
+      "done": "We don offboard {name}."
+    },
+    "errors": {
+      "lastAdmin": "At least one active admin must remain. Add another admin first.",
+      "stale": "Dem change this account while you dey look am. We don refresh the list. Check am and try again.",
+      "duplicate": "Account dey already for this email.",
+      "invalidEmail": "Put correct email address.",
+      "invalidName": "Use 2 to 60 letters.",
+      "invalidRoles": "Choose at least one work role.",
+      "selfOffboard": "You no fit offboard your own account.",
+      "alreadyOffboarded": "This account don already comot.",
+      "invalid": "Some details no correct. Check dem and try again."
+    }
   },
   "s11": {
     "title": "[PCM draft] Organisation settings",
-    "subtitle": "[PCM draft] Intake control, data retention, and election parameters",
-    "intakePause": "[PCM draft] Pause report intake",
-    "intakePauseHint": "[PCM draft] Temporarily stop accepting new reports from observers and citizens.",
-    "retention": "[PCM draft] Data retention period",
-    "retentionDays": "[PCM draft] {days} days",
-    "retentionConfirm": "[PCM draft] Shortening retention will delete older records at next purge.",
-    "electionDay": "[PCM draft] Election day",
-    "publicDelay": "[PCM draft] Public snapshot delay",
-    "delayMinutes": "[PCM draft] {minutes} minutes",
-    "partyLabels": "[PCM draft] Party labels on result sheets",
-    "saveSettings": "[PCM draft] Save organisation settings",
-    "auditExport": "[PCM draft] Export audit log"
+    "retry": "Try again",
+    "cancel": "Cancel",
+    "saved": "We don save am.",
+    "intakeCard": {
+      "title": "Report intake",
+      "open": "Dem dey receive reports",
+      "paused": "Intake don stop",
+      "hint": "If you stop am, citizens and observers no fit send new report. Reports wey don enter no go change.",
+      "switch": "Stop report intake",
+      "banner": "Report intake don stop. We no dey take new reports.",
+      "pauseTitle": "Stop report intake?",
+      "pauseBody": "Nobody go fit send new report until you start am again. Reports wey don enter no go change.",
+      "pauseConfirm": "Stop intake",
+      "resumeTitle": "Start report intake again?",
+      "resumeBody": "Citizens and observers go fit send reports again sharp-sharp.",
+      "resumeConfirm": "Start intake again"
+    },
+    "simCard": {
+      "title": "Practice simulator",
+      "hint": "E let staff try SMS and USSD with test messages. Off am for the real election.",
+      "switch": "Practice simulator",
+      "on": "On",
+      "off": "Off"
+    },
+    "retentionCard": {
+      "title": "How long we keep records",
+      "label": "Keep records for (days)",
+      "hint": "From 30 to 730 days. Records wey pass this go delete for the next purge.",
+      "save": "Save retention",
+      "error": "Put whole number from 30 to 730.",
+      "confirmTitle": "Delete older records?",
+      "confirmBody": "If you keep records for {days} days instead of {current}, we go delete {count, plural, one {# record} other {# records}} for good for the next purge. You no fit undo am.",
+      "confirmUnknown": "If you keep records for {days} days instead of {current}, we go delete the older records for good for the next purge. The server no talk how many. You no fit undo am.",
+      "confirm": "Shorten am and delete"
+    },
+    "scheduleCard": {
+      "title": "Election day and public delay",
+      "electionDay": "Election day",
+      "electionDayHint": "No must. Leave am empty until the date set.",
+      "delay": "Public delay (minutes)",
+      "delayHint": "Public figures go only use reports wey reach this old. From 60 to 1,440 minutes.",
+      "delayError": "Put whole number from 60 to 1,440.",
+      "save": "Save date and delay"
+    },
+    "partiesCard": {
+      "title": "Party labels",
+      "label": "Labels",
+      "hint": "Letters wey dey show for result sheets, like A, B, C. Use 2 to 12 different labels of 1 to 3 capital letters, with comma between dem.",
+      "save": "Save party labels",
+      "error": "Use 2 to 12 different labels of 1 to 3 letters, with comma between dem.",
+      "locked": "Dem don lock am. Result sheet don already come in, so labels no fit change again."
+    },
+    "auditCard": {
+      "title": "Export audit log",
+      "hint": "Download the record of who do wetin, one after the other. One export fit cover up to 92 days.",
+      "format": "File type",
+      "from": "From",
+      "to": "To",
+      "download": "Download",
+      "rangeError": "Choose dates where From no pass To and the gap no pass 92 days.",
+      "rateLimited": "Too many exports this hour. Try again later.",
+      "started": "The download don start."
+    },
+    "meta": {
+      "version": "Version {version}",
+      "updatedBy": "{name} change am last for {when}",
+      "updated": "Dem change am last for {when}",
+      "never": "Dem never change am since setup."
+    },
+    "errors": {
+      "stale": "Dem change these settings while you dey edit. We don load dem again. Check dem and try again.",
+      "invalid": "One of the values no correct. Check the numbers and try again."
+    }
   },
   "s12": {
     "title": "[PCM draft] Security & audit monitoring",
-    "subtitle": "[PCM draft] Security rule alerts and cryptographic audit chain verification",
-    "alerts": "[PCM draft] Security alerts",
-    "severity": "[PCM draft] Severity",
-    "detector": "[PCM draft] Detector",
-    "updateStatus": "[PCM draft] Update status",
-    "auditVerify": "[PCM draft] Audit hash chain verification",
-    "chainStatus": "[PCM draft] Chain integrity",
-    "eventsChecked": "[PCM draft] {count} events verified",
-    "headHash": "[PCM draft] Chain head hash: {hash}",
-    "brokenEvent": "[PCM draft] First broken event: {id}",
-    "verifyNow": "[PCM draft] Run verification check",
-    "exportLog": "[PCM draft] Export audit log (JSONL/CSV)"
+    "subtitle": "Alerts wey our security rules raise, plus check say nobody don change the audit log.",
+    "alertsTitle": "Alerts",
+    "alertsHint": "Open alert, write wetin you see, then acknowledge am or close am.",
+    "tableCaption": "Security alerts, newest one first",
+    "filterLabel": "Status",
+    "status": {
+      "open": "Open",
+      "acknowledged": "Don acknowledge",
+      "resolved": "Don resolve",
+      "false_positive": "Na false alarm"
+    },
+    "severity": {
+      "high": "High",
+      "medium": "Medium",
+      "low": "Low"
+    },
+    "detector": {
+      "rules": "Rules",
+      "model": "Model"
+    },
+    "col": {
+      "severity": "How serious",
+      "rule": "Rule",
+      "detector": "Who catch am",
+      "status": "Status",
+      "lastSeen": "Last time",
+      "action": "Action"
+    },
+    "rule": {
+      "repeated_failed_pins": "Dem dey enter wrong PIN many times",
+      "repeated_failed_staff_sign_in": "Staff sign-in don fail many times",
+      "unusual_download_volume": "Too many downloads",
+      "new_network_sign_in": "Sign-in from new network",
+      "intake_burst": "Reports enter suddenly plenty",
+      "receipt_enumeration": "Dem dey guess receipt codes",
+      "staff_offboarded_with_cases": "Staff wey don leave still get cases",
+      "anomaly": "Strange activity"
+    },
+    "subject": {
+      "observer_code": "Observer code",
+      "staff": "Staff account",
+      "staff_account": "Staff account",
+      "network": "Network",
+      "receipt_lookup": "Receipt check",
+      "intake_source": "Where report dey come from",
+      "organisation": "Organisation"
+    },
+    "detail": {
+      "failures": "Times e fail",
+      "window_minutes": "Time window (minutes)",
+      "distinct_networks": "Different networks",
+      "reports": "Reports",
+      "distinct_items": "Different items",
+      "network": "Network reference",
+      "permanent": "Lock for good"
+    },
+    "detailsTitle": "Wetin dem see",
+    "firstSeen": "First time dem see am",
+    "lastSeen": "Last time dem see am",
+    "update": "Update",
+    "updateTitle": "Update alert",
+    "newStatus": "New status",
+    "noteLabel": "Note",
+    "noteHint": "Wetin you find or do. E go dey for audit log.",
+    "save": "Save update",
+    "updated": "Alert don update.",
+    "staleVersion": "Person don change dis alert as you open am. We don reload am; check am and try again.",
+    "empty": {
+      "open": "No open alert dey.",
+      "acknowledged": "No alert dey wey dem don acknowledge.",
+      "resolved": "No resolved alert dey.",
+      "false_positive": "No alert dey wey dem mark as false alarm."
+    },
+    "loadMore": "Show more alerts",
+    "verifyTitle": "Check audit chain",
+    "verifyHint": "E go check every event hash from first to last. Nothing go change.",
+    "verifyRun": "Run check",
+    "verifyRunning": "E dey check…",
+    "verifyNever": "You never run am. Run the check make you see result.",
+    "verifyOk": "{count} events don pass check · chain dey correct",
+    "verifyIntact": "Chain dey correct",
+    "verifyBroken": "Chain don break",
+    "verifyBrokenTitle": "Audit chain don break",
+    "verifyBrokenEvent": "First event wey break",
+    "verifyBrokenText": "{count} events before dis one dey correct. No edit any record. Tell your administrator now now.",
+    "headHash": "Last hash",
+    "headEvents": "Number of events for chain",
+    "checkedAt": "Dem check am {time}",
+    "exportTitle": "Export audit log",
+    "exportHint": "One row for each event with im hashes, so anybody fit check the file for another place. E reach 92 days. Na only administrators fit do am, and dem go record every export.",
+    "exportFrom": "From",
+    "exportTo": "To",
+    "exportFormat": "Format",
+    "exportJsonl": "JSONL (one event for each line)",
+    "exportCsv": "CSV (for spreadsheet)",
+    "exportRun": "Export",
+    "exportDone": "Export don download.",
+    "exportRange": "Pick dates wey no pass 92 days apart, and put From first."
   },
   "pub": {
     "homeLink": "ElectraGuard AI home",
@@ -1924,6 +2396,34 @@
     "disabled": {
       "title": "Practice phone don off.",
       "body": "The observation organisation don off am for now. You fit still report for this website."
+    }
+  },
+  "sys": {
+    "home": "Go the home page",
+    "notFound": {
+      "title": "We no fit find that page",
+      "body": "The link fit don old or dem type am wrong. Nothing wey you save don change."
+    },
+    "error": {
+      "title": "This page don stop to work",
+      "body": "Something no work well. Your reports wey you save dey safe.",
+      "reload": "Load am again"
+    },
+    "session": {
+      "title": "We don sign you out",
+      "body": "Your session don end, so we sign you out make reports dey safe. Sign in again to continue.",
+      "staff": "Sign in again",
+      "observer": "Open the observer app"
+    },
+    "access": {
+      "title": "Your access don change",
+      "body": "This page no dey open for you again. Coordinator fit don change your role or move the case.",
+      "action": "Go the review queue"
+    },
+    "paused": {
+      "title": "Dem don pause reporting",
+      "body": "The observation organisation don pause new reports for now. If person dey for danger, call 112.",
+      "action": "See reports wey dem don review"
     }
   }
 }
