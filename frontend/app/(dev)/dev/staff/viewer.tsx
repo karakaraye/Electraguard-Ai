@@ -33,6 +33,7 @@ import { SecurityView } from "../../../(staff)/s/_views/SecurityView";
 import {
   FIXTURE_ALERT,
   FIXTURE_BATCHES,
+  FIXTURE_ASSIGNMENTS,
   FIXTURE_CASE_DETAIL,
   FIXTURE_CASE_IN_REVIEW,
   FIXTURE_CASE_MESSAGES,
@@ -42,7 +43,6 @@ import {
   FIXTURE_FLAG,
   FIXTURE_LATE_MATERIALS,
   FIXTURE_OVERVIEW,
-  FIXTURE_QUEUE_ITEM,
   FIXTURE_QUEUE_ITEMS,
   FIXTURE_QUEUE_PAGE,
   FIXTURE_SETTINGS,
@@ -59,6 +59,9 @@ const S01_STATES = [
 /** Screen 39 (S-02) states. */
 /** Screen 40 (S-03) states. */
 const S03_STATES = ["default", "in_review", "result_sheet", "pending_help", "closed", "loading", "error", "stale_version", "invalid_transition", "closure_evidence_changed", "validation"] as const;
+
+/** Screen 41 (S-04) states. */
+const S04_STATES = ["default", "results", "loading", "empty", "error"] as const;
 
 const S02_STATES = ["default", "loading", "empty", "empty_filtered", "error", "forbidden", "new", "more"] as const;
 
@@ -208,46 +211,37 @@ export function StaffStateViewer(): ReactElement {
       case "s04":
         return (
           <AssignView
+            key={state}
             data={
-              state === "empty"
-                ? { items: [], next_cursor: null, reviewers: [] }
-                : {
-                    items: [
-                      {
-                        id: FIXTURE_QUEUE_ITEM.id,
-                        receipt_code: FIXTURE_QUEUE_ITEM.receipt_code,
-                        kind: FIXTURE_QUEUE_ITEM.kind,
-                        channel: FIXTURE_QUEUE_ITEM.channel,
-                        status: FIXTURE_QUEUE_ITEM.status,
-                        version: 1,
-                        urgency: FIXTURE_QUEUE_ITEM.urgency,
-                        category: FIXTURE_QUEUE_ITEM.category,
-                        area: FIXTURE_QUEUE_ITEM.area,
-                        received_at: FIXTURE_QUEUE_ITEM.received_at,
-                        assigned_reviewer: null,
-                        suggested_reviewer: {
-                          id: FIXTURE_STAFF_ACCOUNT.id,
-                          display_name: FIXTURE_STAFF_ACCOUNT.display_name,
-                          reason: "fewest_open_cases_in_area",
-                        },
-                      },
-                    ],
-                    next_cursor: null,
-                    reviewers: [
-                      {
-                        id: FIXTURE_STAFF_ACCOUNT.id,
-                        display_name: FIXTURE_STAFF_ACCOUNT.display_name,
-                        open_cases: 2,
-                        urgent_open: 1,
-                        areas: ["1901"],
-                        active_now: true,
-                      },
-                    ],
-                  }
+              state === "loading" || state === "error"
+                ? null
+                : state === "empty"
+                  ? { ...FIXTURE_ASSIGNMENTS, items: [] }
+                  : state === "results"
+                    ? {
+                        ...FIXTURE_ASSIGNMENTS,
+                        items: FIXTURE_ASSIGNMENTS.items.map((item, i) =>
+                          i === 0 ? { ...item, assigned_reviewer: { id: "st-4", display_name: "H. Bello" } } : item,
+                        ),
+                      }
+                    : FIXTURE_ASSIGNMENTS
             }
             loading={state === "loading"}
+            error={state === "error" ? t("staff.networkError") : null}
             assigning={false}
-            error={state === "error" ? "Failed to load assignments" : null}
+            scope="none"
+            onScopeChange={() => {}}
+            onRefresh={() => {}}
+            onAssign={() => {}}
+            results={
+              state === "results"
+                ? {
+                    [FIXTURE_ASSIGNMENTS.items[0].id]: { report_id: FIXTURE_ASSIGNMENTS.items[0].id, ok: true, version: 3, assigned_reviewer: { id: "st-4", display_name: "H. Bello" } },
+                    [FIXTURE_ASSIGNMENTS.items[1].id]: { report_id: FIXTURE_ASSIGNMENTS.items[1].id, ok: false, error: { code: "already_assigned", message: "" } },
+                    [FIXTURE_ASSIGNMENTS.items[2].id]: { report_id: FIXTURE_ASSIGNMENTS.items[2].id, ok: false, error: { code: "stale_version", message: "" } },
+                  }
+                : {}
+            }
           />
         );
 
@@ -396,7 +390,7 @@ export function StaffStateViewer(): ReactElement {
         <div style={{ marginLeft: "auto", display: "flex", gap: "12px", alignItems: "center" }}>
           <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", alignItems: "center" }}>
             <span style={{ color: "var(--ink-2)" }}>State:</span>
-            {(screen === "s01" ? S01_STATES : screen === "s02" ? S02_STATES : screen === "s03" ? S03_STATES : (["default", "loading", "empty", "error"] as const)).map((st) => (
+            {(screen === "s01" ? S01_STATES : screen === "s02" ? S02_STATES : screen === "s03" ? S03_STATES : screen === "s04" ? S04_STATES : (["default", "loading", "empty", "error"] as const)).map((st) => (
               <Link
                 key={st}
                 href={`/dev/staff?screen=${screen}&state=${st}&theme=${theme}`}

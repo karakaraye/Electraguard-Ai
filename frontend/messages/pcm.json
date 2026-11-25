@@ -1330,18 +1330,49 @@
     "subtitle": "[PCM draft] Workload distribution and reviewer assignment",
     "unassignedCount": "[PCM draft] {count} unassigned cases",
     "reviewers": "[PCM draft] Active reviewers ({count})",
-    "openCases": "[PCM draft] {count} open cases ({urgent} urgent)",
+    "openCases": "{count} open, {urgent} urgent",
     "activeNow": "[PCM draft] Active now",
     "suggestedBadge": "[PCM draft] Suggested: {name}",
     "reasonFewest": "[PCM draft] Fewest open cases",
     "reasonArea": "[PCM draft] Same LGA today",
     "reasonFewestInArea": "[PCM draft] Fewest open cases in LGA",
-    "bulkAssign": "[PCM draft] Assign selected ({count})",
+    "bulkAssign": "{count, plural, =0 {Assign} one {Assign # case} other {Assign # cases}}",
     "takeSuggested": "[PCM draft] Take suggested reviewer",
-    "assignTo": "[PCM draft] Assign to...",
+    "assignTo": "Give am to",
     "selectAll": "[PCM draft] Select all",
-    "assignedSuccess": "[PCM draft] Assigned {count} cases successfully.",
-    "assignedError": "[PCM draft] Could not assign some cases: {error}"
+    "assignedSuccess": "{count, plural, one {We don assign # case.} other {We don assign # cases.}}",
+    "assignedError": "[PCM draft] Could not assign some cases: {error}",
+    "workloadTitle": "Work wey each reviewer get",
+    "legendOpen": "Open",
+    "areas": "{count, plural, =0 {No area} one {# area} other {# areas}}",
+    "noReviewers": "No reviewer yet.",
+    "casesTitle": "Cases",
+    "scope": {
+      "unassigned": "Never assign",
+      "all": "All open"
+    },
+    "refresh": "Refresh the list",
+    "selected": "{count, plural, =0 {You never select anything} one {# don select} other {# don select}}",
+    "target": {
+      "suggested": "The reviewer wey dem suggest for each case"
+    },
+    "maxNote": "You fit assign reach {max} at once.",
+    "selectRow": "Select case {ref}",
+    "columns": {
+      "received": "When we receive am",
+      "reviewer": "Reviewer"
+    },
+    "noSuggestion": "No suggestion",
+    "result": {
+      "assigned": "Dem give am to {name}",
+      "none": "Dem never give anybody",
+      "already": "Another person don assign am first",
+      "stale": "E don change since you load am. Refresh the list.",
+      "failed": "We no fit assign am"
+    },
+    "emptyUnassigned": "Every case get reviewer.",
+    "emptyAll": "No open case.",
+    "failedCount": "{count, plural, one {We no fit assign # case. Check the row.} other {We no fit assign # cases. Check the rows.}}"
   },
   "s05": {
     "title": "[PCM draft] Operations room",

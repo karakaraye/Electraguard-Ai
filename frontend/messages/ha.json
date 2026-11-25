@@ -1330,18 +1330,49 @@
     "subtitle": "[HA draft] Workload distribution and reviewer assignment",
     "unassignedCount": "[HA draft] {count} unassigned cases",
     "reviewers": "[HA draft] Active reviewers ({count})",
-    "openCases": "[HA draft] {count} open cases ({urgent} urgent)",
+    "openCases": "{count} a buɗe, {urgent} na gaggawa",
     "activeNow": "[HA draft] Active now",
     "suggestedBadge": "[HA draft] Suggested: {name}",
     "reasonFewest": "[HA draft] Fewest open cases",
     "reasonArea": "[HA draft] Same LGA today",
     "reasonFewestInArea": "[HA draft] Fewest open cases in LGA",
-    "bulkAssign": "[HA draft] Assign selected ({count})",
+    "bulkAssign": "{count, plural, =0 {Ba da aiki} one {Ba da shari'a #} other {Ba da shari'o'i #}}",
     "takeSuggested": "[HA draft] Take suggested reviewer",
-    "assignTo": "[HA draft] Assign to...",
+    "assignTo": "Ba wa",
     "selectAll": "[HA draft] Select all",
-    "assignedSuccess": "[HA draft] Assigned {count} cases successfully.",
-    "assignedError": "[HA draft] Could not assign some cases: {error}"
+    "assignedSuccess": "{count, plural, one {An ba da shari'a #.} other {An ba da shari'o'i #.}}",
+    "assignedError": "[HA draft] Could not assign some cases: {error}",
+    "workloadTitle": "Nauyin aikin masu bita",
+    "legendOpen": "A buɗe",
+    "areas": "{count, plural, =0 {Babu yanki} one {Yanki #} other {Yankuna #}}",
+    "noReviewers": "Babu masu bita tukuna.",
+    "casesTitle": "Shari'o'i",
+    "scope": {
+      "unassigned": "Ba a ba kowa ba",
+      "all": "Duk masu buɗe"
+    },
+    "refresh": "Sabunta jeri",
+    "selected": "{count, plural, =0 {Ba a zaɓi komai ba} one {An zaɓi #} other {An zaɓi #}}",
+    "target": {
+      "suggested": "Mai bitar da aka ba da shawara ga kowace shari'a"
+    },
+    "maxNote": "Ka ba da har {max} a lokaci guda.",
+    "selectRow": "Zaɓi shari'a {ref}",
+    "columns": {
+      "received": "An karɓa",
+      "reviewer": "Mai bita"
+    },
+    "noSuggestion": "Babu shawara",
+    "result": {
+      "assigned": "An ba {name}",
+      "none": "Ba a ba kowa ba",
+      "already": "Wani ya riga ya ba da ita",
+      "stale": "Ta canza tun lokacin da ka loda ta. Sabunta jeri.",
+      "failed": "Ba a iya ba da ita ba"
+    },
+    "emptyUnassigned": "Kowace shari'a tana da mai bita.",
+    "emptyAll": "Babu shari'o'i a buɗe.",
+    "failedCount": "{count, plural, one {Ba a iya ba da shari'a # ba. Duba layinta.} other {Ba a iya ba da shari'o'i # ba. Duba layukansu.}}"
   },
   "s05": {
     "title": "[HA draft] Operations room",

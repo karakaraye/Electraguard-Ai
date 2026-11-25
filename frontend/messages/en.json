@@ -1329,18 +1329,49 @@
     "subtitle": "Workload distribution and reviewer assignment",
     "unassignedCount": "{count} unassigned cases",
     "reviewers": "Active reviewers ({count})",
-    "openCases": "{count} open cases ({urgent} urgent)",
+    "openCases": "{count} open, {urgent} urgent",
     "activeNow": "Active now",
     "suggestedBadge": "Suggested: {name}",
     "reasonFewest": "Fewest open cases",
     "reasonArea": "Same LGA today",
     "reasonFewestInArea": "Fewest open cases in LGA",
-    "bulkAssign": "Assign selected ({count})",
+    "bulkAssign": "{count, plural, =0 {Assign} one {Assign # case} other {Assign # cases}}",
     "takeSuggested": "Take suggested reviewer",
-    "assignTo": "Assign to...",
+    "assignTo": "Assign to",
     "selectAll": "Select all",
-    "assignedSuccess": "Assigned {count} cases successfully.",
-    "assignedError": "Could not assign some cases: {error}"
+    "assignedSuccess": "{count, plural, one {Assigned # case.} other {Assigned # cases.}}",
+    "assignedError": "Could not assign some cases: {error}",
+    "workloadTitle": "Reviewer workload",
+    "legendOpen": "Open",
+    "areas": "{count, plural, =0 {No areas} one {# area} other {# areas}}",
+    "noReviewers": "No reviewers yet.",
+    "casesTitle": "Cases",
+    "scope": {
+      "unassigned": "Unassigned",
+      "all": "All open"
+    },
+    "refresh": "Refresh list",
+    "selected": "{count, plural, =0 {None selected} one {# selected} other {# selected}}",
+    "target": {
+      "suggested": "Each case's suggested reviewer"
+    },
+    "maxNote": "Assign up to {max} at a time.",
+    "selectRow": "Select case {ref}",
+    "columns": {
+      "received": "Received",
+      "reviewer": "Reviewer"
+    },
+    "noSuggestion": "No suggestion",
+    "result": {
+      "assigned": "Assigned to {name}",
+      "none": "Not assigned",
+      "already": "Someone else assigned it first",
+      "stale": "Changed since you loaded it. Refresh the list.",
+      "failed": "Could not assign"
+    },
+    "emptyUnassigned": "Every case has a reviewer.",
+    "emptyAll": "No open cases.",
+    "failedCount": "{count, plural, one {# case could not be assigned. See its row.} other {# cases could not be assigned. See their rows.}}"
   },
   "s05": {
     "title": "Operations room",

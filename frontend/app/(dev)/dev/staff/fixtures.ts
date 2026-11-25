@@ -4,6 +4,7 @@ import type {
   CodeBatch,
   CoverageResponse,
   LateMaterialsResponse,
+  AssignmentListResponse,
   Message,
   ModerationFlag,
   OrganisationSettings,
@@ -601,4 +602,37 @@ export const FIXTURE_CASE_RESULT_SHEET: CaseDetail = {
   ],
   suggestions: { ...FIXTURE_CASE_DETAIL.suggestions, abstained: true },
   allowed_actions: ["ask", "close"],
+};
+
+/** Screen 41 (S-04): five reviewers of the synthetic organisation and the morning's unassigned cases. */
+export const FIXTURE_ASSIGNMENTS: AssignmentListResponse = {
+  next_cursor: null,
+  reviewers: [
+    { id: "st-1", display_name: "F. Musa", open_cases: 12, urgent_open: 3, areas: ["1901", "1902"], active_now: true },
+    { id: "st-2", display_name: "A. Okafor", open_cases: 9, urgent_open: 1, areas: ["0401"], active_now: true },
+    { id: "st-3", display_name: "T. Adeyemi", open_cases: 6, urgent_open: 0, areas: ["2501", "2502", "2503"], active_now: false },
+    { id: "st-4", display_name: "H. Bello", open_cases: 3, urgent_open: 2, areas: ["1901"], active_now: true },
+    { id: "st-5", display_name: "N. Eze", open_cases: 0, urgent_open: 0, areas: [], active_now: false },
+  ],
+  items: FIXTURE_QUEUE_ITEMS.slice(0, 6).map((item, i) => ({
+    id: item.id,
+    receipt_code: item.receipt_code,
+    kind: item.kind,
+    channel: item.channel,
+    status: "received",
+    version: 2,
+    urgency: item.urgency,
+    category: item.category,
+    area: item.area ? { ...item.area, polling_unit_code: null, polling_unit_name: null } : null,
+    received_at: item.received_at,
+    assigned_reviewer: null,
+    suggested_reviewer:
+      i === 5
+        ? null
+        : [
+            { id: "st-4", display_name: "H. Bello", reason: "fewest_open_cases_in_area" as const },
+            { id: "st-5", display_name: "N. Eze", reason: "fewest_open_cases" as const },
+            { id: "st-3", display_name: "T. Adeyemi", reason: "same_area" as const },
+          ][i % 3],
+  })),
 };

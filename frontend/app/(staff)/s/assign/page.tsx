@@ -1,103 +1,88 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { api } from "../../../../lib/api/client";
-import type { AssignmentListResponse } from "../../../../lib/api/types";
+import type { AssignItemResult, AssignmentListResponse } from "../../../../lib/api/types";
 import { useT } from "../../../../lib/i18n/client";
-import { AssignView } from "../_views/AssignView";
+import { AssignView, type AssignScope, type AssignTarget } from "../_views/AssignView";
 
 export default function AssignPage() {
   const t = useT();
-
+  const [scope, setScope] = useState<AssignScope>("none");
   const [data, setData] = useState<AssignmentListResponse | null>(null);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [assigning, setAssigning] = useState(false);
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [results, setResults] = useState<Record<string, AssignItemResult>>({});
+  const [attempt, setAttempt] = useState(0);
 
-  const loadAssignments = async () => {
-    try {
-      const res = await api("ASG-01", { query: { assigned: "any" } });
-      if (!res.ok) {
-        if (res.status === 404) {
-          setError(t("staff.endpointNotReady"));
-        } else {
-          setError(res.error?.message || t("staff.networkError"));
-        }
-        return;
-      }
-      setData(res.data);
-    } catch {
-      setError(t("staff.networkError"));
-    } finally {
-      setLoading(false);
-    }
-  };
+  const problem = useCallback(
+    (res: { status: number }) =>
+      res.status === 403 ? t("staff.forbidden") : res.status === 404 ? t("staff.endpointNotReady") : t("staff.networkError"),
+    [t],
+  );
 
   useEffect(() => {
     let cancelled = false;
     void (async () => {
-      try {
-        const res = await api("ASG-01", { query: { assigned: "any" } });
-        if (cancelled) return;
-        if (!res.ok) {
-          if (res.status === 404) {
-            setError(t("staff.endpointNotReady"));
-          } else {
-            setError(res.error?.message || t("staff.networkError"));
-          }
-          return;
-        }
-        setData(res.data);
-      } catch {
-        if (!cancelled) setError(t("staff.networkError"));
-      } finally {
-        if (!cancelled) setLoading(false);
+      setLoading(true);
+      setError(null);
+      const res = await api("ASG-01", { query: { assigned: scope } });
+      if (cancelled) return;
+      setLoading(false);
+      if (!res.ok) {
+        setError(problem(res));
+        return;
       }
+      setResults({});
+      setData(res.data);
     })();
     return () => {
       cancelled = true;
     };
-  }, [t]);
+  }, [scope, attempt, problem]);
 
-  const handleAssignBulk = async (
-    items: Array<{ report_id: string; reviewer_id: string; version: number }>
-  ) => {
+  async function loadMore() {
+    if (!data?.next_cursor) return;
+    setLoadingMore(true);
+    const res = await api("ASG-01", { query: { assigned: scope, cursor: data.next_cursor } });
+    setLoadingMore(false);
+    if (!res.ok) {
+      setError(problem(res));
+      return;
+    }
+    const ids = new Set(data.items.map((item) => item.id));
+    setData({ ...res.data, items: [...data.items, ...res.data.items.filter((item) => !ids.has(item.id))] });
+  }
+
+  /** Rows keep their own result; nothing disappears until the list is refreshed. */
+  async function assign(items: Array<{ report_id: string; reviewer_id: AssignTarget; version: number }>) {
     setAssigning(true);
     setError(null);
-    setSuccessMessage(null);
-    try {
-      const res = await api("ASG-02", {
-        body: { items },
-      });
-
-      if (!res.ok) {
-        if (res.status === 404) {
-          setError(t("staff.endpointNotReady"));
-        } else {
-          setError(res.error?.message || t("staff.networkError"));
-        }
-        return;
-      }
-
-      const succeeded = res.data.results.filter((r) => r.ok).length;
-      const failed = res.data.results.filter((r) => !r.ok);
-
-      if (succeeded > 0) {
-        setSuccessMessage(t("s04.assignedSuccess", { count: succeeded }));
-      }
-      if (failed.length > 0) {
-        const firstErr = failed[0].error?.message || "Error";
-        setError(t("s04.assignedError", { error: firstErr }));
-      }
-
-      await loadAssignments();
-    } catch {
-      setError(t("staff.networkError"));
-    } finally {
-      setAssigning(false);
+    const res = await api("ASG-02", { body: { items } });
+    setAssigning(false);
+    if (!res.ok) {
+      setError(problem(res));
+      return;
     }
-  };
+    setResults((current) => {
+      const next = { ...current };
+      for (const result of res.data.results) next[result.report_id] = result;
+      return next;
+    });
+    setData((current) =>
+      current
+        ? {
+            ...current,
+            items: current.items.map((item) => {
+              const result = res.data.results.find((r) => r.report_id === item.id);
+              return result?.ok ? { ...item, version: result.version, assigned_reviewer: result.assigned_reviewer } : item;
+            }),
+          }
+        : current,
+    );
+  }
 
   return (
     <AssignView
@@ -105,8 +90,13 @@ export default function AssignPage() {
       loading={loading}
       error={error}
       assigning={assigning}
-      successMessage={successMessage}
-      onAssignBulk={handleAssignBulk}
+      scope={scope}
+      onScopeChange={setScope}
+      results={results}
+      onAssign={(items) => void assign(items)}
+      onRefresh={() => setAttempt((n) => n + 1)}
+      onLoadMore={() => void loadMore()}
+      loadingMore={loadingMore}
     />
   );
 }

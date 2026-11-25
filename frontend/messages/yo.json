@@ -1330,18 +1330,49 @@
     "subtitle": "[YO draft] Workload distribution and reviewer assignment",
     "unassignedCount": "[YO draft] {count} unassigned cases",
     "reviewers": "[YO draft] Active reviewers ({count})",
-    "openCases": "[YO draft] {count} open cases ({urgent} urgent)",
+    "openCases": "{count} ṣí sílẹ̀, {urgent} kánjúkánjú",
     "activeNow": "[YO draft] Active now",
     "suggestedBadge": "[YO draft] Suggested: {name}",
     "reasonFewest": "[YO draft] Fewest open cases",
     "reasonArea": "[YO draft] Same LGA today",
     "reasonFewestInArea": "[YO draft] Fewest open cases in LGA",
-    "bulkAssign": "[YO draft] Assign selected ({count})",
+    "bulkAssign": "{count, plural, =0 {Yàn} one {Yan ẹjọ́ #} other {Yan ẹjọ́ #}}",
     "takeSuggested": "[YO draft] Take suggested reviewer",
-    "assignTo": "[YO draft] Assign to...",
+    "assignTo": "Yàn fún",
     "selectAll": "[YO draft] Select all",
-    "assignedSuccess": "[YO draft] Assigned {count} cases successfully.",
-    "assignedError": "[YO draft] Could not assign some cases: {error}"
+    "assignedSuccess": "{count, plural, one {A ti yan ẹjọ́ #.} other {A ti yan ẹjọ́ #.}}",
+    "assignedError": "[YO draft] Could not assign some cases: {error}",
+    "workloadTitle": "Iṣẹ́ àwọn olùṣàyẹ̀wò",
+    "legendOpen": "Ṣí sílẹ̀",
+    "areas": "{count, plural, =0 {Kò sí agbègbè} one {Agbègbè #} other {Agbègbè #}}",
+    "noReviewers": "Kò tíì sí olùṣàyẹ̀wò.",
+    "casesTitle": "Àwọn ẹjọ́",
+    "scope": {
+      "unassigned": "A kò tíì yàn",
+      "all": "Gbogbo èyí tó ṣí"
+    },
+    "refresh": "Sọ àtòjọ di tuntun",
+    "selected": "{count, plural, =0 {A kò yan nǹkan kan} one {A yan #} other {A yan #}}",
+    "target": {
+      "suggested": "Olùṣàyẹ̀wò tí a dámọ̀ràn fún ẹjọ́ kọ̀ọ̀kan"
+    },
+    "maxNote": "Yan tó {max} lẹ́ẹ̀kan.",
+    "selectRow": "Yan ẹjọ́ {ref}",
+    "columns": {
+      "received": "Ìgbà tí a gbà á",
+      "reviewer": "Olùṣàyẹ̀wò"
+    },
+    "noSuggestion": "Kò sí àbá",
+    "result": {
+      "assigned": "A yàn án fún {name}",
+      "none": "A kò tíì yàn án",
+      "already": "Ẹlòmíì ti yàn án ṣáájú",
+      "stale": "Ó ti yí padà láti ìgbà tí o gbé e wá. Sọ àtòjọ di tuntun.",
+      "failed": "A kò lè yàn án"
+    },
+    "emptyUnassigned": "Gbogbo ẹjọ́ ló ní olùṣàyẹ̀wò.",
+    "emptyAll": "Kò sí ẹjọ́ tó ṣí sílẹ̀.",
+    "failedCount": "{count, plural, one {A kò lè yan ẹjọ́ #. Wo ìlà rẹ̀.} other {A kò lè yan ẹjọ́ #. Wo àwọn ìlà wọn.}}"
   },
   "s05": {
     "title": "[YO draft] Operations room",

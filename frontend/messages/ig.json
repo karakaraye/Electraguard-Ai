@@ -1330,18 +1330,49 @@
     "subtitle": "[IG draft] Workload distribution and reviewer assignment",
     "unassignedCount": "[IG draft] {count} unassigned cases",
     "reviewers": "[IG draft] Active reviewers ({count})",
-    "openCases": "[IG draft] {count} open cases ({urgent} urgent)",
+    "openCases": "{count} mepere emepe, {urgent} ngwa ngwa",
     "activeNow": "[IG draft] Active now",
     "suggestedBadge": "[IG draft] Suggested: {name}",
     "reasonFewest": "[IG draft] Fewest open cases",
     "reasonArea": "[IG draft] Same LGA today",
     "reasonFewestInArea": "[IG draft] Fewest open cases in LGA",
-    "bulkAssign": "[IG draft] Assign selected ({count})",
+    "bulkAssign": "{count, plural, =0 {Kenye} one {Kenye okwu #} other {Kenye okwu #}}",
     "takeSuggested": "[IG draft] Take suggested reviewer",
-    "assignTo": "[IG draft] Assign to...",
+    "assignTo": "Nye",
     "selectAll": "[IG draft] Select all",
-    "assignedSuccess": "[IG draft] Assigned {count} cases successfully.",
-    "assignedError": "[IG draft] Could not assign some cases: {error}"
+    "assignedSuccess": "{count, plural, one {Ekenyela okwu #.} other {Ekenyela okwu #.}}",
+    "assignedError": "[IG draft] Could not assign some cases: {error}",
+    "workloadTitle": "Ọrụ ndị nyocha",
+    "legendOpen": "Mepere emepe",
+    "areas": "{count, plural, =0 {Enweghị mpaghara} one {Mpaghara #} other {Mpaghara #}}",
+    "noReviewers": "Enwebeghị ndị nyocha.",
+    "casesTitle": "Okwu",
+    "scope": {
+      "unassigned": "Ekenyeghị",
+      "all": "Ndị niile mepere emepe"
+    },
+    "refresh": "Megharịa ndepụta",
+    "selected": "{count, plural, =0 {Ahọrọghị ihe ọ bụla} one {Ahọrọla #} other {Ahọrọla #}}",
+    "target": {
+      "suggested": "Onye nyocha a tụrụ aro maka okwu ọ bụla"
+    },
+    "maxNote": "Kenye ruo {max} n'otu oge.",
+    "selectRow": "Họrọ okwu {ref}",
+    "columns": {
+      "received": "Mgbe anatara ya",
+      "reviewer": "Onye nyocha"
+    },
+    "noSuggestion": "Enweghị aro",
+    "result": {
+      "assigned": "Enyere {name}",
+      "none": "Ekenyeghị ya",
+      "already": "Onye ọzọ ekenyelarị ya",
+      "stale": "Ọ gbanwere kemgbe i bugoro ya. Megharịa ndepụta.",
+      "failed": "Enweghị ike ikenye ya"
+    },
+    "emptyUnassigned": "Okwu ọ bụla nwere onye nyocha.",
+    "emptyAll": "Enweghị okwu mepere emepe.",
+    "failedCount": "{count, plural, one {Enweghị ike ikenye okwu #. Lee ahịrị ya.} other {Enweghị ike ikenye okwu #. Lee ahịrị ha.}}"
   },
   "s05": {
     "title": "[IG draft] Operations room",
