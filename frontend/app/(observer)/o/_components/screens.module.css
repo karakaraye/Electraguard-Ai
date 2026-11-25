@@ -873,3 +873,132 @@
   outline-offset: var(--focus-offset);
   border-radius: 4px;
 }
+
+/* ---------- Report detail (spec screen 20) ---------- */
+.detailHead {
+  display: grid;
+  gap: var(--s-2);
+}
+
+.detailMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-1) var(--s-4);
+  margin: 0;
+  color: var(--ink-2);
+  font: var(--t-small);
+}
+
+/* The status journey: done steps are ink with a tick, the current one is a sun disc. */
+.journey {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  inline-size: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.journeyStep {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: var(--s-2);
+  text-align: center;
+}
+
+/* The line to the next step. */
+.journeyStep:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  top: 11px;
+  left: calc(50% + 14px);
+  right: calc(-50% + 14px);
+  height: 2px;
+  background: var(--rule-control);
+}
+
+.journeyStep[data-state="done"]:not(:last-child)::after {
+  background: var(--ink);
+}
+
+.journeyDot {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border: 2px solid var(--rule-control);
+  border-radius: 50%;
+  background: var(--paper);
+}
+
+.journeyStep[data-state="done"] .journeyDot {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.journeyStep[data-state="current"] .journeyDot {
+  border: 2px solid var(--ink);
+  background: var(--sun);
+  box-shadow: 0 0 0 4px var(--sun-tint);
+}
+
+.journeyLabel {
+  color: var(--ink-2);
+  font: var(--t-small);
+  line-height: 1.3;
+}
+
+.journeyStep[data-state="current"] .journeyLabel {
+  color: var(--ink);
+  font-weight: 700;
+}
+
+/* A closed report explains its outcome in a card. */
+.outcome {
+  display: flex;
+  gap: var(--s-3);
+  inline-size: 100%;
+  padding: var(--s-4);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  background: var(--paper-raised);
+}
+
+.outcomeDisc {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--sun-tint);
+  color: var(--ink);
+}
+
+.outcomeText {
+  display: grid;
+  gap: var(--s-1);
+}
+
+.outcomeText p {
+  margin: 0;
+}
+
+.outcomeTitle {
+  margin: 0;
+  font: var(--t-heading);
+  font-size: 1.125rem;
+}
+
+/* "Your report" as a raised card. */
+.reportCard {
+  display: grid;
+  gap: var(--s-3);
+  padding: var(--s-4);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  background: var(--paper-raised);
+}

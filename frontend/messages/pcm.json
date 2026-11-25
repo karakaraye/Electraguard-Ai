@@ -165,7 +165,8 @@
       "withdrawn": "You don withdraw am",
       "waitingCode": "E dey wait for new code",
       "needsAttention": "E need your attention",
-      "needsAttentionHint": "We no fit accept am yet. Open am, fix wetin dem mark, then send am again."
+      "needsAttentionHint": "We no fit accept am yet. Open am, fix wetin dem mark, then send am again.",
+      "label": "How the report dey go"
     },
     "outcome": {
       "confirmed": "Evidence confirm am",
@@ -647,6 +648,11 @@
       "limit": "One report fit get 6 files at most.",
       "failed": "The file no send. Check your network and try again.",
       "processing": "Dem dey prepare am. E go open in few minutes."
+    },
+    "outcomeWhy": {
+      "confirmed": "Reviewers see evidence wey support wetin you report.",
+      "notEnough": "Reviewers no fit confirm am with the evidence wey dem get. Your report still help.",
+      "outside": "ElectraGuard no dey observe this kind thing, so dem no review am pass this."
     }
   },
   "o15": {

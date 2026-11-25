@@ -165,7 +165,8 @@
       "withdrawn": "A ti fà á sẹ́yìn",
       "waitingCode": "Ó ń dúró de kóòdù tuntun",
       "needsAttention": "Ó nílò àfiyèsí rẹ",
-      "needsAttentionHint": "A kò tíì lè gbà á. Ṣí i, tún ohun tí a fi àmì sí ṣe, kí o sì tún fi ránṣẹ́."
+      "needsAttentionHint": "A kò tíì lè gbà á. Ṣí i, tún ohun tí a fi àmì sí ṣe, kí o sì tún fi ránṣẹ́.",
+      "label": "Ìtẹ̀síwájú ìròyìn"
     },
     "outcome": {
       "confirmed": "Ẹ̀rí fìdí rẹ̀ múlẹ̀",
@@ -647,6 +648,11 @@
       "limit": "Ìròyìn kan lè ní fáìlì mẹ́fà ní púpọ̀ jù.",
       "failed": "Fáìlì náà kò lọ. Ṣàyẹ̀wò nẹ́tíwọ̀ọ̀kì rẹ kí o tún gbìyànjú.",
       "processing": "À ń múra rẹ̀. Yóò ṣí láàárín ìṣẹ́jú díẹ̀."
+    },
+    "outcomeWhy": {
+      "confirmed": "Àwọn olùṣàyẹ̀wò rí ẹ̀rí tó ti ohun tí o ròyìn lẹ́yìn.",
+      "notEnough": "Àwọn olùṣàyẹ̀wò kò lè fìdí rẹ̀ múlẹ̀ pẹ̀lú ẹ̀rí tí wọ́n ní. Ìròyìn rẹ ṣì wúlò.",
+      "outside": "ElectraGuard kò ń wo irú nǹkan yìí, nítorí náà a kò ṣàyẹ̀wò rẹ̀ síwájú."
     }
   },
   "o15": {

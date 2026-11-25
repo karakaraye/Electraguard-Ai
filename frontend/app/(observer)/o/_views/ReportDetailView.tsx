@@ -7,7 +7,7 @@ import type { Category, MessageKind, QuestionState, ReportKind } from "../../../
 import { useLocale, useT } from "../../../../lib/i18n/client";
 import { AppShell, Banner, Button, ButtonLink, Sheet, StatusBadge, TextArea, UploadItem, UploadList, type ReportStatus, type StatusTone, type UploadState } from "../../../../ui";
 import { formatWatDateTime } from "../../../../ui/format";
-import { categoryPictograms, ClockIcon, ImageIcon, PlaceIcon } from "../../../../ui/icons";
+import { categoryPictograms, CheckIcon, ClockIcon, ImageIcon, PlaceIcon, ShieldCheckIcon } from "../../../../ui/icons";
 import { categoryMeta } from "../_lib/categories";
 import { ChecklistPictogram, SheetPictogram } from "../_components/pictograms";
 import styles from "../_components/observer.module.css";
@@ -121,7 +121,7 @@ export function ReportDetailView(props: ReportDetailViewProps) {
   const meta = categoryMeta(category);
   const Pictogram = kind === "checklist" ? ChecklistPictogram : kind === "result_sheet" ? SheetPictogram : categoryPictograms[meta.pictogram];
   const label = kind === "checklist" ? t("o13.checklistStage", { stage: t(`o15.stage.${props.stage ?? "arrival"}`) }) : kind === "result_sheet" ? t("o13.resultSheet") : t(`o05.tile.${meta.tile}`);
-  const title = receiptCode ? t("o14.title", { ref: receiptCode }) : label;
+  const title = label;
 
   const shell = (content: React.ReactNode, actions?: React.ReactNode) => (
     <AppShell
@@ -181,20 +181,53 @@ export function ReportDetailView(props: ReportDetailViewProps) {
   }
 
   const questionOpen = Boolean(props.question) && props.replyState !== "sent";
+  /* Received · Being reviewed · Question for you · Closed. The question step only appears if one was ever asked. */
+  const askedEver = status === "question" || Boolean(props.question) || props.messages.some((message) => message.kind === "formal_question");
+  const journeySteps: Array<{ key: "received" | "inReview" | "question" | "closed"; status: ReportStatus }> = [
+    { key: "received", status: "received" },
+    { key: "inReview", status: "in-review" },
+    ...(askedEver ? [{ key: "question" as const, status: "question" as ReportStatus }] : []),
+    { key: "closed", status: "closed" },
+  ];
+  const current = journeySteps.findIndex((step) => step.status === status);
+  const journey =
+    source === "server" && current >= 0 ? (
+      <ol className={s.journey} aria-label={t("common.status.label")} data-testid="o14-journey">
+        {journeySteps.map((step, index) => {
+          const state = index < current || status === "closed" ? "done" : index === current ? "current" : "later";
+          return (
+            <li key={step.key} className={s.journeyStep} data-state={state} aria-current={state === "current" ? "step" : undefined}>
+              <span className={s.journeyDot} aria-hidden="true">
+                {state === "done" ? <CheckIcon size={14} strokeWidth={3} /> : null}
+              </span>
+              <span className={s.journeyLabel}>{t(`common.status.${step.key}`)}</span>
+            </li>
+          );
+        })}
+      </ol>
+    ) : (
+      <StatusBadge status={status} size="lg" />
+    );
+  const outcomeWhy = props.outcomeKey ? `o14.outcomeWhy.${props.outcomeKey.split(".").pop()}` : null;
   const statusBlock = (
     <div className={s.statusBlock}>
-      <StatusBadge status={status} size="lg" />
-      <p className={styles.lead} style={{ marginTop: 0 }}>
-        {props.outcomeKey ? `${t(props.outcomeKey)}. ` : ""}
-        {t(props.statusHintKey)}
-      </p>
-      <p className={styles.meta}>
-        {props.observedAt !== null ? <span className={`${styles.valueRow} eg-tnum`}>
-          <ClockIcon size={18} aria-hidden="true" />
-          {t("o14.observed", { time: when(props.observedAt, locale) })}
-        </span> : null}
-        <span className="eg-tnum">{props.receivedAt ? t("o14.received", { time: when(props.receivedAt, locale) }) : t("o14.notSentYet")}</span>
-      </p>
+      {journey}
+      {props.outcomeKey && outcomeWhy ? (
+        <section className={s.outcome} data-testid="o14-outcome">
+          <span className={s.outcomeDisc} aria-hidden="true">
+            <ShieldCheckIcon size={24} />
+          </span>
+          <div className={s.outcomeText}>
+            <h2 className={s.outcomeTitle}>{t(props.outcomeKey)}</h2>
+            <p>{t(outcomeWhy)}</p>
+            <p className={styles.meta}>{t(props.statusHintKey)}</p>
+          </div>
+        </section>
+      ) : (
+        <p className={styles.lead} style={{ marginTop: 0 }}>
+          {t(props.statusHintKey)}
+        </p>
+      )}
     </div>
   );
 
@@ -247,19 +280,12 @@ export function ReportDetailView(props: ReportDetailViewProps) {
   ) : null;
 
   const details = (
-    <section aria-labelledby="o14-details" className={styles.tight}>
+    <section aria-labelledby="o14-details" className={s.reportCard}>
       <h2 className={styles.sectionTitle} id="o14-details">
         {t("o14.details")}
       </h2>
-      <p className={`${styles.itemName} ${styles.valueRow}`}>
-        <Pictogram size={28} aria-hidden="true" />
-        <span>{label}</span>
-      </p>
-      {props.place ? (
-        <p className={`${styles.meta} ${styles.valueRow}`}>
-          <PlaceIcon size={18} aria-hidden="true" />
-          {props.place}
-        </p>
+      {props.receivedAt ? (
+        <p className={`${styles.meta} eg-tnum`}>{t("o14.received", { time: when(props.receivedAt, locale) })}</p>
       ) : null}
       {props.description !== null || props.answers?.length ? (
         <dl className={s.facts}>
@@ -417,7 +443,29 @@ export function ReportDetailView(props: ReportDetailViewProps) {
     <>
       {shell(
         <div className={`${styles.screen} ${styles.wide}`}>
-          <h1 className={styles.title}>{title}</h1>
+          <div className={s.detailHead}>
+            <h1 className={`${styles.title} ${styles.valueRow}`}>
+              <Pictogram size={36} aria-hidden="true" />
+              <span>{title}</span>
+            </h1>
+            <p className={s.detailMeta}>
+              {props.place ? (
+                <span className={styles.valueRow}>
+                  <PlaceIcon size={18} aria-hidden="true" />
+                  {props.place}
+                </span>
+              ) : null}
+              {props.observedAt !== null ? (
+                <span className={`${styles.valueRow} eg-tnum`}>
+                  <ClockIcon size={18} aria-hidden="true" />
+                  {t("o14.observed", { time: when(props.observedAt, locale) })}
+                </span>
+              ) : null}
+              <span className="eg-tnum" data-testid="o14-code">
+                {receiptCode ?? t("o14.notSentYet")}
+              </span>
+            </p>
+          </div>
           <div className={s.detail}>
             <div className={s.column}>
               {questionBlock}

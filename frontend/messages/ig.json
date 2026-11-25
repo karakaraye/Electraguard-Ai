@@ -165,7 +165,8 @@
       "withdrawn": "E wepụla ya",
       "waitingCode": "Ọ na-eche koodu ọhụrụ",
       "needsAttention": "Ọ chọrọ nlebara anya gị",
-      "needsAttentionHint": "Anyị enweghị ike ịnabata ya ugbu a. Meghee ya, mezie ihe e depụtara, ziga ya ọzọ."
+      "needsAttentionHint": "Anyị enweghị ike ịnabata ya ugbu a. Meghee ya, mezie ihe e depụtara, ziga ya ọzọ.",
+      "label": "Ọganihu akụkọ"
     },
     "outcome": {
       "confirmed": "Ihe akaebe gosiri na ọ bụ eziokwu",
@@ -647,6 +648,11 @@
       "limit": "Akụkọ nwere ike inwe faịlụ 6 kachasị.",
       "failed": "Faịlụ ahụ ezigaghị. Lelee netwọk gị ma nwaa ọzọ.",
       "processing": "A na-akwadebe ya. Ọ ga-emeghe n'ime nkeji ole na ole."
+    },
+    "outcomeWhy": {
+      "confirmed": "Ndị nyocha hụrụ ihe akaebe na-akwado ihe ị kọrọ.",
+      "notEnough": "Ndị nyocha enweghị ike igosi na ọ bụ eziokwu site n'ihe akaebe ha nwere. Akụkọ gị ka na-enyere aka.",
+      "outside": "ElectraGuard anaghị elebanya anya n'ụdị ihe a, ya mere a gaghị n'ihu nyochaa ya."
     }
   },
   "o15": {

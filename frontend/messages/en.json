@@ -164,7 +164,8 @@
       "withdrawn": "Withdrawn",
       "waitingCode": "Waiting for a new code",
       "needsAttention": "Needs your attention",
-      "needsAttentionHint": "We could not accept it yet. Open it, fix what is marked, and send again."
+      "needsAttentionHint": "We could not accept it yet. Open it, fix what is marked, and send again.",
+      "label": "Report progress"
     },
     "outcome": {
       "confirmed": "Confirmed by evidence",
@@ -646,6 +647,11 @@
       "limit": "A report can have up to 6 files.",
       "failed": "The file did not send. Check your network and try again.",
       "processing": "Being prepared. It opens in a few minutes."
+    },
+    "outcomeWhy": {
+      "confirmed": "Reviewers found evidence that supports what you reported.",
+      "notEnough": "Reviewers could not confirm it from the evidence they had. Your report still helps.",
+      "outside": "This is not something ElectraGuard observes, so it was not reviewed further."
     }
   },
   "o15": {

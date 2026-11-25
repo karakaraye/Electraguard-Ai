@@ -165,7 +165,8 @@
       "withdrawn": "An janye",
       "waitingCode": "Ana jiran sabuwar lamba",
       "needsAttention": "Yana buƙatar hankalinka",
-      "needsAttentionHint": "Ba mu iya karɓa ba tukuna. Ka buɗe shi, ka gyara abin da aka yi wa alama, sannan ka sake aikawa."
+      "needsAttentionHint": "Ba mu iya karɓa ba tukuna. Ka buɗe shi, ka gyara abin da aka yi wa alama, sannan ka sake aikawa.",
+      "label": "Ci gaban rahoto"
     },
     "outcome": {
       "confirmed": "Shaida ta tabbatar",
@@ -647,6 +648,11 @@
       "limit": "Rahoto zai iya samun fayiloli 6 a mafi yawa.",
       "failed": "Fayil ɗin bai tafi ba. Ka duba sabis ɗinka ka sake gwadawa.",
       "processing": "Ana shirya shi. Zai buɗe nan da ƙanƙanin lokaci."
+    },
+    "outcomeWhy": {
+      "confirmed": "Masu bita sun sami shaidar da ta goyi bayan abin da ka ruwaito.",
+      "notEnough": "Masu bita ba su iya tabbatar da shi da shaidar da suke da ita ba. Rahotonka yana da amfani duk da haka.",
+      "outside": "ElectraGuard ba ya sa ido kan irin wannan abu, don haka ba a ci gaba da bita ba."
     }
   },
   "o15": {
