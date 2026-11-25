@@ -284,3 +284,17 @@ class EmergingIssueDetectionIntegrationTests(TestCase):
         # Open list is now empty
         open_res = self.client.get("/api/v1/ops/clusters?status=open")
         self.assertEqual(open_res.json()["items"], [])
+
+    def test_election_day_starts_at_0700_wat(self):
+        day = datetime.now(WAT).date()
+        # 20 reports before 07:00 WAT must be excluded from baseline (a) and hourly buckets
+        for i in range(20):
+            t_pre = datetime.combine(day, time(6, 10 + (i % 45)), tzinfo=WAT).astimezone(dt_timezone.utc)
+            self.create_report(occurred_at=t_pre)
+        wat_now = datetime.combine(day, time(10, 30), tzinfo=WAT)
+        utc_now = wat_now.astimezone(dt_timezone.utc)
+        for _ in range(4):
+            self.create_report(occurred_at=utc_now - timedelta(minutes=10))
+        alerts = detect_emerging(self.org.pk, now=utc_now)
+        self.assertEqual(len(alerts), 1)
+        self.assertEqual(alerts[0].expected, 0.5)
