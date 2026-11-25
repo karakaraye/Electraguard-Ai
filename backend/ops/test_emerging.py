@@ -369,3 +369,31 @@ class EmergingIssueDetectionIntegrationTests(TestCase):
         self.assertEqual(a3[0].total_reports, 18)
         self.assertEqual(len(a3[0].report_ids), 18)
         self.assertIn("7 ", a3[0].explanation)
+
+    def test_race_with_review_opens_new_warning_instead_of_joining(self):
+        from unittest.mock import patch
+
+        day = datetime.now(WAT).date()
+        t1 = datetime.combine(day, time(10, 0), tzinfo=WAT).astimezone(dt_timezone.utc)
+        for _ in range(5):
+            self.create_report(occurred_at=t1 - timedelta(minutes=5))
+        a1 = detect_emerging(self.org.pk, now=t1)
+        self.assertEqual(len(a1), 1)
+        first_pk = a1[0].pk
+
+        t2 = t1 + timedelta(minutes=75)
+        for _ in range(5):
+            self.create_report(occurred_at=t2 - timedelta(minutes=5))
+
+        orig_s4u = ClusterWarning.objects.select_for_update
+
+        def review_before_lock(*args, **kwargs):
+            ClusterWarning.objects.filter(pk=first_pk).update(reviewed_at=t2, reviewed_by="coord@example.com")
+            return orig_s4u(*args, **kwargs)
+
+        with patch.object(ClusterWarning.objects, "select_for_update", side_effect=review_before_lock):
+            a2 = detect_emerging(self.org.pk, now=t2)
+
+        self.assertEqual(len(a2), 1)
+        self.assertNotEqual(a2[0].pk, first_pk)
+        self.assertEqual(ClusterWarning.objects.filter(organisation=self.org).count(), 2)
