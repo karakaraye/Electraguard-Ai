@@ -24,7 +24,7 @@ from .incident_input import field, incident_input
 from .models import CitizenReply, Report, ReviewEvent
 from .v1_views import STATES, missing, persist_report, question_id, withdraw_report
 from .workflow import record_change
-from privacy.redactor import redact
+from privacy.redactor import redact, safe_text
 
 Status = Report.Status
 Action = ReviewEvent.Action
@@ -150,7 +150,7 @@ def receipt_status(request, receipt_code):
 
 
 def reply_message(reply, viewer=None):
-    display_body = reply.body if viewer != "reviewer" else (getattr(reply, "auto_redacted_body", None) or reply.body)
+    display_body = reply.body if viewer != "reviewer" else safe_text(reply)
     return {
         "id": str(reply.pk), "kind": "reply", "author": "citizen", "author_label": "Citizen",
         "body": display_body, "attachment": None, "question_state": None,
