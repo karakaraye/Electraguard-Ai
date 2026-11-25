@@ -63,16 +63,17 @@ export type StepShellProps = {
   banner?: ReactNode;
   actions?: ReactNode;
   testId: string;
+  citizen?: boolean;
   children: ReactNode;
 };
 
-export function StepShell({ step, onBack, onDiscard, offline, banner, actions, testId, children }: StepShellProps) {
+export function StepShell({ step, onBack, onDiscard, offline, banner, actions, testId, citizen, children }: StepShellProps) {
   const t = useT();
   const [menu, setMenu] = useState(false);
   const [confirm, setConfirm] = useState(false);
   return (
     <AppShell
-      title={<AppBarTitle />}
+      title={citizen ? <span data-testid="citizen-title">{t("o04.citizenMode")}</span> : <AppBarTitle />}
       onBack={onBack}
       onMenu={onDiscard ? () => setMenu(true) : undefined}
       offline={offline}
@@ -131,7 +132,8 @@ export function StepShell({ step, onBack, onDiscard, offline, banner, actions, t
   );
 }
 
-type Common = { onBack: () => void; onDiscard?: () => void; offline?: boolean; banner?: ReactNode };
+/** `citizen`: a report without an account (screen 29): the bar names it, and Check and send explains the receipt. */
+type Common = { onBack: () => void; onDiscard?: () => void; offline?: boolean; banner?: ReactNode; citizen?: boolean };
 
 /* ---------- O-05 What happened? ---------- */
 
@@ -804,6 +806,12 @@ export function CheckView({
         <>
           <h1 className={styles.title}>{t("o11.title")}</h1>
           <p className={styles.lead}>{t("o11.hint")}</p>
+          {shell.citizen ? (
+            <p className={styles.note} data-testid="o11-citizen-note">
+              <ShieldCheckIcon />
+              <span>{t("o11.citizenNote")}</span>
+            </p>
+          ) : null}
           {statusArea}
         </>
       )}

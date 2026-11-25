@@ -517,7 +517,8 @@
     "checkingTitle": "Checking your report",
     "summaryTitle": "Your report",
     "sendOffline": "Save and send when online",
-    "checkThis": "Check this"
+    "checkThis": "Check this",
+    "citizenNote": "You don't need an account. You'll get a receipt code."
   },
   "o12": {
     "title": "Report received",

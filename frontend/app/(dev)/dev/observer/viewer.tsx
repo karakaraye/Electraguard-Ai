@@ -301,6 +301,7 @@ export const SCREENS: Record<string, Record<string, (t: Translate) => ReactEleme
   },
   o05: {
     first: () => <CategoryView {...shell} value={null} access={[]} error={false} onChange={noop} onAccess={noop} onContinue={noop} />,
+    citizen: () => <CategoryView {...shell} citizen value={null} access={[]} error={false} onChange={noop} onAccess={noop} onContinue={noop} />,
     error: () => <CategoryView {...shell} value={null} access={[]} error onChange={noop} onAccess={noop} onContinue={noop} />,
     access: () => <CategoryView {...shell} value="access_barrier" access={["steps_no_ramp", "no_assistance"]} error={false} onChange={noop} onAccess={noop} onContinue={noop} />,
     offline: () => <CategoryView {...shell} offline value="queues_crowding" access={[]} error={false} onChange={noop} onAccess={noop} onContinue={noop} />,
@@ -312,6 +313,7 @@ export const SCREENS: Record<string, Record<string, (t: Translate) => ReactEleme
   },
   o07: {
     empty: () => where({}),
+    citizen: () => where({ citizen: true }),
     selected: () => where({ summary: FIXTURE_PLACE }, { value: unitValue }),
     today: () => where({ useToday: { label: FIXTURE_PLACE, code: unitValue.polling_unit_code, selected: false, onUse: noop } }),
     "today-selected": () => where({ summary: FIXTURE_PLACE, useToday: { label: FIXTURE_PLACE, code: unitValue.polling_unit_code, selected: true, onUse: noop } }, { value: unitValue }),
@@ -359,6 +361,7 @@ export const SCREENS: Record<string, Record<string, (t: Translate) => ReactEleme
     "long-text": (t) => check(t, { description: FIXTURE_LONG_TEXT, danger: true, justNow: true }),
     access: (t) => check(t, { category: "access_barrier", access: ["steps_no_ramp", "no_sign_language"], media: [] }),
     offline: (t) => check(t, { offline: true }),
+    citizen: (t) => check(t, { citizen: true }),
     sending: (t) => check(t, { status: "sending" }),
     "saved-offline": (t) => check(t, { status: "savedOffline", offline: true }),
     "not-confirmed": (t) => check(t, { status: "notConfirmed" }),

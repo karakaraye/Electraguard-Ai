@@ -105,7 +105,7 @@ function useNav(handle: DraftHandle): Nav {
             // ignore
           }
         }
-        router.push(citizen ? "/o/start?view=choose" : "/o");
+        router.push(citizen ? "/" : "/o");
       });
     },
     [handle, router, citizen],
@@ -190,10 +190,11 @@ export function IncidentFlow() {
     onDiscard: draft
       ? () =>
           void handle.discard().then(() => {
-            router.push(citizen ? "/o/start?view=choose" : "/o");
+            router.push(citizen ? "/" : "/o");
           })
       : undefined,
     offline,
+    citizen,
     banner: draftExists ? <Banner tone="attn" title={t("o15.draftExists")} onDismiss={() => setDraftExists(false)} data-testid="o15-draft-exists" /> : undefined,
   };
 
@@ -609,7 +610,7 @@ function CheckStep({ handle, nav, shell, sentId, setSentId, offline }: StepProps
       media={draft.media.map((media) => ({ id: media.client_media_id, kind: media.kind, previewUrl: previews[media.client_media_id] ?? null, name: media.name }))}
       errors={errors}
       status={shown}
-      onHome={() => router.push(nav.citizen ? "/o/start?view=choose" : "/o")}
+      onHome={() => router.push(nav.citizen ? "/" : "/o")}
       onEdit={(block) => {
         const target: StepId = block === "source" ? "describe" : block === "describe" ? "describe" : block;
         setServerErrors({});
