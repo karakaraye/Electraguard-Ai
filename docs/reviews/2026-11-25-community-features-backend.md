@@ -112,7 +112,11 @@
 
 ## 2. Verification Results
 
-All tests run against PostgreSQL 17 on local port 55455:
+**GitHub CI (PG17 + Node):** [Run 45679371537](https://github.com/karakaraye/Electraguard-Ai/actions/runs/45679371537) — All jobs green:
+- `backend` job: Passed (3m 11s)
+- `frontend` job: Passed (35s)
+
+Local test suite on PostgreSQL 17 (port 55455):
 
 | Test Module | Pass | Fail | Skip | Duration |
 |---|---|---|---|---|

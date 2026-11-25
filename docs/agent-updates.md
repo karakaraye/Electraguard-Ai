@@ -86,6 +86,7 @@ The full plan is in [hackathon-plan.md](hackathon-plan.md).
 - **Section D (Tests, Contract & Demo Data):**
   - Comprehensive red-line test suite `backend/notices/test_community_features.py` (10 tests), `notices/tests.py` (6 tests), `rumours` (4 tests), `phone_channels` (19 tests) all passing on PostgreSQL 17.
   - Added `notices` to `.github/workflows/verify.yml` test suite list.
+  - GitHub CI (PG17 + Node): [Run 45679371537](https://github.com/karakaraye/Electraguard-Ai/actions/runs/45679371537) (backend + frontend both passed).
   - Added management command `seed_community_demo` populating 2 approved rumours, 1 logistics notice, and cluster-triggering check-ins in synthetic organisation.
   - Synchronized `docs/design/api-contracts.md` and `frontend/lib/api/contracts.ts` with Section 6 contracts.
 - **Slice review report:** [reviews/2026-11-25-community-features-backend.md](reviews/2026-11-25-community-features-backend.md).
