@@ -1,111 +1,431 @@
-.container {
-  display: flex;
-  flex-direction: column;
-  gap: var(--s-5);
-  width: 100%;
-}
+/* S-07 publish snapshots. Colour only for status. */
 
-.topSection {
+.page {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: var(--s-4);
+  gap: var(--s-5);
+  min-width: 0;
 }
 
-.card {
-  display: flex;
-  flex-direction: column;
-  gap: var(--s-3);
-  padding: var(--s-4);
-  background: var(--paper);
-  border: 1px solid var(--rule);
-  border-radius: var(--radius);
+.hint,
+.sub {
+  margin: 0;
+  color: var(--ink-2);
+  font: var(--t-small);
+  overflow-wrap: anywhere;
+}
+
+.sub {
+  color: var(--ink);
 }
 
 .cardTitle {
   margin: 0;
   font: var(--t-heading);
-  font-size: 1.125rem;
+  font-size: 1.0625rem;
 }
 
-.snapshotHistory {
+.miniTitle {
+  margin: 0;
+  font: var(--t-label);
+}
+
+/* ---------- Cards ---------- */
+
+.top {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+  gap: var(--s-4);
+  align-items: stretch;
+}
+
+.card,
+.detail {
+  display: grid;
+  align-content: start;
+  gap: var(--s-4);
+  padding: var(--s-4) var(--s-5);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  background: var(--paper-raised);
+  min-width: 0;
+}
+
+.cardHead {
+  display: grid;
+  gap: var(--s-1);
+  min-width: 0;
+}
+
+.cutoffForm {
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--s-3);
+}
+
+.cutoffField {
+  flex: 1 1 15rem;
+  min-width: 0;
+}
+
+/* The button lines up with the field, not with its label. */
+.cutoffForm > button {
+  margin-top: 1.75rem;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
   gap: var(--s-2);
 }
 
-.snapshotRow {
+.loading {
+  padding: var(--s-4);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  background: var(--paper-raised);
+}
+
+/* ---------- Hourly switch ---------- */
+
+.switchRow {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--s-3);
-  background: var(--paper-2);
-  border: 1px solid var(--rule);
-  border-radius: var(--radius);
+  gap: var(--s-3);
+}
+
+.switch {
+  position: relative;
+  flex: none;
+  width: 64px;
+  height: var(--target-min);
+  padding: 0;
+  border: 0;
+  background: transparent;
   cursor: pointer;
-  text-align: left;
 }
 
-.snapshotRow[data-selected="true"] {
-  border: 2px solid var(--ink);
-  background: var(--paper);
+.switch:disabled {
+  cursor: progress;
 }
 
-.previewSection {
+.track {
+  position: absolute;
+  inset: 9px 6px;
+  border: var(--border-w) solid var(--rule-control);
+  border-radius: var(--radius-pill);
+  background: var(--paper-2);
+  transition: background-color 120ms ease, border-color 120ms ease;
+}
+
+.thumb {
+  position: absolute;
+  top: 50%;
+  left: 3px;
+  width: 20px;
+  height: 20px;
+  margin-top: -10px;
+  border-radius: 50%;
+  background: var(--ink);
+  transition: transform 120ms ease, background-color 120ms ease;
+}
+
+.switch[aria-checked="true"] .track {
+  border-color: var(--ink);
+  background: var(--ink);
+}
+
+.switch[aria-checked="true"] .thumb {
+  background: var(--on-ink);
+  transform: translateX(20px);
+}
+
+.switch:focus-visible {
+  outline: none;
+}
+
+.switch:focus-visible .track {
+  outline: var(--focus-outline);
+  outline-offset: 2px;
+  box-shadow: var(--focus-halo);
+}
+
+/* ---------- The selected release ---------- */
+
+.detailHead {
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--s-3);
+}
+
+.detailText {
+  display: grid;
+  gap: var(--s-1);
+  flex: 1 1 22rem;
+  min-width: 0;
+}
+
+.titleRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-3);
+}
+
+.split {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 19rem;
   gap: var(--s-4);
+  align-items: start;
+}
+
+.previewCol {
+  display: grid;
+  gap: var(--s-3);
+  grid-column: 1;
+  grid-row: 1;
+  min-width: 0;
+}
+
+.previewCaption {
+  display: grid;
+  gap: var(--s-1);
+}
+
+/* The public page, drawn as the public sees it, inside a plain frame. */
+.frame {
+  min-width: 0;
   padding: var(--s-5);
+  border: var(--border-w) solid var(--rule-control);
+  border-radius: var(--radius);
   background: var(--paper);
+  color: var(--ink);
+  overflow: hidden;
+}
+
+.frame > div {
+  padding-top: 0;
+  gap: var(--s-6);
+}
+
+.excluded {
+  display: grid;
+  gap: var(--s-2);
+  grid-column: 2;
+  grid-row: 1;
+  padding: var(--s-4);
   border: 1px solid var(--rule);
   border-radius: var(--radius);
+  background: var(--paper-2);
+  min-width: 0;
+  position: sticky;
+  top: var(--s-4);
 }
 
-.tableWrapper {
-  overflow-x: auto;
-  max-width: 100%;
-  -webkit-overflow-scrolling: touch;
+.leftList {
+  display: grid;
+  gap: var(--s-2);
+  margin: var(--s-2) 0 0;
+  padding: 0;
+  list-style: none;
 }
+
+.leftList li {
+  padding-top: var(--s-2);
+  border-top: 1px solid var(--rule);
+  font: var(--t-body);
+  overflow-wrap: anywhere;
+}
+
+.leftList li[data-zero] {
+  color: var(--ink-2);
+}
+
+/* ---------- History ---------- */
 
 .table {
   width: 100%;
-  min-width: 500px;
   border-collapse: collapse;
-  font-size: 0.875rem;
-  text-align: left;
+  font: var(--t-small);
 }
 
 .table th,
 .table td {
-  padding: var(--s-2) var(--s-3);
+  padding: var(--s-3) var(--s-3);
   border-bottom: 1px solid var(--rule);
+  text-align: start;
+  vertical-align: middle;
+  font-weight: inherit;
+  overflow-wrap: anywhere;
 }
 
-.table th {
-  font-weight: 600;
+.table thead th {
   color: var(--ink-2);
+  font: var(--t-label);
+  font-size: 0.8125rem;
+  white-space: nowrap;
 }
 
-.suppressedCell {
-  color: var(--ink-2);
-  font-style: italic;
-}
-
-.excludedGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: var(--s-3);
-  padding: var(--s-3);
+.table tbody tr[data-selected] {
   background: var(--paper-2);
-  border-radius: var(--radius);
 }
 
-.excludedItem {
+.num {
+  text-align: end !important;
+}
+
+.hash {
+  display: inline-block;
+  max-width: 100%;
+  font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, "Liberation Mono", monospace;
+  font-size: 0.8125rem;
+  letter-spacing: 0.02em;
+  overflow-wrap: anywhere;
+  word-break: break-all;
+}
+
+.by {
+  min-width: 6rem;
+}
+
+.none {
+  color: var(--ink-2);
+}
+
+.rowButton {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--ink);
+  font: var(--t-label);
+  font-size: 0.9375rem;
+  text-align: start;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.rowButton[aria-current="true"] {
+  text-decoration-thickness: 3px;
+}
+
+.rowButton:focus-visible {
+  outline: var(--focus-outline);
+  outline-offset: 2px;
+  box-shadow: var(--focus-halo);
+  border-radius: 4px;
+}
+
+.more {
   display: flex;
-  flex-direction: column;
-  gap: 2px;
+  justify-content: center;
 }
 
-.excludedCount {
-  font-size: 1.25rem;
-  font-weight: 700;
+/* ---------- Sheets ---------- */
+
+.sheetBody {
+  display: grid;
+  gap: var(--s-3);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .track,
+  .thumb {
+    transition: none;
+  }
+}
+
+/* ---------- Narrow screens ---------- */
+
+@media (max-width: 1023px) {
+  .split {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .previewCol,
+  .excluded {
+    grid-column: 1;
+    grid-row: auto;
+    position: static;
+  }
+}
+
+@media (max-width: 899px) {
+  .top {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 767px) {
+  .card,
+  .detail {
+    padding: var(--s-4);
+  }
+
+  .frame {
+    padding: var(--s-3);
+  }
+
+  .cutoffForm > button {
+    margin-top: 0;
+    width: 100%;
+  }
+
+  .actions > button {
+    flex: 1 1 100%;
+  }
+
+  /* The history table becomes one card per release. */
+  .table,
+  .table tbody,
+  .table tr,
+  .table th,
+  .table td {
+    display: block;
+  }
+
+  .table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+
+  .table tr {
+    display: grid;
+    gap: var(--s-2);
+    padding: var(--s-3);
+    margin-bottom: var(--s-3);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+  }
+
+  .table th,
+  .table td {
+    display: grid;
+    grid-template-columns: 7rem minmax(0, 1fr);
+    align-items: center;
+    gap: var(--s-2);
+    padding: 0;
+    border: 0;
+    text-align: start;
+  }
+
+  .table td::before,
+  .table th[scope="row"]::before {
+    content: attr(data-label);
+    color: var(--ink-2);
+    font: var(--t-small);
+  }
+
+  .num {
+    text-align: start !important;
+  }
 }

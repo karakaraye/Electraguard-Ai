@@ -1,232 +1,488 @@
 "use client";
 
-import { useState } from "react";
-import type { Cell, SnapshotRecord } from "../../../../lib/api/types";
-import { useT } from "../../../../lib/i18n/client";
-import { Banner, Button, EmptyState, Field } from "../../../../ui";
-import { ShieldCheckIcon } from "../../../../ui/icons";
+import { useId, useState } from "react";
+import type { Cell, PublicResultsResponse, SnapshotRecord, SnapshotStatus } from "../../../../lib/api/types";
+import { useLocale, useT } from "../../../../lib/i18n/client";
+import { Banner, Button, EmptyState, Field, Sheet, Skeleton, StatusBadge, useNow, type StatusTone } from "../../../../ui";
+import { formatWatDateTime } from "../../../../ui/format";
+import { RetryIcon } from "../../../../ui/icons";
+import { ResultsView } from "../../../(public)/_views/ResultsView";
 import styles from "./PublishView.module.css";
+
+/** The shortest gap the screen asks for. The server enforces the organisation's own public delay. */
+export const MIN_CUTOFF_MINUTES = 60;
+
+export type PublishResult = { ok: true } | { ok: false; message: string };
+
+export type PublishNotice = { tone: "ok" | "attn"; text: string };
+
+/** Opens parts of the screen in a given state on first render. Used by the preview and tests only. */
+export interface PublishSeed {
+  /** "YYYY-MM-DDTHH:mm" in West Africa Time. */
+  cutoff?: string;
+  dialog?: "publish" | "discard" | "schedule";
+  sheetMessage?: string;
+}
 
 export interface PublishViewProps {
   snapshots: SnapshotRecord[];
-  selectedSnapshot: SnapshotRecord | null;
-  hourlySchedule: boolean;
+  selectedId: string | null;
+  /** null when the current setting is not known: the API has no way to read it. */
+  hourly: boolean | null;
   loading: boolean;
   error: string | null;
-  onCreateSnapshot?: (cutoff?: string) => void;
-  onApproveSnapshot?: (id: string, version: number) => void;
-  onDiscardSnapshot?: (id: string, version: number) => void;
-  onToggleSchedule?: (hourly: boolean) => void;
-  onSelectSnapshot?: (id: string) => void;
+  notice?: PublishNotice | null;
+  hasMore?: boolean;
+  loadingMore?: boolean;
+  onSelect?: (id: string) => void;
+  /** `cutoff` is an ISO time with an offset, or undefined to let the server use the latest allowed time. */
+  onGenerate?: (cutoff: string | undefined) => Promise<PublishResult>;
+  onApprove?: (record: SnapshotRecord) => Promise<PublishResult>;
+  onDiscard?: (record: SnapshotRecord) => Promise<PublishResult>;
+  onSetHourly?: (hourly: boolean) => Promise<PublishResult>;
+  onLoadMore?: () => void;
+  onRetry?: () => void;
+  onDismissNotice?: () => void;
+  seed?: PublishSeed | null;
   "data-testid"?: string;
 }
 
+const STATUS_TONE: Record<SnapshotStatus, StatusTone> = {
+  draft: "wait",
+  published: "ok",
+  superseded: "wait",
+  discarded: "attn",
+};
+
+/** "YYYY-MM-DDTHH:mm" in West Africa Time to epoch ms, or null if it is not a time. */
+function watInstant(value: string): number | null {
+  if (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(value)) return null;
+  const ms = Date.parse(`${value}:00+01:00`);
+  return Number.isNaN(ms) ? null : ms;
+}
+
+/** The first 16 characters of the audit-chain code, in groups of four so a narrow screen can wrap it. */
+export function fingerprint(hash: string): string {
+  return (hash.slice(0, 16).match(/.{1,4}/g) ?? []).join(" ");
+}
+
+function Switch({ checked, onToggle, labelledBy, busy }: { checked: boolean; onToggle: () => void; labelledBy: string; busy?: boolean }) {
+  return (
+    <button
+      type="button"
+      role="switch"
+      aria-checked={checked}
+      aria-labelledby={labelledBy}
+      aria-busy={busy || undefined}
+      className={styles.switch}
+      onClick={onToggle}
+      disabled={busy}
+      data-testid="s07-hourly-switch"
+    >
+      <span className={styles.track} aria-hidden="true">
+        <span className={styles.thumb} />
+      </span>
+    </button>
+  );
+}
+
+/** S-07 publish snapshots: preview exactly what the public page will show, then approve it. */
 export function PublishView({
   snapshots,
-  selectedSnapshot,
-  hourlySchedule,
+  selectedId,
+  hourly,
   loading,
   error,
-  onCreateSnapshot,
-  onApproveSnapshot,
-  onDiscardSnapshot,
-  onToggleSchedule,
-  onSelectSnapshot,
+  notice = null,
+  hasMore = false,
+  loadingMore = false,
+  onSelect,
+  onGenerate,
+  onApprove,
+  onDiscard,
+  onSetHourly,
+  onLoadMore,
+  onRetry,
+  onDismissNotice,
+  seed = null,
   "data-testid": testId = "publish-view",
 }: PublishViewProps) {
   const t = useT();
+  const { locale } = useLocale();
+  const now = useNow();
+  const cutoffId = useId();
+  const hourlyLabelId = useId();
 
-  const [cutoffTime, setCutoffTime] = useState("");
+  const [cutoff, setCutoff] = useState(seed?.cutoff ?? "");
+  const [serverProblem, setServerProblem] = useState<string | null>(null);
+  const [generating, setGenerating] = useState(false);
+  const [dialog, setDialog] = useState<"publish" | "discard" | "schedule" | null>(seed?.dialog ?? null);
+  const [sheetMessage, setSheetMessage] = useState<string | null>(seed?.sheetMessage ?? null);
+  const [working, setWorking] = useState(false);
+  const [scheduling, setScheduling] = useState(false);
 
-  const renderCell = (cell: Cell | undefined) => {
-    if (!cell || cell.suppressed) {
-      return <span className={styles.suppressedCell}>{t("ui.metric.fewerThan", { threshold: 5 })}</span>;
-    }
-    return <span className="eg-tnum">{cell.count}</span>;
-  };
+  const selected = snapshots.find((s) => s.id === selectedId) ?? snapshots[0] ?? null;
+
+  /* ---- Cutoff checks, derived on every render ---- */
+  const instant = cutoff ? watInstant(cutoff) : null;
+  const localProblem = !cutoff
+    ? null
+    : instant === null
+      ? t("s07.cutoffInvalid")
+      : now !== null && instant > now - MIN_CUTOFF_MINUTES * 60_000
+        ? t("s07.cutoffTooRecent", { minutes: MIN_CUTOFF_MINUTES })
+        : null;
+  const cutoffProblem = localProblem ?? serverProblem;
+
+  async function generate() {
+    if (!onGenerate || localProblem) return;
+    setServerProblem(null);
+    setGenerating(true);
+    const result = await onGenerate(cutoff ? `${cutoff}:00+01:00` : undefined);
+    setGenerating(false);
+    if (!result.ok) setServerProblem(result.message);
+  }
+
+  function closeSheet() {
+    setDialog(null);
+    setSheetMessage(null);
+  }
+
+  async function confirm(kind: "publish" | "discard") {
+    if (!selected) return;
+    const act = kind === "publish" ? onApprove : onDiscard;
+    if (!act) return;
+    setWorking(true);
+    setSheetMessage(null);
+    const result = await act(selected);
+    setWorking(false);
+    if (result.ok) closeSheet();
+    else setSheetMessage(result.message);
+  }
+
+  async function setHourly(next: boolean) {
+    if (!onSetHourly) return;
+    setScheduling(true);
+    setSheetMessage(null);
+    const result = await onSetHourly(next);
+    setScheduling(false);
+    if (result.ok) closeSheet();
+    else if (dialog === "schedule") setSheetMessage(result.message);
+  }
 
   return (
-    <div className={styles.container} data-testid={testId}>
-      {error && <Banner tone="danger" title={error} critical />}
+    <div className={styles.page} data-testid={testId}>
+      {error ? (
+        <Banner
+          tone="danger"
+          title={error}
+          critical
+          action={onRetry ? <Button variant="secondary" icon={<RetryIcon />} onClick={onRetry}>{t("s07.retry")}</Button> : undefined}
+        />
+      ) : null}
+      {notice ? <Banner tone={notice.tone} title={notice.text} onDismiss={onDismissNotice} data-testid="s07-notice" /> : null}
 
-      <div className={styles.topSection}>
-        {/* Create Snapshot Card */}
-        <div className={styles.card}>
-          <h2 className={styles.cardTitle}>{t("s07.createTitle")}</h2>
-          <p style={{ margin: 0, fontSize: "0.875rem", color: "var(--ink-2)" }}>
-            {t("s07.cutoffHint")}
-          </p>
-
-          <Field
-            id="snapshot-cutoff"
-            label={t("s07.cutoffLabel")}
-            type="datetime-local"
-            value={cutoffTime}
-            onChange={(e) => setCutoffTime(e.target.value)}
-          />
-
-          <div>
-            <Button
-              type="button"
-              variant="primary"
-              onClick={() => onCreateSnapshot?.(cutoffTime || undefined)}
-            >
+      <div className={styles.top}>
+        {/* ---------- Cutoff and preview ---------- */}
+        <section className={styles.card} aria-labelledby={`${cutoffId}-title`}>
+          <div className={styles.cardHead}>
+            <h2 id={`${cutoffId}-title`} className={styles.cardTitle}>{t("s07.createTitle")}</h2>
+            <p className={styles.hint}>{t("s07.cutoffHint", { minutes: MIN_CUTOFF_MINUTES })}</p>
+          </div>
+          <form
+            className={styles.cutoffForm}
+            onSubmit={(event) => {
+              event.preventDefault();
+              void generate();
+            }}
+            noValidate
+          >
+            <Field
+              id={cutoffId}
+              className={styles.cutoffField}
+              label={t("s07.cutoffLabel")}
+              type="datetime-local"
+              numeric
+              value={cutoff}
+              onChange={(event) => {
+                setCutoff(event.target.value);
+                setServerProblem(null);
+              }}
+              error={cutoffProblem ?? undefined}
+              data-testid="s07-cutoff"
+            />
+            <Button type="submit" variant="primary" loading={generating} disabled={Boolean(localProblem)} data-testid="s07-generate">
               {t("s07.createButton")}
             </Button>
+          </form>
+        </section>
+
+        {/* ---------- Hourly release ---------- */}
+        <section className={styles.card} aria-labelledby={hourlyLabelId}>
+          <div className={styles.cardHead}>
+            <h2 id={hourlyLabelId} className={styles.cardTitle}>{t("s07.scheduleTitle")}</h2>
+            <p className={styles.hint}>{t("s07.scheduleHint")}</p>
           </div>
-        </div>
-
-        {/* Hourly Auto Schedule Card */}
-        <div className={styles.card}>
-          <h2 className={styles.cardTitle}>{t("s07.scheduleTitle")}</h2>
-          <p style={{ margin: 0, fontSize: "0.875rem", color: "var(--ink-2)" }}>
-            {t("s07.scheduleHint")}
-          </p>
-          <div style={{ marginTop: "var(--s-2)" }}>
-            <span style={{ fontWeight: 600, color: hourlySchedule ? "var(--ok)" : "var(--ink-2)" }}>
-              {hourlySchedule ? t("s07.scheduleOn") : t("s07.scheduleOff")}
-            </span>
-          </div>
-          <div>
-            <Button
-              type="button"
-              variant="secondary"
-              onClick={() => onToggleSchedule?.(!hourlySchedule)}
-            >
-              {hourlySchedule ? "Pause auto-publishing" : "Enable hourly release"}
-            </Button>
-          </div>
-        </div>
-      </div>
-
-      {/* Snapshot History List */}
-      <div className={styles.card}>
-        <h2 className={styles.cardTitle}>{t("s07.snapshotsList")}</h2>
-        {loading && snapshots.length === 0 && (
-          <div style={{ padding: "var(--s-4)", textAlign: "center", color: "var(--ink-2)" }}>
-            {t("staff.loading")}
-          </div>
-        )}
-
-        {!loading && snapshots.length === 0 && (
-          <EmptyState title="No snapshots published or drafted yet" />
-        )}
-
-        <div className={styles.snapshotHistory}>
-          {snapshots.map((snap) => {
-            const isSelected = selectedSnapshot?.id === snap.id;
-
-            return (
-              <div
-                key={snap.id}
-                className={styles.snapshotRow}
-                data-selected={isSelected}
-                onClick={() => onSelectSnapshot?.(snap.id)}
-              >
-                <div>
-                  <strong>Cutoff: {snap.cutoff}</strong>
-                  <div style={{ fontSize: "0.8125rem", color: "var(--ink-2)" }}>
-                    Created by: {snap.created_by} · Status: <strong>{snap.status.toUpperCase()}</strong>
-                  </div>
-                </div>
-                <div>
-                  <span className="eg-tnum">Total: {renderCell(snap.preview.total)}</span>
-                </div>
+          {hourly === null ? (
+            <>
+              <p className={styles.hint}>{t("s07.scheduleUnknown")}</p>
+              <div className={styles.actions}>
+                <Button variant="secondary" onClick={() => setDialog("schedule")} disabled={scheduling} data-testid="s07-hourly-on">
+                  {t("s07.schedule.confirmOn")}
+                </Button>
+                <Button variant="quiet" onClick={() => void setHourly(false)} loading={scheduling} data-testid="s07-hourly-off">
+                  {t("s07.schedule.turnOff")}
+                </Button>
               </div>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Selected Snapshot Preview */}
-      {selectedSnapshot && (
-        <section className={styles.previewSection}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "var(--s-2)" }}>
-            <h2 className={styles.cardTitle}>{t("s07.previewTitle")}</h2>
-            <div style={{ display: "flex", gap: "var(--s-2)" }}>
-              {selectedSnapshot.status === "draft" && (
-                <>
-                  <Button
-                    type="button"
-                    variant="primary"
-                    onClick={() => onApproveSnapshot?.(selectedSnapshot.id, selectedSnapshot.version)}
-                  >
-                    {t("s07.approvePublish")}
-                  </Button>
-                  <Button
-                    type="button"
-                    variant="quiet"
-                    onClick={() => onDiscardSnapshot?.(selectedSnapshot.id, selectedSnapshot.version)}
-                  >
-                    {t("s07.discard")}
-                  </Button>
-                </>
-              )}
-            </div>
-          </div>
-
-          <p style={{ margin: 0, fontSize: "0.8125rem", color: "var(--ink-2)" }}>
-            {t("s07.suppressionNotice")}
-          </p>
-
-          {/* Excluded counts */}
-          <div>
-            <h3 style={{ fontSize: "1rem", margin: "0 0 var(--s-2)" }}>{t("s07.excludedTitle")}</h3>
-            <div className={styles.excludedGrid}>
-              <div className={styles.excludedItem}>
-                <span className={styles.excludedCount}>{selectedSnapshot.excluded.not_closed}</span>
-                <span style={{ fontSize: "0.75rem", color: "var(--ink-2)" }}>{t("s07.excludedNotClosed", { count: selectedSnapshot.excluded.not_closed })}</span>
-              </div>
-              <div className={styles.excludedItem}>
-                <span className={styles.excludedCount}>{selectedSnapshot.excluded.withdrawn}</span>
-                <span style={{ fontSize: "0.75rem", color: "var(--ink-2)" }}>{t("s07.excludedWithdrawn", { count: selectedSnapshot.excluded.withdrawn })}</span>
-              </div>
-              <div className={styles.excludedItem}>
-                <span className={styles.excludedCount}>{selectedSnapshot.excluded.after_cutoff}</span>
-                <span style={{ fontSize: "0.75rem", color: "var(--ink-2)" }}>{t("s07.excludedAfterCutoff", { count: selectedSnapshot.excluded.after_cutoff })}</span>
-              </div>
-            </div>
-          </div>
-
-          {/* State x Category Table */}
-          <div className={styles.tableWrapper}>
-            <table className={styles.table}>
-              <thead>
-                <tr>
-                  <th>State</th>
-                  <th>Total</th>
-                  <th>Intimidation / Violence</th>
-                  <th>Vote Buying</th>
-                  <th>Late Materials</th>
-                  <th>Equipment Failure</th>
-                </tr>
-              </thead>
-              <tbody>
-                {selectedSnapshot.preview.by_state.map((row) => (
-                  <tr key={row.state_code}>
-                    <td><strong>{row.state_name}</strong></td>
-                    <td>{renderCell(row.total)}</td>
-                    <td>{renderCell(row.by_category?.intimidation_violence)}</td>
-                    <td>{renderCell(row.by_category?.vote_buying)}</td>
-                    <td>{renderCell(row.by_category?.late_materials)}</td>
-                    <td>{renderCell(row.by_category?.equipment_failure)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-          {/* Audit Chain Head */}
-          {selectedSnapshot.preview.audit_chain_head && (
-            <div style={{ display: "flex", alignItems: "center", gap: "var(--s-2)", fontSize: "0.8125rem", color: "var(--ink-2)" }}>
-              <ShieldCheckIcon size={16} />
-              <span>
-                Audit chain verified: <strong>{selectedSnapshot.preview.audit_chain_head.hash.slice(0, 16)}…</strong> ({selectedSnapshot.preview.audit_chain_head.event_count} events)
-              </span>
+            </>
+          ) : (
+            <div className={styles.switchRow}>
+              <StatusBadge tone={hourly ? "ok" : "wait"} label={hourly ? t("s07.scheduleOn") : t("s07.scheduleOff")} />
+              <Switch
+                checked={hourly}
+                labelledBy={hourlyLabelId}
+                busy={scheduling}
+                onToggle={() => (hourly ? void setHourly(false) : setDialog("schedule"))}
+              />
             </div>
           )}
         </section>
-      )}
+      </div>
+
+      {loading && snapshots.length === 0 && !error ? (
+        <div className={styles.loading} role="status" aria-busy="true" aria-label={t("staff.loading")}>
+          <Skeleton lines={8} height={44} delay={0} />
+        </div>
+      ) : null}
+
+      {/* ---------- The selected release ---------- */}
+      {selected ? (
+        <Detail
+          key={selected.id}
+          record={selected}
+          onApprove={() => setDialog("publish")}
+          onDiscard={() => setDialog("discard")}
+        />
+      ) : null}
+
+      {/* ---------- History ---------- */}
+      {!loading || snapshots.length > 0 ? (
+        <section className={styles.card} aria-labelledby={`${cutoffId}-history`}>
+          <div className={styles.cardHead}>
+            <h2 id={`${cutoffId}-history`} className={styles.cardTitle}>{t("s07.snapshotsList")}</h2>
+            {snapshots.length > 0 ? <p className={styles.hint}>{t("s07.history.fingerprintNote")}</p> : null}
+          </div>
+          {snapshots.length === 0 && !error ? (
+            <EmptyState title={t("s07.history.empty")} data-testid="s07-empty">
+              <p>{t("s07.history.emptyBody")}</p>
+            </EmptyState>
+          ) : null}
+          {snapshots.length > 0 ? (
+            <>
+              <p className={styles.hint}>{t("s07.history.selectHint")}</p>
+              <table className={styles.table} data-testid="s07-history">
+                <caption className="eg-sr-only">{t("s07.history.caption")}</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">{t("s07.columns.cutoff")}</th>
+                    <th scope="col">{t("s07.columns.status")}</th>
+                    <th scope="col" className={styles.num}>{t("s07.columns.total")}</th>
+                    <th scope="col">{t("s07.columns.fingerprint")}</th>
+                    <th scope="col">{t("s07.columns.by")}</th>
+                    <th scope="col">{t("s07.columns.published")}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {snapshots.map((snap) => {
+                    const isSelected = snap.id === selected?.id;
+                    return (
+                      <tr key={snap.id} data-selected={isSelected ? "" : undefined}>
+                        <th scope="row" data-label={t("s07.columns.cutoff")}>
+                          <button
+                            type="button"
+                            className={`${styles.rowButton} eg-tnum`}
+                            aria-current={isSelected ? "true" : undefined}
+                            onClick={() => onSelect?.(snap.id)}
+                          >
+                            {formatWatDateTime(snap.cutoff, locale)}
+                          </button>
+                        </th>
+                        <td data-label={t("s07.columns.status")}>
+                          <StatusBadge tone={STATUS_TONE[snap.status]} label={t(`s07.status.${snap.status}`)} />
+                        </td>
+                        <td className={`${styles.num} eg-tnum`} data-label={t("s07.columns.total")}>
+                          <CellText cell={snap.preview.total} />
+                        </td>
+                        <td data-label={t("s07.columns.fingerprint")}>
+                          <code className={styles.hash}>{fingerprint(snap.preview.audit_chain_head.hash)}</code>
+                        </td>
+                        <td data-label={t("s07.columns.by")} className={styles.by}>{snap.created_by}</td>
+                        <td data-label={t("s07.columns.published")} className="eg-tnum">
+                          {snap.published_at ? formatWatDateTime(snap.published_at, locale) : <span className={styles.none}>&ndash;</span>}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+              {hasMore ? (
+                <div className={styles.more}>
+                  <Button variant="secondary" loading={loadingMore} onClick={onLoadMore} data-testid="s07-more">
+                    {t("s07.history.loadMore")}
+                  </Button>
+                </div>
+              ) : null}
+            </>
+          ) : null}
+        </section>
+      ) : null}
+
+      {/* ---------- Confirm sheets ---------- */}
+      {dialog === "publish" && selected ? (
+        <Sheet
+          open
+          onClose={closeSheet}
+          title={t("s07.publish.confirmTitle")}
+          description={t("s07.publish.confirmBody")}
+          data-testid="s07-publish-sheet"
+          footer={
+            <>
+              <Button variant="quiet" onClick={closeSheet}>{t("s07.cancel")}</Button>
+              <Button variant="primary" loading={working} onClick={() => void confirm("publish")} data-testid="s07-publish-confirm">
+                {t("s07.approvePublish")}
+              </Button>
+            </>
+          }
+        >
+          <div className={styles.sheetBody}>
+            {sheetMessage ? <Banner tone="danger" title={sheetMessage} critical /> : null}
+            <p className={styles.sub}>{t("s07.detail.by", { name: selected.created_by, cutoff: formatWatDateTime(selected.cutoff, locale) })}</p>
+          </div>
+        </Sheet>
+      ) : null}
+
+      {dialog === "discard" && selected ? (
+        <Sheet
+          open
+          onClose={closeSheet}
+          title={t("s07.discardConfirm.title")}
+          description={t("s07.discardConfirm.body")}
+          data-testid="s07-discard-sheet"
+          footer={
+            <>
+              <Button variant="quiet" onClick={closeSheet}>{t("s07.cancel")}</Button>
+              <Button variant="danger" loading={working} onClick={() => void confirm("discard")} data-testid="s07-discard-confirm">
+                {t("s07.discard")}
+              </Button>
+            </>
+          }
+        >
+          {sheetMessage ? <Banner tone="danger" title={sheetMessage} critical /> : null}
+        </Sheet>
+      ) : null}
+
+      {dialog === "schedule" ? (
+        <Sheet
+          open
+          onClose={closeSheet}
+          title={t("s07.schedule.confirmTitle")}
+          description={t("s07.schedule.confirmBody")}
+          data-testid="s07-schedule-sheet"
+          footer={
+            <>
+              <Button variant="quiet" onClick={closeSheet}>{t("s07.cancel")}</Button>
+              <Button variant="primary" loading={scheduling} onClick={() => void setHourly(true)} data-testid="s07-schedule-confirm">
+                {t("s07.schedule.confirmOn")}
+              </Button>
+            </>
+          }
+        >
+          {sheetMessage ? <Banner tone="danger" title={sheetMessage} critical /> : null}
+        </Sheet>
+      ) : null}
     </div>
+  );
+}
+
+function CellText({ cell }: { cell: Cell }) {
+  const t = useT();
+  const { locale } = useLocale();
+  if (cell.suppressed) return <span className={styles.none}>{t("p03.fewerThan")}</span>;
+  return <>{new Intl.NumberFormat(locale === "en" ? "en-NG" : undefined).format(cell.count)}</>;
+}
+
+/** One release: the public page exactly as it will be drawn, beside what was left out. */
+function Detail({ record, onApprove, onDiscard }: { record: SnapshotRecord; onApprove: () => void; onDiscard: () => void }) {
+  const t = useT();
+  const { locale } = useLocale();
+  const titleId = useId();
+  const draft = record.status === "draft";
+
+  const data: PublicResultsResponse = {
+    generated_at: record.published_at ?? record.cutoff,
+    notice_key: "results.notice",
+    snapshots: [record.preview],
+    combined: null,
+  };
+
+  const statusNote =
+    record.status === "draft"
+      ? t("s07.detail.draftNote")
+      : record.status === "published"
+        ? t("s07.detail.publishedNote", { time: record.published_at ? formatWatDateTime(record.published_at, locale) : "" })
+        : record.status === "discarded"
+          ? t("s07.detail.discardedNote")
+          : t("s07.detail.supersededNote");
+
+  const left = [
+    { key: "notClosed", count: record.excluded.not_closed },
+    { key: "withdrawn", count: record.excluded.withdrawn },
+    { key: "afterCutoff", count: record.excluded.after_cutoff },
+    { key: "otherKinds", count: record.excluded.other_kinds },
+  ] as const;
+
+  return (
+    <section className={styles.detail} aria-labelledby={titleId} data-testid="s07-detail" data-status={record.status}>
+      <header className={styles.detailHead}>
+        <div className={styles.detailText}>
+          <div className={styles.titleRow}>
+            <h2 id={titleId} className={styles.cardTitle}>{t("s07.previewTitle")}</h2>
+            <StatusBadge tone={STATUS_TONE[record.status]} label={t(`s07.status.${record.status}`)} />
+          </div>
+          <p className={styles.sub}>{t("s07.detail.by", { name: record.created_by, cutoff: formatWatDateTime(record.cutoff, locale) })}</p>
+          <p className={styles.hint}>{statusNote}</p>
+        </div>
+        {draft ? (
+          <div className={styles.actions}>
+            <Button variant="primary" onClick={onApprove} data-testid="s07-approve">{t("s07.approvePublish")}</Button>
+            <Button variant="quiet" onClick={onDiscard} data-testid="s07-discard">{t("s07.discard")}</Button>
+          </div>
+        ) : null}
+      </header>
+
+      <div className={styles.split}>
+        <aside className={styles.excluded} aria-labelledby={`${titleId}-left`} data-testid="s07-exclusions">
+          <h3 id={`${titleId}-left`} className={styles.miniTitle}>{t("s07.exclusions.title")}</h3>
+          <p className={styles.hint}>{t("s07.exclusions.note")}</p>
+          <ul className={styles.leftList}>
+            {left.map((row) => (
+              <li key={row.key} data-zero={row.count === 0 ? "" : undefined} className="eg-tnum">
+                {t(`s07.exclusions.${row.key}`, { count: row.count })}
+              </li>
+            ))}
+          </ul>
+        </aside>
+
+        <div className={styles.previewCol}>
+          <div className={styles.previewCaption}>
+            <h3 className={styles.miniTitle}>{t("s07.preview.title")}</h3>
+            <p className={styles.hint}>{t("s07.preview.note")}</p>
+          </div>
+          <section className={styles.frame} aria-label={t("s07.preview.label")} data-testid="s07-preview">
+            <ResultsView t={t} locale={locale} state={{ kind: "ok", data, view: undefined }} />
+          </section>
+        </div>
+      </div>
+    </section>
   );
 }
