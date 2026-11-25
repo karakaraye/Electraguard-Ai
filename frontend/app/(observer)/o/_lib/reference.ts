@@ -7,7 +7,7 @@
  */
 
 import { useCallback, useEffect, useState } from "react";
-import { downloadJson, getWithRetry } from "../../../../lib/api/client";
+import { api, downloadJson, getWithRetry } from "../../../../lib/api/client";
 import type { AreaIndexResponse, StateAreasResponse } from "../../../../lib/api/types";
 import { get, idbAvailable, put } from "../../../../lib/drafts/db";
 import type { StateListStatus } from "../../../../ui";
@@ -32,6 +32,75 @@ export async function loadIndex(): Promise<AreaIndexResponse | null> {
     return result.data;
   }
   return stored?.data ?? null;
+}
+
+/* ---------- Prefetch so an observer can pick a polling unit offline ---------- */
+
+const USED_KEY = "eg.reference.states";
+/** When the organisation names no coverage area, take every state if the whole list is this small. */
+const SMALL_DATASET_BYTES = 2_000_000;
+
+function usedStates(): string[] {
+  try {
+    const value = JSON.parse(localStorage.getItem(USED_KEY) ?? "[]");
+    return Array.isArray(value) ? value.filter((v): v is string => typeof v === "string") : [];
+  } catch {
+    return [];
+  }
+}
+
+function rememberState(stateCode: string) {
+  try {
+    const next = [stateCode, ...usedStates().filter((code) => code !== stateCode)].slice(0, 6);
+    localStorage.setItem(USED_KEY, JSON.stringify(next));
+  } catch {
+    /* storage blocked: prefetch falls back to the coverage area */
+  }
+}
+
+/** Download (or revalidate) one state's list into IndexedDB. Returns true when the phone has a current copy. */
+async function storeState(stateCode: string, version: string | undefined): Promise<boolean> {
+  const key = `state:${stateCode}`;
+  const stored = await cached<StateAreasResponse>(key);
+  if (stored && version && stored.data.version === version) return true;
+  const result = await downloadJson("REF-01.state", { params: { state_code: stateCode }, headers: stored?.etag ? { "If-None-Match": stored.etag } : {} }, () => undefined);
+  if (result.ok && result.status !== 304 && result.data) {
+    await put<Cached<StateAreasResponse>>("refdata", { key, etag: result.etag, data: result.data, saved_at: Date.now() });
+    return true;
+  }
+  return Boolean(stored);
+}
+
+let prefetching: Promise<void> | null = null;
+
+/**
+ * Runs at sign-in and whenever the phone comes back online: keeps the organisation's coverage states (REF-02),
+ * the states this observer used before, and every state already on the phone current. On a small dataset with no
+ * coverage area it takes every state. Failures are quiet; the picker still downloads on demand.
+ */
+export function prefetchReference(): Promise<void> {
+  if (prefetching) return prefetching;
+  prefetching = (async () => {
+    try {
+      if (!idbAvailable() || navigator.onLine === false) return;
+      const index = await loadIndex();
+      if (!index) return;
+      const known = new Set(index.states.map((s) => s.state_code as string));
+      const wanted = new Set<string>(usedStates().filter((code) => known.has(code)));
+      const settings = await api("REF-02", {}).catch(() => null);
+      const coverage = settings?.ok ? (settings.data.coverage_area?.state_codes ?? []) : [];
+      for (const code of coverage) if (known.has(code)) wanted.add(code);
+      for (const state of index.states) if (await cached(`state:${state.state_code}`)) wanted.add(state.state_code);
+      const total = index.states.reduce((sum, s) => sum + (s.bytes_gzip || 0), 0);
+      if (coverage.length === 0 && total <= SMALL_DATASET_BYTES) for (const code of known) wanted.add(code);
+      for (const code of wanted) {
+        await storeState(code, index.states.find((s) => s.state_code === code)?.version).catch(() => false);
+      }
+    } finally {
+      prefetching = null;
+    }
+  })();
+  return prefetching;
 }
 
 export function useReference(stateCode: string | null) {
@@ -65,6 +134,7 @@ export function useReference(stateCode: string | null) {
 
   useEffect(() => {
     if (!stateCode || !indexLoaded) return;
+    rememberState(stateCode);
     let cancelled = false;
     void (async () => {
       const key = `state:${stateCode}`;

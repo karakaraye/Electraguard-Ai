@@ -14,6 +14,7 @@ import { useT } from "../../../../lib/i18n/client";
 import { kick, markWaitingCode, resumeAfterIntakePause, setPaused, startSync, useOutbox } from "../../../../lib/outbox";
 import { Button, Field, Sheet } from "../../../../ui";
 import { resumeAfterSignIn, startPending } from "../_lib/pending";
+import { prefetchReference } from "../_lib/reference";
 import { clearSession, getSession, markExpired, signedIn, updateFromMe, useObserverSession } from "../_lib/session";
 import { flushPendingSignOut } from "../_lib/signOut";
 import styles from "./observer.module.css";
@@ -61,6 +62,15 @@ export function ObserverRuntime({ children }: { children: ReactNode }) {
     startSync({ owners });
     // Checklist stages, result sheets, messages and posts (lib/outbox carries incident reports only).
     startPending(owners);
+  }, [session?.code]);
+
+  // Keep the polling-unit list on the phone so a report can name its unit offline.
+  useEffect(() => {
+    if (!session?.code) return;
+    void prefetchReference();
+    const onOnline = () => void prefetchReference();
+    window.addEventListener("online", onOnline);
+    return () => window.removeEventListener("online", onOnline);
   }, [session?.code]);
 
   // "Clear this phone" ran offline: end the server session once the network is back (O-20).
