@@ -3,7 +3,7 @@ import type { GuideDocument, GuideListResponse } from "../../../lib/api/types";
 import type { Locale, Translate } from "../../../lib/i18n";
 import { localeTags } from "../../../lib/i18n";
 import { EmptyState } from "../../../ui/EmptyState/EmptyState";
-import { ArrowLeftIcon } from "../../../ui/icons";
+import { ArrowLeftIcon, ChevronRightIcon, FileIcon } from "../../../ui/icons";
 import { formatWatDate } from "../_lib/public";
 import page from "./page.module.css";
 import styles from "./guide.module.css";
@@ -53,12 +53,18 @@ export function GuideIndexView({ t, state }: { t: Translate; state: GuideIndexSt
         <ul className={styles.list} data-testid="guide-list">
           {state.data.documents.map((doc) => (
             <li key={doc.slug}>
-              <Link href={`/guide/${doc.slug}`}>
-                <span className={styles.listTitle} lang={localeTags[doc.language]}>{doc.title}</span>
-                <span className={styles.listMeta}>
-                  {t("p05.version", { version: doc.version })}
-                  {doc.fallback_language_used ? ` ${t("p05.englishOnly")}` : ""}
+              <Link href={`/guide/${doc.slug}`} className={styles.card}>
+                <span className={styles.cardDisc} aria-hidden="true">
+                  <FileIcon size={24} />
                 </span>
+                <span className={styles.cardText}>
+                  <span className={styles.listTitle} lang={localeTags[doc.language]}>{doc.title}</span>
+                  <span className={styles.listMeta}>
+                    <span className="eg-tnum">{t("p05.version", { version: doc.version })}</span>
+                    {doc.fallback_language_used ? <span className={styles.chip}>{t("p05.englishOnly")}</span> : null}
+                  </span>
+                </span>
+                <ChevronRightIcon size={20} className={styles.cardChevron} aria-hidden="true" />
               </Link>
             </li>
           ))}

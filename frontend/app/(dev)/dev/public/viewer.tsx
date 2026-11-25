@@ -43,6 +43,27 @@ const FIXTURE_DOC: GuideDocument = {
 
 Never accept money or gifts in exchange for your vote. Report any pressure to our team.`,
     },
+    {
+      id: "accreditation",
+      heading: "Accreditation",
+      body: `Officials check your voter card and confirm who you are before you can vote.
+
+- Join the queue and keep your voter card with you.
+- Elderly voters, voters with disabilities and pregnant women may be helped to the front.`,
+    },
+    {
+      id: "problems",
+      heading: "If something goes wrong",
+      body: `Stay calm and stay safe. Do not argue with officials or other voters.
+
+- Note the time and what happened.
+- If someone is in danger, call 112. ElectraGuard does not send help.`,
+    },
+    {
+      id: "report",
+      heading: "Report what you saw",
+      body: `You can report on ElectraGuard without an account. Describe roles, not names, and you will get a receipt code to check your report.`,
+    },
   ],
 };
 
@@ -250,7 +271,9 @@ export function PublicStateViewer(): ReactElement {
                 ? { kind: "not_found" }
                 : state === "error"
                   ? { kind: "error" }
-                  : { kind: "ok", data: FIXTURE_DOC }
+                  : state === "fallback"
+                    ? { kind: "ok", data: { ...FIXTURE_DOC, fallback_language_used: true } }
+                    : { kind: "ok", data: FIXTURE_DOC }
             }
           />
         );
