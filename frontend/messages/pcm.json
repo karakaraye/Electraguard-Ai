@@ -944,7 +944,7 @@
   "p01": {
     "title": "Check report",
     "label": "Receipt code",
-    "hint": "Example: EG-4H7Q-92KD",
+    "hint": "E dey start with EG, then two groups of four letters or numbers.",
     "check": "Check",
     "checking": "E dey check",
     "savedCodes": "Codes wey dey this phone",
@@ -2189,6 +2189,7 @@
   "pub": {
     "homeLink": "ElectraGuard AI home",
     "menu": "Menu",
+    "reportShort": "Report am",
     "nav": {
       "label": "Main",
       "home": "Home",
@@ -2215,7 +2216,7 @@
     "basicPhone": "No smartphone? Dial {ussd} or send SMS go {shortCode}.",
     "tryPhone": "Try am for the phone wey dey this screen",
     "check": {
-      "title": "Check report",
+      "title": "You don report already? Check your report",
       "lead": "Put the receipt code wey you get when you report.",
       "outcome": "Wetin dem find: {outcome}",
       "question": "Reviewer get question for you. Open the report for the phone wey you take send am.",
@@ -2237,12 +2238,37 @@
       "open": "See results by state"
     },
     "how": {
-      "title": "How e dey work",
-      "1": "You report wetin you see, for your own language. E dey work even when network weak.",
+      "title": "How report dey waka",
+      "art": {
+        "outbox": "Outbox",
+        "ai": "AI don suggest am",
+        "reviewed": "Dem don check am"
+      },
+      "1": "You report wetin you see, for your own language. If network no dey, e go still send when network come back.",
       "2": "You go get receipt code. Keep am to check your report.",
-      "3": "Reviewer wey don train go check the report. AI dey help arrange reports; na person dey decide.",
+      "3": "Person wey don train go check every report. AI dey help arrange dem; na person dey decide.",
       "4": "Reviewed total by state go show here. Never name, wetin you write, or photo."
     },
+    "ways": {
+      "title": "Three way wey you fit take report",
+      "web": {
+        "title": "For this website",
+        "body": "Answer small questions for your own language. You no need account.",
+        "link": "Start report"
+      },
+      "sms": {
+        "title": "Through SMS go {shortCode}",
+        "body": "Send short text from any phone. E no need data."
+      },
+      "ussd": {
+        "title": "Through USSD for any phone: {ussd}",
+        "body": "Dial the code, then choose from the menu. E no need data."
+      }
+    },
+    "rumour": {
+      "stamp": "Reviewers don check am"
+    },
+    "eveningCaption": "Dem dey publish reviewed total here.",
     "help": {
       "title": "Questions",
       "ask": "Ask ElectraGuard",

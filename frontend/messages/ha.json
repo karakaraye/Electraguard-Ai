@@ -944,7 +944,7 @@
   "p01": {
     "title": "Duba rahoto",
     "label": "Lambar rasiti",
-    "hint": "Misali: EG-4H7Q-92KD",
+    "hint": "Yana farawa da EG, sannan rukuni biyu na haruffa ko lambobi huɗu-huɗu.",
     "check": "Duba",
     "checking": "Ana bincikawa",
     "savedCodes": "Lambobin da ke kan wannan wayar",
@@ -2189,6 +2189,7 @@
   "pub": {
     "homeLink": "Shafin farko na ElectraGuard AI",
     "menu": "Menu",
+    "reportShort": "Kai rahoto",
     "nav": {
       "label": "Babba",
       "home": "Gida",
@@ -2215,7 +2216,7 @@
     "basicPhone": "Ba ka da wayar zamani? Danna {ussd} ko aika SMS zuwa {shortCode}.",
     "tryPhone": "Gwada shi a wayar da ke kan allo",
     "check": {
-      "title": "Duba rahoto",
+      "title": "Ka riga ka kai rahoto? Duba rahotonka",
       "lead": "Shigar da lambar rasiti da ka samu lokacin da ka kai rahoto.",
       "outcome": "Sakamako: {outcome}",
       "question": "Mai dubawa yana da tambaya gare ka. Buɗe rahoton a wayar da ka aika shi da ita.",
@@ -2237,12 +2238,37 @@
       "open": "Duba sakamako bisa jiha"
     },
     "how": {
-      "title": "Yadda yake aiki",
-      "1": "Ka kai rahoton abin da ka gani, da harshenka. Yana aiki ko da sabis ba ƙarfi.",
+      "title": "Yadda rahoto ke tafiya",
+      "art": {
+        "outbox": "Akwatin aikawa",
+        "ai": "AI ta ba da shawara",
+        "reviewed": "An duba"
+      },
+      "1": "Ka kai rahoton abin da ka gani, da harshenka. Idan hanyar sadarwa ta dawo, zai tafi da kansa.",
       "2": "Za ka sami lambar rasiti. Ka ajiye ta don duba rahotonka.",
-      "3": "Mai dubawa da aka horar zai duba rahoton. AI tana taimakawa wajen tsara rahotanni; mutum ne ke yanke shawara.",
+      "3": "Mutumin da aka horar yana duba kowane rahoto. AI tana taimakawa wajen tsara su; mutum ne ke yanke shawara.",
       "4": "Ana wallafa jimillar da aka duba bisa jiha a nan. Ba suna, ba kalmomi, ba hotuna."
     },
+    "ways": {
+      "title": "Hanyoyi uku na kai rahoto",
+      "web": {
+        "title": "A wannan shafin",
+        "body": "Ka amsa gajerun tambayoyi da harshenka. Ba sai ka da asusu ba.",
+        "link": "Fara rahoto"
+      },
+      "sms": {
+        "title": "Ta SMS zuwa {shortCode}",
+        "body": "Aika gajeren saƙo daga kowace waya. Ba ya buƙatar data."
+      },
+      "ussd": {
+        "title": "Ta USSD a kowace waya: {ussd}",
+        "body": "Danna lambar, sannan ka zaɓa daga menu. Ba ya buƙatar data."
+      }
+    },
+    "rumour": {
+      "stamp": "Masu dubawa sun duba"
+    },
+    "eveningCaption": "Ana wallafa jimillar da aka duba a nan.",
     "help": {
       "title": "Tambayoyi",
       "ask": "Tambayi ElectraGuard",

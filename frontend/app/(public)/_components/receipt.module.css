@@ -86,3 +86,16 @@
   margin: 2px 0 0;
   font-variant-numeric: tabular-nums;
 }
+
+/* A checked code slides up into place (200 ms) instead of jumping in. */
+@media (prefers-reduced-motion: no-preference) {
+  .found,
+  .problem {
+    animation: rise 200ms var(--ease-out) both;
+  }
+}
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}

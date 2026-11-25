@@ -944,7 +944,7 @@
   "p01": {
     "title": "Lelee akụkọ",
     "label": "Koodu nnata",
-    "hint": "Ọmụmaatụ: EG-4H7Q-92KD",
+    "hint": "O bidoro na EG, ma e nwee otu abụọ nke mkpụrụedemede ma ọ bụ ọnụọgụgụ anọ-anọ.",
     "check": "Lelee",
     "checking": "A na-elele",
     "savedCodes": "Koodu dị na ekwentị a",
@@ -2189,6 +2189,7 @@
   "pub": {
     "homeLink": "Ibe mbụ ElectraGuard AI",
     "menu": "Menu",
+    "reportShort": "Kọọ akụkọ",
     "nav": {
       "label": "Isi",
       "home": "Ụlọ",
@@ -2215,7 +2216,7 @@
     "basicPhone": "Enweghị ekwentị smart? Pịa {ussd} ma ọ bụ ziga SMS na {shortCode}.",
     "tryPhone": "Nwalee ya na ekwentị dị na ihuenyo",
     "check": {
-      "title": "Lelee akụkọ",
+      "title": "Ị kọọla akụkọ? Lelee akụkọ gị",
       "lead": "Tinye koodu nnata i nwetara mgbe ị kọrọ akụkọ.",
       "outcome": "Nsonaazụ: {outcome}",
       "question": "Onye nyocha nwere ajụjụ maka gị. Mepee akụkọ ahụ na ekwentị i ji zipụ ya.",
@@ -2237,12 +2238,37 @@
       "open": "Hụ nsonaazụ site na steeti"
     },
     "how": {
-      "title": "Otu o si arụ ọrụ",
-      "1": "Ị na-akọ ihe ị hụrụ, n'asụsụ gị. Ọ na-arụ ọrụ ọbụna mgbe netwọk adịghị ike.",
+      "title": "Otu akụkọ si aga",
+      "art": {
+        "outbox": "Igbe ozi ọpụpụ",
+        "ai": "AI tụrụ aro",
+        "reviewed": "Enyochara"
+      },
+      "1": "Ị na-akọ ihe ị hụrụ, n'asụsụ gị. Ọ ka na-aga mgbe netwọk laghachiri.",
       "2": "Ị ga-enweta koodu nnata. Debe ya iji lelee akụkọ gị.",
-      "3": "Onye nyocha a zụrụ azụ ga-enyocha akụkọ ahụ. AI na-enyere aka ịhazi akụkọ; mmadụ na-ekpebi.",
+      "3": "Onye a zụrụ azụ na-enyocha akụkọ ọ bụla. AI na-enyere aka ịhazi ha; mmadụ na-ekpebi.",
       "4": "A na-ebipụta ngụkọta enyochara site na steeti ebe a. Ọ dịghị mgbe aha, okwu ma ọ bụ foto."
     },
+    "ways": {
+      "title": "Ụzọ atọ e si akọ akụkọ",
+      "web": {
+        "title": "Na weebụsaịtị a",
+        "body": "Zaa ajụjụ ole na ole dị mkpirikpi n'asụsụ gị. Ọ dịghị mkpa akaụntụ.",
+        "link": "Malite akụkọ"
+      },
+      "sms": {
+        "title": "Site na SMS na {shortCode}",
+        "body": "Ziga ozi dị mkpirikpi site n'ekwentị ọ bụla. Ọ dịghị mkpa data."
+      },
+      "ussd": {
+        "title": "Site na USSD na ekwentị ọ bụla: {ussd}",
+        "body": "Pịa koodu ahụ, họrọ site na menu. Ọ dịghị mkpa data."
+      }
+    },
+    "rumour": {
+      "stamp": "Ndị nyocha enyochala"
+    },
+    "eveningCaption": "A na-ebipụta ngụkọta enyochara ebe a.",
     "help": {
       "title": "Ajụjụ",
       "ask": "Jụọ ElectraGuard",

@@ -943,7 +943,7 @@
   "p01": {
     "title": "Check a report",
     "label": "Receipt code",
-    "hint": "Example: EG-4H7Q-92KD",
+    "hint": "Starts with EG, then two groups of four letters or numbers.",
     "check": "Check",
     "checking": "Checking",
     "savedCodes": "Codes on this phone",
@@ -2188,6 +2188,7 @@
   "pub": {
     "homeLink": "ElectraGuard AI home",
     "menu": "Menu",
+    "reportShort": "Report",
     "nav": {
       "label": "Main",
       "home": "Home",
@@ -2214,7 +2215,7 @@
     "basicPhone": "No smartphone? Dial {ussd} or send an SMS to {shortCode}.",
     "tryPhone": "Try it on the on-screen phone",
     "check": {
-      "title": "Check a report",
+      "title": "Already reported? Check your report",
       "lead": "Enter the receipt code you got when you reported.",
       "outcome": "Outcome: {outcome}",
       "question": "A reviewer has a question for you. Open the report on the phone you used to send it.",
@@ -2236,12 +2237,37 @@
       "open": "See results by state"
     },
     "how": {
-      "title": "How it works",
-      "1": "You report what you saw, in your language. It works on weak network.",
+      "title": "How a report travels",
+      "art": {
+        "outbox": "Outbox",
+        "ai": "Suggested by AI",
+        "reviewed": "Reviewed"
+      },
+      "1": "You report what you saw, in your language. It still sends when the network comes back.",
       "2": "You get a receipt code. Keep it to check your report.",
-      "3": "A trained reviewer checks the report. AI helps sort reports; a person decides.",
+      "3": "A trained person checks every report. AI helps sort them; a person decides.",
       "4": "Reviewed totals by state are published here. Never names, words or photos."
     },
+    "ways": {
+      "title": "Three ways to report",
+      "web": {
+        "title": "On this website",
+        "body": "Answer a few short questions in your language. No account needed.",
+        "link": "Start a report"
+      },
+      "sms": {
+        "title": "By SMS to {shortCode}",
+        "body": "Send a short text from any phone. It needs no data."
+      },
+      "ussd": {
+        "title": "By USSD on any phone: {ussd}",
+        "body": "Dial the code and choose from the menu. It needs no data."
+      }
+    },
+    "rumour": {
+      "stamp": "Checked by reviewers"
+    },
+    "eveningCaption": "Reviewed totals are published here.",
     "help": {
       "title": "Questions",
       "ask": "Ask ElectraGuard",

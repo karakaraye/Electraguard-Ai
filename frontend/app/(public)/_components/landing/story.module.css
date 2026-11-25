@@ -1,0 +1,449 @@
+/* "How a report travels" (landing plan §4.3): layout, the pinned wide-screen mode, and the four scenes' motion. */
+
+.story {
+  display: grid;
+  gap: var(--s-5);
+  padding-top: var(--s-6);
+  border-top: 1px solid var(--rule);
+}
+
+.title {
+  margin: 0;
+  font: var(--t-title);
+  font-size: clamp(1.75rem, 1.4rem + 1.4vw, 2.25rem);
+  overflow-wrap: anywhere;
+}
+
+.track,
+.sticky {
+  display: grid;
+  gap: var(--s-5);
+}
+
+.rail {
+  display: none;
+}
+
+/* ---------- Stacked (phones, scripts off, motion off): four rows, drawing then sentence ---------- */
+
+.steps {
+  display: grid;
+  gap: var(--s-7);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.step {
+  display: grid;
+  gap: var(--s-4);
+  min-width: 0;
+}
+
+.art {
+  min-width: 0;
+}
+
+.copy {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  gap: var(--s-3);
+  align-items: start;
+}
+
+.no {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--paper-sunk);
+  color: var(--ink);
+  font: var(--t-heading);
+}
+
+.sentence {
+  max-width: 34rem;
+  margin: 0;
+  padding-top: var(--s-2);
+  font: var(--t-body-lg);
+  color: var(--ink);
+}
+
+@media (min-width: 900px) {
+  .steps {
+    gap: var(--s-8);
+  }
+
+  .step {
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+    align-items: center;
+    gap: var(--s-7);
+  }
+
+  .step:nth-child(even) .art {
+    order: 2;
+  }
+
+  .sentence {
+    font-size: 1.25rem;
+    line-height: 1.45;
+  }
+}
+
+/* ---------- Pinned (wide screens, full motion): one step at a time while the section sticks ---------- */
+
+@media (min-width: 900px) and (min-height: 560px) {
+  .story[data-pin] .track {
+    /* The section sticks for the height of the track minus one screen: about 2.4 screens of scrolling. */
+    height: 340vh;
+    align-items: start;
+  }
+
+  .story[data-pin] .sticky {
+    position: sticky;
+    top: var(--head-h, 65px);
+    height: calc(100dvh - var(--head-h, 65px));
+    grid-template-rows: auto auto minmax(0, 1fr);
+    align-content: stretch;
+    padding-block: var(--s-5);
+  }
+
+  .story[data-pin] .rail {
+    position: relative;
+    display: block;
+    height: 40px;
+    margin-top: calc(var(--s-3) * -1);
+  }
+
+  .story[data-pin] .railLine {
+    position: absolute;
+    inset: 19px 20px auto;
+    height: 0;
+    border-top: 2px dotted var(--rule-control);
+  }
+
+  .story[data-pin] .railFill {
+    position: absolute;
+    inset: 18px 20px auto;
+    height: 3px;
+    border-radius: 2px;
+    background: var(--sun-strong);
+    transform: scaleX(var(--p, 0));
+    transform-origin: left center;
+  }
+
+  .story[data-pin] .nodes {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .story[data-pin] .node {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border: 2px solid var(--rule);
+    border-radius: 50%;
+    background: var(--paper);
+    color: var(--ink-3);
+    font: var(--t-label);
+    transition:
+      background-color var(--dur-step) var(--ease-out),
+      border-color var(--dur-step) var(--ease-out),
+      color var(--dur-step) var(--ease-out);
+  }
+
+  .story[data-pin] .node[data-active] {
+    border-color: var(--ink);
+    background: var(--paper-sunk);
+    color: var(--ink);
+  }
+
+  .story[data-pin] .steps {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+    min-height: 0;
+  }
+
+  .story[data-pin] .step {
+    grid-area: 1 / 1;
+    align-self: center;
+    opacity: 0;
+    pointer-events: none;
+    /* Still in the accessibility tree: the sentences are all there for a screen reader. */
+    transition: opacity 200ms var(--ease-out);
+  }
+
+  .story[data-pin] .step[data-active] {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .story[data-pin] .art svg {
+    max-height: calc(100dvh - 330px);
+    margin-inline: auto;
+  }
+}
+
+/* ---------- Drawing parts ---------- */
+
+.signal {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+}
+
+.chipHi,
+.lineCycle {
+  opacity: 0;
+}
+
+.lines {
+  position: relative;
+  width: 136px;
+  height: 44px;
+}
+
+.line {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  font: 700 12px/1.25 var(--font);
+  color: var(--ink);
+}
+
+.outbox {
+  opacity: 0;
+}
+
+.clockHand {
+  transform-origin: 188px 244px;
+}
+
+.sent,
+.mark {
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+}
+
+.tag {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 100%;
+  height: 36px;
+  padding: 0 6px;
+  border: 1px solid var(--ls-c3);
+  border-radius: 8px;
+  background: var(--ls-rd);
+  color: var(--ink);
+  font: 600 15px/1.05 var(--font);
+  text-align: center;
+}
+
+.markText {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 22px;
+  color: var(--ink);
+  font: 800 8.5px/1.05 var(--font);
+  text-align: center;
+}
+
+.band,
+.bar {
+  transform-box: fill-box;
+  transform-origin: 0 50%;
+}
+
+/* ---------- Motion: only with full motion; held on the first frame until the step is on ---------- */
+
+.story[data-motion="full"] :is(.signal, .chipHi, .chipNow, .lineCycle, .lineNow, .outbox, .clockHand, .sent, .paper, .sheet1, .sheet2, .sheet3, .mark, .stamp, .band, .route, .bar) {
+  animation-fill-mode: both;
+  animation-play-state: paused;
+  animation-timing-function: var(--ease-out);
+}
+
+.story[data-motion="full"] .step[data-on] :is(.signal, .chipHi, .chipNow, .lineCycle, .lineNow, .outbox, .clockHand, .sent, .paper, .sheet1, .sheet2, .sheet3, .mark, .stamp, .band, .route, .bar) {
+  animation-play-state: running;
+}
+
+/* Step 1: three languages in turn, the signal drops, the report waits in the Outbox, then it sends. */
+.story[data-motion="full"] :is(.chipHi, .lineCycle) {
+  animation-name: hiWin;
+  animation-duration: 1.5s;
+}
+
+.cycleA { animation-delay: 0.6s; }
+.cycleB { animation-delay: 2.1s; }
+.cycleC { animation-delay: 3.6s; }
+
+.story[data-motion="full"] :is(.chipNow, .lineNow) {
+  animation-name: settle;
+  animation-duration: 5.2s;
+  animation-timing-function: steps(1, end);
+}
+
+.story[data-motion="full"] .signal {
+  animation-name: signal;
+  animation-duration: 9.6s;
+}
+
+.story[data-motion="full"] .signal3 { animation-delay: 0s; }
+.story[data-motion="full"] .signal2 { animation-delay: 0.12s; }
+.story[data-motion="full"] .signal1 { animation-delay: 0.24s; }
+.story[data-motion="full"] .signal0 { animation-delay: 0.36s; }
+
+.story[data-motion="full"] .outbox {
+  animation-name: outbox;
+  animation-duration: 9.6s;
+}
+
+.story[data-motion="full"] .clockHand {
+  animation-name: spin;
+  animation-duration: 1.5s;
+  animation-delay: 6s;
+  animation-timing-function: linear;
+  animation-iteration-count: 1;
+}
+
+.story[data-motion="full"] .sent {
+  animation-name: sent;
+  animation-duration: 9.6s;
+}
+
+/* Step 2: the receipt prints out in small steps, like a ticket. */
+.story[data-motion="full"] .paper {
+  animation-name: print;
+  animation-duration: 2.6s;
+  animation-delay: 0.3s;
+  animation-timing-function: steps(11, end);
+}
+
+/* Step 3: three papers go from "Suggested by AI" to "Reviewed", each one stamped. */
+.story[data-motion="full"] :is(.sheet1, .sheet2, .sheet3) {
+  animation-name: fly;
+  animation-duration: 1.2s;
+}
+
+.sheet1 { --dx: -271px; --dy: -12px; }
+.sheet2 { --dx: -278px; --dy: 0px; }
+.sheet3 { --dx: -285px; --dy: 12px; }
+.story[data-motion="full"] .sheet1 { animation-delay: 0.3s; }
+.story[data-motion="full"] .sheet2 { animation-delay: 1.7s; }
+.story[data-motion="full"] .sheet3 { animation-delay: 3.1s; }
+
+.story[data-motion="full"] .stamp {
+  animation-name: stamp;
+  animation-duration: 5.6s;
+}
+
+.story[data-motion="full"] .mark {
+  animation-name: mark;
+  animation-duration: 5.6s;
+}
+
+/* Step 4: the privacy band wipes the face and the name, then the totals grow, 60 ms apart. */
+.story[data-motion="full"] .band {
+  animation-name: wipe;
+  animation-duration: 0.8s;
+  animation-delay: 0.8s;
+}
+
+.story[data-motion="full"] .route {
+  animation-name: show;
+  animation-duration: 0.4s;
+  animation-delay: 1.8s;
+}
+
+.story[data-motion="full"] .bar {
+  animation-name: grow;
+  animation-duration: 0.6s;
+}
+
+.story[data-motion="full"] .bar0 { animation-delay: 2s; }
+.story[data-motion="full"] .bar1 { animation-delay: 2.06s; }
+.story[data-motion="full"] .bar2 { animation-delay: 2.12s; }
+.story[data-motion="full"] .bar3 { animation-delay: 2.18s; }
+.story[data-motion="full"] .bar4 { animation-delay: 2.24s; }
+
+@keyframes hiWin {
+  0% { opacity: 0; }
+  12%, 88% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+@keyframes settle {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+@keyframes signal {
+  0%, 52% { transform: scaleY(1); }
+  57%, 79% { transform: scaleY(0.001); }
+  84%, 100% { transform: scaleY(1); }
+}
+
+@keyframes outbox {
+  0%, 58% { opacity: 0; transform: translateY(8px); }
+  63%, 83% { opacity: 1; transform: translateY(0); }
+  88%, 100% { opacity: 0; transform: translateY(0); }
+}
+
+@keyframes spin {
+  to { transform: rotate(720deg); }
+}
+
+@keyframes sent {
+  0%, 87% { opacity: 0; transform: scale(0.6); }
+  93% { opacity: 1; transform: scale(1.12); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes print {
+  from { transform: translateX(-175px); }
+  to { transform: translateX(0); }
+}
+
+@keyframes fly {
+  0% { transform: translate(var(--dx), var(--dy)); }
+  45% { transform: translate(calc(var(--dx) * 0.5), calc(var(--dy) * 0.5 - 44px)); }
+  100% { transform: translate(0, 0); }
+}
+
+@keyframes stamp {
+  0%, 24% { transform: translateY(0); }
+  27% { transform: translateY(12px); }
+  30%, 50% { transform: translateY(0); }
+  53% { transform: translateY(12px); }
+  56%, 74% { transform: translateY(0); }
+  77% { transform: translateY(12px); }
+  80%, 100% { transform: translateY(0); }
+}
+
+@keyframes mark {
+  0%, 79% { opacity: 0; transform: scale(1.5); }
+  86%, 100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes wipe {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+@keyframes show {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes grow {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}

@@ -944,7 +944,7 @@
   "p01": {
     "title": "Ṣàyẹ̀wò ìròyìn kan",
     "label": "Kóòdù ìjẹ́rìísí",
-    "hint": "Àpẹẹrẹ: EG-4H7Q-92KD",
+    "hint": "Ó bẹ̀rẹ̀ pẹ̀lú EG, lẹ́yìn náà àwùjọ méjì ti lẹ́tà tàbí nọ́ńbà mẹ́rin-mẹ́rin.",
     "check": "Ṣàyẹ̀wò",
     "checking": "À ń ṣàyẹ̀wò",
     "savedCodes": "Àwọn kóòdù tó wà lórí fóònù yìí",
@@ -2189,6 +2189,7 @@
   "pub": {
     "homeLink": "Ojú-ìwé àkọ́kọ́ ElectraGuard AI",
     "menu": "Àkójọ",
+    "reportShort": "Ròyìn",
     "nav": {
       "label": "Àkọ́kọ́",
       "home": "Ilé",
@@ -2215,7 +2216,7 @@
     "basicPhone": "Kò ní fóònù ìgbàlódé? Tẹ {ussd} tàbí fi SMS ránṣẹ́ sí {shortCode}.",
     "tryPhone": "Gbìyànjú rẹ̀ lórí fóònù tó wà lójú ìbojú",
     "check": {
-      "title": "Ṣàyẹ̀wò ìròyìn",
+      "title": "Ṣé o ti fi ìròyìn ránṣẹ́ tán? Ṣàyẹ̀wò ìròyìn rẹ",
       "lead": "Tẹ kóòdù ìjẹ́rìísí tí o gbà nígbà tí o fi ìròyìn ránṣẹ́.",
       "outcome": "Àbájáde: {outcome}",
       "question": "Olùyẹ̀wò ní ìbéèrè fún ọ. Ṣí ìròyìn náà lórí fóònù tí o fi ránṣẹ́.",
@@ -2237,12 +2238,37 @@
       "open": "Wo àbájáde ní ìpínlẹ̀ kọ̀ọ̀kan"
     },
     "how": {
-      "title": "Bí ó ṣe ń ṣiṣẹ́",
-      "1": "O fi ohun tí o rí ránṣẹ́, ní èdè rẹ. Ó ń ṣiṣẹ́ kódà bí nẹ́tíwọ̀ọ̀kì kò bá lágbára.",
+      "title": "Bí ìròyìn ṣe ń rìn",
+      "art": {
+        "outbox": "Àpótí ìfiránṣẹ́",
+        "ai": "AI ló dábàá rẹ̀",
+        "reviewed": "A ti yẹ̀ ẹ́ wò"
+      },
+      "1": "O fi ohun tí o rí ránṣẹ́, ní èdè rẹ. Yóò tún ránṣẹ́ nígbà tí nẹ́tíwọ̀ọ̀kì bá padà dé.",
       "2": "Wàá gba kóòdù ìjẹ́rìísí. Pa á mọ́ láti ṣàyẹ̀wò ìròyìn rẹ.",
-      "3": "Olùyẹ̀wò tí a kọ́ yóò yẹ ìròyìn náà wò. AI ń ṣèrànwọ́ láti to ìròyìn; ènìyàn ló ń pinnu.",
+      "3": "Ènìyàn tí a kọ́ ń yẹ ìròyìn kọ̀ọ̀kan wò. AI ń ṣèrànwọ́ láti to wọ́n; ènìyàn ló ń pinnu.",
       "4": "A ń gbé àpapọ̀ tí a ti yẹ̀wò jáde níbí ní ìpínlẹ̀ kọ̀ọ̀kan. Kì í ṣe orúkọ, ọ̀rọ̀ tàbí fọ́tò láé."
     },
+    "ways": {
+      "title": "Ọ̀nà mẹ́ta láti fi ìròyìn ránṣẹ́",
+      "web": {
+        "title": "Lórí ojú-òpó wẹ́ẹ̀bù yìí",
+        "body": "Dáhùn àwọn ìbéèrè kékeré ní èdè rẹ. Kò nílò àkọọ́lẹ̀.",
+        "link": "Bẹ̀rẹ̀ ìròyìn"
+      },
+      "sms": {
+        "title": "Nípasẹ̀ SMS sí {shortCode}",
+        "body": "Fi ọ̀rọ̀ kúkúrú ránṣẹ́ láti fóònù èyíkéyìí. Kò nílò dátà."
+      },
+      "ussd": {
+        "title": "Nípasẹ̀ USSD lórí fóònù èyíkéyìí: {ussd}",
+        "body": "Tẹ kóòdù náà, kí o sì yan láti inú àtòjọ. Kò nílò dátà."
+      }
+    },
+    "rumour": {
+      "stamp": "Àwọn olùyẹ̀wò ti yẹ̀ ẹ́ wò"
+    },
+    "eveningCaption": "A ń gbé àpapọ̀ tí a ti yẹ̀wò jáde níbí.",
     "help": {
       "title": "Ìbéèrè",
       "ask": "Béèrè lọ́wọ́ ElectraGuard",
