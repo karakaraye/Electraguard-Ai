@@ -22,34 +22,21 @@ import { EMPTY_QUEUE_FILTERS, QueueTableView } from "../../../(staff)/s/_views/Q
 import { CaseView } from "../../../(staff)/s/_views/CaseView";
 import { AssignView } from "../../../(staff)/s/_views/AssignView";
 import { OpsView } from "../../../(staff)/s/_views/OpsView";
-import { RumourView } from "../../../(staff)/s/_views/RumourView";
-import { PublishView } from "../../../(staff)/s/_views/PublishView";
-import { DiscussionModView } from "../../../(staff)/s/_views/DiscussionModView";
-import { AdminCodesView } from "../../../(staff)/s/_views/AdminCodesView";
-import { AdminStaffView } from "../../../(staff)/s/_views/AdminStaffView";
-import { AdminSettingsView } from "../../../(staff)/s/_views/AdminSettingsView";
-import { SecurityView } from "../../../(staff)/s/_views/SecurityView";
 
 import {
-  FIXTURE_ALERT,
-  FIXTURE_BATCHES,
   FIXTURE_ASSIGNMENTS,
   FIXTURE_CASE_DETAIL,
   FIXTURE_CLUSTERS,
   FIXTURE_CASE_IN_REVIEW,
   FIXTURE_CASE_MESSAGES,
   FIXTURE_CASE_RESULT_SHEET,
-  FIXTURE_CLAIM,
   FIXTURE_COVERAGE,
-  FIXTURE_FLAG,
   FIXTURE_LATE_MATERIALS,
   FIXTURE_OVERVIEW,
   FIXTURE_QUEUE_ITEMS,
   FIXTURE_QUEUE_PAGE,
-  FIXTURE_SETTINGS,
-  FIXTURE_SNAPSHOT_RECORD,
-  FIXTURE_STAFF_ACCOUNT,
 } from "./fixtures";
+import { PREVIEWS } from "./previews";
 
 /** Screen 38 (S-01) states, from the spec's list. */
 const S01_STATES = [
@@ -275,88 +262,15 @@ export function StaffStateViewer(): ReactElement {
       }
 
       case "s06":
-        return (
-          <RumourView
-            claims={state === "empty" ? [] : [FIXTURE_CLAIM]}
-            selectedClaim={state === "empty" ? null : FIXTURE_CLAIM}
-            matches={null}
-            loading={state === "loading"}
-            error={state === "error" ? "Failed to load rumours" : null}
-            currentUserName="F. Musa"
-          />
-        );
-
       case "s07":
-        return (
-          <PublishView
-            snapshots={state === "empty" ? [] : [FIXTURE_SNAPSHOT_RECORD]}
-            selectedSnapshot={state === "empty" ? null : FIXTURE_SNAPSHOT_RECORD}
-            hourlySchedule={true}
-            loading={state === "loading"}
-            error={state === "error" ? "Snapshot preview generation failed" : null}
-          />
-        );
-
       case "s08":
-        return (
-          <DiscussionModView
-            flags={state === "empty" ? [] : [FIXTURE_FLAG]}
-            loading={state === "loading"}
-            error={state === "error" ? "Failed to load flagged posts" : null}
-          />
-        );
-
       case "s09":
-        return (
-          <AdminCodesView
-            batches={state === "empty" ? [] : FIXTURE_BATCHES}
-            codes={[]}
-            activeCards={null}
-            loading={state === "loading"}
-            error={state === "error" ? "Failed to load code batches" : null}
-          />
-        );
-
       case "s10":
-        return (
-          <AdminStaffView
-            staffList={state === "empty" ? [] : [FIXTURE_STAFF_ACCOUNT]}
-            loading={state === "loading"}
-            error={state === "error" ? "Failed to load staff list" : null}
-            inviteResult={null}
-          />
-        );
-
       case "s11":
-        return (
-          <AdminSettingsView
-            settings={state === "empty" ? null : FIXTURE_SETTINGS}
-            loading={state === "loading"}
-            error={state === "error" ? "Failed to load settings" : null}
-          />
-        );
-
-      case "s12":
-        return (
-          <SecurityView
-            alerts={state === "empty" ? [] : [FIXTURE_ALERT]}
-            verification={{
-              intact: true,
-              events_checked: 18422,
-              head: {
-                hash: "b5d12a884f3e9c1b72a0d9e8c6f1a4e2b0c9d7e5f3a1b4c6d8e0f2a4b6c8d0e2",
-                event_count: 18422,
-                at: "2026-12-05T11:00:00+01:00",
-              },
-              first_broken_event_id: null,
-              checked_at: "2026-12-05T11:02:00+01:00",
-            }}
-            loading={state === "loading"}
-            verifying={false}
-            error={state === "error" ? "Security verification failed" : null}
-            statusFilter="all"
-          />
-        );
+      case "s12": {
+        const { Preview } = PREVIEWS[screen];
+        return <Preview key={state} state={state} />;
+      }
 
       default:
         return <div>Select a screen</div>;
@@ -407,7 +321,7 @@ export function StaffStateViewer(): ReactElement {
         <div style={{ marginLeft: "auto", display: "flex", gap: "12px", alignItems: "center" }}>
           <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", alignItems: "center" }}>
             <span style={{ color: "var(--ink-2)" }}>State:</span>
-            {(screen === "s01" ? S01_STATES : screen === "s02" ? S02_STATES : screen === "s03" ? S03_STATES : screen === "s04" ? S04_STATES : screen === "s05" ? S05_STATES : (["default", "loading", "empty", "error"] as const)).map((st) => (
+            {(screen === "s01" ? S01_STATES : screen === "s02" ? S02_STATES : screen === "s03" ? S03_STATES : screen === "s04" ? S04_STATES : screen === "s05" ? S05_STATES : (PREVIEWS[screen]?.states ?? ["default", "loading", "empty", "error"])).map((st) => (
               <Link
                 key={st}
                 href={`/dev/staff?screen=${screen}&state=${st}&theme=${theme}`}
