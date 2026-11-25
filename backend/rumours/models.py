@@ -7,6 +7,11 @@ from accounts.models import OrganisationOwned
 
 
 class Claim(OrganisationOwned):
+    class Source(models.TextChoices):
+        DESK = "desk", "Desk"
+        PUBLIC = "public", "Public"
+        SMS = "sms", "SMS"
+
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     text = models.CharField(max_length=4000, blank=True)
     image_id = models.UUIDField(null=True)
@@ -19,15 +24,31 @@ class Claim(OrganisationOwned):
     area = models.JSONField(null=True)
     harm = models.JSONField()
     check_worthiness = models.JSONField()
+    source = models.CharField(max_length=16, choices=Source.choices, default=Source.DESK)
+    ask_count = models.PositiveIntegerField(default=0)
     status = models.CharField(max_length=20, default="new")
     version = models.PositiveIntegerField(default=0)
     response = models.JSONField(null=True)
     drafted_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, related_name="+", null=True)
-    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, related_name="+")
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.PROTECT, related_name="+", null=True, blank=True
+    )
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         indexes = [models.Index(fields=["organisation", "-created_at"])]
+
+
+class ClaimAskHour(OrganisationOwned):
+    claim = models.ForeignKey(Claim, on_delete=models.CASCADE, related_name="ask_hours")
+    hour = models.DateTimeField()
+    count = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=["claim", "hour"], name="unique_claim_ask_hour"),
+        ]
+        indexes = [models.Index(fields=["claim", "-hour"])]
 
 
 class ClaimRequest(OrganisationOwned):

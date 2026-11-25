@@ -32,6 +32,8 @@ IMAGE_LIMIT = 5 * 1024 * 1024
 
 
 def label(user):
+    if user is None:
+        return None
     return user.get_full_name() or user.email
 
 
