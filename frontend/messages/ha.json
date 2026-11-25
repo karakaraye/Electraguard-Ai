@@ -430,7 +430,8 @@
       "confirm": "Ee, kwanan watan daidai ne",
       "change": "Canza kwanan wata"
     },
-    "error": "Zaɓi lokaci."
+    "error": "Zaɓi lokaci.",
+    "networkTime": "Ana amfani da lokacin sabis."
   },
   "o09": {
     "title": "Gaya mana abin da ya faru",

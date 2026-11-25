@@ -430,7 +430,8 @@
       "confirm": "Ee, ụbọchị ahụ ziri ezi",
       "change": "Gbanwee ụbọchị ahụ"
     },
-    "error": "Họrọ oge."
+    "error": "Họrọ oge.",
+    "networkTime": "Anyị na-eji oge netwọk."
   },
   "o09": {
     "title": "Gwa anyị ihe mere",

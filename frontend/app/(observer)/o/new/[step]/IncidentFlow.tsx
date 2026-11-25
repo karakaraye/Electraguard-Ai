@@ -28,7 +28,7 @@ import { looksLikeName, textHash } from "../../_lib/name-check";
 import { itemToDraft } from "../../_lib/rebuild";
 import { useChecklistDay, watDay } from "../../_lib/checklist";
 import { useReference } from "../../_lib/reference";
-import { correctedNow, useObserverSession } from "../../_lib/session";
+import { correctedNow, useObserverSession, usingNetworkTime } from "../../_lib/session";
 import {
   CategoryView,
   CheckView,
@@ -366,6 +366,7 @@ function WhenStep({ handle, nav, shell }: StepProps) {
   const [showErrors, setShowErrors] = useState(false);
   const [oldSheet, setOldSheet] = useState(false);
   const [now] = useState(() => correctedNow());
+  const [networkTime] = useState(() => usingNetworkTime());
   const minDate = watParts(now - 30 * DAY_MS).date;
 
   function commit() {
@@ -380,6 +381,7 @@ function WhenStep({ handle, nav, shell }: StepProps) {
     <WhenView
       {...shell}
       value={value}
+      networkTime={networkTime}
       onChange={(next) => handle.update({ when: next })}
       showErrors={showErrors}
       now={now}

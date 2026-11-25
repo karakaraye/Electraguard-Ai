@@ -310,6 +310,7 @@ export const SCREENS: Record<string, Record<string, (t: Translate) => ReactEleme
   o08: {
     "just-now": () => when({ mode: "now" }),
     "earlier-today": () => when({ mode: "today", time: "08:40" }),
+    "network-time": () => when({ mode: "now" }, { networkTime: true }),
     "another-day": () => when({ mode: "day", date: "2026-12-03", time: "14:10" }),
     future: () => when({ mode: "today", time: "11:30" }, { showErrors: true }),
     empty: () => when({ mode: "day" }, { showErrors: true }),

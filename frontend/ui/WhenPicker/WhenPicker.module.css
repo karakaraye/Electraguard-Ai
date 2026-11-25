@@ -44,9 +44,11 @@
   }
 }
 
+/* Chosen: sunlight fill, an ink edge and an ink tick, the same as the choice tiles (I-3). */
 .mode[data-checked] {
-  background: var(--ink);
-  color: var(--on-ink);
+  background: var(--sun-tint);
+  box-shadow: inset 0 0 0 2px var(--ink);
+  color: var(--ink);
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -59,10 +61,6 @@
   outline: var(--focus-outline);
   outline-offset: -5px;
   z-index: 1;
-}
-
-.mode[data-checked]:has(.input:focus-visible) {
-  outline-color: var(--on-ink);
 }
 
 .input {
@@ -91,9 +89,9 @@
 }
 
 .mode[data-checked] .radio {
-  background: var(--on-ink);
-  border-color: var(--on-ink);
-  color: var(--ink);
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--paper);
 }
 
 .modeText {

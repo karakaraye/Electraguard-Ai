@@ -25,6 +25,8 @@ export type WhenPickerProps = Omit<ChoiceGroupChrome, "legend" | "error"> & {
   minDate?: string;
   /** Current time used for the future check (corrected by the server clock). Defaults to the phone clock. */
   now?: number | null;
+  /** Replaces the time-zone line, for example to say network time is in use. */
+  zoneText?: string;
   "data-testid"?: string;
 };
 
@@ -71,6 +73,7 @@ export function WhenPicker({
   requireDayTime,
   minDate,
   now: nowOverride,
+  zoneText,
   "data-testid": testId = "when-picker",
 }: WhenPickerProps) {
   const t = useT();
@@ -159,7 +162,7 @@ export function WhenPicker({
 
       <p className={styles.zone}>
         <ClockIcon size={20} />
-        <span>{t("ui.when.zone")}</span>
+        <span data-testid={`${testId}-zone`}>{zoneText ?? t("ui.when.zone")}</span>
       </p>
 
       {olderThanWeek && !errorText ? (

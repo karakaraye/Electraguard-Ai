@@ -339,9 +339,11 @@ export type WhenViewProps = Common & {
   onConfirmOld: () => void;
   onChangeDate: () => void;
   onContinue: () => void;
+  /** The phone clock is more than 10 minutes off, so times use the server clock. */
+  networkTime?: boolean;
 };
 
-export function WhenView({ value, onChange, showErrors, now, minDate, oldSheet, onConfirmOld, onChangeDate, onContinue, ...shell }: WhenViewProps) {
+export function WhenView({ value, onChange, showErrors, now, minDate, oldSheet, onConfirmOld, onChangeDate, onContinue, networkTime, ...shell }: WhenViewProps) {
   const t = useT();
   return (
     <StepShell
@@ -364,6 +366,7 @@ export function WhenView({ value, onChange, showErrors, now, minDate, oldSheet, 
         requireDayTime
         minDate={minDate}
         now={now}
+        zoneText={networkTime ? `${t("o08.watNote")} ${t("o08.networkTime")}` : t("o08.watNote")}
         data-testid="o08-when"
       />
       <Sheet

@@ -429,7 +429,8 @@
       "confirm": "Yes, the date is right",
       "change": "Change the date"
     },
-    "error": "Choose a time."
+    "error": "Choose a time.",
+    "networkTime": "Using network time."
   },
   "o09": {
     "title": "Tell us what happened",

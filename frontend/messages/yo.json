@@ -430,7 +430,8 @@
       "confirm": "Bẹ́ẹ̀ ni, ọjọ́ náà tọ̀nà",
       "change": "Yí ọjọ́ náà padà"
     },
-    "error": "Yan àkókò kan."
+    "error": "Yan àkókò kan.",
+    "networkTime": "A ń lo àkókò nẹ́tíwọ̀ọ̀kì."
   },
   "o09": {
     "title": "Sọ ohun tó ṣẹlẹ̀ fún wa",
