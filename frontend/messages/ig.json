@@ -1652,7 +1652,11 @@
       "h": "Ajụjụ",
       "p": "Maka ajụjụ gbasara akụkọ gị, jụọ otu nyere gị koodu onye nlebanya gị, ma ọ bụ degara onye nyocha na ozi akụkọ gị."
     },
-    "languages": "Ọkwa a dị na Bekee, Naijá, Hausa, Yorùbá na Igbo. Họrọ asụsụ n'elu ibe ahụ."
+    "languages": "Ọkwa a dị na Bekee, Naijá, Hausa, Yorùbá na Igbo. Họrọ asụsụ n'elu ibe ahụ.",
+    "location": {
+      "h": "Ebe a na-echekwa akụkọ gị",
+      "p": "A na-echekwa akụkọ, foto, vidiyo, ozi olu na ndekọ nyocha na mpaghara South Africa North nke Microsoft Azure, na Johannesburg. Azure enweghị mpaghara na Naịjirịa, ya mere a na-echekwa akụkọ gị na mpụga Naịjirịa."
+    }
   },
   "p07": {
     "title": "Nwalee ịkọ akụkọ site na SMS na USSD",

@@ -1652,7 +1652,11 @@
       "h": "Ìbéèrè",
       "p": "Fún ìbéèrè nípa ìròyìn rẹ, béèrè lọ́wọ́ àjọ tó fún ọ ní kóòdù olùwòye rẹ, tàbí kọ̀wé sí olùyẹ̀wò nínú ìfiránṣẹ́ ìròyìn rẹ."
     },
-    "languages": "Ìkéde yìí wà ní Gẹ̀ẹ́sì, Naijá, Hausa, Yorùbá àti Igbo. Yan èdè ní òkè ojú-ìwé."
+    "languages": "Ìkéde yìí wà ní Gẹ̀ẹ́sì, Naijá, Hausa, Yorùbá àti Igbo. Yan èdè ní òkè ojú-ìwé.",
+    "location": {
+      "h": "Ibi tí a ń tọ́jú ìròyìn rẹ sí",
+      "p": "A ń tọ́jú àwọn ìròyìn, fọ́tò, fídíò, ohùn àti àkọsílẹ̀ àyẹ̀wò ní agbègbè South Africa North ti Microsoft Azure, ní Johannesburg. Azure kò ní agbègbè ní Nàìjíríà, nítorí náà a ń tọ́jú ìròyìn rẹ ní òde Nàìjíríà."
+    }
   },
   "p07": {
     "title": "Gbìyànjú fífi ìròyìn ránṣẹ́ pẹ̀lú SMS àti USSD",

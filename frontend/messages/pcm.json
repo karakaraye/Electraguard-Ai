@@ -1652,7 +1652,11 @@
       "h": "Questions",
       "p": "If you get question about your report, ask the organisation wey give you your observer code, or write to the reviewer for your report messages."
     },
-    "languages": "This notice dey for English, Naijá, Hausa, Yorùbá and Igbo. Choose language for the top of the page."
+    "languages": "This notice dey for English, Naijá, Hausa, Yorùbá and Igbo. Choose language for the top of the page.",
+    "location": {
+      "h": "Where we dey keep your report",
+      "p": "Reports, photos, videos, voice notes and the audit record dey stored for Microsoft Azure South Africa North region, for Johannesburg. Azure no get region for Nigeria, so your report dey stored outside Nigeria."
+    }
   },
   "p07": {
     "title": "Try report by SMS and USSD",

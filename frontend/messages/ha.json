@@ -1652,7 +1652,11 @@
       "h": "Tambayoyi",
       "p": "Don tambayoyi game da rahotonka, tambayi ƙungiyar da ta ba ka lambar mai sa ido, ko ka rubuta wa mai dubawa a saƙonnin rahotonka."
     },
-    "languages": "Wannan sanarwa tana da Turanci, Naijá, Hausa, Yorùbá da Igbo. Zaɓi harshe a saman shafin."
+    "languages": "Wannan sanarwa tana da Turanci, Naijá, Hausa, Yorùbá da Igbo. Zaɓi harshe a saman shafin.",
+    "location": {
+      "h": "Inda ake adana rahotonka",
+      "p": "Ana adana rahotanni, hotuna, bidiyo, saƙonnin murya da rikodin bincike a yankin South Africa North na Microsoft Azure, a Johannesburg. Azure ba shi da yanki a Najeriya, don haka ana adana rahotonka a wajen Najeriya."
+    }
   },
   "p07": {
     "title": "Gwada kai rahoto ta SMS da USSD",

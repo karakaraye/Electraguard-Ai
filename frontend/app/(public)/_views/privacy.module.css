@@ -70,3 +70,66 @@
   border-radius: var(--radius);
   background: var(--danger-bg);
 }
+
+/* ---------- Redesign (spec screen 36) ---------- */
+.layout {
+  display: grid;
+  gap: var(--s-6);
+}
+
+/* Contents as a card; on desktop it sits sticky beside the text column, as on a guide. */
+.toc {
+  max-width: none;
+  padding: var(--s-4);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  background: var(--paper-raised);
+}
+
+@media (min-width: 1024px) {
+  .layout {
+    grid-template-columns: minmax(0, var(--measure)) 17rem;
+    column-gap: var(--s-8);
+    align-items: start;
+  }
+
+  .layout > .toc {
+    position: sticky;
+    top: var(--s-6);
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .layout > .body {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .toc ul {
+    display: grid;
+    gap: 0;
+  }
+}
+
+/* Each heading carries an icon in a sun disc. */
+.heading {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+}
+
+.disc {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--sun-tint);
+  color: var(--ink);
+}
+
+.section[data-tone="danger"] .disc {
+  background: var(--paper-raised);
+  color: var(--danger);
+}
