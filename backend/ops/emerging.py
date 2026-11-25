@@ -247,6 +247,16 @@ def _statistical_detection(organisation, now, wat_now, configured_categories):
     lga_areas = {}
     state_known_lgas = defaultdict(set)
 
+    from reference.models import AreaDataset
+
+    for states_data in AreaDataset.objects.values_list("states", flat=True).iterator(chunk_size=1):
+        for st in (states_data or {}).values():
+            st_code = st.get("state_code")
+            if st_code:
+                for lga_item in st.get("lgas", []):
+                    if lga_item.get("lga_code"):
+                        state_known_lgas[st_code].add(lga_item["lga_code"])
+
     for r in reports:
         details = r.incident_details or {}
         if is_simulator_report(details):

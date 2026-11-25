@@ -397,3 +397,41 @@ class EmergingIssueDetectionIntegrationTests(TestCase):
         self.assertEqual(len(a2), 1)
         self.assertNotEqual(a2[0].pk, first_pk)
         self.assertEqual(ClusterWarning.objects.filter(organisation=self.org).count(), 2)
+
+    def test_peer_median_includes_zero_report_peers(self):
+        from reference.models import AreaDataset
+
+        AreaDataset.objects.create(
+            version="test-v1",
+            released_on=datetime.now(WAT).date(),
+            revision=1,
+            source=AreaDataset.Source.SYNTHETIC,
+            index={},
+            states={
+                "KN": {
+                    "state_code": "KN",
+                    "name": "Kano",
+                    "lgas": [
+                        {"lga_code": "KN-01", "name": "Dala", "wards": []},
+                        {"lga_code": "KN-02", "name": "Gwale", "wards": []},
+                        {"lga_code": "KN-03", "name": "Fagge", "wards": []},
+                        {"lga_code": "KN-04", "name": "Tarauni", "wards": []},
+                        {"lga_code": "KN-05", "name": "Nassarawa", "wards": []},
+                    ],
+                }
+            },
+        )
+        day = datetime.now(WAT).date()
+        utc_now = datetime.combine(day, time(11, 0), tzinfo=WAT).astimezone(dt_timezone.utc)
+        # Target LGA KN-01 has 4 reports in the window
+        for _ in range(4):
+            self.create_report(occurred_at=utc_now - timedelta(minutes=5), lga_code="KN-01", lga_name="Dala")
+        # 1 peer (KN-02) has 10 reports in the window; 3 peers (KN-03..05) have 0
+        for _ in range(10):
+            self.create_report(occurred_at=utc_now - timedelta(minutes=5), lga_code="KN-02", lga_name="Gwale")
+
+        alerts = detect_emerging(self.org.pk, now=utc_now)
+        kn01_alerts = [a for a in alerts if a.lga_code == "KN-01"]
+        self.assertEqual(len(kn01_alerts), 1)
+        # Median of [10, 0, 0, 0] is 0.0 -> floor 0.5 (not 10.0!)
+        self.assertEqual(kn01_alerts[0].expected, 0.5)
