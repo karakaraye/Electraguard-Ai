@@ -262,6 +262,11 @@
   color: var(--ink);
 }
 
+/* Chosen: the tile fills with sunlight, so the disc turns to paper to stay visible. */
+.tile[data-checked] .answerIcon {
+  background: var(--paper-raised);
+}
+
 .tile[data-tone="danger"] .answerIcon {
   background: var(--danger-bg);
   color: var(--danger);

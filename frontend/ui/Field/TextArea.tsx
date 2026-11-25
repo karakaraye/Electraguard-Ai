@@ -12,6 +12,8 @@ export type TextAreaProps = Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, "c
   optional?: boolean;
   /** Character limit. Shows "n of max characters" and warns screen readers near the end. */
   maxLength?: number;
+  /** A small control drawn in the field's bottom corner, such as the dictation button. */
+  adornment?: ReactNode;
   ref?: Ref<HTMLTextAreaElement>;
   "data-testid"?: string;
 };
@@ -25,6 +27,7 @@ export function TextArea({
   error,
   optional,
   maxLength,
+  adornment,
   id,
   className,
   rows = 5,
@@ -55,22 +58,25 @@ export function TextArea({
   return (
     <FieldFrame label={label} hint={hint} error={error} optional={optional} id={id} className={className} footer={footer}>
       {({ id: controlId, describedBy, invalid }) => (
-        <textarea
-          ref={ref}
-          id={controlId}
-          rows={rows}
-          className={`${styles.control} ${styles.textarea}`}
-          aria-describedby={describedBy}
-          aria-invalid={invalid || undefined}
-          maxLength={maxLength}
-          value={value}
-          defaultValue={defaultValue}
-          onChange={(event) => {
-            setOwnLength(event.target.value.length);
-            onChange?.(event);
-          }}
-          {...rest}
-        />
+        <div className={styles.adorned} data-adorned={adornment ? true : undefined}>
+          <textarea
+            ref={ref}
+            id={controlId}
+            rows={rows}
+            className={`${styles.control} ${styles.textarea}`}
+            aria-describedby={describedBy}
+            aria-invalid={invalid || undefined}
+            maxLength={maxLength}
+            value={value}
+            defaultValue={defaultValue}
+            onChange={(event) => {
+              setOwnLength(event.target.value.length);
+              onChange?.(event);
+            }}
+            {...rest}
+          />
+          {adornment ? <div className={styles.adornment}>{adornment}</div> : null}
+        </div>
       )}
     </FieldFrame>
   );

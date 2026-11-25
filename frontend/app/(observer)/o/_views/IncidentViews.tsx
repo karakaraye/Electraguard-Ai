@@ -12,7 +12,8 @@ import {
   Button,
   ButtonLink,
   ChoiceTileGroup,
-  DictationButton,
+  DictationCorner,
+  DictationStatus,
   MediaCapture,
   PollingUnitPicker,
   Sheet,
@@ -26,6 +27,7 @@ import {
   type PollingUnitPickerProps,
   type VoiceRecorder,
   type WhenValue,
+  useDictation,
 } from "../../../../ui";
 import { formatBytes, formatWatDateTime } from "../../../../ui/format";
 import {
@@ -41,6 +43,8 @@ import {
   ShieldCheckIcon,
   TrashIcon,
   VideoIcon,
+  EyeIcon,
+  MessageIcon,
 } from "../../../../ui/icons";
 import { AppBarTitle } from "../_components/AppBarTitle";
 import styles from "../_components/observer.module.css";
@@ -428,6 +432,7 @@ export function DescribeView({
 }: DescribeViewProps) {
   const t = useT();
   const { locale } = useLocale();
+  const dictation = useDictation(dictationLang, onDictated, dictationState);
   const errorText = textError ? (textError.key === "o09.tooShort" ? t(textError.key, { min: textError.min }) : t(textError.key, { max: textError.max })) : undefined;
   return (
     <StepShell
@@ -458,6 +463,7 @@ export function DescribeView({
             autoCorrect="on"
             aria-describedby="o09-hints"
             error={errorText}
+            adornment={<DictationCorner dictation={dictation} />}
             data-testid="o09-text"
           />
           {text.length >= 1500 ? (
@@ -465,7 +471,7 @@ export function DescribeView({
               {t("ui.charCount", { count: text.length, max: 2000 })}
             </p>
           ) : null}
-          <DictationButton lang={dictationLang} onText={onDictated} state={dictationState} />
+          <DictationStatus dictation={dictation} />
           {nameWarning ? (
             <div role="alert">
               <Banner
@@ -487,6 +493,8 @@ export function DescribeView({
             onChange={onFirsthand}
             yesLabel={t("o09.sourceSelf")}
             noLabel={t("o09.sourceTold")}
+            yesIcon={<EyeIcon />}
+            noIcon={<MessageIcon />}
             error={sourceError ? t("o09.sourceError") : undefined}
             stacked
             data-testid="o09-source"

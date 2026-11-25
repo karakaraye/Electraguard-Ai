@@ -26,7 +26,7 @@ export { useKeyboardInset, useMediaQuery, useNow, useOffline, useReducedMotion }
 export { setThemePreference, useThemePreference, type ThemePreference } from "./theme";
 export { formatBytes, formatWatDateTime, formatWatTime } from "./format";
 export { PollingUnitPicker, compactCode, type PlaceChange, type PlaceValue, type PollingUnitPickerProps, type StateListStatus } from "./PollingUnitPicker/PollingUnitPicker";
-export { DictationButton, type DictationButtonProps, type DictationState } from "./DictationButton/DictationButton";
+export { DictationButton, DictationCorner, DictationStatus, useDictation, type DictationButtonProps, type DictationState } from "./DictationButton/DictationButton";
 export { MediaCapture, useVoiceRecorder, formatClock, type CaptureSource, type MediaCaptureProps, type VoiceRecorder } from "./MediaCapture/MediaCapture";
 export { BackgroundArt, type BackgroundArtProps } from "./BackgroundArt/BackgroundArt";
 export { animate, haptic, prefersReducedMotion, type AnimateOptions, type MotionToken } from "./motion";

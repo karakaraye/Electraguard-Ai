@@ -52,19 +52,33 @@ function noteSeen(): boolean {
   }
 }
 
+type Dictation = {
+  state: DictationState;
+  speak: () => void;
+  stop: () => void;
+  acceptNote: () => void;
+};
+
+/** Moves focus to the Stop button when listening starts, so a keyboard or TalkBack user can stop at once. */
+function useFocusOnListen(state: DictationState) {
+  const ref = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    if (state === "listening") ref.current?.focus();
+  }, [state]);
+  return ref;
+}
+
 /**
  * Speak instead of typing. Uses the browser's speech engine where it exists;
  * otherwise explains keyboard voice typing. The first use shows a one-time note
  * that the phone's speech service may process the audio (decision Q6).
  */
-export function DictationButton({ lang, onText, state: fixedState, "data-testid": testId = "dictation" }: DictationButtonProps) {
-  const t = useT();
+export function useDictation(lang: string, onText: (text: string) => void, fixedState?: DictationState): Dictation {
   const [ownState, setOwnState] = useState<DictationState>("idle");
   const state = fixedState ?? ownState;
   const recognition = useRef<Recognition | null>(null);
   const silence = useRef<number | undefined>(undefined);
   const limit = useRef<number | undefined>(undefined);
-  const stopRef = useRef<HTMLButtonElement>(null);
   const onTextRef = useRef(onText);
 
   useEffect(() => {
@@ -72,10 +86,6 @@ export function DictationButton({ lang, onText, state: fixedState, "data-testid"
   });
 
   useEffect(() => () => recognition.current?.abort(), []);
-
-  useEffect(() => {
-    if (state === "listening") stopRef.current?.focus();
-  }, [state]);
 
   function clearTimers() {
     window.clearTimeout(silence.current);
@@ -133,7 +143,7 @@ export function DictationButton({ lang, onText, state: fixedState, "data-testid"
     }
   }
 
-  function onSpeak() {
+  function speak() {
     if (!recognitionCtor()) {
       setOwnState("unavailable");
       return;
@@ -145,14 +155,86 @@ export function DictationButton({ lang, onText, state: fixedState, "data-testid"
     start();
   }
 
+  function acceptNote() {
+    try {
+      window.localStorage.setItem(NOTE_KEY, "1");
+    } catch {
+      // Private mode: the note shows again next time.
+    }
+    start();
+  }
+
+  return { state, speak, stop, acceptNote };
+}
+
+/**
+ * The round mic button that sits in a text field's corner. While listening it
+ * becomes Stop, with a still ring that says the phone is hearing you. Hidden
+ * when the phone has no speech engine.
+ */
+export function DictationCorner({ dictation, "data-testid": testId = "dictation" }: { dictation: Dictation; "data-testid"?: string }) {
+  const t = useT();
+  const stopRef = useFocusOnListen(dictation.state);
+  if (dictation.state === "unavailable") return null;
+  const listening = dictation.state === "listening";
+  return (
+    <button
+      ref={stopRef}
+      type="button"
+      className={styles.corner}
+      data-listening={listening || undefined}
+      onClick={listening ? dictation.stop : dictation.speak}
+      data-testid={listening ? `${testId}-stop` : `${testId}-speak`}
+    >
+      {listening ? <StopIcon size={22} aria-hidden="true" /> : <MicIcon size={24} aria-hidden="true" />}
+      <span className="eg-sr-only">{t(listening ? "o09.stop" : "o09.speak")}</span>
+    </button>
+  );
+}
+
+/** What dictation needs to say: listening, the one-time note, no microphone, or no speech engine. */
+export function DictationStatus({ dictation, "data-testid": testId = "dictation" }: { dictation: Dictation; "data-testid"?: string }) {
+  const t = useT();
+  const { state } = dictation;
   if (state === "listening") {
     return (
+      <p className={styles.live} role="status" aria-live="polite" data-testid={`${testId}-listening`}>
+        <span className={styles.dot} aria-hidden="true" />
+        {t("o09.listening")}
+      </p>
+    );
+  }
+  if (state === "note") {
+    return (
+      <div className={styles.note} role="status">
+        <p>{t("o09.speakNote")}</p>
+        <Button variant="secondary" onClick={dictation.acceptNote} data-testid={`${testId}-note-ok`}>
+          {t("o09.speakNoteOk")}
+        </Button>
+      </div>
+    );
+  }
+  if (state === "unavailable" || state === "denied") {
+    return (
+      <p className={styles.info} role="status" data-testid={`${testId}-${state}`}>
+        {t(state === "denied" ? "o09.micDenied" : "o09.speakUnavailable")}
+      </p>
+    );
+  }
+  return null;
+}
+
+/** The stand-alone form (used where there is no field to sit in): a full-width Speak or Stop button. */
+export function DictationButton({ lang, onText, state: fixedState, "data-testid": testId = "dictation" }: DictationButtonProps) {
+  const t = useT();
+  const dictation = useDictation(lang, onText, fixedState);
+  const stopRef = useFocusOnListen(dictation.state);
+
+  if (dictation.state === "listening") {
+    return (
       <div className={styles.listening} data-testid={testId}>
-        <p className={styles.live} role="status" aria-live="polite">
-          <span className={styles.dot} aria-hidden="true" />
-          {t("o09.listening")}
-        </p>
-        <Button ref={stopRef} variant="primary" block icon={<StopIcon />} onClick={stop} data-testid={`${testId}-stop`}>
+        <DictationStatus dictation={dictation} data-testid={testId} />
+        <Button ref={stopRef} variant="primary" block icon={<StopIcon />} onClick={dictation.stop} data-testid={`${testId}-stop`}>
           {t("o09.stop")}
         </Button>
       </div>
@@ -161,38 +243,10 @@ export function DictationButton({ lang, onText, state: fixedState, "data-testid"
 
   return (
     <div className={styles.wrap} data-testid={testId}>
-      <Button variant="secondary" block icon={<MicIcon />} onClick={onSpeak} data-testid={`${testId}-speak`}>
+      <Button variant="secondary" block icon={<MicIcon />} onClick={dictation.speak} data-testid={`${testId}-speak`}>
         {t("o09.speak")}
       </Button>
-      {state === "note" ? (
-        <div className={styles.note} role="status">
-          <p>{t("o09.speakNote")}</p>
-          <Button
-            variant="secondary"
-            onClick={() => {
-              try {
-                window.localStorage.setItem(NOTE_KEY, "1");
-              } catch {
-                // Private mode: the note shows again next time.
-              }
-              start();
-            }}
-            data-testid={`${testId}-note-ok`}
-          >
-            {t("o09.speakNoteOk")}
-          </Button>
-        </div>
-      ) : null}
-      {state === "unavailable" ? (
-        <p className={styles.info} role="status" data-testid={`${testId}-unavailable`}>
-          {t("o09.speakUnavailable")}
-        </p>
-      ) : null}
-      {state === "denied" ? (
-        <p className={styles.info} role="status" data-testid={`${testId}-denied`}>
-          {t("o09.micDenied")}
-        </p>
-      ) : null}
+      <DictationStatus dictation={dictation} data-testid={testId} />
     </div>
   );
 }
