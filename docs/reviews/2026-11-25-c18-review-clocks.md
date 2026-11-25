@@ -73,10 +73,74 @@ Branch `backend/c18-review-clocks`, on top of `backend/c17-emerging-alerts`. Bac
   - `GET /api/v1/admin/settings` returns `review_targets: { urgent, high, normal, low, question_reply }`.
   - `PATCH /api/v1/admin/settings` validates (each target must be an integer between 5 and 1,440 minutes) and updates organisation targets.
 
+## Example Payloads
+
+### Q-01 Queue Row (`GET /api/v1/review/queue`)
+
+```json
+{
+  "id": "a1b2c3d4-0000-4000-8000-000000000001",
+  "receipt_code": "EG-ABCD-123X",
+  "kind": "incident",
+  "channel": "observer",
+  "status": "submitted",
+  "urgency": {"level": "urgent", "source": "suggested", "reasons": ["Immediate danger reported"]},
+  "clock": {
+    "target_minutes": 15,
+    "due_at": "2026-11-25T14:15:00+01:00",
+    "state": "overdue",
+    "minutes_left": -45,
+    "paused": false
+  }
+}
+```
+
+### CASE-01 Clock (`GET /api/v1/review/cases/{id}`)
+
+```json
+{
+  "target_minutes": 15,
+  "due_at": "2026-11-25T14:15:00+01:00",
+  "state": "on_time",
+  "minutes_left": 12,
+  "paused": false
+}
+```
+
+### OPS-01 Overdue (`GET /api/v1/ops/overview`)
+
+```json
+{
+  "overdue": {
+    "urgent": 1,
+    "high": 0,
+    "normal": 2,
+    "low": 0
+  }
+}
+```
+
+### ADM-04 Review Targets (`GET / PATCH /api/v1/admin/settings`)
+
+```json
+{
+  "review_targets": {
+    "urgent": 30,
+    "high": 60,
+    "normal": 240,
+    "low": 480,
+    "question_reply": 120
+  }
+}
+```
+
 ## Verification
 
-- **Unit & Integration Tests (`backend/clocks/tests.py`):**
-  - 8 tests covering clock creation by urgency, target calculations, pause/resume cycles, stop on reviewer actions, overdue sweep notification deduplication, queue clock state filtering, OPS-01 overdue counters, and ADM-04 settings validation.
-- **Full Backend Regression Suite:**
-  - 90 tests ran across `clocks`, `ops`, `privacy`, `reports.test_citizen`, `reports.test_v1_review`, `staff.test_contract_errors`, and `staff.test_retention`.
-  - 100% passed on PostgreSQL 18.
+- **PostgreSQL 17 CI Suite (`https://github.com/karakaraye/Electraguard-Ai/actions/runs/45638447456`):**
+  - Backend: **310 tests ran, 0 failures, 1 skipped** (`OK (skipped=1)` in 118.912s).
+  - Frontend: `lint`, `typecheck`, and `build` passed.
+  - `clocks.tests` (15 tests across `ReviewClocksTests`, `ConcurrentSweepTests`, `ReviewClockApiIntegrationTests`): covers clock creation on observer/citizen/SMS/USSD intake, target calculations, triage urgency recomputation, pause/resume and `question_reply` clock lifecycle, `TransactionTestCase` 2-thread barrier concurrent sweep, signed `(due_at, pk)` cursor paging for `clock_state` filter, organisation isolation, OPS-01 overdue counters, `backfill_review_clocks`, and ADM-04 `review_targets` validation.
+
+## Not done / Open
+
+- No dedicated systemd timer or Compose sidecar service was added for `run_review_clocks`; deployments schedule `python manage.py run_review_clocks --once` (or `--loop`) and run `backfill_review_clocks` once after `migrate` as documented in `PRODUCTION.md` and `deploy/README.md`.
