@@ -1506,3 +1506,60 @@
     border-radius: var(--radius);
   }
 }
+
+/* ---------- Report received (spec screen 18) ---------- */
+/* The one moment of celebration: sun rings around a green check that draws itself once (I-9). */
+.receivedHead {
+  display: grid;
+  justify-items: center;
+  gap: var(--s-3);
+  text-align: center;
+}
+
+.receivedDisc {
+  display: grid;
+  place-items: center;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: var(--ok);
+  color: var(--paper);
+}
+
+.receivedDisc path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.receivedDisc[data-draw] path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: egDrawTick 400ms var(--ease-out) 240ms forwards;
+}
+
+@keyframes egDrawTick {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .receivedDisc[data-draw] path {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+}
+
+.nextSteps {
+  display: grid;
+  gap: var(--s-3);
+  padding-top: var(--s-5);
+  border-top: 1px solid var(--rule);
+}
+
+.another {
+  justify-self: center;
+}

@@ -7,7 +7,7 @@ import type { ReactNode } from "react";
 import type { Category } from "../../../../lib/api/types";
 import { useLocale, useT } from "../../../../lib/i18n/client";
 import type { ReportViewState } from "../../../../lib/outbox";
-import { AppShell, Banner, Button, ButtonLink, ReceiptCard, StatusBadge, UploadItem, UploadList, type ReportStatus, type UploadState } from "../../../../ui";
+import { AppShell, Banner, Button, ButtonLink, ReceiptCard, StatusBadge, SunRings, UploadItem, UploadList, type ReportStatus, type UploadState } from "../../../../ui";
 import { formatWatDateTime } from "../../../../ui/format";
 import { categoryPictograms, PlaceIcon, ClockIcon } from "../../../../ui/icons";
 import { AppBarTitle } from "../_components/AppBarTitle";
@@ -53,39 +53,33 @@ export function ReceiptView({ code, receivedAt, justSent, citizen, items, remove
       onBack={onHome}
       offline={offline}
       actions={
-        <>
-          <Button variant="quiet" block onClick={onAnother} data-testid="o12-another">
-            {t("o12.another")}
+        onView ? (
+          <Button block onClick={onView} data-testid="o12-view">
+            {t("o12.viewReport")}
           </Button>
-          {onView ? (
-            <>
-              <Button variant="quiet" block onClick={onHome} data-testid="o12-home">
-                {t("o12.home")}
-              </Button>
-              <Button block onClick={onView} data-testid="o12-view">
-                {t("o12.viewReport")}
-              </Button>
-            </>
-          ) : (
-            <Button block onClick={onHome} data-testid="o12-home">
-              {t("o12.home")}
-            </Button>
-          )}
-        </>
+        ) : (
+          <Button block onClick={onHome} data-testid="o12-home">
+            {t("o12.home")}
+          </Button>
+        )
       }
       data-testid="o12"
     >
       <BackgroundArt variant="soft" />
       <div className={`${styles.screen} ${styles.wide}`}>
-        <h1 className={styles.title}>{t("o12.title")}</h1>
+        <div className={styles.receivedHead}>
+          <SunRings size={152} ripple={justSent}>
+            <span className={styles.receivedDisc} data-draw={justSent || undefined}>
+              <svg viewBox="0 0 24 24" width="40" height="40" aria-hidden="true">
+                <path d="m5 12.5 4.5 4.5L19 7.5" pathLength={1} />
+              </svg>
+            </span>
+          </SunRings>
+          <h1 className={styles.title}>{t("o12.title")}</h1>
+        </div>
         <div className={styles.receipt}>
           <div className={styles.receiptSide}>
-            <ReceiptCard
-              code={code}
-              receivedAt={receivedAt}
-              animate={justSent}
-              next={[t("o12.next.line1"), t(citizen ? "o12.citizen.keep" : "o12.next.line2"), t("o12.next.line3")]}
-            />
+            <ReceiptCard code={code} receivedAt={receivedAt} animate={justSent} />
           </div>
           {items.length ? (
             <section className={styles.receiptSide} aria-labelledby="o12-attachments">
@@ -117,6 +111,19 @@ export function ReceiptView({ code, receivedAt, justSent, citizen, items, remove
             </section>
           ) : null}
         </div>
+        <section className={styles.nextSteps} aria-labelledby="o12-next">
+          <h2 className={styles.sectionTitle} id="o12-next">
+            {t("ui.receipt.next")}
+          </h2>
+          <ol className={styles.steps}>
+            <li>{t("o12.next.line1")}</li>
+            <li>{t(citizen ? "o12.citizen.keep" : "o12.next.line2")}</li>
+            <li>{t("o12.next.line3")}</li>
+          </ol>
+        </section>
+        <Button variant="quiet" className={styles.another} onClick={onAnother} data-testid="o12-another">
+          {t("o12.another")}
+        </Button>
       </div>
     </AppShell>
   );
