@@ -210,7 +210,8 @@ class EmergingIssueDetectionIntegrationTests(TestCase):
         alerts_2 = detect_emerging(self.org.pk, now=utc_now_2)
         self.assertEqual(len(alerts_2), 1)
         self.assertEqual(alerts_2[0].pk, initial_id)
-        self.assertEqual(alerts_2[0].observed, 10)
+        self.assertEqual(alerts_2[0].observed, 5)
+        self.assertEqual(alerts_2[0].total_reports, 10)
         # Notification still fired only once
         self.assertEqual(
             Alert.objects.filter(organisation=self.org, rule="emerging_volume_spike", subject_key=f"cluster:{initial_id}").count(),
@@ -298,3 +299,35 @@ class EmergingIssueDetectionIntegrationTests(TestCase):
         alerts = detect_emerging(self.org.pk, now=utc_now)
         self.assertEqual(len(alerts), 1)
         self.assertEqual(alerts[0].expected, 0.5)
+
+    def test_joined_warning_three_times_keeps_latest_window_observed(self):
+        day = datetime.now(WAT).date()
+        t1 = datetime.combine(day, time(10, 0), tzinfo=WAT).astimezone(dt_timezone.utc)
+        for _ in range(5):
+            self.create_report(occurred_at=t1 - timedelta(minutes=5))
+        a1 = detect_emerging(self.org.pk, now=t1)
+        self.assertEqual(len(a1), 1)
+        self.assertEqual(a1[0].observed, 5)
+        self.assertEqual(a1[0].total_reports, 5)
+
+        # Join 2: 75 minutes later, 6 new reports in the latest window
+        t2 = t1 + timedelta(minutes=75)
+        for _ in range(6):
+            self.create_report(occurred_at=t2 - timedelta(minutes=5))
+        a2 = detect_emerging(self.org.pk, now=t2)
+        self.assertEqual(len(a2), 1)
+        self.assertEqual(a2[0].pk, a1[0].pk)
+        self.assertEqual(a2[0].observed, 6)
+        self.assertEqual(a2[0].total_reports, 11)
+
+        # Join 3: 75 minutes later, 7 new reports in the latest window
+        t3 = t2 + timedelta(minutes=75)
+        for _ in range(7):
+            self.create_report(occurred_at=t3 - timedelta(minutes=5))
+        a3 = detect_emerging(self.org.pk, now=t3)
+        self.assertEqual(len(a3), 1)
+        self.assertEqual(a3[0].pk, a1[0].pk)
+        self.assertEqual(a3[0].observed, 7)
+        self.assertEqual(a3[0].total_reports, 18)
+        self.assertEqual(len(a3[0].report_ids), 18)
+        self.assertIn("7 ", a3[0].explanation)

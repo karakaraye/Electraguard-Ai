@@ -34,6 +34,7 @@ class ClusterWarning(OrganisationOwned):
     baseline = models.FloatField(default=0.0)
     detector = models.CharField(max_length=20, default=Detector.THRESHOLD, choices=Detector.choices)
     observed = models.PositiveIntegerField(default=0)
+    total_reports = models.PositiveIntegerField(default=0)
     expected = models.FloatField(default=0.0)
     p_value = models.FloatField(null=True, blank=True)
     q_value = models.FloatField(null=True, blank=True)
