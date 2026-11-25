@@ -54,6 +54,7 @@ The full plan is in [hackathon-plan.md](hackathon-plan.md).
 | C17 statistical alerts for unusual report volumes (backend) | Antigravity | `backend/c17-emerging-alerts` | `backend/ops/` (new `emerging.py`, extends `ClusterWarning`); `backend/reports/operations_views.py` (OPS-02 fields only); `docs/eval/emerging*` |
 | C18 review clocks and overdue alerts (backend) | Antigravity | `backend/c18-review-clocks` | new `backend/clocks/`; `backend/reports/reviewer_views.py` and `operations_views.py` (clock fields only); `backend/staff/` (ADM-04 review targets only) |
 | C16–C18 front end, contract text and TypeScript types | Claude | `design/c16-c18-ui` | `frontend/`, `docs/design/api-contracts.md`, `frontend/lib/api/` |
+| Community features backend (rumour check, ward check-ins, area today) | Antigravity | `backend/community-features` | `backend/notices/`, `backend/rumours/`, `backend/publicdata/`, `scripts/eval/`, `docs/eval/`, `docs/reviews/` |
 | Front end (all screens, art, offline logic) | Claude + Antigravity | `design/*`, `logic/*`, `integrate/observer-e2e` | `frontend/` |
 | Front-end design system, screens, API contracts | Claude | `design/frontend` | `frontend/app/(observer)/…`, `frontend/app/(staff)/…`, `frontend/app/(public)/…`, `frontend/ui/…`, `frontend/messages/…`, `docs/design/…` |
 | Product mark and lockups | Claude (brand agent) | `design/brand` | `docs/design/brand/…` |
@@ -62,6 +63,32 @@ The full plan is in [hackathon-plan.md](hackathon-plan.md).
 | Observer and citizen screen specs, message files in 5 languages | Claude (UX agent) | `design/observer-screens` | `docs/design/screens/…`, `frontend/messages/…` |
 
 ## Updates
+
+### 25 Nov 2026 · Antigravity · Community features backend complete (Sections A, B, C, D)
+
+- **Branch:** `backend/community-features` (PR #30: https://github.com/karakaraye/Electraguard-Ai/pull/30)
+- **Section A (Public Rumour Check):**
+  - Extended `Claim` with `source` (`desk|public|sms`), `ask_count`, and `ClaimAskHour` log.
+  - Implemented `rumours/matching.py` multilingual matching service with TF-IDF FeatureUnion and configurable threshold (`0.13`).
+  - Implemented CHK-01 (`GET /api/v1/public/check?q=&lang=`) with safety patterns, approved translations across 5 languages, and `< 5` observation suppression ("fewer than 5").
+  - Implemented CHK-02 (`POST /api/v1/public/check`) with 10/hr rate-limiting per IP & device token, PII redaction before storage, and existing claim ask-count increments.
+  - Added SMS `CHECK <text>` handler in `phone_channels/` (160-char limit, multilingual).
+  - Evaluated on 300 synthetic + 150 handwritten items across EN, PCM, HA, YO, IG with stratified 70/30 split: **92.5% test precision**, **86.0% recall**, **10.4% abstention**.
+- **Section B (Ward Check-ins):**
+  - New app `backend/notices/` with `Notice`, `NoticeAnswer`, `Question`, `NoticeRequest` models and seed data for 6 core election questions across 5 languages.
+  - 5D Content filter (`notices/filtering.py`) enforcing PU codes, phone, email, URLs, personal names, and political term exclusions (`notices/data/political_terms.txt`).
+  - Implemented NOT-01 (create, safety pending approval), NOT-02 (approve/reject with 403 `same_person_approval`), NOT-03 (results per ward & unanswered units), NOT-04 (observer active notices with `my_answer` and strict isolation), NOT-05 (offline answer queue up to 24h, clock skew $\le 5$m guard, replace & audit), NOT-06 (fixed questions list).
+  - Check-in cluster hook: $\ge 3$ "no" answers across $\ge 2$ wards triggers `ClusterWarning` with `trigger="checkins"` and elevates triage urgency for open reports in those wards.
+- **Section C (Demand Ranking, Check-in Evidence, Area Today):**
+  - C1: `sort=demand` and `source` filtering on `GET /api/v1/rumours/claims`; `ask_trend_1h` wired into harm spread score.
+  - C2: `checkin_evidence` linking recent notices/answers in matching area and category on claim detail with suppression.
+  - C3 (AREA-01): `GET /api/v1/observer/area-today` for signed-in observers with 60-min cutoff and secondary complementary suppression; public snapshot remains strictly at state level.
+- **Section D (Tests, Contract & Demo Data):**
+  - Comprehensive red-line test suite `backend/notices/test_community_features.py` (10 tests), `notices/tests.py` (6 tests), `rumours` (4 tests), `phone_channels` (19 tests) all passing on PostgreSQL 17.
+  - Added `notices` to `.github/workflows/verify.yml` test suite list.
+  - Added management command `seed_community_demo` populating 2 approved rumours, 1 logistics notice, and cluster-triggering check-ins in synthetic organisation.
+  - Synchronized `docs/design/api-contracts.md` and `frontend/lib/api/contracts.ts` with Section 6 contracts.
+- **Slice review report:** [reviews/2026-11-25-community-features-backend.md](reviews/2026-11-25-community-features-backend.md).
 
 ### 25 Nov 2026 · C16–C18 review fixes, CI runs, and evaluations complete
 
