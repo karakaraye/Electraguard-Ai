@@ -4,7 +4,8 @@
 
 import type { Outcome, ReportStatus as ServerStatus } from "../../../../lib/api/types";
 import { useLocale, useT } from "../../../../lib/i18n/client";
-import { AppShell, Banner, Button, Field, ReceiptCard, Sheet, StatusBadge, TextArea, UploadItem, UploadList } from "../../../../ui";
+import { AppShell, Banner, Button, Field, ReceiptCard, Sheet, StatusBadge, SunRings, TextArea, UploadItem, UploadList } from "../../../../ui";
+import { PenIcon } from "../../../../ui/icons";
 import { AppBarTitle } from "../_components/AppBarTitle";
 import { OUTCOME_KEY, SERVER_BADGE } from "../_lib/status";
 import type { ReceiptItem } from "./ReceiptView";
@@ -39,45 +40,39 @@ export function CitizenReceiptView(props: CitizenReceiptViewProps) {
       onBack={props.onBack}
       offline={props.offline}
       actions={
-        <>
-          <Button variant="quiet" block onClick={props.onAnother} data-testid="c01-another">
-            {t("c01.another")}
-          </Button>
-          <Button block onClick={props.onCheckStatus} data-testid="c01-check">
-            {t("c01.checkStatus")}
-          </Button>
-        </>
+        <Button block onClick={props.onCheckStatus} data-testid="c01-check">
+          {t("c01.checkStatus")}
+        </Button>
       }
       data-testid="c01"
     >
       <div className={`${styles.screen} ${styles.wide}`}>
-        <h1 className={styles.title}>{t("c01.title")}</h1>
+        <div className={styles.receivedHead}>
+          <SunRings size={152} ripple={props.justSent}>
+            <span className={styles.receivedDisc} data-draw={props.justSent || undefined}>
+              <svg viewBox="0 0 24 24" width="40" height="40" aria-hidden="true">
+                <path d="m5 12.5 4.5 4.5L19 7.5" pathLength={1} />
+              </svg>
+            </span>
+          </SunRings>
+          <h1 className={styles.title}>{t("c01.title")}</h1>
+        </div>
         <div className={styles.receipt}>
           <div className={styles.receiptSide}>
             <ReceiptCard code={props.code} receivedAt={props.receivedAt} animate={props.justSent} />
-            <p className={styles.strong} style={{ margin: 0 }}>
-              {t("c01.writeDown")}
+            <p className={s.writeDown} data-testid="c01-write-down">
+              <PenIcon size={22} aria-hidden="true" />
+              <span>{t("c01.writeDown")}</span>
             </p>
-            <label className={styles.switch} data-testid="c01-keep">
+            <label className={`${styles.switch} ${s.keepRow}`} data-testid="c01-keep">
+              <span className={s.switchText}>
+                <span>{t("c01.keepOnPhone")}</span>
+                <span className={styles.meta}>{t("c01.keepOnPhoneHint")}</span>
+              </span>
               <input type="checkbox" role="switch" checked={props.keep} onChange={(event) => props.onKeep(event.target.checked)} />
-              <span>{t("c01.keepOnPhone")}</span>
-              <span className={styles.switchHint}>{t("c01.keepOnPhoneHint")}</span>
             </label>
           </div>
           <div className={styles.receiptSide}>
-            <section className={styles.tight} aria-labelledby="c01-next">
-              <h2 className={styles.sectionTitle} id="c01-next">
-                {t("c01.next.title")}
-              </h2>
-              <ol className={styles.steps}>
-                <li>{t("c01.next.line1")}</li>
-                <li>{t("c01.next.line2")}</li>
-                <li>{t("c01.next.line3")}</li>
-              </ol>
-              <p className={`${styles.meta} eg-tnum`} data-testid="c01-sms">
-                {t("c01.sms", { code: props.code, shortCode })}
-              </p>
-            </section>
             {props.items.length ? (
               <section className={styles.tight} aria-labelledby="c01-attachments">
                 <h2 className={styles.sectionTitle} id="c01-attachments">
@@ -100,7 +95,23 @@ export function CitizenReceiptView(props: CitizenReceiptViewProps) {
                 {pending ? <p className={styles.note}>{t("o12.keepOpen")}</p> : null}
               </section>
             ) : null}
+            <section className={styles.tight} aria-labelledby="c01-next">
+              <h2 className={styles.sectionTitle} id="c01-next">
+                {t("c01.next.title")}
+              </h2>
+              <ol className={styles.steps}>
+                <li>{t("c01.next.line1")}</li>
+                <li>{t("c01.next.line2")}</li>
+                <li>{t("c01.next.line3")}</li>
+              </ol>
+              <p className={`${styles.meta} eg-tnum`} data-testid="c01-sms">
+                {t("c01.sms", { code: props.code, shortCode })}
+              </p>
+            </section>
             <p className={styles.meta}>{t("c01.citizenLabel")}</p>
+            <Button variant="quiet" className={styles.another} onClick={props.onAnother} data-testid="c01-another">
+              {t("c01.another")}
+            </Button>
           </div>
         </div>
       </div>

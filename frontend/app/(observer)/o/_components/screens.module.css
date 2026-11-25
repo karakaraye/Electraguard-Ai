@@ -1520,3 +1520,30 @@
   margin-left: calc(var(--s-3) * -1);
   color: var(--danger);
 }
+
+/* ---------- Citizen receipt (spec screen 30) ---------- */
+.writeDown {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--s-2);
+  margin: 0;
+  padding: var(--s-3) var(--s-4);
+  border-radius: var(--radius-lg);
+  background: var(--sun-tint);
+  color: var(--ink);
+  font: var(--t-label);
+  font-size: var(--t-base-size);
+  line-height: 1.4;
+}
+
+.writeDown svg {
+  flex: none;
+  margin-top: 1px;
+}
+
+.keepRow {
+  padding: var(--s-3) var(--s-4);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  background: var(--paper-raised);
+}

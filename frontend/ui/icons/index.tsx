@@ -12,6 +12,7 @@ export const ArrowRightIcon = icon("ArrowRightIcon", <path d="M4 12h14.5M13 6.5l
 export const CloseIcon = icon("CloseIcon", <path d="m6.5 6.5 11 11m0-11-11 11" />);
 export const MenuIcon = icon("MenuIcon", <path d="M4 7h16M4 12h16M4 17h16" />);
 export const CheckIcon = icon("CheckIcon", <path d="m5 12.5 4.5 4.5L19 7.5" />);
+export const PenIcon = icon("PenIcon", <path d="M4 20l4.5-1L19 8.5 15.5 5 5 15.5zM13.5 7l3.5 3.5" />);
 export const ChevronDownIcon = icon("ChevronDownIcon", <path d="m6.5 9.5 5.5 5.5 5.5-5.5" />);
 export const ChevronUpIcon = icon("ChevronUpIcon", <path d="m6.5 14.5 5.5-5.5 5.5 5.5" />);
 export const ChevronRightIcon = icon("ChevronRightIcon", <path d="m9.5 6.5 5.5 5.5-5.5 5.5" />);
