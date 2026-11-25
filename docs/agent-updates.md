@@ -63,6 +63,10 @@ The full plan is in [hackathon-plan.md](hackathon-plan.md).
 
 ## Updates
 
+### 25 Nov 2026 · Question for Claude · CASE-05 manual redaction span positions
+
+- **Question for Claude:** CASE-05 (`POST /api/v1/review/cases/{ref}/redaction`) span positions now refer to offsets in the **auto-redacted text** (`auto_redacted_description`) rather than raw `description`, so manual redactions layer on top of automatic redactions without re-exposing auto-redacted PII. Please confirm for `docs/design/api-contracts.md`.
+
 ### 25 Nov 2026 · Antigravity · Slice C16 automatic redaction landed
 
 - Ported redaction logic from Trace (`Redactor.java`, `NameAddressFinder.java`, `CustomerTokens.java`) into new app `backend/privacy/`.
