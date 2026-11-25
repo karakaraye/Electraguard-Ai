@@ -2,7 +2,7 @@
 
 /*
  * O-15 plate: the polling day drawn in code. The sun rides the real West Africa Time
- * clock along the arc between the published opening (07:30) and closing (16:00)
+ * clock along the arc between INEC's published opening (08:30) and closing (14:30)
  * times; before opening it waits at the left horizon, after closing it has set at the
  * right. The six stages are the stops on the ground line, filled as they are sent.
  */
@@ -111,7 +111,7 @@ export function DayPlate({
             textAnchor="middle"
             className={styles.time}
           >
-            07:30
+            08:30
           </text>
           <text
             x={RIGHT}
@@ -119,7 +119,7 @@ export function DayPlate({
             textAnchor="middle"
             className={styles.time}
           >
-            16:00
+            14:30
           </text>
           <line
             x1={LEFT}

@@ -32,8 +32,9 @@ function pointAt(t: number) {
   };
 }
 
-const DAY_START = 7 * 60 + 30; // 07:30 WAT
-const DAY_END = 16 * 60; // 16:00 WAT
+// INEC polling hours: accreditation and voting open 08:30 and close 14:30 WAT (voters in the queue still vote).
+const DAY_START = 8 * 60 + 30; // 08:30 WAT
+const DAY_END = 14 * 60 + 30; // 14:30 WAT
 
 /** The sun's place on the arc for an instant, read in West Africa Time (UTC+1, no daylight saving). */
 export function sunPosition(date: Date): { t: number; below: boolean } {
