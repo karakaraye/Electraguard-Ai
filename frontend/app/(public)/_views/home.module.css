@@ -457,7 +457,7 @@
 }
 
 .rumourCard[data-motion="full"][data-in] .stamp {
-  animation: land 320ms var(--ease-out) 240ms both;
+  animation: land var(--dur-sheet) var(--ease-out) var(--dur-step) both;
 }
 
 @keyframes land {

@@ -182,8 +182,8 @@
   gap: var(--s-3);
   padding: var(--s-2) var(--s-3);
   border-radius: var(--radius);
-  background: var(--ink);
-  color: var(--on-ink);
+  background: var(--slab);
+  color: var(--on-slab);
 }
 
 .count {
@@ -200,15 +200,15 @@
 }
 
 .target select {
-  min-height: 40px;
+  min-height: var(--control-h);
   min-width: 0;
   flex: 1 1 auto;
   max-width: 22rem;
   padding: 0 var(--s-3);
-  border: 1px solid var(--on-ink);
+  border: 1px solid var(--on-slab);
   border-radius: var(--radius);
-  background: var(--ink);
-  color: var(--on-ink);
+  background: var(--slab);
+  color: var(--on-slab);
   font: var(--t-body);
 }
 
@@ -218,7 +218,7 @@
 }
 
 .warn {
-  color: var(--sun);
+  color: var(--on-slab);
   font: var(--t-small);
   font-weight: 600;
 }
@@ -270,7 +270,7 @@
 }
 
 .table tbody tr[data-selected] > * {
-  background: var(--sun-wash);
+  background: var(--paper-sunk);
 }
 
 .table tbody tr[data-done] > * {

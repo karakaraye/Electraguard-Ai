@@ -201,7 +201,7 @@
 }
 
 .switch[data-tone="danger"][aria-checked="true"] .thumb {
-  background: #fff;
+  background: var(--fixed-paper);
 }
 
 .switch[aria-busy="true"] {

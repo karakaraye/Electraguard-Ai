@@ -45,7 +45,9 @@ const subscribe = (notify: () => void) => {
   const id = window.setInterval(notify, 60_000);
   return () => window.clearInterval(id);
 };
-const readMinute = () => Math.floor(Date.now() / 60_000);
+const readMinute = (): number | null => Math.floor(Date.now() / 60_000);
+/** The server and the first browser render share one snapshot; the clock is read after mount. */
+const readServerMinute = (): number | null => null;
 
 export function DayPlate({
   stages,
@@ -54,9 +56,9 @@ export function DayPlate({
   listLabel,
   stateLabels,
 }: DayPlateProps) {
-  const minute = useSyncExternalStore(subscribe, readMinute, readMinute);
-  const clock = now ?? new Date(minute * 60_000);
-  const sun = sunPosition(clock);
+  const minute = useSyncExternalStore(subscribe, readMinute, readServerMinute);
+  const clock = now ?? (minute === null ? null : new Date(minute * 60_000));
+  const sun = sunPosition(clock ?? new Date(0));
   const before = sun.below && sun.t === 0;
   const point = sun.below
     ? { x: before ? LEFT - 4 : RIGHT + 4, y: HORIZON + 6 }
@@ -83,15 +85,16 @@ export function DayPlate({
             d={`M${LEFT} ${HORIZON} Q195 ${CONTROL_Y} ${RIGHT} ${HORIZON}`}
             className={styles.arc}
           />
-          <g
-            className={styles.sun}
-            data-set={sun.below || undefined}
-            transform={`translate(${point.x} ${point.y})`}
-            suppressHydrationWarning
-          >
-            <circle r="19" className={styles.glow} />
-            <circle r="11" className={styles.disc} />
-          </g>
+          {clock ? (
+            <g
+              className={styles.sun}
+              data-set={sun.below || undefined}
+              transform={`translate(${point.x} ${point.y})`}
+            >
+              <circle r="19" className={styles.glow} />
+              <circle r="11" className={styles.disc} />
+            </g>
+          ) : null}
           <rect
             y={HORIZON}
             width="390"

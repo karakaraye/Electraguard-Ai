@@ -28,7 +28,7 @@
 
 .chip,
 .selectChip select {
-  min-height: 36px;
+  min-height: var(--control-h);
   padding: 0 var(--s-3);
   border: 1px solid var(--rule-control);
   border-radius: var(--radius-pill);
@@ -101,13 +101,13 @@
 .viewChip {
   display: inline-flex;
   align-items: center;
-  border: 1px solid var(--sun-line);
+  border: 1px solid var(--ink);
   border-radius: var(--radius-pill);
-  background: var(--sun-wash);
+  background: var(--paper-sunk);
 }
 
 .viewChip button {
-  min-height: 32px;
+  min-height: var(--control-h);
   padding: 0 var(--s-2) 0 var(--s-3);
   border: 0;
   border-radius: var(--radius-pill);
@@ -121,7 +121,7 @@
 .viewChip .viewRemove {
   display: grid;
   place-items: center;
-  width: 32px;
+  width: var(--control-h);
   padding: 0;
   color: var(--ink-2);
 }
@@ -132,7 +132,7 @@
 }
 
 .viewInput {
-  min-height: 40px;
+  min-height: var(--control-h);
   width: 12rem;
   padding: 0 var(--s-3);
   border: var(--border-w) solid var(--rule-control);
@@ -158,7 +158,7 @@
 }
 
 .newPill {
-  min-height: 36px;
+  min-height: var(--control-h);
   padding: 0 var(--s-4);
   border: 0;
   border-radius: var(--radius-pill);
@@ -201,7 +201,7 @@
 }
 
 .tableCol tbody tr[aria-selected="true"] > * {
-  background: var(--sun-wash);
+  background: var(--paper-sunk);
 }
 
 .tableCol tbody tr[aria-selected="true"] > :first-child {

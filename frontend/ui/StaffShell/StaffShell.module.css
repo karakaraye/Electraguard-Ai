@@ -262,7 +262,7 @@
 .tabLink .count {
   position: absolute;
   top: 4px;
-  left: calc(50% + 6px);
+  left: calc(50% + 14px);
   background: var(--paper);
 }
 
@@ -386,7 +386,7 @@ button.tabLink[aria-current="true"]::before {
 }
 
 .moreLink[aria-current="page"] {
-  background: var(--sun-wash);
+  background: var(--paper-sunk);
   box-shadow: inset 3px 0 0 var(--ink);
 }
 

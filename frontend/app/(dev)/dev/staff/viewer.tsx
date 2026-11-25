@@ -98,16 +98,16 @@ export function StaffStateViewer(): ReactElement {
   const t = useT();
 
   const nav: StaffNavItem[] = [
-    { href: `/dev/staff?screen=s02&state=${state}&theme=${theme}`, label: "Queue", icon: InboxIcon, current: screen === "s02" || screen === "s03", count: 2 },
-    { href: `/dev/staff?screen=s04&state=${state}&theme=${theme}`, label: "Assign", icon: SearchIcon, current: screen === "s04" },
-    { href: `/dev/staff?screen=s05&state=${state}&theme=${theme}`, label: "Ops", icon: SignalIcon, current: screen === "s05" },
-    { href: `/dev/staff?screen=s06&state=${state}&theme=${theme}`, label: "Rumours", icon: DiscussionIcon, current: screen === "s06" },
-    { href: `/dev/staff?screen=s07&state=${state}&theme=${theme}`, label: "Publish", icon: UploadIcon, current: screen === "s07" },
-    { href: `/dev/staff?screen=s08&state=${state}&theme=${theme}`, label: "Mod", icon: LockIcon, current: screen === "s08" },
-    { href: `/dev/staff?screen=s09&state=${state}&theme=${theme}`, label: "Codes", icon: KeyIcon, current: screen === "s09" },
-    { href: `/dev/staff?screen=s10&state=${state}&theme=${theme}`, label: "Staff", icon: UsersIcon, current: screen === "s10" },
-    { href: `/dev/staff?screen=s11&state=${state}&theme=${theme}`, label: "Settings", icon: SlidersIcon, current: screen === "s11" },
-    { href: `/dev/staff?screen=s12&state=${state}&theme=${theme}`, label: "Security", icon: ShieldCheckIcon, current: screen === "s12" },
+    { href: `/dev/staff?screen=s02&state=${state}&theme=${theme}`, label: t("staff.nav.queue"), icon: InboxIcon, current: screen === "s02" || screen === "s03", count: 2 },
+    { href: `/dev/staff?screen=s04&state=${state}&theme=${theme}`, label: t("staff.nav.assign"), icon: SearchIcon, current: screen === "s04" },
+    { href: `/dev/staff?screen=s05&state=${state}&theme=${theme}`, label: t("staff.nav.ops"), icon: SignalIcon, current: screen === "s05" },
+    { href: `/dev/staff?screen=s06&state=${state}&theme=${theme}`, label: t("staff.nav.rumours"), icon: DiscussionIcon, current: screen === "s06" },
+    { href: `/dev/staff?screen=s07&state=${state}&theme=${theme}`, label: t("staff.nav.publish"), icon: UploadIcon, current: screen === "s07" },
+    { href: `/dev/staff?screen=s08&state=${state}&theme=${theme}`, label: t("staff.nav.discussions"), icon: LockIcon, current: screen === "s08" },
+    { href: `/dev/staff?screen=s09&state=${state}&theme=${theme}`, label: t("staff.nav.codes"), icon: KeyIcon, current: screen === "s09" },
+    { href: `/dev/staff?screen=s10&state=${state}&theme=${theme}`, label: t("staff.nav.staff"), icon: UsersIcon, current: screen === "s10" },
+    { href: `/dev/staff?screen=s11&state=${state}&theme=${theme}`, label: t("staff.nav.settings"), icon: SlidersIcon, current: screen === "s11" },
+    { href: `/dev/staff?screen=s12&state=${state}&theme=${theme}`, label: t("staff.nav.security"), icon: ShieldCheckIcon, current: screen === "s12" },
   ];
 
   const currentScreenObj = SCREENS.find((s) => s.id === screen) ?? SCREENS[0];

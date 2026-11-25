@@ -140,7 +140,7 @@ export function AssignView({
             >
               {t("s04.bulkAssign", { count: selected.size })}
             </Button>
-            {tooMany ? <span className={styles.warn}>{t("s04.maxNote", { max: ASSIGN_MAX })}</span> : null}
+            {tooMany ? <span className={styles.warn} role="status">{t("s04.maxNote", { max: ASSIGN_MAX })}</span> : null}
           </div>
         ) : null}
 

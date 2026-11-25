@@ -5,7 +5,7 @@ export default function manifest(): MetadataRoute.Manifest {
     name: "ElectraGuard AI",
     short_name: "ElectraGuard",
     description: "Election observation and incident documentation",
-    start_url: "/",
+    start_url: "/o",
     scope: "/",
     display: "standalone",
     background_color: "#ffffff",

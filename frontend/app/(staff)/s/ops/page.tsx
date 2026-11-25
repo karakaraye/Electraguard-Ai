@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useSyncExternalStore } from "react";
 import { api } from "../../../../lib/api/client";
 import type { ChecklistStage, Cluster, CoverageResponse, LateMaterialsResponse, OverviewResponse } from "../../../../lib/api/types";
 import { useT } from "../../../../lib/i18n/client";
@@ -10,12 +10,16 @@ import { OpsView, type Section } from "../_views/OpsView";
 /** The ops room refreshes itself while it is on screen. */
 const REFRESH_MS = 60_000;
 
+const never = () => () => {};
+
 const idle = <T,>(): Section<T> => ({ data: null, loading: true, error: null });
 
 export default function OpsPage() {
   const t = useT();
-  const [today] = useState(() => watParts(Date.now()).date);
-  const [date, setDate] = useState(today);
+  // The day comes from the clock, so the server and the first browser render both leave it empty.
+  const today = useSyncExternalStore(never, () => watParts(Date.now()).date, () => "");
+  const [picked, setDate] = useState<string | null>(null);
+  const date = picked ?? today;
   const [stage, setStage] = useState<ChecklistStage>("opening");
   const [overview, setOverview] = useState<Section<OverviewResponse>>(idle);
   const [clusters, setClusters] = useState<Section<Cluster[]>>(idle);
@@ -32,6 +36,7 @@ export default function OpsPage() {
 
   // Each section loads and fails on its own; earlier data stays while a refresh runs.
   useEffect(() => {
+    if (!date) return;
     let cancelled = false;
     const keep = <T,>(set: (fn: (s: Section<T>) => Section<T>) => void) => set((s) => ({ ...s, loading: true }));
     keep(setOverview);
@@ -52,6 +57,7 @@ export default function OpsPage() {
   }, [date, tick, problem]);
 
   useEffect(() => {
+    if (!date) return;
     let cancelled = false;
     void api("OPS-03", { query: { date, stage } }).then((res) => {
       if (!cancelled) setCoverage(res.ok ? { data: res.data, loading: false, error: null } : (s) => ({ ...s, loading: false, error: problem(res) }));

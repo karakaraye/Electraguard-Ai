@@ -45,14 +45,17 @@ const USSD_MAX = 140;
  * real gateway, so what a judge sees here is the production code path. Reports sent
  * from it carry `simulated: true` and never reach the public results.
  */
-export function PhoneSimulator({ seed }: { seed?: PhoneSeed }) {
+/** Where the phone opens: the dial pad (default), the USSD code already typed, or a new SMS. */
+export type PhoneStart = "home" | "ussd" | "sms";
+
+export function PhoneSimulator({ seed, start = "home" }: { seed?: PhoneSeed; start?: PhoneStart }) {
   const t = useT();
   const { locale } = useLocale();
   const preview = Boolean(seed);
   const [status, setStatus] = useState<PhoneSeed["status"]>(seed?.status ?? "loading");
   const [phoneLabel, setPhoneLabel] = useState(seed?.phoneLabel ?? "");
-  const [view, setView] = useState<View>(seed?.view ?? { name: "home" });
-  const [dial, setDial] = useState("");
+  const [view, setView] = useState<View>(seed?.view ?? (start === "sms" ? { name: "compose" } : { name: "home" }));
+  const [dial, setDial] = useState(start === "ussd" ? USSD_SERVICE_CODE : "");
   const [reply, setReply] = useState("");
   const [draft, setDraft] = useState(seed?.draft ?? "");
   const [messages, setMessages] = useState<Message[]>(seed?.messages ?? []);

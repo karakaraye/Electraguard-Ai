@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Suspense, type CSSProperties } from "react";
+import { Suspense, use, type CSSProperties } from "react";
 import type { Translate } from "../../../lib/i18n";
 import type { Cell, GuideSummary } from "../../../lib/api/types";
 import { SMS_SHORT_CODE } from "../../../lib/config";
@@ -27,6 +27,11 @@ export type HomeResults =
   | { kind: "unavailable" };
 
 type Awaitable<T> = T | Promise<T>;
+
+/** Waits for a streamed value (server) or takes a value as it is (previews render this view in the browser). */
+function useSettled<T>(value: Awaitable<T>): T {
+  return value instanceof Promise ? use(value) : value;
+}
 
 export type HomeViewProps = {
   t: Translate;
@@ -171,7 +176,7 @@ export function HomeView({ t, locale, results, guides, check, reportLines }: Hom
             <div className={styles.wayText}>
               <h3 id="way-sms" className={styles.wayTitle}>{t("p02.ways.sms.title", { shortCode: SMS_SHORT_CODE })}</h3>
               <p className={styles.wayBody}>{t("p02.ways.sms.body")}</p>
-              <Link className={styles.more} href="/phone" aria-describedby="way-sms">
+              <Link className={styles.more} href="/phone?start=sms" aria-describedby="way-sms">
                 {withArrow(t("p02.tryPhone"))}
               </Link>
             </div>
@@ -183,7 +188,7 @@ export function HomeView({ t, locale, results, guides, check, reportLines }: Hom
             <div className={styles.wayText}>
               <h3 id="way-ussd" className={styles.wayTitle}>{t("p02.ways.ussd.title", { ussd: USSD_SERVICE_CODE })}</h3>
               <p className={styles.wayBody}>{t("p02.ways.ussd.body")}</p>
-              <Link className={styles.more} href="/phone" aria-describedby="way-ussd">
+              <Link className={styles.more} href="/phone?start=ussd" aria-describedby="way-ussd">
                 {withArrow(t("p02.tryPhone"))}
               </Link>
             </div>
@@ -266,8 +271,8 @@ export function HomeView({ t, locale, results, guides, check, reportLines }: Hom
 }
 
 /** The results block waits for the API on its own, so a slow or unreachable API never holds back the rest of the page. */
-async function ResultsBody({ results: pending, t, locale }: { results: Awaitable<HomeResults>; t: Translate; locale: Locale }) {
-  const results = await pending;
+function ResultsBody({ results: pending, t, locale }: { results: Awaitable<HomeResults>; t: Translate; locale: Locale }) {
+  const results = useSettled(pending);
   const tag = localeTags[locale];
   return (
     results.kind === "published" ? (
@@ -332,8 +337,8 @@ async function ResultsBody({ results: pending, t, locale }: { results: Awaitable
 }
 
 /** Up to five guides from the real guide list; while it loads, or if it cannot be read, a link to all guides. */
-async function GuideItems({ guides: pending, t }: { guides: Awaitable<GuideSummary[] | null>; t: Translate }) {
-  const guides = await pending;
+function GuideItems({ guides: pending, t }: { guides: Awaitable<GuideSummary[] | null>; t: Translate }) {
+  const guides = useSettled(pending);
   return (
     guides && guides.length > 0 ? (
       guides.slice(0, 5).map((guide) => (
@@ -362,7 +367,7 @@ async function GuideItems({ guides: pending, t }: { guides: Awaitable<GuideSumma
 }
 
 /** The closing line appears only once totals are published, so it never contradicts the empty results. */
-async function EveningCaption({ results: pending, t }: { results: Awaitable<HomeResults>; t: Translate }) {
-  const results = await pending;
+function EveningCaption({ results: pending, t }: { results: Awaitable<HomeResults>; t: Translate }) {
+  const results = useSettled(pending);
   return results.kind === "published" ? <p className={styles.eveningCaption}>{t("p02.eveningCaption")}</p> : null;
 }

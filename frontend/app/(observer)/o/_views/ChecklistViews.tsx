@@ -93,6 +93,16 @@ export function ChecklistListView({ offline, stages, unitLabel = null, now, onBa
             const done = stage.state === "received";
             const isNext = index === nextIndex;
             const locked = !arrivalKnown && stage.slug !== "arrival" && !done;
+            const label = (
+              <>
+                <span className={s.stageName}>{t(`o15.stage.${stage.slug}`)}</span>
+                <span className="eg-sr-only">
+                  {" · "}
+                  {done ? t("o15.stageState.received") : isNext ? t("o04.stageNext") : t(`o15.stageState.${stage.state === "needsAttention" ? "notStarted" : stage.state}`)}
+                </span>
+                {!isNext ? <ChevronRightIcon size={20} aria-hidden="true" /> : null}
+              </>
+            );
             const position = done ? "done" : isNext ? "next" : "later";
             return (
               <li key={stage.slug} className={s.stageItem} data-position={position} data-locked={locked || undefined} data-testid={`o15-stage-${stage.slug}`}>
@@ -100,14 +110,15 @@ export function ChecklistListView({ offline, stages, unitLabel = null, now, onBa
                   {done ? <CheckIcon size={14} strokeWidth={3} /> : null}
                 </span>
                 <div className={s.stageBody}>
-                  <Link href={stage.href} className={s.stageLink}>
-                    <span className={s.stageName}>{t(`o15.stage.${stage.slug}`)}</span>
-                    <span className="eg-sr-only">
-                      {" · "}
-                      {done ? t("o15.stageState.received") : isNext ? t("o04.stageNext") : t(`o15.stageState.${stage.state === "needsAttention" ? "notStarted" : stage.state}`)}
-                    </span>
-                    {!isNext ? <ChevronRightIcon size={20} aria-hidden="true" /> : null}
-                  </Link>
+                  {locked ? (
+                    <a role="link" aria-disabled="true" className={s.stageLink}>
+                      {label}
+                    </a>
+                  ) : (
+                    <Link href={stage.href} className={s.stageLink}>
+                      {label}
+                    </Link>
+                  )}
                   {done ? (
                     <span className={`${styles.meta} eg-tnum`}>
                       {stage.receivedAt ? t("o15.received", { time: formatWatTime(stage.receivedAt, locale) }) : t("o15.stageState.received")}

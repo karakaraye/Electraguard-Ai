@@ -127,6 +127,9 @@ export function PollingUnitPicker({
   }
 
   const searchDisabled = unitOptions.length === 0;
+  /* Whether the state was first shown inline on this visit. It stays inline once shown, so a list that
+     finishes downloading in the background never moves the select out from under someone choosing it. */
+  const [startedInline] = useState(searchDisabled);
   /* The list is not on the phone: nothing can be searched or drilled, so say that first and hide what cannot work. */
   const listMissing = (Boolean(value.state_code) && (status.kind === "missing" || status.kind === "error")) || !states;
 
@@ -187,7 +190,7 @@ export function PollingUnitPicker({
   }
 
   /* Nothing on the phone can be searched yet: the state comes first, inline, and its list downloads. */
-  const stateInline = searchDisabled;
+  const stateInline = searchDisabled || startedInline;
   const stateSelect = (
     <Select
       label={t("o07.state")}

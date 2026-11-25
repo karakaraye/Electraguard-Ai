@@ -232,7 +232,7 @@
   padding: var(--s-2);
   border: 1px solid var(--rule);
   border-radius: var(--radius);
-  background: #ffffff;
+  background: var(--fixed-paper);
 }
 
 .qr svg {

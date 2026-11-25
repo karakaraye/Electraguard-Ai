@@ -280,7 +280,7 @@
 
 .roleOption[data-checked] {
   border-color: var(--ink);
-  background: var(--sun-wash);
+  background: var(--paper-sunk);
 }
 
 .roleOption[data-blocked] {
