@@ -21,30 +21,30 @@ EMAIL_PATTERN = re.compile(
     r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b"
 )
 
-# NIN: 11 digits in same sentence after NIN or NIMC, within 30 chars
+# NIN: 11 digits (single spaces/dashes allowed) in same sentence after NIN or NIMC, within 30 chars
 NIN_PREFIX_PATTERN = re.compile(
-    r"(?i)\b(?:nin|nimc)\b[^.\n!?]{0,30}?(?<!\d)(\d{11})(?!\d)"
+    r"(?i)\b(?:nin|nimc)\b[^.\n!?]{0,30}?(?<!\d)(\d(?:[ -]?\d){10})(?!\d)"
 )
 
-# BVN: 11 digits in same sentence after BVN, within 30 chars
+# BVN: 11 digits (single spaces/dashes allowed) in same sentence after BVN, within 30 chars
 BVN_PREFIX_PATTERN = re.compile(
-    r"(?i)\bbvn\b[^.\n!?]{0,30}?(?<!\d)(\d{11})(?!\d)"
+    r"(?i)\bbvn\b[^.\n!?]{0,30}?(?<!\d)(\d(?:[ -]?\d){10})(?!\d)"
 )
 
-# VIN / Voter card number: 19 alphanumeric characters (with at least 1 digit) within 30 chars of VIN or PVC, or starting with 90F5
+# VIN / Voter card number: 19 alphanumeric characters (single spaces/dashes allowed) within 30 chars of VIN or PVC, or starting with 90F5
 VIN_PREFIX_PATTERN = re.compile(
-    r"(?i)\b(?:vin|pvc)\b[^.\n!?]{0,30}?(?<![A-Za-z0-9])(?=[A-Za-z0-9]*\d)([A-Za-z0-9]{19})(?![A-Za-z0-9])"
+    r"(?i)\b(?:vin|pvc)\b[^.\n!?]{0,30}?(?<![A-Za-z0-9])([A-Za-z0-9](?:[ -]?[A-Za-z0-9]){18})(?![A-Za-z0-9])"
 )
 VIN_SUFFIX_PATTERN = re.compile(
-    r"(?i)(?<![A-Za-z0-9])(?=[A-Za-z0-9]*\d)([A-Za-z0-9]{19})(?![A-Za-z0-9])[^.\n!?]{0,30}?\b(?:vin|pvc)\b"
+    r"(?i)(?<![A-Za-z0-9])([A-Za-z0-9](?:[ -]?[A-Za-z0-9]){18})(?![A-Za-z0-9])[^.\n!?]{0,30}?\b(?:vin|pvc)\b"
 )
 VIN_STANDARD_PATTERN = re.compile(
-    r"(?i)\b(90F5[A-Za-z0-9]{15})\b"
+    r"(?i)\b(90F5(?:[ -]?[A-Za-z0-9]){15})\b"
 )
 
-# Account number: 10 digits immediately following account phrase within 15 chars
+# Account number: 10 digits (single spaces/dashes allowed) immediately following account phrase within 15 chars
 ACCOUNT_PREFIX_PATTERN = re.compile(
-    r"(?i)(?:\baccount\s+(?:no\.?|number)\b|\ba/c\b|\b(?:account|acct|nuban)\b)(?:[:=\-\s]{0,5}(?:is|no\.?|number|na)?[:=\-\s]{0,5})(?<!\d)(\d{10})(?!\d)"
+    r"(?i)(?:\baccount\s+(?:no\.?|number)\b|\ba/c\b|\b(?:account|acct|nuban)\b)(?:[:=\-\s]{0,5}(?:is|no\.?|number|na)?[:=\-\s]{0,5})(?<!\d)(\d(?:[ -]?\d){9})(?!\d)"
 )
 
 OFFICIAL_PLACE_WORDS: Set[str] = {"ward", "unit", "polling", "lga", "collation"}
@@ -228,7 +228,8 @@ def find_candidate_spans(text: str, secret: bytes) -> List[Tuple[int, int, str, 
         candidates.append((m.start(1), m.end(1), "bvn", val, token_for("bvn", val, secret)))
     for m in VIN_PREFIX_PATTERN.finditer(text):
         val = m.group(1)
-        candidates.append((m.start(1), m.end(1), "vin", val, token_for("vin", val, secret)))
+        if any(c.isdigit() for c in val):
+            candidates.append((m.start(1), m.end(1), "vin", val, token_for("vin", val, secret)))
     for m in VIN_STANDARD_PATTERN.finditer(text):
         val = m.group(1)
         candidates.append((m.start(1), m.end(1), "vin", val, token_for("vin", val, secret)))
@@ -238,7 +239,8 @@ def find_candidate_spans(text: str, secret: bytes) -> List[Tuple[int, int, str, 
 
     for m in VIN_SUFFIX_PATTERN.finditer(text):
         val = m.group(1)
-        candidates.append((m.start(1), m.end(1), "vin", val, token_for("vin", val, secret)))
+        if any(c.isdigit() for c in val):
+            candidates.append((m.start(1), m.end(1), "vin", val, token_for("vin", val, secret)))
 
     # 8. Address (exclude official/place words like Ward, Unit, Polling, LGA, Collation)
     for m in ADDRESS_NUMBERED_PATTERN.finditer(text):

@@ -423,6 +423,10 @@ class RedactionTests(TestCase):
             ("Voter presented VIN AB12345678901234567 at desk", "AB12345678901234567", "vin"),
             ("Call (0803) 123 4567 immediately", "(0803) 123 4567", "phone"),
             ("Call 0803  123  4567 for backup", "0803  123  4567", "phone"),
+            ("BVN: 2234 5678 901 was checked", "2234 5678 901", "bvn"),
+            ("Send to account no 0123 456 789", "0123 456 789", "account"),
+            ("NIN 1234-5678-901 verified", "1234-5678-901", "nin"),
+            ("PVC AB12 3456 7890 1234 567", "AB12 3456 7890 1234 567", "vin"),
         ]
         for text, secret_val, expected_kind in recall_cases:
             res = redact(text, self.org_a)
