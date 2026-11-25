@@ -25,6 +25,13 @@ export type SheetProps = {
 const SHEET_STATE = "egSheet";
 
 /**
+ * A closing sheet steps back out of its history entry one tick later, so that a sheet which
+ * unmounts and mounts again at once (React runs effects twice in development) keeps its entry
+ * instead of the late step-back closing it.
+ */
+const pendingBack = new Map<string, number>();
+
+/**
  * Bottom sheet on phones, centred dialog from 600 px. Built on the native modal
  * <dialog>: the rest of the page is inert, Escape closes it, and focus returns
  * to whatever opened it. The Close button is always visible.
@@ -60,14 +67,29 @@ export function Sheet({
       onCloseRef.current();
     };
     if (closeOnBrowserBack) {
-      window.history.pushState({ ...(window.history.state ?? {}), [SHEET_STATE]: id }, "");
+      const pending = pendingBack.get(id);
+      if (pending !== undefined) {
+        // Mounted again straight after closing: the entry is still there, so keep it.
+        window.clearTimeout(pending);
+        pendingBack.delete(id);
+      } else {
+        window.history.pushState({ ...(window.history.state ?? {}), [SHEET_STATE]: id }, "");
+      }
       window.addEventListener("popstate", onPop);
     }
 
     return () => {
       if (closeOnBrowserBack) {
         window.removeEventListener("popstate", onPop);
-        if (!poppedByBrowser && window.history.state?.[SHEET_STATE] === id) window.history.back();
+        if (!poppedByBrowser && window.history.state?.[SHEET_STATE] === id) {
+          pendingBack.set(
+            id,
+            window.setTimeout(() => {
+              pendingBack.delete(id);
+              if (window.history.state?.[SHEET_STATE] === id) window.history.back();
+            }, 0),
+          );
+        }
       }
       if (dialog.open) dialog.close();
       if (opener && opener.isConnected) opener.focus({ preventScroll: true });

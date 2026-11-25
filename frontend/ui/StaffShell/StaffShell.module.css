@@ -301,3 +301,103 @@
   overflow-wrap: normal;
   hyphens: auto;
 }
+
+/* ---------- "More" tab and its sheet (phones and tablets) ---------- */
+
+/* Always a real button, styled like the links. */
+button.tabLink {
+  width: 100%;
+  margin: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+.tabList > li {
+  min-width: 0;
+}
+
+/* Tabs beyond the phone limit: tablets from 640px show some, nothing shows past 6. */
+.tabList > li[data-tier="tablet"],
+.tabList > li[data-tier="hidden"] {
+  display: none;
+}
+
+@media (min-width: 640px) {
+  .tabList > li[data-tier="tablet"] {
+    display: block;
+  }
+
+  .tabList > li[data-more="phone-only"] {
+    display: none;
+  }
+}
+
+/* Current section sits behind More: mark the More tab the same way. */
+button.tabLink[aria-current="true"] {
+  color: var(--ink);
+}
+
+button.tabLink[aria-current="true"]::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 20%;
+  right: 20%;
+  height: 3px;
+  background: var(--ink);
+}
+
+.moreList {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.moreList > li {
+  border-bottom: 1px solid var(--rule);
+}
+
+.moreList > li:last-child {
+  border-bottom: 0;
+}
+
+@media (min-width: 640px) {
+  .moreList > li[data-tablet-tab] {
+    display: none;
+  }
+}
+
+.moreLink {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  min-height: 52px;
+  padding: 0 var(--s-2);
+  color: var(--ink);
+  font: var(--t-label);
+  font-size: 1rem;
+  text-decoration: none;
+}
+
+.moreLink[aria-current="page"] {
+  background: var(--sun-wash);
+  box-shadow: inset 3px 0 0 var(--ink);
+}
+
+.moreLink:focus-visible {
+  outline: var(--focus-outline);
+  outline-offset: calc(var(--focus-offset) * -1);
+  box-shadow: var(--focus-halo);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .moreLink:not([aria-current="page"]):hover {
+    background: var(--paper-2);
+  }
+}
+
+.moreLink .count {
+  background: var(--paper);
+}

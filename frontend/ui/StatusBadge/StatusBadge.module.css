@@ -11,7 +11,9 @@
   font-size: 0.84rem;
   line-height: 1.25;
   vertical-align: middle;
-  overflow-wrap: anywhere;
+  /* break-word, not anywhere: a long word still breaks if it cannot fit, but the badge's minimum
+     width stays a whole word, so narrow table columns no longer split "Open" one letter per line. */
+  overflow-wrap: break-word;
 }
 
 .badge svg {

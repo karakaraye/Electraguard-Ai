@@ -2,10 +2,11 @@
 
 import Link from "next/link";
 import { preload } from "react-dom";
-import { useId, type ComponentType, type ReactNode } from "react";
+import { useId, useState, type ComponentType, type ReactNode } from "react";
 import { useT } from "../../lib/i18n/client";
 import { BrandMark } from "../BrandMark/BrandMark";
-import type { IconProps } from "../icons";
+import { MenuIcon, type IconProps } from "../icons";
+import { Sheet } from "../Sheet/Sheet";
 import { setThemePreference, useThemePreference, type ThemePreference } from "../theme";
 import "../tokens.css";
 import styles from "./StaffShell.module.css";
@@ -20,7 +21,10 @@ export type StaffNavItem = {
 };
 
 export type StaffShellProps = {
-  /** Up to 5 items: they become bottom tabs on phones. */
+  /**
+   * Every section the person can see. Phones show the first 4 as bottom tabs (all of
+   * them when there are 5 or fewer) and put the rest behind "More"; tablets show 6.
+   */
   nav: StaffNavItem[];
   /** Page heading. */
   title: string;
@@ -61,12 +65,21 @@ export function StaffShell({
   const storedTheme = useThemePreference("system");
   const Main = preview ? "div" : "main";
   const split = list !== undefined && detail !== undefined;
+  const [moreOpen, setMoreOpen] = useState(false);
+
+  // How many sections stay as tabs: phones 4 (all when 5 or fewer), tablets 6 (all when 7 or fewer).
+  const phoneCap = nav.length <= 5 ? nav.length : 4;
+  const tabletCap = nav.length <= 7 ? nav.length : 6;
+  const overflow = nav.slice(phoneCap);
+  const moreCount = overflow.reduce((sum, item) => sum + (item.count ?? 0), 0);
+  const moreCurrent = overflow.some((item) => item.current);
 
   const navLinks = (variant: "side" | "tabs") =>
-    nav.map((item) => {
+    nav.map((item, index) => {
       const Icon = item.icon;
+      const tier = variant === "tabs" ? (index < phoneCap ? undefined : index < tabletCap ? "tablet" : "hidden") : undefined;
       return (
-        <li key={`${item.href}-${item.label}`}>
+        <li key={`${item.href}-${item.label}`} data-tier={tier}>
           <Link
             href={item.href}
             className={variant === "side" ? styles.sideLink : styles.tabLink}
@@ -118,8 +131,56 @@ export function StaffShell({
       </div>
 
       <nav className={styles.tabs} aria-label={t("ui.nav.main")}>
-        <ul className={styles.tabList}>{navLinks("tabs")}</ul>
+        <ul className={styles.tabList}>
+          {navLinks("tabs")}
+          {overflow.length > 0 ? (
+            <li data-more={nav.length <= tabletCap ? "phone-only" : "always"}>
+              <button
+                type="button"
+                className={styles.tabLink}
+                aria-haspopup="dialog"
+                aria-current={moreCurrent ? "true" : undefined}
+                onClick={() => setMoreOpen(true)}
+                data-testid="staff-nav-more"
+              >
+                <MenuIcon size={22} />
+                <span className={styles.linkLabel}>{t("staff.shell.more")}</span>
+                {moreCount ? <span className={`${styles.count} eg-tnum`}>{moreCount}</span> : null}
+              </button>
+            </li>
+          ) : null}
+        </ul>
       </nav>
+
+      <Sheet
+        open={moreOpen}
+        onClose={() => setMoreOpen(false)}
+        title={t("staff.shell.moreTitle")}
+        closeOnBrowserBack={false}
+        data-testid="staff-nav-sheet"
+      >
+        <ul className={styles.moreList}>
+          {overflow.map((item, offset) => {
+            const Icon = item.icon;
+            // Sections that are tabs on a tablet are listed here on phones only.
+            const onTablet = phoneCap + offset < tabletCap;
+            return (
+              <li key={`${item.href}-${item.label}`} data-tablet-tab={onTablet || undefined}>
+                <Link
+                  href={item.href}
+                  className={styles.moreLink}
+                  aria-current={item.current ? "page" : undefined}
+                  onClick={() => setMoreOpen(false)}
+                >
+                  <Icon size={22} />
+                  <span className={styles.linkLabel}>{item.label}</span>
+                  {item.count ? <span className={`${styles.count} eg-tnum`}>{item.count}</span> : null}
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+      </Sheet>
     </div>
   );
 }
