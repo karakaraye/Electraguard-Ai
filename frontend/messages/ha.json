@@ -1005,6 +1005,13 @@
     "backToQueue": "[HA draft] Back to queue"
   },
   "s01": {
+    "enrolScan": "Duba wannan lambar da manhajar tantancewarka.",
+    "enrolTypeKey": "Ko ka rubuta wannan maɓalli a cikin manhajar.",
+    "qrLabel": "Lambar QR don manhajar tantancewarka",
+    "qrUnavailable": "Ba a iya nuna lambar QR ba. Ka rubuta maɓallin da ke ƙasa maimakon haka.",
+    "codePaste": "Kana iya liƙa duka lambar.",
+    "footer": "Don masu bita da masu gudanarwa na ƙungiyoyin sa ido. Masu sa ido suna shiga a manhajar da lambar mai sa ido.",
+    "strength": { "empty": "Yi amfani da aƙalla haruffa {min}.", "short": "Ya yi gajere: haruffa {count} cikin {min}.", "fair": "Ya isa tsawo. Kalmar sirri mai tsawo ta fi ƙarfi.", "strong": "Kalmar sirri mai ƙarfi." },
     "title": "[HA draft] Staff sign-in",
     "subtitle": "[HA draft] Official election observation review portal",
     "emailLabel": "[HA draft] Email address",

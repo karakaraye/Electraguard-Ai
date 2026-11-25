@@ -1005,6 +1005,13 @@
     "backToQueue": "[IG draft] Back to queue"
   },
   "s01": {
+    "enrolScan": "Nyochaa koodu a site na ngwa nkwenye gị.",
+    "enrolTypeKey": "Ma ọ bụ pịnye igodo a n'ime ngwa ahụ.",
+    "qrLabel": "Koodu QR maka ngwa nkwenye gị",
+    "qrUnavailable": "Enweghị ike igosi koodu QR. Pịnye igodo dị n'okpuru kama.",
+    "codePaste": "Ị nwere ike ịmado koodu ahụ niile.",
+    "footer": "Maka ndị nyocha na ndị nhazi nke otu ndị nleba anya. Ndị nleba anya na-abanye n'ngwa ahụ site na koodu onye nleba anya ha.",
+    "strength": { "empty": "Jiri opekata mpe mkpụrụedemede {min}.", "short": "Ọ dị mkpụmkpụ: mkpụrụedemede {count} n'ime {min}.", "fair": "O zuru ogologo. Okwuntughe ka ogologo siri ike karịa.", "strong": "Okwuntughe siri ike." },
     "title": "[IG draft] Staff sign-in",
     "subtitle": "[IG draft] Official election observation review portal",
     "emailLabel": "[IG draft] Email address",

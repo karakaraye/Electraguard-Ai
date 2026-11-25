@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { type ReactElement } from "react";
+import { useT } from "../../../../lib/i18n/client";
 import { StaffShell, type StaffNavItem } from "../../../../ui";
 import {
   DiscussionIcon,
@@ -16,7 +17,7 @@ import {
   UploadIcon,
   UsersIcon,
 } from "../../../../ui/icons";
-import { SignInView } from "../../../(staff)/s/_views/SignInView";
+import { SignInView, type SignInStep } from "../../../(staff)/s/_views/SignInView";
 import { QueueView } from "../../../(staff)/s/_views/QueueView";
 import { CaseView } from "../../../(staff)/s/_views/CaseView";
 import { AssignView } from "../../../(staff)/s/_views/AssignView";
@@ -45,6 +46,30 @@ import {
   FIXTURE_STAFF_ACCOUNT,
 } from "./fixtures";
 
+/** Screen 38 (S-01) states, from the spec's list. */
+const S01_STATES = [
+  "default", "loading", "invalid_credentials", "account_locked", "rate_limited",
+  "totp", "totp_typing", "totp_invalid", "enrol", "invite", "invite_short", "invite_fair", "invite_strong", "invite_invalid",
+] as const;
+
+function signInStep(state: string): SignInStep {
+  if (state.startsWith("totp")) return "totp";
+  if (state === "enrol") return "enrol";
+  if (state.startsWith("invite")) return "invite";
+  return "credentials";
+}
+
+function signInError(state: string, t: (key: string) => string): string | null {
+  switch (state) {
+    case "invalid_credentials": return t("s01.errors.invalidCredentials");
+    case "account_locked": return t("s01.errors.accountLocked");
+    case "rate_limited": return t("s01.errors.rateLimited");
+    case "totp_invalid": return t("s01.errors.totpInvalid");
+    case "invite_invalid": return t("s01.errors.inviteInvalid");
+    default: return null;
+  }
+}
+
 const SCREENS = [
   { id: "s01", name: "Staff sign-in" },
   { id: "s02", name: "Review queue" },
@@ -66,6 +91,7 @@ export function StaffStateViewer(): ReactElement {
   const state = searchParams?.get("state") ?? "default";
   const themeParam = searchParams?.get("theme");
   const theme = themeParam === "dark" ? "dark" : "light";
+  const t = useT();
 
   const nav: StaffNavItem[] = [
     { href: `/dev/staff?screen=s02&state=${state}&theme=${theme}`, label: "Queue", icon: InboxIcon, current: screen === "s02" || screen === "s03", count: 2 },
@@ -87,13 +113,24 @@ export function StaffStateViewer(): ReactElement {
       case "s01":
         return (
           <SignInView
-            step={state === "totp" ? "totp" : "credentials"}
+            key={state}
+            step={signInStep(state)}
             email="f.musa@electraguard.ng"
             loading={state === "loading"}
-            error={state === "error" ? "Invalid email or password" : null}
+            error={signInError(state, t)}
+            enrolData={{
+              secret: "JBSWY3DPEHPK3PXPJBSWY3DPEHPK3PXP",
+              otpauth_uri: "otpauth://totp/ElectraGuard:f.musa%40electraguard.ng?secret=JBSWY3DPEHPK3PXPJBSWY3DPEHPK3PXP&issuer=ElectraGuard",
+            }}
+            initialValues={{
+              totp: state === "totp_invalid" ? "482913" : state === "totp_typing" ? "482" : undefined,
+              invitePassword: state === "invite_short" ? "polling" : state === "invite_fair" ? "pollingunitday" : state === "invite_strong" ? "Polling-unit 042, Kano" : undefined,
+            }}
             onEmailChange={() => {}}
             onSubmitCredentials={() => {}}
             onSubmitTotp={() => {}}
+            onSubmitEnrol={() => {}}
+            onSubmitInvitePassword={() => {}}
             onBackToCredentials={() => {}}
           />
         );
@@ -307,9 +344,9 @@ export function StaffStateViewer(): ReactElement {
         ))}
 
         <div style={{ marginLeft: "auto", display: "flex", gap: "12px", alignItems: "center" }}>
-          <div style={{ display: "flex", gap: "6px", alignItems: "center" }}>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", alignItems: "center" }}>
             <span style={{ color: "var(--ink-2)" }}>State:</span>
-            {(["default", "loading", "empty", "error", "totp"] as const).map((st) => (
+            {(screen === "s01" ? S01_STATES : (["default", "loading", "empty", "error"] as const)).map((st) => (
               <Link
                 key={st}
                 href={`/dev/staff?screen=${screen}&state=${st}&theme=${theme}`}

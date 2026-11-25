@@ -1005,6 +1005,13 @@
     "backToQueue": "[YO draft] Back to queue"
   },
   "s01": {
+    "enrolScan": "Ṣàyẹ̀wò kóòdù yìí pẹ̀lú áàpù ìjẹ́rìísí rẹ.",
+    "enrolTypeKey": "Tàbí tẹ kọ́kọ́rọ́ yìí sínú áàpù náà.",
+    "qrLabel": "Kóòdù QR fún áàpù ìjẹ́rìísí rẹ",
+    "qrUnavailable": "A kò lè fi kóòdù QR hàn. Tẹ kọ́kọ́rọ́ ìsàlẹ̀ dípò rẹ̀.",
+    "codePaste": "O lè lẹ gbogbo kóòdù náà mọ́ ibẹ̀.",
+    "footer": "Fún àwọn olùṣàyẹ̀wò àti olùṣètò àwọn àjọ alákíyèsí. Àwọn alákíyèsí máa ń wọlé sí áàpù pẹ̀lú kóòdù alákíyèsí wọn.",
+    "strength": { "empty": "Lo ó kéré tán àmì {min}.", "short": "Ó kúrú jù: àmì {count} nínú {min}.", "fair": "Ó gùn tó. Ọ̀rọ̀ aṣínà tó gùn jù lọ lágbára jù.", "strong": "Ọ̀rọ̀ aṣínà tó lágbára." },
     "title": "[YO draft] Staff sign-in",
     "subtitle": "[YO draft] Official election observation review portal",
     "emailLabel": "[YO draft] Email address",

@@ -1004,6 +1004,13 @@
     "backToQueue": "Back to queue"
   },
   "s01": {
+    "enrolScan": "Scan this code with your authenticator app.",
+    "enrolTypeKey": "Or type this key into the app.",
+    "qrLabel": "QR code for your authenticator app",
+    "qrUnavailable": "The QR code could not be shown. Type the key below instead.",
+    "codePaste": "You can paste the whole code.",
+    "footer": "For reviewers and coordinators of observation organisations. Observers sign in on the app with their observer code.",
+    "strength": { "empty": "Use at least {min} characters.", "short": "Too short: {count} of {min} characters.", "fair": "Long enough. A longer password is stronger.", "strong": "Strong password." },
     "title": "Staff sign-in",
     "subtitle": "Official election observation review portal",
     "emailLabel": "Email address",

@@ -19,6 +19,10 @@ function SignInContainer() {
   const [error, setError] = useState<string | null>(null);
   const [enrolData, setEnrolData] = useState<{ secret: string; otpauth_uri: string } | null>(null);
 
+  /** Anything not handled per step: too many tries, or the server could not be reached. */
+  const otherError = (res: { status: number; error: { code: string } }) =>
+    res.status === 429 || res.error.code === "rate_limited" ? t("s01.errors.rateLimited") : t("staff.networkError");
+
   const handleSubmitCredentials = async (emailInput: string, passwordInput: string) => {
     setLoading(true);
     setError(null);
@@ -35,7 +39,7 @@ function SignInContainer() {
         } else if (res.status === 423 || (res.error && res.error.code === "account_locked")) {
           setError(t("s01.errors.accountLocked"));
         } else {
-          setError(res.error?.message || t("staff.networkError"));
+          setError(otherError(res));
         }
         return;
       }
@@ -64,7 +68,7 @@ function SignInContainer() {
         if (res.status === 404) {
           setError(t("staff.endpointNotReady"));
         } else {
-          setError(res.error?.message || t("staff.networkError"));
+          setError(otherError(res));
         }
       }
     } catch {
@@ -88,7 +92,7 @@ function SignInContainer() {
         } else if (res.status === 401 || (res.error && res.error.code === "totp_invalid")) {
           setError(t("s01.errors.totpInvalid"));
         } else {
-          setError(res.error?.message || t("staff.networkError"));
+          setError(otherError(res));
         }
         return;
       }
@@ -115,7 +119,7 @@ function SignInContainer() {
         } else if (res.status === 401 || (res.error && res.error.code === "totp_invalid")) {
           setError(t("s01.errors.totpInvalid"));
         } else {
-          setError(res.error?.message || t("staff.networkError"));
+          setError(otherError(res));
         }
         return;
       }
@@ -140,10 +144,10 @@ function SignInContainer() {
       if (!res.ok) {
         if (res.status === 404) {
           setError(t("staff.endpointNotReady"));
-        } else if (res.status === 401) {
+        } else if (res.status === 401 || res.status === 410 || res.error.code.startsWith("invite")) {
           setError(t("s01.errors.inviteInvalid"));
         } else {
-          setError(res.error?.message || t("staff.networkError"));
+          setError(otherError(res));
         }
         return;
       }

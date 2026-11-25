@@ -1005,6 +1005,13 @@
     "backToQueue": "[PCM draft] Back to queue"
   },
   "s01": {
+    "enrolScan": "Scan this code with your authenticator app.",
+    "enrolTypeKey": "Or type this key put for the app.",
+    "qrLabel": "QR code for your authenticator app",
+    "qrUnavailable": "The QR code no show. Type the key wey dey below instead.",
+    "codePaste": "You fit paste the whole code.",
+    "footer": "Na for reviewers and coordinators of observation organisation. Observers dey sign in for the app with their observer code.",
+    "strength": { "empty": "Use at least {min} characters.", "short": "E too short: {count} of {min} characters.", "fair": "E long reach. Longer password strong pass.", "strong": "Strong password." },
     "title": "[PCM draft] Staff sign-in",
     "subtitle": "[PCM draft] Official election observation review portal",
     "emailLabel": "[PCM draft] Email address",
