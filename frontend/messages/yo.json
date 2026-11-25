@@ -737,7 +737,8 @@
     },
     "answerCount": "{count, plural, one {Dáhùn ìbéèrè #} other {Dáhùn ìbéèrè #}}",
     "continueStage": "Tẹ̀síwájú ìpele yìí",
-    "allDone": "A dúpẹ́. A ti fi gbogbo ìpele ránṣẹ́."
+    "allDone": "A dúpẹ́. A ti fi gbogbo ìpele ránṣẹ́.",
+    "answered": "A ti dáhùn {done} nínú {total}"
   },
   "o16": {
     "title": "Ṣàyẹ̀wò ìwé èsì",

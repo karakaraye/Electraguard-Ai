@@ -737,7 +737,8 @@
     },
     "answerCount": "{count, plural, one {Zaa ajụjụ #} other {Zaa ajụjụ #}}",
     "continueStage": "Gaa n'ihu na nkebi a",
-    "allDone": "Daalụ. E zigala nkebi niile."
+    "allDone": "Daalụ. E zigala nkebi niile.",
+    "answered": "Azaala {done} n'ime {total}"
   },
   "o16": {
     "title": "Lelee mpempe akwụkwọ nsonaazụ",

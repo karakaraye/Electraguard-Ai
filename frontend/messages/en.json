@@ -736,7 +736,8 @@
     },
     "answerCount": "{count, plural, one {Answer # question} other {Answer # questions}}",
     "continueStage": "Continue this stage",
-    "allDone": "Thank you. All stages sent."
+    "allDone": "Thank you. All stages sent.",
+    "answered": "{done} of {total} answered"
   },
   "o16": {
     "title": "Check the result sheet",

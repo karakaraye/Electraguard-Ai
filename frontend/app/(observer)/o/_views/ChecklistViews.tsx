@@ -173,6 +173,9 @@ export function StageFormView(props: StageFormViewProps) {
   const { stage, answers, errors } = props;
   const questions = QUESTIONS[stage];
   const banner = props.status && props.status !== "sending" ? STATUS_BANNER[props.status] : null;
+  const isAnswered = (question: (typeof questions)[number]) =>
+    question.type === "time" ? Boolean(props.arrivalTime) : question.type === "queue" ? Boolean(answers.queue_size) : answers[question.id] != null;
+  const answeredCount = questions.filter(isAnswered).length;
 
   return (
     <AppShell
@@ -206,7 +209,17 @@ export function StageFormView(props: StageFormViewProps) {
       data-testid="o15-form"
     >
       <div className={styles.screen}>
-        <h1 className={styles.title}>{t(`o15.stage.${stage}`)}</h1>
+        <div className={s.stageHead}>
+          <h1 className={styles.title}>{t(`o15.stage.${stage}`)}</h1>
+          <p className={`${styles.meta} eg-tnum`} aria-live="polite" data-testid="o15-answered">
+            {t("o15.answered", { done: answeredCount, total: questions.length })}
+          </p>
+          <span className={s.stageProgress} aria-hidden="true">
+            {questions.map((question) => (
+              <span key={question.id} data-done={isAnswered(question) || undefined} />
+            ))}
+          </span>
+        </div>
         {stage === "arrival" ? (
           <section className={styles.stack} aria-labelledby="o15-unit">
             <h2 className={s.answerLegend} id="o15-unit">
@@ -225,22 +238,23 @@ export function StageFormView(props: StageFormViewProps) {
           {questions.map((question) => {
             if (question.type === "time") {
               return (
-                <Field
-                  key={question.id}
-                  label={t(question.key)}
-                  hint={t("common.wat")}
-                  type="time"
-                  value={props.arrivalTime}
-                  onChange={(event) => props.onArrivalTime(event.target.value)}
-                  error={props.timeError ?? errors[question.id]}
-                  data-testid="o15-arrival-time"
-                />
+                <div key={question.id} className={s.qCard}>
+                  <Field
+                    label={t(question.key)}
+                    hint={t("common.wat")}
+                    type="time"
+                    value={props.arrivalTime}
+                    onChange={(event) => props.onArrivalTime(event.target.value)}
+                    error={props.timeError ?? errors[question.id]}
+                    data-testid="o15-arrival-time"
+                  />
+                </div>
               );
             }
             if (question.type === "queue") {
               const value = answers.queue_size ?? null;
               return (
-                <div key={question.id} className={styles.stack}>
+                <div key={question.id} className={s.qCard}>
                   <AnswerGroup
                     name={question.id}
                     legend={t(question.key)}
@@ -257,7 +271,7 @@ export function StageFormView(props: StageFormViewProps) {
             const value = answers[question.id] ?? null;
             const problem = value !== null && value !== "not_seen" && value === question.problem;
             return (
-              <div key={question.id} className={styles.stack}>
+              <div key={question.id} className={s.qCard} data-problem={problem || undefined}>
                 <AnswerGroup
                   name={question.id}
                   legend={t(question.key)}
@@ -333,10 +347,10 @@ function ReportThis({ question, onClick }: { question: string; onClick: () => vo
   const t = useT();
   return (
     <div className={s.followUp}>
-      <Button variant="secondary" onClick={onClick} aria-label={`${t("o15.reportThis")}: ${question}`} data-testid="o15-report-this">
+      <Button variant="quiet" icon={<ChevronRightIcon />} className={s.followUpLink} onClick={onClick} aria-label={`${t("o15.reportThis")}: ${question}`} data-testid="o15-report-this">
         {t("o15.reportThis")}
       </Button>
-      <p className={styles.note}>{t("o15.reportThisHint")}</p>
+      <p className={styles.meta}>{t("o15.reportThisHint")}</p>
     </div>
   );
 }

@@ -438,7 +438,7 @@
 
 .questions {
   display: grid;
-  gap: var(--s-6);
+  gap: var(--s-3);
 }
 
 .answerGroup {
@@ -500,8 +500,10 @@
   cursor: pointer;
 }
 
+/* Chosen: sunlight fill and an ink edge, like every other choice. */
 .answer:has(input:checked) {
   border: 2px solid var(--ink);
+  background: var(--sun-tint);
   box-shadow: inset 0 0 0 1px var(--ink);
 }
 
@@ -527,14 +529,13 @@
   color: var(--on-ink);
 }
 
+/* Under a problem answer: a quiet link and its one-line hint, inside the question's card. */
 .followUp {
   display: grid;
-  gap: var(--s-2);
+  gap: 0;
   justify-items: start;
-  padding: var(--s-3) var(--s-4);
-  border: 1px solid var(--rule);
-  border-radius: var(--radius);
-  background: var(--paper-2);
+  padding-top: var(--s-2);
+  border-top: 1px solid var(--rule);
 }
 
 .unit {
@@ -1136,4 +1137,70 @@
 .stageItem[data-locked] .stageName,
 .stageItem[data-locked] .stageBody > span {
   color: var(--ink-2);
+}
+
+/* ---------- Checklist stage (spec screen 23) ---------- */
+.stageHead {
+  display: grid;
+  gap: var(--s-2);
+}
+
+/* One segment per question; answered ones turn ink. */
+.stageProgress {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  gap: 4px;
+}
+
+.stageProgress > span {
+  height: 4px;
+  border-radius: 2px;
+  background: var(--rule-control);
+  transition: background-color var(--dur-fade) var(--ease-out);
+}
+
+.stageProgress > span[data-done] {
+  background: var(--ink);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stageProgress > span {
+    transition: none;
+  }
+}
+
+/* One question per card. A problem answer edges the card in the attention tone. */
+.qCard {
+  display: grid;
+  gap: var(--s-3);
+  padding: var(--s-4);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  background: var(--paper-raised);
+}
+
+.qCard[data-problem] {
+  border-color: var(--attn);
+}
+
+.followUpLink {
+  justify-self: start;
+  margin-left: calc(var(--s-3) * -1);
+}
+
+/* The tick sits on the chip's corner, so it never covers the label ("I did not see"). */
+.answer:has(input:checked) .answerTick {
+  top: -8px;
+  right: -8px;
+  width: 22px;
+  height: 22px;
+  box-shadow: 0 0 0 2px var(--paper-raised);
+}
+
+/* The missing-materials list sits flat inside its question's card, not as a box in a box. */
+.qCard > fieldset[data-testid="o15-materials"] {
+  padding: 0;
+  border: 0;
+  background: none;
 }

@@ -737,7 +737,8 @@
     },
     "answerCount": "{count, plural, one {Amsa tambaya #} other {Amsa tambayoyi #}}",
     "continueStage": "Ci gaba da wannan matakin",
-    "allDone": "Mun gode. An aika duk matakai."
+    "allDone": "Mun gode. An aika duk matakai.",
+    "answered": "An amsa {done} cikin {total}"
   },
   "o16": {
     "title": "Duba takardar sakamako",
