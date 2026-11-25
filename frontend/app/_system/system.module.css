@@ -1,0 +1,127 @@
+/* Screen 50 system pages: one centred card on paper. Colour only for the error tone. */
+
+.page {
+  min-height: 100dvh;
+  background: var(--paper);
+  color: var(--ink);
+  font: var(--t-body);
+}
+
+.main {
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: var(--s-6);
+  min-height: 100dvh;
+  padding: var(--s-6) var(--gutter, 16px);
+}
+
+.brand {
+  display: flex;
+}
+
+.card {
+  display: grid;
+  justify-items: center;
+  gap: var(--s-3);
+  width: 100%;
+  max-width: 440px;
+  padding: var(--s-7) var(--s-6) var(--s-6);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  background: var(--paper-raised);
+  text-align: center;
+}
+
+@media (max-width: 420px) {
+  .card {
+    padding-inline: var(--s-4);
+  }
+}
+
+.disc {
+  display: grid;
+  place-items: center;
+  width: 96px;
+  height: 96px;
+  margin-bottom: var(--s-2);
+  border-radius: 50%;
+  background: var(--sun-tint);
+  color: var(--ink);
+}
+
+.disc[data-tone="danger"] {
+  background: var(--danger-bg);
+  color: var(--danger);
+}
+
+.title {
+  margin: 0;
+  font: var(--t-headline);
+  outline: none;
+}
+
+/* Focus moves to the title so screen readers announce the page; it is not a control, so no ring. */
+.title:focus {
+  outline: none;
+}
+
+.body {
+  max-width: 34ch;
+  margin: 0;
+  color: var(--ink-2);
+  font: var(--t-body-lg);
+  line-height: 1.5;
+}
+
+.actions {
+  display: grid;
+  justify-items: center;
+  gap: var(--s-2);
+  width: 100%;
+  margin-top: var(--s-3);
+}
+
+.primary,
+.quiet {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--target-min);
+  font: var(--t-label);
+  font-size: 1rem;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.primary {
+  width: 100%;
+  max-width: 280px;
+  padding: 0 var(--s-5);
+  border: 0;
+  border-radius: var(--radius);
+  background: var(--ink);
+  color: var(--on-ink);
+}
+
+.quiet {
+  padding: 0 var(--s-3);
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.primary:focus-visible,
+.quiet:focus-visible {
+  outline: var(--focus-outline);
+  outline-offset: var(--focus-offset);
+  box-shadow: var(--focus-halo);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .primary:hover {
+    background: var(--ink-2);
+  }
+}
