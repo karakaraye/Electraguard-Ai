@@ -52,8 +52,8 @@ class StaffAuthTests(TestCase):
         response = self.begin(user, client)
         self.assertEqual(response.status_code, 200, response.content)
         self.assertEqual(response.json()["status"], "totp_enrolment_required")
-        # Use the cookie's existing masked token; AUTH-01 is fenced once pending.
-        token = client.cookies[settings.CSRF_COOKIE_NAME].value
+        # A browser cannot read the HttpOnly cookie, so it fetches the rotated token from AUTH-01.
+        token = client.get(AUTH + "csrf").json()["csrf_token"]
         response = self.request(client, "post", STAFF + "totp/enrolment", {}, csrf=token)
         self.assertEqual(response.status_code, 200, response.content)
         secret = response.json()["secret"]
@@ -84,7 +84,8 @@ class StaffAuthTests(TestCase):
         response = self.begin(self.reviewer, self.client)
         self.assertEqual(response.cookies[settings.SESSION_COOKIE_NAME]["max-age"], "")
         self.assertEqual(self.client.get(ME).json()["pending"], "totp_enrolment_required")
-        for path in (AUTH + "csrf", "/api/auth/me", "/api/v1/review/queue", ADMIN, "/health/live"):
+        self.assertEqual(self.client.get(AUTH + "csrf").status_code, 200)
+        for path in ("/api/auth/me", "/api/v1/review/queue", ADMIN, "/health/live"):
             self.assert_error(self.client.get(path), 403, "totp_required")
         self.assertNotIn("_auth_user_id", self.client.session)
         self.now += timedelta(minutes=5)
