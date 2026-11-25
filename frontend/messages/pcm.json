@@ -898,7 +898,16 @@
       "everywhere": "Sign out for every phone",
       "unsentKept": "{count, plural, one {# report never send. E go stay for this phone and send when you sign in again with this code.} other {# reports never send. Dem go stay for this phone and send when you sign in again with this code.}}"
     },
-    "version": "Version {version}"
+    "version": "Version {version}",
+    "groupDisplay": "Language and how e dey show",
+    "groupAccount": "Account and privacy",
+    "textSize": "How big the writing be",
+    "vibration": "Vibration",
+    "vibrationHint": "Small buzz when you choose answer or send report.",
+    "text": {
+      "normal": "Normal",
+      "large": "Big"
+    }
   },
   "c01": {
     "title": "Dem don receive your report",

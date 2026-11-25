@@ -898,7 +898,16 @@
       "everywhere": "Fita a kowace waya",
       "unsentKept": "{count, plural, one {Ba a aika rahoto # ba tukuna. Zai zauna a wannan wayar kuma ya tafi idan ka sake shiga da wannan lambar.} other {Ba a aika rahotanni # ba tukuna. Za su zauna a wannan wayar kuma su tafi idan ka sake shiga da wannan lambar.}}"
     },
-    "version": "Siga {version}"
+    "version": "Siga {version}",
+    "groupDisplay": "Harshe da nuni",
+    "groupAccount": "Asusu da sirri",
+    "textSize": "Girman rubutu",
+    "vibration": "Jijjiga",
+    "vibrationHint": "Ɗan jijjiga idan ka zaɓi amsa ko ka aika rahoto.",
+    "text": {
+      "normal": "Na yau da kullum",
+      "large": "Babba"
+    }
   },
   "c01": {
     "title": "An karɓi rahoto",

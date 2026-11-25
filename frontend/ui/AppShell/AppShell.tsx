@@ -8,6 +8,7 @@ import { useKeyboardInset, useOffline } from "../hooks";
 import { BrandMark } from "../BrandMark/BrandMark";
 import { ArrowLeftIcon, MenuIcon, OfflineIcon } from "../icons";
 import { useThemePreference, type ThemePreference } from "../theme";
+import { rootFontSize, useTextSize } from "../textSize";
 import "../tokens.css";
 import styles from "./AppShell.module.css";
 
@@ -78,6 +79,13 @@ export function AppShell({
   const browserOffline = useOffline();
   const keyboard = useKeyboardInset(!preview);
   const storedTheme = useThemePreference("light");
+  const textSize = useTextSize();
+
+  // Text size (O-20): scale the root so every rem-based size grows; previews leave the page alone.
+  useEffect(() => {
+    if (preview) return;
+    document.documentElement.style.fontSize = rootFontSize(textSize);
+  }, [textSize, preview]);
   const isOffline = offline ?? browserOffline;
   const Root = preview ? "div" : "main";
   const shellRef = useRef<HTMLDivElement>(null);

@@ -898,7 +898,16 @@
       "everywhere": "Pụọ n'ekwentị niile",
       "unsentKept": "{count, plural, one {E zigabeghị akụkọ #. Ọ ga-anọ na ekwentị a ma ziga mgbe ị banyere ọzọ na koodu a.} other {E zigabeghị akụkọ #. Ha ga-anọ na ekwentị a ma ziga mgbe ị banyere ọzọ na koodu a.}}"
     },
-    "version": "Mbipụta {version}"
+    "version": "Mbipụta {version}",
+    "groupDisplay": "Asụsụ na ngosipụta",
+    "groupAccount": "Akaụntụ na nzuzo",
+    "textSize": "Nha ederede",
+    "vibration": "Ịma jijiji",
+    "vibrationHint": "Obere ịma jijiji mgbe ị họrọ azịza ma ọ bụ zipu akụkọ.",
+    "text": {
+      "normal": "Nkịtị",
+      "large": "Buru ibu"
+    }
   },
   "c01": {
     "title": "Anatala akụkọ",

@@ -897,7 +897,16 @@
       "everywhere": "Sign out on every phone",
       "unsentKept": "{count, plural, one {# report is not sent yet. It stays on this phone and sends when you sign in again with this code.} other {# reports are not sent yet. They stay on this phone and send when you sign in again with this code.}}"
     },
-    "version": "Version {version}"
+    "version": "Version {version}",
+    "groupDisplay": "Language and display",
+    "groupAccount": "Account and privacy",
+    "textSize": "Text size",
+    "vibration": "Vibration",
+    "vibrationHint": "A short buzz when you choose an answer or send a report.",
+    "text": {
+      "normal": "Normal",
+      "large": "Large"
+    }
   },
   "c01": {
     "title": "Report received",

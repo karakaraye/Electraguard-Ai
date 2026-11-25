@@ -86,6 +86,23 @@ function applyFinalFrame(el: HTMLElement, keyframes: Keyframe[] | PropertyIndexe
 
 const VIBRATION_KEY = "eg.vibration";
 
+/** The in-app Vibration setting (O-20). On unless the observer turned it off. */
+export function vibrationOn(): boolean {
+  try {
+    return window.localStorage.getItem(VIBRATION_KEY) !== "off";
+  } catch {
+    return true;
+  }
+}
+
+export function setVibration(on: boolean): void {
+  try {
+    window.localStorage.setItem(VIBRATION_KEY, on ? "on" : "off");
+  } catch {
+    // Storage blocked: the setting lasts for this visit only.
+  }
+}
+
 /**
  * Short vibration (Android). Feature-detected: does nothing on iOS, with reduced
  * motion, or when the in-app Vibration setting (localStorage "eg.vibration") is "off".

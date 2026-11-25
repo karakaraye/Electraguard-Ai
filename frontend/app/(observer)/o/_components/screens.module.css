@@ -750,12 +750,37 @@
 
 /* ---------- Settings (O-20) ---------- */
 
+/* Settings in grouped cards (spec screen 27). */
 .settings {
   display: grid;
   margin: 0;
-  padding: 0;
+  padding: 0 var(--s-4);
   list-style: none;
-  border-top: 1px solid var(--rule);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  background: var(--paper-raised);
+}
+
+.settings > .setting:last-child {
+  border-bottom: 0;
+}
+
+.settingsGroup {
+  margin: var(--s-2) 0 calc(var(--s-2) * -1);
+  color: var(--ink-2);
+  font: var(--t-label);
+  font-size: 0.9375rem;
+  letter-spacing: var(--t-label-tracking);
+}
+
+.settingLabel {
+  font: var(--t-label);
+  font-size: var(--t-base-size);
+}
+
+.switchText {
+  display: grid;
+  gap: 2px;
 }
 
 .setting {

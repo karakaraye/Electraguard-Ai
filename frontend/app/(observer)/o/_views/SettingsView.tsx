@@ -5,7 +5,8 @@
 import Link from "next/link";
 import { useLocale, useT } from "../../../../lib/i18n/client";
 import { localeNames } from "../../../../lib/i18n/config";
-import { AppShell, Banner, Button, Field, LanguageSwitcher, Sheet } from "../../../../ui";
+import { AppShell, Banner, Button, Field, LanguageSwitcher, SegmentedControl, Sheet, setTextSize, setThemePreference, useTextSize, useThemePreference, type TextSize, type ThemePreference } from "../../../../ui";
+import { setVibrationPreference, useVibration } from "../../../../ui/vibration";
 import { ChevronDownIcon, ChevronRightIcon, ChevronUpIcon } from "../../../../ui/icons";
 import styles from "../_components/observer.module.css";
 import s from "../_components/screens.module.css";
@@ -45,12 +46,15 @@ export function SettingsView(props: SettingsViewProps) {
   const { locale } = useLocale();
   const { offline, pin, pinError } = props;
   const errorFor = (field: PinField) => (pinError?.field === field ? pinError.message : undefined);
-
+  const theme = useThemePreference("light");
+  const textSize = useTextSize();
+  const vibration = useVibration();
   return (
     <AppShell title={t("o20.title")} onBack={props.onBack} offline={offline} banner={props.signedOutNotice ? <Banner tone="ok" title={t("o20.signOut.signedOut")} /> : undefined} data-testid="o20">
       <div className={styles.screen}>
         <h1 className={styles.title}>{t("o20.title")}</h1>
         <p className={styles.meta}>{t("o04.signedInAs", { code: props.code })}</p>
+        <h2 className={s.settingsGroup}>{t("o20.groupDisplay")}</h2>
         <ul className={s.settings}>
           <li className={s.setting}>
             <button type="button" className={s.settingRow} onClick={() => props.onLanguage(true)} data-testid="o20-language">
@@ -61,6 +65,46 @@ export function SettingsView(props: SettingsViewProps) {
               </span>
             </button>
           </li>
+          <li className={s.setting}>
+            <span className={s.settingLabel}>
+              {t("ui.theme.label")}
+            </span>
+            <SegmentedControl
+              label={t("ui.theme.label")}
+              options={(["system", "light", "dark"] as const).map((value) => ({ value, label: t(`ui.theme.${value}`) }))}
+              value={theme}
+              onChange={(value) => setThemePreference(value as ThemePreference)}
+              data-testid="o20-theme"
+            />
+          </li>
+          <li className={s.setting}>
+            <span className={s.settingLabel}>{t("o20.textSize")}</span>
+            <SegmentedControl
+              label={t("o20.textSize")}
+              options={(["normal", "large"] as const).map((value) => ({ value, label: t(`o20.text.${value}`) }))}
+              value={textSize}
+              onChange={(value) => setTextSize(value as TextSize)}
+              data-testid="o20-text-size"
+            />
+          </li>
+          <li className={s.setting}>
+            <label className={styles.switch}>
+              <span className={s.switchText}>
+                <span>{t("o20.vibration")}</span>
+                <span className={styles.meta}>{t("o20.vibrationHint")}</span>
+              </span>
+              <input
+                type="checkbox"
+                role="switch"
+                checked={vibration}
+                onChange={(event) => setVibrationPreference(event.target.checked)}
+                data-testid="o20-vibration"
+              />
+            </label>
+          </li>
+        </ul>
+        <h2 className={s.settingsGroup}>{t("o20.groupAccount")}</h2>
+        <ul className={s.settings}>
           <li className={s.setting}>
             <button type="button" className={s.settingRow} aria-expanded={props.pinOpen} aria-controls="o20-pin" onClick={() => props.onPinOpen(!props.pinOpen)} data-testid="o20-pin">
               <span>{t("o20.pin.change")}</span>

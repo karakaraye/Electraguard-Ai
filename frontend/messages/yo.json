@@ -898,7 +898,16 @@
       "everywhere": "Jáde lórí gbogbo fóònù",
       "unsentKept": "{count, plural, one {Ìròyìn # kò tíì lọ. Yóò wà lórí fóònù yìí, yóò sì lọ nígbà tí o bá tún wọlé pẹ̀lú kóòdù yìí.} other {Ìròyìn # kò tíì lọ. Wọn yóò wà lórí fóònù yìí, wọn yóò sì lọ nígbà tí o bá tún wọlé pẹ̀lú kóòdù yìí.}}"
     },
-    "version": "Ẹ̀dà {version}"
+    "version": "Ẹ̀dà {version}",
+    "groupDisplay": "Èdè àti ìrísí",
+    "groupAccount": "Àkọọ́lẹ̀ àti àṣírí",
+    "textSize": "Ìtóbi ọ̀rọ̀",
+    "vibration": "Ìgbọ̀n",
+    "vibrationHint": "Ìgbọ̀n kékeré nígbà tí o bá yan ìdáhùn tàbí fi ìròyìn ránṣẹ́.",
+    "text": {
+      "normal": "Déédé",
+      "large": "Ńlá"
+    }
   },
   "c01": {
     "title": "A ti gba ìròyìn náà",
