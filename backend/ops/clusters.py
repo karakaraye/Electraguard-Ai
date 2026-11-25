@@ -81,13 +81,23 @@ def warning_json(warning):
         "baseline": baseline_str,
         "explanation": explanation,
         "explanation_key": f"ops.alert.{detector}",
-        "explanation_params": {
-            "count": observed,
-            "category": warning.category,
-            "lga_name": lga_name,
-            "window_minutes": win_min,
-            "expected": expected,
-        },
+        "explanation_params": (
+            {
+                "category": warning.category,
+                "lga_name": lga_name,
+                "hours": max(1, round((warning.window_end - warning.window_start).total_seconds() / 3600)),
+                "observed": observed,
+                "expected": expected,
+            }
+            if detector == "drift"
+            else {
+                "count": observed,
+                "category": warning.category,
+                "lga_name": lga_name,
+                "window_minutes": win_min,
+                "expected": expected,
+            }
+        ),
         "window_start": wat(warning.window_start),
         "window_end": wat(warning.window_end),
         "report_ids": warning.report_ids,

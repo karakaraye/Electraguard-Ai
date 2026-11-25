@@ -233,15 +233,53 @@ class EmergingIssueDetectionIntegrationTests(TestCase):
         self.assertEqual(ClusterWarning.objects.filter(organisation=self.org).count(), 2)
 
     def test_drift_never_opens_warning_on_its_own(self):
-        wat_now = datetime.combine(datetime.now(WAT).date(), time(11, 0), tzinfo=WAT)
+        day = datetime.now(WAT).date()
+        wat_now = datetime.combine(day, time(14, 30), tzinfo=WAT)
         utc_now = wat_now.astimezone(dt_timezone.utc)
-        # Gradual counts across 06:00-10:00 WAT (not enough in 30/60m window to pass BH spike)
-        for h in range(4):
-            for _ in range(2):
-                self.create_report(occurred_at=utc_now - timedelta(hours=4 - h, minutes=10))
+        # Rising hourly counts from 07:00-14:00 WAT that trigger CUSUM drift, plus 3 in 14:00-14:30 (not a BH spike)
+        hourly_pattern = [0, 0, 0, 4, 7, 9, 12]
+        for h_idx, count in enumerate(hourly_pattern):
+            base_h = datetime.combine(day, time(7 + h_idx, 10), tzinfo=WAT).astimezone(dt_timezone.utc)
+            for j in range(count):
+                self.create_report(occurred_at=base_h + timedelta(minutes=j * 2))
+        for j in range(3):
+            self.create_report(occurred_at=utc_now - timedelta(minutes=10 - j))
         # No open warning exists -> drift must NOT open a new warning
-        alerts = detect_emerging(self.org.pk, now=utc_now)
+        detect_emerging(self.org.pk, now=utc_now)
         self.assertEqual(ClusterWarning.objects.filter(organisation=self.org).count(), 0)
+
+    def test_drift_adds_evidence_to_open_warning_and_sets_detector_drift(self):
+        day = datetime.now(WAT).date()
+        # Open a warning earlier at 10:30 WAT
+        t_open = datetime.combine(day, time(10, 30), tzinfo=WAT).astimezone(dt_timezone.utc)
+        for j in range(4):
+            self.create_report(occurred_at=t_open - timedelta(minutes=10 - j))
+        initial = detect_emerging(self.org.pk, now=t_open)
+        self.assertEqual(len(initial), 1)
+        self.assertEqual(initial[0].detector, ClusterWarning.Detector.SPIKE)
+
+        # Now build rising hourly counts from 11:00-14:00 WAT and 3 in 14:00-14:30 WAT
+        wat_now = datetime.combine(day, time(14, 30), tzinfo=WAT)
+        utc_now = wat_now.astimezone(dt_timezone.utc)
+        for h_idx, count in [(4, 7), (5, 9), (6, 12)]:
+            base_h = datetime.combine(day, time(7 + h_idx, 10), tzinfo=WAT).astimezone(dt_timezone.utc)
+            for j in range(count):
+                self.create_report(occurred_at=base_h + timedelta(minutes=j * 2))
+        for j in range(3):
+            self.create_report(occurred_at=utc_now - timedelta(minutes=10 - j))
+
+        alerts = detect_emerging(self.org.pk, now=utc_now)
+        self.assertEqual(len(alerts), 1)
+        self.assertEqual(alerts[0].pk, initial[0].pk)
+        self.assertEqual(alerts[0].detector, ClusterWarning.Detector.DRIFT)
+        self.assertGreater(alerts[0].total_reports, 4)
+
+        res = self.client.get("/api/v1/ops/clusters?status=open")
+        self.assertEqual(res.status_code, 200)
+        item = res.json()["items"][0]
+        self.assertEqual(item["detector"], "drift")
+        self.assertEqual(item["explanation_key"], "ops.alert.drift")
+        self.assertEqual(set(item["explanation_params"].keys()), {"category", "lga_name", "hours", "observed", "expected"})
 
     def test_ops_02_contract_api_fields(self):
         wat_now = datetime.combine(datetime.now(WAT).date(), time(15, 0), tzinfo=WAT)
