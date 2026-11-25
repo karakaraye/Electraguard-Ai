@@ -4,12 +4,12 @@
 
 import type { Category, ReportKind } from "../../../../lib/api/types";
 import { useLocale, useT } from "../../../../lib/i18n/client";
-import { AppShell, Banner, Button, EmptyState, ReportList, ReportRow, type ReportStatus, Skeleton, SunRings } from "../../../../ui";
+import { AppShell, Banner, Button, EmptyState, ReportList, ReportRow, type ReportStatus, Skeleton } from "../../../../ui";
 import { formatWatTime } from "../../../../ui/format";
 import { categoryMeta } from "../_lib/categories";
+import { MessagesSpot, ReportsSpot } from "../_components/Spots";
 import { ChecklistPictogram, SheetPictogram } from "../_components/pictograms";
 import styles from "../_components/observer.module.css";
-import { FileIcon, MessageIcon } from "../../../../ui/icons";
 import s from "../_components/screens.module.css";
 
 export type ListRow = {
@@ -63,7 +63,7 @@ function LoadBanner({ load, stale, errorKey, onRetry }: { load: ListLoad; stale:
   if (load === "error" || stale) {
     return (
       <Banner
-        tone="attn"
+        tone="danger"
         title={t(errorKey)}
         action={
           <Button variant="secondary" onClick={onRetry} data-testid="list-retry">
@@ -109,7 +109,6 @@ export function MyReportsView(props: MyReportsViewProps) {
 
   return (
     <AppShell
-      title={t("o13.title")}
       onBack={props.onBack}
       offline={offline}
       queuedCount={props.queuedCount}
@@ -121,13 +120,7 @@ export function MyReportsView(props: MyReportsViewProps) {
         {nothingAtAll ? (
           <EmptyState
             title={t("o13.empty")}
-            art={
-              <SunRings size={128}>
-                <span className={s.emptyDisc}>
-                  <FileIcon size={30} aria-hidden="true" />
-                </span>
-              </SunRings>
-            }
+            art={<ReportsSpot />}
             action={
               <Button onClick={props.onReport} data-testid="o13-report">
                 {t("o04.report")}
@@ -143,9 +136,15 @@ export function MyReportsView(props: MyReportsViewProps) {
                 <label key={option} className={s.segment}>
                   <input type="radio" name="o13-filter" value={option} checked={filter === option} onChange={() => props.onFilter(option)} data-testid={`o13-filter-${option}`} />
                   <span className={s.segmentLabel}>{t(`o13.filter.${option}`)}</span>
-                  <span className={`${s.segmentCount} ${s.tnum}`} data-attention={option === "needsYou" && counts[option] > 0 ? "" : undefined}>
-                    {counts[option]}
-                  </span>
+                  {load === "error" && option !== "onPhone" ? (
+                    <span className={s.segmentCount} aria-hidden="true">
+                      –
+                    </span>
+                  ) : (
+                    <span className={`${s.segmentCount} ${s.tnum}`} data-attention={option === "needsYou" && counts[option] > 0 ? "" : undefined}>
+                      {counts[option]}
+                    </span>
+                  )}
                 </label>
               ))}
             </fieldset>
@@ -201,7 +200,6 @@ export function MessagesView({ offline, rows, load, stale, onRetry, onBack }: Me
   const t = useT();
   return (
     <AppShell
-      title={t("o17.title")}
       onBack={onBack}
       offline={offline}
       banner={load === "error" || load === "unavailable" || stale ? <LoadBanner load={load} stale={stale} errorKey="o17.loadError" onRetry={onRetry} /> : undefined}
@@ -247,13 +245,7 @@ export function MessagesView({ offline, rows, load, stale, onRetry, onBack }: Me
         ) : load === "ok" ? (
           <EmptyState
             title={t("o17.empty")}
-            art={
-              <SunRings size={128}>
-                <span className={s.emptyDisc}>
-                  <MessageIcon size={30} aria-hidden="true" />
-                </span>
-              </SunRings>
-            }
+            art={<MessagesSpot />}
             data-testid="o17-empty"
           />
         ) : null}

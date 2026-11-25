@@ -24,8 +24,10 @@ import {
 } from "../../../../ui/icons";
 import { pinTooSimple } from "../_lib/codes";
 import { AppBarTitle } from "../_components/AppBarTitle";
+import { LangChip } from "../_components/LangChip";
 import { BadgePictogram, PersonPictogram } from "../_components/pictograms";
 import styles from "../_components/observer.module.css";
+import o1 from "../_components/obs1.module.css";
 
 type Shell = { offline?: boolean; banner?: ReactNode };
 
@@ -318,10 +320,10 @@ export type ChooseViewProps = Shell & {
   onCheckStatus: () => void;
 };
 
-export function ChooseView({ onBack, onObserver, onCitizen, onCheckStatus, offline, banner }: ChooseViewProps) {
+export function ChooseView({ onObserver, onCitizen, onCheckStatus, offline, banner }: ChooseViewProps) {
   const t = useT();
   return (
-    <AppShell title={<AppBarTitle />} onBack={onBack} offline={offline} banner={banner} data-testid="o03-choose">
+    <AppShell variant="home" end={<LangChip />} offline={offline} banner={banner} data-testid="o03-choose">
       <BackgroundArt variant="hero" />
       <div className={`${styles.screen} ${styles.wide}`}>
         <h1 className={styles.title}>{t("o03.title")}</h1>
@@ -350,10 +352,9 @@ export function ChooseView({ onBack, onObserver, onCitizen, onCheckStatus, offli
         <Button variant="quiet" className={styles.link} onClick={onCheckStatus} data-testid="o03-check-status">
           {t("o03.checkStatus")}
         </Button>
-        <footer className={styles.chooseFooter}>
-          <BrandMark variant="lockup" size="md" credit />
-          <p>{t("pub.footer.nonpartisan")}</p>
-        </footer>
+        <p className={o1.footerLine} data-testid="o03-footer">
+          {t("o03.footer")}
+        </p>
       </div>
     </AppShell>
   );

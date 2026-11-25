@@ -70,7 +70,7 @@ export function ResultSheetView(props: ResultSheetViewProps) {
   const pinned = (
     <div className={styles.tight}>
       <div role="note" id="o16-not-result">
-        <Banner tone="info" title={t("o16.notResult")} data-testid="o16-not-result" />
+        <Banner tone="wait" title={t("o16.notResult")} data-testid="o16-not-result" />
       </div>
       {props.needUnit ? <Banner tone="attn" title={t("o15.needUnit")} data-testid="o16-need-unit" /> : null}
       {status ? <Banner tone={status.tone} title={t(status.key)} data-testid="o16-status" /> : null}

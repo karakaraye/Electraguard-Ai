@@ -356,6 +356,7 @@ export const MORE_SCREENS: Record<string, Record<string, (t: Translate) => React
       <ChecklistListView
         offline={false}
         onBack={noop}
+        now={new Date("2026-12-05T10:20:00+01:00")}
         unitLabel="Kantudu Primary School I, Kantudu, Dala"
         stages={[
           { slug: "arrival", state: "received", receivedAt: "2026-12-05T07:42:00+01:00", href: "#" },
@@ -371,6 +372,7 @@ export const MORE_SCREENS: Record<string, Record<string, (t: Translate) => React
       <ChecklistListView
         offline={false}
         onBack={noop}
+        now={new Date("2026-12-05T06:50:00+01:00")}
         stages={(["arrival", "opening", "accreditation", "voting", "closing", "results"] as const).map((slug) => ({ slug, state: "notStarted" as const, href: "#" }))}
       />
     ),
@@ -378,6 +380,7 @@ export const MORE_SCREENS: Record<string, Record<string, (t: Translate) => React
       <ChecklistListView
         offline={false}
         onBack={noop}
+        now={new Date("2026-12-05T16:40:00+01:00")}
         unitLabel="Kantudu Primary School I, Kantudu, Dala"
         stages={(["arrival", "opening", "accreditation", "voting", "closing", "results"] as const).map((slug, i) => ({ slug, state: "received" as const, receivedAt: `2026-12-05T${String(7 + i * 2).padStart(2, "0")}:42:00+01:00`, href: "#" }))}
       />

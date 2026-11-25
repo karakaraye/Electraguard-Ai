@@ -131,7 +131,6 @@ export function ReportDetailView(props: ReportDetailViewProps) {
 
   const shell = (content: React.ReactNode, actions?: React.ReactNode) => (
     <AppShell
-      title={receiptCode ? <span className="eg-tnum">{receiptCode}</span> : t("o13.title")}
       onBack={props.onBack}
       offline={offline}
       banner={props.banner ? <Banner tone={props.banner.tone} title={t(props.banner.key)} data-testid="o14-banner" /> : undefined}

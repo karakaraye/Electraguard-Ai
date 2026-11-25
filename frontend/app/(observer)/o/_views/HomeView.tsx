@@ -10,9 +10,9 @@ import type { Category } from "../../../../lib/api/types";
 import { AppShell, Banner, Button, ButtonLink, DayArc, HeroCard, LanguageSwitcher, OutboxBadge, ReportList, ReportRow, Sheet, StatusBadge, type ReportStatus } from "../../../../ui";
 import { formatWatDateTime } from "../../../../ui/format";
 import { AlertIcon, categoryPictograms, ChevronRightIcon, FileIcon, GearIcon, HelpIcon, InfoIcon, MessageIcon, ShieldCheckIcon, SignOutIcon, UsersIcon, type IconProps } from "../../../../ui/icons";
-import { AppBarTitle } from "../_components/AppBarTitle";
 import { AskPictogram, DiscussionsPictogram, MessagesPictogram } from "../_components/pictograms";
 import styles from "../_components/observer.module.css";
+import o1 from "../_components/obs1.module.css";
 import s from "../_components/screens.module.css";
 import { categoryMeta } from "../_lib/categories";
 
@@ -43,6 +43,8 @@ export type HomeViewProps = {
   draftKept: boolean;
   draft: { category: Category | null; startedAt: number } | null;
   rows: HomeRow[];
+  /** For previews and tests: the clock the day arc reads. Defaults to the real clock. */
+  now?: Date;
   /** Today's checklist from this phone (O-15 per-day state): each stage sent, next or later. */
   checklist: { unitLabel: string | null; stages: Array<{ slug: string; state: "sent" | "next" | "later" }> };
   onReport: () => void;
@@ -151,8 +153,7 @@ export function HomeView(props: HomeViewProps) {
 
   return (
     <AppShell
-      title={<AppBarTitle />}
-      hideBack
+      variant="home"
       onMenu={() => setMenu(true)}
       end={
         outbox.length ? (
@@ -196,7 +197,13 @@ export function HomeView(props: HomeViewProps) {
         ) : null}
 
         {/* Stays tappable when intake is paused: reports can still be written and wait on the phone. */}
-        <HeroCard title={t("o04.report")} body={t("o04.heroBody")} onClick={props.onReport} data-testid="o04-report" />
+        {intakePaused ? (
+          <button type="button" className={o1.pausedHero} onClick={props.onReport} data-testid="o04-report">
+            <HeroCard paused title={t("o04.report")} pausedText={t("o04.heroPaused")} data-testid="o04-report-card" />
+          </button>
+        ) : (
+          <HeroCard title={t("o04.report")} body={t("o04.heroBody")} onClick={props.onReport} data-testid="o04-report" />
+        )}
 
         <Link href="/o/checklist" className={styles.arcCard} data-testid="o04-checklist">
           <span className={styles.arcHead}>
@@ -204,6 +211,7 @@ export function HomeView(props: HomeViewProps) {
             <span className={styles.meta}>{t("o04.checklistProgress", { done: sentCount, total: props.checklist.stages.length })}</span>
           </span>
           <DayArc
+            now={props.now}
             stages={props.checklist.stages.map((stage) => ({ id: stage.slug, label: t(`o15.stage.${stage.slug}`), state: stage.state }))}
             nextLabel={nextStage ? t("o04.checklistNext", { stage: t(`o15.stage.${nextStage.slug}`) }) : t("o04.checklistDone")}
             listLabel={t("o04.checklist")}

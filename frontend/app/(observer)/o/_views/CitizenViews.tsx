@@ -33,7 +33,8 @@ export type CitizenReceiptViewProps = {
 export function CitizenReceiptView(props: CitizenReceiptViewProps) {
   const t = useT();
   const pending = props.items.some((item) => item.state !== "saved");
-  const shortCode = props.shortCodeIsTest ? `${props.shortCode} (${t("c01.testNumber")})` : props.shortCode;
+  // The short code is printed plainly (one config value, lib/config.ts); shortCodeIsTest is kept only for callers.
+  const shortCode = props.shortCode;
   return (
     <AppShell
       title={<AppBarTitle />}
@@ -228,7 +229,7 @@ export function StatusView(props: StatusViewProps) {
               : undefined;
 
   return (
-    <AppShell title={t("p01.title")} onBack={props.onBack} offline={props.offline} banner={props.banner ? <Banner tone="attn" title={t(props.banner)} /> : undefined} data-testid="p01">
+    <AppShell onBack={props.onBack} offline={props.offline} banner={props.banner ? <Banner tone="danger" title={t(props.banner)} /> : undefined} data-testid="p01">
       <div className={`${styles.screen} ${styles.wide}`}>
         <h1 className={styles.title}>{t("p01.title")}</h1>
         <div className={s.twoCol}>

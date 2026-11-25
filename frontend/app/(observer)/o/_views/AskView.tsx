@@ -31,7 +31,7 @@ export function AskView(props: AskViewProps) {
   const { offline, state, answer } = props;
   const dictation = useDictation(props.dictationLang, props.onDictated);
   return (
-    <AppShell title={t("o19.appTitle")} onBack={props.onBack} offline={offline} data-testid="o19">
+    <AppShell onBack={props.onBack} offline={offline} data-testid="o19">
       <div className={styles.screen}>
         <h1 className={styles.title}>{t("o19.title")}</h1>
         <p className={styles.note} data-testid="o19-note">
@@ -64,7 +64,7 @@ export function AskView(props: AskViewProps) {
           </p>
         ) : null}
         <div aria-live="polite" className={styles.stack} data-testid="o19-answer">
-          {state === "error" ? <Banner tone="attn" title={t("o19.error")} action={<Button variant="secondary" onClick={props.onAsk}>{t("ui.retry")}</Button>} /> : null}
+          {state === "error" ? <Banner tone="danger" title={t("o19.error")} action={<Button variant="secondary" onClick={props.onAsk}>{t("ui.retry")}</Button>} /> : null}
           {state === "unavailable" ? <Banner tone="wait" title={t("common.error.unavailable")} /> : null}
           {state === "rate_limited" ? <Banner tone="attn" title={t("common.error.tooManyTries", { minutes: props.retryMinutes })} /> : null}
           {state === "answer" && answer ? (
@@ -78,6 +78,7 @@ export function AskView(props: AskViewProps) {
             ) : (
               <>
                 <p className="eg-sr-only">{t("o19.ready")}</p>
+                <h2 className={s.answerTitle}>{t("o19.answered")}</h2>
                 {answer.fallback_language_used ? (
                   <p className={s.fallbackChip}>{t("o19.otherLanguage", { language: localeNames[answer.passages[0]?.source.language as Language] ?? "English" })}</p>
                 ) : null}

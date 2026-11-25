@@ -1,0 +1,106 @@
+.wrap {
+  display: grid;
+  gap: var(--s-2);
+}
+
+.svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.sky {
+  fill: var(--sun-wash);
+}
+
+.ringOuter {
+  fill: var(--sun-tint);
+  opacity: 0.55;
+}
+
+.ringInner {
+  fill: var(--sun-tint);
+  opacity: 0.8;
+}
+
+.arc {
+  fill: none;
+  stroke: var(--sun-strong);
+  stroke-width: 2;
+  stroke-dasharray: 2 7;
+  stroke-linecap: round;
+}
+
+.sun {
+  transition: transform var(--dur-scene) var(--ease-out);
+}
+
+.sun[data-set] {
+  opacity: 0.75;
+}
+
+.glow {
+  fill: var(--sun);
+  opacity: 0.3;
+}
+
+.disc {
+  fill: var(--sun);
+}
+
+.ground {
+  fill: var(--paper-2);
+}
+
+.horizon {
+  stroke: var(--rule-control);
+  stroke-width: 1.5;
+}
+
+.time {
+  fill: var(--ink-2);
+  font: 700 12px var(--font);
+  font-variant-numeric: tabular-nums;
+}
+
+.track {
+  stroke: var(--rule);
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+.done {
+  stroke: var(--ink);
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+.stop[data-state="sent"] {
+  fill: var(--ink);
+}
+
+.stop[data-state="next"] {
+  fill: var(--sun);
+  stroke: var(--ink);
+  stroke-width: 1.5;
+}
+
+.stop[data-state="later"] {
+  fill: var(--paper);
+  stroke: var(--rule-control);
+  stroke-width: 1.5;
+}
+
+.next {
+  margin: 0;
+  color: var(--ink-2);
+  font: var(--t-small);
+  font-weight: 600;
+  text-align: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sun {
+    transition: none;
+  }
+}

@@ -12,6 +12,7 @@ import { useEffect, type ReactElement } from "react";
 import { setLocale, useLocale, useT } from "../../../../lib/i18n/client";
 import { isLocale } from "../../../../lib/i18n/config";
 import { setThemePreference } from "../../../../ui";
+import { Splash } from "../../../../ui/Splash/Splash";
 import { HomeView, type HomeViewProps } from "../../../(observer)/o/_views/HomeView";
 import {
   CategoryView,
@@ -83,6 +84,7 @@ const homeBase: HomeViewProps = {
       { slug: "results", state: "later" },
     ],
   },
+  now: new Date("2026-12-05T10:30:00+01:00"),
   onReport: noop,
   onContinue: noop,
   onSendNow: noop,
@@ -237,6 +239,13 @@ const uploads = (t: Translate): ReceiptViewProps["items"] => [
 ];
 
 export const SCREENS: Record<string, Record<string, (t: Translate) => ReactElement>> = {
+  splash: {
+    first: (t) => (
+      <div style={{ width: "100%", height: "100dvh" }}>
+        <Splash credit={t("ui.byCairn")} preview />
+      </div>
+    ),
+  },
   o01: {
     first: () => <LanguageView selected={null} onChoose={noop} />,
     selected: () => <LanguageView selected="ha" onChoose={noop} />,
@@ -281,6 +290,14 @@ export const SCREENS: Record<string, Record<string, (t: Translate) => ReactEleme
     filled: () => <HomeView {...homeBase} draft={{ category: "access_barrier", startedAt: Date.parse(FIXTURE_OCCURRED_AT) }} unsentCount={1} queuedCount={1} questionCount={1} rows={homeRows} />,
     offline: () => <HomeView {...homeBase} offline unsentCount={2} queuedCount={2} rows={homeRows} />,
     "intake-paused": () => <HomeView {...homeBase} intakePaused rows={homeRows} />,
+    "after-closing": () => (
+      <HomeView
+        {...homeBase}
+        now={new Date("2026-12-05T17:40:00+01:00")}
+        rows={homeRows}
+        checklist={{ ...homeBase.checklist, stages: homeBase.checklist.stages.map((stage) => ({ ...stage, state: "sent" as const })) }}
+      />
+    ),
     "waiting-code": () => <HomeView {...homeBase} waitingCodeCount={2} needsAttentionCount={1} rows={homeRows} />,
     "network-back": () => <HomeView {...homeBase} networkBack pinSaved rows={homeRows} />,
     outbox: () => (

@@ -55,7 +55,7 @@ export function SettingsView(props: SettingsViewProps) {
     if (window.location.hash === "#sign-out") document.getElementById("sign-out")?.scrollIntoView({ block: "start" });
   }, []);
   return (
-    <AppShell title={t("o20.title")} onBack={props.onBack} offline={offline} banner={props.signedOutNotice ? <Banner tone="ok" title={t("o20.signOut.signedOut")} /> : undefined} data-testid="o20">
+    <AppShell onBack={props.onBack} offline={offline} banner={props.signedOutNotice ? <Banner tone="ok" title={t("o20.signOut.signedOut")} /> : undefined} data-testid="o20">
       <div className={styles.screen}>
         <h1 className={styles.title}>{t("o20.title")}</h1>
         <p className={styles.meta}>{t("o04.signedInAs", { code: props.code })}</p>
@@ -76,7 +76,7 @@ export function SettingsView(props: SettingsViewProps) {
             </span>
             <SegmentedControl
               label={t("ui.theme.label")}
-              options={(["system", "light", "dark"] as const).map((value) => ({ value, label: t(`ui.theme.${value}`) }))}
+              options={(["system", "light", "dark"] as const).map((value) => ({ value, label: t(value === "system" ? "o20.themeSystem" : `ui.theme.${value}`) }))}
               value={theme}
               onChange={(value) => setThemePreference(value as ThemePreference)}
               data-testid="o20-theme"
@@ -210,7 +210,7 @@ export function SettingsView(props: SettingsViewProps) {
           <>
             {!offline ? (
               <Button block onClick={props.onSendNow} data-testid="o20-send-first">
-                {t("o20.signOut.sendFirst")}
+                {t("o20.signOut.sendFirst", { count: props.unsentCount })}
               </Button>
             ) : null}
             <Button variant="secondary" block loading={props.busy === "signOut"} onClick={props.onConfirmSignOut} data-testid="o20-sign-out-confirm">
@@ -241,7 +241,7 @@ export function SettingsView(props: SettingsViewProps) {
             </Button>
             {props.unsentCount > 0 && !offline ? (
               <Button variant="secondary" block onClick={props.onSendNow}>
-                {t("o20.signOut.sendFirst")}
+                {t("o20.signOut.sendFirst", { count: props.unsentCount })}
               </Button>
             ) : null}
             <Button variant="danger" block loading={props.busy === "clear"} onClick={props.onConfirmClear} data-testid="o20-clear-confirm">

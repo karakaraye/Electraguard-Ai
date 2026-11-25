@@ -34,14 +34,13 @@ export function DiscussionListView({ offline, load, items, busy, notice, onAnswe
   const joined = items.filter((item) => item.membership === "member");
   return (
     <AppShell
-      title={t("o18.title")}
       onBack={onBack}
       offline={offline}
       banner={
         load === "unavailable" ? (
           <Banner tone="wait" title={t("common.error.unavailable")} />
         ) : load === "error" ? (
-          <Banner tone="attn" title={t("o18.loadError")} action={<Button variant="secondary" onClick={onRetry}>{t("ui.retry")}</Button>} />
+          <Banner tone="danger" title={t("o18.loadError")} action={<Button variant="secondary" onClick={onRetry}>{t("ui.retry")}</Button>} />
         ) : notice ? (
           <Banner tone="attn" title={t(notice)} data-testid="o18-notice" />
         ) : undefined
@@ -176,7 +175,7 @@ export function ThreadView(props: ThreadViewProps) {
 
   if (load === "removed" || load === "loading" || (load !== "ok" && !props.title)) {
     return (
-      <AppShell title={t("o18.title")} onBack={props.onBack} offline={offline} data-testid="o18-thread">
+      <AppShell onBack={props.onBack} offline={offline} data-testid="o18-thread">
         <div className={styles.screen}>
           <h1 className={styles.title}>{load === "removed" ? t("o18.thread.removed") : load === "loading" ? t("o18.loading") : t("o18.loadError")}</h1>
           {load === "error" || load === "offline" ? (
@@ -194,23 +193,12 @@ export function ThreadView(props: ThreadViewProps) {
   const canPost = !closed && !invited;
   return (
     <AppShell
-      title={t("o18.title")}
       onBack={props.onBack}
       offline={offline}
       banner={closed ? <Banner tone="wait" title={t("o18.closed")} critical data-testid="o18-closed" /> : props.flagged ? <Banner tone="ok" title={t("o18.thread.flagged")} /> : undefined}
       actions={
         canPost ? (
           <div className={styles.tight}>
-            <TextArea
-              label={t("o18.thread.postLabel")}
-              hint={t("o18.thread.postHint")}
-              value={props.draft}
-              onChange={(event) => props.onDraft(event.target.value)}
-              maxLength={1000}
-              rows={2}
-              error={props.draftError ?? undefined}
-              data-testid="o18-post-text"
-            />
             {props.nameWarning ? (
               <Banner
                 tone="attn"
@@ -222,9 +210,23 @@ export function ThreadView(props: ThreadViewProps) {
                 }
               />
             ) : null}
-            <Button block loading={props.posting} loadingLabel={t("o18.thread.posting")} onClick={props.onPost} data-testid="o18-post">
-              {t("o18.thread.post")}
-            </Button>
+            <div className={s.postBar}>
+              <TextArea
+                className={s.postField}
+                label={t("o18.thread.postLabel")}
+                hint={t("o18.thread.postHint")}
+                value={props.draft}
+                onChange={(event) => props.onDraft(event.target.value)}
+                maxLength={1000}
+                rows={1}
+                placeholder={t("o18.thread.postLabel")}
+                error={props.draftError ?? undefined}
+                data-testid="o18-post-text"
+              />
+              <Button loading={props.posting} loadingLabel={t("o18.thread.posting")} onClick={props.onPost} data-testid="o18-post">
+                {t("o18.thread.post")}
+              </Button>
+            </div>
           </div>
         ) : undefined
       }

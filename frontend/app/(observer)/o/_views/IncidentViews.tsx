@@ -757,7 +757,7 @@ export function CheckView({
     intakePaused: { tone: "attn", text: t("o11.intakePaused"), badge: "on-phone" },
     queueFull: { tone: "attn", text: t("o11.queueFull", { max: 20 }) },
     storageFull: { tone: "attn", text: t("common.error.storageFull") },
-    server: { tone: "wait", text: `${t("common.error.server")} ${t("o11.savedOffline")}`, badge: "on-phone" },
+    server: { tone: "wait", text: t("o11.savedServer"), badge: "on-phone" },
     needsAttention: { tone: "attn", text: t("o11.needsAttention"), badge: "needs-attention" },
     withdrawn: { tone: "wait", text: t("o11.withdrawn") },
   };

@@ -6,10 +6,11 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import type { MissingMaterial, QueueSize, YesNoNotSeen } from "../../../../lib/api/types";
 import { useLocale, useT } from "../../../../lib/i18n/client";
-import { AppShell, Banner, Button, ButtonLink, DayArc, Field, Sheet, StatusBadge, type ReportStatus } from "../../../../ui";
+import { AppShell, Banner, Button, ButtonLink, Field, Sheet, StatusBadge, type ReportStatus } from "../../../../ui";
 import { formatWatTime } from "../../../../ui/format";
 import { CheckIcon, ChevronRightIcon, PlaceIcon } from "../../../../ui/icons";
 import { MATERIALS, QUESTIONS, QUEUE_SIZES, type StageAnswers, type StageSlug } from "../_lib/checklist";
+import { DayPlate } from "../_components/DayPlate";
 import styles from "../_components/observer.module.css";
 import s from "../_components/screens.module.css";
 
@@ -29,13 +30,15 @@ export type ChecklistListViewProps = {
   stages: Array<{ slug: StageSlug; state: StageState; receivedAt?: string | null; href: string }>;
   /** Today's polling unit from Arrival; null until Arrival is filled in. */
   unitLabel?: string | null;
+  /** For previews; the real clock otherwise. */
+  now?: Date;
   onBack: () => void;
 };
 
 /** Arrival also asks for the polling unit, so it counts as two questions. */
 const questionCount = (slug: StageSlug) => QUESTIONS[slug].length + (slug === "arrival" ? 1 : 0);
 
-export function ChecklistListView({ offline, stages, unitLabel = null, onBack }: ChecklistListViewProps) {
+export function ChecklistListView({ offline, stages, unitLabel = null, now, onBack }: ChecklistListViewProps) {
   const t = useT();
   const { locale } = useLocale();
   const sent = stages.filter((stage) => stage.state === "received").length;
@@ -43,7 +46,7 @@ export function ChecklistListView({ offline, stages, unitLabel = null, onBack }:
   const nextIndex = stages.findIndex((stage) => stage.state === "notStarted" || stage.state === "draft" || stage.state === "needsAttention");
   const arrivalKnown = Boolean(unitLabel) || stages.some((stage) => stage.slug === "arrival" && stage.state === "received");
   return (
-    <AppShell title={t("o15.title")} onBack={onBack} offline={offline} data-testid="o15">
+    <AppShell onBack={onBack} offline={offline} data-testid="o15">
       <div className={styles.screen}>
         <div className={s.dayHead}>
           <h1 className={styles.title}>{t("o15.title")}</h1>
@@ -60,8 +63,8 @@ export function ChecklistListView({ offline, stages, unitLabel = null, onBack }:
           </p>
         </div>
 
-        <div className={s.dayArcCard}>
-          <DayArc
+        <DayPlate
+            now={now}
             stages={stages.map((stage, index) => ({
               id: stage.slug,
               label: t(`o15.stage.${stage.slug}`),
@@ -71,7 +74,6 @@ export function ChecklistListView({ offline, stages, unitLabel = null, onBack }:
             listLabel={t("o04.checklist")}
             stateLabels={{ sent: t("o15.stageState.received"), next: t("o04.stageNext"), later: t("o15.stageState.notStarted") }}
           />
-        </div>
 
         {allDone ? (
           <p className={s.dayDone} role="status" data-testid="o15-all-done">
