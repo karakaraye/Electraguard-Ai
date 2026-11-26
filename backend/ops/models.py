@@ -33,6 +33,7 @@ class ClusterWarning(OrganisationOwned):
     report_ids = models.JSONField()
     baseline = models.FloatField(default=0.0)
     detector = models.CharField(max_length=20, default=Detector.THRESHOLD, choices=Detector.choices)
+    trigger = models.CharField(max_length=16, default="reports", choices=[("reports", "Reports"), ("checkins", "Checkins")])
     observed = models.PositiveIntegerField(default=0)
     total_reports = models.PositiveIntegerField(default=0)
     expected = models.FloatField(default=0.0)

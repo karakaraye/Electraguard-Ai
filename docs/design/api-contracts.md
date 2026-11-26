@@ -1700,6 +1700,114 @@ Gateway: Africa's Talking (sandbox for the hackathon). Callbacks are authenticat
 
 ---
 
+### Community Features (CHK, NOT, AREA)
+
+#### CHK-01 · Public rumour check lookup
+
+- **Status:** NEW. **Screens:** P-08.
+- **Auth:** public, no auth.
+- `GET /api/v1/public/check?q=<query>&lang=<lang>`
+- **Response 200:**
+  ```json
+  {
+    "result": "checked" | "not_checked" | "safety",
+    "response": {
+      "text": "INEC has confirmed voting is proceeding as scheduled.",
+      "approved_at": "2026-11-28T14:00:00+01:00",
+      "language": "en",
+      "observer_support": {
+        "states": 12,
+        "wards": "fewer than 5"
+      }
+    },
+    "claim_ref": "8d0c1a52-4f3e-4b9e-9a51-2f6a0f7c3e11"
+  }
+  ```
+- **Safety signal:** returns `{"result": "safety"}` when text matches emergency or danger patterns.
+- **Red line:** never returns report text, unit codes, or anything finer than state.
+
+#### CHK-02 · Public rumour check submission
+
+- **Status:** NEW. **Screens:** P-08.
+- **Auth:** public, no auth.
+- `POST /api/v1/public/check`
+- **Body:** `{"text": "...", "lang": "en", "device_token": "uuid"}`. `Idempotency-Key` header.
+- **Response 201 / 200 on match:**
+  ```json
+  {
+    "result": "queued" | "matched",
+    "claim_ref": "8d0c1a52-4f3e-4b9e-9a51-2f6a0f7c3e11"
+  }
+  ```
+- Redacted with `redact()` before storage. Matched submissions increment `ask_count` and hourly trend.
+- **Limits:** 10 requests per hour per IP and per device token.
+
+#### NOT-01 · Create ward check-in notice
+
+- **Status:** NEW. **Screens:** S-05.
+- **Auth:** coordinator only.
+- `POST /api/v1/notices`
+- **Body:** `{"scope": {"kind": "ward" | "lga", "code": "SYN-KN-01"}, "type": "safety" | "logistics" | "instruction", "text": "...", "question_id": "materials_arrived", "expires_in_minutes": 360}`.
+- **5D Content Filter:** checks PU codes, phone numbers, emails, links, personal names, and political terms. Blocked notice returns `400 blocked_content` with `{"reasons": [...]}`.
+- Safety notices start as `pending_approval`; others start as `sent`.
+
+#### NOT-02 · Approve or reject notice
+
+- **Status:** NEW. **Screens:** S-05.
+- **Auth:** different coordinator (second-person approval).
+- `POST /api/v1/notices/{id}/approve` and `POST /api/v1/notices/{id}/reject`.
+- Returns `403 same_person_approval` if approver created the notice.
+
+#### NOT-03 · Notices list and ward results
+
+- **Status:** NEW. **Screens:** S-05.
+- **Auth:** coordinator only.
+- `GET /api/v1/notices` and `GET /api/v1/notices/{id}/results`.
+- Results break down answers per ward (`yes`, `no`, `not_seen`) and list unanswered units.
+
+#### NOT-04 · Observer active notices
+
+- **Status:** NEW. **Screens:** O-01 (banner), O-03.
+- **Auth:** signed-in observer only.
+- `GET /api/v1/observer/notices?ward_code=&lga_code=`
+- Returns active notices in the observer's ward/LGA with `my_answer` (`null` if not answered). Observers never see other observers' answers.
+
+#### NOT-05 · Observer answer notice
+
+- **Status:** NEW. **Screens:** O-01, O-03.
+- **Auth:** signed-in observer only.
+- `POST /api/v1/observer/notices/{id}/answer`
+- **Body:** `{"answer": "yes" | "no" | "not_seen", "answered_at": "ISO-8601"}`.
+- Offline queue: accepts `answered_at` up to 24h old. Rejects clock skew > 5 min. Returns `409 notice_expired` if expired. Later answer replaces earlier answer (audited).
+
+#### NOT-06 · Check-in questions list
+
+- **Status:** NEW. **Screens:** S-05.
+- **Auth:** coordinator only.
+- `GET /api/v1/notices/questions`
+- Returns fixed list of questions with translations in all five languages and categories.
+
+#### AREA-01 · Your LGA today
+
+- **Status:** NEW. **Screens:** O-01.
+- **Auth:** signed-in observer only.
+- `GET /api/v1/observer/area-today?lga_code=`
+- **Response 200:**
+  ```json
+  {
+    "lga_code": "SYN-KN-01",
+    "lga_name": "Kano Municipal",
+    "updated_at": "2026-11-28T14:00:00+01:00",
+    "by_category": [
+      { "category": "late_materials", "count": 6 },
+      { "category": "intimidation_violence", "count": "fewer than 5" }
+    ]
+  }
+  ```
+- Reviewed reports only, 60-minute delay, counts under 5 suppressed to "fewer than 5" with secondary suppression.
+
+---
+
 ## 5. Permissions matrix
 
 `Y` allowed · `own` only the caller's own · `asg` only cases currently assigned to the caller · `secret` with the receipt secret · `—` refused (`404` for object routes, `403` otherwise). Every allowed cell is further limited to the caller's organisation (section 3). "Gateway" is the SMS/USSD provider with the path secret.
@@ -1736,6 +1844,10 @@ Gateway: Africa's Talking (sandbox for the hackathon). Callbacks are authenticat
 | AUD-01 verify | — | — | — | — | — | Y | Y | — |
 | SMS-01, USSD-01 | — | — | — | — | — | — | — | Y |
 | SIM-01 | Y | Y | Y | Y | Y | Y | Y | — |
+| CHK-01, CHK-02 | Y | Y | Y | Y | Y | Y | Y | — |
+| NOT-01, 02, 03, 06 | — | — | — | — | — | Y | — | — |
+| NOT-04, NOT-05 | — | — | Y | — | — | — | — | — |
+| AREA-01 | — | — | Y | — | — | — | — | — |
 
 A staff account with several roles has the union of their rows, except that `org_admin` cannot be combined with any other role.
 
@@ -1767,6 +1879,7 @@ Limits are per organisation where an actor exists, otherwise per IP or per phone
 | AUD-01 export | 10 per hour per organisation |
 | SMS-01, USSD-01 | 10 reports and 30 commands per hour per phone |
 | SIM-01 | 60 requests per 10 min, 10 reports per hour per browser session |
+| CHK-02 | 10 per hour per IP and per device token |
 | All other staff reads | 600/min per user |
 
 ---

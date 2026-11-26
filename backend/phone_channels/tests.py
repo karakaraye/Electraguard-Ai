@@ -8,6 +8,7 @@ from accounts.models import Organisation, User
 from reference.models import AreaDataset
 from reports.models import CitizenReply, Report, ReviewEvent, Triage
 from reports.workflow import record_change
+from rumours.models import Claim
 
 from .handlers import LIMIT, menu
 from .intake import public_organisation
@@ -248,3 +249,35 @@ class PhoneTests(TestCase):
         self.assertFalse(details["danger_now"])
         self.assertIsNone(details["area"]["polling_unit_code"])
         self.assertTrue(details["area"]["lga_code"])
+
+    def test_sms_check_command(self):
+        org = public_organisation()
+        # Safety pattern hit returns emergency 112 guidance
+        self.sms("CHECK Armed thugs shooting at ward 2")
+        self.assertIn("112", OutboundSMS.objects.last().text)
+
+        # Approved claim match returns approved response text
+        Claim.objects.create(
+            organisation=org,
+            text="Voting moved to Saturday in Kano",
+            seen_on="whatsapp",
+            language="en",
+            harm={"score": 0.5, "level": "medium", "reasons": []},
+            check_worthiness={"score": 0.5, "level": "medium", "reasons": []},
+            status="response_approved",
+            response={
+                "text": "Voting remains on the scheduled date.",
+                "approved_at": "2026-11-25T10:00:00+01:00",
+            },
+        )
+        self.sms("CHECK Voting moved to Saturday in Kano")
+        self.assertIn("Voting remains on the scheduled date.", OutboundSMS.objects.last().text)
+
+        # Unknown claim redacts PII, queues with source="sms", and replies not checked yet
+        self.sms("CHECK Results cancelled by Mr Chukwu 08031234567 in all wards")
+        self.assertIn("Not checked yet", OutboundSMS.objects.last().text)
+        queued = Claim.objects.filter(source="sms").last()
+        self.assertIsNotNone(queued)
+        self.assertEqual(queued.source, "sms")
+        self.assertNotIn("08031234567", queued.text)
+        self.assertNotIn("Chukwu", queued.text)

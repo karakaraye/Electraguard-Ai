@@ -5,7 +5,8 @@ from io import BytesIO
 from uuid import UUID, uuid4
 
 from django.core import signing
-from django.db import OperationalError, transaction
+from django.db import OperationalError, models, transaction
+from django.db.models import Q, Sum
 from django.http import JsonResponse
 from django.utils import timezone
 from django.views.decorators.cache import never_cache
@@ -32,18 +33,101 @@ IMAGE_LIMIT = 5 * 1024 * 1024
 
 
 def label(user):
+    if user is None:
+        return None
     return user.get_full_name() or user.email
 
 
-def claim_json(claim):
-    return {
+def ask_trend_1h(claim) -> int:
+    try:
+        from .models import ClaimAskHour
+        current_hour = timezone.now().replace(minute=0, second=0, microsecond=0)
+        cutoff = current_hour - timezone.timedelta(hours=1)
+        total = ClaimAskHour.objects.filter(claim=claim, hour__gte=cutoff).aggregate(Sum("count"))["count__sum"]
+        return total or 0
+    except Exception:
+        return 0
+
+
+def checkin_evidence_for(claim):
+    try:
+        from notices.models import Notice, NoticeAnswer
+    except ImportError:
+        return []
+
+    cutoff = timezone.now() - timezone.timedelta(hours=6)
+    notices_qs = Notice.objects.filter(
+        organisation_id=claim.organisation_id,
+        status=Notice.Status.SENT,
+        created_at__gte=cutoff,
+        question__isnull=False,
+    ).select_related("question")
+
+    claim_area = claim.area or {}
+    lga_code = claim_area.get("lga_code")
+    state_code = claim_area.get("state_code")
+    claim_cat = (claim.response or {}).get("category")
+
+    if lga_code:
+        notices_qs = notices_qs.filter(
+            Q(scope_kind="lga", scope_code=lga_code) |
+            Q(scope_kind="ward", scope_code__startswith=lga_code)
+        )
+    elif state_code:
+        notices_qs = notices_qs.filter(
+            Q(scope_code__startswith=state_code)
+        )
+    elif not claim_cat:
+        return []
+
+    if claim_cat:
+        notices_qs = notices_qs.filter(question__category=claim_cat)
+
+    evidence = []
+    for notice in notices_qs:
+        answers = NoticeAnswer.objects.filter(notice=notice)
+        yes_count = answers.filter(answer=NoticeAnswer.AnswerChoice.YES).count()
+        no_count = answers.filter(answer=NoticeAnswer.AnswerChoice.NO).count()
+        not_seen_count = answers.filter(answer=NoticeAnswer.AnswerChoice.NOT_SEEN).count()
+        total = yes_count + no_count + not_seen_count
+        if total == 0:
+            continue
+        q_text = ""
+        if notice.question and notice.question.text_by_lang:
+            q_text = (
+                notice.question.text_by_lang.get(claim.language)
+                or notice.question.text_by_lang.get("en")
+                or str(notice.question.id)
+            )
+        elif notice.question:
+            q_text = str(notice.question.id)
+
+        evidence.append({
+            "question": q_text,
+            "area": notice.scope_code,
+            "yes": yes_count if yes_count >= 5 else "fewer than 5",
+            "no": no_count if no_count >= 5 else "fewer than 5",
+            "not_seen": not_seen_count if not_seen_count >= 5 else "fewer than 5",
+            "window": "6h",
+        })
+    return evidence
+
+
+def claim_json(claim, detail=False):
+    data = {
         "id": str(claim.id), "status": claim.status, "version": claim.version, "text": claim.text,
         "image": {"media_id": str(claim.image_id), **claim.image_dimensions} if claim.image_id else None,
         "seen_on": claim.seen_on, "language": claim.language,
         "seen_at": wat(claim.seen_at) if claim.seen_at else None, "area": claim.area, "harm": claim.harm,
         "check_worthiness": claim.check_worthiness, "image_check": claim.image_check,
         "response": claim.response, "created_by": label(claim.created_by), "created_at": wat(claim.created_at),
+        "source": getattr(claim, "source", "desk"),
+        "ask_count": getattr(claim, "ask_count", 0),
+        "ask_trend_1h": ask_trend_1h(claim),
     }
+    if detail:
+        data["checkin_evidence"] = checkin_evidence_for(claim)
+    return data
 
 
 def scoped(actor):
@@ -74,7 +158,7 @@ def claim_area(value):
     return None
 
 
-def assessment(text, area, seen_at, organisation):
+def assessment(text, area, seen_at, organisation, ask_trend_1h=0):
     words = tokens(text)
     reasons = []
     score = 0
@@ -87,6 +171,10 @@ def assessment(text, area, seen_at, organisation):
     if seen_at and organisation.election_day and wat(seen_at)[:10] == organisation.election_day.isoformat():
         score += 0.15
         reasons.append("election_day")
+    if ask_trend_1h > 0:
+        spread_boost = min(0.3, round(ask_trend_1h * 0.05, 2))
+        score += spread_boost
+        reasons.append("viral_demand")
     level = "high" if score >= 0.7 else "medium" if score >= 0.35 else "low"
     result = {"level": level, "score": round(score, 2)}
     return {**result, "reasons": reasons}, result
@@ -97,8 +185,8 @@ def claims(request):
     denied = authorize(request, roles=COORDINATORS)
     if denied is not None:
         return denied
-    query = scoped(request.user).order_by("-created_at", "id")
-    options = {"status": STATUSES, "harm": LEVELS, "language": LANGUAGES}
+    query = scoped(request.user)
+    options = {"status": STATUSES, "harm": LEVELS, "language": LANGUAGES, "source": {"desk", "public", "sms"}}
     scope = [str(request.user.organisation_id)]
     for field, choices in options.items():
         value = request.GET.get(field)
@@ -108,6 +196,14 @@ def claims(request):
         if value not in choices:
             return invalid(field, "invalid_choice")
         query = query.filter(**{("harm__level" if field == "harm" else field): value})
+    sort = request.GET.get("sort")
+    scope.append(sort)
+    if sort == "demand":
+        query = query.order_by("-ask_count", "-created_at", "id")
+    elif sort is not None and sort != "recent":
+        return invalid("sort", "invalid_choice")
+    else:
+        query = query.order_by("-created_at", "id")
     offset = 0
     try:
         limit = int(request.GET.get("limit", 50))
@@ -132,7 +228,7 @@ def detail(request, claim_id):
     if denied is not None:
         return denied
     claim = scoped(request.user).filter(pk=claim_id).first()
-    return JsonResponse(claim_json(claim)) if claim is not None else not_found()
+    return JsonResponse(claim_json(claim, detail=True)) if claim is not None else not_found()
 
 
 def replayable(request, data, perform):
