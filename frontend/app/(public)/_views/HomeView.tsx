@@ -4,11 +4,11 @@ import type { Translate } from "../../../lib/i18n";
 import type { Cell, GuideSummary } from "../../../lib/api/types";
 import { SMS_SHORT_CODE } from "../../../lib/config";
 import { ButtonLink } from "../../../ui/Button/Button";
-import { ArrowRightIcon } from "../../../ui/icons";
+import { ArrowRightIcon, PhoneIcon } from "../../../ui/icons";
 import { formatWatDateTime } from "../../../ui/format";
 import type { Locale } from "../../../lib/i18n";
 import { formatNumber, localeTags } from "../../../lib/i18n";
-import { LivingScene } from "../_components/living-scene/LivingScene";
+import { HeroArt } from "../_components/landing/HeroArt";
 import { ReceiptCheck, type CheckState } from "../_components/ReceiptCheck";
 import { CountUp } from "../_components/landing/CountUp";
 import { ArtEmptyResults, ArtRumour } from "../_components/landing/ExtraArt";
@@ -82,21 +82,52 @@ export function HomeView({ t, locale, results, guides, check, reportLines }: Hom
 
   return (
     <div className={styles.home}>
-      {/* 4.2 The polling unit: the statement and the one action on still sky, the living scene below at full strength. */}
+      {/* 4.2 The polling unit: the statement on the left, the render laid straight on the paper on the right. */}
       <section id="home-hero" className={styles.hero} aria-labelledby="p02-title">
+        <HeroArt name="hero" className={styles.art} width={2200} height={920} phone={{ width: 780, height: 600 }} data-testid="home-art" />
         <div className={styles.sky}>
           <h1 id="p02-title" className={styles.title}>{t("p02.heading")}</h1>
           <p className={styles.lead}>{t("p02.lead")}</p>
-          {reportAction("home-report")}
+          <div className={styles.heroActions}>
+            <ButtonLink href={REPORT_HREF} data-testid="home-report">
+              {t("p02.report")}
+            </ButtonLink>
+            <ButtonLink variant="secondary" href="/check" data-testid="home-check-rumour-hero">
+              {t("pub.nav.check")}
+            </ButtonLink>
+          </div>
+          <p className={styles.actionHint}>{t("p02.reportHint")}</p>
           <p className={styles.safety}>{t("pub.footer.emergency")}</p>
           <p className={styles.basic}>
-            {t("p02.basicPhone", { ussd: USSD_SERVICE_CODE, shortCode: SMS_SHORT_CODE })}{" "}
-            <Link href="/phone">{t("p02.tryPhone")}</Link>
+            <PhoneIcon size={24} className={styles.basicIcon} />
+            <span>
+              {t("p02.basicPhone", { ussd: USSD_SERVICE_CODE, shortCode: SMS_SHORT_CODE })}
+              <br />
+              <Link href="/phone">{t("p02.tryPhone")}</Link>
+            </span>
           </p>
         </div>
-        <div className={styles.stage}>
-          <LivingScene className={styles.scene} data-testid="home-art" />
+      </section>
+
+      {/* 4.4 Already reported? The receipt check, one full-width strip. */}
+      <section className={styles.check} id="check" aria-labelledby="p02-check">
+        <div className={styles.checkText}>
+          <h2 id="p02-check" className={styles.stripHeading}>{t("p02.check.title")}</h2>
+          <p className={styles.stripText}>{t("p02.check.lead")}</p>
         </div>
+        <div className={styles.checkForm}>
+          <ReceiptCheck initial={check?.state} initialCode={check?.code} />
+        </div>
+      </section>
+
+      {/* 4.5 Reviewed results: real numbers only, starting above the fold. */}
+      <section className={styles.results} aria-labelledby="p02-results">
+        <InView className={styles.resultsBlock}>
+          <ResultsHead results={results} t={t} />
+          <Suspense fallback={<div className={styles.resultsPending} />}>
+            <ResultsBody results={results} t={t} locale={locale} />
+          </Suspense>
+        </InView>
       </section>
 
       {/* 4.3 How a report travels */}
@@ -129,29 +160,6 @@ export function HomeView({ t, locale, results, guides, check, reportLines }: Hom
       </Story>
 
       <div className={styles.cta}>{reportAction()}</div>
-
-      {/* 4.4 Already reported? The receipt check, on a paper receipt with a torn top edge. */}
-      <section className={styles.check} id="check" aria-labelledby="p02-check">
-        <div className={styles.checkText}>
-          <h2 id="p02-check" className={styles.heading}>{t("p02.check.title")}</h2>
-          <p className={styles.text}>{t("p02.check.lead")}</p>
-        </div>
-        <div className={styles.receiptShadow}>
-          <div className={styles.receipt}>
-            <ReceiptCheck initial={check?.state} initialCode={check?.code} />
-          </div>
-        </div>
-      </section>
-
-      {/* 4.5 Reviewed results: real numbers only. */}
-      <section className={styles.results} aria-labelledby="p02-results">
-        <InView className={styles.resultsBlock}>
-          <h2 id="p02-results" className={styles.heading}>{t("p02.results.title")}</h2>
-          <Suspense fallback={<div className={styles.resultsPending} />}>
-            <ResultsBody results={results} t={t} locale={locale} />
-          </Suspense>
-        </InView>
-      </section>
 
       {/* 4.6 Three ways to report */}
       <section className={styles.ways} aria-labelledby="p02-ways">
@@ -257,15 +265,26 @@ export function HomeView({ t, locale, results, guides, check, reportLines }: Hom
       {/* After the story and again before the footer: the one action. */}
       <div className={styles.cta}>{reportAction()}</div>
 
-      {/* 4.9 Evening at the polling unit: the day closes on "Reviewed totals are published here". */}
+      {/* 4.9 Evening at the polling unit: the day closes on "Reviewed totals are published here", straight above the footer. */}
       <div className={styles.evening}>
         <Suspense fallback={null}>
           <EveningCaption results={results} t={t} />
         </Suspense>
-        <div className={styles.eveningStage}>
-          <LivingScene variant="evening" focus="xMidYMax" className={styles.eveningScene} data-testid="evening-scene" />
-        </div>
+        <HeroArt name="evening-footer" className={styles.eveningArt} width={1600} height={333} data-testid="evening-scene" />
       </div>
+    </div>
+  );
+}
+
+/** The heading row of the results: the title, and the link to the full results once there is something to open. */
+function ResultsHead({ results: pending, t }: { results: Awaitable<HomeResults>; t: Translate }) {
+  const results = useSettled(pending);
+  return (
+    <div className={styles.resHead}>
+      <h2 id="p02-results" className={styles.sectionTitle}>{t("p02.results.title")}</h2>
+      {results.kind === "published" ? (
+        <Link className={styles.resLink} href="/results">{t("p02.results.open")}</Link>
+      ) : null}
     </div>
   );
 }
@@ -276,17 +295,24 @@ function ResultsBody({ results: pending, t, locale }: { results: Awaitable<HomeR
   const tag = localeTags[locale];
   return (
     results.kind === "published" ? (
-      <>
-        <p className={styles.figure}>
-          {results.total.suppressed ? (
-            <span className={styles.figureSmall}>{t("p02.results.suppressed")}</span>
-          ) : (
-            <>
-              <CountUp value={results.total.count} tag={tag} className={`${styles.number} eg-tnum`} />{" "}
-              <span className={styles.unit}>{t("p02.results.unit", { count: results.total.count })}</span>
-            </>
-          )}
-        </p>
+      <div className={styles.resGrid}>
+        <div className={styles.resTotal}>
+          <p className={styles.figure}>
+            {results.total.suppressed ? (
+              <span className={styles.figureSmall}>{t("p02.results.suppressed")}</span>
+            ) : (
+              <>
+                <CountUp value={results.total.count} tag={tag} className={`${styles.number} eg-tnum`} />{" "}
+                <span className={styles.unit}>{t("p02.results.unit", { count: results.total.count })}</span>
+              </>
+            )}
+          </p>
+          <p className={styles.meta}>
+            {results.publishedAt ? t("p02.results.published", { time: formatWatDateTime(results.publishedAt, locale) }) : null}{" "}
+            {t("p02.results.cutoff", { time: formatWatDateTime(results.cutoff, locale) })}
+          </p>
+          <p className={styles.notice}>{t("results.notice")}</p>
+        </div>
         {results.categories && results.categories.length ? (
           <ol className={styles.bars} aria-label={t("p02.results.title")}>
             {results.categories.map((item, index) => {
@@ -305,33 +331,27 @@ function ResultsBody({ results: pending, t, locale }: { results: Awaitable<HomeR
             })}
           </ol>
         ) : null}
-        <p className={styles.meta}>
-          {results.publishedAt ? t("p02.results.published", { time: formatWatDateTime(results.publishedAt, locale) }) : null}{" "}
-          {t("p02.results.cutoff", { time: formatWatDateTime(results.cutoff, locale) })}
-        </p>
-        <p className={styles.notice}>{t("results.notice")}</p>
-        <Link className={styles.more} href="/results">
-          {withArrow(t("p02.results.open"))}
-        </Link>
-      </>
+      </div>
     ) : results.kind === "empty" ? (
-      <>
-        <p className={styles.textStrong}>{t("p02.results.empty")}</p>
-        <p className={styles.text}>{t("p02.results.emptyHint")}</p>
-        <Link className={styles.more} href="/results">
-          {withArrow(t("p02.results.how"))}
-        </Link>
+      <div className={styles.resEmpty}>
+        <div>
+          <p className={styles.textStrong}>{t("p02.results.empty")}</p>
+          <p className={styles.text}>{t("p02.results.emptyHint")}</p>
+          <Link className={styles.more} href="/results">
+            {withArrow(t("p02.results.how"))}
+          </Link>
+        </div>
         <div className={styles.emptyArt}>
           <ArtEmptyResults />
         </div>
-      </>
+      </div>
     ) : (
-      <>
+      <div>
         <p className={styles.textStrong}>{t("p02.results.unavailable")}</p>
         <Link className={styles.more} href="/results">
           {withArrow(t("p02.results.open"))}
         </Link>
-      </>
+      </div>
     )
   );
 }

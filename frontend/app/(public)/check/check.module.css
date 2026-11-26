@@ -43,23 +43,12 @@
 }
 
 .quote {
-  position: relative;
   margin: 0;
-  padding: var(--s-5) var(--s-5) var(--s-5) var(--s-7);
-  border: 1px solid var(--rule);
-  border-radius: var(--radius);
-  background: var(--paper-2);
-}
-
-.quote::before {
-  content: "\201C";
-  position: absolute;
-  inset-inline-start: var(--s-4);
-  top: var(--s-2);
-  font: var(--t-display);
-  font-size: 3rem;
-  line-height: 1;
-  color: var(--sun-strong);
+  padding: var(--s-1) 0 var(--s-1) var(--s-4);
+  border: 0;
+  border-inline-start: 3px solid var(--ink);
+  border-radius: 0;
+  background: none;
 }
 
 .quote p {
