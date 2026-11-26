@@ -1528,7 +1528,14 @@
       "model": "Ụdị {version}",
       "error": "Njehie nkezi awa {hours} (enyochara {on})"
     },
-    "syntheticNote": "Amụma ndị a si n'ụdị a zụrụ site na data njem nnwale, ọ bụghị ndekọ nnyefe INEC. Jiri ha mara ebe ị ga-ebu ụzọ lelee."
+    "syntheticNote": "Amụma ndị a si n'ụdị a zụrụ site na data njem nnwale, ọ bụghị ndekọ nnyefe INEC. Jiri ha mara ebe ị ga-ebu ụzọ lelee.",
+    "tabs": {
+      "label": "Akụkụ ụlọ ọrụ",
+      "overview": "Nchịkọta",
+      "checkins": "Ajụjụ nlele",
+      "coverage": "Mkpuchi",
+      "late": "Ngwa ọrụ ndị ọ bịaghị n'oge"
+    }
   },
   "s06": {
     "title": "[IG draft] Rumour desk",
@@ -2682,6 +2689,167 @@
       "title": "I nụrụ asịrị?",
       "body": "Lelee ya megide azịza ndị nyocha anyị kwadoro.",
       "link": "Lelee asịrị"
+    }
+  },
+  "notice": {
+    "checkin": {
+      "title": "Ajụjụ nlele"
+    },
+    "fromCoordinator": "Site n'aka onye nhazi gị, {time}.",
+    "answerBy": "Zaa tupu {time}",
+    "needsYou": "Onye nhazi gị na-ajụ: {question}",
+    "group": "Site n'aka onye nhazi gị",
+    "type": {
+      "logistics": "Ngwa ọrụ",
+      "instruction": "Ntụziaka",
+      "safety": "Nchekwa"
+    },
+    "answer": {
+      "yes": "Ee",
+      "no": "Mba",
+      "not_seen": "Ahụghị m ya"
+    },
+    "notSeenHint": "Họrọ \"Ahụghị m ya\" ma ọ bụrụ na ị enwebeghị ike ilele. Onye nhazi gị na-ahụ azịza n'ime wọọdụ ọ bụla na ebe ntuli aka ndị na-azabeghị.",
+    "save": "Chekwaa azịza m",
+    "offlineBanner": "Netwọk adịghị. A ga-eziga azịza gị mgbe netwọk dị.",
+    "savedOnPhone": "Echekwara ya na ekwentị a. A ga-eziga ya ya na oge ị zara, ya mere ọ bụrụgodị na o ruru oge, a ga-ebu ya n'ọnụ ọgụgụ.",
+    "change": "Gbanwee azịza m",
+    "yourAnswer": "Azịza gị",
+    "answered": "Oge ị zara",
+    "answeredPhone": "{time}, oge ekwentị a",
+    "statusLabel": "Ọnọdụ",
+    "answerExpired": "Ebughị ya n'ọnụ ọgụgụ",
+    "expiredBanner": "Ajụjụ nlele a emechiela tupu azịza gị erute onye nhazi gị, ya mere ebughị ya n'ọnụ ọgụgụ.",
+    "closed": "Ajụjụ nlele a emechiela.",
+    "expired": "O kwuola",
+    "backHome": "Laghachi na Mbido",
+    "loading": "Ajụjụ nlele na-ebubata.",
+    "gone": {
+      "title": "Ajụjụ nlele a adịghị ebe a",
+      "body": "O nwere ike ịbụ na emechiela ya ma ọ bụ wepụla ya. Laghachi na Mbido ka ịhụ ihe mepere emepe.",
+      "offline": "Mepee ya site na Mbido ma ọ bụ Ozi mgbe netwọk dị, mgbe ahụ ị nwere ike ịza ya n'enweghị netwọk."
+    },
+    "waitingLabel": "{count, plural, one {Azịza # na-eche iziga} other {Azịza # na-eche iziga}}",
+    "fewerThan5": "erughị 5",
+    "lga": {
+      "title": "{lga} taa",
+      "updated": "Emelitere {time}",
+      "note": "Akụkọ enyochara nke gafere nkeji 60. A na-egosi ọnụ ọgụgụ erughị 5 dị ka \"erughị 5\"."
+    },
+    "list": {
+      "title": "Ajụjụ nlele",
+      "empty": "Enweghị ajụjụ nlele ọ bụla. Dee nke mbụ.",
+      "sent": "{name} zigara {time}",
+      "expires": "Ga-akwụsị {time}",
+      "fixedNote": "Ajụjụ edoziri: ngwa ntuli aka erutela, ntuli aka amalitela, ebe ntuli aka dị jụụ, ndị ọrụ nọ ebe ahụ, nkwenye ndị na-eme ntuli aka na-arụ ọrụ, e bipụtara nsonaazụ. Ndị na-ele anya na-aza Ee, Mba ma ọ bụ Ahụghị m ya."
+    },
+    "status": {
+      "sent": "Eziga ya",
+      "pending": "Ọ chọrọ nkwado",
+      "expired": "O kwuola",
+      "withdrawn": "Ezigaghachiri ya"
+    },
+    "scope": {
+      "ward": "Wọọdụ",
+      "lga": "Ọchịchị ime obodo"
+    },
+    "new": {
+      "title": "Ajụjụ nlele ọhụrụ",
+      "sendTo": "Ziga ya na",
+      "chooseArea": "Họrọ ebe",
+      "kind": "Ụdị",
+      "safetyHint": "Ọkwa nchekwa na-eche onye nhazi nke abụọ ka o kwado ya tupu ndị na-ele anya ahụ ya.",
+      "what": "Ihe a ga-eziga",
+      "fixed": "Jụọ ajụjụ edoziri",
+      "write": "Dee ozi",
+      "question": "Ajụjụ",
+      "chooseQuestion": "Họrọ ajụjụ",
+      "questionHint": "Ndị na-ele anya na-agụ ya n'asụsụ ha.",
+      "message": "Ozi",
+      "expires": "Ga-akwụsị n'ime",
+      "count": "{count} n'ime {max}",
+      "send": "Ziga ajụjụ nlele"
+    },
+    "expiry": {
+      "30": "Nkeji 30",
+      "60": "Awa 1",
+      "120": "Awa 2",
+      "360": "Awa 6",
+      "720": "Awa 12",
+      "1440": "Awa 24"
+    },
+    "check": {
+      "what": "A na-elele koodu ebe ntuli aka, nọmba ekwentị, imeelụ, njikọ, aha mmadụ na aha otu ndọrọndọrọ ọchịchị ma ọ bụ onye na-azọ ọkwa tupu e zipụ ya.",
+      "clear": "O gafere nlele ọdịnaya.",
+      "blocked": "Enweghị ike iziga nke a ugbu a. Wepụ:"
+    },
+    "reason": {
+      "pollingUnit": "koodu ebe ntuli aka",
+      "phone": "nọmba ekwentị",
+      "email": "adreesị imeelụ",
+      "link": "njikọ",
+      "name": "aha mmadụ",
+      "political": "aha otu ndọrọndọrọ ọchịchị ma ọ bụ onye na-azọ ọkwa"
+    },
+    "errors": {
+      "blocked": "Nlele ọdịnaya kwụsịrị ozi a. Wepụ ihe edepụtara ma ziga ya ọzọ.",
+      "invalid": "Lelee ebe ahụ, ozi ahụ na oge ọ ga-akwụsị, ma nwaa ọzọ.",
+      "conflict": "E kpebiela banyere ọkwa a.",
+      "samePerson": "Ị nweghị ike ikwado ọkwa nchekwa i dere. Onye nhazi ọzọ aghaghị ikwado ya."
+    },
+    "sent": "Eziga ajụjụ nlele.",
+    "sentForApproval": "Echekwara ọkwa nchekwa. Ọ na-eche onye nhazi nke abụọ ka o kwado ya.",
+    "approved": "Ekwadoro ya ma ziga ya ndị na-ele anya.",
+    "rejected": "Ezigaghachiri onye dere ya.",
+    "sentAgain": "Ajụrụ ọzọ ya na oge ọhụrụ ọ ga-akwụsị.",
+    "results": {
+      "titleWard": "Wọọdụ {area}, ebe ntuli aka {answered} n'ime {total} zara",
+      "titleLga": "Ọchịchị ime obodo {area}, ebe ntuli aka {answered} n'ime {total} zara",
+      "none": "Enweghị azịza ọ bụla.",
+      "ward": "Wọọdụ",
+      "answers": "Azịza",
+      "notAnswered": "Azabeghị",
+      "allAnswered": "Ha niile zara",
+      "barLabel": "Ee {yes}, mba {no}, ahụghị m ya {notSeen}, azabeghị {open}",
+      "raise": "Azịza \"Mba\" n'ime {wards} na-ebuli mkpa okwu ndị kwekọrọ na ndepụta.",
+      "openQueue": "Mepee ndepụta"
+    },
+    "again": {
+      "title": "Jụọ otu ajụjụ ahụ ọzọ",
+      "body": "Ga-eziga ya na {area} ọzọ ya na oge ọhụrụ ọ ga-akwụsị. Ndị na-ele anya zaworo nwere ike ịza ọzọ.",
+      "button": "Jụọ ọzọ"
+    },
+    "approve": {
+      "title": "Ọkwa nchekwa na-eche onye nhazi nke abụọ",
+      "meta": "Na {area}. {name} dere ya n'oge {time}. Ga-akwụsị {expires}. O gafere nlele ọdịnaya.",
+      "approve": "Kwado ma ziga",
+      "reject": "Zighachi",
+      "noteLabel": "Gịnị mere a na-ezighachi ya?",
+      "noteHint": "Onye dere ya ga-agụ nke a.",
+      "rule": "Ị nweghị ike ikwado ọkwa nchekwa i dere. A ga-edekọ aha abụọ ahụ.",
+      "mine": "Ọ bụ gị dere ọkwa a, ya mere onye nhazi ọzọ aghaghị ikwado ya."
+    },
+    "rumour": {
+      "asks": "Ajụjụ",
+      "source": "Isi mmalite",
+      "sourceAll": "Ha niile",
+      "sourcePublic": "Site n'aka ọha",
+      "sourceDesk": "Tebụl",
+      "sourceSms": "SMS",
+      "sort": "Hazie",
+      "sortRecent": "Kachasị ọhụrụ",
+      "sortDemand": "Kacha ajụ",
+      "inHour": "{count} n'awa 1",
+      "noneInHour": "enweghị n'awa 1",
+      "fromPublic": "Site n'aka ọha. A jụrụ ya nke mbụ {time}.",
+      "asked": "Tebụl dere ya.",
+      "askCount": "{count, plural, one {ajụjụ} other {ajụjụ}}",
+      "inLastHour": "{count} n'awa gara aga",
+      "noneInLastHour": "enweghị n'awa gara aga",
+      "evidenceTitle": "Ihe àmà site n'ajụjụ nlele, awa 6 gara aga",
+      "evidenceNone": "Enweghị ajụjụ nlele wọọdụ banyere nke a.",
+      "evidenceQuestion": "\"{question}\" ({area})",
+      "evidenceNote": "A na-egosi ọnụ ọgụgụ erughị 5 dị ka \"erughị 5\". Ajụjụ nlele abụghị akụkọ, ha abụghịkwa ihe àmà n'onwe ha."
     }
   }
 }

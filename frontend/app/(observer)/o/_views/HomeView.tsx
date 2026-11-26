@@ -16,6 +16,8 @@ import styles from "../_components/observer.module.css";
 import p3 from "../_components/p3.module.css";
 import s from "../_components/screens.module.css";
 import { categoryMeta } from "../_lib/categories";
+import type { NoticeType } from "../../../../lib/api/types";
+import { LgaTodayCard, type LgaToday } from "../_components/LgaTodayCard";
 
 export type HomeRow = {
   href: string;
@@ -40,6 +42,10 @@ export type HomeViewProps = {
   unreadCount?: number;
   /** Discussions: null when the observer has none (the row is hidden, O-18), else invitations + unread posts. */
   discussions?: { count: number } | null;
+  /** Check-ins waiting for an answer, newest first (NOT-04). Safety ones are red. */
+  notices?: Array<{ id: string; title: string; type: NoticeType }>;
+  /** "Your LGA today" (AREA-01); null when it could not be read. */
+  lgaToday?: LgaToday | null;
   pinSaved: boolean;
   draftKept: boolean;
   draft: { category: Category | null; startedAt: number } | null;
@@ -91,7 +97,20 @@ export function HomeView(props: HomeViewProps) {
     </div>
   );
   const hasBanner = networkBack || pinSaved || draftKept;
-  const needs: Array<{ key: string; tone: "wait" | "attn"; testId: string; text: string; actions: ReactNode }> = [];
+  const needs: Array<{ key: string; tone: "wait" | "attn" | "danger"; testId: string; text: string; actions: ReactNode }> = [];
+  for (const notice of props.notices ?? []) {
+    needs.push({
+      key: `notice-${notice.id}`,
+      tone: notice.type === "safety" ? "danger" : "wait",
+      testId: `o04-notice-${notice.id}`,
+      text: t("notice.needsYou", { question: notice.title }),
+      actions: (
+        <ButtonLink href={`/o/checkin/${notice.id}`} variant="secondary" className={p3.smallBtn} data-testid="o04-notice-answer">
+          {t("o04.answer")}
+        </ButtonLink>
+      ),
+    });
+  }
   if (waitingCodeCount > 0) {
     needs.push({
       key: "waiting",
@@ -235,6 +254,8 @@ export function HomeView(props: HomeViewProps) {
             ) : undefined
           }
         />
+
+        {props.lgaToday ? <LgaTodayCard data={props.lgaToday} /> : null}
 
         <section aria-labelledby="o04-reports" className={p3.reports}>
           <div className={p3.sectionHead}>

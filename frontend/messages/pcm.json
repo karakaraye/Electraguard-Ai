@@ -1528,7 +1528,14 @@
       "model": "Model {version}",
       "error": "E fit miss by {hours} h on average (dem check am {on})"
     },
-    "syntheticNote": "These predictions come from model wey dem train with practice logistics data, no be official INEC delivery record. Use am to know where to look first."
+    "syntheticNote": "These predictions come from model wey dem train with practice logistics data, no be official INEC delivery record. Use am to know where to look first.",
+    "tabs": {
+      "label": "Operations room sections",
+      "overview": "Overview",
+      "checkins": "Check-ins",
+      "coverage": "Coverage",
+      "late": "Late materials"
+    }
   },
   "s06": {
     "title": "[PCM draft] Rumour desk",
@@ -2682,6 +2689,167 @@
       "title": "You hear rumour?",
       "body": "Check am against answers wey our reviewers approve.",
       "link": "Check rumour"
+    }
+  },
+  "notice": {
+    "checkin": {
+      "title": "Check-in"
+    },
+    "fromCoordinator": "From your coordinator, {time}.",
+    "answerBy": "Answer before {time}",
+    "needsYou": "Your coordinator dey ask: {question}",
+    "group": "From your coordinator",
+    "type": {
+      "logistics": "Logistics",
+      "instruction": "Instruction",
+      "safety": "Safety"
+    },
+    "answer": {
+      "yes": "Yes",
+      "no": "No",
+      "not_seen": "I never see am"
+    },
+    "notSeenHint": "Choose \"I never see am\" if you never fit check. Your coordinator go see the answers for each ward and which units never answer.",
+    "save": "Save my answer",
+    "offlineBanner": "No network. Your answer go send when network come.",
+    "savedOnPhone": "E don save for this phone. E go send with the time wey you answer, so even if e late, dem go still count am.",
+    "change": "Change my answer",
+    "yourAnswer": "Your answer",
+    "answered": "Wen you answer",
+    "answeredPhone": "{time}, this phone time",
+    "statusLabel": "Status",
+    "answerExpired": "Dem no count am",
+    "expiredBanner": "This check-in don close before your answer reach your coordinator, so dem no count am.",
+    "closed": "This check-in don close.",
+    "expired": "E don expire",
+    "backHome": "Go back Home",
+    "loading": "Check-in dey load.",
+    "gone": {
+      "title": "This check-in no dey here",
+      "body": "E fit don close or dem don withdraw am. Go back Home make you see wetin dey open.",
+      "offline": "Open am from Home or Messages when network dey, then you fit answer am even if network no dey."
+    },
+    "waitingLabel": "{count, plural, one {# answer dey wait to send} other {# answers dey wait to send}}",
+    "fewerThan5": "less than 5",
+    "lga": {
+      "title": "{lga} today",
+      "updated": "Updated {time}",
+      "note": "Reports wey dem don review wey don pass 60 minutes. If the number no reach 5, we dey show \"less than 5\"."
+    },
+    "list": {
+      "title": "Check-ins",
+      "empty": "No check-in yet. Write the first one.",
+      "sent": "{name} send am for {time}",
+      "expires": "E go expire {time}",
+      "fixedNote": "Fixed questions: materials don reach, voting don start, unit dey calm, officials dey, accreditation dey work, dem don paste results. Observers go answer Yes, No or I never see am."
+    },
+    "status": {
+      "sent": "Dem don send am",
+      "pending": "E need approval",
+      "expired": "E don expire",
+      "withdrawn": "Dem send am back"
+    },
+    "scope": {
+      "ward": "Ward",
+      "lga": "LGA"
+    },
+    "new": {
+      "title": "New check-in",
+      "sendTo": "Send am to",
+      "chooseArea": "Choose place",
+      "kind": "Type",
+      "safetyHint": "Safety notice go wait for second coordinator to approve am before observers go see am.",
+      "what": "Wetin you wan send",
+      "fixed": "Ask fixed question",
+      "write": "Write message",
+      "question": "Question",
+      "chooseQuestion": "Choose question",
+      "questionHint": "Observers go read am for their own language.",
+      "message": "Message",
+      "expires": "E go expire for",
+      "count": "{count} for {max}",
+      "send": "Send check-in"
+    },
+    "expiry": {
+      "30": "30 minutes",
+      "60": "1 hour",
+      "120": "2 hours",
+      "360": "6 hours",
+      "720": "12 hours",
+      "1440": "24 hours"
+    },
+    "check": {
+      "what": "We go check for polling unit code, phone number, email, link, person name and party or candidate name before dem fit send am.",
+      "clear": "E pass the content check.",
+      "blocked": "Dem no fit send this one yet. Comot:"
+    },
+    "reason": {
+      "pollingUnit": "polling unit code",
+      "phone": "phone number",
+      "email": "email address",
+      "link": "link",
+      "name": "person name",
+      "political": "party or candidate name"
+    },
+    "errors": {
+      "blocked": "The content check stop this message. Comot wetin dem list and send am again.",
+      "invalid": "Check the place, the message and when e go expire, then try again.",
+      "conflict": "Dem don already decide on this notice.",
+      "samePerson": "You no fit approve safety notice wey you write. Another coordinator must approve am."
+    },
+    "sent": "Dem don send the check-in.",
+    "sentForApproval": "Safety notice don save. E dey wait for second coordinator to approve am.",
+    "approved": "Dem don approve am and send am to observers.",
+    "rejected": "Dem don send am back to the person wey write am.",
+    "sentAgain": "Dem don ask again with new expiry time.",
+    "results": {
+      "titleWard": "{area} ward, {answered} for {total} units don answer",
+      "titleLga": "{area} LGA, {answered} for {total} units don answer",
+      "none": "No answer yet.",
+      "ward": "Ward",
+      "answers": "Answers",
+      "notAnswered": "Never answer",
+      "allAnswered": "Everybody don answer",
+      "barLabel": "{yes} yes, {no} no, {notSeen} never see am, {open} never answer",
+      "raise": "\"No\" answers for {wards} dey raise priority for matching cases for queue.",
+      "openQueue": "Open queue"
+    },
+    "again": {
+      "title": "Ask the same question again",
+      "body": "E go send am to {area} again with new expiry time. Observers wey don answer fit answer again.",
+      "button": "Ask again"
+    },
+    "approve": {
+      "title": "Safety notice dey wait for second coordinator",
+      "meta": "To {area}. {name} write am for {time}. E go expire {expires}. E pass the content check.",
+      "approve": "Approve and send",
+      "reject": "Send am back",
+      "noteLabel": "Why you dey send am back?",
+      "noteHint": "The person wey write am go read this.",
+      "rule": "You no fit approve safety notice wey you write. Dem go record both names.",
+      "mine": "You write this notice, so another coordinator must approve am."
+    },
+    "rumour": {
+      "asks": "Asks",
+      "source": "Where e come from",
+      "sourceAll": "All",
+      "sourcePublic": "From public",
+      "sourceDesk": "Desk",
+      "sourceSms": "SMS",
+      "sort": "Arrange",
+      "sortRecent": "Newest",
+      "sortDemand": "Wey dem ask pass",
+      "inHour": "{count} for 1 h",
+      "noneInHour": "none for 1 h",
+      "fromPublic": "From public. Dem first ask am {time}.",
+      "asked": "Desk log am.",
+      "askCount": "{count, plural, one {ask} other {asks}}",
+      "inLastHour": "{count} for the last hour",
+      "noneInLastHour": "none for the last hour",
+      "evidenceTitle": "Check-in evidence, last 6 hours",
+      "evidenceNone": "No ward check-in for this one yet.",
+      "evidenceQuestion": "\"{question}\" ({area})",
+      "evidenceNote": "If the number no reach 5, we dey show \"less than 5\". Check-ins no be reports, and dem no be proof by themselves."
     }
   }
 }

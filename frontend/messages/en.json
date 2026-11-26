@@ -1527,7 +1527,14 @@
       "model": "Model {version}",
       "error": "Average error {hours} h (checked {on})"
     },
-    "syntheticNote": "These predictions come from a model trained on synthetic logistics data, not official INEC delivery records. Use them to decide where to look first."
+    "syntheticNote": "These predictions come from a model trained on synthetic logistics data, not official INEC delivery records. Use them to decide where to look first.",
+    "tabs": {
+      "label": "Operations room sections",
+      "overview": "Overview",
+      "checkins": "Check-ins",
+      "coverage": "Coverage",
+      "late": "Late materials"
+    }
   },
   "s06": {
     "title": "Rumour desk",
@@ -2681,6 +2688,167 @@
       "title": "Heard a rumour?",
       "body": "Check it against answers our reviewers approved.",
       "link": "Check a rumour"
+    }
+  },
+  "notice": {
+    "checkin": {
+      "title": "Check-in"
+    },
+    "fromCoordinator": "From your coordinator, {time}.",
+    "answerBy": "Answer by {time}",
+    "needsYou": "Your coordinator asks: {question}",
+    "group": "From your coordinator",
+    "type": {
+      "logistics": "Logistics",
+      "instruction": "Instruction",
+      "safety": "Safety"
+    },
+    "answer": {
+      "yes": "Yes",
+      "no": "No",
+      "not_seen": "Not seen"
+    },
+    "notSeenHint": "Choose Not seen if you have not been able to check. Your coordinator sees the answers per ward and which units have not answered.",
+    "save": "Save answer",
+    "offlineBanner": "Offline. Your answer will send when you have network.",
+    "savedOnPhone": "Saved on this phone. It sends with the time you answered, so a late send still counts.",
+    "change": "Change my answer",
+    "yourAnswer": "Your answer",
+    "answered": "Answered",
+    "answeredPhone": "{time}, this phone's time",
+    "statusLabel": "Status",
+    "answerExpired": "Not counted",
+    "expiredBanner": "This check-in closed before your answer reached your coordinator, so it was not counted.",
+    "closed": "This check-in has closed.",
+    "expired": "Expired",
+    "backHome": "Back to Home",
+    "loading": "Loading the check-in.",
+    "gone": {
+      "title": "This check-in is not here",
+      "body": "It may have closed or been withdrawn. Go back to Home to see what is open.",
+      "offline": "Open it from Home or Messages while you have network, then you can answer it offline."
+    },
+    "waitingLabel": "{count, plural, one {# answer waiting to send} other {# answers waiting to send}}",
+    "fewerThan5": "fewer than 5",
+    "lga": {
+      "title": "{lga} today",
+      "updated": "Updated {time}",
+      "note": "Reviewed reports at least 60 minutes old. Numbers under 5 are shown as \"fewer than 5\"."
+    },
+    "list": {
+      "title": "Check-ins",
+      "empty": "No check-ins yet. Write the first one.",
+      "sent": "Sent {time} by {name}",
+      "expires": "Expires {time}",
+      "fixedNote": "Fixed questions: materials arrived, voting started, unit calm, officials present, accreditation working, results posted. Observers answer Yes, No or Not seen."
+    },
+    "status": {
+      "sent": "Sent",
+      "pending": "Needs approval",
+      "expired": "Expired",
+      "withdrawn": "Sent back"
+    },
+    "scope": {
+      "ward": "Ward",
+      "lga": "LGA"
+    },
+    "new": {
+      "title": "New check-in",
+      "sendTo": "Send to",
+      "chooseArea": "Choose a place",
+      "kind": "Kind",
+      "safetyHint": "A safety notice waits for a second coordinator to approve it before observers see it.",
+      "what": "What to send",
+      "fixed": "Ask a fixed question",
+      "write": "Write a message",
+      "question": "Question",
+      "chooseQuestion": "Choose a question",
+      "questionHint": "Observers read it in their own language.",
+      "message": "Message",
+      "expires": "Expires in",
+      "count": "{count} of {max}",
+      "send": "Send check-in"
+    },
+    "expiry": {
+      "30": "30 minutes",
+      "60": "1 hour",
+      "120": "2 hours",
+      "360": "6 hours",
+      "720": "12 hours",
+      "1440": "24 hours"
+    },
+    "check": {
+      "what": "Checked for polling unit codes, phone numbers, emails, links, personal names and party or candidate names before it can be sent.",
+      "clear": "Passed the content check.",
+      "blocked": "This cannot be sent yet. Remove:"
+    },
+    "reason": {
+      "pollingUnit": "a polling unit code",
+      "phone": "a phone number",
+      "email": "an email address",
+      "link": "a link",
+      "name": "a personal name",
+      "political": "a party or candidate name"
+    },
+    "errors": {
+      "blocked": "The content check stopped this message. Remove what is listed and send again.",
+      "invalid": "Check the place, the message and the expiry, then try again.",
+      "conflict": "This notice was already decided.",
+      "samePerson": "You cannot approve a safety notice you wrote. A different coordinator must approve it."
+    },
+    "sent": "Check-in sent.",
+    "sentForApproval": "Safety notice saved. It waits for a second coordinator to approve it.",
+    "approved": "Approved and sent to observers.",
+    "rejected": "Sent back to the writer.",
+    "sentAgain": "Asked again with a new expiry.",
+    "results": {
+      "titleWard": "{area} ward, {answered} of {total} units answered",
+      "titleLga": "{area} LGA, {answered} of {total} units answered",
+      "none": "No answers yet.",
+      "ward": "Ward",
+      "answers": "Answers",
+      "notAnswered": "Not answered",
+      "allAnswered": "All answered",
+      "barLabel": "{yes} yes, {no} no, {notSeen} not seen, {open} not answered",
+      "raise": "\"No\" answers in {wards} raise the priority of matching cases in the queue.",
+      "openQueue": "Open the queue"
+    },
+    "again": {
+      "title": "Ask the same question again",
+      "body": "Sends it to {area} again with a new expiry. Observers who already answered can answer again.",
+      "button": "Ask again"
+    },
+    "approve": {
+      "title": "Safety notice waiting for a second coordinator",
+      "meta": "To {area}. Written by {name} at {time}. Expires {expires}. Passed the content check.",
+      "approve": "Approve and send",
+      "reject": "Send back",
+      "noteLabel": "Why is it sent back?",
+      "noteHint": "The person who wrote it reads this.",
+      "rule": "You cannot approve a safety notice you wrote. Both names are recorded.",
+      "mine": "You wrote this notice, so another coordinator has to approve it."
+    },
+    "rumour": {
+      "asks": "Asks",
+      "source": "Source",
+      "sourceAll": "All",
+      "sourcePublic": "From the public",
+      "sourceDesk": "Desk",
+      "sourceSms": "SMS",
+      "sort": "Sort",
+      "sortRecent": "Newest",
+      "sortDemand": "Most asked",
+      "inHour": "{count} in 1 h",
+      "noneInHour": "none in 1 h",
+      "fromPublic": "From the public. First asked {time}.",
+      "asked": "Logged by the desk.",
+      "askCount": "{count, plural, one {ask} other {asks}}",
+      "inLastHour": "{count} in the last hour",
+      "noneInLastHour": "none in the last hour",
+      "evidenceTitle": "Check-in evidence, last 6 hours",
+      "evidenceNone": "No ward check-ins on this yet.",
+      "evidenceQuestion": "\"{question}\" ({area})",
+      "evidenceNote": "Counts under 5 are shown as \"fewer than 5\". Check-ins are not reports and are not proof on their own."
     }
   }
 }

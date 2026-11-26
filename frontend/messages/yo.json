@@ -1528,7 +1528,14 @@
       "model": "Àwòṣe {version}",
       "error": "Àṣìṣe àpapọ̀ wákàtí {hours} (a ṣàyẹ̀wò ní {on})"
     },
-    "syntheticNote": "Àwọn àsọtẹ́lẹ̀ yìí wá láti inú àwòṣe tí a kọ́ pẹ̀lú dátà ìrìnnà àdánwò, kì í ṣe àkọsílẹ̀ ìfijíṣẹ́ INEC. Lò wọ́n láti mọ ibi tí o máa kọ́kọ́ wò."
+    "syntheticNote": "Àwọn àsọtẹ́lẹ̀ yìí wá láti inú àwòṣe tí a kọ́ pẹ̀lú dátà ìrìnnà àdánwò, kì í ṣe àkọsílẹ̀ ìfijíṣẹ́ INEC. Lò wọ́n láti mọ ibi tí o máa kọ́kọ́ wò.",
+    "tabs": {
+      "label": "Àwọn apá yàrá iṣẹ́",
+      "overview": "Àkópọ̀",
+      "checkins": "Àwọn ìbéèrè àyẹ̀wò",
+      "coverage": "Ìbòrí",
+      "late": "Àwọn ohun èlò tó pẹ́"
+    }
   },
   "s06": {
     "title": "[YO draft] Rumour desk",
@@ -2682,6 +2689,167 @@
       "title": "Ǹjẹ́ o gbọ́ ọ̀rọ̀ ẹnu?",
       "body": "Ṣayẹwo rẹ̀ pẹ̀lú àwọn ìdáhùn tí àwọn olùyẹ̀wò wa fọwọ́ sí.",
       "link": "Ṣayẹwo ọ̀rọ̀ ẹnu"
+    }
+  },
+  "notice": {
+    "checkin": {
+      "title": "Ìbéèrè àyẹ̀wò"
+    },
+    "fromCoordinator": "Láti ọ̀dọ̀ olùṣètò rẹ, {time}.",
+    "answerBy": "Dáhùn kí {time} tó pé",
+    "needsYou": "Olùṣètò rẹ ń béèrè: {question}",
+    "group": "Láti ọ̀dọ̀ olùṣètò rẹ",
+    "type": {
+      "logistics": "Ohun èlò",
+      "instruction": "Ìtọ́ni",
+      "safety": "Ààbò"
+    },
+    "answer": {
+      "yes": "Bẹ́ẹ̀ ni",
+      "no": "Rárá",
+      "not_seen": "N kò rí i"
+    },
+    "notSeenHint": "Yan \"N kò rí i\" tí o kò bá lè ṣe àyẹ̀wò. Olùṣètò rẹ ń rí àwọn ìdáhùn ní ẹ̀ka kọ̀ọ̀kan àti àwọn ibùdó tí kò tíì dáhùn.",
+    "save": "Fi ìdáhùn mi pamọ́",
+    "offlineBanner": "Kò sí nẹ́tíwọ̀ọ̀kì. A ó fi ìdáhùn rẹ ránṣẹ́ nígbà tí o bá ní nẹ́tíwọ̀ọ̀kì.",
+    "savedOnPhone": "A ti fi pamọ́ sórí fóònù yìí. A ó fi ránṣẹ́ pẹ̀lú àkókò tí o dáhùn, nítorí náà bí ó bá pẹ́, a ṣì máa kà á.",
+    "change": "Yí ìdáhùn mi padà",
+    "yourAnswer": "Ìdáhùn rẹ",
+    "answered": "Àkókò tí o dáhùn",
+    "answeredPhone": "{time}, àkókò fóònù yìí",
+    "statusLabel": "Ipò",
+    "answerExpired": "A kò kà á",
+    "expiredBanner": "Ìbéèrè àyẹ̀wò yìí ti parí kí ìdáhùn rẹ tó dé ọ̀dọ̀ olùṣètò rẹ, nítorí náà a kò kà á.",
+    "closed": "Ìbéèrè àyẹ̀wò yìí ti parí.",
+    "expired": "Ó ti parí",
+    "backHome": "Padà sí Ilé",
+    "loading": "Ìbéèrè àyẹ̀wò ń gbé.",
+    "gone": {
+      "title": "Ìbéèrè àyẹ̀wò yìí kò sí níbí",
+      "body": "Ó lè jẹ́ pé ó ti parí tàbí a ti gbà á padà. Padà sí Ilé láti rí ohun tó ṣí.",
+      "offline": "Ṣí i láti Ilé tàbí Àwọn ìfiránṣẹ́ nígbà tí o bá ní nẹ́tíwọ̀ọ̀kì, lẹ́yìn náà o lè dáhùn rẹ̀ láìsí nẹ́tíwọ̀ọ̀kì."
+    },
+    "waitingLabel": "{count, plural, one {Ìdáhùn # ń dúró de fífiránṣẹ́} other {Àwọn ìdáhùn # ń dúró de fífiránṣẹ́}}",
+    "fewerThan5": "kéré sí 5",
+    "lga": {
+      "title": "{lga} lónìí",
+      "updated": "A ṣe àtúnṣe {time}",
+      "note": "Àwọn ìròyìn tí a ti yẹ̀ wò tí ó ju ìṣẹ́jú 60 lọ. A ń fi àwọn nọ́mbà tí ó kéré sí 5 hàn bí \"kéré sí 5\"."
+    },
+    "list": {
+      "title": "Àwọn ìbéèrè àyẹ̀wò",
+      "empty": "Kò sí ìbéèrè àyẹ̀wò kankan síbẹ̀. Kọ àkọ́kọ́.",
+      "sent": "{name} fi ránṣẹ́ {time}",
+      "expires": "Yóò parí {time}",
+      "fixedNote": "Àwọn ìbéèrè tí kò yí padà: àwọn ohun èlò ìdìbò ti dé, ìdìbò ti bẹ̀rẹ̀, ibùdó wà ní àlàáfíà, àwọn òṣìṣẹ́ wà níbẹ̀, ìforúkọsílẹ̀ ń ṣiṣẹ́, a ti lẹ àbájáde mọ́ gbangba. Àwọn olùwòye ń dáhùn Bẹ́ẹ̀ ni, Rárá tàbí N kò rí i."
+    },
+    "status": {
+      "sent": "A ti fi ránṣẹ́",
+      "pending": "Ó nílò ìfọwọ́sí",
+      "expired": "Ó ti parí",
+      "withdrawn": "A dá padà"
+    },
+    "scope": {
+      "ward": "Wọ́ọ̀dù",
+      "lga": "Ìjọba ìbílẹ̀"
+    },
+    "new": {
+      "title": "Ìbéèrè àyẹ̀wò tuntun",
+      "sendTo": "Fi ránṣẹ́ sí",
+      "chooseArea": "Yan ibi kan",
+      "kind": "Irú",
+      "safetyHint": "Ìkéde ààbò ń dúró de olùṣètò kejì láti fọwọ́ sí i kí àwọn olùwòye tó rí i.",
+      "what": "Ohun tí a ó fi ránṣẹ́",
+      "fixed": "Béèrè ìbéèrè tí kò yí padà",
+      "write": "Kọ ìfiránṣẹ́",
+      "question": "Ìbéèrè",
+      "chooseQuestion": "Yan ìbéèrè kan",
+      "questionHint": "Àwọn olùwòye ń kà á ní èdè wọn.",
+      "message": "Ìfiránṣẹ́",
+      "expires": "Yóò parí ní",
+      "count": "{count} nínú {max}",
+      "send": "Fi ìbéèrè àyẹ̀wò ránṣẹ́"
+    },
+    "expiry": {
+      "30": "Ìṣẹ́jú 30",
+      "60": "Wákàtí 1",
+      "120": "Wákàtí 2",
+      "360": "Wákàtí 6",
+      "720": "Wákàtí 12",
+      "1440": "Wákàtí 24"
+    },
+    "check": {
+      "what": "A ń ṣàyẹ̀wò fún kóòdù ibùdó ìdìbò, nọ́mbà fóònù, ímeèlì, ìjápọ̀, orúkọ ènìyàn àti orúkọ ẹgbẹ́ òṣèlú tàbí olùdíje kí a tó lè fi ránṣẹ́.",
+      "clear": "Ó ti kọjá àyẹ̀wò àkóónú.",
+      "blocked": "A kò tíì lè fi èyí ránṣẹ́. Yọ:"
+    },
+    "reason": {
+      "pollingUnit": "kóòdù ibùdó ìdìbò",
+      "phone": "nọ́mbà fóònù",
+      "email": "àdírẹ́sì ímeèlì",
+      "link": "ìjápọ̀",
+      "name": "orúkọ ènìyàn",
+      "political": "orúkọ ẹgbẹ́ òṣèlú tàbí olùdíje"
+    },
+    "errors": {
+      "blocked": "Àyẹ̀wò àkóónú dá ìfiránṣẹ́ yìí dúró. Yọ ohun tí a kọ sílẹ̀ kí o sì tún fi ránṣẹ́.",
+      "invalid": "Ṣàyẹ̀wò ibi náà, ìfiránṣẹ́ náà àti àkókò ìparí, kí o sì tún gbìyànjú.",
+      "conflict": "A ti ṣe ìpinnu lórí ìkéde yìí tẹ́lẹ̀.",
+      "samePerson": "O kò lè fọwọ́ sí ìkéde ààbò tí o kọ. Olùṣètò mìíràn gbọ́dọ̀ fọwọ́ sí i."
+    },
+    "sent": "A ti fi ìbéèrè àyẹ̀wò ránṣẹ́.",
+    "sentForApproval": "A ti fi ìkéde ààbò pamọ́. Ó ń dúró de olùṣètò kejì láti fọwọ́ sí i.",
+    "approved": "A ti fọwọ́ sí i, a sì ti fi ránṣẹ́ sí àwọn olùwòye.",
+    "rejected": "A ti dá a padà fún ẹni tó kọ ọ́.",
+    "sentAgain": "A ti tún béèrè pẹ̀lú àkókò ìparí tuntun.",
+    "results": {
+      "titleWard": "Wọ́ọ̀dù {area}, ibùdó {answered} nínú {total} ti dáhùn",
+      "titleLga": "Ìjọba ìbílẹ̀ {area}, ibùdó {answered} nínú {total} ti dáhùn",
+      "none": "Kò tíì sí ìdáhùn.",
+      "ward": "Wọ́ọ̀dù",
+      "answers": "Àwọn ìdáhùn",
+      "notAnswered": "Kò tíì dáhùn",
+      "allAnswered": "Gbogbo wọn ti dáhùn",
+      "barLabel": "Bẹ́ẹ̀ ni {yes}, rárá {no}, n kò rí i {notSeen}, kò tíì dáhùn {open}",
+      "raise": "Àwọn ìdáhùn \"Rárá\" ní {wards} ń gbé ìtẹ̀síwájú àwọn ọ̀ràn tó bá a mu sókè nínú àtòjọ.",
+      "openQueue": "Ṣí àtòjọ"
+    },
+    "again": {
+      "title": "Tún béèrè ìbéèrè kan náà",
+      "body": "Yóò tún fi ránṣẹ́ sí {area} pẹ̀lú àkókò ìparí tuntun. Àwọn olùwòye tó ti dáhùn lè tún dáhùn.",
+      "button": "Tún béèrè"
+    },
+    "approve": {
+      "title": "Ìkéde ààbò ń dúró de olùṣètò kejì",
+      "meta": "Sí {area}. {name} kọ ọ́ ní {time}. Yóò parí {expires}. Ó ti kọjá àyẹ̀wò àkóónú.",
+      "approve": "Fọwọ́ sí i kí o sì fi ránṣẹ́",
+      "reject": "Dá padà",
+      "noteLabel": "Kí ló dé tí a fi ń dá a padà?",
+      "noteHint": "Ẹni tó kọ ọ́ yóò ka èyí.",
+      "rule": "O kò lè fọwọ́ sí ìkéde ààbò tí o kọ. A ó ṣe àkọsílẹ̀ orúkọ àwọn méjèèjì.",
+      "mine": "Ìwọ ni o kọ ìkéde yìí, nítorí náà olùṣètò mìíràn gbọ́dọ̀ fọwọ́ sí i."
+    },
+    "rumour": {
+      "asks": "Ìbéèrè",
+      "source": "Orísun",
+      "sourceAll": "Gbogbo rẹ̀",
+      "sourcePublic": "Láti ọ̀dọ̀ gbogbo ènìyàn",
+      "sourceDesk": "Tábìlì",
+      "sourceSms": "SMS",
+      "sort": "Tò",
+      "sortRecent": "Tuntun jùlọ",
+      "sortDemand": "Tí a béèrè jùlọ",
+      "inHour": "{count} ní wákàtí 1",
+      "noneInHour": "kò sí ní wákàtí 1",
+      "fromPublic": "Láti ọ̀dọ̀ gbogbo ènìyàn. A kọ́kọ́ béèrè {time}.",
+      "asked": "Tábìlì ló kọ ọ́ sílẹ̀.",
+      "askCount": "{count, plural, one {ìbéèrè} other {ìbéèrè}}",
+      "inLastHour": "{count} ní wákàtí tó kọjá",
+      "noneInLastHour": "kò sí ní wákàtí tó kọjá",
+      "evidenceTitle": "Ẹ̀rí láti àwọn ìbéèrè àyẹ̀wò, wákàtí 6 tó kọjá",
+      "evidenceNone": "Kò tíì sí ìbéèrè àyẹ̀wò wọ́ọ̀dù lórí èyí.",
+      "evidenceQuestion": "\"{question}\" ({area})",
+      "evidenceNote": "A ń fi àwọn nọ́mbà tí ó kéré sí 5 hàn bí \"kéré sí 5\". Àwọn ìbéèrè àyẹ̀wò kì í ṣe ìròyìn, wọn kì í sì í ṣe ẹ̀rí fúnra wọn."
     }
   }
 }

@@ -36,6 +36,8 @@ import {
   FIXTURE_QUEUE_ITEMS,
   FIXTURE_QUEUE_PAGE,
 } from "./fixtures";
+import { CheckinsView } from "../../../(staff)/s/_views/CheckinsView";
+import { CHECKINS_NOTICES, CHECKINS_NOW, CHECKINS_PLACES, CHECKINS_QUESTIONS, CHECKINS_RESULTS, CHECKINS_USER } from "./previews/checkins.fixtures";
 import { PREVIEWS } from "./previews";
 
 /** Screen 38 (S-01) states, from the spec's list. */
@@ -52,7 +54,7 @@ const S03_STATES = ["default", "in_review", "result_sheet", "pending_help", "clo
 const S04_STATES = ["default", "results", "loading", "empty", "error"] as const;
 
 /** Screen 42 (S-05) states. */
-const S05_STATES = ["default", "loading", "empty", "partial", "error"] as const;
+const S05_STATES = ["default", "loading", "empty", "partial", "error", "checkins", "checkins-approval", "checkins-mine"] as const;
 
 const S02_STATES = ["default", "loading", "empty", "empty_filtered", "error", "forbidden", "new", "more"] as const;
 
@@ -263,6 +265,38 @@ export function StaffStateViewer(): ReactElement {
           state === "loading" ? { data: null, loading: true, error: null }
             : state === "error" ? { data: null, loading: false, error: t("staff.networkError") }
               : { data, loading: false, error: null };
+        if (state.startsWith("checkins")) {
+          const pending = state !== "checkins";
+          return (
+            <OpsView
+              key={state}
+              date="2026-12-05"
+              today="2026-12-05"
+              stage="voting"
+              tab="checkins"
+              checkinsWaiting={1}
+              overview={sec(FIXTURE_OVERVIEW)}
+              clusters={sec(FIXTURE_CLUSTERS)}
+              coverage={sec(FIXTURE_COVERAGE)}
+              lateMaterials={sec(FIXTURE_LATE_MATERIALS)}
+              checkins={
+                <CheckinsView
+                  places={CHECKINS_PLACES}
+                  questions={CHECKINS_QUESTIONS}
+                  notices={{ data: CHECKINS_NOTICES, loading: false, error: null }}
+                  selectedId={pending ? "n-junction" : "n-voting"}
+                  results={{ data: CHECKINS_RESULTS, loading: false, error: null }}
+                  currentUser={state === "checkins-mine" ? "Musa Bello" : CHECKINS_USER}
+                  now={CHECKINS_NOW}
+                  onSend={() => true}
+                  onApprove={() => true}
+                  onReject={() => true}
+                  onAskAgain={() => true}
+                />
+              }
+            />
+          );
+        }
         return (
           <OpsView
             key={state}

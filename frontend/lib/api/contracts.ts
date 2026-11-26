@@ -372,17 +372,17 @@ export interface OperationTypes {
   "CHK-02": Io<T.CheckAskRequest, T.CheckAskResponse>;
 
   // NOT
-  "NOT-01": Io<{ scope: { kind: string; code: string }; type: string; text: string; question_id?: string; expires_in_minutes?: number }, { id: string; status: string }>;
-  "NOT-02.approve": Io<Record<string, unknown>, { status: string }>;
+  "NOT-01": Io<T.CreateNoticeRequest, { id: string; status: T.NoticeStatus }>;
+  "NOT-02.approve": Io<T.EmptyBody, { status: string }>;
   "NOT-02.reject": Io<{ note: string }, { status: string }>;
-  "NOT-03.list": Io<undefined, { items: Record<string, unknown>[] }>;
-  "NOT-03.results": Io<undefined, { notice_id: string; status: string; wards: Record<string, unknown> }>;
-  "NOT-04": Io<undefined, { items: Record<string, unknown>[] }, { ward_code?: string; lga_code?: string }>;
-  "NOT-05": Io<{ answer: "yes" | "no" | "not_seen"; answered_at: string }, { status: string }>;
-  "NOT-06": Io<undefined, { items: Record<string, unknown>[] }>;
+  "NOT-03.list": Io<undefined, { items: T.CoordinatorNotice[] }>;
+  "NOT-03.results": Io<undefined, T.NoticeResultsResponse>;
+  "NOT-04": Io<undefined, { items: T.ObserverNotice[] }, { ward_code?: string; lga_code?: string }>;
+  "NOT-05": Io<{ answer: T.NoticeAnswerChoice; answered_at: string }, { status: string; answer: T.NoticeAnswerChoice }>;
+  "NOT-06": Io<undefined, { items: T.NoticeQuestion[] }>;
 
   // AREA
-  "AREA-01": Io<undefined, { lga_name: string; lga_code: string; updated_at: string; by_category: { category: string; count: number | "fewer than 5" }[] }, { lga_code?: string }>;
+  "AREA-01": Io<undefined, T.AreaTodayResponse, { lga_code?: string }>;
 }
 
 /** Fails to compile if an operation has no types or a type entry has no operation. */

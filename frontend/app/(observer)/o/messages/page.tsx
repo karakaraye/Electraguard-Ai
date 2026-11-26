@@ -9,6 +9,7 @@ import { openPinSheet } from "../_components/ObserverRuntime";
 import { useFocusTitle, useNetwork } from "../_lib/network";
 import { serverRow } from "../_lib/rows";
 import { useLoad } from "../_lib/useLoad";
+import { useNotices } from "../_lib/notices";
 import { useSignedIn } from "../_lib/useSignedIn";
 import { MessagesView, type ListLoad } from "../_views/ListViews";
 
@@ -19,6 +20,7 @@ export default function MessagesPage() {
   const { session } = useSignedIn();
   const { offline } = useNetwork();
   useFocusTitle("o17");
+  const { notices } = useNotices(session?.code ?? null, offline);
 
   const list = useLoad<ReportListResponse>(() => api("REP-02", { query: { has_messages: true, limit: 100 } }), session?.code ?? "", {
     enabled: Boolean(session),
@@ -53,5 +55,5 @@ export default function MessagesPage() {
   if (!session) return null;
   const load: ListLoad = offline ? "offline" : list.status === "ok" ? "ok" : list.status === "loading" ? "loading" : list.status === "unavailable" ? "unavailable" : list.status === "offline" ? "offline" : "error";
 
-  return <MessagesView offline={offline} rows={offline ? [] : rows} load={load} stale={Boolean(list.stale) && !offline} onRetry={list.reload} onBack={() => router.push("/o")} />;
+  return <MessagesView offline={offline} rows={offline ? [] : rows} load={load} stale={Boolean(list.stale) && !offline} onRetry={list.reload} notices={notices} onBack={() => router.push("/o")} />;
 }

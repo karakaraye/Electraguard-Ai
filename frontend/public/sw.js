@@ -10,7 +10,7 @@
  * - Offline fallback: a small page in the five languages.
  */
 
-const VERSION = "v5";
+const VERSION = "v6";
 const SHELL = `eg-shell-${VERSION}`;
 const STATIC = `eg-static-${VERSION}`;
 const REFERENCE = `eg-reference-${VERSION}`;
@@ -26,6 +26,9 @@ const SHELL_PAGES = [
   "/o/new/describe",
   "/o/new/evidence",
   "/o/new/check",
+  // Check-in answers work offline: keep the Messages and answer screens (any id uses the same script files).
+  "/o/messages",
+  "/o/checkin/offline",
 ];
 const SHELL_FILES = [
   "/fonts/noto-sans-latin.woff2",

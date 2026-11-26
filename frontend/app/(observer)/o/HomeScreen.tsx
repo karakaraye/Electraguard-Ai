@@ -13,7 +13,7 @@ import {
   useOutbox,
   type OutboxItem,
 } from "../../../lib/outbox";
-import type { ReportStatus } from "../../../ui";
+import { useNow, type ReportStatus } from "../../../ui";
 import { openPinSheet } from "./_components/ObserverRuntime";
 import { useFocusTitle, useNetwork } from "./_lib/network";
 import { updateFromMe, useObserverSession } from "./_lib/session";
@@ -21,6 +21,9 @@ import { HomeView, type HomeRow } from "./_views/HomeView";
 import { setNavCounts } from "./_lib/navCounts";
 import { STAGES, useChecklistDay, watDay } from "./_lib/checklist";
 import { OUTBOX_BADGE } from "./_lib/status";
+import { openNotices, useAreaToday, useNotices } from "./_lib/notices";
+import { noticeTitle } from "../../../lib/notices";
+import { useLocale } from "../../../lib/i18n/client";
 
 function takeFlag(key: string): boolean {
   try {
@@ -54,6 +57,7 @@ export function HomeScreen() {
   const { session, ready, expired } = useObserverSession();
   const outbox = useOutbox();
   const { offline, back } = useNetwork();
+  const { locale } = useLocale();
   const [draft, setDraft] = useState<IncidentDraft | null>(null);
   const [questions, setQuestions] = useState(0);
   const [unread, setUnread] = useState(0);
@@ -108,6 +112,17 @@ export function HomeScreen() {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session?.code, offline]);
+
+  const clock = useNow();
+  const { notices } = useNotices(session?.code ?? null, offline);
+  const area = useAreaToday(session?.code ?? null, offline);
+  const waitingNotices = useMemo(
+    () => openNotices(notices, clock ?? 0).map((notice) => ({ id: notice.id, title: noticeTitle(notice, locale), type: notice.type })),
+    [notices, locale, clock],
+  );
+  const lgaToday = area.data
+    ? { lgaName: area.data.lga_name, updatedAt: area.data.updated_at, rows: area.data.by_category }
+    : null;
 
   const today = useChecklistDay(session?.code ?? null, watDay());
   const checklist = useMemo(() => {
@@ -168,6 +183,8 @@ export function HomeScreen() {
       questionCount={questions}
       unreadCount={unread}
       discussions={discussions}
+      notices={waitingNotices}
+      lgaToday={lgaToday}
       pinSaved={flags.pin}
       draftKept={keptVisible && Boolean(draft)}
       draft={draft ? { category: draft.category_observer, startedAt: draft.created_at } : null}

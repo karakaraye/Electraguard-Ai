@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState, type KeyboardEvent, type ReactNode } from "react";
 import type { Category, ChecklistStage, Cluster, CoverageResponse, LateMaterialsResponse, OverviewResponse } from "../../../../lib/api/types";
 import { useLocale, useT } from "../../../../lib/i18n/client";
-import { Banner, Button, DataTable, MetricTile, Skeleton, StatusBadge, TextArea, type Column, type StatusTone } from "../../../../ui";
+import { Banner, Button, Count, DataTable, MetricTile, Skeleton, StatusBadge, TextArea, type Column, type StatusTone } from "../../../../ui";
 import { formatWatDateTime, formatWatTime } from "../../../../ui/format";
 import { localeTags, type Locale } from "../../../../lib/i18n/config";
 import { CheckIcon, RetryIcon } from "../../../../ui/icons";
@@ -26,6 +26,14 @@ export const STAGES: Array<{ value: ChecklistStage; key: string }> = [
 ];
 const NOTE_MAX = 500;
 
+export type OpsTab = "overview" | "checkins" | "coverage" | "late";
+const TABS: Array<{ value: OpsTab; key: string }> = [
+  { value: "overview", key: "s05.tabs.overview" },
+  { value: "checkins", key: "s05.tabs.checkins" },
+  { value: "coverage", key: "s05.tabs.coverage" },
+  { value: "late", key: "s05.tabs.late" },
+];
+
 /** One section's data: null while loading, or the error message when it failed. */
 export type Section<T> = { data: T | null; loading: boolean; error: string | null };
 
@@ -42,6 +50,13 @@ export interface OpsViewProps {
   reviewing?: string | null;
   onReviewCluster?: (id: string, note?: string) => void;
   onRefresh?: () => void;
+  /** The open tab. Defaults to the overview. */
+  tab?: OpsTab;
+  onTabChange?: (tab: OpsTab) => void;
+  /** The Check-ins tab's content, built by the page (it has its own data). */
+  checkins?: ReactNode;
+  /** Safety notices waiting for a second coordinator, shown beside the tab name. */
+  checkinsWaiting?: number;
   "data-testid"?: string;
 }
 
@@ -59,6 +74,10 @@ export function OpsView({
   reviewing,
   onReviewCluster,
   onRefresh,
+  tab = "overview",
+  onTabChange,
+  checkins,
+  checkinsWaiting = 0,
   "data-testid": testId = "ops-view",
 }: OpsViewProps) {
   const t = useT();
@@ -66,8 +85,47 @@ export function OpsView({
   const totals = overview.data?.totals;
   const period = date === today ? t("s05.today") : formatDay(date, locale);
 
+  const tabRefs = useRef<Array<HTMLButtonElement | null>>([]);
+  const moveTab = (event: KeyboardEvent, from: number) => {
+    const last = TABS.length - 1;
+    const next = event.key === "ArrowRight" ? (from + 1) % TABS.length : event.key === "ArrowLeft" ? (from - 1 + TABS.length) % TABS.length : event.key === "Home" ? 0 : event.key === "End" ? last : -1;
+    if (next < 0) return;
+    event.preventDefault();
+    onTabChange?.(TABS[next].value);
+    tabRefs.current[next]?.focus();
+  };
+
   return (
     <div className={styles.page} data-testid={testId}>
+      <div className={styles.tabs} role="tablist" aria-label={t("s05.tabs.label")} data-testid="s05-tabs">
+        {TABS.map((item, index) => (
+          <button
+            key={item.value}
+            ref={(el) => {
+              tabRefs.current[index] = el;
+            }}
+            type="button"
+            role="tab"
+            id={`s05-tab-${item.value}`}
+            aria-selected={tab === item.value}
+            aria-controls="s05-panel"
+            tabIndex={tab === item.value ? 0 : -1}
+            className={styles.tab}
+            onClick={() => onTabChange?.(item.value)}
+            onKeyDown={(event) => moveTab(event, index)}
+            data-testid={`s05-tab-${item.value}`}
+          >
+            {t(item.key)}
+            {item.value === "checkins" && checkinsWaiting > 0 ? <Count value={checkinsWaiting} tone="needs" data-testid="s05-checkins-count" /> : null}
+          </button>
+        ))}
+      </div>
+
+      <div id="s05-panel" role="tabpanel" aria-labelledby={`s05-tab-${tab}`} className={styles.panel}>
+      {tab === "checkins" ? checkins : null}
+      {tab === "late" ? <LateMaterials section={lateMaterials} /> : null}
+      {tab === "overview" || tab === "coverage" ? (
+      <>
       <div className={styles.toolbar}>
         <label className={styles.dateField}>
           <span>{t("s05.filterDate")}</span>
@@ -82,6 +140,8 @@ export function OpsView({
 
       {overview.error ? <Banner tone="danger" title={overview.error} critical /> : null}
 
+      {tab === "overview" ? (
+      <>
       <section aria-label={t("s05.totalsLabel")}>
         {overview.loading && !totals ? (
           <div className={styles.tiles}><Skeleton lines={2} height={72} delay={0} /></div>
@@ -105,8 +165,12 @@ export function OpsView({
         <Clusters clusters={clusters} reviewing={reviewing ?? null} onReview={onReviewCluster} />
       </div>
 
-      <Coverage coverage={coverage} stage={stage} onStageChange={onStageChange} />
-      <LateMaterials section={lateMaterials} />
+      </>
+      ) : null}
+      {tab === "coverage" ? <Coverage coverage={coverage} stage={stage} onStageChange={onStageChange} /> : null}
+      </>
+      ) : null}
+      </div>
     </div>
   );
 }

@@ -5,7 +5,10 @@
 import type { Category, ReportKind } from "../../../../lib/api/types";
 import { useLocale, useT } from "../../../../lib/i18n/client";
 import Link from "next/link";
-import { Banner, Button, Count, ReportList, ReportRow, StatusBadge, type ReportStatus, Skeleton } from "../../../../ui";
+import { Banner, Button, Count, ReportList, ReportRow, StatusBadge, Tag, useNow, type ReportStatus, Skeleton } from "../../../../ui";
+import { noticeTitle } from "../../../../lib/notices";
+import type { NoticeView } from "../_lib/notices";
+import noticeStyles from "../_components/notice.module.css";
 import { ObserverShell } from "../_components/ObserverShell";
 import { formatWatTime } from "../../../../ui/format";
 import { categoryMeta } from "../_lib/categories";
@@ -205,9 +208,12 @@ export type MessagesViewProps = {
   stale: boolean;
   onRetry: () => void;
   onBack: () => void;
+  /** Check-ins from the coordinator, newest first. They lead the list. */
+  notices?: NoticeView[];
+  now?: number;
 };
 
-export function MessagesView({ offline, rows, load, stale, onRetry, onBack }: MessagesViewProps) {
+export function MessagesView({ offline, rows, load, stale, onRetry, onBack, notices = [], now }: MessagesViewProps) {
   const t = useT();
   return (
     <ObserverShell
@@ -222,6 +228,18 @@ export function MessagesView({ offline, rows, load, stale, onRetry, onBack }: Me
       <div className={`${styles.screen} ${styles.wide}`}>
         <h1 className="eg-sr-only">{t("o17.title")}</h1>
         <p className={styles.meta}>{t("o17.hint")}</p>
+        {notices.length ? (
+          <section className={p3.listStack} aria-labelledby="o17-notices" data-testid="o17-group-notices">
+            <h2 className={p3.groupLabel} id="o17-notices">
+              {t("notice.group")}
+            </h2>
+            <ul className={p3.msgList} aria-label={t("notice.group")}>
+              {notices.map((notice) => (
+                <NoticeRow key={notice.id} notice={notice} now={now} />
+              ))}
+            </ul>
+          </section>
+        ) : null}
         {load === "loading" ? (
           <div className={s.skeletonList} aria-hidden="true" data-testid="o17-loading">
             {[0, 1].map((index) => (
@@ -253,7 +271,7 @@ export function MessagesView({ offline, rows, load, stale, onRetry, onBack }: Me
                 </ul>
               </section>
             ))
-        ) : load === "ok" ? (
+        ) : load === "ok" && notices.length === 0 ? (
           <ObserverEmpty art="messagesEmpty" title={t("o17.emptyTitle")} data-testid="o17-empty">
             {t("o17.emptyBody")}
           </ObserverEmpty>
@@ -263,6 +281,33 @@ export function MessagesView({ offline, rows, load, stale, onRetry, onBack }: Me
         </p>
       </div>
     </ObserverShell>
+  );
+}
+
+/** One check-in from the coordinator: what it asks, its type (only Safety is red), and when to answer by. */
+function NoticeRow({ notice, now: nowProp }: { notice: NoticeView; now?: number }) {
+  const t = useT();
+  const clock = useNow();
+  const now = nowProp ?? clock ?? 0;
+  const { locale } = useLocale();
+  const closed = Date.parse(notice.expires_at) <= now;
+  return (
+    <li>
+      <Link href={`/o/checkin/${notice.id}`} className={p3.msg} data-testid={`o17-notice-${notice.id}`}>
+        <span className={`${p3.msgTime} ${noticeStyles.rowTime} eg-tnum`}>{formatWatTime(notice.created_at, locale)}</span>
+        <p className={noticeStyles.rowTitle}>{noticeTitle(notice, locale)}</p>
+        <span className={noticeStyles.tags}>
+          {notice.type === "safety" ? <StatusBadge tone="danger" label={t("notice.type.safety")} /> : <Tag>{t(`notice.type.${notice.type}`)}</Tag>}
+          {notice.answer ? (
+            <StatusBadge tone={notice.answer.state === "expired" ? "attn" : "ok"} label={notice.answer.state === "on_phone" ? t("ui.status.onPhone") : t(`notice.answer.${notice.answer.choice}`)} />
+          ) : closed ? (
+            <StatusBadge tone="wait" label={t("notice.expired")} />
+          ) : (
+            <StatusBadge tone="attn" label={t("notice.answerBy", { time: formatWatTime(notice.expires_at, locale) })} />
+          )}
+        </span>
+      </Link>
+    </li>
   );
 }
 

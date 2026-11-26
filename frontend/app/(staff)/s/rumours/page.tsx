@@ -1,11 +1,11 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { api, uuidv4 } from "../../../../lib/api/client";
 import { API_BASE } from "../../../../lib/api/contracts";
 import type { Claim, ClaimMatchesResponse, Language } from "../../../../lib/api/types";
 import { useT } from "../../../../lib/i18n/client";
-import { RumourView, type ClaimStatusFilter, type NewClaimFields } from "../_views/RumourView";
+import { RumourView, type ClaimSort, type ClaimSourceFilter, type ClaimStatusFilter, type NewClaimFields } from "../_views/RumourView";
 
 type Failure = { status: number; error?: { code?: string } | null };
 
@@ -49,7 +49,17 @@ export default function RumoursPage() {
   const [notice, setNotice] = useState<string | null>(null);
   const [currentUser, setCurrentUser] = useState("");
   const [filter, setFilter] = useState<ClaimStatusFilter>("all");
+  const [source, setSource] = useState<ClaimSourceFilter>("all");
+  const [sort, setSort] = useState<ClaimSort>("recent");
   const [attempt, setAttempt] = useState(0);
+  const query = useMemo(
+    () => ({
+      ...(filter === "all" ? {} : { status: filter }),
+      ...(source === "all" ? {} : { source }),
+      ...(sort === "demand" ? { sort } : {}),
+    }),
+    [filter, source, sort],
+  );
 
   const problem = useCallback(
     (res: Failure): string => {
@@ -85,7 +95,7 @@ export default function RumoursPage() {
     void (async () => {
       setLoading(true);
       setError(null);
-      const res = await api("RUM-01.list", { query: filter === "all" ? {} : { status: filter } });
+      const res = await api("RUM-01.list", { query });
       if (cancelled) return;
       setLoading(false);
       if (!res.ok) {
@@ -99,7 +109,7 @@ export default function RumoursPage() {
     return () => {
       cancelled = true;
     };
-  }, [filter, attempt, problem]);
+  }, [query, attempt, problem]);
 
   useEffect(() => {
     if (!selectedId) return;
@@ -114,7 +124,21 @@ export default function RumoursPage() {
     };
   }, [selectedId, t]);
 
-  const selectedClaim = claims.find((c) => c.id === selectedId) ?? null;
+  const listed = claims.find((c) => c.id === selectedId) ?? null;
+  // Only the single-claim read carries the check-in evidence, so it is read for the open claim and kept with its id.
+  const [evidence, setEvidence] = useState<{ id: string; items: Claim["checkin_evidence"] } | null>(null);
+  const listedAsks = listed?.ask_count;
+  useEffect(() => {
+    if (!selectedId) return;
+    let cancelled = false;
+    void api("RUM-01.get", { params: { id: selectedId } }).then((res) => {
+      if (!cancelled && res.ok) setEvidence({ id: selectedId, items: res.data.checkin_evidence ?? [] });
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [selectedId, listedAsks]);
+  const selectedClaim = listed && evidence?.id === listed.id ? { ...listed, checkin_evidence: evidence.items } : listed;
   const current = selectedId && matchesFor?.id === selectedId ? matchesFor : null;
   const matches = current?.data ?? null;
   const matchesError = current?.error ?? null;
@@ -137,7 +161,7 @@ export default function RumoursPage() {
   async function loadMore() {
     if (!nextCursor) return;
     setLoadingMore(true);
-    const res = await api("RUM-01.list", { query: filter === "all" ? { cursor: nextCursor } : { status: filter, cursor: nextCursor } });
+    const res = await api("RUM-01.list", { query: { ...query, cursor: nextCursor } });
     setLoadingMore(false);
     if (!res.ok) {
       setError(problem(res));
@@ -203,6 +227,16 @@ export default function RumoursPage() {
       notice={notice}
       currentUserName={currentUser}
       statusFilter={filter}
+      sourceFilter={source}
+      sort={sort}
+      onSourceFilter={(value) => {
+        clearMessages();
+        setSource(value);
+      }}
+      onSort={(value) => {
+        clearMessages();
+        setSort(value);
+      }}
       hasMore={Boolean(nextCursor)}
       loadingMore={loadingMore}
       onStatusFilter={(value) => {

@@ -90,6 +90,10 @@
   color: var(--attn);
 }
 
+.needShape[data-tone="danger"] {
+  color: var(--danger);
+}
+
 .needText {
   margin: 0;
   font: 500 0.9375rem/1.4 var(--font);
