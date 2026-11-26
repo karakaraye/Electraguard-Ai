@@ -1,0 +1,146 @@
+/* The moving hero layers (landing plan 4.2 and 6). The stage is drawn in the render's own pixels and
+   scaled with `zoom`, so it never isolates: the shadow layer multiplies onto the still beneath it. */
+
+.stage {
+  position: absolute;
+  left: 0;
+  top: 0;
+  pointer-events: none;
+  visibility: hidden;
+  /* people walk off past the picture's edge: clip them there so the page never scrolls sideways
+     (overflow does not isolate, so the shadows still multiply onto the still) */
+  overflow: hidden;
+}
+
+/* shown only once every layer is decoded and drawn at a frame identical to the still */
+.stage[data-live] {
+  visibility: visible;
+}
+
+.stage img {
+  display: block;
+  max-width: none;
+  user-select: none;
+}
+
+.patch,
+.pole {
+  position: absolute;
+}
+
+.masked {
+  position: absolute;
+  inset: 0;
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+}
+
+.shadows {
+  mix-blend-mode: multiply;
+}
+
+.sprite {
+  position: absolute;
+  left: 0;
+  top: 0;
+  overflow: hidden;
+  transform-origin: 0 0;
+  will-change: transform;
+}
+
+.sprite > img {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+/* walking through the canopy's shadow: the toon render's shadow tone */
+.shade > img {
+  filter: brightness(0.86);
+}
+
+.over {
+  position: absolute;
+  inset: 0;
+}
+
+.over svg {
+  position: absolute;
+  left: 0;
+  top: 0;
+  overflow: visible;
+}
+
+.crown {
+  position: absolute;
+  animation: sway 7.5s cubic-bezier(0.45, 0, 0.55, 1) infinite alternate;
+}
+
+.crown img {
+  width: 100%;
+  height: 100%;
+}
+
+.sunglow {
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+  animation: glow 9s cubic-bezier(0.45, 0, 0.55, 1) infinite alternate;
+}
+
+.bird {
+  opacity: 0;
+  animation: bird 36s linear infinite;
+}
+
+.bird1 {
+  animation-delay: -18s;
+}
+
+.wing {
+  transform-box: fill-box;
+  transform-origin: 50% 60%;
+  animation: flap 0.46s cubic-bezier(0.45, 0, 0.55, 1) infinite alternate;
+}
+
+.bird1 .wing {
+  animation-duration: 0.52s;
+}
+
+.stage[data-motion="ambient"] .figures,
+.stage[data-motion="ambient"] .shadows {
+  display: none;
+}
+
+.stage[data-paused] * {
+  animation-play-state: paused !important;
+}
+
+@keyframes sway {
+  from { transform: rotate(-0.55deg); }
+  to { transform: rotate(0.6deg); }
+}
+
+@keyframes glow {
+  from { opacity: 0.1; transform: scale(0.94); }
+  to { opacity: 0.55; transform: scale(1.05); }
+}
+
+@keyframes flap {
+  from { transform: scaleY(1); }
+  to { transform: scaleY(-0.35); }
+}
+
+@keyframes bird {
+  0%, 8% { opacity: 0; transform: translate(var(--bx0), var(--by0)); }
+  10% { opacity: 1; }
+  34% { opacity: 1; }
+  36%, 100% { opacity: 0; transform: translate(var(--bx1), var(--by1)); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stage {
+    display: none;
+  }
+}

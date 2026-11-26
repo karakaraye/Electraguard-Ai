@@ -81,7 +81,12 @@
   mask-composite: intersect;
 }
 
-.art img {
+.art picture {
+  display: block;
+  height: 100%;
+}
+
+.art picture img {
   display: block;
   height: 100%;
   width: auto;
@@ -198,7 +203,11 @@
     mask-composite: add;
   }
 
-  .art img {
+  .art picture {
+    height: auto;
+  }
+
+  .art picture img {
     width: 100%;
     height: auto;
   }
