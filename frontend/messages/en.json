@@ -987,7 +987,13 @@
       "codes": "Observer Codes",
       "staff": "Staff Accounts",
       "settings": "Settings",
-      "security": "Security"
+      "security": "Security",
+      "groups": {
+        "review": "Review",
+        "monitor": "Monitor",
+        "moderate": "Moderate",
+        "admin": "Admin"
+      }
     },
     "roles": {
       "reviewer": "Reviewer",
@@ -1008,7 +1014,30 @@
     "backToQueue": "Back to queue",
     "shell": {
       "more": "More",
-      "moreTitle": "More sections"
+      "moreTitle": "More sections",
+      "account": "Account menu",
+      "breadcrumb": "Breadcrumb",
+      "closeMenu": "Close menu",
+      "intake": {
+        "paused": "Intake paused",
+        "receiving": "Receiving reports"
+      },
+      "keys": {
+        "close": "Close a panel",
+        "help": "Show shortcuts",
+        "search": "Search cases",
+        "next": "Next case",
+        "previous": "Previous case",
+        "open": "Open the case"
+      },
+      "menu": "Open menu",
+      "search": "Search",
+      "searchLabel": "Find a case by reference",
+      "searchPlaceholder": "Find a case by reference",
+      "shortcuts": "Keyboard shortcuts"
+    },
+    "notFound": {
+      "title": "Page not found"
     }
   },
   "s01": {

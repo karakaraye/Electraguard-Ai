@@ -988,7 +988,13 @@
       "codes": "[IG draft] Observer Codes",
       "staff": "[IG draft] Staff Accounts",
       "settings": "[IG draft] Settings",
-      "security": "[IG draft] Security"
+      "security": "[IG draft] Security",
+      "groups": {
+        "review": "Nyochaa",
+        "monitor": "Nlele",
+        "moderate": "Njikwa mkparịta ụka",
+        "admin": "Nchịkwa"
+      }
     },
     "roles": {
       "reviewer": "[IG draft] Reviewer",
@@ -1009,7 +1015,30 @@
     "backToQueue": "[IG draft] Back to queue",
     "shell": {
       "more": "Ndị ọzọ",
-      "moreTitle": "Ngalaba ndị ọzọ"
+      "moreTitle": "Ngalaba ndị ọzọ",
+      "account": "Nhọrọ akaụntụ",
+      "breadcrumb": "Ụzọ ibe",
+      "closeMenu": "Mechie nhọrọ",
+      "intake": {
+        "paused": "Akwụsịla ịnata akụkọ",
+        "receiving": "Na-anata akụkọ"
+      },
+      "keys": {
+        "close": "Mechie ngalaba",
+        "help": "Gosi ụzọ mkpirisi",
+        "search": "Chọọ okwu",
+        "next": "Okwu na-esote",
+        "previous": "Okwu gara aga",
+        "open": "Mepee okwu ahụ"
+      },
+      "menu": "Mepee nhọrọ",
+      "search": "Chọọ",
+      "searchLabel": "Chọta okwu site na nọmba ya",
+      "searchPlaceholder": "Chọta okwu site na nọmba ya",
+      "shortcuts": "Ụzọ mkpirisi keyboard"
+    },
+    "notFound": {
+      "title": "Achọtaghị ibe a"
     }
   },
   "s01": {

@@ -988,7 +988,13 @@
       "codes": "[PCM draft] Observer Codes",
       "staff": "[PCM draft] Staff Accounts",
       "settings": "[PCM draft] Settings",
-      "security": "[PCM draft] Security"
+      "security": "[PCM draft] Security",
+      "groups": {
+        "review": "Review",
+        "monitor": "Monitor",
+        "moderate": "Moderate",
+        "admin": "Admin"
+      }
     },
     "roles": {
       "reviewer": "[PCM draft] Reviewer",
@@ -1009,7 +1015,30 @@
     "backToQueue": "[PCM draft] Back to queue",
     "shell": {
       "more": "Oda ones",
-      "moreTitle": "Oda sections"
+      "moreTitle": "Oda sections",
+      "account": "Account menu",
+      "breadcrumb": "Where you dey",
+      "closeMenu": "Close menu",
+      "intake": {
+        "paused": "Reports don stop to enter",
+        "receiving": "Reports dey enter"
+      },
+      "keys": {
+        "close": "Close di panel",
+        "help": "Show shortcuts",
+        "search": "Search cases",
+        "next": "Next case",
+        "previous": "Previous case",
+        "open": "Open di case"
+      },
+      "menu": "Open menu",
+      "search": "Search",
+      "searchLabel": "Find case with im reference",
+      "searchPlaceholder": "Find case with im reference",
+      "shortcuts": "Keyboard shortcuts"
+    },
+    "notFound": {
+      "title": "We no see dis page"
     }
   },
   "s01": {

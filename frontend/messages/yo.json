@@ -988,7 +988,13 @@
       "codes": "[YO draft] Observer Codes",
       "staff": "[YO draft] Staff Accounts",
       "settings": "[YO draft] Settings",
-      "security": "[YO draft] Security"
+      "security": "[YO draft] Security",
+      "groups": {
+        "review": "Àyẹ̀wò",
+        "monitor": "Ìtọ́pinpin",
+        "moderate": "Ìmójútó àsọyé",
+        "admin": "Ìṣàkóso"
+      }
     },
     "roles": {
       "reviewer": "[YO draft] Reviewer",
@@ -1009,7 +1015,30 @@
     "backToQueue": "[YO draft] Back to queue",
     "shell": {
       "more": "Àwọn míì",
-      "moreTitle": "Àwọn ìpín míì"
+      "moreTitle": "Àwọn ìpín míì",
+      "account": "Àtòjọ àkọọ́lẹ̀",
+      "breadcrumb": "Ọ̀nà ojú-ìwé",
+      "closeMenu": "Pa àtòjọ náà",
+      "intake": {
+        "paused": "A ti dá gbígba ìròyìn dúró",
+        "receiving": "À ń gba ìròyìn"
+      },
+      "keys": {
+        "close": "Pa pánẹ́lì",
+        "help": "Fi àwọn ọ̀nà àbùjá hàn",
+        "search": "Wá ẹjọ́",
+        "next": "Ẹjọ́ tó kàn",
+        "previous": "Ẹjọ́ tó ṣáájú",
+        "open": "Ṣí ẹjọ́ náà"
+      },
+      "menu": "Ṣí àtòjọ",
+      "search": "Wá",
+      "searchLabel": "Wá ẹjọ́ nípa nọ́mbà rẹ̀",
+      "searchPlaceholder": "Wá ẹjọ́ nípa nọ́mbà rẹ̀",
+      "shortcuts": "Àwọn ọ̀nà àbùjá kọ̀ǹpútà"
+    },
+    "notFound": {
+      "title": "A kò rí ojú-ìwé náà"
     }
   },
   "s01": {

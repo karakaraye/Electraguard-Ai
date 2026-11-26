@@ -1,10 +1,11 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { api } from "../../../../lib/api/client";
 import type { QueueItem, QueueQuery, QueueResponse, ReportStatus } from "../../../../lib/api/types";
 import { useT } from "../../../../lib/i18n/client";
+import { useStaffHeaderState } from "../_lib/header";
 import {
   EMPTY_QUEUE_FILTERS,
   QueueTableView,
@@ -49,6 +50,7 @@ export default function QueuePage() {
   const router = useRouter();
   const t = useT();
 
+  const { search } = useStaffHeaderState();
   const [filters, setFilters] = useState<QueueTableFilters>(EMPTY_QUEUE_FILTERS);
   const [data, setData] = useState<QueueResponse | null>(null);
   const [loading, setLoading] = useState(true);
@@ -143,9 +145,16 @@ export default function QueuePage() {
     writeViews(next);
   }
 
+  // The header search narrows the loaded rows by case reference.
+  const shown = useMemo(() => {
+    const needle = search.trim().toLowerCase();
+    if (!data || !needle) return data;
+    return { ...data, items: data.items.filter((item) => item.receipt_code.toLowerCase().includes(needle)) };
+  }, [data, search]);
+
   return (
     <QueueTableView
-      data={data}
+      data={shown}
       loading={loading}
       loadingMore={loadingMore}
       error={error}
