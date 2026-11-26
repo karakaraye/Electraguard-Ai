@@ -2188,15 +2188,17 @@
   "pub": {
     "homeLink": "ElectraGuard AI home",
     "menu": "Menu",
+    "menuClose": "Close menu",
     "reportShort": "Report",
     "nav": {
       "label": "Main",
+      "here": "You are here",
       "home": "Home",
       "results": "Results",
       "ask": "Ask",
-      "check": "Check",
+      "check": "Check a rumour",
       "guide": "Guides",
-      "phone": "Try SMS and USSD",
+      "phone": "SMS and USSD",
       "privacy": "Privacy"
     },
     "footer": {

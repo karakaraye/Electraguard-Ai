@@ -2189,15 +2189,17 @@
   "pub": {
     "homeLink": "Shafin farko na ElectraGuard AI",
     "menu": "Menu",
+    "menuClose": "Rufe menu",
     "reportShort": "Kai rahoto",
     "nav": {
       "label": "Babba",
+      "here": "Kana nan",
       "home": "Gida",
       "results": "Sakamako",
       "ask": "Tambaya",
-      "check": "Duba",
+      "check": "Duba jita-jita",
       "guide": "Jagorori",
-      "phone": "Gwada SMS da USSD",
+      "phone": "SMS da USSD",
       "privacy": "Sirri"
     },
     "footer": {
