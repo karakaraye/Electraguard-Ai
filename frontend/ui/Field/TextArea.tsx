@@ -35,6 +35,7 @@ export function TextArea({
   defaultValue,
   onChange,
   ref,
+  "aria-describedby": extraDescribedBy,
   ...rest
 }: TextAreaProps) {
   const t = useT();
@@ -64,7 +65,7 @@ export function TextArea({
             id={controlId}
             rows={rows}
             className={`${styles.control} ${styles.textarea}`}
-            aria-describedby={describedBy}
+            aria-describedby={[extraDescribedBy, describedBy].filter(Boolean).join(" ") || undefined}
             aria-invalid={invalid || undefined}
             maxLength={maxLength}
             value={value}

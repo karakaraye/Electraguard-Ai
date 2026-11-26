@@ -72,7 +72,7 @@ test("the phone blocks a future time and missing answers before anything is sent
   await page.getByTestId("continue").click();
   expect(new URL(page.url()).pathname).toBe("/o/new/describe");
   // The message sits under the field and is its accessible description.
-  await expect(page.getByTestId("o09-text")).toHaveAccessibleDescription(/2000/);
+  await expect(page.getByTestId("o09-text")).toHaveAccessibleDescription(/2,?000/);
 });
 
 test("the server refuses bad reports and media with the contract's error codes, storing nothing", async ({ context, page }) => {

@@ -169,13 +169,31 @@ export function useDraft(owner: string | null, mode: IncidentDraft["mode"], lang
   const timer = useRef<number | undefined>(undefined);
   const current = useRef<IncidentDraft | null>(null);
 
+  /** The write in flight. Changes made meanwhile are written right after it, newest value only. */
+  const writing = useRef<Promise<void> | null>(null);
+
+  const drain = useCallback(() => {
+    if (writing.current) return writing.current;
+    const run = (async () => {
+      try {
+        while (pending.current) {
+          const value = pending.current;
+          pending.current = null;
+          await saveDraft(value);
+        }
+      } finally {
+        writing.current = null;
+      }
+    })();
+    writing.current = run;
+    return run;
+  }, []);
+
   const flush = useCallback(async () => {
     window.clearTimeout(timer.current);
     timer.current = undefined;
-    const value = pending.current;
-    pending.current = null;
-    if (value) await saveDraft(value);
-  }, []);
+    await drain();
+  }, [drain]);
 
   useEffect(() => {
     let cancelled = false;
@@ -217,18 +235,12 @@ export function useDraft(owner: string | null, mode: IncidentDraft["mode"], lang
       current.current = next;
       setDraft(next);
       pending.current = next;
-      // The first change after a quiet moment is written at once, so a reload or a closed tab right after a tap
-      // cannot lose it (a write started while the page unloads is not reliable). Changes that follow are
-      // batched, and never pushed back: the latest value reaches the phone within 250 ms.
-      if (timer.current === undefined) {
-        void flush();
-        timer.current = window.setTimeout(() => {
-          timer.current = undefined;
-          void flush();
-        }, SAVE_DEBOUNCE_MS);
-      }
+      // Written to the phone at once, one write at a time: a reload or a closed tab right after a tap or a
+      // keystroke cannot lose it (a write started while the page unloads is not reliable), and a burst of typing
+      // costs a write per finished write, not per key.
+      void drain();
     },
-    [owner, mode, language, flush],
+    [owner, mode, language, drain],
   );
 
   const discard = useCallback(async () => {
