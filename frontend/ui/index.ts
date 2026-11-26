@@ -29,7 +29,7 @@ export { YesNo, type YesNoProps } from "./YesNo/YesNo";
 export { useKeyboardInset, useMediaQuery, useNow, useOffline, useReducedMotion, useScrolled } from "./hooks";
 export { THEME_LOCK, setThemePreference, useThemePreference, type ThemePreference } from "./theme";
 export { rootFontSize, setTextSize, useTextSize, type TextSize } from "./textSize";
-export { formatBytes, formatWatDateTime, formatWatTime } from "./format";
+export { formatBytes, formatWatDateTime, formatWatShort, formatWatTime } from "./format";
 export { PollingUnitPicker, compactCode, type PlaceChange, type PlaceValue, type PollingUnitPickerProps, type StateListStatus } from "./PollingUnitPicker/PollingUnitPicker";
 export { DictationButton, DictationCorner, DictationStatus, useDictation, type DictationButtonProps, type DictationState } from "./DictationButton/DictationButton";
 export { MediaCapture, useVoiceRecorder, formatClock, type CaptureSource, type MediaCaptureProps, type VoiceRecorder } from "./MediaCapture/MediaCapture";

@@ -11,9 +11,9 @@ import { ObserverShell } from "../_components/ObserverShell";
 import { formatWatTime } from "../../../../ui/format";
 import { CheckIcon, ChevronRightIcon, PlaceIcon } from "../../../../ui/icons";
 import { MATERIALS, QUESTIONS, QUEUE_SIZES, type StageAnswers, type StageSlug } from "../_lib/checklist";
-import { DayPlate } from "../_components/DayPlate";
 import styles from "../_components/observer.module.css";
 import s from "../_components/screens.module.css";
+import p3 from "../_components/p3.module.css";
 
 /* ---------- Stage list ---------- */
 
@@ -39,7 +39,7 @@ export type ChecklistListViewProps = {
 /** Arrival also asks for the polling unit, so it counts as two questions. */
 const questionCount = (slug: StageSlug) => QUESTIONS[slug].length + (slug === "arrival" ? 1 : 0);
 
-export function ChecklistListView({ offline, stages, unitLabel = null, now, onBack }: ChecklistListViewProps) {
+export function ChecklistListView({ offline, stages, unitLabel = null, onBack }: ChecklistListViewProps) {
   const t = useT();
   const { locale } = useLocale();
   const sent = stages.filter((stage) => stage.state === "received").length;
@@ -50,7 +50,7 @@ export function ChecklistListView({ offline, stages, unitLabel = null, now, onBa
     <ObserverShell tab="other" title={t("o15.title")} onBack={onBack} offline={offline} data-testid="o15">
       <div className={styles.screen}>
         <div className={s.dayHead}>
-          <h1 className={styles.title}>{t("o15.title")}</h1>
+          <h1 className={p3.h1}>{t("o15.title")}</h1>
           <p className={s.detailMeta}>
             {unitLabel ? (
               <span className={styles.valueRow}>
@@ -63,18 +63,6 @@ export function ChecklistListView({ offline, stages, unitLabel = null, now, onBa
             </span>
           </p>
         </div>
-
-        <DayPlate
-            now={now}
-            stages={stages.map((stage, index) => ({
-              id: stage.slug,
-              label: t(`o15.stage.${stage.slug}`),
-              state: stage.state === "received" ? "sent" : index === nextIndex ? "next" : "later",
-            }))}
-            nextLabel={nextIndex >= 0 ? t("o04.checklistNext", { stage: t(`o15.stage.${stages[nextIndex].slug}`) }) : t("o04.checklistDone")}
-            listLabel={t("o04.checklist")}
-            stateLabels={{ sent: t("o15.stageState.received"), next: t("o04.stageNext"), later: t("o15.stageState.notStarted") }}
-          />
 
         {allDone ? (
           <p className={s.dayDone} role="status" data-testid="o15-all-done">
@@ -130,7 +118,7 @@ export function ChecklistListView({ offline, stages, unitLabel = null, now, onBa
                     <span className={styles.meta}>{t(`o15.desc.${stage.slug}`)}</span>
                   )}
                   {isNext && !locked ? (
-                    <ButtonLink href={stage.href} variant={stage.state === "draft" ? "secondary" : "primary"} icon={<ChevronRightIcon />} className={s.stageGo} data-testid={`o15-go-${stage.slug}`}>
+                    <ButtonLink href={stage.href} variant={stage.state === "draft" ? "secondary" : "primary"} className={`${s.stageGo} ${p3.smallBtn}`} data-testid={`o15-go-${stage.slug}`}>
                       {stage.state === "draft" ? t("o15.continueStage") : t("o15.answerCount", { count: questionCount(stage.slug) })}
                     </ButtonLink>
                   ) : null}

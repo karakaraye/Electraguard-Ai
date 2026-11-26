@@ -3,7 +3,7 @@
 import Link from "next/link";
 import type { ComponentType, ReactNode } from "react";
 import { useLocale } from "../../lib/i18n/client";
-import { formatWatDateTime } from "../format";
+import { formatWatShort } from "../format";
 import { categoryPictograms, ChevronRightIcon, type IconProps, type IncidentCategory } from "../icons";
 import { StatusBadge, type ReportStatus } from "../StatusBadge/StatusBadge";
 import styles from "./ReportRow.module.css";
@@ -61,7 +61,7 @@ export function ReportRow({
           </span>
           <span className={styles.meta}>
             {place ? <span>{place}</span> : null}
-            {hideTime ? null : <span className="eg-tnum">{formatWatDateTime(observedAt, locale)}</span>}
+            {hideTime ? null : <span className="eg-tnum">{formatWatShort(observedAt, locale)}</span>}
           </span>
           <span className={styles.status}>
             <StatusBadge status={status} />

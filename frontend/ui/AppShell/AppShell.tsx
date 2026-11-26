@@ -30,7 +30,7 @@ export type AppShellProps = {
    * Done in the right slot, for a receipt: nothing to go back to, so Back is gone and Done ends the flow.
    * Pass a href or a handler.
    */
-  done?: { label: string; href?: string; onClick?: () => void };
+  done?: { label: string; href?: string; onClick?: () => void; testId?: string };
   /** Bottom navigation, pinned under the content (Home, Report, My reports, Messages). */
   bottomNav?: ReactNode;
   /** Opens the menu. Omit to hide the Menu button. */
@@ -175,11 +175,11 @@ export function AppShell({
 
   const doneControl = done ? (
     done.href ? (
-      <Link href={done.href} className={`${styles.barBtn} ${styles.done}`} onClick={done.onClick} data-testid="done">
+      <Link href={done.href} className={`${styles.barBtn} ${styles.done}`} onClick={done.onClick} data-testid={done.testId ?? "done"}>
         {done.label}
       </Link>
     ) : (
-      <button type="button" className={`${styles.barBtn} ${styles.done}`} onClick={done.onClick} data-testid="done">
+      <button type="button" className={`${styles.barBtn} ${styles.done}`} onClick={done.onClick} data-testid={done.testId ?? "done"}>
         {done.label}
       </button>
     )

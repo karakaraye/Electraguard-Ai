@@ -236,12 +236,12 @@
   flex: 1;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: 4px;
   min-height: 44px;
-  padding: 0 4px;
+  padding: 0 2px;
   border-radius: 8px;
   color: var(--ink-2);
-  font: 600 0.875rem/1.1 var(--font);
+  font: 600 0.8125rem/1.1 var(--font);
   text-align: center;
 }
 
@@ -355,4 +355,591 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+/* ---------- Report detail ---------- */
+
+.detailHead {
+  display: grid;
+  gap: var(--s-1);
+  justify-items: start;
+}
+
+.headDisc {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  margin-bottom: var(--s-2);
+  border-radius: 50%;
+  background: var(--paper-sunk);
+  color: var(--ink);
+}
+
+.h1 {
+  margin: 0;
+  font: 700 1.75rem/1.15 var(--font-display);
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+}
+
+.h1:focus {
+  outline: none;
+}
+
+.headMeta {
+  margin: 0;
+  color: var(--ink-2);
+  font: 400 0.875rem/1.4 var(--font);
+}
+
+.headMeta > span + span::before {
+  content: ", ";
+}
+
+.refRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-3);
+  box-sizing: border-box;
+  width: 100%;
+  margin-top: var(--s-4);
+  padding: var(--s-3) var(--s-2) var(--s-3) var(--s-4);
+  border-radius: var(--radius-lg);
+  background: var(--paper-raised);
+  box-shadow: inset 0 0 0 1px var(--rule);
+}
+
+.refText {
+  display: grid;
+  min-width: 0;
+}
+
+.refLabel {
+  color: var(--ink-3);
+  font: 400 0.8125rem/1.3 var(--font);
+}
+
+.refCode {
+  font: 700 1.0625rem/1.2 var(--font);
+  letter-spacing: 0.02em;
+  overflow-wrap: anywhere;
+}
+
+/* Four-step status line: bars, not discs. */
+.timeline {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  gap: 4px;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.timelineStep {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  color: var(--ink-3);
+  font: 600 0.75rem/1.3 var(--font);
+}
+
+.timelineBar {
+  display: block;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--rule);
+}
+
+.timelineStep[data-state="done"] {
+  color: var(--ink);
+}
+
+.timelineStep[data-state="done"] .timelineBar {
+  background: var(--ink);
+}
+
+.timelineStep[data-state="current"] {
+  color: var(--ink);
+}
+
+.timelineStep[data-state="current"] .timelineBar {
+  background: var(--ink);
+}
+
+.timelineStep[data-state="current"][data-step="question"] {
+  color: var(--attn);
+}
+
+.timelineStep[data-state="current"][data-step="question"] .timelineBar {
+  background: var(--attn);
+}
+
+.timelineLabel {
+  overflow-wrap: anywhere;
+}
+
+/* The question: one warm card, the answer box inside it. */
+.qcard {
+  display: grid;
+  gap: var(--s-3);
+  padding: var(--s-4);
+  border-radius: var(--radius-lg);
+  background: var(--attn-bg);
+}
+
+.qHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px var(--s-2);
+  margin: 0;
+  color: var(--attn);
+  font: 600 0.8125rem/1.3 var(--font);
+}
+
+.qHead svg {
+  width: 14px;
+  height: 14px;
+}
+
+.qHead:focus {
+  outline: none;
+}
+
+.qAsked {
+  font-weight: 500;
+}
+
+.qAsked::before {
+  content: "- ";
+}
+
+.qBody {
+  margin: 0;
+  font: 500 1rem/1.45 var(--font);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+/* Files: the whole row opens the file. */
+.files {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  background: var(--paper-raised);
+  box-shadow: inset 0 0 0 1px var(--rule);
+}
+
+.files > li + li {
+  box-shadow: inset 0 1px 0 var(--rule);
+}
+
+.fileUpload {
+  padding: var(--s-2);
+}
+
+.fileRow {
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr) 20px;
+  align-items: center;
+  gap: var(--s-3);
+  min-height: 64px;
+  padding: var(--s-2) var(--s-3);
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.fileRow:focus-visible {
+  outline: var(--focus-outline);
+  outline-offset: -3px;
+}
+
+.fileRow:active {
+  background: var(--paper-sunk);
+}
+
+.fileIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius);
+  background: var(--paper-sunk);
+}
+
+.fileText {
+  display: grid;
+  min-width: 0;
+}
+
+.fileName {
+  font: 600 1rem/1.25rem var(--font);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fileSub {
+  color: var(--ink-3);
+  font: 400 0.875rem/1.25rem var(--font);
+}
+
+.fileChevron {
+  width: 20px;
+  height: 20px;
+  color: var(--ink-3);
+}
+
+/* Composer: pinned above the bottom bar, one add control. */
+.composer {
+  position: sticky;
+  bottom: calc(56px + env(safe-area-inset-bottom));
+  z-index: 2;
+  display: grid;
+  gap: var(--s-1);
+  margin-inline: calc(var(--gutter) * -1);
+  padding: var(--s-2) var(--s-3);
+  background: var(--paper);
+  box-shadow: inset 0 1px 0 var(--rule);
+}
+
+.composerRow {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--s-2);
+}
+
+.composerAdd,
+.composerSend {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.composerAdd {
+  background: none;
+  box-shadow: inset 0 0 0 1px var(--rule-control);
+  color: var(--ink);
+}
+
+.composerSend {
+  background: var(--ink);
+  color: var(--on-ink);
+}
+
+.composerSend[disabled],
+.composerAdd[disabled] {
+  background: var(--paper-sunk);
+  color: var(--ink-3);
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+.composerAdd:focus-visible,
+.composerSend:focus-visible,
+.composerField:focus-visible {
+  outline: var(--focus-outline);
+  outline-offset: var(--focus-offset);
+}
+
+.composerField {
+  flex: 1;
+  box-sizing: border-box;
+  min-width: 0;
+  min-height: 44px;
+  max-height: 120px;
+  margin: 0;
+  padding: 10px 16px;
+  border: 0;
+  border-radius: 22px;
+  background: var(--paper-raised);
+  box-shadow: inset 0 0 0 1.5px var(--rule-control);
+  color: var(--ink);
+  font: 400 0.9375rem/1.5 var(--font);
+  resize: none;
+  field-sizing: content;
+}
+
+.composerField[aria-invalid="true"] {
+  box-shadow: inset 0 0 0 2px var(--danger);
+}
+
+.composerNote {
+  margin: 0;
+  color: var(--ink-2);
+  font: 400 0.8125rem/1.4 var(--font);
+}
+
+.composerError {
+  margin: 0;
+  color: var(--danger);
+  font: 600 0.875rem/1.4 var(--font);
+}
+
+/* Conversation bubbles. */
+.thread {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.msgItem {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.msgItem[data-mine] {
+  align-items: flex-end;
+}
+
+.bub {
+  display: grid;
+  gap: 4px;
+  box-sizing: border-box;
+  max-width: 88%;
+  padding: 10px 14px;
+  border-radius: 16px;
+  font: 400 0.9375rem/1.45 var(--font);
+}
+
+.bub[data-kind="them"] {
+  background: var(--paper-raised);
+  box-shadow: inset 0 0 0 1px var(--rule);
+  border-bottom-left-radius: 6px;
+}
+
+.bub[data-kind="question"] {
+  background: var(--attn-bg);
+  border-bottom-left-radius: 6px;
+}
+
+.bub[data-kind="mine"] {
+  background: var(--ink);
+  color: var(--on-ink);
+  border-bottom-right-radius: 6px;
+}
+
+.bubBy {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--ink-3);
+  font: 600 0.75rem/1.3 var(--font);
+}
+
+.bubBy svg {
+  width: 12px;
+  height: 12px;
+}
+
+.bub[data-kind="question"] .bubBy {
+  color: var(--attn);
+}
+
+.bub[data-kind="mine"] .bubBy {
+  color: var(--hero-ink-2);
+}
+
+.bubText {
+  margin: 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.bubFile {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  color: inherit;
+  font: 600 0.875rem/1.3 var(--font);
+  text-underline-offset: 3px;
+}
+
+.bubTime {
+  color: var(--ink-3);
+  font: 400 0.75rem/1.3 var(--font);
+}
+
+.sysLine {
+  align-self: center;
+  margin: 0;
+  color: var(--ink-3);
+  font: 600 0.75rem/1.3 var(--font);
+  text-align: center;
+}
+
+/* ---------- Receipt ---------- */
+
+.receiptPage {
+  display: grid;
+  gap: var(--s-5);
+  max-width: var(--measure);
+  margin-inline: auto;
+}
+
+.okHead {
+  display: grid;
+  justify-items: center;
+  gap: var(--s-3);
+  padding-top: var(--s-2);
+  text-align: center;
+}
+
+.okDisc {
+  width: 56px;
+  height: 56px;
+}
+
+.receiptStack {
+  display: grid;
+  gap: var(--s-4);
+}
+
+.h3 {
+  margin: 0;
+  font: 700 1.0625rem/1.3 var(--font);
+}
+
+.nextSteps {
+  display: grid;
+  gap: var(--s-3);
+}
+
+.nextList {
+  display: grid;
+  gap: var(--s-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: next;
+}
+
+.nextList li {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr);
+  gap: var(--s-3);
+  font: 400 1rem/1.45 var(--font);
+  counter-increment: next;
+}
+
+.nextList li::before {
+  content: counter(next);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1.5px var(--ink);
+  font: 700 0.8125rem/1 var(--font);
+  font-variant-numeric: tabular-nums;
+}
+
+.receiptFoot {
+  display: grid;
+  gap: var(--s-3);
+}
+
+.keep {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-4);
+  padding: var(--s-4);
+  border-radius: var(--radius-lg);
+  background: var(--paper-raised);
+  box-shadow: inset 0 0 0 1px var(--rule);
+}
+
+.keepText {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.keepTitle {
+  font: 600 0.9375rem/1.3 var(--font);
+}
+
+.keepHint {
+  color: var(--ink-2);
+  font: 400 0.875rem/1.4 var(--font);
+}
+
+.footnote {
+  padding-top: var(--s-4);
+  box-shadow: inset 0 1px 0 var(--rule);
+  color: var(--ink-2);
+  font: 400 0.8125rem/1.5 var(--font);
+}
+
+.footnote p {
+  margin: 0;
+}
+
+.footnote p + p {
+  margin-top: 6px;
+}
+
+/* ---------- Settings ---------- */
+
+.inlineSetting.inlineSetting {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-3);
+}
+
+.rowText {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.rowSub {
+  color: var(--ink-3);
+  font: 400 0.8125rem/1.4 var(--font);
+}
+
+.signOutRow {
+  color: var(--danger);
+}
+
+.signOutLabel {
+  font: 600 1rem/1.25 var(--font);
+}
+
+/* ---------- Sign in ---------- */
+
+.forgot {
+  margin: 0;
+  color: var(--ink-2);
+  font: 400 0.875rem/1.45 var(--font);
+}
+
+.dangerLink {
+  color: var(--danger);
 }

@@ -23,6 +23,11 @@ export function formatWatDateTime(value: Date | number | string, locale: Locale)
   return `${formatter(locale, { dateStyle: "medium", timeStyle: "short", hourCycle: "h23" }, "dt").format(toDate(value))} WAT`;
 }
 
+/** "22 Nov, 14:05 WAT": rows in a list, where the year is not needed. */
+export function formatWatShort(value: Date | number | string, locale: Locale): string {
+  return `${formatter(locale, { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit", hourCycle: "h23" }, "ds").format(toDate(value))} WAT`;
+}
+
 /** "14:05 WAT" */
 export function formatWatTime(value: Date | number | string, locale: Locale): string {
   return `${formatter(locale, { timeStyle: "short", hourCycle: "h23" }, "t").format(toDate(value))} WAT`;

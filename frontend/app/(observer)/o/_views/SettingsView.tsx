@@ -3,7 +3,7 @@
 /* O-20 Settings: language, change PIN, privacy notice, what waits on this phone, sign out, clear this phone. */
 
 import Link from "next/link";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useLocale, useT } from "../../../../lib/i18n/client";
 import { localeNames } from "../../../../lib/i18n/config";
 import { Banner, Button, Field, LanguageSwitcher, SegmentedControl, Sheet, Switch, setTextSize, useTextSize, type TextSize } from "../../../../ui";
@@ -12,6 +12,7 @@ import { setVibrationPreference, useVibration } from "../../../../ui/vibration";
 import { ChevronDownIcon, ChevronRightIcon, ChevronUpIcon } from "../../../../ui/icons";
 import styles from "../_components/observer.module.css";
 import s from "../_components/screens.module.css";
+import p3 from "../_components/p3.module.css";
 
 export type PinField = "current" | "next" | "confirm" | "form";
 
@@ -50,6 +51,7 @@ export function SettingsView(props: SettingsViewProps) {
   const errorFor = (field: PinField) => (pinError?.field === field ? pinError.message : undefined);
   const textSize = useTextSize();
   const vibration = useVibration();
+  const [choose, setChoose] = useState(false);
   // From the menu's Sign out (#sign-out): bring the sign-out choices into view.
   useEffect(() => {
     if (window.location.hash === "#sign-out") document.getElementById("sign-out")?.scrollIntoView({ block: "start" });
@@ -57,8 +59,7 @@ export function SettingsView(props: SettingsViewProps) {
   return (
     <ObserverShell tab="other" title={t("o20.title")} onBack={props.onBack} offline={offline} banner={props.signedOutNotice ? <Banner tone="ok" title={t("o20.signOut.signedOut")} /> : undefined} data-testid="o20">
       <div className={styles.screen}>
-        <h1 className={styles.title}>{t("o20.title")}</h1>
-        <p className={styles.meta}>{t("o04.signedInAs", { code: props.code })}</p>
+        <h1 className="eg-sr-only">{t("o20.title")}</h1>
         <h2 className={s.settingsGroup}>{t("o20.groupDisplay")}</h2>
         <ul className={s.settings}>
           <li className={s.setting}>
@@ -70,7 +71,7 @@ export function SettingsView(props: SettingsViewProps) {
               </span>
             </button>
           </li>
-          <li className={s.setting}>
+          <li className={`${s.setting} ${p3.inlineSetting}`}>
             <span className={s.settingLabel}>{t("o20.textSize")}</span>
             <SegmentedControl
               label={t("o20.textSize")}
@@ -154,12 +155,13 @@ export function SettingsView(props: SettingsViewProps) {
             </Link>
           </li>
           <li className={s.setting}>
-            <p className={styles.lead} style={{ margin: 0 }} data-testid="o20-storage">
-              {t("o20.storage", { reports: props.unsentCount, size: props.mediaLabel })}
-            </p>
+            <div className={p3.rowText} data-testid="o20-storage">
+              <span className={s.settingLabel}>{t("o20.storageTitle")}</span>
+              <span className={p3.rowSub}>{t("o20.storageLine", { reports: props.unsentCount, size: props.mediaLabel })}</span>
+            </div>
             {props.unsentCount > 0 && !offline ? (
               <div>
-                <Button variant="secondary" onClick={props.onSendNow} data-testid="o20-send-now">
+                <Button variant="secondary" className={p3.smallBtn} onClick={props.onSendNow} data-testid="o20-send-now">
                   {t("o04.sendNow")}
                 </Button>
               </div>
@@ -167,23 +169,73 @@ export function SettingsView(props: SettingsViewProps) {
           </li>
         </ul>
 
-        <div className={s.signOut} id="sign-out">
-          <Button variant="secondary" block loading={props.busy === "signOut"} onClick={() => props.onSignOut(false)} data-testid="o20-sign-out">
-            {t("o20.signOut.button")}
-          </Button>
-          <Button variant="quiet" block disabled={offline} loading={props.busy === "everywhere"} onClick={() => props.onSignOut(true)} data-testid="o20-sign-out-everywhere">
-            {t("o20.signOut.everywhere")}
-          </Button>
-          <div className={s.dangerZone}>
-            <Button variant="secondary" block className={s.dangerOutline} onClick={props.onClear} data-testid="o20-clear">
-              {t("o20.signOut.clearButton")}
-            </Button>
-            <p className={styles.note}>{t("o20.signOut.clearHint")}</p>
-          </div>
-        </div>
+        <ul className={s.settings} id="sign-out">
+          <li className={s.setting}>
+            <button type="button" className={`${s.settingRow} ${p3.signOutRow}`} onClick={() => setChoose(true)} data-testid="o20-sign-out-row">
+              <span className={p3.rowText}>
+                <span className={p3.signOutLabel}>{t("o20.signOut.button")}</span>
+                <span className={p3.rowSub}>{t("o20.signOut.rowHint")}</span>
+              </span>
+              <span className={s.settingValue}>
+                <ChevronRightIcon aria-hidden="true" />
+              </span>
+            </button>
+          </li>
+        </ul>
 
         <p className={`${styles.meta} eg-tnum`}>{t("o20.version", { version: props.version })}</p>
       </div>
+
+      <Sheet
+        open={choose}
+        onClose={() => setChoose(false)}
+        title={t("o20.signOut.button")}
+        description={props.unsentCount > 0 ? t("o20.signOut.unsentKept", { count: props.unsentCount }) : t("o20.signOut.rowHint")}
+        footer={
+          <>
+            <Button
+              variant="secondary"
+              block
+              loading={props.busy === "signOut"}
+              onClick={() => {
+                setChoose(false);
+                props.onSignOut(false);
+              }}
+              data-testid="o20-sign-out"
+            >
+              {t("o20.signOut.button")}
+            </Button>
+            <Button
+              variant="secondary"
+              block
+              className={s.dangerOutline}
+              onClick={() => {
+                setChoose(false);
+                props.onClear();
+              }}
+              data-testid="o20-clear"
+            >
+              {t("o20.signOut.clearButton")}
+            </Button>
+            <Button
+              variant="quiet"
+              block
+              disabled={offline}
+              loading={props.busy === "everywhere"}
+              onClick={() => {
+                setChoose(false);
+                props.onSignOut(true);
+              }}
+              data-testid="o20-sign-out-everywhere"
+            >
+              {t("o20.signOut.everywhere")}
+            </Button>
+          </>
+        }
+        data-testid="o20-sign-out-sheet"
+      >
+        <p className={styles.note}>{t("o20.signOut.clearHint")}</p>
+      </Sheet>
 
       <Sheet open={props.languageOpen} onClose={() => props.onLanguage(false)} title={t("o01.title")} data-testid="o20-language-sheet">
         <LanguageSwitcher onChanged={() => props.onLanguage(false)} />

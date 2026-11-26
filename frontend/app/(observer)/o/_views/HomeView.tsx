@@ -9,7 +9,7 @@ import { useLocale, useT } from "../../../../lib/i18n/client";
 import type { Category } from "../../../../lib/api/types";
 import { Banner, Button, ButtonLink, Count, HeroCard, OutboxBadge, ReportList, ReportRow, Sheet, StatusBadge, type ReportStatus } from "../../../../ui";
 import { StatusShape } from "../../../../ui/StatusBadge/StatusBadge";
-import { formatWatDateTime } from "../../../../ui/format";
+import { formatWatDateTime, formatWatTime } from "../../../../ui/format";
 import { categoryPictograms, ChevronRightIcon } from "../../../../ui/icons";
 import { ObserverShell } from "../_components/ObserverShell";
 import styles from "../_components/observer.module.css";
@@ -226,7 +226,7 @@ export function HomeView(props: HomeViewProps) {
                   <span className={p3.draftText}>
                     <span className={p3.draftTitle}>{t("o04.continueDraft")}</span>
                     <span className={p3.draftMeta}>
-                      {t(`o05.tile.${categoryMeta(draft.category).tile}`)}, {t("o04.draftSaved", { time: formatWatDateTime(draft.startedAt, locale) })}
+                      {t(`o05.tile.${categoryMeta(draft.category).tile}`)}, {t("o04.draftSaved", { time: formatWatTime(draft.startedAt, locale) })}
                     </span>
                   </span>
                   <ChevronRightIcon aria-hidden="true" />

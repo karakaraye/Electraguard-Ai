@@ -311,6 +311,7 @@
     "citizenMode": "Ìròyìn ọmọ ìlú",
     "report": "Ròyìn nǹkan kan",
     "heroBody": "Sọ ohun tí o rí ní ibùdó ìdìbò rẹ fún wa.",
+    "heroOffline": "O ṣì lè fi ìròyìn ránṣẹ́. Yóò dúró lórí fóònù yìí.",
     "continueDraft": "Tẹ̀síwájú nínú ìròyìn rẹ",
     "draftSaved": "O bẹ̀rẹ̀ ní {time}",
     "checklist": "Àkọsílẹ̀ àyẹ̀wò ọjọ́ ìdìbò",
@@ -354,10 +355,10 @@
     "draftKept": "A ti fi ìròyìn rẹ pamọ́ sórí fóònù yìí.",
     "discard": "Pa ìròyìn yìí rẹ́",
     "leave": {
-      "title": "Ṣé o fẹ́ kúrò nínú ìròyìn yìí?",
-      "body": "A ti fi pamọ́ sórí fóònù yìí. O lè tẹ̀ síwájú láti Ilé.",
-      "save": "Fi pamọ́ kí o jáde",
-      "keep": "Tẹ̀ síwájú láti kọ"
+      "title": "Ṣé kí a fi àkọsílẹ̀ yìí pamọ́ kí o sì jáde?",
+      "body": "A ti fi ìròyìn rẹ pamọ́ sórí fóònù yìí. O lè tẹ̀ síwájú láti Ilé.",
+      "save": "Fi àkọsílẹ̀ pamọ́ kí o jáde",
+      "keep": "Dúró kí o parí rẹ̀"
     }
   },
   "o05": {
@@ -577,6 +578,8 @@
       "onPhone": "Ó wà lórí fóònù yìí"
     },
     "empty": "Kò sí ìròyìn kankan síbẹ̀. Tí o bá fi ìròyìn ránṣẹ́, yóò hàn níbí.",
+    "emptyTitle": "Kò sí ìròyìn kankan sí i",
+    "emptyBody": "Nígbà tí o bá fi ìròyìn ránṣẹ́, yóò hàn níbí pẹ̀lú kódù ìwé ẹ̀rí rẹ̀ àti ipò rẹ̀.",
     "emptyFilter": "Kò sí nǹkan níbí báyìí.",
     "offlineList": "Kò sí nẹ́tíwọ̀ọ̀kì. À ń fi ohun tí fóònù yìí mọ̀ hàn. Ipò wọn lè ti pẹ́.",
     "updated": "Ìmúdójúìwọ̀n: {time}",
@@ -594,6 +597,7 @@
     "observed": "Ó ṣẹlẹ̀ ní {time}",
     "received": "A gbà á ní {time}",
     "notSentYet": "Kò tíì lọ",
+    "copyShort": "Daakọ",
     "question": {
       "title": "Ìbéèrè fún ọ",
       "replyLabel": "Ìdáhùn rẹ",
@@ -805,6 +809,8 @@
     "questionTag": "Ìbéèrè fún ọ",
     "newMessage": "{count, plural, one {Ọ̀rọ̀ tuntun #} other {Ọ̀rọ̀ tuntun #}}",
     "empty": "Kò sí ìfiránṣẹ́. Tí olùyẹ̀wò bá kọ̀wé sí ọ, yóò hàn níbí.",
+    "emptyTitle": "Kò sí ìfiránṣẹ́",
+    "emptyBody": "Nígbà tí olùyẹ̀wò bá kọ̀wé sí ọ, yóò hàn níbí. Wàá tún rí i lórí Ilé.",
     "loading": "À ń mú àwọn ìfiránṣẹ́ wá",
     "loadError": "A kò rí àwọn ìfiránṣẹ́ rẹ mú wá. Gbìyànjú lẹ́ẹ̀kan sí i.",
     "offline": "Kò sí nẹ́tíwọ̀ọ̀kì. Àwọn ìfiránṣẹ́ tuntun yóò hàn nígbà tí o bá ní nẹ́tíwọ̀ọ̀kì.",
@@ -827,6 +833,8 @@
     "closesAt": "Yóò parí ní {time}",
     "closed": "Ìjíròrò yìí ti parí.",
     "empty": "Kò sí ìjíròrò. Alábòójútó ìjíròrò lè pè ọ́ tí ìṣòro kan bá wà tí ẹ jọ ní ní agbègbè rẹ.",
+    "emptyTitle": "Kò sí ìjíròrò",
+    "emptyBody": "Alábòójútó ìjíròrò lè pè ọ́ tí ìṣòro kan bá wà tí ẹ jọ ní ní agbègbè rẹ.",
     "loading": "À ń mú àwọn ìjíròrò wá",
     "loadError": "A kò rí àwọn ìjíròrò mú wá. Gbìyànjú lẹ́ẹ̀kan sí i.",
     "thread": {
@@ -903,8 +911,11 @@
     },
     "privacy": "Ìkéde ìpamọ́",
     "storage": "Lórí fóònù yìí: {reports, plural, =0 {kò sí ìròyìn tó ń dúró} one {ìròyìn # ń dúró} other {ìròyìn # ń dúró}}, fọ́tò àti fídíò {size}",
+    "storageTitle": "Lórí fóònù yìí",
+    "storageLine": "{reports, plural, =0 {kò sí ìròyìn tó ń dúró} one {ìròyìn # ń dúró} other {ìròyìn # ń dúró}}, fọ́tò àti fídíò {size}",
     "signOut": {
       "button": "Jáde",
+      "rowHint": "Yan láti pa fóònù yìí mọ́ tàbí láti fọ̀ ọ́ mọ́",
       "clearButton": "Jáde kí o sì pa ohun gbogbo rẹ́ lórí fóònù yìí",
       "clearHint": "Lo èyí lórí fóònù tí ẹ jọ ń lò. Ó máa pa gbogbo ohun tí ElectraGuard tọ́jú síbí rẹ́.",
       "title": "Ṣé o fẹ́ jáde kí o sì pa ohun gbogbo rẹ́ lórí fóònù yìí?",

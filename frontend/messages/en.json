@@ -310,6 +310,7 @@
     "citizenMode": "Citizen report",
     "report": "Report something",
     "heroBody": "Tell us what you see at your polling unit.",
+    "heroOffline": "You can still report. It waits on this phone.",
     "continueDraft": "Continue your report",
     "draftSaved": "Started {time}",
     "checklist": "Polling-day checklist",
@@ -353,10 +354,10 @@
     "draftKept": "Your report is saved on this phone.",
     "discard": "Delete this report",
     "leave": {
-      "title": "Leave this report?",
-      "body": "It is saved on this phone. You can continue it from Home.",
-      "save": "Save and leave",
-      "keep": "Keep writing"
+      "title": "Keep this draft and leave?",
+      "body": "Your report is saved on this phone. You can continue it from Home.",
+      "save": "Keep draft and leave",
+      "keep": "Stay and finish"
     }
   },
   "o05": {
@@ -576,6 +577,8 @@
       "onPhone": "On this phone"
     },
     "empty": "No reports yet. When you send a report, it will show here.",
+    "emptyTitle": "No reports yet",
+    "emptyBody": "When you send a report, it will show here with its receipt code and status.",
     "emptyFilter": "Nothing here right now.",
     "offlineList": "Offline. Showing what this phone knows. Status may be older.",
     "updated": "Updated {time}",
@@ -593,6 +596,7 @@
     "observed": "Happened {time}",
     "received": "Received {time}",
     "notSentYet": "Not sent yet",
+    "copyShort": "Copy",
     "question": {
       "title": "Question for you",
       "replyLabel": "Your answer",
@@ -804,6 +808,8 @@
     "questionTag": "Question for you",
     "newMessage": "{count, plural, one {# new message} other {# new messages}}",
     "empty": "No messages. When a reviewer writes to you, it will show here.",
+    "emptyTitle": "No messages",
+    "emptyBody": "When a reviewer writes to you, it will show here. You will also see it on Home.",
     "loading": "Getting messages",
     "loadError": "We could not get your messages. Try again.",
     "offline": "Offline. New messages will show when you have network.",
@@ -826,6 +832,8 @@
     "closesAt": "Closes {time}",
     "closed": "This discussion is closed.",
     "empty": "No discussions. A moderator may invite you if there is a shared problem in your area.",
+    "emptyTitle": "No discussions",
+    "emptyBody": "A moderator may invite you if there is a shared problem in your area.",
     "loading": "Getting discussions",
     "loadError": "We could not get discussions. Try again.",
     "thread": {
@@ -902,8 +910,11 @@
     },
     "privacy": "Privacy notice",
     "storage": "On this phone: {reports, plural, =0 {no reports waiting} one {# report waiting} other {# reports waiting}}, {size} of media",
+    "storageTitle": "On this phone",
+    "storageLine": "{reports, plural, =0 {no reports waiting} one {# report waiting} other {# reports waiting}}, {size} of media",
     "signOut": {
       "button": "Sign out",
+      "rowHint": "Choose to keep or clear this phone",
       "clearButton": "Sign out and clear this phone",
       "clearHint": "Use this on a shared phone. It removes everything ElectraGuard keeps here.",
       "title": "Sign out and clear this phone?",

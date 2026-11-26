@@ -48,6 +48,7 @@ import {
 } from "../../../../ui/icons";
 import { ObserverShell } from "../_components/ObserverShell";
 import styles from "../_components/observer.module.css";
+import p3 from "../_components/p3.module.css";
 import { ACCESS_DETAILS, CATEGORIES, categoryMeta } from "../_lib/categories";
 
 export const TOTAL_STEPS = 7;
@@ -102,10 +103,13 @@ export function StepShell({ step, onBack, onDiscard, onLeave, offline, banner, a
               >
                 {t("incident.leave.save")}
               </Button>
+              <Button variant="secondary" block onClick={() => setLeaving(false)} data-testid="step-leave-continue">
+                {t("incident.leave.keep")}
+              </Button>
               <Button
-                variant="secondary"
+                variant="quiet"
                 block
-                icon={<TrashIcon />}
+                className={p3.dangerLink}
                 onClick={() => {
                   setLeaving(false);
                   setConfirm(true);
@@ -113,9 +117,6 @@ export function StepShell({ step, onBack, onDiscard, onLeave, offline, banner, a
                 data-testid="step-menu-discard"
               >
                 {t("incident.discard")}
-              </Button>
-              <Button variant="quiet" block onClick={() => setLeaving(false)} data-testid="step-leave-continue">
-                {t("incident.leave.keep")}
               </Button>
             </div>
           </Sheet>

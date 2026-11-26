@@ -4,11 +4,13 @@
 
 import type { Category, ReportKind } from "../../../../lib/api/types";
 import { useLocale, useT } from "../../../../lib/i18n/client";
-import { Banner, Button, EmptyState, ReportList, ReportRow, type ReportStatus, Skeleton } from "../../../../ui";
+import Link from "next/link";
+import { Banner, Button, Count, ReportList, ReportRow, StatusBadge, type ReportStatus, Skeleton } from "../../../../ui";
 import { ObserverShell } from "../_components/ObserverShell";
 import { formatWatTime } from "../../../../ui/format";
 import { categoryMeta } from "../_lib/categories";
-import { MessagesSpot, ReportsSpot } from "../_components/Spots";
+import { ObserverEmpty } from "../_components/ObserverEmpty";
+import p3 from "../_components/p3.module.css";
 import { ChecklistPictogram, SheetPictogram } from "../_components/pictograms";
 import styles from "../_components/observer.module.css";
 import s from "../_components/screens.module.css";
@@ -26,6 +28,10 @@ export type ListRow = {
   status: ReportStatus;
   /** Extra line, already translated. */
   note?: string;
+  /** Messages list: the latest reviewer words, the time they were written and the unread count. */
+  preview?: string;
+  previewAt?: string | null;
+  unread?: number;
 };
 
 export type ListLoad = "loading" | "ok" | "offline" | "error" | "unavailable";
@@ -52,7 +58,7 @@ export function Row({ row }: { row: ListRow }) {
       hideTime={row.at === null}
       reference={row.reference}
       status={row.status}
-      note={row.note}
+      note={row.note ?? (!row.reference && row.status !== "received" ? t("o14.notSentYet") : undefined)}
       data-testid="report-row"
     />
   );
@@ -112,6 +118,7 @@ export function MyReportsView(props: MyReportsViewProps) {
     <ObserverShell
       tab="reports"
       title={t("o13.title")}
+      hideBack
       onBack={props.onBack}
       offline={offline}
       queuedCount={props.queuedCount}
@@ -119,40 +126,41 @@ export function MyReportsView(props: MyReportsViewProps) {
       data-testid="o13"
     >
       <div className={`${styles.screen} ${styles.wide}`}>
-        <h1 className={styles.title}>{t("o13.title")}</h1>
+        <h1 className="eg-sr-only">{t("o13.title")}</h1>
         {nothingAtAll ? (
-          <EmptyState
-            title={t("o13.empty")}
-            art={<ReportsSpot />}
+          <ObserverEmpty
+            art="reportsEmpty"
+            title={t("o13.emptyTitle")}
             action={
               <Button onClick={props.onReport} data-testid="o13-report">
                 {t("o04.report")}
               </Button>
             }
             data-testid="o13-empty"
-          />
+          >
+            {t("o13.emptyBody")}
+          </ObserverEmpty>
         ) : (
           <>
-            <fieldset className={s.segmented} data-testid="o13-filter">
+            <fieldset className={p3.segments} data-testid="o13-filter">
               <legend className="eg-sr-only">{t("o13.filterLabel")}</legend>
               {options.map((option) => (
-                <label key={option} className={s.segment}>
+                <label key={option} className={p3.segment}>
                   <input type="radio" name="o13-filter" value={option} checked={filter === option} onChange={() => props.onFilter(option)} data-testid={`o13-filter-${option}`} />
-                  <span className={s.segmentLabel}>{t(`o13.filter.${option}`)}</span>
-                  {load === "error" && option !== "onPhone" ? (
-                    <span className={s.segmentCount} aria-hidden="true">
-                      –
-                    </span>
-                  ) : (
-                    <span className={`${s.segmentCount} ${s.tnum}`} data-attention={option === "needsYou" && counts[option] > 0 ? "" : undefined}>
-                      {counts[option]}
-                    </span>
-                  )}
+                  <span className={p3.segmentFace}>
+                    <span>{t(`o13.filter.${option}`)}</span>
+                    {load === "error" && option !== "onPhone" ? (
+                      <span aria-hidden="true">-</span>
+                    ) : (
+                      <Count value={counts[option]} tone={option === "needsYou" && counts[option] > 0 ? "needs" : "neutral"} />
+                    )}
+                  </span>
                 </label>
               ))}
             </fieldset>
-            <p className={styles.meta} data-testid="o13-freshness">
-              {offline || load === "offline" ? t("o13.offlineList") : load === "loading" ? t("o13.loading") : updatedAt ? t("o13.updated", { time: formatWatTime(updatedAt, locale) }) : ""}
+            <p className={p3.listMeta} data-testid="o13-freshness">
+              <span>{load === "loading" ? "" : t("o13.resultCount", { count: rows.length })}</span>
+              <span>{offline || load === "offline" ? t("o13.offlineList") : load === "loading" ? t("o13.loading") : updatedAt ? t("o13.updated", { time: formatWatTime(updatedAt, locale) }) : ""}</span>
             </p>
             {rows.length ? (
               <ReportList label={t("o13.title")}>
@@ -205,14 +213,15 @@ export function MessagesView({ offline, rows, load, stale, onRetry, onBack }: Me
     <ObserverShell
       tab="messages"
       title={t("o17.title")}
+      hideBack
       onBack={onBack}
       offline={offline}
       banner={load === "error" || load === "unavailable" || stale ? <LoadBanner load={load} stale={stale} errorKey="o17.loadError" onRetry={onRetry} /> : undefined}
       data-testid="o17"
     >
       <div className={`${styles.screen} ${styles.wide}`}>
-        <h1 className={styles.title}>{t("o17.title")}</h1>
-        <p className={styles.lead}>{t("o17.hint")}</p>
+        <h1 className="eg-sr-only">{t("o17.title")}</h1>
+        <p className={styles.meta}>{t("o17.hint")}</p>
         {load === "loading" ? (
           <div className={s.skeletonList} aria-hidden="true" data-testid="o17-loading">
             {[0, 1].map((index) => (
@@ -233,31 +242,53 @@ export function MessagesView({ offline, rows, load, stale, onRetry, onBack }: Me
           ]
             .filter((group) => group.rows.length)
             .map((group) => (
-              <section key={group.key} className={s.messageGroup} aria-labelledby={`o17-${group.key}`} data-testid={`o17-group-${group.key}`}>
-                <h2 className={s.groupTitle} id={`o17-${group.key}`}>
+              <section key={group.key} className={p3.listStack} aria-labelledby={`o17-${group.key}`} data-testid={`o17-group-${group.key}`}>
+                <h2 className={p3.groupLabel} id={`o17-${group.key}`}>
                   {group.title}
-                  <span className={`${s.segmentCount} ${s.tnum}`} data-attention={group.key === "questions" ? "" : undefined}>
-                    {group.rows.length}
-                  </span>
                 </h2>
-                <ReportList label={group.title}>
+                <ul className={p3.msgList} aria-label={group.title}>
                   {group.rows.map((row) => (
-                    <Row key={row.key} row={row} />
+                    <MessageRow key={row.key} row={row} />
                   ))}
-                </ReportList>
+                </ul>
               </section>
             ))
         ) : load === "ok" ? (
-          <EmptyState
-            title={t("o17.empty")}
-            art={<MessagesSpot />}
-            data-testid="o17-empty"
-          />
+          <ObserverEmpty art="messagesEmpty" title={t("o17.emptyTitle")} data-testid="o17-empty">
+            {t("o17.emptyBody")}
+          </ObserverEmpty>
         ) : null}
         <p className="eg-sr-only" role="status" aria-live="polite">
           {load === "ok" ? t("o13.resultCount", { count: rows.length }) : ""}
         </p>
       </div>
     </ObserverShell>
+  );
+}
+
+/** One message in the grouped list: the receipt code, when the reviewer wrote, what they said, then status and place. */
+function MessageRow({ row }: { row: ListRow }) {
+  const t = useT();
+  const { locale } = useLocale();
+  const meta = categoryMeta(row.category);
+  const label =
+    row.kind === "checklist" ? t("o13.checklistStage", { stage: t(`o15.stage.${row.stage ?? "arrival"}`) }) : row.kind === "result_sheet" ? t("o13.resultSheet") : t(`o05.tile.${meta.tile}`);
+  const when = row.previewAt ?? row.at;
+  const text = row.preview ?? row.note;
+  return (
+    <li>
+      <Link href={row.href} className={p3.msg} data-testid="report-row">
+        <span className={`${p3.msgCode} eg-tnum`}>{row.reference ?? label}</span>
+        <span className={`${p3.msgTime} eg-tnum`}>
+          {when ? formatWatTime(when, locale) : null}
+          {row.unread ? <Count value={row.unread} tone="needs" label={t("o17.newMessage", { count: row.unread })} /> : null}
+        </span>
+        {text ? <p className={p3.msgPreview}>{text}</p> : null}
+        <span className={p3.msgFoot}>
+          {row.status === "question" ? <StatusBadge status="question" /> : null}
+          {row.status === "question" ? <span className={p3.msgTag}>{label}</span> : null}
+        </span>
+      </Link>
+    </li>
   );
 }

@@ -24,10 +24,10 @@ const noop = () => undefined;
 /* ---------- O-13 / O-17 ---------- */
 
 const rows: ListRow[] = [
-  { key: "q", href: "#", kind: "incident", category: "late_materials", place: "Gwammaja Open Space", at: FIXTURE_OCCURRED_AT, reference: "EG-9M2C-7TQA", status: "question" },
+  { key: "q", href: "#", kind: "incident", category: "late_materials", place: "Gwammaja Open Space", at: FIXTURE_OCCURRED_AT, reference: "EG-9M2C-7TQA", status: "question", preview: "Which materials were missing when the unit opened? Were ballot papers there?", previewAt: "2026-12-05T09:02:00+01:00" },
   { key: "p", href: "#", kind: "incident", category: "queues_crowding", place: FIXTURE_PLACE, at: FIXTURE_OCCURRED_AT, status: "on-phone" },
   { key: "c", href: "#", kind: "checklist", category: null, stage: "opening", place: "Kantudu Primary School I", at: FIXTURE_OCCURRED_AT, reference: "EG-2K8D-4XRA", status: "received" },
-  { key: "r", href: "#", kind: "incident", category: "intimidation_violence", place: "Kantudu Primary School I", at: FIXTURE_OCCURRED_AT, reference: FIXTURE_RECEIPT, status: "in-review", note: "1 new message" },
+  { key: "r", href: "#", kind: "incident", category: "intimidation_violence", place: "Kantudu Primary School I", at: FIXTURE_OCCURRED_AT, reference: FIXTURE_RECEIPT, status: "in-review", note: "1 new message", preview: "Thank you. Is everyone safe now? You can send a photo if it is safe to take one.", previewAt: "2026-12-05T08:57:00+01:00", unread: 1 },
   { key: "s", href: "#", kind: "result_sheet", category: null, place: "Kantudu Primary School I", at: FIXTURE_RECEIVED_AT, reference: "EG-7PQ3-H2MB", status: "received" },
 ];
 
@@ -410,7 +410,7 @@ export const MORE_SCREENS: Record<string, Record<string, (t: Translate) => React
     preview: () => (
       <MessagesView
         offline={false}
-        rows={[rows[0], { ...rows[3], note: "Reviewer · 11:02: Thank you. Two other observers reported the same gate." }]}
+        rows={[rows[0], { ...rows[3], preview: "Thank you. Two other observers reported the same gate.", previewAt: "2026-12-05T11:02:00+01:00", unread: 1 }]}
         load="ok"
         stale={false}
         onRetry={noop}

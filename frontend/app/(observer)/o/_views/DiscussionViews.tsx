@@ -5,7 +5,8 @@
 import Link from "next/link";
 import type { DiscussionSummary, FlagReason, Post } from "../../../../lib/api/types";
 import { useLocale, useT } from "../../../../lib/i18n/client";
-import { Banner, Button, EmptyState, Sheet, TextArea, SunRings } from "../../../../ui";
+import { Banner, Button, Sheet, TextArea } from "../../../../ui";
+import { ObserverEmpty } from "../_components/ObserverEmpty";
 import { ObserverShell } from "../_components/ObserverShell";
 import { formatWatDateTime } from "../../../../ui/format";
 import { ChevronRightIcon, InfoIcon, UsersIcon } from "../../../../ui/icons";
@@ -56,17 +57,9 @@ export function DiscussionListView({ offline, load, items, busy, notice, onAnswe
         {load === "loading" ? <p className={styles.meta}>{t("o18.loading")}</p> : null}
         {load === "offline" && !items.length ? <p className={styles.note}>{t("o18.offline")}</p> : null}
         {load === "ok" && !items.length ? (
-          <EmptyState
-            title={t("o18.empty")}
-            art={
-              <SunRings size={128}>
-                <span className={s.emptyDisc}>
-                  <UsersIcon size={30} aria-hidden="true" />
-                </span>
-              </SunRings>
-            }
-            data-testid="o18-empty"
-          />
+          <ObserverEmpty art="discussionsEmpty" title={t("o18.emptyTitle")} data-testid="o18-empty">
+            {t("o18.emptyBody")}
+          </ObserverEmpty>
         ) : null}
         {invited.length ? (
           <section className={styles.stack} aria-labelledby="o18-invitations">
