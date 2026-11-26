@@ -26,6 +26,9 @@ COPY backend/publicdata ./publicdata
 COPY backend/rumours ./rumours
 COPY backend/security ./security
 COPY backend/staff ./staff
+COPY backend/clocks ./clocks
+COPY backend/notices ./notices
+COPY backend/privacy ./privacy
 COPY data/synthetic /data/synthetic
 # load_reference_areas resolves its default dataset to /data/reference in this layout.
 COPY data/reference /data/reference
