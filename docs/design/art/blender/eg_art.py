@@ -1150,6 +1150,10 @@ def probe():
             p = world_to_camera_view(scene, cam, o.matrix_world.translation)
             top = world_to_camera_view(scene, cam, o.matrix_world.translation + Vector((0, 0, 1.7)))
             print("PROBE %-22s u=%.2f v=%.2f  v1.7=%.2f" % (o.name, p.x, p.y, top.y))
+    xs = [world_to_camera_view(scene, cam, o.matrix_world @ Vector(c)).x for o in bpy.data.objects if o.name.startswith("neem_r_leaf") for c in o.bound_box]
+    ys = [world_to_camera_view(scene, cam, o.matrix_world @ Vector(c)).y for o in bpy.data.objects if o.name.startswith("neem_r_leaf") for c in o.bound_box]
+    if xs:
+        print("PROBE neem crown u %.2f..%.2f v %.2f..%.2f" % (min(xs), max(xs), min(ys), max(ys)))
     hz = world_to_camera_view(scene, cam, Vector((cam.location.x, 66, 2.5)))
     print("PROBE horizon_bush_top v=%.2f" % hz.y)
 
@@ -1194,6 +1198,9 @@ SCHOOL = dict(loc=(8.0, 9.6, 0), yaw=-5, length=22)
 CANOPY = (4.6, 3.4)
 
 
+NEEM_HERO = (9.4, 7.4, 0)
+
+
 def polling_unit(lamps_lit=False, sheet=False, morning=True, open_left=False):
     """The shared set: school, path, compound wall, trees, ground detail.
 
@@ -1203,8 +1210,9 @@ def polling_unit(lamps_lit=False, sheet=False, morning=True, open_left=False):
     ground_plane()
     school("school", SCHOOL["loc"], SCHOOL["yaw"], length=SCHOOL["length"], lamps_lit=lamps_lit, sheet=sheet)
     pp = bezier((-12, -17), (-6.5, -2.5), (3.4, 1.6), 24)
-    pth = path_strip("path", pp, [3.4 * (1 - (i / 24) ** 3) + 0.2 for i in range(25)], toon(C("ground"), C("rule")))
-    _link(pth, False)
+    if not open_left:  # in the hero the path would be cut by the left fade into a straight band
+        pth = path_strip("path", pp, [3.4 * (1 - (i / 24) ** 3) + 0.2 for i in range(25)], toon(C("ground"), C("rule")))
+        _link(pth, False)
     # compound wall along the front, opening where the path comes in
     fence("fence_l", (-34, -9.0, 0), 0, 24.0)
     fence("fence_r", (-4.0, -9.0, 0), 0, 30.0)
@@ -1216,7 +1224,10 @@ def polling_unit(lamps_lit=False, sheet=False, morning=True, open_left=False):
         palm("palm_d", (-13.0, 20.0, 0), h=8.0, seed=12, lean=(0.04, 0.0), yaw=70)
     palm("palm_b", (19.0, 15.0, 0), h=8.4, seed=5, lean=(0.06, 0.0), yaw=40)
     palm("palm_c", (22.5, 11.5, 0), h=7.0, seed=8, lean=(0.05, -0.03), yaw=10)
-    neem("neem_r", (12.0, 7.6, 0), s=1.1, seed=4)
+    if open_left:  # pulled in so the whole crown sits inside the hero frame
+        neem("neem_r", NEEM_HERO, s=0.8, seed=4)
+    else:
+        neem("neem_r", (12.0, 7.6, 0), s=1.1, seed=4)
     if not open_left:
         neem("neem_back", (-4.0, 19.0, 0), s=0.9, seed=9)
     bush_line("horizon", 66, 8 if open_left else -160, 160, seed=3, hmin=1.0, hmax=2.6)
@@ -1416,7 +1427,7 @@ def build_story():
     for i, x in enumerate(xs):
         pool(f"pool{i}", (x, 0.3), 2.25, 1.3)
     # (a) at the unit: the observer types a report beside the ballot table
-    polling_table("a_table", (xs[0] - 0.7, 1.0, 0), 0, w=1.6, d=0.7)
+    polling_table("a_table", (xs[0] - 0.35, 1.0, 0), 0, w=1.3, d=0.7)
     cast("observer", "a_observer", (xs[0] + 0.9, -0.1, 0), -30)
     tuft("a_tuft", (xs[0] - 2.0, -0.6, 0), 1.3, 3)
     tuft("a_tuft2", (xs[0] + 1.9, 0.6, 0), 1.0, 4)
@@ -1434,7 +1445,7 @@ def build_story():
     cast("elder", "d_elder", (xs[3] - 1.2, -0.6, 0), 165, tilt=-8)
     cast("youngw", "d_youngw", (xs[3] + 0.9, -0.5, 0), 195, tilt=-10, card=False, rhand=None)
     sun_light((0.45, 0.4, -0.85), energy=4.0)
-    camera((0, -30, 12), (0, 0.3, 1.9), ortho=21.5)
+    camera((0, -30, 12), (0, 0.3, 1.9), ortho=22.6)
     # one continuous dotted ink line through all four
     ctrl = [(-12.4, -0.4, 0.5), (xs[0] - 1.2, -0.9, 0.7), (xs[0] + 0.75, -0.55, 1.15), (xs[0] + 2.6, -0.2, 2.4), (xs[1] - 1.5, 0.0, 2.3),
             (xs[1] + 0.2, 0.0, 2.0), (xs[1] + 1.4, 0.8, 3.7), (xs[2] - 1.7, 0.0, 2.2), (xs[2] + 0.05, -0.15, 1.15), (xs[2] + 1.5, -0.4, 1.7),
