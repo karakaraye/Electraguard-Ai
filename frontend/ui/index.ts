@@ -1,5 +1,6 @@
 export { BrandMark, type BrandMarkProps } from "./BrandMark/BrandMark";
 export { AppShell, type AppShellProps } from "./AppShell/AppShell";
+export { ArtSlot } from "./ArtSlot/ArtSlot";
 export { Banner, type BannerProps } from "./Banner/Banner";
 export { Button, ButtonLink, type ButtonProps, type ButtonLinkProps, type ButtonVariant } from "./Button/Button";
 export { ChoiceTile, ChoiceTileGroup, type ChoiceTileProps, type ChoiceOption, type ChoiceTileGroupProps } from "./ChoiceTile/ChoiceTile";

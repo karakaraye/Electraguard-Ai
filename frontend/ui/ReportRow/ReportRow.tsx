@@ -52,21 +52,21 @@ export function ReportRow({
     <li className={styles.item}>
       <Link href={href} className={styles.row} data-testid={testId}>
         <span className={styles.disc}>
-          <Pictogram size={30} />
+          <Pictogram size={24} />
         </span>
         <span className={styles.main}>
           <span className={styles.title} data-unread={unread || undefined}>
             {unread ? <span className={styles.dot} aria-hidden="true" /> : null}
-            {categoryLabel}
+            <span className={styles.titleText}>{categoryLabel}</span>
           </span>
           <span className={styles.meta}>
             {place ? <span>{place}</span> : null}
             {hideTime ? null : <span className="eg-tnum">{formatWatDateTime(observedAt, locale)}</span>}
-            {reference ? <span className="eg-tnum">{reference}</span> : null}
           </span>
-          {note ? <span className={styles.note}>{note}</span> : null}
-          <span className={styles.badge}>
+          <span className={styles.status}>
             <StatusBadge status={status} />
+            {reference ? <span className={`${styles.code} eg-tnum`}>{reference}</span> : null}
+            {note ? <span className={styles.note}>{note}</span> : null}
           </span>
         </span>
         <ChevronRightIcon className={styles.chevron} />

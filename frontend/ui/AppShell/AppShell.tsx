@@ -43,6 +43,8 @@ export type AppShellProps = {
   variant?: "home" | "task" | "plain";
   /** Banners shown under the top bar (intake paused, question waiting). */
   banner?: ReactNode;
+  /** A full-width notice strip right under the bar (intake paused). */
+  strip?: ReactNode;
   /** The pinned bottom action area: normally one primary Button. */
   actions?: ReactNode;
   /** Override the network state (for example from the outbox). Defaults to the browser's. */
@@ -83,6 +85,7 @@ export function AppShell({
   end,
   variant,
   banner,
+  strip,
   actions,
   offline,
   queuedCount,
@@ -236,6 +239,8 @@ export function AppShell({
           </p>
         ) : null}
       </div>
+
+      {strip}
 
       {banner ? <div className={styles.banner}>{banner}</div> : null}
 

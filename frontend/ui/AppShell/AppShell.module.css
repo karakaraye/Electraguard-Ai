@@ -187,13 +187,12 @@
   font: var(--t-small);
   font-weight: 600;
   line-height: 1.4;
-  color: var(--on-slab);
+  color: var(--ink);
 }
 
 .networkBar {
   margin: 0;
-  background: var(--slab);
-  border-bottom: 1px solid var(--slab);
+  background: var(--wait-bg);
 }
 
 .networkInner svg {

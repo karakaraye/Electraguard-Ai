@@ -198,7 +198,7 @@ self.addEventListener("fetch", (event) => {
     event.respondWith(staleWhileRevalidate(request));
     return;
   }
-  if (SHELL_FILES.includes(url.pathname) || url.pathname.startsWith("/fonts/") || url.pathname.startsWith("/icons/")) {
+  if (SHELL_FILES.includes(url.pathname) || url.pathname.startsWith("/fonts/") || url.pathname.startsWith("/icons/") || url.pathname.startsWith("/art/observer/")) {
     event.respondWith(cacheFirst(request, SHELL));
   }
   // Everything else (report data, sessions) goes straight to the network and is never stored.
