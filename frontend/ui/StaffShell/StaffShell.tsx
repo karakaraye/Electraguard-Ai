@@ -2,12 +2,12 @@
 
 import Link from "next/link";
 import { preload } from "react-dom";
-import { useEffect, useId, useState, type ComponentType, type ReactNode } from "react";
+import { useEffect, useState, type ComponentType, type ReactNode } from "react";
 import { useT } from "../../lib/i18n/client";
 import { BrandMark } from "../BrandMark/BrandMark";
 import { MenuIcon, type IconProps } from "../icons";
 import { Sheet } from "../Sheet/Sheet";
-import { setThemePreference, useThemePreference, type ThemePreference } from "../theme";
+import { THEME_LOCK, useThemePreference, type ThemePreference } from "../theme";
 import "../tokens.css";
 import styles from "./StaffShell.module.css";
 
@@ -62,8 +62,8 @@ export function StaffShell({
 }: StaffShellProps) {
   preload("/fonts/noto-sans-latin.woff2", { as: "font", type: "font/woff2", crossOrigin: "anonymous" });
   const t = useT();
-  const storedTheme = useThemePreference("system");
-  const resolvedTheme = theme ?? storedTheme;
+  const storedTheme = useThemePreference("light");
+  const resolvedTheme = THEME_LOCK ?? theme ?? storedTheme;
   // Dialogs may render beside the shell: give the page root the same theme.
   useEffect(() => {
     if (preview) return;
@@ -191,30 +191,6 @@ export function StaffShell({
           })}
         </ul>
       </Sheet>
-    </div>
-  );
-}
-
-/** Appearance choice for staff: same as device, light or dark. Stored on this device. */
-export function ThemeSwitcher({ "data-testid": testId = "theme-switcher" }: { "data-testid"?: string }) {
-  const t = useT();
-  const id = useId();
-  const theme = useThemePreference("system");
-  return (
-    <div className={styles.themeSwitcher} data-testid={testId}>
-      <label htmlFor={`${id}-theme`} className="eg-sr-only">
-        {t("ui.theme.label")}
-      </label>
-      <select
-        id={`${id}-theme`}
-        className={styles.themeSelect}
-        value={theme}
-        onChange={(event) => setThemePreference(event.target.value as ThemePreference)}
-      >
-        <option value="system">{t("ui.theme.system")}</option>
-        <option value="light">{t("ui.theme.light")}</option>
-        <option value="dark">{t("ui.theme.dark")}</option>
-      </select>
     </div>
   );
 }

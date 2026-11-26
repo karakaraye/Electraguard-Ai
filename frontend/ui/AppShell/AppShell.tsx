@@ -2,12 +2,12 @@
 
 import Link from "next/link";
 import { preload } from "react-dom";
-import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
+import { useEffect, useRef, type CSSProperties, type ReactNode } from "react";
 import { useT } from "../../lib/i18n/client";
-import { useKeyboardInset, useOffline } from "../hooks";
+import { useKeyboardInset, useOffline, useScrolled } from "../hooks";
 import { BrandMark } from "../BrandMark/BrandMark";
 import { ArrowLeftIcon, MenuIcon, OfflineIcon } from "../icons";
-import { useThemePreference, type ThemePreference } from "../theme";
+import { THEME_LOCK, useThemePreference, type ThemePreference } from "../theme";
 import { rootFontSize, useTextSize } from "../textSize";
 import "../tokens.css";
 import styles from "./AppShell.module.css";
@@ -87,7 +87,7 @@ export function AppShell({
     document.documentElement.style.fontSize = rootFontSize(textSize);
   }, [textSize, preview]);
   // Sheets and dialogs may render beside the shell, not inside it: give the page root the same theme.
-  const resolvedTheme = theme ?? storedTheme;
+  const resolvedTheme = THEME_LOCK ?? theme ?? storedTheme;
   useEffect(() => {
     if (preview) return;
     const root = document.documentElement;
@@ -101,16 +101,7 @@ export function AppShell({
   const shellRef = useRef<HTMLDivElement>(null);
   const sentinelRef = useRef<HTMLDivElement>(null);
   const actionsRef = useRef<HTMLDivElement>(null);
-  const [scrolled, setScrolled] = useState(false);
-
-  // The bar's bottom rule appears only once content has scrolled under it.
-  useEffect(() => {
-    const sentinel = sentinelRef.current;
-    if (!sentinel || typeof IntersectionObserver === "undefined") return;
-    const observer = new IntersectionObserver(([entry]) => setScrolled(!entry.isIntersecting));
-    observer.observe(sentinel);
-    return () => observer.disconnect();
-  }, []);
+  const scrolled = useScrolled(sentinelRef);
 
   // A focused field or the last tile is never hidden behind the action bar.
   const hasActions = Boolean(actions);

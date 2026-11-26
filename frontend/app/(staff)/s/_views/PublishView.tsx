@@ -3,7 +3,7 @@
 import { useId, useState } from "react";
 import type { Cell, PublicResultsResponse, SnapshotRecord, SnapshotStatus } from "../../../../lib/api/types";
 import { useLocale, useT } from "../../../../lib/i18n/client";
-import { Banner, Button, EmptyState, Field, Sheet, Skeleton, StatusBadge, useNow, type StatusTone } from "../../../../ui";
+import { Banner, Button, EmptyState, Field, Sheet, Skeleton, StatusBadge, Switch, useNow, type StatusTone } from "../../../../ui";
 import { formatWatDateTime } from "../../../../ui/format";
 import { RetryIcon } from "../../../../ui/icons";
 import { ResultsView } from "../../../(public)/_views/ResultsView";
@@ -64,26 +64,6 @@ function watInstant(value: string): number | null {
 /** The first 16 characters of the audit-chain code, in groups of four so a narrow screen can wrap it. */
 export function fingerprint(hash: string): string {
   return (hash.slice(0, 16).match(/.{1,4}/g) ?? []).join(" ");
-}
-
-function Switch({ checked, onToggle, labelledBy, busy }: { checked: boolean; onToggle: () => void; labelledBy: string; busy?: boolean }) {
-  return (
-    <button
-      type="button"
-      role="switch"
-      aria-checked={checked}
-      aria-labelledby={labelledBy}
-      aria-busy={busy || undefined}
-      className={styles.switch}
-      onClick={onToggle}
-      disabled={busy}
-      data-testid="s07-hourly-switch"
-    >
-      <span className={styles.track} aria-hidden="true">
-        <span className={styles.thumb} />
-      </span>
-    </button>
-  );
 }
 
 /** S-07 publish snapshots: preview exactly what the public page will show, then approve it. */
@@ -242,6 +222,7 @@ export function PublishView({
                 checked={hourly}
                 labelledBy={hourlyLabelId}
                 busy={scheduling}
+                data-testid="s07-hourly-switch"
                 onToggle={() => (hourly ? void setHourly(false) : setDialog("schedule"))}
               />
             </div>

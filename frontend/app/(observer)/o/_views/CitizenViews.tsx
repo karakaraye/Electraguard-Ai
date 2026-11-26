@@ -4,7 +4,7 @@
 
 import type { Outcome, ReportStatus as ServerStatus } from "../../../../lib/api/types";
 import { useLocale, useT } from "../../../../lib/i18n/client";
-import { AppShell, Banner, Button, Field, ReceiptCard, Sheet, StatusBadge, SunRings, TextArea, UploadItem, UploadList } from "../../../../ui";
+import { AppShell, Banner, Button, Field, ReceiptCard, Sheet, StatusBadge, SunRings, Switch, TextArea, UploadItem, UploadList } from "../../../../ui";
 import { CheckIcon, CloseIcon, PenIcon, ShieldCheckIcon } from "../../../../ui/icons";
 import { AppBarTitle } from "../_components/AppBarTitle";
 import { OUTCOME_KEY } from "../_lib/status";
@@ -67,10 +67,10 @@ export function CitizenReceiptView(props: CitizenReceiptViewProps) {
             </p>
             <label className={`${styles.switch} ${s.keepRow}`} data-testid="c01-keep">
               <span className={s.switchText}>
-                <span>{t("c01.keepOnPhone")}</span>
-                <span className={styles.meta}>{t("c01.keepOnPhoneHint")}</span>
+                <span id="c01-keep-label">{t("c01.keepOnPhone")}</span>
+                <span className={styles.meta} id="c01-keep-hint">{t("c01.keepOnPhoneHint")}</span>
               </span>
-              <input type="checkbox" role="switch" checked={props.keep} onChange={(event) => props.onKeep(event.target.checked)} />
+              <Switch checked={props.keep} onToggle={() => props.onKeep(!props.keep)} labelledBy="c01-keep-label" aria-describedby="c01-keep-hint" />
             </label>
           </div>
           <div className={styles.receiptSide}>

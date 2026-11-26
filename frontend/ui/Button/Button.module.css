@@ -112,15 +112,15 @@
   }
 }
 
-/* Disabled: no opacity wash (it fails contrast); a hatched outline instead */
+/* Disabled: no opacity wash (it fails contrast); a solid pale button with a plain edge */
 .button[aria-disabled="true"] {
   cursor: not-allowed;
 }
 
 .button[aria-disabled="true"]:not([aria-busy="true"]) {
   background: var(--paper-2);
-  border-color: var(--rule-control);
-  border-style: dashed;
+  border-color: var(--rule);
+  border-style: solid;
   color: var(--ink-3);
 }
 

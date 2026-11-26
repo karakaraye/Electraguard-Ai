@@ -21,6 +21,7 @@ import {
   Stepper,
   TextArea,
   WhenPicker,
+  Switch,
   YesNo,
   type CaptureSource,
   type DictationState,
@@ -596,12 +597,11 @@ export function EvidenceView({ items, recorder, onPick, onBlur, onRetake, onRemo
                       ) : null}
                       {item.kind !== "audio" ? (
                         <label className={styles.switch}>
-                          <span>{t("o10.blur")}</span>
-                          <input
-                            type="checkbox"
-                            role="switch"
+                          <span id={`o10-blur-label-${item.id}`}>{t("o10.blur")}</span>
+                          <Switch
                             checked={item.blur}
-                            onChange={(event) => onBlur(item.id, event.target.checked)}
+                            onToggle={() => onBlur(item.id, !item.blur)}
+                            labelledBy={`o10-blur-label-${item.id}`}
                             aria-describedby="o10-blur-note"
                             data-testid="o10-blur"
                           />

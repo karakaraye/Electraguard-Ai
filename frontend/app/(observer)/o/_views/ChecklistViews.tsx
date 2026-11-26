@@ -6,7 +6,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import type { MissingMaterial, QueueSize, YesNoNotSeen } from "../../../../lib/api/types";
 import { useLocale, useT } from "../../../../lib/i18n/client";
-import { AppShell, Banner, Button, ButtonLink, Field, Sheet, StatusBadge, type ReportStatus } from "../../../../ui";
+import { AppShell, Banner, Button, ButtonLink, ChoiceTile, Field, Sheet, StatusBadge, type ReportStatus } from "../../../../ui";
 import { formatWatTime } from "../../../../ui/format";
 import { CheckIcon, ChevronRightIcon, PlaceIcon } from "../../../../ui/icons";
 import { MATERIALS, QUESTIONS, QUEUE_SIZES, type StageAnswers, type StageSlug } from "../_lib/checklist";
@@ -393,13 +393,14 @@ function AnswerGroup({
       <legend className={s.answerLegend}>{legend}</legend>
       <div className={`${s.answers} ${two ? s.answersTwo : ""}`}>
         {options.map((option) => (
-          <label key={option.value} className={s.answer}>
-            <input type="radio" name={name} value={option.value} checked={value === option.value} onChange={() => onChange(option.value)} />
-            <span>{option.label}</span>
-            <span className={s.answerTick} aria-hidden="true">
-              <CheckIcon size={12} strokeWidth={3} />
-            </span>
-          </label>
+          <ChoiceTile
+            key={option.value}
+            name={name}
+            value={option.value}
+            checked={value === option.value}
+            onChange={() => onChange(option.value)}
+            label={option.label}
+          />
         ))}
       </div>
       {error ? (

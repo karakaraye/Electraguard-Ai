@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useEffect } from "react";
 import { useLocale, useT } from "../../../../lib/i18n/client";
 import { localeNames } from "../../../../lib/i18n/config";
-import { AppShell, Banner, Button, Field, LanguageSwitcher, SegmentedControl, Sheet, setTextSize, setThemePreference, useTextSize, useThemePreference, type TextSize, type ThemePreference } from "../../../../ui";
+import { AppShell, Banner, Button, Field, LanguageSwitcher, SegmentedControl, Sheet, Switch, setTextSize, useTextSize, type TextSize } from "../../../../ui";
 import { setVibrationPreference, useVibration } from "../../../../ui/vibration";
 import { ChevronDownIcon, ChevronRightIcon, ChevronUpIcon } from "../../../../ui/icons";
 import styles from "../_components/observer.module.css";
@@ -47,7 +47,6 @@ export function SettingsView(props: SettingsViewProps) {
   const { locale } = useLocale();
   const { offline, pin, pinError } = props;
   const errorFor = (field: PinField) => (pinError?.field === field ? pinError.message : undefined);
-  const theme = useThemePreference("light");
   const textSize = useTextSize();
   const vibration = useVibration();
   // From the menu's Sign out (#sign-out): bring the sign-out choices into view.
@@ -71,18 +70,6 @@ export function SettingsView(props: SettingsViewProps) {
             </button>
           </li>
           <li className={s.setting}>
-            <span className={s.settingLabel}>
-              {t("ui.theme.label")}
-            </span>
-            <SegmentedControl
-              label={t("ui.theme.label")}
-              options={(["system", "light", "dark"] as const).map((value) => ({ value, label: t(value === "system" ? "o20.themeSystem" : `ui.theme.${value}`) }))}
-              value={theme}
-              onChange={(value) => setThemePreference(value as ThemePreference)}
-              data-testid="o20-theme"
-            />
-          </li>
-          <li className={s.setting}>
             <span className={s.settingLabel}>{t("o20.textSize")}</span>
             <SegmentedControl
               label={t("o20.textSize")}
@@ -95,14 +82,14 @@ export function SettingsView(props: SettingsViewProps) {
           <li className={s.setting}>
             <label className={styles.switch}>
               <span className={s.switchText}>
-                <span>{t("o20.vibration")}</span>
-                <span className={styles.meta}>{t("o20.vibrationHint")}</span>
+                <span id="o20-vibration-label">{t("o20.vibration")}</span>
+                <span className={styles.meta} id="o20-vibration-hint">{t("o20.vibrationHint")}</span>
               </span>
-              <input
-                type="checkbox"
-                role="switch"
+              <Switch
                 checked={vibration}
-                onChange={(event) => setVibrationPreference(event.target.checked)}
+                onToggle={() => setVibrationPreference(!vibration)}
+                labelledBy="o20-vibration-label"
+                aria-describedby="o20-vibration-hint"
                 data-testid="o20-vibration"
               />
             </label>

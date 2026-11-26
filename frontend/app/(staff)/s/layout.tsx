@@ -5,7 +5,7 @@ import { useEffect, useState, type ReactNode } from "react";
 import { api } from "../../../lib/api/client";
 import type { MeResponse, Role } from "../../../lib/api/types";
 import { useT } from "../../../lib/i18n/client";
-import { Button, StaffShell, ThemeSwitcher, type StaffNavItem } from "../../../ui";
+import { Button, StaffShell, type StaffNavItem } from "../../../ui";
 import {
   DiscussionIcon,
   InboxIcon,
@@ -177,7 +177,6 @@ export default function StaffLayout({ children }: { children: ReactNode }) {
           {t("staff.signedInAs", { name: me.user.display_name })}
         </span>
       ) : null}
-      <ThemeSwitcher />
       <Button variant="quiet" onClick={handleSignOut} aria-label={t("staff.signOut")}>
         <SignOutIcon size={18} />
         <span>{t("staff.signOut")}</span>

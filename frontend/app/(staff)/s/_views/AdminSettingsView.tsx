@@ -4,7 +4,7 @@ import { useEffect, useId, useState, type ComponentProps, type FormEvent, type R
 import type { OrganisationSettings, UpdateSettingsRequest } from "../../../../lib/api/types";
 import { localeTags, type Locale } from "../../../../lib/i18n/config";
 import { useLocale, useT } from "../../../../lib/i18n/client";
-import { Banner, Button, Field, SegmentedControl, Sheet, Skeleton, StatusBadge } from "../../../../ui";
+import { Banner, Button, Field, SegmentedControl, Sheet, Skeleton, StatusBadge, Switch } from "../../../../ui";
 import { formatWatDateTime } from "../../../../ui/format";
 import { DownloadIcon, LockIcon, RetryIcon } from "../../../../ui/icons";
 import styles from "./AdminSettingsView.module.css";
@@ -225,23 +225,6 @@ function DateField(props: Omit<ComponentProps<typeof Field>, "type">) {
       <Field {...props} type="date" />
       {words ? <p className={`${styles.dayEcho} eg-tnum`}>{words}</p> : null}
     </div>
-  );
-}
-
-function Switch({ checked, onToggle, labelledBy, tone, busy }: { checked: boolean; onToggle: () => void; labelledBy: string; tone: "ink" | "danger"; busy?: boolean }) {
-  return (
-    <button
-      type="button"
-      role="switch"
-      aria-checked={checked}
-      aria-labelledby={labelledBy}
-      aria-busy={busy || undefined}
-      className={styles.switch}
-      data-tone={tone}
-      onClick={onToggle}
-    >
-      <span className={styles.thumb} aria-hidden="true" />
-    </button>
   );
 }
 

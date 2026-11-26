@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 import type { Translate } from "../../../lib/i18n";
 import { BrandMark } from "../../../ui/BrandMark/BrandMark";
+import { THEME_LOCK } from "../../../ui/theme";
 import { MenuIcon } from "../../../ui/icons";
 import { LanguageMenu } from "./LanguageMenu";
 import { NavLinks } from "./NavLinks";
@@ -21,13 +22,12 @@ export const NAV = [
 /**
  * Public shell: mark and navigation on top, one reading column, and a footer that
  * carries the credit line, the nonpartisan statement and the emergency number.
- * Follows the device's light or dark setting. The shell owns the landmarks.
+ * Always light. The shell owns the landmarks.
  */
-export function PublicShell({ t, children, theme = "system" }: { t: Translate; children: ReactNode; theme?: "system" | "light" | "dark" }) {
+export function PublicShell({ t, children, theme = THEME_LOCK ?? "light" }: { t: Translate; children: ReactNode; theme?: "system" | "light" | "dark" }) {
   const items = NAV.map((item) => ({ href: item.href, label: t(item.key) }));
   return (
-    // The theme script sets the person's saved theme on this element before the page hydrates.
-    <div className={`eg-public ${styles.shell}`} data-theme={theme} suppressHydrationWarning>
+    <div className={`eg-public ${styles.shell}`} data-theme={THEME_LOCK ?? theme} suppressHydrationWarning>
       <a className={styles.skip} href="#eg-main">
         {t("ui.skipToContent")}
       </a>

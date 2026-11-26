@@ -9,7 +9,7 @@ import styles from "./ChoiceTile.module.css";
 export type ChoiceOption = {
   value: string;
   label: string;
-  /** 40 px category pictogram (see icons/pictograms). */
+  /** Category pictogram (see icons/pictograms), drawn in the tile's icon disc. */
   pictogram?: ComponentType<IconProps>;
   hint?: string;
   disabled?: boolean;
@@ -29,8 +29,8 @@ export type ChoiceTileGroupProps = ChoiceGroupChrome & {
   options: ChoiceOption[];
   value: string | null;
   onChange: (value: string) => void;
-  /** Columns from 600 px up (always 2 on phones). */
-  columns?: 2 | 3;
+  /** Columns from 720 px up. Always one column on phones. */
+  columns?: 1 | 2 | 3;
   "data-testid"?: string;
 };
 
@@ -63,10 +63,82 @@ export function GroupError({ error, id }: { error: ReactNode; id: string }) {
   );
 }
 
+export type ChoiceTileProps = {
+  name: string;
+  value: string;
+  checked: boolean;
+  onChange: () => void;
+  label: ReactNode;
+  description?: ReactNode;
+  /** Pictogram or icon drawn in the 40 px disc. Without it the tile has no disc. */
+  icon?: ReactNode;
+  /** A danger answer: red edge and disc, always with an icon or word. */
+  tone?: "danger";
+  disabled?: boolean;
+  /** Radio by default; "checkbox" for pick-many lists that share the look. */
+  type?: "radio" | "checkbox";
+  "data-testid"?: string;
+};
+
 /**
- * Single-select grid of picture tiles. Built on native radio inputs, so arrow
+ * One tile for every choice step: 64 px minimum, an optional icon disc, the label (and a
+ * one-line description), and a 24 px tick that fills when chosen. The native input fills the
+ * tile, so keyboard, screen readers and arrow keys behave as a normal radio group.
+ */
+export function ChoiceTile({
+  name,
+  value,
+  checked,
+  onChange,
+  label,
+  description,
+  icon,
+  tone,
+  disabled,
+  type = "radio",
+  "data-testid": testId,
+}: ChoiceTileProps) {
+  return (
+    <label
+      className={styles.tile}
+      data-checked={checked || undefined}
+      data-disabled={disabled || undefined}
+      data-bare={icon ? undefined : ""}
+      data-tone={tone}
+      data-testid={testId}
+    >
+      <input
+        className={styles.input}
+        type={type}
+        name={name}
+        value={value}
+        checked={checked}
+        disabled={disabled}
+        onChange={() => {
+          haptic(8);
+          onChange();
+        }}
+      />
+      {icon ? (
+        <span className={styles.disc} aria-hidden="true">
+          {icon}
+        </span>
+      ) : null}
+      <span className={styles.tileText}>
+        <span className={styles.tileLabel}>{label}</span>
+        {description ? <span className={styles.tileHint}>{description}</span> : null}
+      </span>
+      <span className={styles.tick} aria-hidden="true">
+        <CheckIcon strokeWidth={2.5} />
+      </span>
+    </label>
+  );
+}
+
+/**
+ * Single-select list of ChoiceTiles. Built on native radio inputs, so arrow
  * keys, Space and screen readers work as a radio group without extra code.
- * The selected tile gets a 2 px ink border and a tick: never colour alone.
+ * The selected tile gets a 2 px ink edge and a filled tick: never colour alone.
  */
 export function ChoiceTileGroup({
   legend,
@@ -77,7 +149,7 @@ export function ChoiceTileGroup({
   options,
   value,
   onChange,
-  columns = 3,
+  columns = 1,
   "data-testid": testId = "choice-tiles",
 }: ChoiceTileGroupProps) {
   const id = useId();
@@ -95,42 +167,20 @@ export function ChoiceTileGroup({
       {error && errorId ? <GroupError error={error} id={errorId} /> : null}
       <div className={styles.grid} data-columns={columns}>
         {options.map((option) => {
-          const checked = value === option.value;
           const Pictogram = option.pictogram;
           return (
-            <label
+            <ChoiceTile
               key={option.value}
-              className={styles.tile}
-              data-checked={checked || undefined}
-              data-disabled={option.disabled || undefined}
+              name={name}
+              value={option.value}
+              checked={value === option.value}
+              disabled={option.disabled}
+              onChange={() => onChange(option.value)}
+              label={option.label}
+              description={option.hint}
+              icon={Pictogram ? <Pictogram size={24} /> : undefined}
               data-testid={`${testId}-${option.value}`}
-            >
-              <input
-                className={styles.input}
-                type="radio"
-                name={name}
-                value={option.value}
-                checked={checked}
-                disabled={option.disabled}
-                onChange={() => {
-                  haptic(8);
-                  onChange(option.value);
-                }}
-              />
-              <i className={styles.sweep} aria-hidden="true" />
-              {Pictogram ? (
-                <span className={styles.disc}>
-                  <Pictogram size={30} />
-                </span>
-              ) : null}
-              <span className={styles.tileText}>
-                <span className={styles.tileLabel}>{option.label}</span>
-                {option.hint ? <span className={styles.tileHint}>{option.hint}</span> : null}
-              </span>
-              <span className={styles.tick} aria-hidden="true">
-                <CheckIcon size={14} strokeWidth={3} />
-              </span>
-            </label>
+            />
           );
         })}
       </div>

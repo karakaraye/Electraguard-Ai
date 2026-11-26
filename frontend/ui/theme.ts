@@ -4,6 +4,13 @@ import { useSyncExternalStore } from "react";
 
 export type ThemePreference = "system" | "light" | "dark";
 
+/**
+ * Light only. While this is set, every screen renders light and the stored choice is
+ * ignored. The dark and device-follow tokens stay in tokens.css for later; set this to
+ * null to bring the stored preference back.
+ */
+export const THEME_LOCK: ThemePreference | null = "light";
+
 const STORAGE_KEY = "eg.theme";
 const listeners = new Set<() => void>();
 let memory: ThemePreference | null = null;
@@ -25,6 +32,7 @@ function read(): ThemePreference | null {
 
 /** Saves the appearance choice on this device. */
 export function setThemePreference(theme: ThemePreference) {
+  if (THEME_LOCK) return;
   memory = theme;
   try {
     window.localStorage.setItem(STORAGE_KEY, theme);
@@ -46,7 +54,7 @@ function subscribe(listener: () => void) {
 export function useThemePreference(fallback: ThemePreference): ThemePreference {
   return useSyncExternalStore(
     subscribe,
-    () => read() ?? fallback,
-    () => fallback,
+    () => THEME_LOCK ?? read() ?? fallback,
+    () => THEME_LOCK ?? fallback,
   );
 }
