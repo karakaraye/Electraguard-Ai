@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useRef, useState, type FormEvent, type KeyboardEvent } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState, type FormEvent, type KeyboardEvent } from "react";
 import type {
   Category,
   Channel,
@@ -26,6 +26,7 @@ import {
 } from "../../../../ui";
 import { formatWatDateTime } from "../../../../ui/format";
 import { useMediaQuery } from "../../../../ui/hooks";
+import { animate } from "../../../../ui/motion";
 import {
   CameraIcon,
   ChevronDownIcon,
@@ -197,6 +198,30 @@ export function QueueTableView({
         });
   }, [rawItems, sort]);
 
+  // When the "n new" pill is pressed, the rows already on screen step down to make room (FLIP:
+  // measured, then moved back to where they were and released), and the new rows fade in.
+  const tops = useRef<Map<string, number>>(new Map());
+  const revealing = useRef(false);
+  useLayoutEffect(() => {
+    const rows = Array.from(bodyRef.current?.querySelectorAll<HTMLElement>("tr[data-row-key]") ?? []);
+    const next = new Map<string, number>();
+    for (const row of rows) next.set(row.dataset.rowKey ?? "", row.getBoundingClientRect().top + window.scrollY);
+    if (revealing.current && tops.current.size > 0) {
+      revealing.current = false;
+      for (const row of rows) {
+        const key = row.dataset.rowKey ?? "";
+        const was = tops.current.get(key);
+        if (was === undefined) {
+          animate(row, [{ opacity: 0 }, { opacity: 1 }], { duration: 240, easing: "out" });
+        } else {
+          const dy = was - (next.get(key) ?? was);
+          if (Math.abs(dy) > 1) animate(row, [{ transform: `translateY(${dy}px)` }, { transform: "translateY(0)" }], { duration: 240, easing: "out" });
+        }
+      }
+    }
+    tops.current = next;
+  });
+
   // Rows that were not here at the last render glow once (a cue, not a jump).
   const seen = useRef<Set<string> | null>(null);
   const [fresh, setFresh] = useState<Set<string>>(new Set());
@@ -206,7 +231,7 @@ export function QueueTableView({
       const added = [...ids].filter((id) => !seen.current!.has(id));
       if (added.length > 0 && seen.current.size > 0) {
         const start = window.setTimeout(() => setFresh(new Set(added)), 0);
-        const stop = window.setTimeout(() => setFresh(new Set()), 2600);
+        const stop = window.setTimeout(() => setFresh(new Set()), 1800);
         seen.current = ids;
         return () => {
           window.clearTimeout(start);
@@ -598,7 +623,10 @@ export function QueueTableView({
           <button
             type="button"
             className={styles.newPill}
-            onClick={onShowNew}
+            onClick={() => {
+              revealing.current = true;
+              onShowNew?.();
+            }}
             data-testid="s02-new-pill"
           >
             {t("s02.newCases", { count: newCount })}

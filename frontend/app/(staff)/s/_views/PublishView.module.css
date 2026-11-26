@@ -363,22 +363,3 @@
     text-align: start !important;
   }
 }
-
-/* Status chip change: the new chip settles in from slightly smaller. Transform and opacity only. */
-.chipMorph {
-  display: inline-flex;
-  animation: chip-morph var(--dur-step) var(--ease-pop) both;
-}
-
-@keyframes chip-morph {
-  from {
-    opacity: 0;
-    transform: scale(0.88);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .chipMorph {
-    animation: none;
-  }
-}

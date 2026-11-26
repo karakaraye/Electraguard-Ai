@@ -20,7 +20,7 @@ export { Count, type CountProps, type CountTone } from "./Count/Count";
 export { Tag, type TagProps } from "./Tag/Tag";
 export { StaffShell, type StaffCrumb, type StaffNavItem, type StaffShellProps } from "./StaffShell/StaffShell";
 export { StatusBadge, StatusShape, type ReportStatus, type StatusBadgeProps, type StatusTone } from "./StatusBadge/StatusBadge";
-export { Stepper, type StepperProps } from "./Stepper/Stepper";
+export { Stepper, useStepTravel, type StepperProps } from "./Stepper/Stepper";
 export { SuggestionCard, type SuggestionCardProps, type SuggestionState } from "./SuggestionCard/SuggestionCard";
 export { Timeline, type TimelineEvent, type TimelineProps } from "./Timeline/Timeline";
 export { UploadItem, UploadList, type UploadItemProps, type UploadKind, type UploadState } from "./UploadItem/UploadItem";

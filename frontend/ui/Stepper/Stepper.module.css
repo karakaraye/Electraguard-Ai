@@ -22,8 +22,18 @@
   height: 100%;
   background: var(--ink);
   transform-origin: left center;
-  transition: transform var(--dur-step) var(--ease-out);
   will-change: transform;
+}
+
+/* A new step starts from where the last one ended and grows (or shrinks) into place. */
+.fill[data-grow] {
+  animation: grow var(--dur-step) var(--ease-out) both;
+}
+
+@keyframes grow {
+  from {
+    transform: scaleX(var(--from));
+  }
 }
 
 :global([dir="rtl"]) .fill {

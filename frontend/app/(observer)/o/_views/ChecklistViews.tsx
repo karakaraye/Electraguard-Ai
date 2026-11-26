@@ -3,10 +3,11 @@
 /* O-15 Polling-day checklist: the stage list and one stage's form. Views only. */
 
 import Link from "next/link";
-import type { ReactNode } from "react";
+import { useLayoutEffect, useRef, type ReactNode } from "react";
 import type { MissingMaterial, QueueSize, YesNoNotSeen } from "../../../../lib/api/types";
 import { useLocale, useT } from "../../../../lib/i18n/client";
 import { Banner, Button, ButtonLink, ChoiceTile, Field, Sheet, StatusBadge, type ReportStatus } from "../../../../ui";
+import { animate } from "../../../../ui/motion";
 import { ObserverShell } from "../_components/ObserverShell";
 import { formatWatTime } from "../../../../ui/format";
 import { CheckIcon, ChevronRightIcon, PlaceIcon } from "../../../../ui/icons";
@@ -36,6 +37,46 @@ export type ChecklistListViewProps = {
   onBack: () => void;
 };
 
+const SEEN_KEY = "eg.checklist.seen";
+
+/**
+ * The timeline fills as stages are received: the line below a stage grows from the top (150 ms)
+ * and its dot pops (160 ms). Only stages received since the last look move, so a person who comes
+ * back to the list sees it still; the first look of a visit fills what is already done.
+ */
+function useTimelineFill(list: { current: HTMLOListElement | null }, done: number) {
+  useLayoutEffect(() => {
+    let seen = 0;
+    try {
+      seen = Number(window.sessionStorage.getItem(SEEN_KEY) ?? 0) || 0;
+    } catch {
+      seen = 0;
+    }
+    const items = Array.from(list.current?.children ?? []);
+    const flights: Array<Animation | null> = [];
+    items.forEach((item, index) => {
+      if (item.getAttribute("data-position") !== "done" || index < seen) return;
+      const delay = (index - seen) * 150;
+      const dot = item.querySelector("[data-stage-dot]");
+      const line = item.querySelector("[data-stage-line]");
+      flights.push(animate(dot, [{ transform: "scale(0.6)" }, { transform: "scale(1)" }], { duration: 160, delay, easing: "out" }));
+      flights.push(animate(line, [{ transform: "scaleY(0)" }, { transform: "scaleY(1)" }], { duration: 150, delay: delay + 40, easing: "cubic-bezier(0.77, 0, 0.175, 1)" }));
+    });
+    // Remembered a moment later, so a remount straight away (development runs effects twice) still plays.
+    const remember = window.setTimeout(() => {
+      try {
+        window.sessionStorage.setItem(SEEN_KEY, String(done));
+      } catch {
+        // Storage blocked: every look then fills the done stages again, which is harmless.
+      }
+    }, 400);
+    return () => {
+      window.clearTimeout(remember);
+      flights.forEach((flight) => flight?.cancel());
+    };
+  }, [list, done]);
+}
+
 /** Arrival also asks for the polling unit, so it counts as two questions. */
 const questionCount = (slug: StageSlug) => QUESTIONS[slug].length + (slug === "arrival" ? 1 : 0);
 
@@ -45,6 +86,8 @@ export function ChecklistListView({ offline, stages, unitLabel = null, onBack }:
   const sent = stages.filter((stage) => stage.state === "received").length;
   const allDone = sent === stages.length;
   const nextIndex = stages.findIndex((stage) => stage.state === "notStarted" || stage.state === "draft" || stage.state === "needsAttention");
+  const timeline = useRef<HTMLOListElement>(null);
+  useTimelineFill(timeline, sent);
   const arrivalKnown = Boolean(unitLabel) || stages.some((stage) => stage.slug === "arrival" && stage.state === "received");
   return (
     <ObserverShell tab="other" title={t("o15.title")} onBack={onBack} offline={offline} data-testid="o15">
@@ -77,7 +120,7 @@ export function ChecklistListView({ offline, stages, unitLabel = null, onBack }:
             <span>{t("o15.needUnit")}</span>
           </p>
         ) : null}
-        <ol className={s.stageTimeline} aria-label={t("o15.title")}>
+        <ol ref={timeline} className={s.stageTimeline} aria-label={t("o15.title")}>
           {stages.map((stage, index) => {
             const done = stage.state === "received";
             const isNext = index === nextIndex;
@@ -95,7 +138,8 @@ export function ChecklistListView({ offline, stages, unitLabel = null, onBack }:
             const position = done ? "done" : isNext ? "next" : "later";
             return (
               <li key={stage.slug} className={s.stageItem} data-position={position} data-locked={locked || undefined} data-testid={`o15-stage-${stage.slug}`}>
-                <span className={s.stageDot} aria-hidden="true">
+                {index < stages.length - 1 ? <span className={s.stageLine} data-stage-line aria-hidden="true" /> : null}
+                <span className={s.stageDot} data-stage-dot aria-hidden="true">
                   {done ? <CheckIcon size={14} strokeWidth={3} /> : null}
                 </span>
                 <div className={s.stageBody}>

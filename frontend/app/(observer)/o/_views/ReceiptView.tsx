@@ -192,7 +192,7 @@ export function PendingView({ state, category, place, occurredAt, offline, onHom
                   ) : null}
                 </p>
                 <div>
-                  <StatusBadge status={badge} size="lg" />
+                  <StatusBadge status={badge} size="lg" morph />
                 </div>
               </>
             ) : (

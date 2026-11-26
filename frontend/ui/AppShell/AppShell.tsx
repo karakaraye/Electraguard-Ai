@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { preload } from "react-dom";
-import { useEffect, useRef, type CSSProperties, type ReactNode } from "react";
+import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import { useT } from "../../lib/i18n/client";
 import { useKeyboardInset, useOffline, useScrolled } from "../hooks";
 import { BrandMark } from "../BrandMark/BrandMark";
@@ -61,6 +61,54 @@ export type AppShellProps = {
   children: ReactNode;
   "data-testid"?: string;
 };
+
+/**
+ * "hidden" while the page's own heading is on screen, "shown" once it has scrolled under the bar,
+ * null when the page has no heading (the bar title then always shows). "snap" is the first
+ * placement, which must not animate. Fades only; nothing is removed from the accessibility tree.
+ */
+type TitleState = null | "hidden" | "shown";
+
+function useBarTitle(contentRef: { current: HTMLElement | null }, enabled: boolean, content: ReactNode) {
+  const [state, setState] = useState<TitleState>(null);
+  const [settled, setSettled] = useState(false);
+  const watching = useRef<Element | null>(null);
+  const observer = useRef<IntersectionObserver | null>(null);
+
+  useEffect(() => {
+    if (!enabled || typeof IntersectionObserver === "undefined") return;
+    const heading = contentRef.current?.querySelector("h1") ?? null;
+    if (heading === watching.current) return;
+    observer.current?.disconnect();
+    watching.current = heading;
+    if (!heading) {
+      observer.current = null;
+      setState(null);
+      return;
+    }
+    observer.current = new IntersectionObserver(
+      ([entry]) => setState(entry.isIntersecting || entry.boundingClientRect.bottom > 57 ? "hidden" : "shown"),
+      { rootMargin: "-57px 0px 0px 0px" },
+    );
+    observer.current.observe(heading);
+    // `content` is a dependency so the heading is looked for again whenever the screen's content changes.
+  }, [contentRef, enabled, content]);
+
+  const stop = () => {
+    observer.current?.disconnect();
+    watching.current = null;
+  };
+  useEffect(() => stop, []);
+
+  // The first value is applied without a transition; later changes fade.
+  useEffect(() => {
+    if (state === null || settled) return;
+    const id = window.requestAnimationFrame(() => setSettled(true));
+    return () => window.cancelAnimationFrame(id);
+  }, [state, settled]);
+
+  return state === null ? undefined : !settled ? "snap-" + state : state;
+}
 
 function preloadFonts() {
   preload("/fonts/noto-sans-latin.woff2", { as: "font", type: "font/woff2", crossOrigin: "anonymous" });
@@ -121,6 +169,8 @@ export function AppShell({
   const shellRef = useRef<HTMLDivElement>(null);
   const sentinelRef = useRef<HTMLDivElement>(null);
   const actionsRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLElement>(null);
+  const barTitle = useBarTitle(contentRef, !preview && variant !== "home", children);
   const scrolled = useScrolled(sentinelRef);
 
   // A focused field or the last tile is never hidden behind the action bar.
@@ -168,7 +218,13 @@ export function AppShell({
         <span className="eg-sr-only">{t("ui.productName")}</span>
       </span>
     ) : title ? (
-      <p className={styles.title}>{title}</p>
+      <p
+        className={styles.title}
+        data-auto={barTitle ? barTitle.replace("snap-", "") : undefined}
+        data-snap={barTitle?.startsWith("snap-") || undefined}
+      >
+        {title}
+      </p>
     ) : (
       <span />
     );
@@ -244,7 +300,7 @@ export function AppShell({
 
       {banner ? <div className={styles.banner}>{banner}</div> : null}
 
-      <Root id={contentId} tabIndex={preview ? undefined : -1} className={styles.content}>
+      <Root ref={contentRef as never} id={contentId} tabIndex={preview ? undefined : -1} className={styles.content}>
         {children}
       </Root>
 

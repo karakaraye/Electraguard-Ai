@@ -371,13 +371,13 @@
   font: 600 0.875rem/1 var(--font);
   box-shadow: var(--shadow-pop);
   cursor: pointer;
-  animation: pill-in var(--dur-step) var(--ease-pop) both;
+  animation: pill-in var(--dur-exit) var(--ease-out) both;
 }
 
 @keyframes pill-in {
   from {
     opacity: 0;
-    transform: translateY(-8px) scale(0.96);
+    transform: translateY(-8px);
   }
 }
 
@@ -509,7 +509,7 @@
   background: var(--sun-tint);
   opacity: 0;
   pointer-events: none;
-  animation: arrive 2.4s var(--ease-out) 1 both;
+  animation: arrive 1.6s linear 1 both;
 }
 
 .table tbody tr[data-new] > :first-child {
@@ -521,6 +521,24 @@
     opacity: 0;
   }
   12% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* Reduced motion: the glow stays still for 600 ms, then fades in 80 ms. */
+@media (prefers-reduced-motion: reduce) {
+  .table tbody tr[data-new] > :first-child::before,
+  .cards > li[data-new] .card::before {
+    animation: arrive-still 680ms linear 1 both;
+  }
+}
+
+@keyframes arrive-still {
+  0%,
+  88% {
     opacity: 0.9;
   }
   100% {

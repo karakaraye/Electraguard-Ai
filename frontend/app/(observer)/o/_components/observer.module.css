@@ -10,6 +10,38 @@
   max-width: none;
 }
 
+/* Report steps: the new step's content comes in 16 px from the side the person is travelling from
+   (forward: from the right; Back: from the left) and fades up; the progress rule grows on its own. */
+.screen[data-travel] > :not([data-testid="stepper"]) {
+  animation: travel-forward var(--dur-step) var(--ease-out) backwards;
+}
+
+.screen[data-travel="-1"] > :not([data-testid="stepper"]) {
+  animation-name: travel-back;
+}
+
+:global([dir="rtl"]) .screen[data-travel] > :not([data-testid="stepper"]) {
+  animation-name: travel-back;
+}
+
+:global([dir="rtl"]) .screen[data-travel="-1"] > :not([data-testid="stepper"]) {
+  animation-name: travel-forward;
+}
+
+@keyframes travel-forward {
+  from {
+    opacity: 0;
+    transform: translateX(16px);
+  }
+}
+
+@keyframes travel-back {
+  from {
+    opacity: 0;
+    transform: translateX(-16px);
+  }
+}
+
 .title {
   margin: 0;
   font: var(--t-title);
@@ -1453,22 +1485,54 @@
   stroke-linejoin: round;
 }
 
-.receivedDisc[data-draw] path {
-  stroke-dasharray: 1;
-  stroke-dashoffset: 1;
-  animation: egDrawTick 400ms var(--ease-out) 240ms forwards;
+/* The disc scales in (200 ms); then the tick is drawn left to right through a cover that scales
+   away (300 ms from 120 ms). Transform and opacity only, no stroke animation. */
+.receivedDisc {
+  position: relative;
 }
 
-@keyframes egDrawTick {
+.receivedDisc[data-draw] {
+  animation: disc-in 200ms var(--ease-out) both;
+}
+
+.receivedDisc[data-draw]::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 32px;
+  height: 32px;
+  margin: -16px 0 0 -16px;
+  background: var(--ok);
+  transform-origin: right center;
+  animation: tick-reveal 300ms var(--ease-out) 120ms both;
+}
+
+@keyframes disc-in {
+  from {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+}
+
+@keyframes tick-reveal {
   to {
-    stroke-dashoffset: 0;
+    transform: scaleX(0);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .receivedDisc[data-draw] path {
-    animation: none;
-    stroke-dashoffset: 0;
+  .receivedDisc[data-draw] {
+    animation: disc-fade 80ms linear both;
+  }
+  .receivedDisc[data-draw]::after {
+    display: none;
+  }
+}
+
+@keyframes disc-fade {
+  from {
+    opacity: 0;
   }
 }
 

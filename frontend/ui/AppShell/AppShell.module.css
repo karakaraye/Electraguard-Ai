@@ -42,12 +42,23 @@
   z-index: var(--z-sticky);
   padding-top: env(safe-area-inset-top);
   background: var(--paper);
-  border-bottom: 1px solid transparent;
-  transition: border-color var(--dur-fade) ease;
 }
 
-.top[data-scrolled] {
-  border-bottom-color: var(--rule);
+/* The 1 px rule fades in (opacity only) once the page has scrolled 8 px. */
+.top::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  height: 1px;
+  background: var(--rule);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--dur-fade) var(--ease-out);
+}
+
+.top[data-scrolled]::after {
+  opacity: 1;
 }
 
 .sentinel {
@@ -55,7 +66,7 @@
   top: 0;
   left: 0;
   width: 1px;
-  height: 1px;
+  height: 8px;
   pointer-events: none;
 }
 
@@ -161,6 +172,28 @@
 @media (hover: hover) and (pointer: fine) {
   .barBtn:hover {
     background: var(--paper-2);
+  }
+}
+
+/* The bar title waits until the page's own heading has scrolled under the bar, then fades up 4 px. */
+.title[data-auto] {
+  transition:
+    opacity var(--dur-fade) var(--ease-out),
+    transform var(--dur-fade) var(--ease-out);
+}
+
+.title[data-auto="hidden"] {
+  opacity: 0;
+  transform: translateY(4px);
+}
+
+.title[data-snap] {
+  transition: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .title[data-auto="hidden"] {
+    transform: none;
   }
 }
 

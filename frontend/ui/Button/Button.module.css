@@ -165,3 +165,112 @@
   width: 1.25em;
   height: 1.25em;
 }
+
+/* ---------- Send: the bar closes into a ring that turns (design: motion studies, Send) ---------- */
+/* Label fades (100 ms); the fill closes to a disc (scaleX, 300 ms ease-in-out); the disc and its ring
+   appear as the fill goes. Reduced motion keeps the plain loading text above. */
+.ringLayer {
+  display: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .button[data-ring] .ringLayer {
+    position: absolute;
+    inset: calc(var(--border-w) * -1);
+    display: grid;
+    place-items: center;
+    pointer-events: none;
+  }
+
+  .ringBg {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: var(--ink);
+    opacity: 0;
+  }
+
+  .ringDisc {
+    display: grid;
+    place-items: center;
+    height: 100%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: var(--ink);
+    opacity: 0;
+  }
+
+  .ringSpin {
+    width: 40%;
+    aspect-ratio: 1;
+    border: 3px solid rgb(250 248 243 / 0.3);
+    border-top-color: var(--on-ink);
+    border-radius: 50%;
+  }
+
+  .button[data-ring] .label {
+    transition: opacity 100ms linear;
+  }
+
+  .button[data-ring][aria-busy="true"] {
+    background: transparent;
+    border-color: transparent;
+  }
+
+  .button[data-ring] .label[data-hidden] {
+    visibility: visible;
+    opacity: 0;
+  }
+
+  .button[data-ring] .loading {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .button[data-ring][aria-busy="true"] .ringBg {
+    transform-origin: center;
+    animation: ring-close 300ms cubic-bezier(0.77, 0, 0.175, 1) both;
+  }
+
+  .button[data-ring][aria-busy="true"] .ringDisc {
+    animation: ring-disc 120ms linear 220ms both;
+  }
+
+  .button[data-ring][aria-busy="true"] .ringSpin {
+    animation: ring-turn 800ms linear infinite;
+  }
+}
+
+@keyframes ring-close {
+  0% {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+  90% {
+    opacity: 1;
+    transform: scaleX(var(--ring-k, 1));
+  }
+  100% {
+    opacity: 0;
+    transform: scaleX(var(--ring-k, 1));
+  }
+}
+
+@keyframes ring-disc {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes ring-turn {
+  to {
+    transform: rotate(360deg);
+  }
+}

@@ -64,7 +64,7 @@ export function ReportRow({
             {hideTime ? null : <span className="eg-tnum">{formatWatShort(observedAt, locale)}</span>}
           </span>
           <span className={styles.status}>
-            <StatusBadge status={status} />
+            <StatusBadge status={status} morph />
             {reference ? <span className={`${styles.code} eg-tnum`}>{reference}</span> : null}
             {note ? <span className={styles.note}>{note}</span> : null}
           </span>

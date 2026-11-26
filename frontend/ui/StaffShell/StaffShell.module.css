@@ -229,6 +229,8 @@
   color: var(--ok);
   font: 600 0.8125rem/1 var(--font);
   text-decoration: none;
+  /* Green gives way to amber in 200 ms; the ring below is the only other movement. */
+  transition: color var(--dur-exit) linear;
 }
 
 .intake[data-state="paused"] {
@@ -243,11 +245,33 @@
   border-radius: 50%;
   background: var(--ok-solid);
   box-shadow: 0 0 0 3px var(--ok-bg);
+  transition:
+    background-color var(--dur-exit) linear,
+    box-shadow var(--dur-exit) linear;
 }
 
 .intake[data-state="paused"] .dot {
   background: var(--attn-solid);
   box-shadow: 0 0 0 3px var(--attn-bg);
+}
+
+/* In the phone's left drawer the rail's rows rise and fade in one after the other (30 ms apart). */
+.rail[data-variant="sheet"] .itemWrap {
+  animation: row-in var(--dur-exit) var(--ease-out) backwards;
+}
+
+.rail[data-variant="sheet"] .itemWrap:nth-child(1) { animation-delay: 120ms; }
+.rail[data-variant="sheet"] .itemWrap:nth-child(2) { animation-delay: 150ms; }
+.rail[data-variant="sheet"] .itemWrap:nth-child(3) { animation-delay: 180ms; }
+.rail[data-variant="sheet"] .itemWrap:nth-child(4) { animation-delay: 210ms; }
+.rail[data-variant="sheet"] .itemWrap:nth-child(5) { animation-delay: 240ms; }
+.rail[data-variant="sheet"] .itemWrap:nth-child(n + 6) { animation-delay: 270ms; }
+
+@keyframes row-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
 }
 
 /* One ring when intake pauses: transform and opacity only. */
@@ -257,17 +281,24 @@
   inset: -3px;
   border-radius: 50%;
   border: 2px solid var(--attn-solid);
-  animation: ring var(--dur-scene) var(--ease-out) 1 both;
+  animation: ring 600ms var(--ease-out) 1 both;
 }
 
 @keyframes ring {
   from {
-    opacity: 0.9;
+    opacity: 0.55;
     transform: scale(1);
   }
   to {
     opacity: 0;
-    transform: scale(3.2);
+    transform: scale(2.8);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .intake[data-pulse] .dot::after {
+    animation: none;
+    display: none;
   }
 }
 

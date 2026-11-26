@@ -1,11 +1,12 @@
 "use client";
 
-import { useId, useState } from "react";
+import { useId, useLayoutEffect, useRef, useState } from "react";
 import type { Cell, PublicResultsResponse, SnapshotRecord, SnapshotStatus } from "../../../../lib/api/types";
 import { useLocale, useT } from "../../../../lib/i18n/client";
 import { Banner, Button, EmptyState, Field, Sheet, Skeleton, StatusBadge, Switch, useNow, type StatusTone } from "../../../../ui";
 import { formatWatDateTime } from "../../../../ui/format";
 import { RetryIcon } from "../../../../ui/icons";
+import { animate } from "../../../../ui/motion";
 import { ResultsView } from "../../../(public)/_views/ResultsView";
 import styles from "./PublishView.module.css";
 
@@ -102,6 +103,34 @@ export function PublishView({
   const [scheduling, setScheduling] = useState(false);
 
   const selected = snapshots.find((s) => s.id === selectedId) ?? snapshots[0] ?? null;
+
+  // A new release arriving at the top of the history slides in from 8 px above while the older rows
+  // step down one row (FLIP). Anything else that changes the list (paging, first load) is instant.
+  const historyBody = useRef<HTMLTableSectionElement>(null);
+  const rowTops = useRef<Map<string, number>>(new Map());
+  useLayoutEffect(() => {
+    const rows = Array.from(historyBody.current?.querySelectorAll<HTMLElement>("tr[data-row-key]") ?? []);
+    const next = new Map<string, number>();
+    for (const row of rows) next.set(row.dataset.rowKey ?? "", row.getBoundingClientRect().top + window.scrollY);
+    const before = rowTops.current;
+    const head = rows[0];
+    if (before.size > 0 && head && !before.has(head.dataset.rowKey ?? "")) {
+      animate(
+        head,
+        [
+          { opacity: 0, transform: "translateY(-8px)" },
+          { opacity: 1, transform: "translateY(0)" },
+        ],
+        { duration: 200, easing: "out" },
+      );
+      for (const row of rows.slice(1)) {
+        const key = row.dataset.rowKey ?? "";
+        const dy = (before.get(key) ?? next.get(key) ?? 0) - (next.get(key) ?? 0);
+        if (Math.abs(dy) > 1) animate(row, [{ transform: `translateY(${dy}px)` }, { transform: "translateY(0)" }], { duration: 200, easing: "out" });
+      }
+    }
+    rowTops.current = next;
+  });
 
   /* ---- Cutoff checks, derived on every render ---- */
   const instant = cutoff ? watInstant(cutoff) : null;
@@ -273,11 +302,11 @@ export function PublishView({
                     <th scope="col">{t("s07.columns.published")}</th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody ref={historyBody}>
                   {snapshots.map((snap) => {
                     const isSelected = snap.id === selected?.id;
                     return (
-                      <tr key={snap.id} data-selected={isSelected ? "" : undefined}>
+                      <tr key={snap.id} data-row-key={snap.id} data-selected={isSelected ? "" : undefined}>
                         <th scope="row" data-label={t("s07.columns.cutoff")}>
                           <button
                             type="button"
@@ -428,10 +457,8 @@ function Detail({ record, onApprove, onDiscard }: { record: SnapshotRecord; onAp
         <div className={styles.detailText}>
           <div className={styles.titleRow}>
             <h2 id={titleId} className={styles.cardTitle}>{t("s07.previewTitle")}</h2>
-            {/* Keyed by status: when a draft becomes published the chip changes in place. */}
-            <span key={record.status} className={styles.chipMorph}>
-              <StatusBadge tone={STATUS_TONE[record.status]} label={t(`s07.status.${record.status}`)} />
-            </span>
+            {/* Keyed by release: when this release goes from draft to published the chip morphs in place. */}
+            <StatusBadge key={record.id} morph tone={STATUS_TONE[record.status]} label={t(`s07.status.${record.status}`)} />
           </div>
           <p className={styles.sub}>{t("s07.detail.by", { name: record.created_by, cutoff: formatWatDateTime(record.cutoff, locale) })}</p>
           <p className={styles.hint}>{statusNote}</p>

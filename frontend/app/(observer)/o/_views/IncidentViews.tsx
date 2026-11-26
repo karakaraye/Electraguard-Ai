@@ -11,6 +11,7 @@ import {
   Button,
   ButtonLink,
   ChoiceTileGroup,
+  OutboxBadge,
   DictationCorner,
   DictationStatus,
   MediaCapture,
@@ -18,6 +19,7 @@ import {
   Sheet,
   StatusBadge,
   Stepper,
+  useStepTravel,
   TextArea,
   WhenPicker,
   Switch,
@@ -67,14 +69,17 @@ export type StepShellProps = {
   actions?: ReactNode;
   testId: string;
   citizen?: boolean;
+  /** Extra control in the bar before Close (the outbox badge after a report is saved on the phone). */
+  end?: ReactNode;
   children: ReactNode;
 };
 
-export function StepShell({ step, onBack, onDiscard, onLeave, offline, banner, actions, testId, citizen, children }: StepShellProps) {
+export function StepShell({ step, onBack, onDiscard, onLeave, offline, banner, actions, testId, citizen, end, children }: StepShellProps) {
   const t = useT();
   const [leaving, setLeaving] = useState(false);
   const [confirm, setConfirm] = useState(false);
   const leave = onLeave ?? onBack;
+  const travel = useStepTravel(step);
   return (
     <ObserverShell
       title={citizen ? <span data-testid="citizen-title">{t("o04.citizenMode")}</span> : t("ui.nav.newReport")}
@@ -82,11 +87,12 @@ export function StepShell({ step, onBack, onDiscard, onLeave, offline, banner, a
       onClose={onDiscard ? () => setLeaving(true) : leave}
       offline={offline}
       banner={banner}
+      end={end}
       actions={actions}
       data-testid={testId}
     >
-      <div className={`${styles.screen} ${styles.wide}`}>
-        {step > 0 ? <Stepper current={step} total={TOTAL_STEPS} /> : null}
+      <div className={`${styles.screen} ${styles.wide}`} data-travel={step > 0 && travel.direction ? travel.direction : undefined}>
+        {step > 0 ? <Stepper current={step} total={TOTAL_STEPS} from={travel.from} /> : null}
         {children}
       </div>
       {onDiscard ? (
@@ -709,6 +715,8 @@ export type CheckViewProps = Common & {
   onEdit: (block: CheckBlock) => void;
   onSend: () => void;
   onHome?: () => void;
+  /** Reports waiting on this phone, shown on the outbox badge once this one is saved here. */
+  outboxCount?: number;
 };
 
 export function CheckView({
@@ -726,9 +734,12 @@ export function CheckView({
   onEdit,
   onSend,
   onHome,
+  outboxCount = 0,
   ...shell
 }: CheckViewProps) {
   const t = useT();
+  // Where the Send button was when it was pressed: the saved-on-phone envelope leaves from there.
+  const [sendBox, setSendBox] = useState<DOMRect | null>(null);
   const { locale } = useLocale();
   const [all, setAll] = useState(false);
   const meta = category ? categoryMeta(category) : null;
@@ -795,6 +806,11 @@ export function CheckView({
       step={outcome ? 0 : 7}
       testId="o11"
       {...shell}
+      end={
+        status === "savedOffline" && outboxCount > 0 ? (
+          <OutboxBadge count={outboxCount} flyFrom={sendBox} label={t("o04.outboxLabel", { count: outboxCount })} data-testid="o11-outbox-badge" />
+        ) : undefined
+      }
       actions={
         finished && onHome ? (
           <Button block onClick={onHome} data-testid="o11-home">
@@ -803,8 +819,12 @@ export function CheckView({
         ) : (
           <Button
             block
-            onClick={onSend}
+            onClick={(event) => {
+              setSendBox(event.currentTarget.getBoundingClientRect());
+              onSend();
+            }}
             loading={busy}
+            ring
             loadingLabel={t("o11.sending")}
             disabled={status === "queueFull" || status === "storageFull"}
             data-testid="o11-send"

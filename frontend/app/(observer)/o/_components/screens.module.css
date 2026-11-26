@@ -1067,17 +1067,17 @@
   padding-bottom: var(--s-5);
 }
 
-.stageItem:not(:last-child)::before {
-  content: "";
+.stageLine {
   position: absolute;
   top: 30px;
   bottom: 2px;
   left: 13px;
   width: 2px;
   background: var(--rule-control);
+  transform-origin: top center;
 }
 
-.stageItem[data-position="done"]:not(:last-child)::before {
+.stageItem[data-position="done"] .stageLine {
   background: var(--ok);
 }
 

@@ -125,7 +125,7 @@ export function CaseView({
           <p className={styles.reporter}>{reporter}</p>
         </div>
         <div className={styles.headBadges}>
-          <StatusBadge status={badgeStatus(c.status)} size="lg" />
+          <StatusBadge status={badgeStatus(c.status)} size="lg" morph />
           {c.simulated ? <span className={styles.simulated}>{t("s03.simulated")}</span> : null}
         </div>
       </header>

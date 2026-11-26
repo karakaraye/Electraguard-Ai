@@ -253,7 +253,7 @@ function IntakeCard({
     <Card id={titleId} title={t("s11.intakeCard.title")} hint={t("s11.intakeCard.hint")} wide>
       <div className={styles.switchRow}>
         <div className={styles.switchText}>
-          <StatusBadge tone={paused ? "danger" : "ok"} label={paused ? t("s11.intakeCard.paused") : t("s11.intakeCard.open")} />
+          <StatusBadge morph tone={paused ? "danger" : "ok"} label={paused ? t("s11.intakeCard.paused") : t("s11.intakeCard.open")} />
           <span id={`${titleId}-switch`} className={styles.switchLabel}>{t("s11.intakeCard.switch")}</span>
         </div>
         <Switch checked={paused} onToggle={() => setOpen(true)} labelledBy={`${titleId}-switch`} tone="danger" />

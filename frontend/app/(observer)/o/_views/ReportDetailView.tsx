@@ -223,7 +223,7 @@ export function ReportDetailView(props: ReportDetailViewProps) {
         })}
       </ol>
     ) : (
-      <StatusBadge status={status} size="lg" />
+      <StatusBadge status={status} size="lg" morph />
     );
   const outcomeWhy = props.outcomeKey ? `o14.outcomeWhy.${props.outcomeKey.split(".").pop()}` : null;
   const statusBlock = (

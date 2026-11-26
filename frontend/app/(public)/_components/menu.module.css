@@ -169,6 +169,28 @@
   color: var(--danger);
 }
 
+/* Rows rise 8 px and fade in once the sheet is moving: 200 ms each, from 120 ms, 30 ms apart. */
+.rows li,
+.langLabel,
+.radio,
+.emergency {
+  animation: row-in var(--dur-exit) var(--ease-out) backwards;
+}
+
+.rows li:nth-child(1) { animation-delay: 120ms; }
+.rows li:nth-child(2) { animation-delay: 150ms; }
+.rows li:nth-child(3) { animation-delay: 180ms; }
+.rows li:nth-child(4) { animation-delay: 210ms; }
+.rows li:nth-child(5) { animation-delay: 240ms; }
+.rows li:nth-child(n + 6) { animation-delay: 270ms; }
+.langLabel { animation-delay: 270ms; }
+.radio { animation-delay: 300ms; }
+.emergency { animation-delay: 330ms; }
+
+@keyframes row-in {
+  from { opacity: 0; transform: translateY(8px); }
+}
+
 @keyframes fade {
   from { opacity: 0; }
   to { opacity: 1; }

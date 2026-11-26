@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, type ComponentType, type ReactNode } from "react";
+import { useId, useState, type ComponentType, type ReactNode } from "react";
 import { useT } from "../../lib/i18n/client";
 import { AlertIcon, CheckIcon, type IconProps } from "../icons";
 import { haptic } from "../motion";
@@ -98,10 +98,13 @@ export function ChoiceTile({
   type = "radio",
   "data-testid": testId,
 }: ChoiceTileProps) {
+  // The tick pops only when this tile is chosen now, never when a saved answer is shown again.
+  const [chosenNow, setChosenNow] = useState(false);
   return (
     <label
       className={styles.tile}
       data-checked={checked || undefined}
+      data-pop={(checked && chosenNow) || undefined}
       data-disabled={disabled || undefined}
       data-bare={icon ? undefined : ""}
       data-tone={tone}
@@ -115,7 +118,8 @@ export function ChoiceTile({
         checked={checked}
         disabled={disabled}
         onChange={() => {
-          haptic(8);
+          setChosenNow(true);
+          haptic(10);
           onChange();
         }}
       />

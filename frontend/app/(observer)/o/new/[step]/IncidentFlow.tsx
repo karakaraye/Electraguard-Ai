@@ -18,6 +18,7 @@ import {
   QueueFullError,
   returnToDraft,
   StorageFullError,
+  useOutbox,
   useReportState,
   type OutboxItem,
 } from "../../../../../lib/outbox";
@@ -530,6 +531,7 @@ function CheckStep({ handle, nav, shell, sentId, setSentId, offline }: StepProps
   const [serverErrors, setServerErrors] = useState<Partial<Record<CheckBlock, string>>>({});
   const [localErrors, setLocalErrors] = useState<Partial<Record<CheckBlock, string>>>({});
   const report = useReportState(sentId);
+  const outboxCount = useOutbox().items.length;
   const draft = sent?.draft ?? handle.draft;
   const previews = useMediaPreviews(draft?.media ?? []);
   const leftHome = useRef(false);
@@ -611,6 +613,7 @@ function CheckStep({ handle, nav, shell, sentId, setSentId, offline }: StepProps
       media={draft.media.map((media) => ({ id: media.client_media_id, kind: media.kind, previewUrl: previews[media.client_media_id] ?? null, name: media.name }))}
       errors={errors}
       status={shown}
+      outboxCount={outboxCount}
       onHome={() => router.push(nav.citizen ? "/o/start?view=choose" : "/o")}
       onEdit={(block) => {
         const target: StepId = block === "source" ? "describe" : block === "describe" ? "describe" : block;

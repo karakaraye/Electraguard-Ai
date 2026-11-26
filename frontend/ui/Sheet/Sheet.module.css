@@ -38,7 +38,7 @@
 .sheet::backdrop {
   background: transparent;
   transition:
-    background-color var(--dur-sheet) ease,
+    background-color var(--dur-step) linear,
     overlay var(--dur-sheet) allow-discrete,
     display var(--dur-sheet) allow-discrete;
 }
@@ -176,4 +176,37 @@
 .footer > * {
   flex: 1 1 9rem;
   min-width: 0;
+}
+
+/* Rows rise 8 px and fade in after the sheet starts to move: 200 ms each, from 120 ms, 30 ms apart.
+   Backwards fill only, so nothing is left holding a transform once a row has arrived. The footer
+   only fades (no movement), so the buttons are still the moment they can be pressed. */
+.body > *,
+.footer > * {
+  animation: row-in var(--dur-exit) var(--ease-out) backwards;
+}
+
+.footer > * {
+  animation-name: row-fade;
+}
+
+.body > :nth-child(1) { animation-delay: 120ms; }
+.body > :nth-child(2) { animation-delay: 150ms; }
+.body > :nth-child(3) { animation-delay: 180ms; }
+.body > :nth-child(4) { animation-delay: 210ms; }
+.body > :nth-child(5) { animation-delay: 240ms; }
+.body > :nth-child(n + 6) { animation-delay: 270ms; }
+.footer > * { animation-delay: 150ms; }
+
+@keyframes row-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+@keyframes row-fade {
+  from {
+    opacity: 0;
+  }
 }
