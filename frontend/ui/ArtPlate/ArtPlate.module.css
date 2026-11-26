@@ -1,0 +1,56 @@
+.plate {
+  display: block;
+  width: 100%;
+  background: var(--paper-2);
+  border-radius: var(--radius-xl);
+}
+
+.window {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  border-radius: var(--radius-xl);
+}
+
+.window svg,
+.image {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* Light: the art meets the paper with no frame. */
+.fade {
+  display: none;
+}
+
+/* Dark: a paper window with a hairline and a 24px inner fade. */
+:global([data-theme="dark"]) .plate {
+  border: 1px solid var(--rule);
+  background: var(--art-wall);
+}
+
+:global([data-theme="dark"]) .fade {
+  position: absolute;
+  inset: 0;
+  display: block;
+  border-radius: inherit;
+  box-shadow: inset 0 0 24px 8px var(--art-wall);
+  pointer-events: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  :global([data-theme="system"]) .plate {
+    border: 1px solid var(--rule);
+    background: var(--art-wall);
+  }
+
+  :global([data-theme="system"]) .fade {
+    position: absolute;
+    inset: 0;
+    display: block;
+    border-radius: inherit;
+    box-shadow: inset 0 0 24px 8px var(--art-wall);
+    pointer-events: none;
+  }
+}

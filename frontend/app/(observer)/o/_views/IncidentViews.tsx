@@ -12,7 +12,8 @@ import {
   Button,
   ButtonLink,
   ChoiceTileGroup,
-  DictationButton,
+  DictationCorner,
+  DictationStatus,
   MediaCapture,
   PollingUnitPicker,
   Sheet,
@@ -26,6 +27,7 @@ import {
   type PollingUnitPickerProps,
   type VoiceRecorder,
   type WhenValue,
+  useDictation,
 } from "../../../../ui";
 import { formatBytes, formatWatDateTime } from "../../../../ui/format";
 import {
@@ -38,8 +40,11 @@ import {
   PhoneIcon,
   PlaceIcon,
   RetryIcon,
+  ShieldCheckIcon,
   TrashIcon,
   VideoIcon,
+  EyeIcon,
+  MessageIcon,
 } from "../../../../ui/icons";
 import { AppBarTitle } from "../_components/AppBarTitle";
 import styles from "../_components/observer.module.css";
@@ -58,16 +63,17 @@ export type StepShellProps = {
   banner?: ReactNode;
   actions?: ReactNode;
   testId: string;
+  citizen?: boolean;
   children: ReactNode;
 };
 
-export function StepShell({ step, onBack, onDiscard, offline, banner, actions, testId, children }: StepShellProps) {
+export function StepShell({ step, onBack, onDiscard, offline, banner, actions, testId, citizen, children }: StepShellProps) {
   const t = useT();
   const [menu, setMenu] = useState(false);
   const [confirm, setConfirm] = useState(false);
   return (
     <AppShell
-      title={<AppBarTitle />}
+      title={citizen ? <span data-testid="citizen-title">{t("o04.citizenMode")}</span> : <AppBarTitle />}
       onBack={onBack}
       onMenu={onDiscard ? () => setMenu(true) : undefined}
       offline={offline}
@@ -126,7 +132,8 @@ export function StepShell({ step, onBack, onDiscard, offline, banner, actions, t
   );
 }
 
-type Common = { onBack: () => void; onDiscard?: () => void; offline?: boolean; banner?: ReactNode };
+/** `citizen`: a report without an account (screen 29): the bar names it, and Check and send explains the receipt. */
+type Common = { onBack: () => void; onDiscard?: () => void; offline?: boolean; banner?: ReactNode; citizen?: boolean };
 
 /* ---------- O-05 What happened? ---------- */
 
@@ -215,6 +222,7 @@ export function DangerView({ value, error, onAnswer, ...shell }: DangerViewProps
         yesLabel={t("o06.yes")}
         noLabel={t("o06.no")}
         yesIcon={<AlertIcon />}
+        noIcon={<ShieldCheckIcon />}
         yesTone="danger"
         stacked
         data-testid="o06-answer"
@@ -237,27 +245,34 @@ export function EmergencyView({ onContinue, onLater, ...shell }: EmergencyViewPr
           <Button variant="quiet" block onClick={onLater} data-testid="o06-later">
             {t("o06.emergency.later")}
           </Button>
-          <Button block onClick={onContinue} data-testid="o06-continue">
+          <Button variant="secondary" block onClick={onContinue} data-testid="o06-continue">
             {t("o06.emergency.continue")}
           </Button>
         </>
       }
     >
-      <div className={styles.titleRow}>
-        <AlertIcon size={28} aria-hidden="true" />
-        <h1 className={styles.title}>{t("o06.emergency.title")}</h1>
-      </div>
-      <ol className={styles.steps}>
-        <li>{t("o06.emergency.step1")}</li>
-        <li>{t("o06.emergency.step2")}</li>
-        <li>{t("o06.emergency.step3")}</li>
-      </ol>
-      <ButtonLink href={`tel:${EMERGENCY_NUMBER}`} variant="danger" block icon={<PhoneIcon />} className={styles.call} data-testid="o06-call">
-        {t("o06.emergency.call")}
-      </ButtonLink>
-      <p className={styles.noDispatch} data-testid="o06-no-dispatch">
-        {t("o06.emergency.noDispatch")}
-      </p>
+      {/* One safety card: the steps, then Call 112 as the strongest action on the page. */}
+      <section className={styles.safetyCard} aria-labelledby="o06-emergency-title">
+        <div className={styles.titleRow}>
+          <span className={styles.safetyDisc} aria-hidden="true">
+            <AlertIcon size={26} />
+          </span>
+          <h1 className={styles.title} id="o06-emergency-title">
+            {t("o06.emergency.title")}
+          </h1>
+        </div>
+        <ol className={`${styles.steps} ${styles.safetySteps}`}>
+          <li>{t("o06.emergency.step1")}</li>
+          <li>{t("o06.emergency.step2")}</li>
+          <li>{t("o06.emergency.step3")}</li>
+        </ol>
+        <ButtonLink href={`tel:${EMERGENCY_NUMBER}`} variant="danger" block icon={<PhoneIcon />} className={`${styles.call} ${styles.callNow}`} data-testid="o06-call">
+          {t("o06.emergency.call")}
+        </ButtonLink>
+        <p className={styles.noDispatch} data-testid="o06-no-dispatch">
+          {t("o06.emergency.noDispatch")}
+        </p>
+      </section>
     </StepShell>
   );
 }
@@ -268,7 +283,8 @@ export type WhereViewProps = Common & {
   picker: Omit<PollingUnitPickerProps, "error">;
   summary: string | null;
   error: boolean;
-  useToday?: { label: string; onUse: () => void } | null;
+  /** The unit the Arrival stage recorded today, pinned above the search. */
+  useToday?: { label: string; code: string; selected: boolean; onUse: () => void } | null;
   onContinue: () => void;
 };
 
@@ -286,16 +302,32 @@ export function WhereView({ picker, summary, error, useToday, onContinue, ...she
       }
     >
       <h1 className={styles.title}>{t("o07.title")}</h1>
-      {useToday ? (
-        <Button variant="secondary" block icon={<PlaceIcon />} onClick={useToday.onUse} data-testid="o07-use-today">
-          {t("o07.useToday", { unit: useToday.label })}
-        </Button>
-      ) : null}
-      <PollingUnitPicker {...picker} error={error ? t("o07.error") : undefined} selected={summary ? t("o07.selected", { place: summary }) : ""} />
-      <p className={styles.note}>
+      <p className={`${styles.note} ${styles.noGps}`}>
         <PlaceIcon />
         <span>{t("o07.noGps")}</span>
       </p>
+      {useToday ? (
+        <button
+          type="button"
+          className={styles.todayCard}
+          aria-pressed={useToday.selected}
+          onClick={useToday.onUse}
+          data-testid="o07-use-today"
+        >
+          <span className={styles.todayDisc} aria-hidden="true">
+            <PlaceIcon size={24} />
+          </span>
+          <span className={styles.todayText}>
+            <span className={styles.todayEyebrow}>{t("o07.todayTitle")}</span>
+            <span className={styles.todayName}>{useToday.label}</span>
+            <span className={styles.todayCode}>{useToday.code}</span>
+          </span>
+          <span className={styles.todayTick} aria-hidden="true">
+            {useToday.selected ? <CheckIcon size={18} /> : null}
+          </span>
+        </button>
+      ) : null}
+      <PollingUnitPicker {...picker} error={error ? t("o07.error") : undefined} selected={summary ? t("o07.selected", { place: summary }) : ""} />
     </StepShell>
   );
 }
@@ -313,9 +345,11 @@ export type WhenViewProps = Common & {
   onConfirmOld: () => void;
   onChangeDate: () => void;
   onContinue: () => void;
+  /** The phone clock is more than 10 minutes off, so times use the server clock. */
+  networkTime?: boolean;
 };
 
-export function WhenView({ value, onChange, showErrors, now, minDate, oldSheet, onConfirmOld, onChangeDate, onContinue, ...shell }: WhenViewProps) {
+export function WhenView({ value, onChange, showErrors, now, minDate, oldSheet, onConfirmOld, onChangeDate, onContinue, networkTime, ...shell }: WhenViewProps) {
   const t = useT();
   return (
     <StepShell
@@ -338,6 +372,7 @@ export function WhenView({ value, onChange, showErrors, now, minDate, oldSheet, 
         requireDayTime
         minDate={minDate}
         now={now}
+        zoneText={networkTime ? `${t("o08.watNote")} ${t("o08.networkTime")}` : t("o08.watNote")}
         data-testid="o08-when"
       />
       <Sheet
@@ -399,6 +434,7 @@ export function DescribeView({
 }: DescribeViewProps) {
   const t = useT();
   const { locale } = useLocale();
+  const dictation = useDictation(dictationLang, onDictated, dictationState);
   const errorText = textError ? (textError.key === "o09.tooShort" ? t(textError.key, { min: textError.min }) : t(textError.key, { max: textError.max })) : undefined;
   return (
     <StepShell
@@ -429,6 +465,7 @@ export function DescribeView({
             autoCorrect="on"
             aria-describedby="o09-hints"
             error={errorText}
+            adornment={<DictationCorner dictation={dictation} />}
             data-testid="o09-text"
           />
           {text.length >= 1500 ? (
@@ -436,7 +473,7 @@ export function DescribeView({
               {t("ui.charCount", { count: text.length, max: 2000 })}
             </p>
           ) : null}
-          <DictationButton lang={dictationLang} onText={onDictated} state={dictationState} />
+          <DictationStatus dictation={dictation} />
           {nameWarning ? (
             <div role="alert">
               <Banner
@@ -458,6 +495,8 @@ export function DescribeView({
             onChange={onFirsthand}
             yesLabel={t("o09.sourceSelf")}
             noLabel={t("o09.sourceTold")}
+            yesIcon={<EyeIcon />}
+            noIcon={<MessageIcon />}
             error={sourceError ? t("o09.sourceError") : undefined}
             stacked
             data-testid="o09-source"
@@ -496,6 +535,8 @@ export type EvidenceViewProps = Common & {
 };
 
 const kindIcon = { photo: CameraIcon, video: VideoIcon, audio: MicIcon } as const;
+/** Attachments per report (contract: media_limit_reached). */
+export const MAX_ITEMS = 6;
 
 export function EvidenceView({ items, recorder, onPick, onBlur, onRetake, onRemove, notices, limitReached, estimate, onContinue, ...shell }: EvidenceViewProps) {
   const t = useT();
@@ -514,8 +555,10 @@ export function EvidenceView({ items, recorder, onPick, onBlur, onRetake, onRemo
         </Button>
       }
     >
-      <h1 className={styles.title}>{t("o10.title")}</h1>
-      <p className={styles.lead}>{t("o10.hint")}</p>
+      <div className={styles.evidenceTitle}>
+        <h1 className={styles.title}>{t("o10.title")}</h1>
+        <span className={styles.optionalChip}>{t("ui.optional")}</span>
+      </div>
       <div className={styles.tight} aria-live="assertive">
         {notices.map((notice) => (
           <Banner key={notice.key} tone={notice.tone} title={t(notice.key, notice.vars)} data-testid={`o10-notice-${notice.key}`} />
@@ -523,7 +566,7 @@ export function EvidenceView({ items, recorder, onPick, onBlur, onRetake, onRemo
       </div>
       <MediaCapture onPick={onPick} recorder={recorder} disabled={limitReached} />
       <p className={styles.meta} aria-live="polite" data-testid="o10-count">
-        {t("o10.count", { count: items.length })}
+        {items.length ? t("o10.countOf", { count: items.length, max: MAX_ITEMS }) : ""}
       </p>
       {items.length ? (
         <ul className={styles.items} data-testid="o10-items">
@@ -534,7 +577,7 @@ export function EvidenceView({ items, recorder, onPick, onBlur, onRetake, onRemo
             return (
               <li key={item.id} data-testid="o10-item">
                 <div className={styles.item} role="group" aria-label={`${item.name}, ${index + 1} / ${items.length}`}>
-                <span className={styles.thumb} aria-hidden="true">
+                <span className={styles.thumb} data-processing={item.processing || undefined} aria-hidden="true">
                   {item.previewUrl && item.kind === "photo" ? (
                     // eslint-disable-next-line @next/next/no-img-element -- a local blob: URL, never sent anywhere
                     <img src={item.previewUrl} alt="" />
@@ -547,39 +590,47 @@ export function EvidenceView({ items, recorder, onPick, onBlur, onRetake, onRemo
                       <p className={styles.meta}>{seconds === null ? t("o10.sizeOffline", { size }) : t("o10.size", { size, time: time(seconds) })}</p>
                       {item.kind !== "audio" ? (
                         <p className={styles.tag}>
-                          <CheckIcon size={16} strokeWidth={2.5} />
+                          <CheckIcon size={14} strokeWidth={2.5} />
                           {t("o10.locationRemoved")}
                         </p>
                       ) : null}
                       {item.kind !== "audio" ? (
                         <label className={styles.switch}>
+                          <span>{t("o10.blur")}</span>
                           <input
                             type="checkbox"
                             role="switch"
                             checked={item.blur}
                             onChange={(event) => onBlur(item.id, event.target.checked)}
+                            aria-describedby="o10-blur-note"
                             data-testid="o10-blur"
                           />
-                          <span>{t("o10.blur")}</span>
-                          <span className={styles.switchHint}>{t("o10.blurHint")}</span>
                         </label>
                       ) : null}
-                      <div className={styles.itemActions}>
-                        <Button variant="secondary" icon={<RetryIcon />} onClick={() => onRetake(item.id)} data-testid="o10-retake">
-                          {t("o10.retake")}
-                        </Button>
-                        <Button variant="quiet" icon={<TrashIcon />} onClick={() => setRemoving(item.id)} data-testid="o10-remove">
-                          {t("o10.remove")}
-                        </Button>
-                      </div>
                     </>
                   ) : null}
                 </div>
+                {!item.processing ? (
+                <div className={styles.itemActions}>
+                  <Button variant="quiet" icon={<RetryIcon />} onClick={() => onRetake(item.id)} data-testid="o10-retake">
+                    {t("o10.retake")}
+                  </Button>
+                  <Button variant="quiet" icon={<TrashIcon />} onClick={() => setRemoving(item.id)} data-testid="o10-remove">
+                    {t("o10.remove")}
+                  </Button>
+                </div>
+                ) : null}
                 </div>
               </li>
             );
           })}
         </ul>
+      ) : null}
+      {items.some((item) => item.kind !== "audio") ? (
+        <p className={styles.note} id="o10-blur-note" data-testid="o10-blur-note">
+          <ShieldCheckIcon />
+          <span>{t("o10.blurHint")}</span>
+        </p>
       ) : null}
       <Sheet
         open={removing !== null}
@@ -664,7 +715,7 @@ export function CheckView({
   const [all, setAll] = useState(false);
   const meta = category ? categoryMeta(category) : null;
   const Pictogram = meta ? categoryPictograms[meta.pictogram] : null;
-  const long = description.split("\n").length > 6 || description.length > 360;
+  const long = description.split("\n").length > 3 || description.length > 150;
   const busy = status === "sending" || status === "notConfirmed";
   const finished = status === "savedOffline" || status === "intakePaused" || status === "server" || status === "withdrawn";
   /* The outcome comes first: the title says what happened to the report, the card follows, the summary is secondary. */
@@ -677,7 +728,10 @@ export function CheckView({
 
   const block = (id: CheckBlock, label: string, value: ReactNode) => (
     <div className={styles.block} data-invalid={errors[id] ? "" : undefined} data-wide={id === "describe" || undefined} data-testid={`o11-${id}`}>
-      <dt>{label}</dt>
+      <dt>
+        {label}
+        {errors[id] ? <span className={styles.needsChip}>{t("o11.checkThis")}</span> : null}
+      </dt>
       <dd>
         {value}
         {errors[id] ? (
@@ -703,7 +757,7 @@ export function CheckView({
     intakePaused: { tone: "attn", text: t("o11.intakePaused"), badge: "on-phone" },
     queueFull: { tone: "attn", text: t("o11.queueFull", { max: 20 }) },
     storageFull: { tone: "attn", text: t("common.error.storageFull") },
-    server: { tone: "wait", text: `${t("common.error.server")} ${t("o11.savedOffline")}`, badge: "on-phone" },
+    server: { tone: "wait", text: t("o11.savedServer"), badge: "on-phone" },
     needsAttention: { tone: "attn", text: t("o11.needsAttention"), badge: "needs-attention" },
     withdrawn: { tone: "wait", text: t("o11.withdrawn") },
   };
@@ -737,7 +791,7 @@ export function CheckView({
             disabled={status === "queueFull" || status === "storageFull"}
             data-testid="o11-send"
           >
-            {t("o11.send")}
+            {shell.offline ? t("o11.sendOffline") : t("o11.send")}
           </Button>
         )
       }
@@ -752,6 +806,13 @@ export function CheckView({
         <>
           <h1 className={styles.title}>{t("o11.title")}</h1>
           <p className={styles.lead}>{t("o11.hint")}</p>
+          {shell.citizen ? (
+            <p className={styles.note} data-testid="o11-citizen-note">
+              <ShieldCheckIcon />
+              <span>{t("o11.citizenNote")}</span>
+            </p>
+          ) : null}
+          {statusArea}
         </>
       )}
       <dl className={styles.summary} data-secondary={outcome ? "" : undefined}>
@@ -841,7 +902,6 @@ export function CheckView({
           ),
         )}
       </dl>
-      {outcome ? null : statusArea}
     </StepShell>
   );
 }

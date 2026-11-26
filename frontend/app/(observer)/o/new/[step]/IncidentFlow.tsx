@@ -26,8 +26,9 @@ import { fromWat, watParts } from "../../../../../ui/hooks";
 import { useFocusTitle, useNetwork } from "../../_lib/network";
 import { looksLikeName, textHash } from "../../_lib/name-check";
 import { itemToDraft } from "../../_lib/rebuild";
+import { useChecklistDay, watDay } from "../../_lib/checklist";
 import { useReference } from "../../_lib/reference";
-import { correctedNow, useObserverSession } from "../../_lib/session";
+import { correctedNow, useObserverSession, usingNetworkTime } from "../../_lib/session";
 import {
   CategoryView,
   CheckView,
@@ -193,6 +194,7 @@ export function IncidentFlow() {
           })
       : undefined,
     offline,
+    citizen,
     banner: draftExists ? <Banner tone="attn" title={t("o15.draftExists")} onDismiss={() => setDraftExists(false)} data-testid="o15-draft-exists" /> : undefined,
   };
 
@@ -202,7 +204,7 @@ export function IncidentFlow() {
     case "danger":
       return <DangerStep handle={handle} nav={nav} shell={shell} />;
     case "where":
-      return <WhereStep handle={handle} nav={nav} shell={shell} />;
+      return <WhereStep handle={handle} nav={nav} shell={shell} observer={citizen ? null : (session?.code ?? null)} />;
     case "when":
       return <WhenStep handle={handle} nav={nav} shell={shell} />;
     case "describe":
@@ -281,11 +283,13 @@ function DangerStep({ handle, nav, shell }: StepProps) {
 
 /* ---------- O-07 ---------- */
 
-function WhereStep({ handle, nav, shell }: StepProps) {
+function WhereStep({ handle, nav, shell, observer }: StepProps & { observer: string | null }) {
   const draft = handle.draft;
   const place = draft?.place;
   const [error, setError] = useState(false);
   const reference = useReference(place?.state_code ?? null);
+  // The unit the Arrival stage recorded today (observers only; citizens have no checklist).
+  const todayUnit = useChecklistDay(observer, watDay()).unit;
   const value = {
     state_code: place?.state_code ?? null,
     lga_code: place?.lga_code ?? null,
@@ -320,7 +324,29 @@ function WhereStep({ handle, nav, shell }: StepProps) {
       }}
       summary={complete ? (place?.label ?? null) : null}
       error={error}
-      useToday={null}
+      useToday={
+        todayUnit
+          ? {
+              label: todayUnit.label,
+              code: todayUnit.code,
+              selected: value.polling_unit_code === todayUnit.code,
+              onUse: () => {
+                setError(false);
+                handle.update({
+                  place: {
+                    state_code: todayUnit.state_code,
+                    lga_code: todayUnit.lga_code,
+                    ward_code: todayUnit.ward_code,
+                    polling_unit_code: todayUnit.code,
+                    unknown_unit: false,
+                    label: todayUnit.label,
+                    ward_name: todayUnit.ward_name,
+                  },
+                });
+              },
+            }
+          : null
+      }
       onContinue={() => {
         if (!complete) {
           setError(true);
@@ -341,6 +367,7 @@ function WhenStep({ handle, nav, shell }: StepProps) {
   const [showErrors, setShowErrors] = useState(false);
   const [oldSheet, setOldSheet] = useState(false);
   const [now] = useState(() => correctedNow());
+  const [networkTime] = useState(() => usingNetworkTime());
   const minDate = watParts(now - 30 * DAY_MS).date;
 
   function commit() {
@@ -355,6 +382,7 @@ function WhenStep({ handle, nav, shell }: StepProps) {
     <WhenView
       {...shell}
       value={value}
+      networkTime={networkTime}
       onChange={(next) => handle.update({ when: next })}
       showErrors={showErrors}
       now={now}

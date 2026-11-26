@@ -1,0 +1,23 @@
+/* The empty-results clock: a slow ambient movement. It runs with full or ambient motion, and only while on screen. */
+
+.wrap {
+  display: block;
+}
+
+.hand {
+  transform-origin: 238px 60px;
+}
+
+.wrap[data-motion="full"] .hand,
+.wrap[data-motion="ambient"] .hand {
+  animation: sweep 60s linear infinite paused;
+}
+
+.wrap[data-motion="full"][data-in] .hand,
+.wrap[data-motion="ambient"][data-in] .hand {
+  animation-play-state: running;
+}
+
+@keyframes sweep {
+  to { transform: rotate(360deg); }
+}

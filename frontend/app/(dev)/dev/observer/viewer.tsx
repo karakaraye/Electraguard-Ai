@@ -12,6 +12,7 @@ import { useEffect, type ReactElement } from "react";
 import { setLocale, useLocale, useT } from "../../../../lib/i18n/client";
 import { isLocale } from "../../../../lib/i18n/config";
 import { setThemePreference } from "../../../../ui";
+import { Splash } from "../../../../ui/Splash/Splash";
 import { HomeView, type HomeViewProps } from "../../../(observer)/o/_views/HomeView";
 import {
   CategoryView,
@@ -28,7 +29,7 @@ import {
   type WhereViewProps,
 } from "../../../(observer)/o/_views/IncidentViews";
 import { PendingView, ReceiptView, type ReceiptViewProps } from "../../../(observer)/o/_views/ReceiptView";
-import { ChooseView, LanguageView, NoticeView, RevokedView, SetPinView, SignInView, type SignInViewProps } from "../../../(observer)/o/_views/StartViews";
+import { ChooseView, LanguageView, NoticeView, RevokedView, SetPinView, SignInView, WelcomeView, OfflineWelcomeView, type SignInViewProps } from "../../../(observer)/o/_views/StartViews";
 import {
   FIXTURE_AREAS,
   FIXTURE_CODE,
@@ -72,6 +73,18 @@ const homeBase: HomeViewProps = {
   draftKept: false,
   draft: null,
   rows: [],
+  checklist: {
+    unitLabel: "Kantudu Primary School I",
+    stages: [
+      { slug: "arrival", state: "sent" },
+      { slug: "opening", state: "sent" },
+      { slug: "accreditation", state: "next" },
+      { slug: "voting", state: "later" },
+      { slug: "closing", state: "later" },
+      { slug: "results", state: "later" },
+    ],
+  },
+  now: new Date("2026-12-05T10:30:00+01:00"),
   onReport: noop,
   onContinue: noop,
   onSendNow: noop,
@@ -226,10 +239,25 @@ const uploads = (t: Translate): ReceiptViewProps["items"] => [
 ];
 
 export const SCREENS: Record<string, Record<string, (t: Translate) => ReactElement>> = {
+  splash: {
+    first: (t) => (
+      <div style={{ width: "100%", height: "100dvh" }}>
+        <Splash credit={t("ui.byCairn")} preview />
+      </div>
+    ),
+  },
   o01: {
     first: () => <LanguageView selected={null} onChoose={noop} />,
     selected: () => <LanguageView selected="ha" onChoose={noop} />,
     offline: () => <LanguageView selected={null} onChoose={noop} offline />,
+  },
+  ob1: {
+    first: () => <WelcomeView onBack={noop} onNext={noop} onSkip={noop} />,
+    offline: () => <WelcomeView onBack={noop} onNext={noop} onSkip={noop} offline />,
+  },
+  ob3: {
+    first: () => <OfflineWelcomeView onBack={noop} onContinue={noop} />,
+    offline: () => <OfflineWelcomeView onBack={noop} onContinue={noop} offline />,
   },
   o02: {
     first: () => <NoticeView onBack={noop} onContinue={noop} />,
@@ -262,11 +290,35 @@ export const SCREENS: Record<string, Record<string, (t: Translate) => ReactEleme
     filled: () => <HomeView {...homeBase} draft={{ category: "access_barrier", startedAt: Date.parse(FIXTURE_OCCURRED_AT) }} unsentCount={1} queuedCount={1} questionCount={1} rows={homeRows} />,
     offline: () => <HomeView {...homeBase} offline unsentCount={2} queuedCount={2} rows={homeRows} />,
     "intake-paused": () => <HomeView {...homeBase} intakePaused rows={homeRows} />,
+    "after-closing": () => (
+      <HomeView
+        {...homeBase}
+        now={new Date("2026-12-05T17:40:00+01:00")}
+        rows={homeRows}
+        checklist={{ ...homeBase.checklist, stages: homeBase.checklist.stages.map((stage) => ({ ...stage, state: "sent" as const })) }}
+      />
+    ),
     "waiting-code": () => <HomeView {...homeBase} waitingCodeCount={2} needsAttentionCount={1} rows={homeRows} />,
     "network-back": () => <HomeView {...homeBase} networkBack pinSaved rows={homeRows} />,
+    outbox: () => (
+      <HomeView
+        {...homeBase}
+        unsentCount={3}
+        queuedCount={3}
+        rows={homeRows}
+        checklist={{ ...homeBase.checklist, unitLabel: "Kantudu Primary School I, Kantudu, Dala" }}
+        outbox={[
+          { id: "a", category: "intimidation_violence", createdAt: Date.parse("2026-12-05T09:05:00+01:00"), status: "sending", deletable: false },
+          { id: "b", category: "queues_crowding", createdAt: Date.parse("2026-12-05T09:40:00+01:00"), status: "on-phone", deletable: true },
+          { id: "c", category: "access_barrier", createdAt: Date.parse("2026-12-05T10:12:00+01:00"), status: "needs-attention", deletable: true },
+        ]}
+        onDeleteQueued={noop}
+      />
+    ),
   },
   o05: {
     first: () => <CategoryView {...shell} value={null} access={[]} error={false} onChange={noop} onAccess={noop} onContinue={noop} />,
+    citizen: () => <CategoryView {...shell} citizen value={null} access={[]} error={false} onChange={noop} onAccess={noop} onContinue={noop} />,
     error: () => <CategoryView {...shell} value={null} access={[]} error onChange={noop} onAccess={noop} onContinue={noop} />,
     access: () => <CategoryView {...shell} value="access_barrier" access={["steps_no_ramp", "no_assistance"]} error={false} onChange={noop} onAccess={noop} onContinue={noop} />,
     offline: () => <CategoryView {...shell} offline value="queues_crowding" access={[]} error={false} onChange={noop} onAccess={noop} onContinue={noop} />,
@@ -278,7 +330,10 @@ export const SCREENS: Record<string, Record<string, (t: Translate) => ReactEleme
   },
   o07: {
     empty: () => where({}),
+    citizen: () => where({ citizen: true }),
     selected: () => where({ summary: FIXTURE_PLACE }, { value: unitValue }),
+    today: () => where({ useToday: { label: FIXTURE_PLACE, code: unitValue.polling_unit_code, selected: false, onUse: noop } }),
+    "today-selected": () => where({ summary: FIXTURE_PLACE, useToday: { label: FIXTURE_PLACE, code: unitValue.polling_unit_code, selected: true, onUse: noop } }, { value: unitValue }),
     "ward-only": () => where({ summary: "Kantudu, Dala" }, { value: { ...unitValue, polling_unit_code: null, unknown_unit: true } }),
     error: () => where({ error: true }),
     downloading: () => where({}, { areas: {}, value: { ...unitValue, lga_code: null, ward_code: null, polling_unit_code: null, state_code: "LA" }, status: { kind: "downloading", percent: 42 } }),
@@ -289,6 +344,7 @@ export const SCREENS: Record<string, Record<string, (t: Translate) => ReactEleme
   o08: {
     "just-now": () => when({ mode: "now" }),
     "earlier-today": () => when({ mode: "today", time: "08:40" }),
+    "network-time": () => when({ mode: "now" }, { networkTime: true }),
     "another-day": () => when({ mode: "day", date: "2026-12-03", time: "14:10" }),
     future: () => when({ mode: "today", time: "11:30" }, { showErrors: true }),
     empty: () => when({ mode: "day" }, { showErrors: true }),
@@ -321,6 +377,8 @@ export const SCREENS: Record<string, Record<string, (t: Translate) => ReactEleme
     first: (t) => check(t, {}),
     "long-text": (t) => check(t, { description: FIXTURE_LONG_TEXT, danger: true, justNow: true }),
     access: (t) => check(t, { category: "access_barrier", access: ["steps_no_ramp", "no_sign_language"], media: [] }),
+    offline: (t) => check(t, { offline: true }),
+    citizen: (t) => check(t, { citizen: true }),
     sending: (t) => check(t, { status: "sending" }),
     "saved-offline": (t) => check(t, { status: "savedOffline", offline: true }),
     "not-confirmed": (t) => check(t, { status: "notConfirmed" }),
@@ -371,6 +429,8 @@ export function ObserverStateViewer() {
   useEffect(() => {
     setThemePreference(theme === "dark" ? "dark" : "light");
     document.documentElement.style.background = theme === "dark" ? "#111112" : "#ffffff";
+    // Sheets render beside the previewed shell, so the page root carries the theme too.
+    document.documentElement.dataset.theme = theme === "dark" ? "dark" : "light";
   }, [theme]);
 
   if ((lang && lang !== locale) || loading) return null;

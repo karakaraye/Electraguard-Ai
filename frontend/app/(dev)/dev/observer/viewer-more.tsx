@@ -356,6 +356,8 @@ export const MORE_SCREENS: Record<string, Record<string, (t: Translate) => React
       <ChecklistListView
         offline={false}
         onBack={noop}
+        now={new Date("2026-12-05T10:20:00+01:00")}
+        unitLabel="Kantudu Primary School I, Kantudu, Dala"
         stages={[
           { slug: "arrival", state: "received", receivedAt: "2026-12-05T07:42:00+01:00", href: "#" },
           { slug: "opening", state: "onPhone", href: "#" },
@@ -364,6 +366,23 @@ export const MORE_SCREENS: Record<string, Record<string, (t: Translate) => React
           { slug: "closing", state: "notStarted", href: "#" },
           { slug: "results", state: "notStarted", href: "#" },
         ]}
+      />
+    ),
+    "list-not-started": () => (
+      <ChecklistListView
+        offline={false}
+        onBack={noop}
+        now={new Date("2026-12-05T06:50:00+01:00")}
+        stages={(["arrival", "opening", "accreditation", "voting", "closing", "results"] as const).map((slug) => ({ slug, state: "notStarted" as const, href: "#" }))}
+      />
+    ),
+    "list-all-done": () => (
+      <ChecklistListView
+        offline={false}
+        onBack={noop}
+        now={new Date("2026-12-05T16:40:00+01:00")}
+        unitLabel="Kantudu Primary School I, Kantudu, Dala"
+        stages={(["arrival", "opening", "accreditation", "voting", "closing", "results"] as const).map((slug, i) => ({ slug, state: "received" as const, receivedAt: `2026-12-05T${String(7 + i * 2).padStart(2, "0")}:42:00+01:00`, href: "#" }))}
       />
     ),
     opening: () => <StageFormView {...stageBase} answers={{ opened_on_time: "yes", materials_all_present: "no", materials_missing: ["result_sheets", "indelible_ink"] }} />,
@@ -388,6 +407,17 @@ export const MORE_SCREENS: Record<string, Record<string, (t: Translate) => React
   },
   o17: {
     filled: () => <MessagesView offline={false} rows={[rows[0], rows[3]]} load="ok" stale={false} onRetry={noop} onBack={noop} />,
+    preview: () => (
+      <MessagesView
+        offline={false}
+        rows={[rows[0], { ...rows[3], note: "Reviewer · 11:02: Thank you. Two other observers reported the same gate." }]}
+        load="ok"
+        stale={false}
+        onRetry={noop}
+        onBack={noop}
+      />
+    ),
+    loading: () => <MessagesView offline={false} rows={[]} load="loading" stale={false} onRetry={noop} onBack={noop} />,
     empty: () => <MessagesView offline={false} rows={[]} load="ok" stale={false} onRetry={noop} onBack={noop} />,
     offline: () => <MessagesView offline rows={[]} load="offline" stale={false} onRetry={noop} onBack={noop} />,
     unavailable: () => <MessagesView offline={false} rows={[]} load="unavailable" stale={false} onRetry={noop} onBack={noop} />,
@@ -423,6 +453,7 @@ export const MORE_SCREENS: Record<string, Record<string, (t: Translate) => React
     ),
     "no-answer": () => <AskView {...askBase} question="Who will win?" state="answer" answer={{ status: "abstained", language: "en", fallback_language_used: false, passages: [] }} />,
     offline: () => <AskView {...askBase} offline />,
+    asking: () => <AskView {...askBase} question="What should I do if the polling unit opens late?" state="asking" />,
   },
   o20: {
     first: () => <SettingsView {...settingsBase} unsentCount={2} mediaLabel="3.4 MB" />,

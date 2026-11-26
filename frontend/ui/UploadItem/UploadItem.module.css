@@ -11,9 +11,9 @@
   grid-template-columns: auto minmax(0, 1fr);
   gap: var(--s-3);
   padding: var(--s-4);
-  border: 1px solid var(--rule-control);
-  border-radius: var(--radius);
-  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  background: var(--paper-raised);
   color: var(--ink);
 }
 

@@ -52,9 +52,9 @@
   overflow-y: auto;
   overscroll-behavior: contain;
   list-style: none;
-  border: var(--border-w) solid var(--ink);
+  border: 1px solid var(--rule-control);
   border-radius: var(--radius);
-  background: var(--paper);
+  background: var(--paper-raised);
   box-shadow: var(--shadow-sheet);
 }
 

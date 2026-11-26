@@ -1,131 +1,508 @@
-.container {
-  display: flex;
-  flex-direction: column;
-  gap: var(--s-5);
-  width: 100%;
-}
+/* S-09 observer codes. Plain ink and paper; colour only on status badges and the one-time notice. */
 
-.topSection {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: var(--s-3);
-}
-
-.batchesGrid {
+.page {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: var(--s-3);
+  gap: var(--s-5);
+  min-width: 0;
 }
 
-.batchCard {
+/* Focus moves to the print heading for screen readers; it is not a control, so no ring. */
+.title:focus {
+  outline: none;
+}
+
+.title {
   display: flex;
-  flex-direction: column;
-  gap: var(--s-2);
-  padding: var(--s-4);
-  background: var(--paper);
-  border: 1px solid var(--rule);
-  border-radius: var(--radius);
-}
-
-.batchTitle {
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--s-2) var(--s-3);
   margin: 0;
   font: var(--t-heading);
-  font-size: 1rem;
+  font-size: 1.0625rem;
 }
 
-.batchMeta {
-  display: flex;
-  align-items: center;
-  gap: var(--s-3);
-  font-size: 0.8125rem;
+.titleCount {
   color: var(--ink-2);
+  font: var(--t-small);
 }
 
-.batchStats {
-  display: flex;
-  gap: var(--s-3);
-  font-size: 0.875rem;
+.sub {
+  margin: 0;
+  color: var(--ink-2);
+  font: var(--t-small);
 }
 
-.printSheet {
-  display: flex;
-  flex-direction: column;
-  gap: var(--s-4);
-  padding: var(--s-5);
-  background: var(--paper);
-  border: 2px dashed var(--ink);
-  border-radius: var(--radius);
+.nowrap {
+  white-space: nowrap;
 }
 
-.cardsGrid {
+.panel {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: var(--s-3);
+  min-width: 0;
+}
+
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
   gap: var(--s-3);
 }
 
-.codeCard {
+.headText {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.headText h2:focus-visible {
+  outline: var(--focus-outline);
+  outline-offset: var(--focus-offset);
+}
+
+.headEnd {
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
+  align-items: center;
   gap: var(--s-2);
-  padding: var(--s-3);
-  background: var(--paper-2);
+}
+
+.loading {
+  padding: var(--s-4);
   border: 1px solid var(--rule);
-  border-radius: var(--radius);
+  border-radius: var(--radius-lg);
+  background: var(--paper-raised);
 }
 
-.codeCardVal {
-  font-family: monospace;
-  font-size: 1.125rem;
-  font-weight: 700;
+/* ---------- Batches ---------- */
+
+.batchGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr));
+  gap: var(--s-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
-.tableWrapper {
-  overflow-x: auto;
+.batch {
+  display: grid;
+  align-content: start;
+  gap: var(--s-2);
+  min-width: 0;
+  padding: var(--s-4);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  background: var(--paper-raised);
+}
+
+.batchTop {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s-1) var(--s-3);
+}
+
+.batchName {
+  margin: 0;
+  font: var(--t-label);
+  overflow-wrap: anywhere;
+}
+
+.stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-1) var(--s-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font: var(--t-small);
+}
+
+.batchEnd {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-2) var(--s-3);
+  margin-top: var(--s-1);
+}
+
+/* ---------- Codes: tools ---------- */
+
+.tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--s-3) var(--s-4);
+}
+
+.search {
+  flex: 0 1 18rem;
+  min-width: min(100%, 12rem);
+}
+
+.chipGroup {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  min-height: 44px;
+  padding: 0 var(--s-3);
+  border: 1px solid var(--rule-control);
+  border-radius: var(--radius-pill);
+  background: var(--paper);
+  color: var(--ink);
+  font: var(--t-small);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.chip:hover {
+  background: var(--paper-2);
+}
+
+.chip[aria-pressed="true"] {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.chip:focus-visible {
+  outline: var(--focus-outline);
+  outline-offset: var(--focus-offset);
+}
+
+.chipCount {
+  font-weight: 400;
+  opacity: 0.8;
+}
+
+/* ---------- Codes: table ---------- */
+
+.scroller {
   max-width: 100%;
-  -webkit-overflow-scrolling: touch;
+  overflow-x: auto;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  background: var(--paper-raised);
 }
 
 .table {
   width: 100%;
-  min-width: 500px;
-  border-collapse: collapse;
-  font-size: 0.875rem;
-  text-align: left;
+  border-collapse: separate;
+  border-spacing: 0;
+  font: var(--t-base);
 }
 
 .table th,
 .table td {
-  padding: var(--s-2) var(--s-3);
+  padding: var(--s-3);
   border-bottom: 1px solid var(--rule);
+  text-align: left;
+  vertical-align: middle;
 }
 
-.table th {
-  font-weight: 600;
+.table thead th {
+  background: var(--paper-2);
+  color: var(--ink-2);
+  font: var(--t-label);
+  white-space: nowrap;
+}
+
+.table tbody tr:last-child > * {
+  border-bottom: 0;
+}
+
+.table tbody tr[data-off] > * {
   color: var(--ink-2);
 }
 
+.codeCell {
+  font-weight: 400;
+  white-space: nowrap;
+}
+
+.batchCell {
+  min-width: 8rem;
+  max-width: 12rem;
+}
+
+.codeStack {
+  display: inline-grid;
+  gap: 2px;
+}
+
+/* A code or PIN is read aloud and typed in: it never breaks, and the letters are spaced apart. */
+.code,
+.cardCode,
+.cardPin {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+  word-break: keep-all;
+}
+
+.code {
+  font-size: 1rem;
+}
+
+.replaced {
+  white-space: normal;
+}
+
+.activity {
+  display: grid;
+  gap: 2px;
+  white-space: nowrap;
+}
+
+.actionsCell {
+  width: 1%;
+  white-space: nowrap;
+}
+
+/* Three quiet actions on one line; each opens a sheet that asks for the reason. */
+.rowActions {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 0;
+}
+
+.table td:has(> [data-tone]) {
+  width: 1%;
+  white-space: nowrap;
+}
+
+.table td :global([data-tone]) {
+  white-space: nowrap;
+}
+
+/* ---------- Codes: phone cards ---------- */
+
+.cards {
+  display: grid;
+  gap: var(--s-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cardRow {
+  display: grid;
+  justify-items: start;
+  gap: var(--s-2);
+  min-width: 0;
+  padding: var(--s-4);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  background: var(--paper-raised);
+}
+
+.cardRow[data-off] {
+  color: var(--ink-2);
+}
+
+.cardTop {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-2) var(--s-3);
+  width: 100%;
+}
+
+/* ---------- Cards to print ---------- */
+
+.cardsPanel {
+  display: grid;
+  gap: var(--s-4);
+  padding: var(--s-4) var(--s-5);
+  border: 1px solid var(--ink);
+  border-radius: var(--radius-lg);
+  background: var(--paper-raised);
+  min-width: 0;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 17.5rem), 1fr));
+  gap: var(--s-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.card {
+  position: relative;
+  display: grid;
+  align-content: start;
+  gap: var(--s-3);
+  min-width: 0;
+  padding: var(--s-4) var(--s-4) var(--s-3);
+  border: 2px dashed var(--ink-2);
+  border-radius: var(--radius);
+  background: var(--paper);
+  color: var(--ink);
+  break-inside: avoid;
+}
+
+.scissors {
+  position: absolute;
+  top: -11px;
+  left: var(--s-4);
+  display: inline-flex;
+  padding: 0 var(--s-1);
+  background: var(--paper-raised);
+  color: var(--ink);
+  line-height: 0;
+}
+
+.cardMark {
+  display: flex;
+  align-items: center;
+  color: var(--ink);
+}
+
+.field {
+  display: grid;
+  gap: 2px;
+}
+
+.fieldLabel {
+  color: var(--ink-2);
+  font: var(--t-small);
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.cardCode {
+  font-size: 1.375rem;
+  letter-spacing: 0.1em;
+}
+
+.cardPin {
+  font-size: 1.375rem;
+  letter-spacing: 0.14em;
+}
+
+.cardNote {
+  margin: 0;
+  color: var(--ink-2);
+  font: var(--t-small);
+  font-size: 0.8125rem;
+}
+
+/* ---------- Sheets ---------- */
+
+.form {
+  display: grid;
+  gap: var(--s-4);
+}
+
+/* ---------- Print: A4, cut-out cards only ---------- */
+
+.printRoot {
+  display: none;
+}
+
+@page {
+  size: A4;
+  margin: 10mm;
+}
+
 @media print {
-  .topSection,
-  .batchCard,
-  .tableWrapper,
-  .hidePrint {
+  /* Everything else in the page goes; only the cards are printed. */
+  :global(body) > :not(.printRoot) {
     display: none !important;
   }
 
-  .printSheet {
-    border: none;
-    padding: 0;
+  :global(html):has(.printRoot),
+  :global(body):has(.printRoot) {
+    background: #fff !important;
   }
 
-  .cardsGrid {
+  .printRoot {
+    --ink: #000;
+    --ink-2: #333;
+    --paper: #fff;
+    --paper-raised: #fff;
+    display: block;
+    color: #000;
+    background: #fff;
+    font-size: 11pt;
+  }
+
+  .printNote {
+    margin: 0 0 4mm;
+    font: 600 9pt/1.3 var(--font);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .printGrid {
+    display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
+    gap: 5mm;
+    margin: 0;
+    padding: 0;
+    list-style: none;
   }
 
-  .codeCard {
-    border: 1px solid #000;
+  .printRoot .card {
+    height: 52mm;
+    padding: 5mm 5mm 3mm;
+    gap: 2.5mm;
+    border: 0.4mm dashed #000;
+    border-radius: 0;
+    break-inside: avoid;
     page-break-inside: avoid;
+    background: #fff;
+  }
+
+  .printRoot .scissors {
+    top: -2.2mm;
+    left: 5mm;
+    background: #fff;
+  }
+
+  .printRoot .cardCode,
+  .printRoot .cardPin {
+    font-size: 15pt;
+  }
+
+  .printRoot .fieldLabel {
+    font-size: 7pt;
+  }
+
+  .printRoot .cardNote {
+    font-size: 7.5pt;
+    line-height: 1.3;
+  }
+}
+
+@media (max-width: 480px) {
+  .headEnd {
+    width: 100%;
+  }
+
+  .cardsPanel {
+    padding: var(--s-4);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .chip {
+    transition: background-color 120ms ease-out;
   }
 }

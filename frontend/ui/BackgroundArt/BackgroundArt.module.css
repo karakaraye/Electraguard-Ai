@@ -78,6 +78,52 @@
   }
 }
 
+/* ---------- Plate: full strength under a hero, paper fade only at the top edge ---------- */
+
+.art[data-variant="plate"] {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  z-index: 0;
+  height: clamp(170px, 30vh, 300px);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 26%);
+  mask-image: linear-gradient(to bottom, transparent 0%, #000 26%);
+}
+
+.art[data-variant="plate"] .scene {
+  width: 100%;
+  height: 100%;
+}
+
+/* Light: the pale scene is deepened a little so the queue reads as figures, not as a haze. */
+.art[data-variant="plate"] .scene {
+  filter: brightness(0.9) contrast(1.35) saturate(1.15);
+}
+
+/* The dark scene is drawn in deep greys for the soft variant; as a full-strength plate it is lifted
+   so the queue and the canopy read clearly instead of sinking into the page. */
+[data-theme="dark"] .art[data-variant="plate"] .scene {
+  filter: brightness(1.6) contrast(1.08);
+}
+
+@media (prefers-color-scheme: dark) {
+  [data-theme="system"] .art[data-variant="plate"] .scene {
+    filter: brightness(1.6) contrast(1.08);
+  }
+}
+
+@media (min-width: 600px) {
+  .art[data-variant="plate"] {
+    height: clamp(220px, 36vh, 380px);
+  }
+}
+
+@media (min-width: 1024px) {
+  .art[data-variant="plate"] {
+    height: clamp(260px, 42vh, 420px);
+  }
+}
+
 /* ---------- Soft background ---------- */
 
 .art[data-variant="soft"] {

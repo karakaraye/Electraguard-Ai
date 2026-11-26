@@ -10,16 +10,20 @@ import { PublicShell } from "../../../(public)/_components/PublicShell";
 import { HomeView } from "../../../(public)/_views/HomeView";
 import { ResultsView } from "../../../(public)/_views/ResultsView";
 import { AskScreen } from "../../../(public)/ask/AskScreen";
+import { AskPageView } from "../../../(public)/ask/AskPageView";
 import { GuideDocumentView, GuideIndexView } from "../../../(public)/_views/GuideViews";
+import pageStyles from "../../../(public)/_views/page.module.css";
 import { PrivacyView } from "../../../(public)/_views/PrivacyView";
-import { PhoneSimulator } from "../../../(public)/phone/PhoneSimulator";
+import { PhoneSimulator, type PhoneSeed } from "../../../(public)/phone/PhoneSimulator";
+import { CheckView, type CheckState } from "../../../(public)/check/CheckView";
+import { CheckHeader } from "../../../(public)/check/CheckHeader";
 
 const cell = (count: number): Cell => ({ count, suppressed: false });
 
-const FIXTURE_GUIDES: Array<GuideSummary & { fallback_language_used: boolean }> = [
-  { document_id: "voting-rights", title: "Your rights at the polling unit", slug: "voting-rights", version: "2026.1", language: "en", fallback_language_used: false },
-  { document_id: "late-opening", title: "What to do if opening is delayed", slug: "late-opening", version: "2026.1", language: "en", fallback_language_used: false },
-  { document_id: "counting-rules", title: "Official vote-counting procedure", slug: "counting-rules", version: "2026.1", language: "en", fallback_language_used: false },
+const FIXTURE_GUIDES: Array<GuideSummary & { fallback_language_used: boolean; approved_on: string }> = [
+  { document_id: "voting-rights", title: "Your rights at the polling unit", slug: "voting-rights", version: "2026.1", language: "en", fallback_language_used: false, approved_on: "2026-11-20" },
+  { document_id: "late-opening", title: "What to do if opening is delayed", slug: "late-opening", version: "2026.1", language: "en", fallback_language_used: true, approved_on: "2026-11-18" },
+  { document_id: "counting-rules", title: "Official vote-counting procedure", slug: "counting-rules", version: "2026.1", language: "en", fallback_language_used: false, approved_on: "2026-11-12" },
 ];
 
 const FIXTURE_DOC: GuideDocument = {
@@ -33,7 +37,7 @@ const FIXTURE_DOC: GuideDocument = {
   sections: [
     {
       id: "rights",
-      heading: "Voter Rights",
+      heading: "Voter rights",
       body: `Every registered voter has the right to cast a ballot in secret and without intimidation.
 
 - Arrive at your designated polling unit before accreditation ends.
@@ -42,6 +46,27 @@ const FIXTURE_DOC: GuideDocument = {
 - You are entitled to see that the ballot box is empty before voting begins.
 
 Never accept money or gifts in exchange for your vote. Report any pressure to our team.`,
+    },
+    {
+      id: "accreditation",
+      heading: "Accreditation",
+      body: `Officials check your voter card and confirm who you are before you can vote.
+
+- Join the queue and keep your voter card with you.
+- Elderly voters, voters with disabilities and pregnant women may be helped to the front.`,
+    },
+    {
+      id: "problems",
+      heading: "If something goes wrong",
+      body: `Stay calm and stay safe. Do not argue with officials or other voters.
+
+- Note the time and what happened.
+- If someone is in danger, call 112. ElectraGuard does not send help.`,
+    },
+    {
+      id: "report",
+      heading: "Report what you saw",
+      body: `You can report on ElectraGuard without an account. Describe roles, not names, and you will get a receipt code to check your report.`,
     },
   ],
 };
@@ -61,44 +86,47 @@ const FIXTURE_RESULTS: PublicResultsResponse = {
         {
           state_code: "KAN",
           state_name: "Kano",
-          total: cell(215),
+          total: cell(410),
           by_category: {
-            late_materials: cell(70),
-            equipment_failure: cell(55),
-            queues_crowding: cell(45),
-            intimidation_violence: cell(25),
-            vote_buying: cell(12),
+            late_materials: cell(130),
+            equipment_failure: cell(100),
+            queues_crowding: cell(85),
+            intimidation_violence: cell(45),
+            vote_buying: cell(20),
+            access_barrier: cell(30),
           },
         },
         {
           state_code: "LA",
           state_name: "Lagos",
-          total: cell(340),
+          total: cell(520),
           by_category: {
-            late_materials: cell(110),
-            equipment_failure: cell(90),
-            queues_crowding: cell(85),
-            intimidation_violence: cell(30),
-            vote_buying: cell(15),
+            late_materials: cell(160),
+            equipment_failure: cell(130),
+            queues_crowding: cell(120),
+            intimidation_violence: cell(50),
+            vote_buying: cell(25),
+            access_barrier: cell(35),
           },
         },
         {
           state_code: "RI",
           state_name: "Rivers",
-          total: cell(185),
+          total: cell(310),
           by_category: {
-            late_materials: cell(50),
-            equipment_failure: cell(45),
-            queues_crowding: cell(40),
-            intimidation_violence: cell(35),
-            vote_buying: cell(10),
+            late_materials: cell(90),
+            equipment_failure: cell(75),
+            queues_crowding: cell(70),
+            intimidation_violence: cell(40),
+            vote_buying: cell(15),
+            access_barrier: cell(20),
           },
         },
       ],
       outcomes: [
         { outcome: "corroborated", count: 810, share_percent: 65.3, suppressed: false },
-        { outcome: "insufficient_evidence", count: 95, share_percent: 7.7, suppressed: false },
-        { outcome: "out_of_scope", count: 35, share_percent: 2.8, suppressed: false },
+        { outcome: "insufficient_evidence", count: 330, share_percent: 26.6, suppressed: false },
+        { outcome: "out_of_scope", count: 100, share_percent: 8.1, suppressed: false },
       ],
       timeline: [
         { hour_start: "2026-12-05T08:00:00+01:00", count: cell(180) },
@@ -117,6 +145,41 @@ const FIXTURE_RESULTS: PublicResultsResponse = {
   combined: null,
 };
 
+/** Screen 37 states: the phone's views, plus every failure the spec lists. */
+function phoneSeed(state: string, t: (key: string, values?: Record<string, string | number>) => string): PhoneSeed {
+  const base: PhoneSeed = { status: "ready", phoneLabel: "+234 800 000 0417", view: { name: "home" } };
+  const sent = "2026-12-05T10:42:00+01:00";
+  switch (state) {
+    case "starting":
+      return { status: "loading" };
+    case "disabled":
+      return { status: "disabled" };
+    case "network":
+      return { status: "unreachable" };
+    case "server":
+      return { ...base, notice: t("p07.error.server") };
+    case "too_many":
+      return { ...base, notice: t("p07.error.tooMany") };
+    case "invalid":
+      return { ...base, view: { name: "compose" }, draft: "REPORT", notice: t("p07.error.invalid") };
+    case "ussd":
+      return { ...base, view: { name: "ussd", sessionId: "sess-1", text: "ElectraGuard\n1. Report what you saw\n2. Check a receipt\n3. Answer a question\n4. Language" } };
+    case "sms":
+      return { ...base, view: { name: "compose" }, draft: t("p07.how.reportExample") };
+    case "inbox":
+      return {
+        ...base,
+        view: { name: "inbox" },
+        messages: [
+          { id: "m1", text: t("p07.how.reportExample"), received_at: sent, from: "+234 800 000 0417", direction: "out" },
+          { id: "m2", text: "ElectraGuard: Report received. Your receipt code is EG-4H7Q-92KD. Text STATUS EG-4H7Q-92KD to check it.", received_at: sent, from: "ElectraGuard", direction: "in" },
+        ],
+      };
+    default:
+      return base;
+  }
+}
+
 const PAGES = [
   { id: "home", label: "Home" },
   { id: "results", label: "Results" },
@@ -125,7 +188,49 @@ const PAGES = [
   { id: "guide-doc", label: "Guide Doc" },
   { id: "privacy", label: "Privacy" },
   { id: "phone", label: "Phone" },
+  { id: "check", label: "Check" },
 ] as const;
+
+const CHECK_STATES = [
+  "default", "typing", "checked", "checked_support", "checked_english_only", "not_checked", "queued",
+  "matched", "safety", "error_rate_limited", "error_network", "invalid",
+] as const;
+
+const CHECK_TEXT = "Is it true that voting has been moved to Sunday?";
+const CHECK_RESPONSE = {
+  text: "INEC has not changed the date of the election. Voting takes place on the date in the official timetable.",
+  approved_at: "2026-12-04T09:30:00+01:00",
+  language: "en",
+} as const;
+
+function checkPreview(state: string, locale: string): { text: string; problem: string | null; view: CheckState } {
+  switch (state) {
+    case "typing":
+      return { text: "Someone said the collation centre", problem: null, view: { kind: "idle" } };
+    case "checked":
+      return { text: CHECK_TEXT, problem: null, view: { kind: "checked", response: { ...CHECK_RESPONSE, language: locale } } };
+    case "checked_support":
+      return { text: CHECK_TEXT, problem: null, view: { kind: "checked", response: { ...CHECK_RESPONSE, language: locale, observer_support: { states: 7, wards: "fewer than 5" } } } };
+    case "checked_english_only":
+      return { text: CHECK_TEXT, problem: null, view: { kind: "checked", response: { ...CHECK_RESPONSE, language: "en" } } };
+    case "not_checked":
+      return { text: CHECK_TEXT, problem: null, view: { kind: "not_checked", ask: "idle" } };
+    case "queued":
+      return { text: CHECK_TEXT, problem: null, view: { kind: "not_checked", ask: "queued" } };
+    case "matched":
+      return { text: CHECK_TEXT, problem: null, view: { kind: "not_checked", ask: "matched" } };
+    case "safety":
+      return { text: "They are shooting at the polling unit", problem: null, view: { kind: "safety" } };
+    case "error_rate_limited":
+      return { text: CHECK_TEXT, problem: null, view: { kind: "error", reason: "too_many" } };
+    case "error_network":
+      return { text: CHECK_TEXT, problem: null, view: { kind: "error", reason: "offline" } };
+    case "invalid":
+      return { text: "Hi", problem: "invalid", view: { kind: "idle" } };
+    default:
+      return { text: "", problem: null, view: { kind: "idle" } };
+  }
+}
 
 export function PublicStateViewer(): ReactElement {
   const searchParams = useSearchParams();
@@ -162,6 +267,11 @@ export function PublicStateViewer(): ReactElement {
                       publishedAt: "2026-12-05T14:00:00+01:00",
                       cutoff: "2026-12-05T13:00:00+01:00",
                       organisations: 4,
+                      categories: [
+                        { category: "late_materials", count: 380 },
+                        { category: "equipment_failure", count: 305 },
+                        { category: "queues_crowding", count: 275 },
+                      ],
                     }
             }
             guides={state === "error" ? null : FIXTURE_GUIDES}
@@ -185,6 +295,7 @@ export function PublicStateViewer(): ReactElement {
 
       case "ask":
         return (
+          <AskPageView t={t}>
           <AskScreen
             initial={
               state === "answered"
@@ -219,12 +330,14 @@ export function PublicStateViewer(): ReactElement {
             }
             initialQuestion={state === "answered" ? "What should I do if the polling unit opens late?" : ""}
           />
+          </AskPageView>
         );
 
       case "guide":
         return (
           <GuideIndexView
             t={t}
+            locale={locale}
             state={
               state === "error"
                 ? { kind: "error" }
@@ -245,23 +358,39 @@ export function PublicStateViewer(): ReactElement {
                 ? { kind: "not_found" }
                 : state === "error"
                   ? { kind: "error" }
-                  : { kind: "ok", data: FIXTURE_DOC }
+                  : state === "fallback"
+                    ? { kind: "ok", data: { ...FIXTURE_DOC, fallback_language_used: true } }
+                    : { kind: "ok", data: FIXTURE_DOC }
             }
           />
         );
+
+      case "check": {
+        const preview = checkPreview(state, locale);
+        const english = state === "checked_english_only" ? (locale === "en" ? "ha" : locale) : locale;
+        return (
+          <div className={pageStyles.page}>
+            <CheckHeader t={t} />
+            <CheckView
+              key={`${state}-${english}`}
+              locale={english}
+              text={preview.text}
+              onText={() => {}}
+              problem={preview.problem === "invalid" ? t("p08.tooShort") : null}
+              state={preview.view}
+              onSubmit={(event) => event.preventDefault()}
+              onAsk={() => {}}
+            />
+          </div>
+        );
+      }
 
       case "privacy":
         return <PrivacyView t={t} locale={locale} />;
 
       case "phone":
         return (
-          <PhoneSimulator
-            seed={{
-              status: "ready",
-              phoneLabel: "Basic Feature Phone (SIM-01)",
-              view: state === "ussd" ? { name: "ussd", sessionId: "sess-1", text: "Welcome to ElectraGuard USSD\n1. Report incident\n2. Check receipt" } : { name: "home" },
-            }}
-          />
+          <PhoneSimulator key={state} seed={phoneSeed(state, t)} />
         );
 
       default:
@@ -283,6 +412,7 @@ export function PublicStateViewer(): ReactElement {
     >
       {/* Dev Bar */}
       <div
+        data-dev-bar
         style={{
           background: "var(--paper)",
           color: "var(--ink)",
@@ -313,7 +443,7 @@ export function PublicStateViewer(): ReactElement {
         <div style={{ marginLeft: "auto", display: "flex", gap: "12px", alignItems: "center" }}>
           <div style={{ display: "flex", gap: "6px", alignItems: "center" }}>
             <span style={{ color: "var(--ink-2)" }}>State:</span>
-            {(["default", "empty", "error", "answered", "abstained", "offline"] as const).map((st) => (
+            {(page === "check" ? CHECK_STATES : (["default", "empty", "error", "answered", "abstained", "offline"] as const)).map((st) => (
               <Link
                 key={st}
                 href={`/dev/public?page=${page}&state=${st}&theme=${theme}&lang=${locale}`}

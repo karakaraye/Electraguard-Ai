@@ -103,3 +103,109 @@
   gap: var(--s-2);
   padding-inline-start: 1.5rem;
 }
+
+/* ---------- Redesign (spec screen 35) ---------- */
+/* Guide list: raised cards. */
+.list {
+  display: grid;
+  gap: var(--s-3);
+  border-top: 0;
+}
+
+.list li {
+  border-bottom: 0;
+}
+
+.list a.card {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr) 20px;
+  align-items: center;
+  gap: var(--s-3);
+  padding: var(--s-4);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  background: var(--paper-raised);
+}
+
+.cardDisc {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--sun-tint);
+}
+
+.cardText {
+  display: grid;
+  gap: var(--s-1);
+  min-width: 0;
+}
+
+.card .listTitle {
+  text-decoration: none;
+}
+
+.listMeta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-1) var(--s-2);
+}
+
+.chip {
+  padding: 1px var(--s-2);
+  border-radius: var(--radius-pill);
+  background: var(--sun-tint);
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.cardChevron {
+  color: var(--ink-2);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .list a.card:hover {
+    border-color: var(--rule-control);
+  }
+}
+
+/* Reader: the contents as a card; on desktop it sits sticky beside the 68-character column. */
+.toc {
+  padding: var(--s-4);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  background: var(--paper-raised);
+}
+
+@media (min-width: 1024px) {
+  .article {
+    grid-template-columns: minmax(0, var(--measure)) 17rem;
+    column-gap: var(--s-8);
+    max-width: none;
+  }
+
+  /* The contents card spans many rows. Row gaps would add up across the empty rows it spans
+     (a huge gap before the last block), so spacing is margin on each block instead. */
+  .article {
+    row-gap: 0;
+  }
+
+  .article > * {
+    grid-column: 1;
+    margin-block-end: var(--s-6);
+  }
+
+  .article > .toc {
+    position: sticky;
+    top: var(--s-6);
+    grid-column: 2;
+    grid-row: 1 / span 40;
+    align-self: start;
+  }
+
+  .toc ol {
+    font: var(--t-body);
+  }
+}

@@ -1,9 +1,12 @@
 import type {
   CaseDetail,
   Claim,
+  Cluster,
   CodeBatch,
   CoverageResponse,
   LateMaterialsResponse,
+  AssignmentListResponse,
+  Message,
   ModerationFlag,
   OrganisationSettings,
   OverviewResponse,
@@ -147,14 +150,14 @@ export const FIXTURE_CASE_DETAIL: CaseDetail = {
     category: {
       value: "intimidation_violence",
       confidence: "high",
-      reasons: ["armed disruption"],
+      reasons: ["Armed men are said to have driven voters away from the polling unit"],
       decision: null,
       corrected_value: null,
     },
     urgency: {
       value: "urgent",
       confidence: "high",
-      reasons: ["threats_to_observers"],
+      reasons: ["The report says people are in danger right now", "The observer saw it first-hand"],
       decision: null,
       corrected_value: null,
     },
@@ -216,6 +219,11 @@ export const FIXTURE_OVERVIEW: OverviewResponse = {
   by_lga: [
     { state_code: "KN", lga_code: "1901", lga_name: "Kano Municipal", count: 350, urgent: 15 },
     { state_code: "KN", lga_code: "1902", lga_name: "Fagge", count: 280, urgent: 10 },
+    { state_code: "LA", lga_code: "2420", lga_name: "Surulere", count: 214, urgent: 9 },
+    { state_code: "RI", lga_code: "3217", lga_name: "Obio/Akpor", count: 166, urgent: 4 },
+    { state_code: "EN", lga_code: "1406", lga_name: "Enugu North", count: 92, urgent: 2 },
+    { state_code: "FC", lga_code: "1502", lga_name: "Bwari", count: 81, urgent: 1 },
+    { state_code: "OY", lga_code: "3109", lga_name: "Ibadan North", count: 57, urgent: 0 },
   ],
   generated_at: "2026-12-05T12:00:00+01:00",
 };
@@ -242,14 +250,19 @@ export const FIXTURE_COVERAGE: CoverageResponse = {
       units_without: 85,
       no_answers: 1,
     },
+    { lga_code: "2420", lga_name: "Surulere", expected_units: 212, units_with_checklist: 201, units_without: 11, no_answers: 7 },
+    { lga_code: "3217", lga_name: "Obio/Akpor", expected_units: 318, units_with_checklist: 176, units_without: 142, no_answers: 12 },
   ],
-  most_no_answers: [],
+  most_no_answers: [
+    { polling_unit_code: "32-17-04-011", polling_unit_name: "Rumuokoro Model School II", no_count: 4, questions: ["secrecy_kept", "party_agents_present", "device_working", "priority_given"] },
+    { polling_unit_code: "24-20-02-006", polling_unit_name: "Itire Community Hall", no_count: 3, questions: ["opened_on_time", "materials_all_present", "officials_present"] },
+  ],
 };
 
 export const FIXTURE_LATE_MATERIALS: LateMaterialsResponse = {
   model_version: "v1.2",
   generated_at: "2026-12-05T10:00:00+01:00",
-  data_source: "official",
+  data_source: "synthetic",
   metrics: { mae_transit_hours: 1.2, evaluated_on: "2026-12-05" },
   rows: [
     {
@@ -407,3 +420,260 @@ export const FIXTURE_ALERT: SecurityAlert = {
   last_seen_at: "2026-12-05T07:38:00+01:00",
   detector: "rules",
 };
+
+/** Screen 39 (S-02): a morning queue from the synthetic test institutions, newest urgency first. */
+function queueRow(
+  n: number,
+  patch: Partial<QueueItem> & Pick<QueueItem, "receipt_code" | "urgency" | "category" | "area" | "occurred_at">,
+): QueueItem {
+  return {
+    id: `rep-1${String(n).padStart(2, "0")}`,
+    kind: "incident",
+    channel: "app",
+    status: "received",
+    received_at: patch.occurred_at ?? "2026-12-05T09:00:00+01:00",
+    media_counts: { photo: 0, video: 0, audio: 0 },
+    has_open_question: false,
+    unread_messages: 0,
+    flags: { possible_duplicate: false, result_sheet_flags: 0, possible_names: false },
+    last_activity_at: patch.occurred_at ?? "2026-12-05T09:00:00+01:00",
+    ...patch,
+  };
+}
+
+const area = (state_code: string, state_name: string, lga_name: string, ward_name: string | null, polling_unit_name: string | null = null) => ({
+  state_code, state_name, lga_code: null, lga_name, ward_code: null, ward_name, polling_unit_code: null, polling_unit_name,
+});
+
+export const FIXTURE_QUEUE_ITEMS: QueueItem[] = [
+  queueRow(1, {
+    receipt_code: "EG-4H7Q-92KD",
+    urgency: { level: "urgent", source: "suggested", reasons: ["danger_reported", "seen_firsthand", "video"] },
+    category: { value: "intimidation_violence", source: "observer" },
+    area: area("KN", "Kano", "Kano Municipal", "Zango", "Zango Primary School I"),
+    occurred_at: "2026-12-05T08:41:00+01:00",
+    received_at: "2026-12-05T08:43:00+01:00",
+    media_counts: { photo: 1, video: 1, audio: 0 },
+    flags: { possible_duplicate: true, result_sheet_flags: 0, possible_names: true },
+  }),
+  queueRow(2, {
+    receipt_code: "EG-9M2C-61TA",
+    status: "in_review",
+    urgency: { level: "urgent", source: "corrected", reasons: ["vote_buying", "photo"] },
+    category: { value: "vote_buying", source: "suggested" },
+    area: area("LA", "Lagos", "Surulere", "Itire"),
+    occurred_at: "2026-12-05T08:30:00+01:00",
+    media_counts: { photo: 3, video: 0, audio: 0 },
+  }),
+  queueRow(3, {
+    receipt_code: "EG-2P8R-07LW",
+    channel: "sms",
+    urgency: { level: "high", source: "suggested", reasons: ["cluster", "sms_report"] },
+    category: { value: "late_materials", source: "observer" },
+    area: area("RI", "Rivers", "Obio/Akpor", null),
+    occurred_at: "2026-12-05T08:12:00+01:00",
+  }),
+  queueRow(4, {
+    receipt_code: "EG-6T4N-38QE",
+    status: "question",
+    kind: "result_sheet",
+    urgency: { level: "high", source: "suggested", reasons: ["result_sheet_flag"] },
+    category: { value: "not_sure", source: "observer" },
+    area: area("EN", "Enugu", "Enugu North", "Ogui Urban"),
+    occurred_at: "2026-12-05T07:58:00+01:00",
+    media_counts: { photo: 2, video: 0, audio: 0 },
+    has_open_question: true,
+    unread_messages: 1,
+    flags: { possible_duplicate: false, result_sheet_flags: 2, possible_names: false },
+  }),
+  queueRow(5, {
+    receipt_code: "EG-8K1D-54VB",
+    channel: "citizen",
+    urgency: { level: "normal", source: "suggested", reasons: ["told_by_someone", "citizen_report"] },
+    category: { value: "misinformation", source: "suggested" },
+    area: area("FC", "FCT", "Bwari", "Kubwa"),
+    occurred_at: "2026-12-05T07:44:00+01:00",
+  }),
+  queueRow(6, {
+    receipt_code: "EG-3W9F-20HC",
+    urgency: { level: "normal", source: "suggested", reasons: ["seen_firsthand", "audio"] },
+    category: { value: "access_barrier", source: "observer" },
+    area: area("OY", "Oyo", "Ibadan North", "Agbowo"),
+    occurred_at: "2026-12-05T07:31:00+01:00",
+    media_counts: { photo: 0, video: 0, audio: 1 },
+  }),
+  queueRow(7, {
+    receipt_code: "EG-5B6J-83XR",
+    channel: "ussd",
+    simulated: true,
+    urgency: { level: "low", source: "suggested", reasons: [] },
+    category: { value: "queues_crowding", source: "observer" },
+    area: area("KD", "Kaduna", "Kaduna North", null),
+    occurred_at: "2026-12-05T07:20:00+01:00",
+  }),
+  queueRow(8, {
+    receipt_code: "EG-7C3V-46MP",
+    status: "closed",
+    urgency: { level: "low", source: "suggested", reasons: ["seen_firsthand"] },
+    category: { value: "good_practice", source: "observer" },
+    area: area("AN", "Anambra", "Awka South", "Amawbia"),
+    occurred_at: "2026-12-05T07:05:00+01:00",
+    media_counts: { photo: 1, video: 0, audio: 0 },
+  }),
+];
+
+export const FIXTURE_QUEUE_PAGE: QueueResponse = {
+  items: FIXTURE_QUEUE_ITEMS,
+  next_cursor: null,
+  counts: { received: 38, in_review: 12, question: 5, closed: 141, withdrawn: 2 },
+};
+
+/** Screen 40 (S-03): the same Kano case part-way through review, with help and a conversation. */
+export const FIXTURE_CASE_IN_REVIEW: CaseDetail = {
+  ...FIXTURE_CASE_DETAIL,
+  receipt_code: "EG-4H7Q-92KD",
+  status: "in_review",
+  version: 5,
+  reporter: { type: "observer", label: "OBS-KN-0417", accredited: true },
+  times: { ...FIXTURE_CASE_DETAIL.times, clock_skew_seconds: 420 },
+  media: [
+    { ...FIXTURE_CASE_DETAIL.media[0], blurred: true },
+    {
+      id: "med-2",
+      kind: "audio",
+      status: "ready",
+      size_bytes: 310000,
+      duration_ms: 41000,
+      blurred: false,
+      exif_removed: true,
+      sha256: "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",
+      original_sha256: "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",
+      integrity_verified: true,
+      transcript: { text: "Men with sticks came in at about twenty to nine and told people in the queue to go home.", language: "en", method: "local_asr" },
+      created_at: "2026-12-05T08:17:00+01:00",
+    },
+  ],
+  pending_uploads: [{ id: "up-3", kind: "video", size_bytes: 8_400_000, received_bytes: 5_100_000 }],
+  suggestions: {
+    ...FIXTURE_CASE_DETAIL.suggestions,
+    category: { value: "intimidation_violence", confidence: "high", reasons: ["Weapons mentioned", "Voters sent away"], decision: null, corrected_value: null },
+    urgency: { value: "urgent", confidence: "medium", reasons: ["Danger reported now", "Seen firsthand"], decision: "accepted", corrected_value: null },
+  },
+  duplicates: [
+    {
+      report_id: "rep-204",
+      receipt_code: "EG-2X7M-55RD",
+      score: 0.82,
+      decision: "pending",
+      accessible: true,
+      summary: { category: "intimidation_violence", ward_name: "Zango", occurred_at: "2026-12-05T08:38:00+01:00", channel: "sms" },
+    } as CaseDetail["duplicates"][number],
+  ],
+  name_check: { possible_names: true },
+  open_question: { id: "q-1", body: "How many people with sticks did you see, and are they still there?", asked_at: "2026-12-05T08:52:00+01:00" } as CaseDetail["open_question"],
+  allowed_actions: ["ask", "close", "redact"],
+  history: {
+    chain_intact: true,
+    events: [
+      { id: "ev-1", version: 1, action: "received", actor_label: "System", created_at: "2026-12-05T08:16:30+01:00", change: {} },
+      { id: "ev-2", version: 3, action: "start", actor_label: "F. Musa (Reviewer)", created_at: "2026-12-05T08:48:00+01:00", change: {} },
+      { id: "ev-3", version: 4, action: "suggestion_accepted", actor_label: "F. Musa (Reviewer)", created_at: "2026-12-05T08:49:00+01:00", change: { urgency: "urgent" } },
+      { id: "ev-4", version: 5, action: "ask", actor_label: "F. Musa (Reviewer)", created_at: "2026-12-05T08:52:00+01:00", change: {} },
+    ],
+  },
+};
+
+export const FIXTURE_CASE_MESSAGES: Message[] = [
+  {
+    id: "m-1", kind: "formal_question", author: "reviewer", author_label: "F. Musa (Reviewer)",
+    body: "How many people with sticks did you see, and are they still there?", attachment: null,
+    question_state: "open", reply_to: null, created_at: "2026-12-05T08:52:00+01:00", read: true,
+  },
+  {
+    id: "m-2", kind: "message", author: "observer", author_label: "OBS-KN-0417",
+    body: "I am outside the gate now. Voting has stopped.", attachment: null,
+    question_state: null, reply_to: null, created_at: "2026-12-05T08:55:00+01:00", read: false,
+  },
+];
+
+/** A result sheet with two failed checks, for the flags box and its fixed disclaimer. */
+export const FIXTURE_CASE_RESULT_SHEET: CaseDetail = {
+  ...FIXTURE_CASE_DETAIL,
+  receipt_code: "EG-6T4N-38QE",
+  kind: "result_sheet",
+  status: "question",
+  language: "en",
+  original: { description: "Sheet photographed at the polling unit after counting.", redacted_description: null, redactions: [] },
+  translation: { ...FIXTURE_CASE_DETAIL.translation, status: "not_needed", text: null },
+  category_observer: "not_sure",
+  danger_now: false,
+  result_sheet_flags: [
+    { type: "accredited_exceeds_registered", explanation_key: "rs.flag.accredited_exceeds_registered", values: { accredited: 812, registered: 790 }, benign_causes_keys: ["rs.benign.copy_error", "rs.benign.unread_digit"] },
+    { type: "votes_plus_rejected_differs", explanation_key: "rs.flag.sum_differs", values: { accredited: 812, sum: 821 }, benign_causes_keys: ["rs.benign.copy_error", "rs.benign.unread_digit"] },
+  ],
+  suggestions: { ...FIXTURE_CASE_DETAIL.suggestions, abstained: true },
+  allowed_actions: ["ask", "close"],
+};
+
+/** Screen 41 (S-04): five reviewers of the synthetic organisation and the morning's unassigned cases. */
+export const FIXTURE_ASSIGNMENTS: AssignmentListResponse = {
+  next_cursor: null,
+  reviewers: [
+    { id: "st-1", display_name: "F. Musa", open_cases: 12, urgent_open: 3, areas: ["1901", "1902"], active_now: true },
+    { id: "st-2", display_name: "A. Okafor", open_cases: 9, urgent_open: 1, areas: ["0401"], active_now: true },
+    { id: "st-3", display_name: "T. Adeyemi", open_cases: 6, urgent_open: 0, areas: ["2501", "2502", "2503"], active_now: false },
+    { id: "st-4", display_name: "H. Bello", open_cases: 3, urgent_open: 2, areas: ["1901"], active_now: true },
+    { id: "st-5", display_name: "N. Eze", open_cases: 0, urgent_open: 0, areas: [], active_now: false },
+  ],
+  items: FIXTURE_QUEUE_ITEMS.slice(0, 6).map((item, i) => ({
+    id: item.id,
+    receipt_code: item.receipt_code,
+    kind: item.kind,
+    channel: item.channel,
+    status: "received",
+    version: 2,
+    urgency: item.urgency,
+    category: item.category,
+    area: item.area ? { ...item.area, polling_unit_code: null, polling_unit_name: null } : null,
+    received_at: item.received_at,
+    assigned_reviewer: null,
+    suggested_reviewer:
+      i === 5
+        ? null
+        : [
+            { id: "st-4", display_name: "H. Bello", reason: "fewest_open_cases_in_area" as const },
+            { id: "st-5", display_name: "N. Eze", reason: "fewest_open_cases" as const },
+            { id: "st-3", display_name: "T. Adeyemi", reason: "same_area" as const },
+          ][i % 3],
+  })),
+};
+
+/** Screen 42 (S-05): two cluster warnings, one already reviewed. */
+export const FIXTURE_CLUSTERS: Cluster[] = [
+  {
+    id: "cl-1",
+    category: "intimidation_violence",
+    area: { state_code: "KN", state_name: "Kano", lga_code: "1901", lga_name: "Kano Municipal" } as Cluster["area"],
+    report_count: 9,
+    baseline: 1.5,
+    window_start: "2026-12-05T08:30:00+01:00",
+    window_end: "2026-12-05T09:30:00+01:00",
+    report_ids: [],
+    status: "open",
+    reviewed_by: null,
+    reviewed_at: null,
+  },
+  {
+    id: "cl-2",
+    category: "late_materials",
+    area: { state_code: "RI", state_name: "Rivers", lga_code: "3217", lga_name: "Obio/Akpor" } as Cluster["area"],
+    report_count: 14,
+    baseline: 4,
+    window_start: "2026-12-05T07:00:00+01:00",
+    window_end: "2026-12-05T08:00:00+01:00",
+    report_ids: [],
+    status: "reviewed",
+    reviewed_by: "A. Okafor",
+    reviewed_at: "2026-12-05T08:20:00+01:00",
+  },
+];

@@ -1,0 +1,433 @@
+/* S-02 review queue. Staff type is one step smaller; colour only for status. */
+
+.page {
+  display: grid;
+  gap: var(--s-4);
+  min-width: 0;
+}
+
+.tabs {
+  max-width: 44rem;
+  overflow-x: auto;
+}
+
+/* ---------- Filter chips ---------- */
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-2) var(--s-3);
+}
+
+.chipGroup {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-1);
+}
+
+.chip,
+.selectChip select {
+  min-height: var(--control-h);
+  padding: 0 var(--s-3);
+  border: 1px solid var(--rule-control);
+  border-radius: var(--radius-pill);
+  background: var(--paper-raised);
+  color: var(--ink);
+  font: var(--t-label);
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: background-color var(--dur-fade) ease, border-color var(--dur-fade) ease;
+}
+
+.chip[aria-pressed="true"],
+.selectChip[data-on] select {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: var(--on-ink);
+}
+
+.chip:focus-visible,
+.selectChip select:focus-visible,
+.viewChip button:focus-visible,
+.newPill:focus-visible,
+.open:focus-visible {
+  outline: var(--focus-outline);
+  outline-offset: var(--focus-offset);
+  box-shadow: var(--focus-halo);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .chip:not([aria-pressed="true"]):hover {
+    border-color: var(--ink-2);
+  }
+}
+
+.selectChip {
+  display: inline-flex;
+}
+
+.selectChip select {
+  padding-inline-end: var(--s-5);
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, currentColor 50%), linear-gradient(135deg, currentColor 50%, transparent 50%);
+  background-position: calc(100% - 15px) 50%, calc(100% - 10px) 50%;
+  background-size: 5px 5px;
+  background-repeat: no-repeat;
+}
+
+/* ---------- Saved views ---------- */
+
+.views {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-2);
+  padding-top: var(--s-2);
+  border-top: 1px solid var(--rule);
+}
+
+.viewsLabel {
+  color: var(--ink-2);
+  font: var(--t-label);
+  font-size: 0.875rem;
+}
+
+.viewList {
+  display: contents;
+  list-style: none;
+}
+
+.viewChip {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--ink);
+  border-radius: var(--radius-pill);
+  background: var(--paper-sunk);
+}
+
+.viewChip button {
+  min-height: var(--control-h);
+  padding: 0 var(--s-2) 0 var(--s-3);
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--ink);
+  font: var(--t-label);
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
+.viewChip .viewRemove {
+  display: grid;
+  place-items: center;
+  width: var(--control-h);
+  padding: 0;
+  color: var(--ink-2);
+}
+
+.viewForm {
+  display: flex;
+  gap: var(--s-2);
+}
+
+.viewInput {
+  min-height: var(--control-h);
+  width: 12rem;
+  padding: 0 var(--s-3);
+  border: var(--border-w) solid var(--rule-control);
+  border-radius: var(--radius);
+  background: var(--paper-raised);
+  color: var(--ink);
+  font: var(--t-body);
+}
+
+.viewInput:focus-visible {
+  outline: var(--focus-outline);
+  outline-offset: 1px;
+}
+
+/* ---------- New cases pill (I-18) ---------- */
+
+.newRow {
+  display: flex;
+  justify-content: center;
+  position: sticky;
+  top: var(--s-2);
+  z-index: 2;
+}
+
+.newPill {
+  min-height: var(--control-h);
+  padding: 0 var(--s-4);
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: var(--ink);
+  color: var(--on-ink);
+  font: var(--t-label);
+  font-size: 0.875rem;
+  box-shadow: var(--shadow-raised);
+  cursor: pointer;
+}
+
+/* ---------- Table and preview ---------- */
+
+.work {
+  display: grid;
+  gap: var(--s-4);
+  align-items: start;
+  min-width: 0;
+}
+
+@media (min-width: 1280px) {
+  .work[data-preview] {
+    grid-template-columns: minmax(0, 1fr) 19rem;
+  }
+}
+
+.tableCol {
+  display: grid;
+  gap: var(--s-3);
+  min-width: 0;
+}
+
+/* Tighter cells so every column fits inside the card, with the preview open or closed. */
+.tableCol table :is(th, td) {
+  padding-inline: var(--s-2);
+}
+
+.tableCol table :is(th, td):first-child {
+  padding-inline-start: var(--s-3);
+}
+
+.tableCol tbody tr[aria-selected="true"] > * {
+  background: var(--paper-sunk);
+}
+
+.tableCol tbody tr[aria-selected="true"] > :first-child {
+  box-shadow: inset 3px 0 0 var(--ink);
+}
+
+.loadingRows {
+  padding: var(--s-4);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  background: var(--paper-raised);
+}
+
+.ref {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-1) var(--s-2);
+}
+
+.simulated {
+  padding: 0 var(--s-1);
+  border: 1px dashed var(--rule-control);
+  border-radius: 4px;
+  color: var(--ink-2);
+  font: var(--t-small);
+  font-weight: 600;
+}
+
+.place {
+  display: grid;
+}
+
+.sub {
+  color: var(--ink-2);
+  font: var(--t-small);
+}
+
+.reasons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-1);
+}
+
+.reason {
+  padding: 1px var(--s-2);
+  border-radius: var(--radius-pill);
+  background: var(--paper-2);
+  color: var(--ink);
+  font: var(--t-small);
+  font-weight: 600;
+}
+
+.evidence {
+  display: inline-flex;
+  gap: var(--s-3);
+  white-space: nowrap;
+}
+
+.evidence > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.keys {
+  margin: 0;
+  color: var(--ink-2);
+  font: var(--t-small);
+}
+
+.more {
+  display: flex;
+  justify-content: center;
+}
+
+.nowrap {
+  white-space: nowrap;
+}
+
+@media (min-width: 1280px) {
+  .preview {
+    position: sticky;
+    top: var(--s-4);
+    display: grid;
+    gap: var(--s-4);
+    padding: var(--s-5);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-lg);
+    background: var(--paper-raised);
+  }
+}
+
+.previewHead {
+  display: grid;
+  gap: var(--s-2);
+}
+
+.previewEyebrow {
+  margin: 0;
+  color: var(--ink-2);
+  font: var(--t-label);
+  font-size: 0.8125rem;
+  letter-spacing: var(--t-label-tracking);
+  text-transform: uppercase;
+}
+
+.previewRef {
+  margin: 0;
+  font: var(--t-headline);
+}
+
+.previewBadges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+}
+
+.facts {
+  display: grid;
+  gap: var(--s-2);
+  margin: 0;
+}
+
+.facts div {
+  display: grid;
+  grid-template-columns: 7rem minmax(0, 1fr);
+  gap: var(--s-2);
+  padding-bottom: var(--s-2);
+  border-bottom: 1px solid var(--rule);
+}
+
+.facts dt {
+  color: var(--ink-2);
+  font: var(--t-small);
+}
+
+.facts dd {
+  margin: 0;
+  font: var(--t-body);
+  font-size: 0.9375rem;
+}
+
+.flags {
+  display: grid;
+  gap: var(--s-1);
+  margin: 0;
+  padding: var(--s-3);
+  border-radius: var(--radius);
+  background: var(--attn-bg);
+  color: var(--ink);
+  font: var(--t-small);
+  list-style: none;
+}
+
+.open {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-2);
+  min-height: var(--target-min);
+  border-radius: var(--radius);
+  background: var(--ink);
+  color: var(--on-ink);
+  font: var(--t-label);
+  text-decoration: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chip,
+  .selectChip select {
+    transition: none;
+  }
+}
+
+/* ---------- Phones: status dropdown and cards (read-only use) ---------- */
+
+.statusSelect {
+  display: grid;
+  gap: var(--s-1);
+  font: var(--t-label);
+}
+
+.statusSelect select {
+  min-height: var(--target-min);
+  padding: 0 var(--s-3);
+  border: var(--border-w) solid var(--rule-control);
+  border-radius: var(--radius);
+  background: var(--paper-raised);
+  color: var(--ink);
+  font: var(--t-body);
+}
+
+.cards {
+  display: grid;
+  gap: var(--s-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.card {
+  display: grid;
+  gap: var(--s-1);
+  padding: var(--s-3) var(--s-4);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: var(--paper-raised);
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.card:focus-visible {
+  outline: var(--focus-outline);
+  outline-offset: var(--focus-offset);
+  box-shadow: var(--focus-halo);
+}
+
+.cardTop {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+  margin-bottom: var(--s-1);
+}
+
+.cardRef {
+  font: var(--t-label);
+  font-size: 1.0625rem;
+}

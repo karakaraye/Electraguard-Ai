@@ -202,8 +202,8 @@ export const OPERATIONS = {
   "GUIDE-01.list": { contract: "GUIDE-01", method: "GET", path: "/public/guides", callers: ALL, status: "NEW", idempotent: false },
   "GUIDE-01.get": { contract: "GUIDE-01", method: "GET", path: "/public/guides/{slug}", callers: ALL, status: "NEW", idempotent: false },
 
-  // CHK
-  "CHK-01": { contract: "CHK-01", method: "GET", path: "/public/check", callers: ALL, status: "NEW", idempotent: false },
+  // CHK (P-08 public rumour check)
+  "CHK-01": { contract: "CHK-01", method: "GET", path: "/public/check", callers: ["public"], status: "NEW", idempotent: false },
   "CHK-02": { contract: "CHK-02", method: "POST", path: "/public/check", callers: ["public"], status: "NEW", idempotent: true, body: "json" },
 
   // NOT
@@ -368,10 +368,8 @@ export interface OperationTypes {
 
   "GUIDE-01.list": Io<undefined, T.GuideListResponse, { language?: T.Language }>;
   "GUIDE-01.get": Io<undefined, T.GuideDocument, { language?: T.Language }>;
-
-  // CHK
-  "CHK-01": Io<undefined, { result: string; response?: Record<string, unknown>; claim_ref?: string }, { q?: string; lang?: string }>;
-  "CHK-02": Io<{ text: string; lang: string; device_token: string }, { result: string; claim_ref: string }>;
+  "CHK-01": Io<undefined, T.CheckResponse, T.CheckQuery>;
+  "CHK-02": Io<T.CheckAskRequest, T.CheckAskResponse>;
 
   // NOT
   "NOT-01": Io<{ scope: { kind: string; code: string }; type: string; text: string; question_id?: string; expires_in_minutes?: number }, { id: string; status: string }>;

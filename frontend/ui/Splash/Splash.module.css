@@ -1,0 +1,107 @@
+/* Spec screen 1 and I-1. Hidden unless the first-paint gate marked <html>. */
+.splash {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--paper);
+  color: var(--ink);
+  overflow: hidden;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+:global(html[data-eg-splash]) .splash {
+  display: flex;
+}
+
+.splash[data-phase="leaving"] {
+  opacity: 0;
+  transition: opacity var(--dur-sheet) var(--ease-exit);
+}
+
+.centre {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s-5);
+  /* Sit a little above centre, so the scene below has room. */
+  margin-bottom: 18vh;
+}
+
+.rings {
+  animation: settle var(--dur-scene) var(--ease-enter) both;
+}
+
+/* The mark sits on the sun disc in ink in both themes. */
+.mark {
+  width: 68px;
+  height: 68px;
+  color: var(--fixed-ink);
+}
+
+.words {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s-1);
+  animation: rise var(--dur-scene) var(--ease-enter) 200ms both;
+}
+
+.name {
+  margin: 0;
+  font: var(--t-display);
+  letter-spacing: var(--display-tracking);
+  text-align: center;
+}
+
+.credit {
+  margin: 0;
+  color: var(--ink-2);
+  font: var(--t-body-lg);
+}
+
+@keyframes settle {
+  from {
+    transform: scale(0.85);
+    opacity: 0;
+  }
+}
+
+@keyframes rise {
+  from {
+    transform: translateY(12px);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rings,
+  .words {
+    animation: none;
+  }
+  .splash[data-phase="leaving"] {
+    transition-duration: 80ms;
+  }
+}
+
+/* Gallery preview: settled, inside its frame (the transform contains the fixed scene). */
+.splash[data-preview] {
+  position: relative;
+  inset: auto;
+  display: flex;
+  width: 100%;
+  height: 100%;
+  transform: translateZ(0);
+  cursor: default;
+}
+
+.splash[data-preview] .rings,
+.splash[data-preview] .words {
+  animation: none;
+}

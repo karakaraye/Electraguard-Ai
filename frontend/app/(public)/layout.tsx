@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = { width: "device-width", initialScale: 1, viewportFit: "cover" };
 
 /** Namespaces the client islands on public pages need; the rest stays on the server. */
-const CLIENT_NAMESPACES = ["ui", "common", "pub", "p01", "p02", "p04", "p07", "o05"];
+const CLIENT_NAMESPACES = ["ui", "common", "pub", "p01", "p02", "p04", "p07", "p08", "o05"];
 
 function pick(messages: Messages): Messages {
   const subset: Messages = {};

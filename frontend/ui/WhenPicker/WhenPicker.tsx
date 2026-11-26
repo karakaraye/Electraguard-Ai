@@ -25,6 +25,8 @@ export type WhenPickerProps = Omit<ChoiceGroupChrome, "legend" | "error"> & {
   minDate?: string;
   /** Current time used for the future check (corrected by the server clock). Defaults to the phone clock. */
   now?: number | null;
+  /** Replaces the time-zone line, for example to say network time is in use. */
+  zoneText?: string;
   "data-testid"?: string;
 };
 
@@ -71,6 +73,7 @@ export function WhenPicker({
   requireDayTime,
   minDate,
   now: nowOverride,
+  zoneText,
   "data-testid": testId = "when-picker",
 }: WhenPickerProps) {
   const t = useT();
@@ -102,6 +105,8 @@ export function WhenPicker({
   return (
     <fieldset className={styles.group} data-testid={testId} aria-describedby={errorText ? errorId : undefined}>
       <GroupLegend legend={legend ?? t("ui.when.legend")} headingLevel={headingLevel} hint={hint} />
+      {/* The error sits under the question, never below a long list where it can be hidden. */}
+      {errorText ? <GroupError error={errorText} id={errorId} /> : null}
       <div className={styles.modes}>
         {modes.map((option) => {
           const checked = value.mode === option.mode;
@@ -157,7 +162,7 @@ export function WhenPicker({
 
       <p className={styles.zone}>
         <ClockIcon size={20} />
-        <span>{t("ui.when.zone")}</span>
+        <span data-testid={`${testId}-zone`}>{zoneText ?? t("ui.when.zone")}</span>
       </p>
 
       {olderThanWeek && !errorText ? (
@@ -167,7 +172,6 @@ export function WhenPicker({
         </p>
       ) : null}
 
-      {errorText ? <GroupError error={errorText} id={errorId} /> : null}
     </fieldset>
   );
 }

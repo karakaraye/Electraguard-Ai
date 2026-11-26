@@ -145,6 +145,7 @@ export function SearchSelect({
     }
   }
 
+  const emptyText = noMatchesText ? noMatchesText(query ?? "") : t("ui.search.noMatches");
   return (
     <FieldFrame label={label} hint={hint} error={error} optional={optional} id={id}>
       {({ id: controlId, describedBy, invalid }) => (
@@ -209,7 +210,7 @@ export function SearchSelect({
             id={`${listId}-list`}
             role="listbox"
             className={styles.list}
-            hidden={!open}
+            hidden={!open || matches.length === 0}
             aria-label={typeof label === "string" ? label : undefined}
           >
             {matches.map((option, index) => {
@@ -234,14 +235,15 @@ export function SearchSelect({
                 </li>
               );
             })}
-            {matches.length === 0 ? (
-              <li className={styles.empty} role="presentation">
-                {noMatchesText ? noMatchesText(query ?? "") : t("ui.search.noMatches")}
-              </li>
-            ) : null}
           </ul>
+          {/* No matches: a plain panel, not an empty listbox, and the hint is what gets announced. */}
+          {open && matches.length === 0 ? (
+            <p className={`${styles.list} ${styles.empty}`} aria-hidden="true" data-testid={`${testId}-empty`}>
+              {emptyText}
+            </p>
+          ) : null}
           <span className="eg-sr-only" role="status" aria-live="polite">
-            {open && query !== null ? t("ui.search.results", { count: matches.length }) : ""}
+            {open && query !== null ? (matches.length === 0 ? emptyText : t("ui.search.results", { count: matches.length })) : ""}
           </span>
         </div>
       )}

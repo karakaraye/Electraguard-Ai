@@ -8,23 +8,25 @@
   margin: 0;
   padding: 0;
   border: 0;
-  border-radius: var(--radius) var(--radius) 0 0;
-  background: var(--paper);
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  background: var(--paper-raised);
   color: var(--ink);
   font: var(--t-base);
   box-shadow: var(--shadow-sheet);
   overflow: hidden;
   transform: translateY(100%);
   transition:
-    transform var(--dur-sheet) var(--ease-sheet),
-    opacity var(--dur-sheet) var(--ease-sheet),
-    overlay var(--dur-sheet) allow-discrete,
-    display var(--dur-sheet) allow-discrete;
+    transform var(--dur-exit) var(--ease-exit),
+    opacity var(--dur-exit) var(--ease-exit),
+    overlay var(--dur-exit) allow-discrete,
+    display var(--dur-exit) allow-discrete;
 }
 
 .sheet[open] {
   display: flex;
   transform: none;
+  transition-duration: var(--dur-sheet);
+  transition-timing-function: var(--ease-sheet);
 }
 
 @starting-style {
@@ -34,7 +36,7 @@
 }
 
 .sheet::backdrop {
-  background: rgb(11 11 12 / 0);
+  background: transparent;
   transition:
     background-color var(--dur-sheet) ease,
     overlay var(--dur-sheet) allow-discrete,
@@ -42,12 +44,12 @@
 }
 
 .sheet[open]::backdrop {
-  background: rgb(11 11 12 / 0.55);
+  background: var(--scrim);
 }
 
 @starting-style {
   .sheet[open]::backdrop {
-    background: rgb(11 11 12 / 0);
+    background: transparent;
   }
 }
 
@@ -59,7 +61,7 @@
     max-width: 34rem;
     max-height: min(80dvh, 44rem);
     margin: auto;
-    border-radius: var(--radius);
+    border-radius: var(--radius-xl);
     border: 1px solid var(--rule);
     opacity: 0;
     transform: scale(0.97);
@@ -90,7 +92,7 @@
   align-self: center;
   width: 40px;
   height: 4px;
-  margin-top: var(--s-2);
+  margin-top: 10px;
   border-radius: 2px;
   background: var(--rule);
 }
@@ -162,8 +164,15 @@
 }
 
 .footer {
-  display: grid;
+  display: flex;
+  flex-wrap: wrap;
   gap: var(--s-2);
   padding: var(--s-3) var(--gutter) max(var(--s-3), env(safe-area-inset-bottom));
   border-top: 1px solid var(--rule);
+}
+
+/* Cancel then confirm, side by side; they wrap (Cancel on top) only when a label needs the room. */
+.footer > * {
+  flex: 1 1 9rem;
+  min-width: 0;
 }

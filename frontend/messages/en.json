@@ -116,6 +116,7 @@
     },
     "suggestion": {
       "label": "Suggested",
+      "notDecided": "Suggested, not decided",
       "accept": "Accept",
       "correct": "Correct",
       "accepted": "Accepted",
@@ -163,7 +164,8 @@
       "withdrawn": "Withdrawn",
       "waitingCode": "Waiting for a new code",
       "needsAttention": "Needs your attention",
-      "needsAttentionHint": "We could not accept it yet. Open it, fix what is marked, and send again."
+      "needsAttentionHint": "We could not accept it yet. Open it, fix what is marked, and send again.",
+      "label": "Report progress"
     },
     "outcome": {
       "confirmed": "Confirmed by evidence",
@@ -215,6 +217,15 @@
     "yo": "Yorùbá",
     "ig": "Igbo"
   },
+  "ob": {
+    "title1": "Report what you see at the polling unit.",
+    "body1": "A trained reviewer reads every report. You get a receipt code to follow it.",
+    "title3": "No network? It still works.",
+    "body3": "Your report waits safely on this phone and sends itself when the network is back.",
+    "next": "Next",
+    "skip": "Skip",
+    "progress": "Page {current} of {total}"
+  },
   "o02": {
     "title": "What this app keeps",
     "line1": "We do not ask your name.",
@@ -259,6 +270,11 @@
       "body": "Pick 6 numbers you will remember. Do not use your birthday or 123456. Do not share it.",
       "newLabel": "New PIN",
       "confirmLabel": "Type the new PIN again",
+      "rules": {
+        "six": "6 numbers",
+        "notSimple": "Not easy to guess, like 123456 or a birth year",
+        "match": "Both PINs are the same"
+      },
       "submit": "Save my PIN",
       "submitting": "Saving",
       "tooSimple": "That PIN is too easy to guess. Try different numbers.",
@@ -276,17 +292,27 @@
       "clearTitle": "Delete these reports from this phone?",
       "clearBody": "They were never sent. If you delete them, they are gone for good. This cannot be undone.",
       "clearConfirm": "Delete reports"
-    }
+    },
+    "footer": "ElectraGuard AI by Cairn · Independent and nonpartisan"
   },
   "o04": {
     "title": "Home",
     "signedInAs": "Observer {code}",
+    "greeting": {
+      "morning": "Good morning",
+      "afternoon": "Good afternoon",
+      "evening": "Good evening"
+    },
     "citizenMode": "Citizen report",
     "report": "Report something",
+    "heroBody": "Tell us what you see at your polling unit.",
     "continueDraft": "Continue your report",
     "draftSaved": "Started {time}",
     "checklist": "Polling-day checklist",
     "checklistProgress": "{done} of {total} stages sent",
+    "checklistNext": "Next: {stage}",
+    "checklistDone": "All stages sent",
+    "stageNext": "Next",
     "myReports": "My reports",
     "myReportsCount": "{count, plural, =0 {No reports yet} one {# report} other {# reports}}",
     "messages": "Messages",
@@ -313,7 +339,11 @@
     "fix": "Fix it",
     "purpose": "Report what you see at your polling unit. Every report helps build a better Nigeria.",
     "tasks": "What you can do",
-    "allReports": "See all my reports"
+    "allReports": "See all my reports",
+    "outboxTitle": "Waiting to send",
+    "outboxOrder": "Reports send in the order you made them.",
+    "outboxLabel": "{count, plural, one {# report waiting to send} other {# reports waiting to send}}",
+    "heroPaused": "New reports are paused. You can still write them. They will wait on this phone."
   },
   "incident": {
     "draftKept": "Your report is saved on this phone.",
@@ -366,7 +396,7 @@
   "o07": {
     "title": "Where did it happen?",
     "searchLabel": "Polling unit code or name",
-    "searchHint": "Example: 24-05-08-011",
+    "searchHint": "Example: KN-04-07-012",
     "orChoose": "Or choose step by step",
     "state": "State",
     "lga": "Local government area",
@@ -385,7 +415,10 @@
     "searchNeedsState": "Choose your state below first. Then you can search its polling units.",
     "listDownloadingNoPercent": "Downloading the polling-unit list",
     "listMissingKept": "Your answers are kept. Come back when you have network.",
-    "unknownUnitNeedsList": "Available after the list downloads."
+    "unknownUnitNeedsList": "Available after the list downloads.",
+    "todayTitle": "Your polling unit today",
+    "byArea": "Choose by state, LGA and ward",
+    "stateFirst": "Choose your state first. Then you can search its polling units."
   },
   "o08": {
     "title": "When did it happen?",
@@ -402,7 +435,8 @@
       "confirm": "Yes, the date is right",
       "change": "Change the date"
     },
-    "error": "Choose a time."
+    "error": "Choose a time.",
+    "networkTime": "Using network time."
   },
   "o09": {
     "title": "Tell us what happened",
@@ -438,7 +472,7 @@
     "blur": "Blur faces",
     "blurHint": "Faces we can detect are blurred. Check before sending.",
     "locationRemoved": "Location removed",
-    "size": "{size} · about {time} to send now",
+    "size": "{size} · about {time} to send",
     "sizeOffline": "{size} · will send when you have network",
     "retake": "Retake",
     "remove": "Remove",
@@ -457,7 +491,8 @@
     "videoTooLong": "Choose a clip of 60 seconds or less.",
     "voiceTooLong": "Choose a voice note of 2 minutes or less.",
     "unreadable": "This file could not be opened. Try another one.",
-    "itemName": "{kind, select, photo {Photo} video {Video} other {Voice note}} {n}"
+    "itemName": "{kind, select, photo {Photo} video {Video} other {Voice note}} {n}",
+    "countOf": "{count} of {max} added"
   },
   "o11": {
     "title": "Check and send",
@@ -482,7 +517,11 @@
     "needsAttention": "We could not accept this report yet. Fix the parts marked below, then send it again.",
     "savedTitle": "Saved on this phone",
     "checkingTitle": "Checking your report",
-    "summaryTitle": "Your report"
+    "summaryTitle": "Your report",
+    "sendOffline": "Save and send when online",
+    "checkThis": "Check this",
+    "citizenNote": "You don't need an account. You'll get a receipt code.",
+    "savedServer": "Our server had a problem. Your report is safe on this phone. It will send by itself when the server is back."
   },
   "o12": {
     "title": "Report received",
@@ -584,7 +623,7 @@
       "button": "Withdraw this report",
       "title": "Withdraw this report?",
       "body": "Your text, photos, videos and voice notes will be deleted. Reviewers will only see that a report was withdrawn. This cannot be undone.",
-      "confirm": "Withdraw report",
+      "confirm": "Withdraw",
       "keep": "Keep it",
       "done": "You withdrew this report.",
       "tooLate": "Review has started, so this report can no longer be withdrawn. You can send a message to the reviewer instead.",
@@ -615,6 +654,11 @@
       "limit": "A report can have up to 6 files.",
       "failed": "The file did not send. Check your network and try again.",
       "processing": "Being prepared. It opens in a few minutes."
+    },
+    "outcomeWhy": {
+      "confirmed": "Reviewers found evidence that supports what you reported.",
+      "notEnough": "Reviewers could not confirm it from the evidence they had. Your report still helps.",
+      "outside": "This is not something ElectraGuard observes, so it was not reviewed further."
     }
   },
   "o15": {
@@ -688,7 +732,19 @@
     },
     "answerInvalid": "Choose one of the answers.",
     "unitRequired": "Choose the polling unit you are at. A ward alone is not enough here.",
-    "unansweredHint": "You can send now and fill the rest later, or go back and answer them."
+    "unansweredHint": "You can send now and fill the rest later, or go back and answer them.",
+    "desc": {
+      "arrival": "When you get there: your polling unit and the time you arrived.",
+      "opening": "Did the unit open on time, with materials, officials and agents there?",
+      "accreditation": "The device, the queue, and whether elderly and disabled voters went first.",
+      "voting": "Secrecy, help for those who need it, and anything that disturbed voting.",
+      "closing": "When voting closed, and whether counting was public and signed.",
+      "results": "Whether the result sheet was posted where people can see it."
+    },
+    "answerCount": "{count, plural, one {Answer # question} other {Answer # questions}}",
+    "continueStage": "Continue this stage",
+    "allDone": "Thank you. All stages sent.",
+    "answered": "{done} of {total} answered"
   },
   "o16": {
     "title": "Check the result sheet",
@@ -708,7 +764,8 @@
       "view": "See the photo",
       "tooBig": "This photo is too big. Take it again a little further away.",
       "tooMany": "Too many photos read in the last hour. Type the numbers from the sheet.",
-      "unavailable": "Reading photos is not available yet. Type the numbers from the sheet."
+      "unavailable": "Reading photos is not available yet. Type the numbers from the sheet.",
+      "frame": "Fit the whole sheet inside the frame"
     },
     "numbers": {
       "title": "Type exactly what the sheet shows",
@@ -722,7 +779,9 @@
       "notNumber": "Use numbers only, like 245.",
       "tooBig": "That number is too big for one polling unit. Check it again.",
       "checkThis": "Check this number",
-      "required": "Type the number on the sheet. Type 0 if the sheet shows 0."
+      "required": "Type the number on the sheet. Type 0 if the sheet shows 0.",
+      "groupVoters": "Voters and ballots",
+      "groupParties": "Votes for each party"
     },
     "confirm": "I checked every number against the posted sheet",
     "confirmError": "Tick the box after you check every number.",
@@ -737,7 +796,9 @@
     "empty": "No messages. When a reviewer writes to you, it will show here.",
     "loading": "Getting messages",
     "loadError": "We could not get your messages. Try again.",
-    "offline": "Offline. New messages will show when you have network."
+    "offline": "Offline. New messages will show when you have network.",
+    "groupQuestions": "Questions for you",
+    "groupUnread": "Unread"
   },
   "o18": {
     "title": "Discussions",
@@ -812,7 +873,8 @@
     "ready": "Answer ready.",
     "version": "version {version}",
     "openSourceNamed": "Open {title}",
-    "noGuides": "No guides are saved on this phone yet. They are saved when you open them with network."
+    "noGuides": "No guides are saved on this phone yet. They are saved when you open them with network.",
+    "answered": "From the approved guides"
   },
   "o20": {
     "title": "Settings",
@@ -837,13 +899,23 @@
       "title": "Sign out and clear this phone?",
       "body": "Drafts, saved reports and messages on this phone will be removed. Reports already received stay safe with the reviewers.",
       "unsentWarning": "{count, plural, one {# report is not sent yet. It will be lost.} other {# reports are not sent yet. They will be lost.}}",
-      "sendFirst": "Send them first",
+      "sendFirst": "{count, plural, one {Send it first} other {Send them first}}",
       "confirm": "Clear and sign out",
       "signedOut": "You are signed out.",
       "everywhere": "Sign out on every phone",
       "unsentKept": "{count, plural, one {# report is not sent yet. It stays on this phone and sends when you sign in again with this code.} other {# reports are not sent yet. They stay on this phone and send when you sign in again with this code.}}"
     },
-    "version": "Version {version}"
+    "version": "Version {version}",
+    "groupDisplay": "Language and display",
+    "groupAccount": "Account and privacy",
+    "textSize": "Text size",
+    "vibration": "Vibration",
+    "vibrationHint": "A short buzz when you choose an answer or send a report.",
+    "text": {
+      "normal": "Normal",
+      "large": "Large"
+    },
+    "themeSystem": "System"
   },
   "c01": {
     "title": "Report received",
@@ -866,13 +938,12 @@
     "checkStatus": "Check status",
     "another": "Report something else",
     "citizenLabel": "Citizen report, not from an accredited observer",
-    "testNumber": "test number",
     "secretMissing": "This file cannot be added from this phone."
   },
   "p01": {
     "title": "Check a report",
     "label": "Receipt code",
-    "hint": "Example: EG-4H7Q-92KD",
+    "hint": "Starts with EG, then two groups of four letters or numbers.",
     "check": "Check",
     "checking": "Checking",
     "savedCodes": "Codes on this phone",
@@ -934,9 +1005,25 @@
     "save": "Save changes",
     "cancel": "Cancel",
     "confirm": "Confirm",
-    "backToQueue": "Back to queue"
+    "backToQueue": "Back to queue",
+    "shell": {
+      "more": "More",
+      "moreTitle": "More sections"
+    }
   },
   "s01": {
+    "enrolScan": "Scan this code with your authenticator app.",
+    "enrolTypeKey": "Or type this key into the app.",
+    "qrLabel": "QR code for your authenticator app",
+    "qrUnavailable": "The QR code could not be shown. Type the key below instead.",
+    "codePaste": "You can paste the whole code.",
+    "footer": "For reviewers and coordinators of observation organisations. Observers sign in on the app with their observer code.",
+    "strength": {
+      "empty": "Use at least {min} characters.",
+      "short": "Too short: {count} of {min} characters.",
+      "fair": "Long enough. A longer password is stronger.",
+      "strong": "Strong password."
+    },
     "title": "Staff sign-in",
     "subtitle": "Official election observation review portal",
     "emailLabel": "Email address",
@@ -986,7 +1073,9 @@
       "category": "Category",
       "channel": "Channel",
       "hasEvidence": "Has media",
-      "clear": "Reset filters"
+      "clear": "Reset filters",
+      "label": "Filters",
+      "anyCategory": "Any category"
     },
     "columns": {
       "urgency": "Urgency",
@@ -995,7 +1084,8 @@
       "location": "Location",
       "occurred": "Occurred",
       "evidence": "Evidence",
-      "status": "Status"
+      "status": "Status",
+      "reasons": "Why"
     },
     "urgency": {
       "urgent": "Urgent",
@@ -1017,9 +1107,52 @@
       "citizen_report": "Citizen report",
       "sms_report": "SMS report"
     },
-    "empty": "No cases matching the current filters.",
+    "empty": "No cases match these filters.",
     "emptySubtitle": "New reports assigned to you will appear here.",
-    "loadMore": "Load more cases"
+    "loadMore": "Load more cases",
+    "tabsLabel": "Cases by status",
+    "caption": "Cases in the review queue",
+    "simulated": "Simulated",
+    "noPlace": "No place given",
+    "keys": "J and K move between cases. Enter opens one.",
+    "moreReasons": "+{count}",
+    "newCases": "{count, plural, one {# new case} other {# new cases}}",
+    "channel": {
+      "app": "Observer app",
+      "citizen": "Citizen web",
+      "sms": "SMS",
+      "ussd": "USSD"
+    },
+    "views": {
+      "title": "Saved views",
+      "save": "Save this view",
+      "name": "View name",
+      "saveConfirm": "Save",
+      "remove": "Remove saved view {name}"
+    },
+    "evidence": {
+      "photo": "{count, plural, one {# photo} other {# photos}}",
+      "video": "{count, plural, one {# video} other {# videos}}",
+      "audio": "{count, plural, one {# voice note} other {# voice notes}}",
+      "none": "None"
+    },
+    "flags": {
+      "duplicate": "May be a duplicate of another report",
+      "resultSheet": "{count, plural, one {# result sheet check failed} other {# result sheet checks failed}}",
+      "names": "The text may contain names",
+      "question": "Waiting for an answer to a question",
+      "unread": "{count, plural, one {# unread message} other {# unread messages}}"
+    },
+    "preview": {
+      "title": "Case preview",
+      "place": "Place",
+      "notGiven": "Not given",
+      "received": "Received",
+      "open": "Open case"
+    },
+    "tabs": {
+      "question": "Questions"
+    }
   },
   "s03": {
     "title": "Case review",
@@ -1046,7 +1179,10 @@
       "addSpan": "Add redaction span",
       "clearSpans": "Clear all redactions",
       "save": "Save redactions",
-      "preview": "Redacted preview:"
+      "preview": "Redacted preview:",
+      "mode": "Hide names",
+      "selected": "Selected: “{text}”",
+      "count": "{count, plural, =0 {Nothing hidden yet} one {# part hidden} other {# parts hidden}}"
     },
     "details": {
       "category": "Category: {category}",
@@ -1055,17 +1191,43 @@
       "location": "Location",
       "occurredAt": "Occurred: {time}",
       "receivedAt": "Received: {time}",
-      "skew": "Phone clock skew: {seconds}s"
+      "skew": "Phone clock skew: {seconds}s",
+      "title": "Details",
+      "categoryGiven": "Category given",
+      "dangerNow": "Danger now",
+      "seenFirsthand": "Seen firsthand",
+      "place": "Place",
+      "occurred": "Occurred",
+      "saved": "Saved on the phone",
+      "received": "Received",
+      "yes": "Yes",
+      "no": "No",
+      "unknown": "Not given",
+      "skewWarn": "The phone clock was {minutes} minutes off. Check the times."
     },
     "evidence": {
       "title": "Evidence & integrity",
       "sha256": "SHA-256 verified",
       "exifRemoved": "EXIF stripped",
       "blurred": "Faces blurred",
-      "unblur": "View unblurred (recorded in audit)",
+      "unblur": "View unblurred",
       "transcript": "Audio transcript",
-      "pendingUpload": "Pending upload: {received} of {total} bytes received",
-      "noEvidence": "No media attachments submitted."
+      "pendingUpload": "Still arriving: {received} of {total}",
+      "noEvidence": "No media attachments submitted.",
+      "sha256No": "SHA-256 not verified",
+      "exifNo": "EXIF not stripped",
+      "blurredNo": "Faces not blurred",
+      "unblurReason": "Why do you need to see it unblurred?",
+      "unblurHint": "Your reason is recorded in the audit trail.",
+      "unblurConfirm": "View unblurred",
+      "unblurUnavailable": "The unblurred file is no longer available. It is kept only while the file is being processed.",
+      "unblurShown": "Showing the unblurred file. This view is recorded.",
+      "unblurredAlt": "Unblurred evidence photo",
+      "kind": {
+        "photo": "Photo",
+        "video": "Video",
+        "audio": "Voice note"
+      }
     },
     "suggestions": {
       "title": "AI suggestions",
@@ -1075,7 +1237,12 @@
       "accept": "Accept suggestion",
       "correct": "Correct suggestion",
       "correctLabel": "Choose correction",
-      "saveCorrection": "Apply correction"
+      "saveCorrection": "Apply correction",
+      "pending": "Suggestions are being prepared.",
+      "failed": "No suggestion could be made. Decide from the report.",
+      "abstained": "No suggestion: not confident enough.",
+      "confirmAccept": "Set the {field} to “{value}”?",
+      "names": "The text may contain names. Hide them before it is shared."
     },
     "duplicates": {
       "title": "Duplicate candidates",
@@ -1084,7 +1251,11 @@
       "link": "Link as duplicate",
       "keepSeparate": "Keep separate",
       "linked": "Linked",
-      "inaccessible": "Report from another organisation (metadata only)"
+      "inaccessible": "Report from another organisation (metadata only)",
+      "notice": "Possible duplicates found by matching. A person decides.",
+      "thisCase": "This report",
+      "confirmLink": "Confirm link",
+      "keptSeparate": "Kept separate"
     },
     "resultSheet": {
       "title": "Result sheet consistency check",
@@ -1094,14 +1265,19 @@
       "accreditedExceeds": "Accredited voters exceed registered voters",
       "sumDiffers": "Party votes plus rejected votes differs from accredited count",
       "roundNumbers": "Unusually round numbers",
-      "benignCauses": "Possible benign causes: copy error, unreadable digit"
+      "benignCauses": "Possible benign causes: copy error, unreadable digit",
+      "identical": "Identical to another polling unit's sheet",
+      "digitSwap": "Two digits may be swapped",
+      "noFlags": "No consistency problems found."
     },
     "conversation": {
       "title": "Observer conversation",
       "send": "Send message",
       "placeholder": "Type a message to the observer...",
       "markRead": "Mark messages read",
-      "noMessages": "No messages yet."
+      "noMessages": "No messages yet.",
+      "formal": "Formal question",
+      "label": "Message to the reporter"
     },
     "actions": {
       "title": "Case actions",
@@ -1120,12 +1296,40 @@
       "rationaleLabel": "Internal rationale",
       "rationaleHint": "Explain why this case was corroborated, closed or dismissed. Never shown to reporters.",
       "expectedMediaLabel": "Confirm evidence considered in this closure",
-      "submitClose": "Confirm closure"
+      "submitClose": "Confirm closure",
+      "considered": "{count, plural, =0 {I considered the whole report (no files)} one {I considered all the evidence (# file)} other {I considered all the evidence (# files)}}"
     },
     "history": {
       "title": "Audit trail",
       "chainIntact": "Hash chain intact",
       "chainBroken": "Hash chain broken!"
+    },
+    "columns": {
+      "report": "Report",
+      "help": "Help",
+      "decision": "Decision"
+    },
+    "simulated": "Simulated report",
+    "translationView": {
+      "original": "Original",
+      "english": "English (machine)",
+      "pending": "The machine translation is being prepared.",
+      "failed": "The machine translation failed. Read the original."
+    },
+    "decision": {
+      "status": "Status",
+      "outcome": "Outcome: {outcome}",
+      "openQuestion": "Question waiting for an answer",
+      "askedAt": "Asked {time}",
+      "nothing": "No action is open on this case."
+    },
+    "errors": {
+      "stale": "Someone else changed this case. Reload it to see the latest version.",
+      "invalid": "That action is no longer possible. The case has moved on.",
+      "evidence": "New evidence arrived. Check it before you close the case.",
+      "validation": "Check the fields and try again.",
+      "reload": "Reload",
+      "notFound": "This case was not found."
     }
   },
   "s04": {
@@ -1133,18 +1337,49 @@
     "subtitle": "Workload distribution and reviewer assignment",
     "unassignedCount": "{count} unassigned cases",
     "reviewers": "Active reviewers ({count})",
-    "openCases": "{count} open cases ({urgent} urgent)",
+    "openCases": "{count} open, {urgent} urgent",
     "activeNow": "Active now",
     "suggestedBadge": "Suggested: {name}",
     "reasonFewest": "Fewest open cases",
     "reasonArea": "Same LGA today",
     "reasonFewestInArea": "Fewest open cases in LGA",
-    "bulkAssign": "Assign selected ({count})",
+    "bulkAssign": "{count, plural, =0 {Assign} one {Assign # case} other {Assign # cases}}",
     "takeSuggested": "Take suggested reviewer",
-    "assignTo": "Assign to...",
+    "assignTo": "Assign to",
     "selectAll": "Select all",
-    "assignedSuccess": "Assigned {count} cases successfully.",
-    "assignedError": "Could not assign some cases: {error}"
+    "assignedSuccess": "{count, plural, one {Assigned # case.} other {Assigned # cases.}}",
+    "assignedError": "Could not assign some cases: {error}",
+    "workloadTitle": "Reviewer workload",
+    "legendOpen": "Open",
+    "areas": "{count, plural, =0 {No areas} one {# area} other {# areas}}",
+    "noReviewers": "No reviewers yet.",
+    "casesTitle": "Cases",
+    "scope": {
+      "unassigned": "Unassigned",
+      "all": "All open"
+    },
+    "refresh": "Refresh list",
+    "selected": "{count, plural, =0 {None selected} one {# selected} other {# selected}}",
+    "target": {
+      "suggested": "Each case's suggested reviewer"
+    },
+    "maxNote": "Assign up to {max} at a time.",
+    "selectRow": "Select case {ref}",
+    "columns": {
+      "received": "Received",
+      "reviewer": "Reviewer"
+    },
+    "noSuggestion": "No suggestion",
+    "result": {
+      "assigned": "Assigned to {name}",
+      "none": "Not assigned",
+      "already": "Someone else assigned it first",
+      "stale": "Changed since you loaded it. Refresh the list.",
+      "failed": "Could not assign"
+    },
+    "emptyUnassigned": "Every case has a reviewer.",
+    "emptyAll": "No open cases.",
+    "failedCount": "{count, plural, one {# case could not be assigned. See its row.} other {# cases could not be assigned. See their rows.}}"
   },
   "s05": {
     "title": "Operations room",
@@ -1161,27 +1396,36 @@
     },
     "clusters": {
       "title": "Cluster warnings",
-      "badge": "{count} reports in {window}m",
-      "baseline": "Baseline: {baseline}",
+      "badge": "{count} reports in {window} min",
+      "baseline": "Usual for this window: {baseline}",
       "reviewButton": "Mark reviewed",
       "reviewNote": "Review note (optional)",
       "reviewedBadge": "Reviewed",
       "settings": "Cluster thresholds",
       "windowMinutes": "Window (minutes)",
       "minReports": "Minimum reports",
-      "saveSettings": "Update thresholds"
+      "saveSettings": "Update thresholds",
+      "openCount": "{count} open",
+      "reviewedBy": "Reviewed by {name}, {time}"
     },
     "coverage": {
       "title": "Coverage gaps",
       "expected": "{expected} expected polling units",
       "withChecklist": "{count} reported ({percent}%)",
       "withoutChecklist": "{count} missing",
-      "noAnswers": "Units with most 'No' answers"
+      "noAnswers": "Units with most 'No' answers",
+      "stage": "Stage",
+      "summary": "{reported} of {expected} polling units reported ({percent}%). {missing} missing.",
+      "colExpected": "Expected units",
+      "colReported": "Reported",
+      "colMissing": "Missing",
+      "colNo": "'No' answers",
+      "noCount": "{count, plural, one {# 'No'} other {# 'No' answers}}"
     },
     "lateMaterials": {
       "title": "Late materials risk",
       "subtitle": "Logistical prediction model",
-      "hours": "{hours}h predicted transit",
+      "hours": "{hours} h",
       "riskHigh": "High risk",
       "riskMedium": "Medium risk",
       "riskLow": "Low risk"
@@ -1196,92 +1440,360 @@
       "count": "{count} reports ({urgent} urgent)",
       "viewMap": "Map view (LGA level)",
       "viewTable": "Table view"
-    }
+    },
+    "filterDate": "Day",
+    "updated": "Updated {time}",
+    "refresh": "Refresh",
+    "totalsLabel": "Totals",
+    "notResult": "This is not a result.",
+    "empty": "Nothing for this day yet.",
+    "lga": {
+      "lga": "LGA",
+      "reports": "Reports",
+      "urgent": "Urgent"
+    },
+    "late": {
+      "rank": "Rank",
+      "risk": "Risk",
+      "place": "Ward",
+      "transit": "Predicted travel",
+      "factors": "Why",
+      "model": "Model {version}",
+      "error": "Average error {hours} h (checked {on})"
+    },
+    "syntheticNote": "These predictions come from a model trained on synthetic logistics data, not official INEC delivery records. Use them to decide where to look first."
   },
   "s06": {
     "title": "Rumour desk",
     "subtitle": "Track online claims, match with field observations, draft responses",
-    "newClaim": "Log new claim",
-    "claimText": "Claim text",
+    "newClaim": "Log a claim",
+    "claimText": "What was said",
     "source": "Seen on",
-    "image": "Upload screenshot/image",
-    "claimsList": "Active claims",
-    "harmLevel": "Harm risk: {level}",
-    "checkWorthiness": "Check-worthiness: {level}",
+    "image": "Screenshot or photo (optional)",
+    "claimsList": "Claims",
     "imageGuide": {
-      "title": "Image verification guide",
-      "notice": "Guidance only. Always verify with human judgment.",
-      "reverseSearch": "Run reverse image search",
-      "checkDate": "Verify date against claim timestamp",
-      "lookEdits": "Inspect for image manipulations",
-      "compression": "Compression artifact hint: {hint}"
+      "title": "Check the image",
+      "notice": "A guide only. These steps do not decide whether an image is real.",
+      "reverseSearch": "Search for the image online to find where it first appeared.",
+      "checkDate": "Compare the date of the image with the date in the claim.",
+      "lookEdits": "Look for signs the image was edited.",
+      "compression": "Compression hint: {hint}",
+      "checkSource": "Check who posted it first, and when.",
+      "metaYes": "The file had hidden details. We removed them.",
+      "metaNo": "The file had no hidden details."
     },
     "matches": {
-      "title": "Matched field observations",
-      "corroboratedOnly": "Only closed corroborated reports shown",
-      "pastClaims": "Past verified claims"
+      "title": "Field reports that match",
+      "pastClaims": "Past verified claims",
+      "note": "Suggested by matching words. Only closed reports confirmed by evidence are shown. You decide what it means.",
+      "none": "No confirmed field report matches this claim yet.",
+      "similar": "{percent}% similar",
+      "error": "Could not load matching reports.",
+      "occurred": "Happened {time}"
     },
     "response": {
-      "title": "Public response draft",
-      "textLabel": "Response text",
+      "title": "Reply for the public",
+      "textLabel": "Reply text",
       "saveDraft": "Save draft",
-      "approve": "Approve response",
-      "reject": "Reject draft",
+      "approve": "Approve reply",
+      "reject": "Send back",
       "dismiss": "Dismiss claim",
-      "draftedBy": "Drafted by {name} at {time}",
-      "approvedBy": "Approved by {name} at {time}",
+      "draftedBy": "Drafted by {name}, {time}",
+      "approvedBy": "Approved by {name}, {time}",
       "secondPersonNotice": "Another coordinator must approve a response you drafted.",
-      "rejectNote": "Rejection note"
-    }
+      "intro": "Write a short, factual reply. A second coordinator must approve it before it is used.",
+      "languageLabel": "Reply language",
+      "sentBack": "Sent back: {note}",
+      "none": "No reply has been drafted yet.",
+      "dismissedLock": "This claim was dismissed and can no longer be changed.",
+      "approvedNote": "This reply is approved. Saving a new draft replaces it and needs approval again.",
+      "unsaved": "You have changes you have not saved. Save the draft first."
+    },
+    "count": "{count, plural, =0 {No claims} one {# claim} other {# claims}}",
+    "filter": {
+      "label": "Show",
+      "all": "All claims"
+    },
+    "status": {
+      "new": "New",
+      "matched": "Needs a reply",
+      "response_draft": "Reply drafted",
+      "response_approved": "Reply approved",
+      "dismissed": "Dismissed"
+    },
+    "columns": {
+      "claim": "Claim",
+      "harm": "Harm",
+      "check": "Check priority",
+      "seenOn": "Seen on",
+      "status": "Status",
+      "logged": "Logged"
+    },
+    "table": {
+      "caption": "Claims logged by the rumour desk"
+    },
+    "suggestedNote": "Harm and check priority are suggested by the system. You decide.",
+    "empty": {
+      "title": "No claims yet.",
+      "body": "Log a claim you have seen to check it against field reports.",
+      "filtered": "No claims with this status.",
+      "select": "Choose a claim to see matching reports and write a reply."
+    },
+    "back": "Back to claims",
+    "loadMore": "Load more claims",
+    "new": {
+      "intro": "Type what was said, or add a screenshot. Leave out names and phone numbers."
+    },
+    "claimTextHint": "Copy the words as they were written or spoken.",
+    "seenOn": {
+      "whatsapp": "WhatsApp",
+      "facebook": "Facebook",
+      "x": "X (Twitter)",
+      "tiktok": "TikTok",
+      "sms": "Text message",
+      "radio": "Radio",
+      "in_person": "In person",
+      "other": "Somewhere else"
+    },
+    "language": "Language of the claim",
+    "lang": {
+      "en": "English",
+      "pcm": "Naijá",
+      "ha": "Hausa",
+      "yo": "Yorùbá",
+      "ig": "Igbo"
+    },
+    "imageHint": "JPEG, PNG or WebP, 5 MB or less.",
+    "imageChoose": "Choose an image",
+    "imageRemove": "Remove image",
+    "needTextOrImage": "Type the claim or add an image.",
+    "saveClaim": "Log claim",
+    "errors": {
+      "stale": "Someone else changed this claim. Reload the list, then try again.",
+      "transition": "This cannot be done for the claim's current status.",
+      "samePerson": "Another coordinator must approve this.",
+      "invalid": "Check the text and try again.",
+      "rateLimited": "Too many claims in the last hour. Try again later.",
+      "imageType": "Use a JPEG, PNG or WebP image.",
+      "imageSize": "The image must be 5 MB or smaller.",
+      "imageUnreadable": "We could not read that image. Try another."
+    },
+    "notice": {
+      "created": "Claim logged.",
+      "saved": "Draft saved.",
+      "approved": "Reply approved.",
+      "rejected": "Reply sent back to the writer.",
+      "dismissed": "Claim dismissed."
+    },
+    "detail": {
+      "seenOn": "Seen on {source}, in {language}",
+      "loggedBy": "Logged by {name}, {time}",
+      "imageAttached": "An image is attached ({width} by {height} pixels).",
+      "noText": "No text, image only."
+    },
+    "harm": {
+      "high": "Harm: high",
+      "medium": "Harm: medium",
+      "low": "Harm: low"
+    },
+    "check": {
+      "high": "Check priority: high",
+      "medium": "Check priority: medium",
+      "low": "Check priority: low"
+    },
+    "harmReasons": {
+      "title": "Why harm was rated this way",
+      "violence_claim": "It mentions violence.",
+      "location_specific": "It names a place.",
+      "election_day": "It was seen on election day."
+    },
+    "pastClaims": {
+      "title": "Earlier claims that look similar",
+      "none": "No earlier claim looks similar.",
+      "reply": "Reply we approved",
+      "noReply": "No reply was approved."
+    },
+    "approve": {
+      "title": "Approve this reply?",
+      "body": "You are approving the reply drafted by {name}. Your name will be recorded."
+    },
+    "reject": {
+      "title": "Send this reply back?",
+      "body": "Tell the writer what to change. The note is kept on the record.",
+      "noteLabel": "Note to the writer"
+    },
+    "dismiss": {
+      "title": "Dismiss this claim?",
+      "body": "Use this when the claim needs no reply. A dismissed claim cannot be changed.",
+      "noteLabel": "Why is it dismissed?"
+    },
+    "noteHint": "1 to 500 characters."
   },
   "s07": {
     "title": "Publish snapshots",
     "subtitle": "Public aggregated releases with statistical privacy suppression",
-    "createTitle": "Create new snapshot",
-    "cutoffLabel": "Cutoff time",
-    "cutoffHint": "Must be at least 60 minutes in the past.",
+    "createTitle": "Preview a new release",
+    "cutoffLabel": "Cutoff time (West Africa Time)",
+    "cutoffHint": "Reports that closed after this time are left out. Pick a time at least {minutes} minutes ago, or leave it empty to use the latest time allowed.",
     "createButton": "Generate preview",
-    "scheduleTitle": "Automatic hourly release",
-    "scheduleHint": "Builds and publishes a snapshot every hour if checks pass.",
-    "scheduleOn": "Hourly publishing is active",
-    "scheduleOff": "Hourly publishing is paused",
-    "snapshotsList": "Snapshot history",
-    "previewTitle": "Snapshot preview (exact public data)",
-    "suppressionNotice": "Counts below 5 are suppressed with 'fewer than 5'. Primary and secondary suppression applied.",
-    "excludedTitle": "Excluded from snapshot",
-    "excludedNotClosed": "{count} not yet closed",
-    "excludedWithdrawn": "{count} withdrawn",
-    "excludedAfterCutoff": "{count} after cutoff",
+    "scheduleTitle": "Hourly release",
+    "scheduleHint": "When on, a snapshot is built and published every hour if the checks pass. Your name is recorded as the approver.",
+    "scheduleOn": "On",
+    "scheduleOff": "Off",
+    "snapshotsList": "Releases",
+    "previewTitle": "Release preview",
     "approvePublish": "Approve and publish",
-    "discard": "Discard draft"
+    "discard": "Discard draft",
+    "cutoffTooRecent": "Pick a time at least {minutes} minutes ago.",
+    "cutoffInvalid": "Enter a valid date and time.",
+    "scheduleUnknown": "The current setting is not shown here. Choose on or off to set it.",
+    "schedule": {
+      "confirmTitle": "Turn on hourly release?",
+      "confirmBody": "Snapshots will publish by themselves every hour, with your name recorded as approver. You can turn it off at any time.",
+      "confirmOn": "Turn on",
+      "turnOff": "Turn off",
+      "stale": "The hourly release setting was changed somewhere else. Reload this page, then try again."
+    },
+    "notice": {
+      "generated": "Preview ready. Check it before you publish.",
+      "scheduleOn": "Hourly release is on.",
+      "scheduleOff": "Hourly release is off.",
+      "published": "Published. The public results page now shows this release.",
+      "discarded": "Draft discarded."
+    },
+    "columns": {
+      "cutoff": "Cutoff",
+      "status": "Status",
+      "total": "Reports",
+      "fingerprint": "Fingerprint",
+      "by": "Prepared by",
+      "published": "Published"
+    },
+    "status": {
+      "draft": "Draft",
+      "published": "Published",
+      "discarded": "Discarded",
+      "superseded": "Replaced"
+    },
+    "history": {
+      "caption": "Releases, newest first",
+      "empty": "No releases yet.",
+      "emptyBody": "Generate a preview to make the first one.",
+      "fingerprintNote": "The fingerprint is the start of the audit-chain code saved with each release. It lets anyone check that the release was not changed.",
+      "loadMore": "Load more releases",
+      "selectHint": "Select a release to see what the public sees.",
+      "selected": "Showing below"
+    },
+    "detail": {
+      "draftNote": "This is a draft. Nothing is public until you approve and publish it.",
+      "publishedNote": "Published {time}.",
+      "discardedNote": "This draft was discarded. It was never public.",
+      "supersededNote": "A newer release replaced this one on the public page.",
+      "by": "Prepared by {name}, cutoff {cutoff}"
+    },
+    "preview": {
+      "title": "What the public will see",
+      "note": "This is the public results page drawn from this release. Counts below 5 are hidden here exactly as they will be online.",
+      "label": "Public results page preview"
+    },
+    "exclusions": {
+      "title": "Left out of this release",
+      "note": "These reports are not counted in the preview.",
+      "notClosed": "{count, plural, one {# report not closed yet} other {# reports not closed yet}}",
+      "withdrawn": "{count, plural, one {# report withdrawn by the observer} other {# reports withdrawn by the observer}}",
+      "afterCutoff": "{count, plural, one {# report that came after the cutoff} other {# reports that came after the cutoff}}",
+      "otherKinds": "{count, plural, one {# item of another kind, or with no state} other {# items of another kind, or with no state}}"
+    },
+    "publish": {
+      "confirmTitle": "Publish this release?",
+      "confirmBody": "Anyone can see these totals on the public results page once you approve. It replaces the release now shown there. This cannot be undone, but a newer release can replace it."
+    },
+    "discardConfirm": {
+      "title": "Discard this draft?",
+      "body": "The draft stays in the history as discarded. It was never public, and you cannot publish it later."
+    },
+    "errors": {
+      "stale": "This release changed. Reload the list, then try again.",
+      "transition": "Only a draft can be approved or discarded.",
+      "tooRecent": "The cutoff is too recent. Pick an earlier time.",
+      "invalid": "Check the details and try again."
+    },
+    "retry": "Try again",
+    "cancel": "Cancel"
   },
   "s08": {
     "title": "Discussion moderation",
-    "subtitle": "Community oversight and safety for observer forums",
-    "flagsInbox": "Reported posts ({count})",
-    "flaggedBy": "Flagged {count} times",
-    "reasons": "Reasons: {reasons}",
+    "subtitle": "Posts that observers or the system flagged for a check",
+    "flagsInbox": "{count, plural, one {# flagged post} other {# flagged posts}}",
+    "flaggedBy": "{count, plural, one {Flagged once} other {Flagged # times}}",
     "nameCheckAlert": "Possible personal name detected",
     "hidePost": "Hide post",
     "unhidePost": "Unhide post",
-    "hideReason": "Reason for hiding",
-    "removeMember": "Remove member from forum",
+    "hideReason": "Reason",
+    "removeMember": "Remove member",
     "closeDiscussion": "Close discussion",
-    "createDiscussion": "Create new discussion",
-    "topic": "Discussion topic",
-    "wardLga": "Ward or LGA scope",
-    "inviteCodes": "Invite observer codes"
+    "createDiscussion": "Create discussion",
+    "topic": "Topic",
+    "refresh": "Refresh",
+    "loadMore": "Load more",
+    "emptyTitle": "No flagged posts right now.",
+    "emptyBody": "A post appears here when observers flag it, or when it may name a person.",
+    "reasonsLabel": "Reasons given",
+    "reason_names_a_person": "Names a person",
+    "reason_too_specific_location": "Place too specific",
+    "reason_abusive": "Abusive",
+    "reason_other": "Other",
+    "reason_off_topic": "Off topic",
+    "author": "Posted by {code}",
+    "hiddenBadge": "Hidden",
+    "hiddenFor": "Hidden for: {reason}",
+    "hiddenBodyLabel": "Original text. Only moderators can see it.",
+    "cancel": "Cancel",
+    "hideTitle": "Hide this post",
+    "hideBody": "Observers will no longer see it. You can unhide it later.",
+    "hideNote": "Note",
+    "hideNoteHint": "Optional. Kept in the audit trail. Up to 500 characters.",
+    "hideConfirm": "Hide post",
+    "removeTitle": "Remove this member",
+    "removeBody": "{code} will lose access to this discussion. Other discussions are not affected.",
+    "removeReason": "Reason",
+    "removeReasonHint": "Required. Kept in the audit trail. Up to 500 characters.",
+    "removeConfirm": "Remove member",
+    "closeTitle": "Close this discussion",
+    "closeBody": "Nobody can post or join once it is closed, and it cannot be reopened. Its flagged posts leave this list.",
+    "closeConfirm": "Close discussion",
+    "createLead": "Observers join by invitation, so add their codes below.",
+    "titleLabel": "Title",
+    "titleHint": "3 to 120 characters.",
+    "topicHint": "Optional. Up to 500 characters.",
+    "areaLabel": "Area",
+    "state": "State",
+    "lga": "LGA",
+    "ward": "Ward",
+    "wholeLga": "Whole LGA",
+    "areaLoading": "Loading areas...",
+    "invites": "Invite observer codes",
+    "invitesHint": "Optional. One code per line, up to 200.",
+    "createSubmit": "Create discussion",
+    "noticeHidden": "Post hidden.",
+    "noticeUnhidden": "Post is visible again.",
+    "noticeRemoved": "{code} was removed from the discussion.",
+    "noticeClosed": "Discussion closed.",
+    "noticeCreated": "Discussion created. Invited: {invited}.",
+    "noticeNotFound": "These codes were not found: {codes}.",
+    "errClosed": "This discussion has already closed.",
+    "errNotFound": "That post or member is no longer there. Refresh the list.",
+    "errInvalid": "Check the text you entered and try again.",
+    "errArea": "That area is not recognised. Choose it from the lists.",
+    "valTitle": "Enter a title of 3 to 120 characters.",
+    "valReason": "Enter a reason.",
+    "valArea": "Choose a state and an LGA.",
+    "valInvites": "Enter at most 200 observer codes."
   },
   "s09": {
     "title": "Observer code batches",
-    "subtitle": "Batch generation, printable cards, and credential management",
-    "batches": "Batches",
-    "createBatch": "Create code batch",
-    "label": "Batch label",
-    "count": "Number of codes",
-    "printCards": "Print code cards",
-    "printConfirm": "Issue setup PINs and prepare printable cards",
-    "printNotice": "Setup PINs are shown only once. Print or distribute immediately.",
+    "createBatch": "Create batch",
+    "printNotice": "Setup PINs are shown only once.",
     "codesTable": "Observer codes",
     "searchCodes": "Search codes",
     "status": {
@@ -1291,66 +1803,398 @@
       "revoked": "Revoked"
     },
     "actions": {
-      "revoke": "Revoke code",
-      "reissue": "Reissue code",
+      "revoke": "Revoke",
+      "reissue": "Reissue",
       "resetPin": "Reset PIN",
-      "reason": "Reason"
+      "revokeFor": "Revoke {code}",
+      "reissueFor": "Reissue {code}",
+      "resetPinFor": "Reset the PIN for {code}"
+    },
+    "create": {
+      "title": "Create a batch",
+      "description": "Each code comes with a setup PIN. The PINs are shown once, on the cards you print next.",
+      "label": "Batch label",
+      "labelHint": "Up to 80 characters. Use the ward or training group so you can find it later.",
+      "count": "Number of codes",
+      "countHint": "From 1 to 500.",
+      "submit": "Create batch",
+      "cancel": "Cancel",
+      "errors": {
+        "label": "Enter a label of up to 80 characters.",
+        "count": "Enter a whole number from 1 to 500."
+      }
+    },
+    "batchList": {
+      "title": "Batches",
+      "empty": "No batches yet. Create one to issue observer codes.",
+      "created": "Created {when} by {who}",
+      "codes": "{count, plural, one {# code} other {# codes}}",
+      "unclaimed": "{count} unclaimed",
+      "active": "{count} active",
+      "revoked": "{count} revoked",
+      "printed": "Printed {when}",
+      "notPrinted": "Not printed yet",
+      "print": "Print cards",
+      "printFor": "Print cards for {label}"
+    },
+    "cards": {
+      "heading": "{count, plural, one {# card} other {# cards}} ready to print",
+      "headingFor": "Card for {code}",
+      "noticeMore": "Print now. Once you close this view the PINs cannot be shown again. Reset a PIN to get a new one.",
+      "print": "Print",
+      "close": "Done",
+      "code": "Observer code",
+      "pin": "Setup PIN",
+      "expires": "PIN expires {when}",
+      "how": "Enter this code and PIN the first time you open ElectraGuard AI.",
+      "cutLine": "Cut along the dashed line",
+      "cutHere": "Cut here"
+    },
+    "searchPlaceholder": "OBS-",
+    "table": {
+      "columns": {
+        "code": "Observer code",
+        "batch": "Batch",
+        "status": "Status",
+        "activated": "Activated",
+        "lastActive": "Last active",
+        "actions": "Actions",
+        "activity": "Activity"
+      },
+      "never": "Not yet",
+      "replacedBy": "Replaced by {code}",
+      "empty": "No observer codes yet. Create a batch to issue some.",
+      "emptyFilter": "No codes match. Try another search or status.",
+      "count": "{count, plural, one {# code} other {# codes}}",
+      "noBatch": "No batch",
+      "lastActiveOn": "Last active {date}"
+    },
+    "filter": {
+      "label": "Show",
+      "all": "All"
+    },
+    "revoke": {
+      "title": "Revoke {code}?",
+      "body": "This signs the observer out on every phone straight away and the code can never be used again. Reports already sent are kept.",
+      "confirm": "Revoke code"
+    },
+    "reissue": {
+      "title": "Reissue {code}?",
+      "body": "The old code is revoked and a new code with a new setup PIN is made. It counts toward the daily limit.",
+      "confirm": "Reissue code"
+    },
+    "resetPin": {
+      "title": "Reset the PIN for {code}?",
+      "body": "The observer is signed out, the code goes back to unclaimed and a new setup PIN is shown once.",
+      "confirm": "Reset PIN"
+    },
+    "reason": {
+      "label": "Reason",
+      "hint": "Recorded in the audit log.",
+      "lost_phone": "Lost phone",
+      "left_programme": "Left the programme",
+      "suspected_misuse": "Suspected misuse",
+      "other": "Other"
+    },
+    "confirmPrint": {
+      "title": "Print cards for {label}?",
+      "body": "Printing makes new setup PINs for the {count, plural, one {# unclaimed code} other {# unclaimed codes}} in this batch. Older PINs for those codes stop working. Active and revoked codes are not changed.",
+      "confirm": "Reset PINs and print"
+    },
+    "cancel": "Cancel",
+    "retry": "Try again",
+    "errors": {
+      "confirmation": "Confirm that the unclaimed setup PINs should be reset, then try again.",
+      "rateLimited": "This organisation has reached its daily limit of 2,000 new codes. Try again tomorrow.",
+      "alreadyRevoked": "This code is already revoked. The list has been refreshed.",
+      "notFound": "We could not find that code. The list has been refreshed.",
+      "invalid": "Check the details and try again.",
+      "inProgress": "This request is still being processed. Wait a moment and try again."
+    },
+    "notice": {
+      "created": "Batch created. Print the cards now; the setup PINs are not shown again.",
+      "revoked": "{code} is revoked.",
+      "reissued": "{code} is revoked. Its replacement card is ready below.",
+      "pinReset": "New setup PIN ready for {code}.",
+      "printed": "Cards ready for {label}. The setup PINs are shown only once."
     }
   },
   "s10": {
     "title": "Staff accounts",
-    "subtitle": "Manage staff access, roles, and two-factor credentials",
-    "staffList": "Staff members ({count})",
+    "staffList": "{count, plural, one {# staff member} other {# staff members}}",
     "createStaff": "Add staff member",
-    "displayName": "Display name",
-    "email": "Email address",
-    "roles": "Assigned roles",
-    "roleAdminAlone": "Admin role cannot be combined with reviewer, coordinator, or moderator.",
-    "inviteUrl": "One-time invitation link",
-    "copyInvite": "Copy link",
     "reset2fa": "Reset 2FA",
-    "offboard": "Offboard staff",
-    "offboardReason": "Offboarding reason",
-    "offboardWarning": "Any open cases assigned to this user will be returned to the unassigned queue."
+    "offboard": "Offboard",
+    "retry": "Try again",
+    "cancel": "Cancel",
+    "filter": {
+      "label": "Show",
+      "all": "All",
+      "active": "Active",
+      "invited": "Invited",
+      "offboarded": "Offboarded"
+    },
+    "empty": "No staff accounts yet.",
+    "emptyFilter": "No staff accounts match this filter.",
+    "caption": "Staff accounts",
+    "columns": {
+      "name": "Name",
+      "roles": "Roles",
+      "twofa": "Two-step code",
+      "lastSignIn": "Last sign-in",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "status": {
+      "active": "Active",
+      "invited": "Invited",
+      "offboarded": "Offboarded"
+    },
+    "twofa": {
+      "on": "Set up",
+      "off": "Not set up"
+    },
+    "neverSignedIn": "Not yet",
+    "you": "You",
+    "reset2faFor": "Reset 2FA for {name}",
+    "offboardFor": "Offboard {name}",
+    "selfNote": "You cannot offboard your own account.",
+    "create": {
+      "title": "Add a staff member",
+      "description": "They get a one-time link to choose a password and set up a two-step code.",
+      "email": "Email address",
+      "name": "Display name",
+      "nameHint": "2 to 60 characters.",
+      "roles": "Roles",
+      "rolesHint": "Choose at least one. Admin cannot be combined with another role.",
+      "submit": "Create account"
+    },
+    "invite": {
+      "title": "One-time invite link",
+      "body": "Give this link to {name}. It works once and cannot be shown again after you close this. It expires {when}.",
+      "label": "Invite link",
+      "copy": "Copy link",
+      "copied": "Copied",
+      "copyFailed": "Could not copy. Select the link and copy it by hand.",
+      "done": "I have copied it"
+    },
+    "reset": {
+      "title": "Reset the two-step code for {name}?",
+      "body": "{name} is signed out everywhere and must set up a new two-step code at the next sign-in. The password stays the same.",
+      "confirm": "Reset 2FA",
+      "done": "Two-step code reset for {name}."
+    },
+    "offboardDialog": {
+      "title": "Offboard {name}?",
+      "body": "{name} loses access at once and is signed out everywhere. Open cases assigned to them go back to the unassigned list. This cannot be undone.",
+      "reason": "Reason",
+      "reasons": {
+        "access_ended": "Access is no longer needed",
+        "role_changed": "Role changed",
+        "credential_risk": "Sign-in details may be at risk"
+      },
+      "confirm": "Offboard",
+      "done": "{name} has been offboarded."
+    },
+    "errors": {
+      "lastAdmin": "Keep at least one active organisation admin. Add another admin first.",
+      "stale": "This account changed while you were looking at it. The list has been refreshed. Check it and try again.",
+      "duplicate": "This email already has an account.",
+      "invalidEmail": "Enter a valid email address.",
+      "invalidName": "Use 2 to 60 characters.",
+      "invalidRoles": "Choose at least one role.",
+      "selfOffboard": "You cannot offboard your own account.",
+      "alreadyOffboarded": "This account is already offboarded.",
+      "invalid": "Some details are not allowed. Check them and try again."
+    }
   },
   "s11": {
     "title": "Organisation settings",
-    "subtitle": "Intake control, data retention, and election parameters",
-    "intakePause": "Pause report intake",
-    "intakePauseHint": "Temporarily stop accepting new reports from observers and citizens.",
-    "retention": "Data retention period",
-    "retentionDays": "{days} days",
-    "retentionConfirm": "Shortening retention will delete older records at next purge.",
-    "electionDay": "Election day",
-    "publicDelay": "Public snapshot delay",
-    "delayMinutes": "{minutes} minutes",
-    "partyLabels": "Party labels on result sheets",
-    "saveSettings": "Save organisation settings",
-    "auditExport": "Export audit log"
+    "retry": "Try again",
+    "cancel": "Cancel",
+    "saved": "Saved.",
+    "intakeCard": {
+      "title": "Report intake",
+      "open": "Receiving reports",
+      "paused": "Intake paused",
+      "hint": "Pausing stops citizens and observers from sending new reports. Reports already received are not affected.",
+      "switch": "Pause report intake",
+      "banner": "Report intake is paused. New reports are not being accepted.",
+      "pauseTitle": "Pause report intake?",
+      "pauseBody": "Nobody can send a new report until you resume. Reports already received are not affected.",
+      "pauseConfirm": "Pause intake",
+      "resumeTitle": "Resume report intake?",
+      "resumeBody": "Citizens and observers can send reports again straight away.",
+      "resumeConfirm": "Resume intake"
+    },
+    "simCard": {
+      "title": "Practice simulator",
+      "hint": "Lets staff try the SMS and USSD channels with test messages. Turn it off for the live election.",
+      "switch": "Practice simulator",
+      "on": "On",
+      "off": "Off"
+    },
+    "retentionCard": {
+      "title": "Data retention",
+      "label": "Keep records for (days)",
+      "hint": "From 30 to 730 days. Records older than this are deleted at the next purge.",
+      "save": "Save retention",
+      "error": "Enter a whole number from 30 to 730.",
+      "confirmTitle": "Delete older records?",
+      "confirmBody": "Keeping records for {days} days instead of {current} will permanently delete {count, plural, one {# record} other {# records}} at the next purge. This cannot be undone.",
+      "confirmUnknown": "Keeping records for {days} days instead of {current} will permanently delete the older records at the next purge. The server did not say how many. This cannot be undone.",
+      "confirm": "Shorten and delete"
+    },
+    "scheduleCard": {
+      "title": "Election day and public delay",
+      "electionDay": "Election day",
+      "electionDayHint": "Optional. Leave empty until the date is fixed.",
+      "delay": "Public delay (minutes)",
+      "delayHint": "Public figures only use reports at least this old. From 60 to 1,440 minutes.",
+      "delayError": "Enter a whole number from 60 to 1,440.",
+      "save": "Save date and delay"
+    },
+    "partiesCard": {
+      "title": "Party labels",
+      "label": "Labels",
+      "hint": "Letters shown on result sheets, for example A, B, C. Use 2 to 12 different labels of 1 to 3 capital letters, separated by commas.",
+      "save": "Save party labels",
+      "error": "Use 2 to 12 different labels of 1 to 3 letters, separated by commas.",
+      "locked": "Locked. A result sheet has already been reported, so the labels can no longer change."
+    },
+    "auditCard": {
+      "title": "Export audit log",
+      "hint": "Download the record of who did what, in order. One export covers up to 92 days.",
+      "format": "File type",
+      "from": "From",
+      "to": "To",
+      "download": "Download",
+      "rangeError": "Choose dates where From is not after To and the gap is at most 92 days.",
+      "rateLimited": "Too many exports this hour. Try again later.",
+      "started": "The download has started."
+    },
+    "meta": {
+      "version": "Version {version}",
+      "updatedBy": "Last changed by {name} on {when}",
+      "updated": "Last changed {when}",
+      "never": "Not changed since setup."
+    },
+    "errors": {
+      "stale": "These settings changed while you were editing. They have been reloaded. Check them and try again.",
+      "invalid": "One of the values is not allowed. Check the numbers and try again."
+    }
   },
   "s12": {
     "title": "Security & audit monitoring",
-    "subtitle": "Security rule alerts and cryptographic audit chain verification",
-    "alerts": "Security alerts",
-    "severity": "Severity",
-    "detector": "Detector",
-    "updateStatus": "Update status",
-    "auditVerify": "Audit hash chain verification",
-    "chainStatus": "Chain integrity",
-    "eventsChecked": "{count} events verified",
-    "headHash": "Chain head hash: {hash}",
-    "brokenEvent": "First broken event: {id}",
-    "verifyNow": "Run verification check",
-    "exportLog": "Export audit log (JSONL/CSV)"
+    "subtitle": "Alerts raised by our security rules, and a check that the audit log has not been changed.",
+    "alertsTitle": "Alerts",
+    "alertsHint": "Open an alert, write what you found, then acknowledge or close it.",
+    "tableCaption": "Security alerts, newest first",
+    "filterLabel": "Status",
+    "status": {
+      "open": "Open",
+      "acknowledged": "Acknowledged",
+      "resolved": "Resolved",
+      "false_positive": "False alarm"
+    },
+    "severity": {
+      "high": "High",
+      "medium": "Medium",
+      "low": "Low"
+    },
+    "detector": {
+      "rules": "Rules",
+      "model": "Model"
+    },
+    "col": {
+      "severity": "Severity",
+      "rule": "Rule",
+      "detector": "Detected by",
+      "status": "Status",
+      "lastSeen": "Last seen",
+      "action": "Action"
+    },
+    "rule": {
+      "repeated_failed_pins": "Repeated wrong PINs",
+      "repeated_failed_staff_sign_in": "Repeated failed staff sign-ins",
+      "unusual_download_volume": "Unusual number of downloads",
+      "new_network_sign_in": "Sign-in from a new network",
+      "intake_burst": "Sudden burst of reports",
+      "receipt_enumeration": "Receipt codes being guessed",
+      "staff_offboarded_with_cases": "Offboarded staff still hold cases",
+      "anomaly": "Unusual activity"
+    },
+    "subject": {
+      "observer_code": "Observer code",
+      "staff": "Staff account",
+      "staff_account": "Staff account",
+      "network": "Network",
+      "receipt_lookup": "Receipt lookup",
+      "intake_source": "Report source",
+      "organisation": "Organisation"
+    },
+    "detail": {
+      "failures": "Failed tries",
+      "window_minutes": "Window (minutes)",
+      "distinct_networks": "Different networks",
+      "reports": "Reports",
+      "distinct_items": "Different items",
+      "network": "Network reference",
+      "permanent": "Locked for good"
+    },
+    "detailsTitle": "What was seen",
+    "firstSeen": "First seen",
+    "lastSeen": "Last seen",
+    "update": "Update",
+    "updateTitle": "Update alert",
+    "newStatus": "New status",
+    "noteLabel": "Note",
+    "noteHint": "What you found or did. Kept in the audit log.",
+    "save": "Save update",
+    "updated": "Alert updated.",
+    "staleVersion": "Someone changed this alert while you had it open. It was reloaded; check it and try again.",
+    "empty": {
+      "open": "No open alerts.",
+      "acknowledged": "No acknowledged alerts.",
+      "resolved": "No resolved alerts.",
+      "false_positive": "No alerts marked as false alarms."
+    },
+    "loadMore": "Show more alerts",
+    "verifyTitle": "Verify audit chain",
+    "verifyHint": "Re-checks every event's hash from the first to the last. Nothing is changed.",
+    "verifyRun": "Run check",
+    "verifyRunning": "Checking…",
+    "verifyNever": "Not run yet. Run the check to see the result.",
+    "verifyOk": "{count} events verified · chain intact",
+    "verifyIntact": "Chain intact",
+    "verifyBroken": "Chain broken",
+    "verifyBrokenTitle": "The audit chain is broken",
+    "verifyBrokenEvent": "First broken event",
+    "verifyBrokenText": "{count} events before this one are fine. Do not edit records. Tell your administrator now.",
+    "headHash": "Head hash",
+    "headEvents": "Events in chain",
+    "checkedAt": "Checked {time}",
+    "exportTitle": "Export audit log",
+    "exportHint": "One row per event with its hashes, so the file can be checked elsewhere. Up to 92 days. Administrators only, and each export is itself logged.",
+    "exportFrom": "From",
+    "exportTo": "To",
+    "exportFormat": "Format",
+    "exportJsonl": "JSONL (one event per line)",
+    "exportCsv": "CSV (for spreadsheets)",
+    "exportRun": "Export",
+    "exportDone": "Export downloaded.",
+    "exportRange": "Pick dates at most 92 days apart, with From first."
   },
   "pub": {
     "homeLink": "ElectraGuard AI home",
     "menu": "Menu",
+    "reportShort": "Report",
     "nav": {
       "label": "Main",
       "home": "Home",
       "results": "Results",
       "ask": "Ask",
+      "check": "Check",
       "guide": "Guides",
       "phone": "Try SMS and USSD",
       "privacy": "Privacy"
@@ -1369,10 +2213,9 @@
     "report": "Report what you saw",
     "reportHint": "No account and no name. You get a receipt code to check it later.",
     "basicPhone": "No smartphone? Dial {ussd} or send an SMS to {shortCode}.",
-    "testNumber": "(test number)",
     "tryPhone": "Try it on the on-screen phone",
     "check": {
-      "title": "Check a report",
+      "title": "Already reported? Check your report",
       "lead": "Enter the receipt code you got when you reported.",
       "outcome": "Outcome: {outcome}",
       "question": "A reviewer has a question for you. Open the report on the phone you used to send it.",
@@ -1394,12 +2237,37 @@
       "open": "See results by state"
     },
     "how": {
-      "title": "How it works",
-      "1": "You report what you saw, in your language. It works on weak network.",
+      "title": "How a report travels",
+      "art": {
+        "outbox": "Outbox",
+        "ai": "Suggested by AI",
+        "reviewed": "Reviewed"
+      },
+      "1": "You report what you saw, in your language. It still sends when the network comes back.",
       "2": "You get a receipt code. Keep it to check your report.",
-      "3": "A trained reviewer checks the report. AI helps sort reports; a person decides.",
+      "3": "A trained person checks every report. AI helps sort them; a person decides.",
       "4": "Reviewed totals by state are published here. Never names, words or photos."
     },
+    "ways": {
+      "title": "Three ways to report",
+      "web": {
+        "title": "On this website",
+        "body": "Answer a few short questions in your language. No account needed.",
+        "link": "Start a report"
+      },
+      "sms": {
+        "title": "By SMS to {shortCode}",
+        "body": "Send a short text from any phone. It needs no data."
+      },
+      "ussd": {
+        "title": "By USSD on any phone: {ussd}",
+        "body": "Dial the code and choose from the menu. It needs no data."
+      }
+    },
+    "rumour": {
+      "stamp": "Checked by reviewers"
+    },
+    "eveningCaption": "Reviewed totals are published here.",
     "help": {
       "title": "Questions",
       "ask": "Ask ElectraGuard",
@@ -1522,7 +2390,9 @@
     "error": {
       "title": "Guides could not be loaded.",
       "body": "Try again in a minute."
-    }
+    },
+    "chipEnglish": "English only",
+    "approvedShort": "Approved {date}"
   },
   "p06": {
     "title": "Privacy notice",
@@ -1584,9 +2454,18 @@
       "h": "Questions",
       "p": "For questions about your report, ask the organisation that gave you your observer code, or write to the reviewer in your report's messages."
     },
-    "languages": "This notice is in English, Naijá, Hausa, Yorùbá and Igbo. Choose a language at the top of the page."
+    "languages": "This notice is in English, Naijá, Hausa, Yorùbá and Igbo. Choose a language at the top of the page.",
+    "location": {
+      "h": "Where your report is stored",
+      "p": "Reports, photos, videos, voice notes and the audit record are stored in Microsoft Azure's South Africa North region, in Johannesburg. Azure has no region in Nigeria, so your report is stored outside Nigeria."
+    }
   },
   "p07": {
+    "banner": "Simulated phone. Reports made here are marked and never counted in public results.",
+    "keyboard": "You can use your keyboard here: numbers, * and #, Enter for Call or OK, Escape for End.",
+    "more": {
+      "title": "More messages you can send"
+    },
     "title": "Try reporting by SMS and USSD",
     "lead": "Use this on-screen phone to try ElectraGuard the way a basic phone does. It runs on the same system as real SMS and USSD.",
     "deviceLabel": "Simulated basic phone",
@@ -1657,6 +2536,77 @@
     "disabled": {
       "title": "The phone simulator is switched off.",
       "body": "The observation organisation has turned it off for now. You can still report on this website."
+    }
+  },
+  "sys": {
+    "home": "Go to the home page",
+    "notFound": {
+      "title": "We could not find that page",
+      "body": "The link may be old or mistyped. Nothing you saved has changed."
+    },
+    "error": {
+      "title": "This page stopped working",
+      "body": "Something went wrong. Your saved reports are safe.",
+      "reload": "Reload"
+    },
+    "session": {
+      "title": "You were signed out",
+      "body": "Your session ended, so we signed you out to keep reports safe. Sign in again to carry on.",
+      "staff": "Sign in again",
+      "observer": "Open the observer app"
+    },
+    "access": {
+      "title": "Your access changed",
+      "body": "This page is no longer open to you. A coordinator may have changed your role or moved the case.",
+      "action": "Go to the review queue"
+    },
+    "paused": {
+      "title": "Reporting is paused",
+      "body": "The observation organisation has paused new reports for now. If someone is in danger, call 112.",
+      "action": "See reviewed reports"
+    }
+  },
+  "p08": {
+    "title": "Check a rumour",
+    "heading": "Check a rumour",
+    "lead": "Paste a message you heard or saw. If our reviewers have approved an answer, we show it here.",
+    "label": "What did you hear or see?",
+    "hint": "Paste or type the message. 5 to 500 characters.",
+    "check": "Check",
+    "checking": "Checking",
+    "tooShort": "Write at least 5 characters.",
+    "tooLong": "Use 500 characters or fewer.",
+    "invalid": "Check the message. It must be 5 to 500 characters.",
+    "checked": {
+      "title": "Approved answer"
+    },
+    "englishOnly": "Shown in English. A translation is not ready yet.",
+    "approvedOn": "Approved on {date}",
+    "reviewers": "Checked by ElectraGuard reviewers. Not an INEC statement.",
+    "support": "Observers reported this in {states} states and {wards} wards.",
+    "fewer": "fewer than 5",
+    "notChecked": {
+      "title": "We have not checked this yet."
+    },
+    "ask": "Ask our reviewers to check it",
+    "asking": "Sending",
+    "queued": "Thank you. We have passed it to our reviewers. Check again later.",
+    "matched": "Others have asked about this too. Our reviewers are already looking at it.",
+    "safety": {
+      "title": "If someone is in danger, call 112 now.",
+      "call": "Call {number}",
+      "report": "Report what you saw"
+    },
+    "error": {
+      "tooMany": "Too many checks. Try again in a few minutes.",
+      "offline": "No connection. Check your internet and try again.",
+      "unavailable": "Rumour check is not available right now.",
+      "failed": "Something went wrong. Try again."
+    },
+    "homeCard": {
+      "title": "Heard a rumour?",
+      "body": "Check it against answers our reviewers approved.",
+      "link": "Check a rumour"
     }
   }
 }

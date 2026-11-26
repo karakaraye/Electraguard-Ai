@@ -30,18 +30,19 @@
 }
 
 .control {
+  box-sizing: border-box;
   display: block;
   width: 100%;
   min-height: var(--control-h);
   margin: 0;
   padding: var(--s-3) var(--s-4);
-  border: var(--border-w) solid var(--rule-control);
+  border: 1px solid var(--rule-control);
   border-radius: var(--radius);
-  background: var(--paper);
+  background: var(--paper-raised);
   color: var(--ink);
   font: var(--t-base);
   appearance: none;
-  transition: border-color var(--dur-fade) ease;
+  transition: box-shadow var(--dur-fade) ease, border-color var(--dur-fade) ease;
 }
 
 .control::placeholder {
@@ -53,8 +54,13 @@
 .control:focus {
   outline: var(--focus-outline);
   outline-offset: var(--focus-offset);
-  box-shadow: var(--focus-halo);
+  /* 1px border + 1px inset = the 2px ink border; the ring shows for the keyboard */
+  box-shadow: inset 0 0 0 1px var(--ink);
   border-color: var(--ink);
+}
+
+.control:focus:not(:focus-visible) {
+  outline: none;
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -77,7 +83,7 @@
 
 .field[data-invalid] .control {
   border-color: var(--danger);
-  border-width: 2px;
+  box-shadow: inset 0 0 0 1px var(--danger);
 }
 
 /* Native date and time inputs: keep the system picker icon readable in both themes */
@@ -87,15 +93,8 @@
   cursor: pointer;
 }
 
-[data-theme="dark"] .control::-webkit-calendar-picker-indicator {
-  filter: invert(1);
-}
-
-@media (prefers-color-scheme: dark) {
-  [data-theme="system"] .control::-webkit-calendar-picker-indicator {
-    filter: invert(1);
-  }
-}
+/* The picker icon follows the control's colour-scheme (dark under a dark theme, set in tokens.css).
+   No filter here: inverting an icon the browser already draws light turns it dark again. */
 
 /* ---------- TextArea ---------- */
 
@@ -161,4 +160,21 @@
   flex: none;
   width: 20px;
   height: 20px;
+}
+
+/* A control in the text field's bottom corner (dictation). The text keeps clear of it. */
+.adorned {
+  position: relative;
+}
+
+/* The field grows with its text, so the corner grip is dropped to keep the corner for the control. */
+.adorned[data-adorned] .textarea {
+  padding-bottom: calc(var(--s-3) + 56px);
+  resize: none;
+}
+
+.adornment {
+  position: absolute;
+  right: var(--s-2);
+  bottom: var(--s-2);
 }

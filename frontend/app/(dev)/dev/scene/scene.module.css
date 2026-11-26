@@ -1,0 +1,87 @@
+/* Landing hero with the living scene (landing plan §4.2). Development preview. */
+.page {
+  min-height: 100dvh;
+  background: var(--paper);
+  color: var(--ink);
+  font: var(--t-body);
+}
+
+/* Text sits on still sky at the top; the scene fills the full width below at full strength. */
+.hero {
+  position: relative;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  min-height: 88dvh;
+  overflow: hidden;
+}
+
+.sky {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: var(--s-4);
+  max-width: 40rem;
+  padding: var(--s-7) var(--gutter) var(--s-4);
+}
+
+@media (min-width: 900px) {
+  .sky {
+    padding: var(--s-8) clamp(24px, 6vw, 96px) var(--s-4);
+  }
+}
+
+.title {
+  margin: 0;
+  font: var(--t-display);
+  font-size: clamp(2.25rem, 1.6rem + 3vw, 3.75rem);
+  letter-spacing: var(--display-tracking);
+  text-wrap: balance;
+}
+
+.lead {
+  margin: 0;
+  max-width: 34rem;
+  color: var(--ink-2);
+  font: var(--t-body-lg);
+}
+
+.actions {
+  display: grid;
+  justify-items: start;
+  gap: var(--s-2);
+}
+
+.hint,
+.basic {
+  margin: 0;
+  color: var(--ink-2);
+  font: var(--t-small);
+}
+
+/* The drawing keeps its proportions and is cropped from the sides on narrow screens,
+   so the people stay large enough to read (at least 70 px tall on a 360 px screen). */
+.stage {
+  position: relative;
+  min-height: 320px;
+}
+
+.scene {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* On phones the hero grows with its content instead of filling the screen, and the stage is
+   taller so the slice crops more from the sides: the people read larger and sit closer to the text. */
+@media (max-width: 599px) {
+  .hero {
+    min-height: auto;
+  }
+  .stage {
+    min-height: 380px;
+    /* The drawing's own empty sky slides up under the text, so no blank band opens between them. */
+    margin-top: -112px;
+  }
+}

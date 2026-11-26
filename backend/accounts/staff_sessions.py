@@ -13,6 +13,8 @@ PENDING_LIFE = timedelta(minutes=5)
 IDLE = timedelta(minutes=30)
 ABSOLUTE = timedelta(hours=8)
 PENDING_PATHS = {
+    # Sign-in rotates the CSRF token and the cookie is HttpOnly, so the browser must fetch the new one here.
+    "/api/v1/auth/csrf",
     "/api/v1/auth/staff/totp",
     "/api/v1/auth/staff/totp/enrolment",
     "/api/v1/auth/staff/totp/enrolment/confirm",

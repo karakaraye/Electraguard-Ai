@@ -5,9 +5,9 @@
 import Link from "next/link";
 import type { DiscussionSummary, FlagReason, Post } from "../../../../lib/api/types";
 import { useLocale, useT } from "../../../../lib/i18n/client";
-import { AppShell, Banner, Button, EmptyState, Sheet, TextArea } from "../../../../ui";
+import { AppShell, Banner, Button, EmptyState, Sheet, TextArea, SunRings } from "../../../../ui";
 import { formatWatDateTime } from "../../../../ui/format";
-import { ChevronRightIcon, InfoIcon } from "../../../../ui/icons";
+import { ChevronRightIcon, InfoIcon, UsersIcon } from "../../../../ui/icons";
 import styles from "../_components/observer.module.css";
 import s from "../_components/screens.module.css";
 
@@ -34,14 +34,13 @@ export function DiscussionListView({ offline, load, items, busy, notice, onAnswe
   const joined = items.filter((item) => item.membership === "member");
   return (
     <AppShell
-      title={t("o18.title")}
       onBack={onBack}
       offline={offline}
       banner={
         load === "unavailable" ? (
           <Banner tone="wait" title={t("common.error.unavailable")} />
         ) : load === "error" ? (
-          <Banner tone="attn" title={t("o18.loadError")} action={<Button variant="secondary" onClick={onRetry}>{t("ui.retry")}</Button>} />
+          <Banner tone="danger" title={t("o18.loadError")} action={<Button variant="secondary" onClick={onRetry}>{t("ui.retry")}</Button>} />
         ) : notice ? (
           <Banner tone="attn" title={t(notice)} data-testid="o18-notice" />
         ) : undefined
@@ -53,7 +52,19 @@ export function DiscussionListView({ offline, load, items, busy, notice, onAnswe
         <p className={styles.lead}>{t("o18.hint")}</p>
         {load === "loading" ? <p className={styles.meta}>{t("o18.loading")}</p> : null}
         {load === "offline" && !items.length ? <p className={styles.note}>{t("o18.offline")}</p> : null}
-        {load === "ok" && !items.length ? <EmptyState title={t("o18.empty")} data-testid="o18-empty" /> : null}
+        {load === "ok" && !items.length ? (
+          <EmptyState
+            title={t("o18.empty")}
+            art={
+              <SunRings size={128}>
+                <span className={s.emptyDisc}>
+                  <UsersIcon size={30} aria-hidden="true" />
+                </span>
+              </SunRings>
+            }
+            data-testid="o18-empty"
+          />
+        ) : null}
         {invited.length ? (
           <section className={styles.stack} aria-labelledby="o18-invitations">
             <h2 className={styles.sectionTitle} id="o18-invitations">
@@ -70,7 +81,7 @@ export function DiscussionListView({ offline, load, items, busy, notice, onAnswe
                   <span>{t("o18.invite.rules")}</span>
                 </p>
                 <div className={styles.itemActions}>
-                  <Button variant="secondary" disabled={offline} loading={busy?.id === item.id && busy.action === "accept"} onClick={() => onAnswer(item.id, "accept")} data-testid="o18-join">
+                  <Button disabled={offline} loading={busy?.id === item.id && busy.action === "accept"} onClick={() => onAnswer(item.id, "accept")} data-testid="o18-join">
                     {t("o18.invite.join")}
                   </Button>
                   <Button variant="quiet" disabled={offline} loading={busy?.id === item.id && busy.action === "decline"} onClick={() => onAnswer(item.id, "decline")} data-testid="o18-decline">
@@ -87,7 +98,7 @@ export function DiscussionListView({ offline, load, items, busy, notice, onAnswe
             <h2 className={styles.sectionTitle} id="o18-joined">
               {t("o18.joined")}
             </h2>
-            <ul className={s.tasks}>
+            <ul className={`${s.tasks} ${s.joinedCard}`}>
               {joined.map((item) => (
                 <li key={item.id}>
                   <Link href={`/o/discussions/${item.id}`} className={s.taskLink} style={{ gridTemplateColumns: "minmax(0, 1fr) auto 24px" }} data-testid="o18-row">
@@ -164,7 +175,7 @@ export function ThreadView(props: ThreadViewProps) {
 
   if (load === "removed" || load === "loading" || (load !== "ok" && !props.title)) {
     return (
-      <AppShell title={t("o18.title")} onBack={props.onBack} offline={offline} data-testid="o18-thread">
+      <AppShell onBack={props.onBack} offline={offline} data-testid="o18-thread">
         <div className={styles.screen}>
           <h1 className={styles.title}>{load === "removed" ? t("o18.thread.removed") : load === "loading" ? t("o18.loading") : t("o18.loadError")}</h1>
           {load === "error" || load === "offline" ? (
@@ -182,23 +193,12 @@ export function ThreadView(props: ThreadViewProps) {
   const canPost = !closed && !invited;
   return (
     <AppShell
-      title={t("o18.title")}
       onBack={props.onBack}
       offline={offline}
       banner={closed ? <Banner tone="wait" title={t("o18.closed")} critical data-testid="o18-closed" /> : props.flagged ? <Banner tone="ok" title={t("o18.thread.flagged")} /> : undefined}
       actions={
         canPost ? (
           <div className={styles.tight}>
-            <TextArea
-              label={t("o18.thread.postLabel")}
-              hint={t("o18.thread.postHint")}
-              value={props.draft}
-              onChange={(event) => props.onDraft(event.target.value)}
-              maxLength={1000}
-              rows={2}
-              error={props.draftError ?? undefined}
-              data-testid="o18-post-text"
-            />
             {props.nameWarning ? (
               <Banner
                 tone="attn"
@@ -210,9 +210,23 @@ export function ThreadView(props: ThreadViewProps) {
                 }
               />
             ) : null}
-            <Button block loading={props.posting} loadingLabel={t("o18.thread.posting")} onClick={props.onPost} data-testid="o18-post">
-              {t("o18.thread.post")}
-            </Button>
+            <div className={s.postBar}>
+              <TextArea
+                className={s.postField}
+                label={t("o18.thread.postLabel")}
+                hint={t("o18.thread.postHint")}
+                value={props.draft}
+                onChange={(event) => props.onDraft(event.target.value)}
+                maxLength={1000}
+                rows={1}
+                placeholder={t("o18.thread.postLabel")}
+                error={props.draftError ?? undefined}
+                data-testid="o18-post-text"
+              />
+              <Button loading={props.posting} loadingLabel={t("o18.thread.posting")} onClick={props.onPost} data-testid="o18-post">
+                {t("o18.thread.post")}
+              </Button>
+            </div>
           </div>
         ) : undefined
       }
@@ -230,14 +244,19 @@ export function ThreadView(props: ThreadViewProps) {
         {invited ? null : posts.length === 0 ? (
           <p className={styles.meta}>{t("o18.thread.empty")}</p>
         ) : (
-          <ol className={s.posts} aria-label={props.title} aria-live="polite" data-testid="o18-posts">
+          <ol className={s.thread} aria-label={props.title} aria-live="polite" data-testid="o18-posts">
             {posts.map((post) => (
-              <li key={post.id} className={s.post}>
-                <div className={s.postHead}>
-                  <span className={s.postAuthor}>{post.is_me ? t("o18.thread.you") : post.author_label === "Moderator" ? t("o18.thread.moderator") : post.author_label}</span>
+              <li
+                key={post.id}
+                className={`${s.bubble} ${post.is_me ? s.bubbleMine : ""} ${post.author_label === "Moderator" && !post.is_me ? s.bubbleMod : ""}`}
+                data-hidden={post.state === "hidden" || undefined}
+                data-testid="o18-post"
+              >
+                <div className={s.bubbleMeta}>
+                  <span className={s.bubbleAuthor}>{post.is_me ? t("o18.thread.you") : post.author_label === "Moderator" ? t("o18.thread.moderator") : post.author_label}</span>
                   <span>{post.queued ? t("o18.thread.queued") : formatWatDateTime(post.created_at, locale)}</span>
                 </div>
-                {post.state === "hidden" ? <p className={s.postHidden}>{t("o18.thread.hidden")}</p> : <p className={s.postText}>{post.body}</p>}
+                {post.state === "hidden" ? <p className={s.postHidden}>{t("o18.thread.hidden")}</p> : <p className={s.bubbleText}>{post.body}</p>}
                 {!post.is_me && !post.queued && post.state !== "hidden" && !closed ? (
                   <div className={s.postActions}>
                     <Button variant="quiet" onClick={() => props.onFlag(post)} aria-label={`${t("o18.thread.flag")}: ${post.author_label}`} data-testid="o18-flag">

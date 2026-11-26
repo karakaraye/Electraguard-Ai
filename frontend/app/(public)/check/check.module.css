@@ -1,0 +1,145 @@
+.check {
+  display: grid;
+  gap: var(--s-6);
+  max-width: 45rem;
+  min-width: 0;
+}
+
+.form {
+  display: grid;
+  gap: var(--s-4);
+}
+
+.submit {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-3);
+}
+
+.result {
+  outline: none;
+  min-width: 0;
+}
+
+.result:empty {
+  display: none;
+}
+
+.card {
+  display: grid;
+  gap: var(--s-4);
+  padding: var(--s-5);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  background: var(--paper-raised);
+  animation: egCheckIn var(--dur-fade) var(--ease-out);
+}
+
+.cardTitle {
+  margin: 0;
+  font: var(--t-heading);
+  outline: none;
+  overflow-wrap: anywhere;
+}
+
+.quote {
+  position: relative;
+  margin: 0;
+  padding: var(--s-5) var(--s-5) var(--s-5) var(--s-7);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: var(--paper-2);
+}
+
+.quote::before {
+  content: "\201C";
+  position: absolute;
+  inset-inline-start: var(--s-4);
+  top: var(--s-2);
+  font: var(--t-display);
+  font-size: 3rem;
+  line-height: 1;
+  color: var(--sun-strong);
+}
+
+.quote p {
+  margin: 0;
+  font: var(--t-body-lg);
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+
+.note {
+  margin: 0;
+  padding: var(--s-3);
+  border-radius: var(--radius);
+  background: var(--info-bg);
+  color: var(--ink);
+  font: var(--t-body);
+}
+
+.facts {
+  display: grid;
+  gap: var(--s-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font: var(--t-small);
+  font-size: 0.9375rem;
+  color: var(--ink-2);
+}
+
+.text {
+  margin: 0;
+  font: var(--t-body-lg);
+}
+
+.link {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--target-min);
+  color: var(--ink);
+  font: var(--t-label);
+  font-size: 1.0625rem;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.link:focus-visible {
+  outline: var(--focus-outline);
+  outline-offset: var(--focus-offset);
+  box-shadow: var(--focus-halo);
+  border-radius: 4px;
+}
+
+.danger {
+  border-color: var(--danger);
+  background: var(--danger-bg);
+}
+
+.problem {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--s-3);
+  padding: var(--s-5);
+  border: 1px solid var(--danger);
+  border-radius: var(--radius);
+  background: var(--danger-bg);
+}
+
+.shape {
+  padding-top: 4px;
+  color: var(--danger);
+}
+
+@keyframes egCheckIn {
+  from {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    animation: none;
+  }
+}

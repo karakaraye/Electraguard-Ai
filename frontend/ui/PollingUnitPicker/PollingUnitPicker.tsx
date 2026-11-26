@@ -1,13 +1,14 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import type { StateAreasResponse } from "../../lib/api/types";
 import { useT } from "../../lib/i18n/client";
 import { Banner } from "../Banner/Banner";
 import { Button } from "../Button/Button";
 import { Select } from "../Field/Select";
 import { normalise, SearchSelect, type SearchOption } from "../SearchSelect/SearchSelect";
-import { RetryIcon } from "../icons";
+import { Sheet } from "../Sheet/Sheet";
+import { ChevronRightIcon, RetryIcon } from "../icons";
 import styles from "./PollingUnitPicker.module.css";
 
 export type PlaceValue = {
@@ -68,8 +69,10 @@ function describe(areas: Record<string, StateAreasResponse>, value: PlaceValue):
 
 /**
  * Where did it happen? Search by polling-unit code or name across the state
- * lists on this phone, or drill State → LGA → Ward → Unit. "I don't know the
- * polling unit" keeps the ward only. Never GPS.
+ * lists on this phone. State → LGA → Ward → Unit lives in a sheet behind a quiet
+ * link, and "I don't know the polling unit" opens the same sheet for the ward
+ * only. Before any list is on the phone, the state is chosen first, inline,
+ * because search needs that state's list. Never GPS.
  */
 export function PollingUnitPicker({
   states,
@@ -87,6 +90,8 @@ export function PollingUnitPicker({
   const lga = state?.lgas.find((item) => item.lga_code === value.lga_code);
   const ward = lga?.wards.find((item) => item.ward_code === value.ward_code);
   const listReady = status.kind === "ready" && Boolean(state);
+  /** The area sheet: "area" drills to a unit, "ward" stops at the ward ("I don't know the polling unit"). */
+  const [sheet, setSheet] = useState<"area" | "ward" | null>(null);
 
   const unitOptions = useMemo<UnitOption[]>(() => {
     const options: UnitOption[] = [];
@@ -97,7 +102,7 @@ export function PollingUnitPicker({
             options.push({
               value: code,
               label: name,
-              detail: `${code} · ${w.name} · ${l.name}`,
+              detail: `${code} · ${w.name}, ${l.name}`,
               state: data.state_code,
               lga: l.lga_code,
               ward: w.ward_code,
@@ -115,7 +120,16 @@ export function PollingUnitPicker({
     onChange({ ...next, ...describe(areas, next) });
   }
 
+  function openSheet(wardOnly: boolean) {
+    setSheet(wardOnly ? "ward" : "area");
+    // Ward only: a ward already chosen is kept and the unit is dropped.
+    if (wardOnly && ward && !value.unknown_unit) emit({ ...value, polling_unit_code: null, unknown_unit: true });
+  }
+
   const searchDisabled = unitOptions.length === 0;
+  /* Whether the state was first shown inline on this visit. It stays inline once shown, so a list that
+     finishes downloading in the background never moves the select out from under someone choosing it. */
+  const [startedInline] = useState(searchDisabled);
   /* The list is not on the phone: nothing can be searched or drilled, so say that first and hide what cannot work. */
   const listMissing = (Boolean(value.state_code) && (status.kind === "missing" || status.kind === "error")) || !states;
 
@@ -175,92 +189,135 @@ export function PollingUnitPicker({
     );
   }
 
+  /* Nothing on the phone can be searched yet: the state comes first, inline, and its list downloads. */
+  const stateInline = searchDisabled || startedInline;
+  const stateSelect = (
+    <Select
+      label={t("o07.state")}
+      aria-label={t("o07.state")}
+      hint={stateInline ? t("o07.stateFirst") : undefined}
+      placeholder={t("o07.choose")}
+      options={(states ?? []).map((item) => ({ value: item.state_code, label: item.name }))}
+      value={value.state_code ?? ""}
+      disabled={!states}
+      onChange={(event) =>
+        emit({ state_code: event.target.value || null, lga_code: null, ward_code: null, polling_unit_code: null, unknown_unit: false })
+      }
+      data-testid={`${testId}-state`}
+    />
+  );
+  const downloading = Boolean(value.state_code) && status.kind === "downloading";
+
   return (
     <div className={styles.picker} data-testid={testId}>
-      <SearchSelect
-        label={t("o07.searchLabel")}
-        hint={searchDisabled ? t("o07.searchNeedsState") : t("o07.searchHint")}
-        options={unitOptions}
-        value={value.polling_unit_code}
-        limit={20}
-        disabled={searchDisabled}
-        error={error}
-        filter={(option, query) => {
-          const unit = option as UnitOption;
-          const code = compactCode(query);
-          return (code.length >= 2 && unit.compact.includes(code)) || unit.haystack.includes(normalise(query));
-        }}
-        noMatchesText={(query) => t("o07.noResults", { query })}
-        onChange={(code) => {
-          const unit = unitOptions.find((option) => option.value === code);
-          if (!unit) {
-            emit({ ...value, polling_unit_code: null });
-            return;
-          }
-          emit({ state_code: unit.state, lga_code: unit.lga, ward_code: unit.ward, polling_unit_code: unit.value, unknown_unit: false });
-        }}
-        data-testid={`${testId}-search`}
-      />
+      {stateInline ? stateSelect : null}
+
+      <div className={styles.searchBlock}>
+        <SearchSelect
+          label={t("o07.searchLabel")}
+          hint={t("o07.searchHint")}
+          options={unitOptions}
+          value={value.polling_unit_code}
+          limit={20}
+          disabled={searchDisabled}
+          error={error}
+          filter={(option, query) => {
+            const unit = option as UnitOption;
+            const code = compactCode(query);
+            return (code.length >= 2 && unit.compact.includes(code)) || unit.haystack.includes(normalise(query));
+          }}
+          noMatchesText={(query) => t("o07.noResults", { query })}
+          onChange={(code) => {
+            const unit = unitOptions.find((option) => option.value === code);
+            if (!unit) {
+              emit({ ...value, polling_unit_code: null });
+              return;
+            }
+            emit({ state_code: unit.state, lga_code: unit.lga, ward_code: unit.ward, polling_unit_code: unit.value, unknown_unit: false });
+          }}
+          data-testid={`${testId}-search`}
+        />
+        {downloading ? (
+          <div className={styles.progress} role="status" data-testid={`${testId}-downloading`}>
+            <span className={styles.track} aria-hidden="true">
+              <span
+                className={styles.bar}
+                data-indeterminate={status.percent === null || undefined}
+                style={status.percent === null ? undefined : { transform: `scaleX(${Math.max(4, Math.min(100, status.percent)) / 100})` }}
+              />
+            </span>
+            <span className={styles.progressText}>
+              {status.percent === null ? t("o07.listDownloadingNoPercent") : t("o07.listDownloading", { percent: status.percent })}
+            </span>
+          </div>
+        ) : null}
+      </div>
       <p className={styles.selected} aria-live="polite" data-testid="o07-summary">
         {selected ?? ""}
       </p>
 
-      <p className={styles.divider}>
-        <span>{t("o07.orChoose")}</span>
-      </p>
-
-      <div className={styles.drill}>
-        <Select
-          label={t("o07.state")}
-          aria-label={t("o07.state")}
-          placeholder={t("o07.choose")}
-          options={(states ?? []).map((item) => ({ value: item.state_code, label: item.name }))}
-          value={value.state_code ?? ""}
-          disabled={!states}
-          onChange={(event) =>
-            emit({ state_code: event.target.value || null, lga_code: null, ward_code: null, polling_unit_code: null, unknown_unit: false })
-          }
-          data-testid={`${testId}-state`}
-        />
-        <Select
-          label={t("o07.lga")}
-          aria-label={t("o07.lga")}
-          placeholder={t("o07.choose")}
-          options={(state?.lgas ?? []).map((item) => ({ value: item.lga_code, label: item.name }))}
-          value={value.lga_code ?? ""}
-          disabled={!listReady}
-          onChange={(event) => emit({ ...value, lga_code: event.target.value || null, ward_code: null, polling_unit_code: null, unknown_unit: false })}
-          data-testid={`${testId}-lga`}
-        />
-        <Select
-          label={t("o07.ward")}
-          aria-label={t("o07.ward")}
-          placeholder={t("o07.choose")}
-          options={(lga?.wards ?? []).map((item) => ({ value: item.ward_code, label: item.name }))}
-          value={value.ward_code ?? ""}
-          disabled={!listReady || !lga}
-          onChange={(event) => emit({ ...value, ward_code: event.target.value || null, polling_unit_code: null })}
-          data-testid={`${testId}-ward`}
-        />
-        <Select
-          label={t("o07.unit")}
-          aria-label={t("o07.unit")}
-          placeholder={t("o07.choose")}
-          options={(ward?.units ?? []).map(([code, name]) => ({ value: code, label: `${name} (${code})` }))}
-          value={value.polling_unit_code ?? ""}
-          disabled={!listReady || !ward || value.unknown_unit}
-          onChange={(event) => emit({ ...value, polling_unit_code: event.target.value || null, unknown_unit: false })}
-          data-testid={`${testId}-unit`}
-        />
+      <div className={styles.links}>
+        <button type="button" className={styles.link} onClick={() => openSheet(false)} data-testid={`${testId}-by-area`}>
+          <span>{t("o07.byArea")}</span>
+          <ChevronRightIcon size={20} aria-hidden="true" />
+        </button>
+        <button type="button" className={styles.link} onClick={() => openSheet(true)} data-testid={`${testId}-unknown-link`}>
+          <span>{t("o07.unknownUnit")}</span>
+          <ChevronRightIcon size={20} aria-hidden="true" />
+        </button>
       </div>
 
-      {unknownRow}
-
-      {value.state_code && status.kind === "downloading" ? (
-        <p className={styles.status} role="status" data-testid={`${testId}-downloading`}>
-          {status.percent === null ? t("o07.listDownloadingNoPercent") : t("o07.listDownloading", { percent: status.percent })}
-        </p>
-      ) : null}
+      <Sheet
+        open={sheet !== null}
+        onClose={() => setSheet(null)}
+        title={t(sheet === "ward" ? "o07.unknownUnit" : "o07.byArea")}
+        description={sheet === "ward" ? <p>{t("o07.unknownUnitNote")}</p> : undefined}
+        footer={
+          <Button block onClick={() => setSheet(null)} data-testid={`${testId}-done`}>
+            {t("common.done")}
+          </Button>
+        }
+        data-testid={`${testId}-sheet`}
+      >
+        <div className={styles.drill}>
+          {stateInline ? null : stateSelect}
+          <Select
+            label={t("o07.lga")}
+            aria-label={t("o07.lga")}
+            placeholder={t("o07.choose")}
+            options={(state?.lgas ?? []).map((item) => ({ value: item.lga_code, label: item.name }))}
+            value={value.lga_code ?? ""}
+            disabled={!listReady}
+            onChange={(event) =>
+              emit({ ...value, lga_code: event.target.value || null, ward_code: null, polling_unit_code: null, unknown_unit: sheet === "ward" })
+            }
+            data-testid={`${testId}-lga`}
+          />
+          <Select
+            label={t("o07.ward")}
+            aria-label={t("o07.ward")}
+            placeholder={t("o07.choose")}
+            options={(lga?.wards ?? []).map((item) => ({ value: item.ward_code, label: item.name }))}
+            value={value.ward_code ?? ""}
+            disabled={!listReady || !lga}
+            onChange={(event) => emit({ ...value, ward_code: event.target.value || null, polling_unit_code: null, unknown_unit: sheet === "ward" })}
+            data-testid={`${testId}-ward`}
+          />
+          {value.unknown_unit ? null : (
+            <Select
+              label={t("o07.unit")}
+              aria-label={t("o07.unit")}
+              placeholder={t("o07.choose")}
+              options={(ward?.units ?? []).map(([code, name]) => ({ value: code, label: `${name} (${code})` }))}
+              value={value.polling_unit_code ?? ""}
+              disabled={!listReady || !ward}
+              onChange={(event) => emit({ ...value, polling_unit_code: event.target.value || null, unknown_unit: false })}
+              data-testid={`${testId}-unit`}
+            />
+          )}
+        </div>
+        {unknownRow}
+      </Sheet>
     </div>
   );
 }

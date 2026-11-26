@@ -6,10 +6,11 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import type { MissingMaterial, QueueSize, YesNoNotSeen } from "../../../../lib/api/types";
 import { useLocale, useT } from "../../../../lib/i18n/client";
-import { AppShell, Banner, Button, Field, Sheet, StatusBadge, type ReportStatus } from "../../../../ui";
+import { AppShell, Banner, Button, ButtonLink, Field, Sheet, StatusBadge, type ReportStatus } from "../../../../ui";
 import { formatWatTime } from "../../../../ui/format";
 import { CheckIcon, ChevronRightIcon, PlaceIcon } from "../../../../ui/icons";
 import { MATERIALS, QUESTIONS, QUEUE_SIZES, type StageAnswers, type StageSlug } from "../_lib/checklist";
+import { DayPlate } from "../_components/DayPlate";
 import styles from "../_components/observer.module.css";
 import s from "../_components/screens.module.css";
 
@@ -27,42 +28,115 @@ const STATE_BADGE: Record<Exclude<StageState, "notStarted">, ReportStatus> = {
 export type ChecklistListViewProps = {
   offline: boolean;
   stages: Array<{ slug: StageSlug; state: StageState; receivedAt?: string | null; href: string }>;
+  /** Today's polling unit from Arrival; null until Arrival is filled in. */
+  unitLabel?: string | null;
+  /** For previews; the real clock otherwise. */
+  now?: Date;
   onBack: () => void;
 };
 
-export function ChecklistListView({ offline, stages, onBack }: ChecklistListViewProps) {
+/** Arrival also asks for the polling unit, so it counts as two questions. */
+const questionCount = (slug: StageSlug) => QUESTIONS[slug].length + (slug === "arrival" ? 1 : 0);
+
+export function ChecklistListView({ offline, stages, unitLabel = null, now, onBack }: ChecklistListViewProps) {
   const t = useT();
   const { locale } = useLocale();
+  const sent = stages.filter((stage) => stage.state === "received").length;
+  const allDone = sent === stages.length;
+  const nextIndex = stages.findIndex((stage) => stage.state === "notStarted" || stage.state === "draft" || stage.state === "needsAttention");
+  const arrivalKnown = Boolean(unitLabel) || stages.some((stage) => stage.slug === "arrival" && stage.state === "received");
   return (
-    <AppShell title={t("o15.title")} onBack={onBack} offline={offline} data-testid="o15">
+    <AppShell onBack={onBack} offline={offline} data-testid="o15">
       <div className={styles.screen}>
-        <h1 className={styles.title}>{t("o15.title")}</h1>
-        <p className={styles.lead}>{t("o15.hint")}</p>
-        <ol className={s.stageList} aria-label={t("o15.title")}>
-          {stages.map((stage) => (
-            <li key={stage.slug}>
-              <Link href={stage.href} className={s.stageRow} data-done={stage.state === "received" || undefined} data-testid={`o15-stage-${stage.slug}`}>
-                <span className={s.stageMain}>
-                  <span className={s.stageName}>{t(`o15.stage.${stage.slug}`)}</span>
-                  {stage.state === "notStarted" ? (
-                    <span className={styles.meta}>{t("o15.stageState.notStarted")}</span>
-                  ) : (
-                    <StatusBadge
-                      status={STATE_BADGE[stage.state]}
-                      label={
-                        stage.state === "received" && stage.receivedAt
-                          ? t("o15.received", { time: formatWatTime(stage.receivedAt, locale) })
-                          : stage.state === "draft"
-                            ? t("o15.stageState.draft")
-                            : undefined
-                      }
-                    />
-                  )}
+        <div className={s.dayHead}>
+          <h1 className={styles.title}>{t("o15.title")}</h1>
+          <p className={s.detailMeta}>
+            {unitLabel ? (
+              <span className={styles.valueRow}>
+                <PlaceIcon size={18} aria-hidden="true" />
+                {unitLabel}
+              </span>
+            ) : null}
+            <span className="eg-tnum" data-testid="o15-progress">
+              {t("o04.checklistProgress", { done: sent, total: stages.length })}
+            </span>
+          </p>
+        </div>
+
+        <DayPlate
+            now={now}
+            stages={stages.map((stage, index) => ({
+              id: stage.slug,
+              label: t(`o15.stage.${stage.slug}`),
+              state: stage.state === "received" ? "sent" : index === nextIndex ? "next" : "later",
+            }))}
+            nextLabel={nextIndex >= 0 ? t("o04.checklistNext", { stage: t(`o15.stage.${stages[nextIndex].slug}`) }) : t("o04.checklistDone")}
+            listLabel={t("o04.checklist")}
+            stateLabels={{ sent: t("o15.stageState.received"), next: t("o04.stageNext"), later: t("o15.stageState.notStarted") }}
+          />
+
+        {allDone ? (
+          <p className={s.dayDone} role="status" data-testid="o15-all-done">
+            <CheckIcon size={20} strokeWidth={2.5} aria-hidden="true" />
+            {t("o15.allDone")}
+          </p>
+        ) : null}
+
+        {!arrivalKnown ? (
+          <p className={styles.note} data-testid="o15-need-unit">
+            <PlaceIcon />
+            <span>{t("o15.needUnit")}</span>
+          </p>
+        ) : null}
+        <ol className={s.stageTimeline} aria-label={t("o15.title")}>
+          {stages.map((stage, index) => {
+            const done = stage.state === "received";
+            const isNext = index === nextIndex;
+            const locked = !arrivalKnown && stage.slug !== "arrival" && !done;
+            const label = (
+              <>
+                <span className={s.stageName}>{t(`o15.stage.${stage.slug}`)}</span>
+                <span className="eg-sr-only">
+                  {" · "}
+                  {done ? t("o15.stageState.received") : isNext ? t("o04.stageNext") : t(`o15.stageState.${stage.state === "needsAttention" ? "notStarted" : stage.state}`)}
                 </span>
-                <ChevronRightIcon aria-hidden="true" />
-              </Link>
-            </li>
-          ))}
+                {!isNext ? <ChevronRightIcon size={20} aria-hidden="true" /> : null}
+              </>
+            );
+            const position = done ? "done" : isNext ? "next" : "later";
+            return (
+              <li key={stage.slug} className={s.stageItem} data-position={position} data-locked={locked || undefined} data-testid={`o15-stage-${stage.slug}`}>
+                <span className={s.stageDot} aria-hidden="true">
+                  {done ? <CheckIcon size={14} strokeWidth={3} /> : null}
+                </span>
+                <div className={s.stageBody}>
+                  {locked ? (
+                    <a role="link" aria-disabled="true" className={s.stageLink}>
+                      {label}
+                    </a>
+                  ) : (
+                    <Link href={stage.href} className={s.stageLink}>
+                      {label}
+                    </Link>
+                  )}
+                  {done ? (
+                    <span className={`${styles.meta} eg-tnum`}>
+                      {stage.receivedAt ? t("o15.received", { time: formatWatTime(stage.receivedAt, locale) }) : t("o15.stageState.received")}
+                    </span>
+                  ) : stage.state === "onPhone" || stage.state === "needsAttention" ? (
+                    <StatusBadge status={STATE_BADGE[stage.state]} />
+                  ) : (
+                    <span className={styles.meta}>{t(`o15.desc.${stage.slug}`)}</span>
+                  )}
+                  {isNext && !locked ? (
+                    <ButtonLink href={stage.href} variant={stage.state === "draft" ? "secondary" : "primary"} icon={<ChevronRightIcon />} className={s.stageGo} data-testid={`o15-go-${stage.slug}`}>
+                      {stage.state === "draft" ? t("o15.continueStage") : t("o15.answerCount", { count: questionCount(stage.slug) })}
+                    </ButtonLink>
+                  ) : null}
+                </div>
+              </li>
+            );
+          })}
         </ol>
       </div>
     </AppShell>
@@ -112,6 +186,9 @@ export function StageFormView(props: StageFormViewProps) {
   const { stage, answers, errors } = props;
   const questions = QUESTIONS[stage];
   const banner = props.status && props.status !== "sending" ? STATUS_BANNER[props.status] : null;
+  const isAnswered = (question: (typeof questions)[number]) =>
+    question.type === "time" ? Boolean(props.arrivalTime) : question.type === "queue" ? Boolean(answers.queue_size) : answers[question.id] != null;
+  const answeredCount = questions.filter(isAnswered).length;
 
   return (
     <AppShell
@@ -145,7 +222,17 @@ export function StageFormView(props: StageFormViewProps) {
       data-testid="o15-form"
     >
       <div className={styles.screen}>
-        <h1 className={styles.title}>{t(`o15.stage.${stage}`)}</h1>
+        <div className={s.stageHead}>
+          <h1 className={styles.title}>{t(`o15.stage.${stage}`)}</h1>
+          <p className={`${styles.meta} eg-tnum`} aria-live="polite" data-testid="o15-answered">
+            {t("o15.answered", { done: answeredCount, total: questions.length })}
+          </p>
+          <span className={s.stageProgress} aria-hidden="true">
+            {questions.map((question) => (
+              <span key={question.id} data-done={isAnswered(question) || undefined} />
+            ))}
+          </span>
+        </div>
         {stage === "arrival" ? (
           <section className={styles.stack} aria-labelledby="o15-unit">
             <h2 className={s.answerLegend} id="o15-unit">
@@ -164,22 +251,23 @@ export function StageFormView(props: StageFormViewProps) {
           {questions.map((question) => {
             if (question.type === "time") {
               return (
-                <Field
-                  key={question.id}
-                  label={t(question.key)}
-                  hint={t("common.wat")}
-                  type="time"
-                  value={props.arrivalTime}
-                  onChange={(event) => props.onArrivalTime(event.target.value)}
-                  error={props.timeError ?? errors[question.id]}
-                  data-testid="o15-arrival-time"
-                />
+                <div key={question.id} className={s.qCard}>
+                  <Field
+                    label={t(question.key)}
+                    hint={t("common.wat")}
+                    type="time"
+                    value={props.arrivalTime}
+                    onChange={(event) => props.onArrivalTime(event.target.value)}
+                    error={props.timeError ?? errors[question.id]}
+                    data-testid="o15-arrival-time"
+                  />
+                </div>
               );
             }
             if (question.type === "queue") {
               const value = answers.queue_size ?? null;
               return (
-                <div key={question.id} className={styles.stack}>
+                <div key={question.id} className={s.qCard}>
                   <AnswerGroup
                     name={question.id}
                     legend={t(question.key)}
@@ -196,7 +284,7 @@ export function StageFormView(props: StageFormViewProps) {
             const value = answers[question.id] ?? null;
             const problem = value !== null && value !== "not_seen" && value === question.problem;
             return (
-              <div key={question.id} className={styles.stack}>
+              <div key={question.id} className={s.qCard} data-problem={problem || undefined}>
                 <AnswerGroup
                   name={question.id}
                   legend={t(question.key)}
@@ -272,10 +360,10 @@ function ReportThis({ question, onClick }: { question: string; onClick: () => vo
   const t = useT();
   return (
     <div className={s.followUp}>
-      <Button variant="secondary" onClick={onClick} aria-label={`${t("o15.reportThis")}: ${question}`} data-testid="o15-report-this">
+      <Button variant="quiet" icon={<ChevronRightIcon />} className={s.followUpLink} onClick={onClick} aria-label={`${t("o15.reportThis")}: ${question}`} data-testid="o15-report-this">
         {t("o15.reportThis")}
       </Button>
-      <p className={styles.note}>{t("o15.reportThisHint")}</p>
+      <p className={styles.meta}>{t("o15.reportThisHint")}</p>
     </div>
   );
 }

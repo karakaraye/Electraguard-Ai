@@ -1,148 +1,351 @@
-.container {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-6);
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: var(--sp-4);
-}
+/* S-12 security and audit. Colour only for status: severity, chain result and problems. */
 
-.header {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-1);
-}
-
-.title {
-  font: var(--t-display);
-  margin: 0;
-}
-
-.subtitle {
-  font: var(--t-body);
-  color: var(--c-muted);
-  margin: 0;
-}
-
-.verifySection {
-  background: var(--c-surface);
-  border: 1px solid var(--c-border);
-  border-radius: var(--r-md);
-  padding: var(--sp-6);
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-4);
-}
-
-.verifyHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: var(--sp-3);
-}
-
-.verifyGrid {
+.page {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: var(--sp-4);
+  gap: var(--s-5);
+  min-width: 0;
 }
 
-.verifyTile {
-  background: var(--c-surface-raised);
-  border: 1px solid var(--c-border);
-  border-radius: var(--r-md);
-  padding: var(--sp-4);
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-1);
+.intro {
+  margin: 0;
+  max-width: 62ch;
+  color: var(--ink-2);
+  font: var(--t-body);
 }
 
-.tileLabel {
-  font: var(--t-small);
-  color: var(--c-muted);
-}
-
-.tileValue {
+.sectionTitle {
+  margin: 0;
   font: var(--t-heading);
+  font-size: 1.0625rem;
 }
 
-.tileDetail {
-  font: var(--t-caption);
-  color: var(--c-muted);
+.sub {
+  margin: var(--s-1) 0 0;
+  color: var(--ink-2);
+  font: var(--t-small);
+  overflow-wrap: anywhere;
+}
+
+/* ---------- Cards ---------- */
+
+.panel {
+  display: grid;
+  gap: var(--s-4);
+  padding: var(--s-4) var(--s-5);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  background: var(--paper-raised);
+  min-width: 0;
+}
+
+.panelHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--s-3);
+}
+
+.panelHead > div {
+  flex: 1 1 18rem;
+  min-width: 0;
+}
+
+/* ---------- Chain result ---------- */
+
+.result {
+  display: grid;
+  gap: var(--s-3);
+  padding: var(--s-4);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  min-width: 0;
+}
+
+.result[data-tone="ok"] {
+  border-color: var(--ok-solid);
+  background: var(--ok-bg);
+}
+
+.result[data-tone="danger"] {
+  border-color: var(--danger-solid);
+  background: var(--danger-bg);
+}
+
+.resultHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-2) var(--s-3);
+}
+
+.resultLine {
+  margin: 0;
+  font: var(--t-label);
+  overflow-wrap: anywhere;
+}
+
+.result[data-tone="danger"] .resultLine {
+  color: var(--danger);
+}
+
+.dangerText {
+  margin: 0;
+  color: var(--danger);
+  font: var(--t-body);
+  font-weight: 600;
+}
+
+.facts,
+.details {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+  gap: var(--s-3);
+  margin: 0;
+}
+
+.facts > div,
+.details > div {
+  min-width: 0;
+}
+
+.facts dt,
+.details dt {
+  color: var(--ink-2);
+  font: var(--t-small);
+}
+
+.facts dd,
+.details dd {
+  margin: 2px 0 0;
+  font: var(--t-label);
+  overflow-wrap: anywhere;
+}
+
+.facts > div:first-child {
+  grid-column: 1 / -1;
+}
+
+.hash {
+  font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.45;
+  letter-spacing: 0;
   word-break: break-all;
 }
 
-.alertsSection {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-4);
+.problem {
+  margin: 0;
+  color: var(--danger);
+  font: var(--t-small);
+  font-weight: 600;
 }
 
-.toolbar {
+.good {
+  margin: 0;
+  color: var(--ok);
+  font: var(--t-small);
+  font-weight: 600;
+}
+
+/* ---------- Alerts ---------- */
+
+.alerts {
+  display: grid;
+  gap: var(--s-3);
+  min-width: 0;
+}
+
+.alertsHead {
   display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
   justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: var(--sp-3);
+  gap: var(--s-3);
 }
 
-.filterGroup {
-  display: flex;
-  gap: var(--sp-2);
-  align-items: center;
+.alertsHead > div:first-child {
+  flex: 1 1 16rem;
+  min-width: 0;
 }
 
-.alertCard {
-  background: var(--c-surface);
-  border: 1px solid var(--c-border);
-  border-radius: var(--r-md);
-  padding: var(--sp-4);
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-3);
+.filterSelect {
+  flex: 1 1 100%;
 }
 
-.alertHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: var(--sp-3);
-  flex-wrap: wrap;
+.loading {
+  padding: var(--s-4);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  background: var(--paper-raised);
 }
 
-.alertMeta {
-  display: flex;
-  align-items: center;
-  gap: var(--sp-2);
-  flex-wrap: wrap;
+.ruleCell {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
 }
 
-.alertRule {
-  font: var(--t-heading);
+.ruleCell .sub {
   margin: 0;
 }
 
-.alertSubject {
-  font: var(--t-body);
-  font-weight: 500;
+.ruleName {
+  margin: 0;
+  font: var(--t-label);
+  overflow-wrap: anywhere;
 }
 
-.alertDetails {
-  background: var(--c-surface-raised);
-  border: 1px solid var(--c-border);
-  border-radius: var(--r-sm);
-  padding: var(--sp-3);
+.cards {
+  display: grid;
+  gap: var(--s-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.card {
+  display: grid;
+  gap: var(--s-1);
+  padding: var(--s-4);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  background: var(--paper-raised);
+  min-width: 0;
+}
+
+.card .sub {
+  margin: 0;
+}
+
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+}
+
+.cardAction {
+  display: flex;
+  margin-top: var(--s-2);
+}
+
+.more {
+  display: flex;
+  justify-content: center;
+}
+
+/* ---------- Update sheet ---------- */
+
+.sheetBody {
+  display: grid;
+  gap: var(--s-4);
+}
+
+.sheetSummary {
+  display: grid;
+  gap: var(--s-1);
+}
+
+.sheetSummary .sub {
+  margin: 0;
+}
+
+.miniTitle {
+  margin: 0 0 var(--s-2);
+  font: var(--t-label);
+}
+
+.details {
+  padding: var(--s-3);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: var(--paper-2);
+}
+
+.sheetActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+}
+
+/* ---------- Export ---------- */
+
+.exportForm {
+  padding-bottom: var(--s-5);
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+  align-items: end;
+  gap: var(--s-3);
+}
+
+
+.dateField {
+  position: relative;
+  min-width: 0;
+}
+
+/* The day in words, hanging under the native date field so neighbouring fields stay aligned. */
+.dayEcho {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin: var(--s-1) 0 0;
+  color: var(--ink-2);
   font: var(--t-small);
-  font-family: var(--f-mono, monospace);
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--sp-4);
+  font-weight: 600;
+  white-space: nowrap;
 }
 
-.alertActions {
-  display: flex;
-  align-items: center;
-  gap: var(--sp-2);
-  flex-wrap: wrap;
+.exportButton {
+  justify-self: start;
+}
+
+@media (max-width: 767px) {
+  .panel {
+    padding: var(--s-4);
+  }
+
+  .exportButton {
+    justify-self: stretch;
+  }
+}
+
+/* The alerts table fits its card at 1280 px: tighter cells, whole badges and buttons, no clipped Update. */
+.alerts table th,
+.alerts table td {
+  padding-left: var(--s-2);
+  padding-right: var(--s-2);
+}
+
+.alerts table td:first-child,
+.alerts table th:first-child {
+  padding-left: var(--s-3);
+}
+
+.alerts table td:last-child,
+.alerts table th:last-child {
+  padding-right: var(--s-3);
+  white-space: nowrap;
+}
+
+.alerts table td > :global([data-tone]) {
+  white-space: nowrap;
+}
+
+/* Stacked on a phone, the day in words sits in the flow instead of hanging below. */
+@media (max-width: 767px) {
+  .exportForm {
+    padding-bottom: 0;
+  }
+
+  .dateField {
+    display: grid;
+    gap: var(--s-2);
+  }
+
+  .dayEcho {
+    position: static;
+    margin: 0;
+  }
 }

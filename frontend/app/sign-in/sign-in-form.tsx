@@ -19,7 +19,7 @@ export function SignInForm() {
     try {
       const response = await authPost("sign-in", body);
       if (response.ok) {
-        window.location.replace("/");
+        window.location.replace("/workspace");
         return;
       }
       setError(response.status === 401 ? "Invalid email or password." : "Sign-in failed. Try again.");

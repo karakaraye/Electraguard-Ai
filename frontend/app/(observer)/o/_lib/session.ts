@@ -132,8 +132,12 @@ export function lastCode(): string {
 
 /** "Now" corrected by the server clock when the phone is more than 10 minutes off (O-08). */
 export function correctedNow(): number {
-  const offset = getSession()?.clock_offset_ms ?? 0;
-  return Math.abs(offset) > 10 * 60_000 ? Date.now() + offset : Date.now();
+  return usingNetworkTime() ? Date.now() + (getSession()?.clock_offset_ms ?? 0) : Date.now();
+}
+
+/** True when the phone clock is more than 10 minutes off and times follow the server (O-08 note). */
+export function usingNetworkTime(): boolean {
+  return Math.abs(getSession()?.clock_offset_ms ?? 0) > 10 * 60_000;
 }
 
 /* ---------- Device flags ---------- */

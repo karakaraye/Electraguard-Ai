@@ -3,6 +3,7 @@
 import { useId, type ComponentType, type ReactNode } from "react";
 import { useT } from "../../lib/i18n/client";
 import { AlertIcon, CheckIcon, type IconProps } from "../icons";
+import { haptic } from "../motion";
 import styles from "./ChoiceTile.module.css";
 
 export type ChoiceOption = {
@@ -90,6 +91,8 @@ export function ChoiceTileGroup({
       data-testid={testId}
     >
       <GroupLegend legend={legend} headingLevel={headingLevel} hint={hint} hintId={hintId} />
+      {/* The error sits under the question, never below a long list where it can be hidden. */}
+      {error && errorId ? <GroupError error={error} id={errorId} /> : null}
       <div className={styles.grid} data-columns={columns}>
         {options.map((option) => {
           const checked = value === option.value;
@@ -109,11 +112,15 @@ export function ChoiceTileGroup({
                 value={option.value}
                 checked={checked}
                 disabled={option.disabled}
-                onChange={() => onChange(option.value)}
+                onChange={() => {
+                  haptic(8);
+                  onChange(option.value);
+                }}
               />
+              <i className={styles.sweep} aria-hidden="true" />
               {Pictogram ? (
-                <span className={styles.pictogram}>
-                  <Pictogram size={40} />
+                <span className={styles.disc}>
+                  <Pictogram size={30} />
                 </span>
               ) : null}
               <span className={styles.tileText}>
@@ -121,13 +128,12 @@ export function ChoiceTileGroup({
                 {option.hint ? <span className={styles.tileHint}>{option.hint}</span> : null}
               </span>
               <span className={styles.tick} aria-hidden="true">
-                <CheckIcon size={16} strokeWidth={2.5} />
+                <CheckIcon size={14} strokeWidth={3} />
               </span>
             </label>
           );
         })}
       </div>
-      {error && errorId ? <GroupError error={error} id={errorId} /> : null}
     </fieldset>
   );
 }

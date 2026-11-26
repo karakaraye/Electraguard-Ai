@@ -26,6 +26,8 @@ export type ReportRowProps = {
   pictogram?: ComponentType<IconProps>;
   /** Hide the time line (for rows whose time is not known). */
   hideTime?: boolean;
+  /** Something new since the last visit: bold title and a dot. */
+  unread?: boolean;
   "data-testid"?: string;
 };
 
@@ -41,6 +43,7 @@ export function ReportRow({
   note,
   pictogram,
   hideTime,
+  unread,
   "data-testid": testId = "report-row",
 }: ReportRowProps) {
   const { locale } = useLocale();
@@ -48,11 +51,14 @@ export function ReportRow({
   return (
     <li className={styles.item}>
       <Link href={href} className={styles.row} data-testid={testId}>
-        <span className={styles.pictogram}>
-          <Pictogram size={32} />
+        <span className={styles.disc}>
+          <Pictogram size={30} />
         </span>
         <span className={styles.main}>
-          <span className={styles.title}>{categoryLabel}</span>
+          <span className={styles.title} data-unread={unread || undefined}>
+            {unread ? <span className={styles.dot} aria-hidden="true" /> : null}
+            {categoryLabel}
+          </span>
           <span className={styles.meta}>
             {place ? <span>{place}</span> : null}
             {hideTime ? null : <span className="eg-tnum">{formatWatDateTime(observedAt, locale)}</span>}

@@ -1,127 +1,17 @@
+/* Landing page (plan §4): hero, receipt check, results, three ways, rumour card, questions, evening. */
+
 .home {
+  --edge: max(var(--gutter), calc((100vw - 72rem) / 2 + var(--gutter)));
   display: grid;
-  gap: var(--s-7);
+  gap: var(--s-8);
 }
 
-/* ---------- Hero: the statement, the one action, and the polling-day band under it ---------- */
-
-.hero {
-  position: relative;
-  /* A paint container makes the art's fixed position resolve to this band, not the viewport */
-  contain: paint;
-  margin-inline: calc(50% - 50vw);
-  padding: var(--s-7) var(--gutter) clamp(150px, 26vh, 250px);
-  border-bottom: 1px solid var(--rule);
-  background: var(--paper);
-}
-
-.heroText {
-  display: grid;
-  justify-items: start;
-  gap: var(--s-4);
-  max-width: 72rem;
-  margin: 0 auto;
-}
-
-.title {
-  max-width: 15ch;
-  margin: 0;
-  font: var(--t-display);
-  font-size: clamp(2.25rem, 1.5rem + 3.2vw, 3.75rem);
-  line-height: 1.06;
-  letter-spacing: -0.02em;
-  overflow-wrap: anywhere;
-  text-wrap: balance;
-}
-
-.lead {
-  max-width: 36rem;
-  margin: 0;
-  font: var(--t-body-lg);
-  font-size: clamp(1.125rem, 1rem + 0.4vw, 1.25rem);
-  color: var(--ink-2);
-}
-
-.actions {
-  display: grid;
-  justify-items: start;
-  gap: var(--s-2);
-  margin-top: var(--s-2);
-}
-
-.actionHint {
-  margin: 0;
-  font: var(--t-small);
-  color: var(--ink-2);
-}
-
-.basic {
-  max-width: 36rem;
-  margin: var(--s-2) 0 0;
-  font: var(--t-body);
-  color: var(--ink-2);
-}
-
-.basic a,
-.text a {
-  color: var(--ink);
-  font-weight: 600;
-  text-decoration: underline;
-  text-underline-offset: 0.2em;
-}
-
-.basic a:focus-visible,
-.more:focus-visible,
-.links a:focus-visible {
-  outline: var(--focus-outline);
-  outline-offset: var(--focus-offset);
-  box-shadow: var(--focus-halo);
-  border-radius: 4px;
-}
-
-@media (min-width: 600px) {
-  .hero {
-    padding-bottom: clamp(190px, 32vh, 330px);
-  }
-}
-
-@media (min-width: 1024px) {
-  .hero {
-    padding-top: var(--s-8);
-    padding-bottom: clamp(220px, 36vh, 400px);
-  }
-}
-
-@media (max-height: 520px) {
-  .hero {
-    padding-bottom: var(--s-7);
-  }
-}
-
-/* ---------- Check and results ---------- */
-
-.grid {
-  display: grid;
-  gap: var(--s-7);
-}
-
-@media (min-width: 900px) {
-  .grid {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    gap: var(--s-8);
-  }
-}
-
-.block {
-  display: grid;
-  align-content: start;
-  gap: var(--s-3);
-  min-width: 0;
-}
+/* ---------- Shared text ---------- */
 
 .heading {
   margin: 0;
   font: var(--t-title);
+  font-size: clamp(1.75rem, 1.4rem + 1.4vw, 2.25rem);
   overflow-wrap: anywhere;
 }
 
@@ -138,6 +28,205 @@
   font-weight: 600;
 }
 
+.nowrap {
+  white-space: nowrap;
+}
+
+.moreArrow {
+  margin-inline-start: var(--s-2);
+  vertical-align: -4px;
+}
+
+.more {
+  display: inline-block;
+  justify-self: start;
+  padding-block: 12px;
+  line-height: 1.3;
+  color: var(--ink);
+  font: var(--t-label);
+  font-size: 1.0625rem;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.25em;
+}
+
+.basic a:focus-visible,
+.more:focus-visible,
+.links a:focus-visible {
+  outline: var(--focus-outline);
+  outline-offset: var(--focus-offset);
+  box-shadow: var(--focus-halo);
+  border-radius: 4px;
+}
+
+/* ---------- 4.2 Hero: the statement and the one action on still sky, the living scene below ---------- */
+
+.hero {
+  position: relative;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  min-height: min(88dvh, 54rem);
+  margin-inline: calc(50% - 50vw);
+  overflow: hidden;
+}
+
+.sky {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  justify-items: start;
+  align-content: start;
+  gap: var(--s-4);
+  max-width: calc(40rem + var(--edge) * 2);
+  padding: var(--s-7) var(--edge) var(--s-4);
+}
+
+.title {
+  margin: 0;
+  font: var(--t-display);
+  font-size: clamp(2.25rem, 1.6rem + 3vw, 3.75rem);
+  line-height: 1.06;
+  letter-spacing: var(--display-tracking);
+  overflow-wrap: anywhere;
+  text-wrap: balance;
+}
+
+.lead {
+  max-width: 34rem;
+  margin: 0;
+  font: var(--t-body-lg);
+  color: var(--ink-2);
+}
+
+.actions {
+  display: grid;
+  justify-items: start;
+  gap: var(--s-2);
+  margin-top: var(--s-2);
+}
+
+.actionHint,
+.basic {
+  max-width: 34rem;
+  margin: 0;
+  font: var(--t-small);
+  color: var(--ink-2);
+}
+
+/* The safety line sits right under the action, where someone in trouble will look. */
+.safety {
+  max-width: 34rem;
+  margin: 0;
+  font: var(--t-small);
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.basic a {
+  color: var(--ink);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+/* The drawing keeps its proportions and is cropped from the sides on narrow screens,
+   so the people stay large enough to read (at least 70 px tall on a 360 px screen). */
+.stage {
+  position: relative;
+  min-height: 320px;
+}
+
+.scene {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+@media (min-width: 900px) {
+  .sky {
+    padding-top: var(--s-8);
+  }
+}
+
+@media (max-width: 599px) {
+  .hero {
+    min-height: auto;
+  }
+
+  .sky {
+    padding-top: var(--s-6);
+  }
+
+  .stage {
+    min-height: 380px;
+    /* The drawing's own empty sky slides up under the text, so no blank band opens between them. */
+    margin-top: -112px;
+  }
+}
+
+/* ---------- The one action, repeated after the story and before the footer ---------- */
+
+.cta {
+  display: grid;
+  justify-items: center;
+  text-align: center;
+}
+
+.cta .actions {
+  justify-items: center;
+  margin-top: 0;
+}
+
+/* ---------- 4.4 Check your report: a paper receipt with a torn top edge ---------- */
+
+.check {
+  display: grid;
+  gap: var(--s-6);
+  align-items: start;
+}
+
+.checkText {
+  display: grid;
+  gap: var(--s-3);
+}
+
+.receiptShadow {
+  width: 100%;
+  max-width: 32rem;
+  filter: drop-shadow(0 0 0.6px var(--ink-3)) drop-shadow(0 8px 14px rgb(14 13 11 / 0.08));
+}
+
+.receipt {
+  display: grid;
+  gap: var(--s-4);
+  padding: calc(var(--s-5) + 9px) var(--s-5) var(--s-5);
+  background: var(--paper-raised);
+  clip-path: polygon(0% 9px, 5% 0px, 10% 9px, 15% 0px, 20% 9px, 25% 0px, 30% 9px, 35% 0px, 40% 9px, 45% 0px, 50% 9px, 55% 0px, 60% 9px, 65% 0px, 70% 9px, 75% 0px, 80% 9px, 85% 0px, 90% 9px, 95% 0px, 100% 9px, 100% 100%, 0 100%);
+}
+
+@media (min-width: 900px) {
+  .check {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 32rem);
+    column-gap: var(--s-8);
+    align-items: center;
+  }
+
+  .receiptShadow {
+    justify-self: end;
+  }
+}
+
+/* ---------- 4.5 Reviewed results ---------- */
+
+.resultsBlock {
+  display: grid;
+  align-content: start;
+  gap: var(--s-3);
+  min-width: 0;
+}
+
 .figure {
   display: flex;
   flex-wrap: wrap;
@@ -152,10 +241,7 @@
   letter-spacing: -0.02em;
 }
 
-.unit {
-  font: var(--t-heading);
-}
-
+.unit,
 .figureSmall {
   font: var(--t-heading);
 }
@@ -173,78 +259,225 @@
   color: var(--ink);
 }
 
-.more {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--s-2);
-  justify-self: start;
-  min-height: var(--target-min);
-  color: var(--ink);
-  font: var(--t-label);
-  font-size: 1.0625rem;
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 0.25em;
-}
-
-/* ---------- How it works: a real sequence, so it is numbered ---------- */
-
-.how {
+.bars {
   display: grid;
-  gap: var(--s-4);
-  padding-top: var(--s-6);
-  border-top: 1px solid var(--rule);
+  gap: var(--s-3);
+  margin: var(--s-2) 0;
+  padding: 0;
+  list-style: none;
 }
 
-.steps {
+.bar {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--s-1) var(--s-3);
+  font: var(--t-body);
+}
+
+.barCount {
+  font-weight: 700;
+}
+
+.barTrack {
+  grid-column: 1 / -1;
+  display: block;
+  height: 8px;
+  border-radius: 4px;
+  background: var(--paper-sunk);
+  overflow: hidden;
+}
+
+/* The bar is drawn at full width and scaled to its share, so it can grow from the left without reflow. */
+.barFill {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--ink);
+  transform: scaleX(var(--v, 1));
+  transform-origin: left center;
+  transition: transform 480ms var(--ease-out) calc(var(--i, 0) * 60ms);
+}
+
+/* Full motion: bars start empty and grow, one after another 60 ms apart, when the block scrolls into view. */
+.resultsBlock[data-motion="full"]:not([data-in]) .barFill {
+  transform: scaleX(0);
+}
+
+.emptyArt {
+  width: min(100%, 22rem);
+  margin-top: var(--s-4);
+}
+
+@media (min-width: 900px) {
+  .resultsBlock {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    column-gap: var(--s-8);
+  }
+
+  .resultsBlock > * {
+    grid-column: 1;
+  }
+
+  .resultsBlock > .bars,
+  .resultsBlock > .emptyArt {
+    grid-column: 2;
+    grid-row: 1 / span 6;
+    align-self: center;
+    margin: 0;
+  }
+
+  .resultsBlock > .emptyArt {
+    justify-self: end;
+  }
+}
+
+/* ---------- 4.6 Three ways to report ---------- */
+
+.ways {
+  display: grid;
+  gap: var(--s-5);
+}
+
+.wayList {
   display: grid;
   gap: var(--s-4);
   margin: 0;
   padding: 0;
   list-style: none;
-  counter-reset: none;
 }
 
-.steps li {
+/* Phone: compact rows, the small drawing beside its words. */
+.wayItem {
   display: grid;
-  grid-template-columns: 2.5rem minmax(0, 1fr);
-  gap: var(--s-3);
-  align-items: start;
-  max-width: 40rem;
-  font: var(--t-body-lg);
+  grid-template-columns: 104px minmax(0, 1fr);
+  gap: var(--s-4);
+  align-items: center;
+  padding: var(--s-4);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-xl);
+  background: var(--paper-raised);
 }
 
-.stepNo {
-  display: inline-grid;
-  place-items: center;
-  width: 2.25rem;
-  height: 2.25rem;
-  border: var(--border-w) solid var(--ink);
-  border-radius: 50%;
-  font: var(--t-label);
-  font-size: 1rem;
+.wayArt {
+  min-width: 0;
+}
+
+.wayText {
+  display: grid;
+  gap: var(--s-1);
+  min-width: 0;
+}
+
+.wayTitle {
+  margin: 0;
+  font: var(--t-heading);
+  font-size: 1.125rem;
+  overflow-wrap: anywhere;
+}
+
+.wayBody {
+  margin: 0;
+  font: var(--t-body);
+  color: var(--ink-2);
 }
 
 @media (min-width: 900px) {
-  .steps {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: var(--s-6);
+  .wayList {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--s-5);
   }
 
-  .steps li {
-    grid-template-columns: 1fr;
-    font: var(--t-body);
-    font-size: 1.0625rem;
+  .wayItem {
+    grid-template-columns: minmax(0, 1fr);
+    align-content: start;
+    gap: var(--s-4);
+    padding: var(--s-5);
+  }
+
+  .wayArt {
+    width: min(100%, 15rem);
+    margin-inline: auto;
+  }
+
+  .wayText {
+    gap: var(--s-2);
   }
 }
 
-/* ---------- Questions: a plain list of links, not cards ---------- */
+/* ---------- 4.7 Heard a rumour? ---------- */
+
+.rumourCard {
+  display: grid;
+  gap: var(--s-5);
+  align-items: center;
+  padding: var(--s-5);
+  border: 2px solid var(--ink);
+  border-radius: var(--radius-xl);
+}
+
+.rumourArt {
+  position: relative;
+  width: min(100%, 20rem);
+}
+
+.stamp {
+  position: absolute;
+  right: -4px;
+  bottom: 4px;
+  padding: var(--s-2) var(--s-3);
+  border: 2px solid var(--ink);
+  border-radius: var(--radius-sm);
+  background: var(--paper);
+  color: var(--ink);
+  font: var(--t-label);
+  font-size: 0.875rem;
+  font-weight: 800;
+  line-height: 1.15;
+  text-align: center;
+  transform: rotate(-8deg);
+}
+
+.rumourText {
+  display: grid;
+  justify-items: start;
+  gap: var(--s-3);
+}
+
+.note {
+  margin: 0;
+  font: var(--t-small);
+  color: var(--ink-2);
+}
+
+/* The stamp lands once when the card comes into view; a mouse pointer on the card lands it again. */
+.rumourCard[data-motion="full"]:not([data-in]) .stamp {
+  opacity: 0;
+  transform: rotate(-8deg) scale(1.5);
+}
+
+.rumourCard[data-motion="full"][data-in] .stamp {
+  animation: land var(--dur-sheet) var(--ease-out) var(--dur-step) both;
+}
+
+@keyframes land {
+  from { opacity: 0; transform: rotate(-8deg) scale(1.5); }
+  to { opacity: 1; transform: rotate(-8deg) scale(1); }
+}
+
+@media (min-width: 800px) {
+  .rumourCard {
+    grid-template-columns: minmax(0, 20rem) minmax(0, 1fr);
+    gap: var(--s-7);
+    padding: var(--s-6) var(--s-7);
+  }
+}
+
+/* ---------- 4.8 Questions and guides ---------- */
 
 .help {
   display: grid;
   gap: var(--s-3);
-  padding-top: var(--s-6);
-  border-top: 1px solid var(--rule);
 }
 
 .links {
@@ -259,11 +492,20 @@
 }
 
 .links a {
-  display: grid;
-  gap: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-4);
+  min-height: var(--target-min);
   padding: var(--s-4) 0;
   color: var(--ink);
   text-decoration: none;
+}
+
+.linkBody {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
 }
 
 .linkTitle {
@@ -272,6 +514,7 @@
   text-decoration: underline;
   text-decoration-thickness: 1px;
   text-underline-offset: 0.2em;
+  overflow-wrap: anywhere;
 }
 
 .linkText {
@@ -279,8 +522,75 @@
   color: var(--ink-2);
 }
 
+.linkArrow {
+  flex: none;
+  transition: transform var(--dur-fade) var(--ease-out);
+}
+
 @media (hover: hover) and (pointer: fine) {
   .links a:hover .linkTitle {
     text-decoration-thickness: 2px;
   }
+
+  .links a:hover .linkArrow {
+    transform: translateX(4px);
+  }
+}
+
+@media (min-width: 800px) {
+  .links {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: var(--s-8);
+  }
+}
+
+/* ---------- 4.9 Evening at the polling unit ---------- */
+
+.evening {
+  margin-inline: calc(50% - 50vw);
+  /* The page ends on the scene: it cancels the reading column's bottom padding so it meets the footer. */
+  margin-bottom: calc(var(--s-8) * -1);
+  padding-top: var(--s-6);
+  background: var(--hero);
+  color: var(--hero-ink);
+}
+
+.eveningCaption {
+  margin: 0;
+  padding-inline: var(--edge);
+  font: var(--t-heading);
+}
+
+.eveningStage {
+  position: relative;
+  height: 210px;
+  margin-top: var(--s-3);
+  overflow: hidden;
+}
+
+/* On phones the drawing is drawn taller than the frame and anchored to the ground, so only the
+   people and the wall show, large enough to read. */
+.eveningScene {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  display: block;
+  width: 100%;
+  height: 340px;
+}
+
+@media (min-width: 600px) {
+  .eveningStage {
+    height: 230px;
+  }
+
+  .eveningScene {
+    height: 100%;
+  }
+}
+
+/* Holds the space of the results while they stream in, so nothing below jumps when they arrive. */
+.resultsPending {
+  min-block-size: 9rem;
 }

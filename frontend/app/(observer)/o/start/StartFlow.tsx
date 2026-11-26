@@ -10,14 +10,14 @@ import { adoptWaitingItems, removeItems, setPaused, useOutbox } from "../../../.
 import { normaliseObserverCode, observerCodeValid, pinTooSimple } from "../_lib/codes";
 import { useFocusTitle, useNetwork } from "../_lib/network";
 import { lastCode, localeChosen, markNoticeSeen, noticeSeen, signedIn, updateFromMe, useObserverSession } from "../_lib/session";
-import { ChooseView, LanguageView, NoticeView, RevokedView, SetPinView, SignInView, type SignInError } from "../_views/StartViews";
+import { ChooseView, LanguageView, NoticeView, RevokedView, SetPinView, SignInView, WelcomeView, OfflineWelcomeView, type SignInError } from "../_views/StartViews";
 
-type View = "language" | "notice" | "choose" | "sign-in" | "set-pin" | "revoked";
-const VIEWS: View[] = ["language", "notice", "choose", "sign-in", "set-pin", "revoked"];
+type View = "language" | "welcome" | "notice" | "offline" | "choose" | "sign-in" | "set-pin" | "revoked";
+const VIEWS: View[] = ["language", "welcome", "notice", "offline", "choose", "sign-in", "set-pin", "revoked"];
 
 function firstView(): View {
   if (!localeChosen()) return "language";
-  if (!noticeSeen(NOTICE_VERSION)) return "notice";
+  if (!noticeSeen(NOTICE_VERSION)) return "welcome";
   return "choose";
 }
 
@@ -45,7 +45,7 @@ export function StartFlow() {
   useEffect(() => {
     if (!ready) return;
     const next = requested && VIEWS.includes(requested) ? requested : firstView();
-    if (session?.code && next !== "revoked" && next !== "language" && next !== "notice") {
+    if (session?.code && next !== "revoked" && next !== "language" && next !== "welcome" && next !== "notice" && next !== "offline") {
       router.replace("/o");
       return;
     }
@@ -66,7 +66,7 @@ export function StartFlow() {
   async function chooseLanguage(next: Locale) {
     await setLocale(next);
     if (noticeSeen(NOTICE_VERSION)) go("choose");
-    else go("notice");
+    else go("welcome");
   }
 
   async function submitSignIn() {
@@ -184,24 +184,28 @@ export function StartFlow() {
   switch (view) {
     case "language":
       return <LanguageView selected={localeChosen() ? locale : null} onChoose={chooseLanguage} offline={offline} />;
+    case "welcome":
+      return <WelcomeView offline={offline} onBack={() => go("language")} onNext={() => go("notice")} onSkip={() => go("notice")} />;
     case "notice":
       return (
         <NoticeView
           offline={offline}
-          onBack={() => (params.get("from") === "settings" ? router.push("/o/settings") : go("language"))}
+          onBack={() => (params.get("from") === "settings" ? router.push("/o/settings") : go("welcome"))}
           onContinue={() => {
             markNoticeSeen(NOTICE_VERSION);
             // Read again from Settings (O-20): back to Settings, not into sign-in.
             if (params.get("from") === "settings") router.push("/o/settings");
-            else go("choose");
+            else go("offline");
           }}
         />
       );
+    case "offline":
+      return <OfflineWelcomeView offline={offline} onBack={() => go("notice")} onContinue={() => go("choose")} />;
     case "choose":
       return (
         <ChooseView
           offline={offline}
-          onBack={() => go("notice")}
+          onBack={() => go("offline")}
           onObserver={() => {
             if (!code) setCode(lastCode());
             go("sign-in");

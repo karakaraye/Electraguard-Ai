@@ -1,0 +1,76 @@
+/* Screens 6 and 10 (agent OBS-1): the language chip, the paused hero, and the quiet footer line. */
+
+/* Paused hero: still one tap target (a report can be written and waits on the phone), but grey. */
+.pausedHero {
+  --hero: #57534b;
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-xl);
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+:global([data-theme="dark"]) .pausedHero {
+  --hero: #34312c;
+}
+
+.pausedHero:focus-visible {
+  outline: 3px solid var(--sun-strong);
+  outline-offset: 2px;
+}
+
+/* Language chip in the app bar: the globe and the language's own name; a real select sits over it. */
+.langChip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-1);
+  min-height: var(--target-min);
+  padding: 0 var(--s-2);
+  border-radius: var(--radius);
+  color: var(--ink);
+  font: var(--t-label);
+  font-size: 1rem;
+  white-space: nowrap;
+}
+
+.langChip:focus-within {
+  outline: var(--focus-outline);
+  outline-offset: calc(var(--focus-offset) * -1);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .langChip:hover {
+    background: var(--paper-2);
+  }
+}
+
+.langSelect {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+/* One small quiet line at the foot of the choose screen. */
+.footerLine {
+  margin: var(--s-4) 0 0;
+  padding-top: var(--s-4);
+  border-top: 1px solid var(--rule);
+  color: var(--ink-3);
+  font: var(--t-small);
+  font-size: 0.8125rem;
+  text-align: center;
+  text-wrap: balance;
+}

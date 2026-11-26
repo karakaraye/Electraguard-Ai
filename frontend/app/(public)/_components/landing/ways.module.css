@@ -1,0 +1,98 @@
+/* Loops for the three small drawings under "Three ways to report". They run only with full motion and only while on screen. */
+
+.ripple,
+.typed,
+.tick,
+.dial,
+.menu1,
+.menu2 {
+  transform-box: fill-box;
+}
+
+.ripple {
+  transform-origin: 50% 50%;
+  opacity: 0;
+}
+
+.typed {
+  transform-origin: 0 50%;
+}
+
+.tick {
+  transform-origin: 50% 50%;
+}
+
+.way[data-motion="full"] :is(.ripple, .typed, .tick, .dial, .menu1, .menu2) {
+  animation-duration: 7s;
+  animation-iteration-count: infinite;
+  animation-timing-function: var(--ease-out);
+  animation-play-state: paused;
+}
+
+.way[data-motion="full"][data-in] :is(.ripple, .typed, .tick, .dial, .menu1, .menu2) {
+  animation-play-state: running;
+}
+
+.way[data-motion="full"] .ripple {
+  animation-name: ripple;
+  animation-duration: 3s;
+}
+
+.way[data-motion="full"] .typed {
+  animation-name: typed;
+}
+
+.way[data-motion="full"] .typed2 { animation-delay: 0.7s; }
+.way[data-motion="full"] .typed3 { animation-delay: 1.4s; }
+
+.way[data-motion="full"] .tick {
+  animation-name: tick;
+}
+
+.way[data-motion="full"] .dial {
+  animation-name: dial;
+  animation-duration: 8s;
+}
+
+.way[data-motion="full"] :is(.menu1, .menu2) {
+  animation-name: menu;
+  animation-duration: 8s;
+}
+
+.way[data-motion="full"] .menu2 {
+  animation-delay: 0.5s;
+}
+
+@keyframes ripple {
+  0%, 20% { opacity: 0; transform: scale(0.5); }
+  30% { opacity: 0.9; transform: scale(0.8); }
+  75%, 100% { opacity: 0; transform: scale(1.7); }
+}
+
+/* The message is typed bar by bar, ticked as sent, then cleared for the next loop. */
+@keyframes typed {
+  0%, 6% { transform: scaleX(0); }
+  22%, 82% { transform: scaleX(1); }
+  92%, 100% { transform: scaleX(0); }
+}
+
+@keyframes tick {
+  0%, 44% { opacity: 0; transform: scale(0.5); }
+  52% { opacity: 1; transform: scale(1.15); }
+  58%, 82% { opacity: 1; transform: scale(1); }
+  92%, 100% { opacity: 0; transform: scale(1); }
+}
+
+/* The code is keyed in one character at a time. */
+@keyframes dial {
+  0% { clip-path: inset(0 100% 0 0); }
+  4% { clip-path: inset(0 100% 0 0); animation-timing-function: steps(8, end); }
+  30%, 86% { clip-path: inset(0 0 0 0); }
+  94%, 100% { clip-path: inset(0 100% 0 0); }
+}
+
+@keyframes menu {
+  0%, 36% { opacity: 0; transform: translateY(4px); }
+  44%, 86% { opacity: 1; transform: translateY(0); }
+  94%, 100% { opacity: 0; transform: translateY(0); }
+}

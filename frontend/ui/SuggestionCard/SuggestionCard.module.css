@@ -3,8 +3,8 @@
   gap: var(--s-2);
   padding: var(--s-4);
   border: 1px dashed var(--info);
-  border-radius: var(--radius);
-  background: var(--paper);
+  border-radius: var(--radius-lg);
+  background: var(--paper-raised);
   color: var(--ink);
 }
 
@@ -34,6 +34,14 @@
   letter-spacing: var(--t-label-tracking);
 }
 
+.eyebrow {
+  margin: 0;
+  color: var(--info);
+  font: var(--t-eyebrow);
+  letter-spacing: var(--t-eyebrow-tracking);
+  text-transform: uppercase;
+}
+
 .field {
   color: var(--ink-2);
   font: var(--t-label);
@@ -57,6 +65,31 @@
   color: var(--ink-2);
   font: var(--t-small);
   font-weight: 600;
+}
+
+/* Confidence as a word and a three-step bar: low one, medium two, high three. */
+.confidenceRow {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+}
+
+.bar {
+  display: inline-grid;
+  grid-template-columns: repeat(3, 20px);
+  gap: 3px;
+}
+
+.bar span {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--rule);
+}
+
+.bar[data-level="low"] span:nth-child(-n + 1),
+.bar[data-level="medium"] span:nth-child(-n + 2),
+.bar[data-level="high"] span {
+  background: var(--info-solid);
 }
 
 .reasons {

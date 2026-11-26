@@ -4,7 +4,8 @@ import { Fragment, useEffect, useRef, useState, type ReactNode } from "react";
 import { useLocale, useT } from "../../lib/i18n/client";
 import { Button } from "../Button/Button";
 import { formatWatDateTime } from "../format";
-import { CopyIcon, DownloadIcon } from "../icons";
+import { CheckIcon, CopyIcon, DownloadIcon } from "../icons";
+import { animate } from "../motion";
 import styles from "./ReceiptCard.module.css";
 
 export type ReceiptCardProps = {
@@ -63,20 +64,20 @@ async function saveImage({ code, title, label, received }: { code: string; title
   }
   const font = '"Noto Sans", system-ui, sans-serif';
   ctx.scale(scale, scale);
-  ctx.fillStyle = "#ffffff";
+  ctx.fillStyle = "#faf8f3";
   ctx.fillRect(0, 0, width, height);
-  ctx.strokeStyle = "#0b0b0c";
+  ctx.strokeStyle = "#0e0d0b";
   ctx.lineWidth = 2;
   ctx.strokeRect(16, 16, width - 32, height - 32);
-  ctx.fillStyle = "#3a3a3d";
+  ctx.fillStyle = "#45413a";
   ctx.font = `600 16px ${font}`;
   ctx.fillText(title, 40, 62);
   ctx.font = `600 18px ${font}`;
   ctx.fillText(label, 40, 120);
-  ctx.fillStyle = "#0b0b0c";
-  ctx.font = `700 44px ${font}`;
+  ctx.fillStyle = "#0e0d0b";
+  ctx.font = `800 44px ${font}`;
   ctx.fillText(code, 40, 176);
-  ctx.fillStyle = "#3a3a3d";
+  ctx.fillStyle = "#45413a";
   ctx.font = `400 18px ${font}`;
   ctx.fillText(received, 40, 232);
   const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/png"));
@@ -91,27 +92,40 @@ async function saveImage({ code, title, label, received }: { code: string; title
   setTimeout(() => URL.revokeObjectURL(url), 10_000);
 }
 
-/** Receipt code in display size, with copy and save-as-image, received time and next steps. */
-export function ReceiptCard({ code, receivedAt, next, animate = true, "data-testid": testId = "receipt-card" }: ReceiptCardProps) {
+/** "EG-4H7Q-92KD" read out as "E G, 4 H 7 Q, 9 2 K D". */
+function spellOut(code: string) {
+  return code
+    .split("-")
+    .map((part) => part.split("").join(" "))
+    .join(", ");
+}
+
+/**
+ * The receipt ticket: eyebrow, code in display type, time, a dashed tear line with
+ * two side notches, then Copy and Save. Render it only after the server has
+ * confirmed the report.
+ */
+export function ReceiptCard({ code, receivedAt, next, animate: rise = true, "data-testid": testId = "receipt-card" }: ReceiptCardProps) {
   const t = useT();
   const { locale } = useLocale();
   const [copy, setCopy] = useState<CopyState>("idle");
   const resetTimer = useRef<number | undefined>(undefined);
-  const tickRef = useRef<SVGPathElement>(null);
+  const ticketRef = useRef<HTMLDivElement>(null);
   const received = t("ui.receipt.receivedAt", { time: formatWatDateTime(receivedAt, locale) });
 
+  // The ticket rises 24px into place once (I-9).
   useEffect(() => {
-    const tick = tickRef.current;
-    if (!animate || !tick || typeof tick.animate !== "function") return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const length = tick.getTotalLength();
-    tick.style.strokeDasharray = String(length);
-    const animation = tick.animate(
-      [{ strokeDashoffset: length }, { strokeDashoffset: 0 }],
-      { duration: 320, easing: "cubic-bezier(0.23, 1, 0.32, 1)", fill: "backwards" },
+    if (!rise) return;
+    const anim = animate(
+      ticketRef.current,
+      [
+        { opacity: 0, transform: "translateY(24px)" },
+        { opacity: 1, transform: "translateY(0)" },
+      ],
+      { duration: 500, easing: "enter" },
     );
-    return () => animation.cancel();
-  }, [animate]);
+    return () => anim?.cancel();
+  }, [rise]);
 
   useEffect(() => () => window.clearTimeout(resetTimer.current), []);
 
@@ -119,52 +133,52 @@ export function ReceiptCard({ code, receivedAt, next, animate = true, "data-test
 
   return (
     <section className={styles.card} data-testid={testId} aria-labelledby={`${testId}-label`}>
-      <div className={styles.head}>
-        <svg className={styles.tick} viewBox="0 0 32 32" width="32" height="32" aria-hidden="true">
-          <circle cx="16" cy="16" r="15" fill="var(--ok)" />
-          <path ref={tickRef} d="m9.5 16.5 4.5 4.5 8.5-9" fill="none" stroke="var(--paper)" strokeWidth="2.5" strokeLinecap="square" />
-        </svg>
-        <p className={styles.label} id={`${testId}-label`}>
-          {t("ui.receipt.label")}
-        </p>
-      </div>
+      <div ref={ticketRef} className={styles.ticket}>
+        <div className={styles.top}>
+          <p className={styles.eyebrow} id={`${testId}-label`}>
+            {t("ui.receipt.label")}
+          </p>
+          <p className={`${styles.code} eg-tnum`} data-testid={`${testId}-code`} aria-hidden="true">
+            {segments.map((segment, index) => (
+              <Fragment key={index}>
+                {index > 0 ? (
+                  <>
+                    -<wbr />
+                  </>
+                ) : null}
+                <span className={styles.segment}>{segment}</span>
+              </Fragment>
+            ))}
+          </p>
+          <p className="eg-sr-only">{spellOut(code)}</p>
+          <p className={`${styles.received} eg-tnum`}>{received}</p>
+        </div>
 
-      <p className={`${styles.code} eg-tnum`} data-testid={`${testId}-code`}>
-        {segments.map((segment, index) => (
-          <Fragment key={index}>
-            {index > 0 ? (
-              <>
-                -<wbr />
-              </>
-            ) : null}
-            <span className={styles.segment}>{segment}</span>
-          </Fragment>
-        ))}
-      </p>
-      <p className={`${styles.received} eg-tnum`}>{received}</p>
+        <div className={styles.tear} aria-hidden="true" />
 
-      <div className={styles.actions}>
-        <Button
-          variant="secondary"
-          icon={<CopyIcon />}
-          onClick={async () => {
-            const ok = await copyText(code);
-            setCopy(ok ? "copied" : "failed");
-            window.clearTimeout(resetTimer.current);
-            resetTimer.current = window.setTimeout(() => setCopy("idle"), 4000);
-          }}
-          data-testid={`${testId}-copy`}
-        >
-          {copy === "copied" ? t("ui.receipt.copied") : t("ui.receipt.copy")}
-        </Button>
-        <Button
-          variant="secondary"
-          icon={<DownloadIcon />}
-          onClick={() => saveImage({ code, title: t("ui.receipt.imageTitle"), label: t("ui.receipt.label"), received })}
-          data-testid={`${testId}-save`}
-        >
-          {t("ui.receipt.save")}
-        </Button>
+        <div className={styles.actions}>
+          <Button
+            variant="secondary"
+            icon={copy === "copied" ? <CheckIcon /> : <CopyIcon />}
+            onClick={async () => {
+              const ok = await copyText(code);
+              setCopy(ok ? "copied" : "failed");
+              window.clearTimeout(resetTimer.current);
+              resetTimer.current = window.setTimeout(() => setCopy("idle"), 2000);
+            }}
+            data-testid={`${testId}-copy`}
+          >
+            {copy === "copied" ? t("ui.receipt.copied") : t("ui.receipt.copy")}
+          </Button>
+          <Button
+            variant="secondary"
+            icon={<DownloadIcon />}
+            onClick={() => saveImage({ code, title: t("ui.receipt.imageTitle"), label: t("ui.receipt.label"), received })}
+            data-testid={`${testId}-save`}
+          >
+            {t("ui.receipt.save")}
+          </Button>
+        </div>
       </div>
       <p className={styles.copyStatus} role="status" aria-live="polite">
         {copy === "copied" ? t("ui.receipt.copied") : copy === "failed" ? t("ui.receipt.copyFailed") : ""}

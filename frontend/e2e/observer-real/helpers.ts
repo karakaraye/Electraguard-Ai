@@ -120,18 +120,25 @@ export async function fillReport(page: Page, input: ReportInput = {}) {
   await stepIs(page, "check");
 }
 
-/** First state → first LGA → first ward → first unit from the server's reference list. */
+/**
+ * First state → first LGA → first ward → first unit from the server's reference list.
+ * The state is chosen inline until a list is on the phone; LGA, ward and unit live in the area sheet.
+ */
 export async function choosePlace(page: Page) {
   const state = page.getByTestId("polling-unit-picker-state");
+  if (!(await state.isVisible())) await page.getByTestId("polling-unit-picker-by-area").click();
   await expect(state).toBeEnabled();
   const stateValue = await state.locator("option").nth(1).getAttribute("value");
   await state.selectOption(stateValue!);
+  const sheet = page.getByTestId("polling-unit-picker-sheet");
+  if (!(await sheet.evaluate((dialog: HTMLDialogElement) => dialog.open))) await page.getByTestId("polling-unit-picker-by-area").click();
   for (const level of ["lga", "ward", "unit"]) {
     const select = page.getByTestId(`polling-unit-picker-${level}`);
     await expect(select).toBeEnabled({ timeout: 20_000 });
     const value = await select.locator("option").nth(1).getAttribute("value");
     await select.selectOption(value!);
   }
+  await page.getByTestId("polling-unit-picker-done").click();
   await expect(page.getByTestId("o07-summary")).not.toBeEmpty();
 }
 

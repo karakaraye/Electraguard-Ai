@@ -852,6 +852,45 @@ export interface AskResponse {
 }
 
 // ---------------------------------------------------------------------------
+// CHK (public rumour check)
+// ---------------------------------------------------------------------------
+
+export interface CheckQuery {
+  /** 5..500 characters. */
+  q: string;
+  lang: Language;
+}
+
+export interface CheckObserverSupport {
+  states: number | "fewer than 5";
+  wards: number | "fewer than 5";
+  checkins?: unknown;
+}
+
+export interface CheckResponse {
+  result: "checked" | "not_checked" | "safety";
+  response?: {
+    text: string;
+    approved_at: DateTimeString | null;
+    language: string;
+    observer_support?: CheckObserverSupport;
+  };
+  claim_ref?: string;
+}
+
+export interface CheckAskRequest {
+  text: string;
+  lang: Language;
+  /** Random id kept on this device (localStorage "eg.check.device"). */
+  device_token: string;
+}
+
+export interface CheckAskResponse {
+  result: "queued" | "matched";
+  claim_ref: string;
+}
+
+// ---------------------------------------------------------------------------
 // GUIDE
 // ---------------------------------------------------------------------------
 
@@ -1084,7 +1123,8 @@ export interface CaseDetail {
   name_check: { possible_names: boolean };
   open_question: OpenQuestion | null;
   allowed_actions: CaseAction[];
-  history: { chain_intact: boolean; events: AuditEventView[] };
+  /** null: the server has not checked this case's chain. */
+  history: { chain_intact: boolean | null; events: AuditEventView[] };
   legacy_location?: string | null;
 }
 

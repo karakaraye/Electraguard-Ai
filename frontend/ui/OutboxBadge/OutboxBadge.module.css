@@ -1,0 +1,67 @@
+.badge {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: var(--target-min);
+  height: var(--target-min);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.badge:focus-visible {
+  outline: var(--focus-outline);
+  outline-offset: -3px;
+}
+
+.badge:active {
+  transform: scale(0.98);
+}
+
+.dot {
+  position: absolute;
+  top: 6px;
+  right: 4px;
+  display: grid;
+  place-items: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  border-radius: 9px;
+  background: var(--attn-solid);
+  color: var(--fixed-ink);
+  font: 700 0.6875rem/1 var(--font);
+  font-variant-numeric: tabular-nums;
+}
+
+.badge[data-state="failed"] .dot {
+  background: var(--danger);
+  color: var(--paper);
+}
+
+.ring {
+  position: absolute;
+  inset: 8px;
+  border: 2px solid var(--rule-control);
+  border-top-color: var(--ink);
+  border-radius: 50%;
+  animation: spin 900ms linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ring {
+    animation: none;
+    border-top-color: var(--rule-control);
+  }
+}

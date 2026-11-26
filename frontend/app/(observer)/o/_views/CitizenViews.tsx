@@ -4,9 +4,10 @@
 
 import type { Outcome, ReportStatus as ServerStatus } from "../../../../lib/api/types";
 import { useLocale, useT } from "../../../../lib/i18n/client";
-import { AppShell, Banner, Button, Field, ReceiptCard, Sheet, StatusBadge, TextArea, UploadItem, UploadList } from "../../../../ui";
+import { AppShell, Banner, Button, Field, ReceiptCard, Sheet, StatusBadge, SunRings, TextArea, UploadItem, UploadList } from "../../../../ui";
+import { CheckIcon, CloseIcon, PenIcon, ShieldCheckIcon } from "../../../../ui/icons";
 import { AppBarTitle } from "../_components/AppBarTitle";
-import { OUTCOME_KEY, SERVER_BADGE } from "../_lib/status";
+import { OUTCOME_KEY } from "../_lib/status";
 import type { ReceiptItem } from "./ReceiptView";
 import styles from "../_components/observer.module.css";
 import s from "../_components/screens.module.css";
@@ -32,52 +33,47 @@ export type CitizenReceiptViewProps = {
 export function CitizenReceiptView(props: CitizenReceiptViewProps) {
   const t = useT();
   const pending = props.items.some((item) => item.state !== "saved");
-  const shortCode = props.shortCodeIsTest ? `${props.shortCode} (${t("c01.testNumber")})` : props.shortCode;
+  // The short code is printed plainly (one config value, lib/config.ts); shortCodeIsTest is kept only for callers.
+  const shortCode = props.shortCode;
   return (
     <AppShell
       title={<AppBarTitle />}
       onBack={props.onBack}
       offline={props.offline}
       actions={
-        <>
-          <Button variant="quiet" block onClick={props.onAnother} data-testid="c01-another">
-            {t("c01.another")}
-          </Button>
-          <Button block onClick={props.onCheckStatus} data-testid="c01-check">
-            {t("c01.checkStatus")}
-          </Button>
-        </>
+        <Button block onClick={props.onCheckStatus} data-testid="c01-check">
+          {t("c01.checkStatus")}
+        </Button>
       }
       data-testid="c01"
     >
       <div className={`${styles.screen} ${styles.wide}`}>
-        <h1 className={styles.title}>{t("c01.title")}</h1>
+        <div className={styles.receivedHead}>
+          <SunRings size={152} ripple={props.justSent}>
+            <span className={styles.receivedDisc} data-draw={props.justSent || undefined}>
+              <svg viewBox="0 0 24 24" width="40" height="40" aria-hidden="true">
+                <path d="m5 12.5 4.5 4.5L19 7.5" pathLength={1} />
+              </svg>
+            </span>
+          </SunRings>
+          <h1 className={styles.title}>{t("c01.title")}</h1>
+        </div>
         <div className={styles.receipt}>
           <div className={styles.receiptSide}>
             <ReceiptCard code={props.code} receivedAt={props.receivedAt} animate={props.justSent} />
-            <p className={styles.strong} style={{ margin: 0 }}>
-              {t("c01.writeDown")}
+            <p className={s.writeDown} data-testid="c01-write-down">
+              <PenIcon size={22} aria-hidden="true" />
+              <span>{t("c01.writeDown")}</span>
             </p>
-            <label className={styles.switch} data-testid="c01-keep">
+            <label className={`${styles.switch} ${s.keepRow}`} data-testid="c01-keep">
+              <span className={s.switchText}>
+                <span>{t("c01.keepOnPhone")}</span>
+                <span className={styles.meta}>{t("c01.keepOnPhoneHint")}</span>
+              </span>
               <input type="checkbox" role="switch" checked={props.keep} onChange={(event) => props.onKeep(event.target.checked)} />
-              <span>{t("c01.keepOnPhone")}</span>
-              <span className={styles.switchHint}>{t("c01.keepOnPhoneHint")}</span>
             </label>
           </div>
           <div className={styles.receiptSide}>
-            <section className={styles.tight} aria-labelledby="c01-next">
-              <h2 className={styles.sectionTitle} id="c01-next">
-                {t("c01.next.title")}
-              </h2>
-              <ol className={styles.steps}>
-                <li>{t("c01.next.line1")}</li>
-                <li>{t("c01.next.line2")}</li>
-                <li>{t("c01.next.line3")}</li>
-              </ol>
-              <p className={`${styles.meta} eg-tnum`} data-testid="c01-sms">
-                {t("c01.sms", { code: props.code, shortCode })}
-              </p>
-            </section>
             {props.items.length ? (
               <section className={styles.tight} aria-labelledby="c01-attachments">
                 <h2 className={styles.sectionTitle} id="c01-attachments">
@@ -100,7 +96,23 @@ export function CitizenReceiptView(props: CitizenReceiptViewProps) {
                 {pending ? <p className={styles.note}>{t("o12.keepOpen")}</p> : null}
               </section>
             ) : null}
+            <section className={styles.tight} aria-labelledby="c01-next">
+              <h2 className={styles.sectionTitle} id="c01-next">
+                {t("c01.next.title")}
+              </h2>
+              <ol className={styles.steps}>
+                <li>{t("c01.next.line1")}</li>
+                <li>{t("c01.next.line2")}</li>
+                <li>{t("c01.next.line3")}</li>
+              </ol>
+              <p className={`${styles.meta} eg-tnum`} data-testid="c01-sms">
+                {t("c01.sms", { code: props.code, shortCode })}
+              </p>
+            </section>
             <p className={styles.meta}>{t("c01.citizenLabel")}</p>
+            <Button variant="quiet" className={styles.another} onClick={props.onAnother} data-testid="c01-another">
+              {t("c01.another")}
+            </Button>
           </div>
         </div>
       </div>
@@ -167,6 +179,38 @@ function day(value: string, locale: string) {
   }
 }
 
+/** Received · Being reviewed · (Question for you) · Closed, with dates only (P-01 privacy rule). */
+function StatusJourney({ result }: { result: StatusResult }) {
+  const t = useT();
+  const { locale } = useLocale();
+  const asked = result.has_open_question || result.status === "question";
+  const steps: Array<{ key: "received" | "inReview" | "question" | "closed"; status: ServerStatus }> = [
+    { key: "received", status: "received" },
+    { key: "inReview", status: "in_review" },
+    ...(asked ? [{ key: "question" as const, status: "question" as ServerStatus }] : []),
+    { key: "closed", status: "closed" },
+  ];
+  const currentStatus: ServerStatus = result.has_open_question ? "question" : result.status;
+  const current = steps.findIndex((step) => step.status === currentStatus);
+  return (
+    <ol className={s.journey} aria-label={t("common.status.label")} data-testid="p01-journey">
+      {steps.map((step, index) => {
+        const state = index < current || currentStatus === "closed" ? "done" : index === current ? "current" : "later";
+        const date = step.key === "received" ? result.received_on : index === current && index > 0 ? result.updated_on : null;
+        return (
+          <li key={step.key} className={s.journeyStep} data-state={state} aria-current={state === "current" ? "step" : undefined}>
+            <span className={s.journeyDot} aria-hidden="true">
+              {state === "done" ? <CheckIcon size={14} strokeWidth={3} /> : null}
+            </span>
+            <span className={s.journeyLabel}>{t(`common.status.${step.key}`)}</span>
+            {date ? <span className={`${s.journeyDate} eg-tnum`}>{day(date, locale)}</span> : null}
+          </li>
+        );
+      })}
+    </ol>
+  );
+}
+
 export function StatusView(props: StatusViewProps) {
   const t = useT();
   const { locale } = useLocale();
@@ -185,7 +229,7 @@ export function StatusView(props: StatusViewProps) {
               : undefined;
 
   return (
-    <AppShell title={t("p01.title")} onBack={props.onBack} offline={props.offline} banner={props.banner ? <Banner tone="attn" title={t(props.banner)} /> : undefined} data-testid="p01">
+    <AppShell onBack={props.onBack} offline={props.offline} banner={props.banner ? <Banner tone="danger" title={t(props.banner)} /> : undefined} data-testid="p01">
       <div className={`${styles.screen} ${styles.wide}`}>
         <h1 className={styles.title}>{t("p01.title")}</h1>
         <div className={s.twoCol}>
@@ -220,15 +264,15 @@ export function StatusView(props: StatusViewProps) {
                 <h2 className={styles.sectionTitle} id="p01-saved">
                   {t("p01.savedCodes")}
                 </h2>
-                <ul className={s.savedCodes}>
+                <ul className={s.codeChips}>
                   {props.saved.map((code) => (
-                    <li key={code} className={s.savedCode}>
-                      <Button variant="quiet" disabled={props.offline} onClick={() => props.onCheckSaved(code)} aria-label={t("p01.checkCode", { code })} data-testid="p01-saved">
+                    <li key={code} className={s.codeChip}>
+                      <button type="button" className={s.codeChipMain} disabled={props.offline} onClick={() => props.onCheckSaved(code)} aria-label={t("p01.checkCode", { code })} data-testid="p01-saved">
                         <span className="eg-tnum">{code}</span>
-                      </Button>
-                      <Button variant="quiet" onClick={() => props.onRemoveSaved(code)} aria-label={`${t("p01.removeCode")}: ${code}`}>
-                        {t("p01.removeCode")}
-                      </Button>
+                      </button>
+                      <button type="button" className={s.codeChipRemove} onClick={() => props.onRemoveSaved(code)} aria-label={`${t("p01.removeCode")}: ${code}`} data-testid="p01-saved-remove">
+                        <CloseIcon size={16} aria-hidden="true" />
+                      </button>
                     </li>
                   ))}
                 </ul>
@@ -242,18 +286,35 @@ export function StatusView(props: StatusViewProps) {
                 <h2 id="p01-result" tabIndex={-1}>
                   {t("p01.result.status")} · <span className="eg-tnum">{result.receipt_code}</span>
                 </h2>
-                <div>
-                  <StatusBadge status={result.has_open_question ? "question" : SERVER_BADGE[result.status]} size="lg" />
-                </div>
-                <p className={styles.lead} style={{ margin: 0 }}>
-                  {result.outcome ? `${t(OUTCOME_KEY[result.outcome])}. ` : ""}
-                  {t(EXPLAIN[result.has_open_question ? "question" : result.status])}
-                </p>
-                <p className={styles.meta}>
-                  {t("p01.result.received", { time: day(result.received_on, locale) })}
-                  <br />
-                  {t("p01.result.updated", { time: day(result.updated_on, locale) })}
-                </p>
+                {result.status === "withdrawn" ? (
+                  <div>
+                    <StatusBadge status="withdrawn" size="lg" />
+                  </div>
+                ) : (
+                  <StatusJourney result={result} />
+                )}
+                {result.outcome ? (
+                  <section className={s.outcome} data-testid="p01-outcome">
+                    <span className={s.outcomeDisc} aria-hidden="true">
+                      <ShieldCheckIcon size={24} />
+                    </span>
+                    <div className={s.outcomeText}>
+                      <h3 className={s.outcomeTitle}>{t(OUTCOME_KEY[result.outcome])}</h3>
+                      <p>{t(`o14.outcomeWhy.${OUTCOME_KEY[result.outcome].split(".").pop()}`)}</p>
+                    </div>
+                  </section>
+                ) : (
+                  <p className={styles.lead} style={{ margin: 0 }}>
+                    {t(EXPLAIN[result.has_open_question ? "question" : result.status])}
+                  </p>
+                )}
+                {result.status === "withdrawn" ? (
+                  <p className={styles.meta}>
+                    {t("p01.result.received", { time: day(result.received_on, locale) })}
+                    <br />
+                    {t("p01.result.updated", { time: day(result.updated_on, locale) })}
+                  </p>
+                ) : null}
                 {result.has_open_question && props.replyState !== "sent" ? (
                   props.hasSecret && props.question ? (
                     <div className={s.question} data-testid="p01-question">

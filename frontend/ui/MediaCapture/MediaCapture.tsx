@@ -188,7 +188,9 @@ export function MediaCapture({ onPick, recorder, disabled, "data-testid": testId
             }}
             data-testid={`${testId}-${key}`}
           >
-            <Icon size={32} className={styles.actionIcon} />
+            <span className={styles.actionDisc} aria-hidden="true">
+              <Icon size={26} />
+            </span>
             <span className={styles.actionLabel}>{label}</span>
             {sub ? <span className={styles.actionSub}>{sub}</span> : null}
           </button>

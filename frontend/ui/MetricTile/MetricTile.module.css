@@ -3,8 +3,10 @@
   align-content: start;
   gap: var(--s-1);
   min-width: 0;
-  padding: var(--s-4) 0 var(--s-3);
-  border-top: 2px solid var(--ink);
+  padding: var(--s-4);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  background: var(--paper-raised);
 }
 
 .label {
@@ -19,6 +21,7 @@
   margin: 0;
   color: var(--ink);
   font: var(--t-display);
+  font-weight: 700;
   font-variant-numeric: tabular-nums;
 }
 

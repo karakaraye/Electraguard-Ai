@@ -1,329 +1,381 @@
 "use client";
 
 import { useState } from "react";
-import type { Cluster, CoverageResponse, LateMaterialsResponse, OverviewResponse } from "../../../../lib/api/types";
-import { useT } from "../../../../lib/i18n/client";
-import { Banner, Button, EmptyState, MetricTile } from "../../../../ui";
+import type { Category, ChecklistStage, Cluster, CoverageResponse, LateMaterialsResponse, OverviewResponse } from "../../../../lib/api/types";
+import { useLocale, useT } from "../../../../lib/i18n/client";
+import { Banner, Button, DataTable, MetricTile, Skeleton, StatusBadge, TextArea, type Column, type StatusTone } from "../../../../ui";
+import { formatWatDateTime, formatWatTime } from "../../../../ui/format";
+import { localeTags, type Locale } from "../../../../lib/i18n/config";
+import { CheckIcon, RetryIcon } from "../../../../ui/icons";
+import { CATEGORY_ROWS } from "../../../(public)/_lib/public";
+import { QUESTIONS } from "../../../(observer)/o/_lib/checklist";
 import styles from "./OpsView.module.css";
 
+const CATEGORY_KEY = Object.fromEntries(CATEGORY_ROWS.map((row) => [row.value, row.key])) as Record<Category, string>;
+const QUESTION_KEY: Record<string, string> = {
+  ...Object.fromEntries(Object.values(QUESTIONS).flat().map((q) => [q.id, q.key])),
+  materials_missing: "o15.q.materialsList",
+};
+export const STAGES: Array<{ value: ChecklistStage; key: string }> = [
+  { value: "arrival", key: "o15.stage.arrival" },
+  { value: "opening", key: "o15.stage.opening" },
+  { value: "accreditation", key: "o15.stage.accreditation" },
+  { value: "voting", key: "o15.stage.voting" },
+  { value: "closing_counting", key: "o15.stage.closing" },
+  { value: "results_posted", key: "o15.stage.results" },
+];
+const NOTE_MAX = 500;
+
+/** One section's data: null while loading, or the error message when it failed. */
+export type Section<T> = { data: T | null; loading: boolean; error: string | null };
+
 export interface OpsViewProps {
-  overview: OverviewResponse | null;
-  clusters: Cluster[];
-  coverage: CoverageResponse | null;
-  lateMaterials: LateMaterialsResponse | null;
-  loading: boolean;
-  error: string | null;
+  date: string;
+  onDateChange?: (date: string) => void;
+  today: string;
+  stage: ChecklistStage;
+  onStageChange?: (stage: ChecklistStage) => void;
+  overview: Section<OverviewResponse>;
+  clusters: Section<Cluster[]>;
+  coverage: Section<CoverageResponse>;
+  lateMaterials: Section<LateMaterialsResponse>;
+  reviewing?: string | null;
   onReviewCluster?: (id: string, note?: string) => void;
+  onRefresh?: () => void;
   "data-testid"?: string;
 }
 
+/** S-05 operations room: today's totals, where reports come from, clusters, coverage and late-materials risk. */
 export function OpsView({
+  date,
+  onDateChange,
+  today,
+  stage,
+  onStageChange,
   overview,
   clusters,
   coverage,
   lateMaterials,
-  loading,
-  error,
+  reviewing,
   onReviewCluster,
+  onRefresh,
   "data-testid": testId = "ops-view",
 }: OpsViewProps) {
   const t = useT();
-
-  const [reviewNotes, setReviewNotes] = useState<Record<string, string>>({});
-
-  const totals = overview?.totals;
+  const { locale } = useLocale();
+  const totals = overview.data?.totals;
+  const period = date === today ? t("s05.today") : formatDay(date, locale);
 
   return (
-    <div className={styles.container} data-testid={testId}>
-      {error && <Banner tone="danger" title={error} critical />}
+    <div className={styles.page} data-testid={testId}>
+      <div className={styles.toolbar}>
+        <label className={styles.dateField}>
+          <span>{t("s05.filterDate")}</span>
+          <input type="date" value={date} max={today} onChange={(e) => e.target.value && onDateChange?.(e.target.value)} data-testid="s05-date" />
+        </label>
+        <span className={`${styles.dayLong} eg-tnum`}>{formatDay(date, locale)}</span>
+        {date !== today ? <Button variant="quiet" onClick={() => onDateChange?.(today)}>{t("s05.today")}</Button> : null}
+        <span className={styles.updated}>
+          {overview.data ? <span className="eg-tnum">{t("s05.updated", { time: formatWatTime(overview.data.generated_at, locale) })}</span> : null}
+          {onRefresh ? <Button variant="quiet" icon={<RetryIcon />} onClick={onRefresh}>{t("s05.refresh")}</Button> : null}
+        </span>
+      </div>
 
-      {loading && !overview && (
-        <div style={{ padding: "var(--s-4)", textAlign: "center", color: "var(--ink-2)" }}>
-          {t("staff.loading")}
-        </div>
-      )}
+      {overview.error ? <Banner tone="danger" title={overview.error} critical /> : null}
 
-      {/* Totals Grid */}
-      {totals && (
-        <div className={styles.totalsGrid}>
-          <MetricTile
-            value={totals.reports}
-            label={t("s05.totals.totalReports")}
-            period={t("s05.today")}
-          />
-          <MetricTile
-            value={totals.incidents_after_links}
-            label={t("s05.totals.incidents")}
-            period={t("s05.today")}
-          />
-          <MetricTile
-            value={totals.urgent_open}
-            label={t("s05.totals.urgentOpen")}
-            period={t("s05.today")}
-          />
-          <MetricTile
-            value={totals.open_questions}
-            label={t("s05.totals.openQuestions")}
-            period={t("s05.today")}
-          />
-          <MetricTile
-            value={totals.result_sheet_flags_open}
-            label={t("s05.totals.resultFlags")}
-            period={t("s05.today")}
-          />
-          <MetricTile
-            value={totals.withdrawn}
-            label={t("s05.totals.withdrawn")}
-            period={t("s05.today")}
-          />
-        </div>
-      )}
-
-      {/* Result Sheet Consistency Check Banner */}
-      <section className={styles.section}>
-        <div className={styles.resultSheetBanner}>
-          <p style={{ margin: 0 }}>{t("s05.resultSheetFlags.disclaimer")}</p>
-        </div>
-        <p style={{ color: "var(--ink-2)", fontSize: "0.875rem", margin: 0 }}>
-          {t("s05.resultSheetFlags.openFlags", { count: totals?.result_sheet_flags_open || 0 })}
-        </p>
+      <section aria-label={t("s05.totalsLabel")}>
+        {overview.loading && !totals ? (
+          <div className={styles.tiles}><Skeleton lines={2} height={72} delay={0} /></div>
+        ) : totals ? (
+          <div className={styles.tiles}>
+            <MetricTile value={totals.reports} label={t("s05.totals.totalReports")} period={period} />
+            <MetricTile value={totals.incidents_after_links} label={t("s05.totals.incidents")} period={period} />
+            <MetricTile value={totals.urgent_open} label={t("s05.totals.urgentOpen")} period={period} />
+            <MetricTile value={totals.open_questions} label={t("s05.totals.openQuestions")} period={period} />
+            <div className={styles.flagTile}>
+              <MetricTile value={totals.result_sheet_flags_open} label={t("s05.totals.resultFlags")} period={period} />
+              <p className={styles.notResult}>{t("s05.notResult")}</p>
+            </div>
+            <MetricTile value={totals.withdrawn} label={t("s05.totals.withdrawn")} period={period} />
+          </div>
+        ) : null}
       </section>
 
-      {/* Cluster Warnings */}
-      <section className={styles.section}>
-        <div className={styles.sectionHeader}>
-          <h2 className={styles.sectionTitle}>{t("s05.clusters.title")}</h2>
-          <span className={styles.badgeAttn}>
-            {clusters.filter((c) => c.status === "open").length} open
-          </span>
-        </div>
+      <div className={styles.split}>
+        <ByLga overview={overview} />
+        <Clusters clusters={clusters} reviewing={reviewing ?? null} onReview={onReviewCluster} />
+      </div>
 
-        {clusters.length === 0 ? (
-          <div className={styles.emptyFullWidth}>
-            <EmptyState title="No active cluster warnings" />
-          </div>
-        ) : (
-          <div className={styles.clusterList}>
-            {clusters.map((cluster) => {
-              const isReviewed = cluster.status === "reviewed";
-              const note = reviewNotes[cluster.id] || "";
-
-              return (
-                <div key={cluster.id} className={styles.clusterCard}>
-                  <div className={styles.clusterTop}>
-                    <div>
-                      <strong>{cluster.category}</strong>
-                      <span style={{ marginLeft: "var(--s-2)", color: "var(--ink-2)" }}>
-                        {cluster.area.state_name} · {cluster.area.lga_name}
-                      </span>
-                    </div>
-                    {isReviewed ? (
-                      <span className={styles.badgeOk}>{t("s05.clusters.reviewedBadge")}</span>
-                    ) : (
-                      <span className={styles.badgeAttn}>
-                        {t("s05.clusters.badge", { count: cluster.report_count, window: 60 })}
-                      </span>
-                    )}
-                  </div>
-
-                  <p style={{ fontSize: "0.875rem", margin: 0, color: "var(--ink-2)" }}>
-                    {t("s05.clusters.baseline", { baseline: cluster.baseline })}
-                  </p>
-
-                  {!isReviewed && (
-                    <div style={{ display: "flex", gap: "var(--s-2)", marginTop: "var(--s-2)" }}>
-                      <input
-                        type="text"
-                        className="eg-input"
-                        placeholder={t("s05.clusters.reviewNote")}
-                        value={note}
-                        onChange={(e) =>
-                          setReviewNotes({ ...reviewNotes, [cluster.id]: e.target.value })
-                        }
-                        style={{ flex: 1 }}
-                      />
-                      <Button
-                        type="button"
-                        variant="secondary"
-                        onClick={() => onReviewCluster?.(cluster.id, note || undefined)}
-                      >
-                        {t("s05.clusters.reviewButton")}
-                      </Button>
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        )}
-      </section>
-
-      {/* Coverage Gaps */}
-      {coverage && (
-        <section className={styles.section}>
-          <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>{t("s05.coverage.title")}</h2>
-            <span style={{ fontSize: "0.875rem", color: "var(--ink-2)" }}>
-              Stage: <strong>{coverage.stage}</strong>
-            </span>
-          </div>
-
-          <div className={styles.tableWrapper}>
-            <table className={styles.table}>
-              <thead>
-                <tr>
-                  <th>LGA</th>
-                  <th>Expected Units</th>
-                  <th>With Checklist</th>
-                  <th>Missing</th>
-                  <th>&apos;No&apos; Answers</th>
-                </tr>
-              </thead>
-              <tbody>
-                {coverage.rows.map((row) => {
-                  if ("lga_code" in row) {
-                    return (
-                      <tr key={row.lga_code}>
-                        <td>
-                          <strong>{row.lga_name}</strong>
-                        </td>
-                        <td>{row.expected_units}</td>
-                        <td>{row.units_with_checklist}</td>
-                        <td>{row.units_without}</td>
-                        <td>{row.no_answers}</td>
-                      </tr>
-                    );
-                  }
-                  return (
-                    <tr key={row.polling_unit_code}>
-                      <td>
-                        <strong>{row.polling_unit_name}</strong>
-                      </td>
-                      <td>1</td>
-                      <td>{row.has_checklist ? 1 : 0}</td>
-                      <td>{row.has_checklist ? 0 : 1}</td>
-                      <td>{row.no_answers}</td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-
-          {coverage.most_no_answers.length > 0 && (
-            <div style={{ marginTop: "var(--s-3)" }}>
-              <h3 style={{ fontSize: "1rem", margin: "0 0 var(--s-2)" }}>
-                {t("s05.coverage.noAnswers")}
-              </h3>
-              <div className={styles.tableWrapper}>
-                <table className={styles.table}>
-                  <thead>
-                    <tr>
-                      <th>Polling Unit</th>
-                      <th>Count of &apos;No&apos;</th>
-                      <th>Questions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {coverage.most_no_answers.map((unit) => (
-                      <tr key={unit.polling_unit_code}>
-                        <td>
-                          <strong>{unit.polling_unit_name}</strong>
-                          <span style={{ display: "block", fontSize: "0.75rem", color: "var(--ink-2)" }}>
-                            {unit.polling_unit_code}
-                          </span>
-                        </td>
-                        <td>{unit.no_count}</td>
-                        <td>{unit.questions.join(", ")}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          )}
-        </section>
-      )}
-
-      {/* Late Materials Risk Model */}
-      {lateMaterials && (
-        <section className={styles.section}>
-          <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>{t("s05.lateMaterials.title")}</h2>
-            <span style={{ fontSize: "0.75rem", color: "var(--ink-2)" }}>
-              Model: {lateMaterials.model_version} (Suggested predictions)
-            </span>
-          </div>
-
-          {lateMaterials.rows.length === 0 ? (
-            <p style={{ color: "var(--ink-2)" }}>No late-materials risk predictions generated.</p>
-          ) : (
-            <div className={styles.tableWrapper}>
-              <table className={styles.table}>
-                <thead>
-                  <tr>
-                    <th>Rank</th>
-                    <th>LGA & Ward</th>
-                    <th>Predicted Transit</th>
-                    <th>Risk Level</th>
-                    <th>Contributing Factors</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {lateMaterials.rows.map((row) => (
-                    <tr key={row.polling_unit_code}>
-                      <td>#{row.rank}</td>
-                      <td>
-                        <strong>{row.lga_name}</strong> · {row.ward_name}
-                      </td>
-                      <td>{t("s05.lateMaterials.hours", { hours: row.predicted_transit_hours })}</td>
-                      <td>
-                        <span
-                          style={{
-                            fontWeight: 600,
-                            color:
-                              row.risk === "high"
-                                ? "var(--danger)"
-                                : row.risk === "medium"
-                                ? "var(--attn-ink)"
-                                : "var(--ok)",
-                          }}
-                        >
-                          {row.risk === "high"
-                            ? t("s05.lateMaterials.riskHigh")
-                            : row.risk === "medium"
-                            ? t("s05.lateMaterials.riskMedium")
-                            : t("s05.lateMaterials.riskLow")}
-                        </span>
-                      </td>
-                      <td>{row.factors.join(", ")}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </section>
-      )}
-
-      {/* Reports by LGA */}
-      {overview?.by_lga && (
-        <section className={styles.section}>
-          <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>{t("s05.lgaBreakdown.title")}</h2>
-          </div>
-          <div className={styles.lgaGrid}>
-            {overview.by_lga.map((lga) => (
-              <div key={lga.lga_code} className={styles.lgaTile}>
-                <strong>{lga.lga_name}</strong>
-                <span className="eg-tnum" style={{ fontSize: "0.875rem" }}>
-                  {t("s05.lgaBreakdown.count", { count: lga.count, urgent: lga.urgent })}
-                </span>
-              </div>
-            ))}
-          </div>
-        </section>
-      )}
+      <Coverage coverage={coverage} stage={stage} onStageChange={onStageChange} />
+      <LateMaterials section={lateMaterials} />
     </div>
+  );
+}
+
+/** "5 Dec 2026" from a yyyy-mm-dd day, so a numeric date is never ambiguous. */
+function formatDay(day: string, locale: Locale): string {
+  const date = new Date(`${day}T12:00:00+01:00`);
+  if (Number.isNaN(date.getTime())) return day;
+  try {
+    return new Intl.DateTimeFormat(localeTags[locale], { dateStyle: "medium", timeZone: "Africa/Lagos" }).format(date);
+  } catch {
+    return day;
+  }
+}
+
+function SectionHead({ id, title, children }: { id: string; title: string; children?: React.ReactNode }) {
+  return (
+    <div className={styles.sectionHead}>
+      <h2 id={id} className={styles.sectionTitle}>{title}</h2>
+      {children}
+    </div>
+  );
+}
+
+function SectionBody<T>({ section, empty, children }: { section: Section<T>; empty: boolean; children: React.ReactNode }) {
+  const t = useT();
+  if (section.error) return <p className={styles.sectionError} role="alert">{section.error}</p>;
+  if (section.loading && !section.data) return <Skeleton lines={4} height={28} delay={0} />;
+  if (empty) return <p className={styles.muted}>{t("s05.empty")}</p>;
+  return <>{children}</>;
+}
+
+/* ---------- Reports by LGA ---------- */
+
+type LgaRow = OverviewResponse["by_lga"][number];
+
+function ByLga({ overview }: { overview: Section<OverviewResponse> }) {
+  const t = useT();
+  const rows = overview.data?.by_lga ?? [];
+  const max = Math.max(1, ...rows.map((r) => r.count));
+  const columns: Column<LgaRow>[] = [
+    { key: "lga_name", header: t("s05.lga.lga"), sortable: true, rowHeader: true },
+    {
+      key: "count",
+      header: t("s05.lga.reports"),
+      sortable: true,
+      numeric: true,
+      render: (row) => (
+        <span className={styles.barCell}>
+          <span className={styles.bar} aria-hidden="true">
+            <span style={{ width: `${(row.count / max) * 100}%` }}>
+              <span className={styles.barUrgent} style={{ width: row.count ? `${(row.urgent / row.count) * 100}%` : 0 }} />
+            </span>
+          </span>
+          <span>{row.count}</span>
+        </span>
+      ),
+    },
+    { key: "urgent", header: t("s05.lga.urgent"), sortable: true, numeric: true },
+  ];
+  return (
+    <section className={styles.card} aria-labelledby="s05-lga">
+      <SectionHead id="s05-lga" title={t("s05.lgaBreakdown.title")} />
+      <SectionBody section={overview} empty={rows.length === 0}>
+        <DataTable
+          caption={t("s05.lgaBreakdown.title")}
+          captionHidden
+          columns={columns}
+          rows={rows}
+          rowKey={(row) => row.lga_code}
+          initialSort={{ key: "count", direction: "descending" }}
+          data-testid="s05-lga-table"
+        />
+      </SectionBody>
+    </section>
+  );
+}
+
+/* ---------- Cluster warnings ---------- */
+
+function Clusters({ clusters, reviewing, onReview }: { clusters: Section<Cluster[]>; reviewing: string | null; onReview?: (id: string, note?: string) => void }) {
+  const t = useT();
+  const { locale } = useLocale();
+  const [notes, setNotes] = useState<Record<string, string>>({});
+  const list = clusters.data ?? [];
+  const open = list.filter((c) => c.status === "open").length;
+  return (
+    <section className={styles.card} aria-labelledby="s05-clusters">
+      <SectionHead id="s05-clusters" title={t("s05.clusters.title")}>
+        {open ? <StatusBadge tone="attn" label={t("s05.clusters.openCount", { count: open })} /> : null}
+      </SectionHead>
+      <SectionBody section={clusters} empty={list.length === 0}>
+        <ul className={styles.clusters}>
+          {list.map((cluster) => {
+            const minutes = Math.max(1, Math.round((Date.parse(cluster.window_end) - Date.parse(cluster.window_start)) / 60000));
+            const reviewed = cluster.status === "reviewed";
+            return (
+              <li key={cluster.id} className={styles.cluster} data-reviewed={reviewed ? "" : undefined} data-testid={`s05-cluster-${cluster.id}`}>
+                <div className={styles.clusterHead}>
+                  <p className={styles.clusterTitle}>{t(CATEGORY_KEY[cluster.category])}</p>
+                  {reviewed ? <StatusBadge tone="ok" label={t("s05.clusters.reviewedBadge")} /> : <StatusBadge tone="attn" label={t("s05.clusters.badge", { count: cluster.report_count, window: minutes })} />}
+                </div>
+                <p className={styles.muted}>
+                  {[cluster.area.lga_name, cluster.area.state_name].filter(Boolean).join(", ")}
+                  {" · "}
+                  <span className="eg-tnum">{`${formatWatTime(cluster.window_start, locale)}–${formatWatTime(cluster.window_end, locale)}`}</span>
+                </p>
+                <p className={`${styles.muted} eg-tnum`}>{t("s05.clusters.baseline", { baseline: cluster.baseline })}</p>
+                {reviewed ? (
+                  <p className={styles.reviewed}>
+                    <CheckIcon size={16} />
+                    {cluster.reviewed_at
+                      ? t("s05.clusters.reviewedBy", { name: cluster.reviewed_by ?? "", time: formatWatDateTime(cluster.reviewed_at, locale) })
+                      : t("s05.clusters.reviewedBadge")}
+                  </p>
+                ) : onReview ? (
+                  <form
+                    className={styles.reviewForm}
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      onReview(cluster.id, notes[cluster.id]?.trim() || undefined);
+                    }}
+                  >
+                    <TextArea
+                      id={`note-${cluster.id}`}
+                      label={t("s05.clusters.reviewNote")}
+                      maxLength={NOTE_MAX}
+                      rows={2}
+                      value={notes[cluster.id] ?? ""}
+                      onChange={(e) => setNotes({ ...notes, [cluster.id]: e.target.value })}
+                    />
+                    <div>
+                      <Button type="submit" variant="secondary" loading={reviewing === cluster.id}>{t("s05.clusters.reviewButton")}</Button>
+                    </div>
+                  </form>
+                ) : null}
+              </li>
+            );
+          })}
+        </ul>
+      </SectionBody>
+    </section>
+  );
+}
+
+/* ---------- Coverage gaps ---------- */
+
+type CoverageRow = CoverageResponse["rows"][number];
+
+function Coverage({ coverage, stage, onStageChange }: { coverage: Section<CoverageResponse>; stage: ChecklistStage; onStageChange?: (stage: ChecklistStage) => void }) {
+  const t = useT();
+  const { locale } = useLocale();
+  const rows = coverage.data?.rows ?? [];
+  const lgaRows = rows.filter((r): r is Extract<CoverageRow, { lga_code: string }> => "lga_code" in r);
+  const expected = lgaRows.reduce((sum, r) => sum + r.expected_units, 0);
+  const reported = lgaRows.reduce((sum, r) => sum + r.units_with_checklist, 0);
+  const pct = (part: number, whole: number) => (whole ? Math.round((part / whole) * 100) : 0);
+  const columns: Column<CoverageRow>[] = [
+    { key: "name", header: t("s05.lga.lga"), rowHeader: true, sortable: true, sortValue: (r) => ("lga_code" in r ? r.lga_name : r.polling_unit_name), render: (r) => ("lga_code" in r ? r.lga_name : r.polling_unit_name) },
+    { key: "expected", header: t("s05.coverage.colExpected"), numeric: true, sortable: true, sortValue: (r) => ("lga_code" in r ? r.expected_units : 1), render: (r) => ("lga_code" in r ? r.expected_units : 1) },
+    {
+      key: "reported",
+      header: t("s05.coverage.colReported"),
+      numeric: true,
+      sortable: true,
+      sortValue: (r) => ("lga_code" in r ? pct(r.units_with_checklist, r.expected_units) : r.has_checklist ? 100 : 0),
+      render: (r) => {
+        const value = "lga_code" in r ? pct(r.units_with_checklist, r.expected_units) : r.has_checklist ? 100 : 0;
+        return (
+          <span className={styles.barCell}>
+            <span className={styles.bar} aria-hidden="true"><span style={{ width: `${value}%` }} /></span>
+            <span>{`${value}%`}</span>
+          </span>
+        );
+      },
+    },
+    { key: "missing", header: t("s05.coverage.colMissing"), numeric: true, sortable: true, sortValue: (r) => ("lga_code" in r ? r.units_without : r.has_checklist ? 0 : 1), render: (r) => ("lga_code" in r ? r.units_without : r.has_checklist ? 0 : 1) },
+    { key: "no", header: t("s05.coverage.colNo"), numeric: true, sortable: true, sortValue: (r) => r.no_answers, render: (r) => r.no_answers },
+  ];
+
+  return (
+    <section className={styles.card} aria-labelledby="s05-coverage">
+      <SectionHead id="s05-coverage" title={t("s05.coverage.title")}>
+        <label className={styles.inlineSelect}>
+          <span>{t("s05.coverage.stage")}</span>
+          <select value={stage} onChange={(e) => onStageChange?.(e.target.value as ChecklistStage)} data-testid="s05-stage">
+            {STAGES.map((s) => <option key={s.value} value={s.value}>{t(s.key)}</option>)}
+          </select>
+        </label>
+      </SectionHead>
+      <SectionBody section={coverage} empty={rows.length === 0}>
+        {lgaRows.length ? (
+          <p className={`${styles.summary} eg-tnum`}>
+            {t("s05.coverage.summary", { reported, expected, percent: pct(reported, expected), missing: expected - reported })}
+          </p>
+        ) : null}
+        <DataTable
+          caption={t("s05.coverage.title")}
+          captionHidden
+          columns={columns}
+          rows={rows}
+          rowKey={(r) => ("lga_code" in r ? r.lga_code : r.polling_unit_code)}
+          initialSort={{ key: "missing", direction: "descending" }}
+          data-testid="s05-coverage-table"
+        />
+        {coverage.data?.most_no_answers.length ? (
+          <div className={styles.noAnswers}>
+            <h3 className={styles.subTitle}>{t("s05.coverage.noAnswers")}</h3>
+            <ul>
+              {coverage.data.most_no_answers.map((unit) => (
+                <li key={unit.polling_unit_code}>
+                  <span className={styles.unit}>
+                    <span>{unit.polling_unit_name}</span>
+                    <span className={`${styles.muted} eg-tnum`}>{unit.polling_unit_code}</span>
+                  </span>
+                  <span className={styles.noList}>
+                    <strong className="eg-tnum">{t("s05.coverage.noCount", { count: unit.no_count })}</strong>
+                    <span className={styles.muted}>{unit.questions.map((q) => (QUESTION_KEY[q] ? t(QUESTION_KEY[q]) : q)).join(" · ")}</span>
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
+        {coverage.data ? <p className={`${styles.muted} eg-tnum`}>{t("s05.updated", { time: formatWatTime(coverage.data.as_of, locale) })}</p> : null}
+      </SectionBody>
+    </section>
+  );
+}
+
+/* ---------- Late-materials risk ---------- */
+
+type LateRow = LateMaterialsResponse["rows"][number];
+
+function LateMaterials({ section }: { section: Section<LateMaterialsResponse> }) {
+  const t = useT();
+  const { locale } = useLocale();
+  const data = section.data;
+  const riskTone: Record<LateRow["risk"], StatusTone> = { high: "danger", medium: "attn", low: "wait" };
+  const riskLabel = (risk: LateRow["risk"]) =>
+    risk === "high" ? t("s05.lateMaterials.riskHigh") : risk === "medium" ? t("s05.lateMaterials.riskMedium") : t("s05.lateMaterials.riskLow");
+  const columns: Column<LateRow>[] = [
+    { key: "rank", header: t("s05.late.rank"), numeric: true, sortable: true },
+    { key: "risk", header: t("s05.late.risk"), sortable: true, sortValue: (r) => ["high", "medium", "low"].indexOf(r.risk), render: (r) => <span className={styles.nowrap}><StatusBadge tone={riskTone[r.risk]} label={riskLabel(r.risk)} /></span> },
+    { key: "place", header: t("s05.late.place"), rowHeader: true, render: (r) => <span className={styles.unit}><span>{r.ward_name}</span><span className={styles.muted}>{r.lga_name}</span></span> },
+    { key: "predicted_transit_hours", header: t("s05.late.transit"), numeric: true, sortable: true, render: (r) => t("s05.lateMaterials.hours", { hours: r.predicted_transit_hours.toFixed(1) }) },
+    { key: "factors", header: t("s05.late.factors"), render: (r) => <span className={styles.muted}>{r.factors.join(" · ")}</span> },
+  ];
+  return (
+    <section className={styles.card} aria-labelledby="s05-late">
+      <SectionHead id="s05-late" title={t("s05.lateMaterials.title")}>
+        <span className={styles.suggested}>{t("ui.suggestion.label")}</span>
+      </SectionHead>
+      <SectionBody section={section} empty={(data?.rows.length ?? 0) === 0}>
+        {data ? (
+          <>
+            <DataTable caption={t("s05.lateMaterials.title")} captionHidden columns={columns} rows={data.rows} rowKey={(r) => r.polling_unit_code} data-testid="s05-late-table" />
+            <p className={`${styles.muted} eg-tnum`}>
+              {[
+                data.model_version ? t("s05.late.model", { version: data.model_version }) : null,
+                typeof data.metrics?.mae_transit_hours === "number" ? t("s05.late.error", { hours: data.metrics.mae_transit_hours.toFixed(1), on: data.metrics.evaluated_on ? formatDay(data.metrics.evaluated_on, locale) : "" }) : null,
+                data.generated_at ? t("s05.updated", { time: formatWatDateTime(data.generated_at, locale) }) : null,
+              ].filter(Boolean).join(" · ")}
+            </p>
+          </>
+        ) : null}
+      </SectionBody>
+      {data?.data_source === "synthetic" ? <p className={styles.footnote} data-testid="s05-synthetic">{t("s05.syntheticNote")}</p> : null}
+    </section>
   );
 }

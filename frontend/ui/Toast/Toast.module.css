@@ -1,0 +1,54 @@
+.region {
+  position: fixed;
+  inset-inline: 16px;
+  bottom: calc(var(--toast-bottom, 96px) + env(safe-area-inset-bottom));
+  z-index: 60;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.toast {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 28rem;
+  padding: 14px 16px;
+  border-radius: var(--radius);
+  background: var(--slab);
+  color: var(--on-slab);
+  box-shadow: var(--shadow-raised);
+  font: var(--t-label);
+  font-size: 0.9375rem;
+  line-height: 1.35;
+  pointer-events: auto;
+}
+
+.text {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.action {
+  flex: none;
+  min-height: var(--target-min);
+  margin: calc(var(--s-3) * -1) calc(var(--s-2) * -1) calc(var(--s-3) * -1) 0;
+  padding: 0 var(--s-3);
+  border: 0;
+  border-radius: var(--radius);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  cursor: pointer;
+}
+
+.action:focus-visible {
+  outline: 3px solid var(--on-slab);
+  outline-offset: -3px;
+}

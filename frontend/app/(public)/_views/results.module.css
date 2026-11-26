@@ -284,3 +284,54 @@
   font-size: 1.0625rem;
   text-decoration: none;
 }
+
+/* ---------- Redesign (spec screen 33) ---------- */
+/* The summary and each section become raised cards; tables fill their card. */
+.summary,
+.section {
+  padding: var(--s-5);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-xl);
+  background: var(--paper-raised);
+}
+
+.summary {
+  border-block: 1px solid var(--rule);
+}
+
+.table,
+.states {
+  max-width: none;
+}
+
+.audit {
+  padding: var(--s-5);
+  border: 1px dashed var(--rule-control);
+  border-radius: var(--radius-lg);
+}
+
+.notice {
+  border-color: var(--sun-strong);
+  background: var(--sun-tint);
+}
+
+/* Phones: give the label column room so words never break mid-word. */
+@media (max-width: 600px) {
+  .summary,
+  .section {
+    padding: var(--s-4);
+  }
+
+  .barCol {
+    width: 42%;
+  }
+
+  .num {
+    width: 3.5rem;
+  }
+
+  .table tbody th {
+    overflow-wrap: normal;
+    hyphens: auto;
+  }
+}

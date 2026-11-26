@@ -10,7 +10,7 @@
  * - Offline fallback: a small page in the five languages.
  */
 
-const VERSION = "v3";
+const VERSION = "v4";
 const SHELL = `eg-shell-${VERSION}`;
 const STATIC = `eg-static-${VERSION}`;
 const REFERENCE = `eg-reference-${VERSION}`;
@@ -27,7 +27,15 @@ const SHELL_PAGES = [
   "/o/new/evidence",
   "/o/new/check",
 ];
-const SHELL_FILES = ["/fonts/noto-sans-latin.woff2", "/fonts/noto-sans-latin-ext.woff2", "/icon.svg", "/manifest.webmanifest"];
+const SHELL_FILES = [
+  "/fonts/noto-sans-latin.woff2",
+  "/fonts/noto-sans-latin-ext.woff2",
+  "/fonts/noto-sans-display-latin.woff2",
+  "/fonts/noto-sans-display-latin-ext.woff2",
+  "/fonts/noto-sans-display-marks.woff2",
+  "/icon.svg",
+  "/manifest.webmanifest",
+];
 
 const OFFLINE_TEXT = [
   ["en", "Offline. Reports will send when you have network.", "Try again"],
@@ -83,8 +91,19 @@ async function cachePage(path, seen) {
     const chunks = source.match(/static\/chunks\/[^"'\s\\,:;]+\.(?:js|css)/g) || [];
     await Promise.all(chunks.map((chunk) => visit(`/_next/${chunk}`)));
   }
-  const assets = html.match(/\/_next\/static\/[^"'\s)\\]+/g) || [];
+  // Route groups put parentheses in chunk paths, for example
+  // /_next/static/chunks/app/(observer)/o/page-….js, so ")" is allowed inside a path;
+  // only an unbalanced trailing ")" (the end of a CSS url(…)) is dropped.
+  const assets = (html.match(/\/_next\/static\/[^"'\s\\{};]+/g) || []).map(trimUnbalanced);
   await Promise.all(assets.map(visit));
+}
+
+/** "/a/(b)/c.js)" becomes "/a/(b)/c.js": closing parentheses with no opening one are dropped. */
+function trimUnbalanced(path) {
+  let out = path;
+  const count = (text, char) => text.split(char).length - 1;
+  while (out.endsWith(")") && count(out, ")") > count(out, "(")) out = out.slice(0, -1);
+  return out;
 }
 
 self.addEventListener("install", (event) => {

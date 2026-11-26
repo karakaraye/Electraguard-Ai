@@ -1,102 +1,296 @@
-.container {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-6);
-  max-width: 960px;
-  margin: 0 auto;
-  padding: var(--sp-4);
+/* S-11 organisation settings. Plain ink and paper; colour only for status (the danger switch, status badges). */
+
+.page {
+  display: grid;
+  gap: var(--s-5);
+  min-width: 0;
 }
 
-.header {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-1);
+.loading {
+  padding: var(--s-4);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  background: var(--paper-raised);
 }
 
-.title {
-  font: var(--t-display);
+.grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--s-4);
+  align-items: stretch;
+  min-width: 0;
+}
+
+@media (min-width: 900px) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .grid > [data-wide],
+  .grid > .meta {
+    grid-column: 1 / -1;
+  }
+}
+
+/* A form wraps a card; the card fills the form so paired cards stay the same height. */
+.formCard {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
   margin: 0;
 }
 
-.subtitle {
-  font: var(--t-body);
-  color: var(--c-muted);
-  margin: 0;
+.formCard > .card {
+  flex: 1 1 auto;
 }
 
 .card {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-4);
-  background: var(--c-surface);
-  border: 1px solid var(--c-border);
-  border-radius: var(--r-md);
-  padding: var(--sp-6);
-}
-
-.sectionTitle {
-  font: var(--t-heading);
-  margin: 0 0 var(--sp-1) 0;
-}
-
-.sectionDescription {
-  font: var(--t-small);
-  color: var(--c-muted);
-  margin: 0 0 var(--sp-4) 0;
-}
-
-.formGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: var(--sp-4);
+  align-content: start;
+  gap: var(--s-4);
+  min-width: 0;
+  padding: var(--s-5);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  background: var(--paper-raised);
 }
 
-.toggleRow {
+.cardHead {
+  display: grid;
+  gap: var(--s-1);
+  min-width: 0;
+}
+
+.cardTitle {
+  margin: 0;
+  font: var(--t-heading);
+  font-size: 1.0625rem;
+}
+
+.hint {
+  margin: 0;
+  color: var(--ink-2);
+  font: var(--t-small);
+  overflow-wrap: break-word;
+}
+
+.cardFoot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-3);
+  margin-top: auto;
+  padding-top: var(--s-1);
+}
+
+.fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  gap: var(--s-4);
+  align-items: start;
+}
+
+.auditFields {
+  padding-bottom: var(--s-4);
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+  gap: var(--s-4);
+  align-items: end;
+}
+
+/* The date in words, under a native date field, so "05/12/2026" is never ambiguous. */
+.dateField {
+  position: relative;
+  min-width: 0;
+}
+
+.dayEcho {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin: var(--s-1) 0 0;
+  color: var(--ink-2);
+  font: var(--t-small);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* ---------- Switch rows ---------- */
+
+.switchRow {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--sp-3) var(--sp-4);
-  background: var(--c-surface-raised);
-  border: 1px solid var(--c-border);
-  border-radius: var(--r-md);
+  gap: var(--s-4);
+  min-width: 0;
+  padding: var(--s-3) var(--s-4);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: var(--paper);
 }
 
-.toggleMeta {
+.switchText {
   display: flex;
-  flex-direction: column;
-  gap: var(--sp-1);
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-2) var(--s-3);
+  min-width: 0;
 }
 
-.toggleLabel {
-  font: var(--t-body);
+.switchLabel {
+  font: var(--t-label);
+  overflow-wrap: break-word;
+}
+
+.switch {
+  --sw-w: 56px;
+  --sw-h: 32px;
+  --sw-pad: 4px;
+  position: relative;
+  flex: none;
+  box-sizing: border-box;
+  width: var(--sw-w);
+  min-width: var(--sw-w);
+  height: var(--sw-h);
+  padding: 0;
+  border: 2px solid var(--rule-control);
+  border-radius: var(--radius-pill);
+  background: var(--paper-sunk);
+  cursor: pointer;
+  transition: background-color var(--dur-fade) ease, border-color var(--dur-fade) ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* A 48 px touch target around the 32 px track. */
+.switch::before {
+  content: "";
+  position: absolute;
+  inset: -8px -4px;
+}
+
+.switch:focus-visible {
+  outline: var(--focus-outline);
+  outline-offset: var(--focus-offset);
+}
+
+.thumb {
+  position: absolute;
+  top: 50%;
+  left: var(--sw-pad);
+  width: 20px;
+  height: 20px;
+  margin-top: -10px;
+  border-radius: 50%;
+  background: var(--ink-2);
+  transition: transform var(--dur-step) var(--ease-out), background-color var(--dur-fade) ease;
+}
+
+.switch[aria-checked="true"] {
+  border-color: var(--ink);
+  background: var(--ink);
+}
+
+.switch[aria-checked="true"] .thumb {
+  background: var(--paper);
+  transform: translateX(calc(var(--sw-w) - 2 * var(--sw-pad) - 4px - 20px));
+}
+
+.switch[data-tone="danger"][aria-checked="true"] {
+  border-color: var(--danger-solid);
+  background: var(--danger-solid);
+}
+
+.switch[data-tone="danger"][aria-checked="true"] .thumb {
+  background: var(--fixed-paper);
+}
+
+.switch[aria-busy="true"] {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .switch,
+  .thumb {
+    transition: none;
+  }
+}
+
+/* ---------- Status line, problems, locks ---------- */
+
+.status {
+  min-height: 1.4em;
+  margin: 0;
+  color: var(--ink-2);
+  font: var(--t-small);
   font-weight: 600;
 }
 
-.toggleHint {
-  font: var(--t-small);
-  color: var(--c-muted);
+.problem {
+  color: var(--danger);
 }
 
-.dangerBox {
-  border-left: 4px solid var(--c-danger);
-  background: var(--c-surface-raised);
-  padding: var(--sp-4);
-  border-radius: var(--r-sm);
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-3);
-}
-
-.metaInfo {
-  font: var(--t-small);
-  color: var(--c-muted);
-  border-top: 1px solid var(--c-border);
-  padding-top: var(--sp-4);
-}
-
-.actions {
+.locked {
   display: flex;
   align-items: center;
-  gap: var(--sp-3);
-  margin-top: var(--sp-2);
+  gap: var(--s-2);
+  margin: 0;
+  padding: var(--s-3);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: var(--paper-2);
+  color: var(--ink-2);
+  font: var(--t-small);
+}
+
+.locked svg {
+  flex: none;
+}
+
+.meta {
+  margin: 0;
+  color: var(--ink-3);
+  font: var(--t-small);
+  overflow-wrap: break-word;
+}
+
+@media (max-width: 480px) {
+  .card {
+    padding: var(--s-4);
+  }
+
+  .switchRow {
+    padding: var(--s-3);
+  }
+}
+
+/* Where fields stack in one column the day in words sits in the flow, not hanging below. */
+.fields .dayEcho {
+  position: static;
+  margin: 0;
+}
+
+.fields .dateField {
+  display: grid;
+  gap: var(--s-2);
+}
+
+.status:empty {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  .auditFields {
+    padding-bottom: 0;
+  }
+
+  .dateField {
+    display: grid;
+    gap: var(--s-2);
+  }
+
+  .dayEcho {
+    position: static;
+    margin: 0;
+  }
 }

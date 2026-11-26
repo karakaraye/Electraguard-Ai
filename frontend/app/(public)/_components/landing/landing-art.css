@@ -1,0 +1,56 @@
+/*
+ * Shared look of the landing page drawings. They use the polling-scene palette (--ls-*, defined on
+ * any element with class "living-scene" in scene-colours.css), so they match the hero in both themes.
+ * Colour comes from the palette and the sun tokens only; text uses the page ink.
+ */
+.ga {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.ga text {
+  font-family: var(--font);
+}
+
+.ga-c1 { fill: var(--ls-c1); }
+.ga-c2 { fill: var(--ls-c2); }
+.ga-c3 { fill: var(--ls-c3); }
+.ga-c4 { fill: var(--ls-c4); }
+.ga-c5 { fill: var(--ls-c5); }
+.ga-rd { fill: var(--ls-rd); }
+.ga-re { fill: var(--ls-re); }
+.ga-sk { fill: var(--ls-sk); }
+.ga-hr { fill: var(--ls-hr); }
+.ga-sh { fill: var(--ls-sh); }
+.ga-ink { fill: var(--ink); }
+.ga-ink2 { fill: var(--ink-2); }
+.ga-sun { fill: var(--ls-c3); }
+.ga-sunt { fill: var(--ls-c4); }
+.ga-sunw { fill: var(--ls-re); }
+.ga-sunstrong { fill: var(--ls-c1); }
+.ga-okbg { fill: var(--ok-bg); }
+
+.ga-line {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.ga-s1 { stroke: var(--ls-c1); }
+.ga-s2 { stroke: var(--ls-c2); }
+.ga-s3 { stroke: var(--ls-c3); }
+.ga-s4 { stroke: var(--ls-c4); }
+.ga-sstrong { stroke: var(--ls-c2); }
+.ga-sok { stroke: var(--ok); }
+.ga-sink { stroke: var(--ink); }
+.ga-edge { stroke: var(--ls-c3); stroke-width: 1.2; }
+
+/* Ballot box and table: tones that follow the theme, so the box darkens at night with the rest. */
+.ga-cn { fill: var(--ls-cn); }
+.ga-cs { fill: var(--ls-cs); }
+.ga-cv { fill: var(--ls-cv); }
+
+/* The result sheet in the evening scene uses the grey palette; gold stays with the hero sun. */
+.living-scene[data-variant="evening"] .sn { fill: var(--ls-c3); }

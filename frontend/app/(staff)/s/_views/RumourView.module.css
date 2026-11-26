@@ -1,109 +1,333 @@
-.container {
-  display: flex;
-  flex-direction: column;
+/* S-06 rumour desk. Plain black and white; colour only for status. */
+
+.page {
+  display: grid;
   gap: var(--s-5);
-  width: 100%;
+  min-width: 0;
 }
 
-.topSection {
+.sectionTitle {
+  margin: 0;
+  font: var(--t-heading);
+  font-size: 1.0625rem;
+}
+
+.sub {
+  margin: 0;
+  color: var(--ink-2);
+  font: var(--t-small);
+}
+
+.nowrap {
+  white-space: nowrap;
+}
+
+.hint {
+  padding: var(--s-5);
+  border: 1px dashed var(--rule-control);
+  border-radius: var(--radius-lg);
+  text-align: center;
+}
+
+/* ---------- List ---------- */
+
+.listSection {
+  display: grid;
+  gap: var(--s-3);
+  min-width: 0;
+}
+
+.head {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
   flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
   gap: var(--s-3);
 }
 
-.layoutSplit {
+.headText {
   display: grid;
-  grid-template-columns: minmax(280px, 1fr) minmax(320px, 1.5fr);
-  gap: var(--s-4);
-  align-items: start;
+  gap: 2px;
 }
 
-@media (max-width: 899px) {
-  .layoutSplit {
-    grid-template-columns: 1fr;
-  }
+.headActions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--s-3);
+}
+
+.filter {
+  min-width: 12rem;
+}
+
+.loading {
+  padding: var(--s-4);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  background: var(--paper-raised);
+}
+
+.tableFrame {
+  --table-max-height: none;
+  min-width: 0;
+}
+
+.claimCell {
+  display: grid;
+  gap: 2px;
+  width: clamp(9rem, 17vw, 14.5rem);
+  min-width: 0;
+}
+
+.truncate {
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.excerpt {
+  font: var(--t-body);
+  overflow-wrap: anywhere;
+}
+
+.cards {
+  display: grid;
+  gap: var(--s-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
 .card {
-  display: flex;
-  flex-direction: column;
-  gap: var(--s-3);
-  padding: var(--s-4);
-  background: var(--paper);
-  border: 1px solid var(--rule);
-  border-radius: var(--radius);
-}
-
-.claimList {
-  display: flex;
-  flex-direction: column;
+  display: grid;
   gap: var(--s-2);
-}
-
-.claimRow {
-  display: flex;
-  flex-direction: column;
-  gap: var(--s-2);
-  padding: var(--s-3);
-  background: var(--paper-2);
+  width: 100%;
+  min-height: var(--target-min);
+  padding: var(--s-3) var(--s-4);
   border: 1px solid var(--rule);
-  border-radius: var(--radius);
-  cursor: pointer;
+  border-radius: var(--radius-lg);
+  background: var(--paper-raised);
+  color: var(--ink);
+  font: inherit;
   text-align: left;
+  cursor: pointer;
 }
 
-.claimRow:hover {
-  border-color: var(--ink);
+.card:focus-visible {
+  outline: var(--focus-outline);
+  outline-offset: var(--focus-offset);
 }
 
-.claimRow[data-selected="true"] {
-  border: 2px solid var(--ink);
-  background: var(--paper);
-}
-
-.claimMeta {
+.chips {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: 0.75rem;
-  color: var(--ink-2);
   flex-wrap: wrap;
-}
-
-.guideBox {
-  display: flex;
-  flex-direction: column;
   gap: var(--s-2);
-  padding: var(--s-3);
-  background: var(--paper-2);
-  border: 1px solid var(--rule);
-  border-radius: var(--radius);
 }
 
-.promptList {
-  margin: 0;
-  padding-left: var(--s-4);
-  font-size: 0.875rem;
-}
-
-.responseBox {
+.more {
   display: flex;
-  flex-direction: column;
-  gap: var(--s-3);
-  padding: var(--s-4);
-  background: var(--paper-2);
-  border: 1px solid var(--rule);
-  border-radius: var(--radius);
+  justify-content: center;
 }
 
-.secondPersonNotice {
-  padding: var(--s-2) var(--s-3);
-  background: var(--attn-bg);
-  border: 1px solid var(--attn-border);
-  color: var(--attn-ink);
-  border-radius: var(--radius);
-  font-size: 0.8125rem;
+/* ---------- Log a claim ---------- */
+
+.form {
+  display: grid;
+  gap: var(--s-4);
+}
+
+.formRow {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
+  gap: var(--s-3);
+}
+
+.fileBlock {
+  display: grid;
+  gap: var(--s-1);
+}
+
+.fileLabel {
+  font: var(--t-label);
+}
+
+.file {
+  max-width: 100%;
+  min-height: var(--target-min);
+  padding: var(--s-2) 0;
+  color: var(--ink);
+  font: var(--t-body);
+}
+
+.file:focus-visible {
+  outline: var(--focus-outline);
+  outline-offset: var(--focus-offset);
+}
+
+.fileName {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-2);
+  font: var(--t-small);
+  overflow-wrap: anywhere;
+}
+
+.problem {
+  color: var(--danger);
+  font: var(--t-small);
   font-weight: 600;
+}
+
+.formActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+}
+
+/* ---------- Detail ---------- */
+
+.detailAnchor {
+  scroll-margin-top: var(--s-4);
+  min-width: 0;
+}
+
+.detail {
+  display: grid;
+  gap: var(--s-4);
+  min-width: 0;
+}
+
+@media (min-width: 1100px) {
+  .detail {
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    align-items: start;
+  }
+}
+
+.main,
+.side {
+  display: grid;
+  gap: var(--s-4);
+  min-width: 0;
+}
+
+.panel {
+  display: grid;
+  gap: var(--s-3);
+  min-width: 0;
+  padding: var(--s-4) var(--s-5);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  background: var(--paper-raised);
+}
+
+.panelTitle {
+  margin: 0;
+  font: var(--t-heading);
+  font-size: 1.0625rem;
+}
+
+.subTitle {
+  margin: var(--s-2) 0 0;
+  font: var(--t-label);
+}
+
+.claimText {
+  margin: 0;
+  font: var(--t-body);
+  font-size: 1.125rem;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.reasons ul,
+.steps {
+  margin: var(--s-1) 0 0;
+  padding-inline-start: var(--s-5);
+  font: var(--t-base);
+}
+
+.reasons li,
+.steps li {
+  margin-bottom: var(--s-1);
+}
+
+.matchList {
+  display: grid;
+  gap: var(--s-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.match {
+  display: grid;
+  gap: var(--s-1);
+  padding: var(--s-3);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: var(--paper-2);
+}
+
+.matchHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s-1) var(--s-3);
+  font: var(--t-base);
+  overflow-wrap: anywhere;
+}
+
+.sim {
+  padding: 1px var(--s-2);
+  border: 1px solid var(--sun-line);
+  border-radius: var(--radius-pill);
+  background: var(--sun-wash);
+  font: var(--t-small);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.quote {
+  margin: 0;
+  padding-inline-start: var(--s-3);
+  border-inline-start: 3px solid var(--rule-control);
+  font: var(--t-base);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.sentBack {
+  margin: 0;
+  color: var(--attn);
+  font: var(--t-small);
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+}
+
+/* Chip columns keep a fixed, whole-chip width: "Needs a reply" and "Reply drafted" never clip. */
+.tableFrame table td > :global([data-tone]) {
+  white-space: nowrap;
+}
+
+.tableFrame table th,
+.tableFrame table td {
+  padding-left: var(--s-2);
+  padding-right: var(--s-2);
+}
+
+.tableFrame table th:first-child,
+.tableFrame table td:first-child {
+  padding-left: var(--s-3);
 }

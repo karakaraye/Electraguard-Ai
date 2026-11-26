@@ -5,12 +5,14 @@ import { BrandMark } from "../../../ui/BrandMark/BrandMark";
 import { MenuIcon } from "../../../ui/icons";
 import { LanguageMenu } from "./LanguageMenu";
 import { NavLinks } from "./NavLinks";
+import { HeaderReport } from "./landing/HeaderReport";
 import styles from "./shell.module.css";
 
 export const NAV = [
   { href: "/", key: "pub.nav.home" },
   { href: "/results", key: "pub.nav.results" },
   { href: "/ask", key: "pub.nav.ask" },
+  { href: "/check", key: "pub.nav.check" },
   { href: "/guide", key: "pub.nav.guide" },
   { href: "/phone", key: "pub.nav.phone" },
   { href: "/privacy", key: "pub.nav.privacy" },
@@ -24,7 +26,8 @@ export const NAV = [
 export function PublicShell({ t, children, theme = "system" }: { t: Translate; children: ReactNode; theme?: "system" | "light" | "dark" }) {
   const items = NAV.map((item) => ({ href: item.href, label: t(item.key) }));
   return (
-    <div className={`eg-public ${styles.shell}`} data-theme={theme}>
+    // The theme script sets the person's saved theme on this element before the page hydrates.
+    <div className={`eg-public ${styles.shell}`} data-theme={theme} suppressHydrationWarning>
       <a className={styles.skip} href="#eg-main">
         {t("ui.skipToContent")}
       </a>
@@ -39,10 +42,11 @@ export function PublicShell({ t, children, theme = "system" }: { t: Translate; c
           <div className={styles.wideLang}>
             <LanguageMenu />
           </div>
+          <HeaderReport href="/o/new/what?as=citizen" label={t("pub.reportShort")} className={styles.headReport} />
           <details className={styles.menu}>
             <summary className={styles.menuButton}>
               <MenuIcon size={22} />
-              {t("pub.menu")}
+              <span className={styles.menuText}>{t("pub.menu")}</span>
             </summary>
             <div className={styles.menuPanel}>
               <nav aria-label={t("pub.nav.label")}>
