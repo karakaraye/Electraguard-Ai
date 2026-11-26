@@ -6,7 +6,8 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import type { MissingMaterial, QueueSize, YesNoNotSeen } from "../../../../lib/api/types";
 import { useLocale, useT } from "../../../../lib/i18n/client";
-import { AppShell, Banner, Button, ButtonLink, ChoiceTile, Field, Sheet, StatusBadge, type ReportStatus } from "../../../../ui";
+import { Banner, Button, ButtonLink, ChoiceTile, Field, Sheet, StatusBadge, type ReportStatus } from "../../../../ui";
+import { ObserverShell } from "../_components/ObserverShell";
 import { formatWatTime } from "../../../../ui/format";
 import { CheckIcon, ChevronRightIcon, PlaceIcon } from "../../../../ui/icons";
 import { MATERIALS, QUESTIONS, QUEUE_SIZES, type StageAnswers, type StageSlug } from "../_lib/checklist";
@@ -46,7 +47,7 @@ export function ChecklistListView({ offline, stages, unitLabel = null, now, onBa
   const nextIndex = stages.findIndex((stage) => stage.state === "notStarted" || stage.state === "draft" || stage.state === "needsAttention");
   const arrivalKnown = Boolean(unitLabel) || stages.some((stage) => stage.slug === "arrival" && stage.state === "received");
   return (
-    <AppShell onBack={onBack} offline={offline} data-testid="o15">
+    <ObserverShell tab="other" title={t("o15.title")} onBack={onBack} offline={offline} data-testid="o15">
       <div className={styles.screen}>
         <div className={s.dayHead}>
           <h1 className={styles.title}>{t("o15.title")}</h1>
@@ -139,7 +140,7 @@ export function ChecklistListView({ offline, stages, unitLabel = null, now, onBa
           })}
         </ol>
       </div>
-    </AppShell>
+    </ObserverShell>
   );
 }
 
@@ -191,7 +192,8 @@ export function StageFormView(props: StageFormViewProps) {
   const answeredCount = questions.filter(isAnswered).length;
 
   return (
-    <AppShell
+    <ObserverShell
+      tab="other"
       title={t("o15.title")}
       onBack={props.onBack}
       offline={props.offline}
@@ -352,7 +354,7 @@ export function StageFormView(props: StageFormViewProps) {
       >
         <p className={styles.note}>{t("o15.unansweredHint")}</p>
       </Sheet>
-    </AppShell>
+    </ObserverShell>
   );
 }
 

@@ -18,6 +18,7 @@ import { openPinSheet } from "./_components/ObserverRuntime";
 import { useFocusTitle, useNetwork } from "./_lib/network";
 import { updateFromMe, useObserverSession } from "./_lib/session";
 import { HomeView, type HomeRow } from "./_views/HomeView";
+import { setNavCounts } from "./_lib/navCounts";
 import { STAGES, useChecklistDay, watDay } from "./_lib/checklist";
 import { OUTBOX_BADGE } from "./_lib/status";
 
@@ -94,6 +95,7 @@ export function HomeScreen() {
       if (list.ok) {
         setQuestions(list.data.counts.open_questions);
         setUnread(list.data.counts.unread_messages);
+        setNavCounts({ questions: list.data.counts.open_questions, unread: list.data.counts.unread_messages });
       }
       // The Discussions row exists only with an invitation or a membership (O-18).
       if (talks.ok) {

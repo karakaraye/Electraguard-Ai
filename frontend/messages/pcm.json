@@ -131,7 +131,11 @@
       "unknown": "We never check the record chain yet"
     },
     "nav": {
-      "main": "Main"
+      "main": "Main",
+      "report": "Report am",
+      "newReport": "New report",
+      "receipt": "Receipt",
+      "needYou": "{count, plural, one {# dey wait for you} other {# dey wait for you}}"
     }
   },
   "common": {
@@ -348,7 +352,13 @@
   },
   "incident": {
     "draftKept": "Your report dey saved for this phone.",
-    "discard": "Delete this report"
+    "discard": "Delete this report",
+    "leave": {
+      "title": "Comot from this report?",
+      "body": "We don save am for this phone. You fit continue am from Home.",
+      "save": "Save am, comot",
+      "keep": "Continue to write"
+    }
   },
   "o05": {
     "title": "Wetin happen?",

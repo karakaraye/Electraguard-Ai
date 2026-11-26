@@ -6,7 +6,8 @@ import Link from "next/link";
 import { useEffect } from "react";
 import { useLocale, useT } from "../../../../lib/i18n/client";
 import { localeNames } from "../../../../lib/i18n/config";
-import { AppShell, Banner, Button, Field, LanguageSwitcher, SegmentedControl, Sheet, Switch, setTextSize, useTextSize, type TextSize } from "../../../../ui";
+import { Banner, Button, Field, LanguageSwitcher, SegmentedControl, Sheet, Switch, setTextSize, useTextSize, type TextSize } from "../../../../ui";
+import { ObserverShell } from "../_components/ObserverShell";
 import { setVibrationPreference, useVibration } from "../../../../ui/vibration";
 import { ChevronDownIcon, ChevronRightIcon, ChevronUpIcon } from "../../../../ui/icons";
 import styles from "../_components/observer.module.css";
@@ -54,7 +55,7 @@ export function SettingsView(props: SettingsViewProps) {
     if (window.location.hash === "#sign-out") document.getElementById("sign-out")?.scrollIntoView({ block: "start" });
   }, []);
   return (
-    <AppShell onBack={props.onBack} offline={offline} banner={props.signedOutNotice ? <Banner tone="ok" title={t("o20.signOut.signedOut")} /> : undefined} data-testid="o20">
+    <ObserverShell tab="other" title={t("o20.title")} onBack={props.onBack} offline={offline} banner={props.signedOutNotice ? <Banner tone="ok" title={t("o20.signOut.signedOut")} /> : undefined} data-testid="o20">
       <div className={styles.screen}>
         <h1 className={styles.title}>{t("o20.title")}</h1>
         <p className={styles.meta}>{t("o04.signedInAs", { code: props.code })}</p>
@@ -238,6 +239,6 @@ export function SettingsView(props: SettingsViewProps) {
         }
         data-testid="o20-clear-sheet"
       />
-    </AppShell>
+    </ObserverShell>
   );
 }

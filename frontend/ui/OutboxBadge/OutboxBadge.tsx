@@ -13,7 +13,7 @@ export type OutboxBadgeProps = {
   "data-testid"?: string;
 };
 
-/** Envelope with a count. Hidden at 0. The count bumps when it goes up. */
+/** Envelope with a 16 px count at its top right. Hidden at 0. The count bumps when it goes up; the ring turns round the count while sending; the count is red when sending failed. */
 export function OutboxBadge({ count, state = "waiting", onClick, label, "data-testid": testId = "outbox-badge" }: OutboxBadgeProps) {
   const dot = useRef<HTMLSpanElement>(null);
   const previous = useRef(count);
@@ -33,19 +33,15 @@ export function OutboxBadge({ count, state = "waiting", onClick, label, "data-te
 
   return (
     <button type="button" className={styles.badge} onClick={onClick} aria-label={label} data-state={state} data-testid={testId}>
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinejoin="round" aria-hidden="true" focusable="false">
-        <rect x="3" y="6" width="18" height="13" rx="2" />
-        <path d="m3 8 9 6 9-6" />
-      </svg>
-      {state === "sending" ? <span className={styles.ring} aria-hidden="true" /> : null}
-      <span ref={dot} className={styles.dot} aria-hidden="true">
-        {state === "failed" ? (
-          <svg width="10" height="10" viewBox="0 0 16 16" focusable="false">
-            <path d="M8 1.5 15 14.25H1z" fill="currentColor" />
-          </svg>
-        ) : (
-          count
-        )}
+      <span className={styles.envelope}>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinejoin="round" aria-hidden="true" focusable="false">
+          <rect x="3" y="6" width="18" height="13" rx="2" />
+          <path d="m3 8 9 6 9-6" />
+        </svg>
+        <span ref={dot} className={`${styles.dot} eg-tnum`} aria-hidden="true">
+          {state === "sending" ? <span className={styles.ring} /> : null}
+          {count > 99 ? "99+" : count}
+        </span>
       </span>
     </button>
   );

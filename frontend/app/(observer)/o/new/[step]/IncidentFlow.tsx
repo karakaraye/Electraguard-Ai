@@ -187,6 +187,7 @@ export function IncidentFlow() {
 
   const shell = {
     onBack: nav.back,
+    onLeave: () => nav.leave(true),
     onDiscard: draft
       ? () =>
           void handle.discard().then(() => {
@@ -216,7 +217,7 @@ export function IncidentFlow() {
   }
 }
 
-type StepProps = { handle: DraftHandle; nav: Nav; shell: { onBack: () => void; onDiscard?: () => void; offline: boolean; banner?: ReactNode } };
+type StepProps = { handle: DraftHandle; nav: Nav; shell: { onBack: () => void; onDiscard?: () => void; onLeave?: () => void; offline: boolean; banner?: ReactNode } };
 
 /* ---------- O-05 ---------- */
 

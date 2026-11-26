@@ -7,9 +7,10 @@ import Link from "next/link";
 import { useState, type ComponentType } from "react";
 import { useLocale, useT } from "../../../../lib/i18n/client";
 import type { Category } from "../../../../lib/api/types";
-import { AppShell, Banner, Button, ButtonLink, DayArc, HeroCard, LanguageSwitcher, OutboxBadge, ReportList, ReportRow, Sheet, StatusBadge, type ReportStatus } from "../../../../ui";
+import { Banner, Button, ButtonLink, DayArc, HeroCard, OutboxBadge, ReportList, ReportRow, Sheet, StatusBadge, type ReportStatus } from "../../../../ui";
 import { formatWatDateTime } from "../../../../ui/format";
-import { AlertIcon, categoryPictograms, ChevronRightIcon, FileIcon, GearIcon, HelpIcon, InfoIcon, MessageIcon, ShieldCheckIcon, SignOutIcon, UsersIcon, type IconProps } from "../../../../ui/icons";
+import { categoryPictograms, ChevronRightIcon, type IconProps } from "../../../../ui/icons";
+import { ObserverShell } from "../_components/ObserverShell";
 import { AskPictogram, DiscussionsPictogram, MessagesPictogram } from "../_components/pictograms";
 import styles from "../_components/observer.module.css";
 import o1 from "../_components/obs1.module.css";
@@ -61,7 +62,6 @@ export type HomeViewProps = {
 export function HomeView(props: HomeViewProps) {
   const t = useT();
   const { locale } = useLocale();
-  const [menu, setMenu] = useState(false);
   const [outboxOpen, setOutboxOpen] = useState(false);
   const [deleting, setDeleting] = useState<string | null>(null);
   const outbox = props.outbox ?? [];
@@ -152,9 +152,12 @@ export function HomeView(props: HomeViewProps) {
     networkBack || pinSaved || draftKept || waitingCodeCount > 0 || intakePaused || unsentCount > 0 || needsAttentionCount > 0 || questionCount > 0;
 
   return (
-    <AppShell
+    <ObserverShell
       variant="home"
-      onMenu={() => setMenu(true)}
+      tab="home"
+      menuCode={code}
+      menuUnit={props.checklist.unitLabel}
+      counts={{ questions: questionCount, unread: props.unreadCount ?? 0 }}
       end={
         outbox.length ? (
           <OutboxBadge
@@ -286,11 +289,6 @@ export function HomeView(props: HomeViewProps) {
         </nav>
       </div>
 
-      <Sheet open={menu} onClose={() => setMenu(false)} title={t("ui.menu")} data-testid="o04-menu">
-        <ObserverMenu code={code} unitLabel={props.checklist.unitLabel} />
-        <LanguageSwitcher variant="compact" />
-      </Sheet>
-
       <Sheet
         open={outboxOpen}
         onClose={() => {
@@ -353,7 +351,7 @@ export function HomeView(props: HomeViewProps) {
         </ul>
         {offline && !deleting ? <p className={styles.note}>{t("ui.network.offline")}</p> : null}
       </Sheet>
-    </AppShell>
+    </ObserverShell>
   );
 }
 
@@ -391,47 +389,5 @@ function QuickTile({
         {count > 0 && countLabel ? <span className="eg-sr-only">{countLabel}</span> : null}
       </Link>
     </li>
-  );
-}
-
-/** The top-bar menu: who is signed in, every place in the app, the 112 line and sign out (spec screen 28). */
-export function ObserverMenu({ code, unitLabel }: { code?: string; unitLabel?: string | null }) {
-  const t = useT();
-  const links: Array<{ href: string; key: string; icon: ComponentType<IconProps>; testId: string }> = [
-    { href: "/o/settings", key: "o20.title", icon: GearIcon, testId: "settings" },
-    { href: "/o/reports", key: "o13.title", icon: FileIcon, testId: "reports" },
-    { href: "/o/messages", key: "o17.title", icon: MessageIcon, testId: "messages" },
-    { href: "/o/ask", key: "o04.ask", icon: HelpIcon, testId: "ask" },
-    { href: "/o/discussions", key: "o18.title", icon: UsersIcon, testId: "discussions" },
-    { href: "/guide", key: "pub.nav.guide", icon: InfoIcon, testId: "guide" },
-    { href: "/o/start?view=notice&from=settings", key: "o20.privacy", icon: ShieldCheckIcon, testId: "privacy" },
-  ];
-  return (
-    <div className={s.menu}>
-      {code ? (
-        <p className={s.menuWho} data-testid="menu-who">
-          <span className="eg-tnum">{t("o04.signedInAs", { code })}</span>
-          {unitLabel ? <span className={styles.meta}>{unitLabel}</span> : null}
-        </p>
-      ) : null}
-      <ul className={s.menuList}>
-        {links.map((link) => (
-          <li key={link.href}>
-            <Link href={link.href} className={s.menuLink} data-testid={`menu-${link.testId}`}>
-              <link.icon size={22} aria-hidden="true" />
-              <span>{t(link.key)}</span>
-            </Link>
-          </li>
-        ))}
-      </ul>
-      <p className={s.menu112} data-testid="menu-112">
-        <AlertIcon size={20} aria-hidden="true" />
-        <span>{t("o02.line4")}</span>
-      </p>
-      <Link href="/o/settings#sign-out" className={s.menuLink} data-testid="menu-sign-out">
-        <SignOutIcon size={22} aria-hidden="true" />
-        <span>{t("o20.signOut.button")}</span>
-      </Link>
-    </div>
   );
 }

@@ -1,9 +1,8 @@
 .badge {
-  position: relative;
   display: grid;
   place-items: center;
-  width: var(--target-min);
-  height: var(--target-min);
+  width: 44px;
+  height: 44px;
   margin: 0;
   padding: 0;
   border: 0;
@@ -12,6 +11,7 @@
   color: var(--ink);
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
+  transition: transform var(--dur-press) var(--ease-out);
 }
 
 .badge:focus-visible {
@@ -23,30 +23,39 @@
   transform: scale(0.98);
 }
 
+.envelope {
+  position: relative;
+  display: inline-flex;
+}
+
+/* A 16 px count whose corner sits 2 px outside the icon's top-right corner. */
 .dot {
   position: absolute;
-  top: 6px;
-  right: 4px;
+  top: -2px;
+  right: -2px;
   display: grid;
   place-items: center;
-  min-width: 18px;
-  height: 18px;
+  box-sizing: border-box;
+  min-width: 16px;
+  height: 16px;
   padding: 0 4px;
-  border-radius: 9px;
-  background: var(--attn-solid);
-  color: var(--fixed-ink);
+  border-radius: 8px;
+  background: var(--ink);
+  color: var(--on-ink);
   font: 700 0.6875rem/1 var(--font);
-  font-variant-numeric: tabular-nums;
+  box-shadow: 0 0 0 2px var(--paper);
+  transform: translate(0, 0);
 }
 
 .badge[data-state="failed"] .dot {
-  background: var(--danger);
-  color: var(--paper);
+  background: var(--danger-solid);
+  color: #ffffff;
 }
 
+/* While sending, a ring turns round the count (not the icon). */
 .ring {
   position: absolute;
-  inset: 8px;
+  inset: -5px;
   border: 2px solid var(--rule-control);
   border-top-color: var(--ink);
   border-radius: 50%;

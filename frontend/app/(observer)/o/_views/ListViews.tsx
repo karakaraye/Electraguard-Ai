@@ -4,7 +4,8 @@
 
 import type { Category, ReportKind } from "../../../../lib/api/types";
 import { useLocale, useT } from "../../../../lib/i18n/client";
-import { AppShell, Banner, Button, EmptyState, ReportList, ReportRow, type ReportStatus, Skeleton } from "../../../../ui";
+import { Banner, Button, EmptyState, ReportList, ReportRow, type ReportStatus, Skeleton } from "../../../../ui";
+import { ObserverShell } from "../_components/ObserverShell";
 import { formatWatTime } from "../../../../ui/format";
 import { categoryMeta } from "../_lib/categories";
 import { MessagesSpot, ReportsSpot } from "../_components/Spots";
@@ -108,7 +109,9 @@ export function MyReportsView(props: MyReportsViewProps) {
   const nothingAtAll = load === "ok" && counts.all === 0;
 
   return (
-    <AppShell
+    <ObserverShell
+      tab="reports"
+      title={t("o13.title")}
       onBack={props.onBack}
       offline={offline}
       queuedCount={props.queuedCount}
@@ -181,7 +184,7 @@ export function MyReportsView(props: MyReportsViewProps) {
           </>
         )}
       </div>
-    </AppShell>
+    </ObserverShell>
   );
 }
 
@@ -199,7 +202,9 @@ export type MessagesViewProps = {
 export function MessagesView({ offline, rows, load, stale, onRetry, onBack }: MessagesViewProps) {
   const t = useT();
   return (
-    <AppShell
+    <ObserverShell
+      tab="messages"
+      title={t("o17.title")}
       onBack={onBack}
       offline={offline}
       banner={load === "error" || load === "unavailable" || stale ? <LoadBanner load={load} stale={stale} errorKey="o17.loadError" onRetry={onRetry} /> : undefined}
@@ -253,6 +258,6 @@ export function MessagesView({ offline, rows, load, stale, onRetry, onBack }: Me
           {load === "ok" ? t("o13.resultCount", { count: rows.length }) : ""}
         </p>
       </div>
-    </AppShell>
+    </ObserverShell>
   );
 }

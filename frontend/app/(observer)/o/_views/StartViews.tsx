@@ -23,7 +23,6 @@ import {
   ShieldCheckIcon,
 } from "../../../../ui/icons";
 import { pinTooSimple } from "../_lib/codes";
-import { AppBarTitle } from "../_components/AppBarTitle";
 import { LangChip } from "../_components/LangChip";
 import { BadgePictogram, PersonPictogram } from "../_components/pictograms";
 import styles from "../_components/observer.module.css";
@@ -53,7 +52,7 @@ export function LanguageView({ selected, onChoose, offline, banner }: LanguageVi
   }
 
   return (
-    <AppShell title={<AppBarTitle />} hideBack offline={offline} banner={banner} data-testid="o01">
+    <AppShell title={t("ui.language.label")} hideBack offline={offline} banner={banner} data-testid="o01">
       <BackgroundArt variant="hero" />
       <div className={styles.screen}>
         <h1 className={styles.title} id="o01-title" lang="en">
@@ -120,7 +119,7 @@ export function WelcomeView({ onBack, onNext, onSkip, offline, banner }: Welcome
   const start = useRef<{ x: number; y: number } | null>(null);
   return (
     <AppShell
-      title={<AppBarTitle />}
+      title={t("ui.productName")}
       onBack={onBack}
       offline={offline}
       banner={banner}
@@ -156,7 +155,7 @@ export function OfflineWelcomeView({ onBack, onContinue, offline, banner }: Shel
   const t = useT();
   return (
     <AppShell
-      title={<AppBarTitle />}
+      title={t("ui.productName")}
       onBack={onBack}
       offline={offline}
       banner={banner}
@@ -240,7 +239,7 @@ export function NoticeView({ onBack, onContinue, readOnly, offline, banner }: No
   ];
   return (
     <AppShell
-      title={<AppBarTitle />}
+      title={t("o20.privacy")}
       onBack={onBack}
       offline={offline}
       banner={banner}
@@ -397,7 +396,7 @@ export function SignInView({ code, pin, onCode, onCodeBlur, onPin, onSubmit, onB
       : null;
   return (
     <AppShell
-      title={<AppBarTitle />}
+      title={t("o03.signIn.title")}
       onBack={onBack}
       offline={offline}
       banner={banner}
@@ -537,7 +536,7 @@ export function SetPinView({ first, second, onFirst, onSecond, onSubmit, onBack,
   ];
   return (
     <AppShell
-      title={<AppBarTitle />}
+      title={t("o03.setPin.title")}
       onBack={onBack}
       offline={offline}
       banner={banner}
@@ -633,7 +632,7 @@ export function RevokedView({ unsentCount, onSignInNew, onClear, offline, banner
   const opener = useRef<HTMLButtonElement>(null);
   return (
     <AppShell
-      title={<AppBarTitle />}
+      title={t("ui.productName")}
       hideBack
       offline={offline}
       banner={banner}

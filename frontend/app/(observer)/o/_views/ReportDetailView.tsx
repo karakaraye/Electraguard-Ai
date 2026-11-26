@@ -5,7 +5,8 @@
 import { useEffect, useRef } from "react";
 import type { Category, MessageKind, QuestionState, ReportKind } from "../../../../lib/api/types";
 import { useLocale, useT } from "../../../../lib/i18n/client";
-import { AppShell, Banner, Button, ButtonLink, Sheet, StatusBadge, TextArea, UploadItem, UploadList, type ReportStatus, type StatusTone, type UploadState } from "../../../../ui";
+import { Banner, Button, ButtonLink, Sheet, StatusBadge, TextArea, UploadItem, UploadList, type ReportStatus, type StatusTone, type UploadState } from "../../../../ui";
+import { ObserverShell } from "../_components/ObserverShell";
 import { formatWatDateTime } from "../../../../ui/format";
 import { categoryPictograms, CheckIcon, ClockIcon, ImageIcon, PlaceIcon, ShieldCheckIcon } from "../../../../ui/icons";
 import { categoryMeta } from "../_lib/categories";
@@ -130,7 +131,9 @@ export function ReportDetailView(props: ReportDetailViewProps) {
   const title = label;
 
   const shell = (content: React.ReactNode, actions?: React.ReactNode) => (
-    <AppShell
+    <ObserverShell
+      tab="reports"
+      title={t("ui.nav.report")}
       onBack={props.onBack}
       offline={offline}
       banner={props.banner ? <Banner tone={props.banner.tone} title={t(props.banner.key)} data-testid="o14-banner" /> : undefined}
@@ -138,7 +141,7 @@ export function ReportDetailView(props: ReportDetailViewProps) {
       data-testid="o14"
     >
       {content}
-    </AppShell>
+    </ObserverShell>
   );
 
   if (load === "loading") {

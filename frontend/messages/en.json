@@ -130,7 +130,11 @@
       "unknown": "Record chain not checked yet"
     },
     "nav": {
-      "main": "Main"
+      "main": "Main",
+      "report": "Report",
+      "newReport": "New report",
+      "receipt": "Receipt",
+      "needYou": "{count, plural, one {# needs you} other {# need you}}"
     }
   },
   "common": {
@@ -347,7 +351,13 @@
   },
   "incident": {
     "draftKept": "Your report is saved on this phone.",
-    "discard": "Delete this report"
+    "discard": "Delete this report",
+    "leave": {
+      "title": "Leave this report?",
+      "body": "It is saved on this phone. You can continue it from Home.",
+      "save": "Save and leave",
+      "keep": "Keep writing"
+    }
   },
   "o05": {
     "title": "What happened?",

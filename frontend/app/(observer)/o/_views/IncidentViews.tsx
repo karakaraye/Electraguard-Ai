@@ -7,7 +7,6 @@ import type { AccessBarrierDetail, Category } from "../../../../lib/api/types";
 import { EMERGENCY_NUMBER } from "../../../../lib/config";
 import { useLocale, useT } from "../../../../lib/i18n/client";
 import {
-  AppShell,
   Banner,
   Button,
   ButtonLink,
@@ -47,7 +46,7 @@ import {
   EyeIcon,
   MessageIcon,
 } from "../../../../ui/icons";
-import { AppBarTitle } from "../_components/AppBarTitle";
+import { ObserverShell } from "../_components/ObserverShell";
 import styles from "../_components/observer.module.css";
 import { ACCESS_DETAILS, CATEGORIES, categoryMeta } from "../_lib/categories";
 
@@ -58,8 +57,10 @@ export const TOTAL_STEPS = 7;
 export type StepShellProps = {
   step: number;
   onBack: () => void;
-  /** Delete the draft (confirmed in a sheet). Omit to hide the menu. */
+  /** Delete the draft (confirmed in a sheet). Omit when there is no draft yet. */
   onDiscard?: () => void;
+  /** Close: keep the draft on this phone and go Home. */
+  onLeave?: () => void;
   offline?: boolean;
   banner?: ReactNode;
   actions?: ReactNode;
@@ -68,15 +69,16 @@ export type StepShellProps = {
   children: ReactNode;
 };
 
-export function StepShell({ step, onBack, onDiscard, offline, banner, actions, testId, citizen, children }: StepShellProps) {
+export function StepShell({ step, onBack, onDiscard, onLeave, offline, banner, actions, testId, citizen, children }: StepShellProps) {
   const t = useT();
-  const [menu, setMenu] = useState(false);
+  const [leaving, setLeaving] = useState(false);
   const [confirm, setConfirm] = useState(false);
+  const leave = onLeave ?? onBack;
   return (
-    <AppShell
-      title={citizen ? <span data-testid="citizen-title">{t("o04.citizenMode")}</span> : <AppBarTitle />}
+    <ObserverShell
+      title={citizen ? <span data-testid="citizen-title">{t("o04.citizenMode")}</span> : t("ui.nav.newReport")}
       onBack={onBack}
-      onMenu={onDiscard ? () => setMenu(true) : undefined}
+      onClose={onDiscard ? () => setLeaving(true) : leave}
       offline={offline}
       banner={banner}
       actions={actions}
@@ -88,19 +90,34 @@ export function StepShell({ step, onBack, onDiscard, offline, banner, actions, t
       </div>
       {onDiscard ? (
         <>
-          <Sheet open={menu} onClose={() => setMenu(false)} title={t("ui.menu")} data-testid="step-menu">
-            <Button
-              variant="secondary"
-              block
-              icon={<TrashIcon />}
-              onClick={() => {
-                setMenu(false);
-                setConfirm(true);
-              }}
-              data-testid="step-menu-discard"
-            >
-              {t("incident.discard")}
-            </Button>
+          <Sheet open={leaving} onClose={() => setLeaving(false)} title={t("incident.leave.title")} description={t("incident.leave.body")} data-testid="step-leave">
+            <div className={styles.stack}>
+              <Button
+                block
+                onClick={() => {
+                  setLeaving(false);
+                  leave();
+                }}
+                data-testid="step-leave-keep"
+              >
+                {t("incident.leave.save")}
+              </Button>
+              <Button
+                variant="secondary"
+                block
+                icon={<TrashIcon />}
+                onClick={() => {
+                  setLeaving(false);
+                  setConfirm(true);
+                }}
+                data-testid="step-menu-discard"
+              >
+                {t("incident.discard")}
+              </Button>
+              <Button variant="quiet" block onClick={() => setLeaving(false)} data-testid="step-leave-continue">
+                {t("incident.leave.keep")}
+              </Button>
+            </div>
           </Sheet>
           <Sheet
             open={confirm}
@@ -129,12 +146,12 @@ export function StepShell({ step, onBack, onDiscard, offline, banner, actions, t
           />
         </>
       ) : null}
-    </AppShell>
+    </ObserverShell>
   );
 }
 
 /** `citizen`: a report without an account (screen 29): the bar names it, and Check and send explains the receipt. */
-type Common = { onBack: () => void; onDiscard?: () => void; offline?: boolean; banner?: ReactNode; citizen?: boolean };
+type Common = { onBack: () => void; onDiscard?: () => void; onLeave?: () => void; offline?: boolean; banner?: ReactNode; citizen?: boolean };
 
 /* ---------- O-05 What happened? ---------- */
 

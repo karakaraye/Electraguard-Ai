@@ -6,7 +6,7 @@ import { useEffect, useRef, type CSSProperties, type ReactNode } from "react";
 import { useT } from "../../lib/i18n/client";
 import { useKeyboardInset, useOffline, useScrolled } from "../hooks";
 import { BrandMark } from "../BrandMark/BrandMark";
-import { ArrowLeftIcon, MenuIcon, OfflineIcon } from "../icons";
+import { ArrowLeftIcon, CloseIcon, MenuIcon, OfflineIcon } from "../icons";
 import { THEME_LOCK, useThemePreference, type ThemePreference } from "../theme";
 import { rootFontSize, useTextSize } from "../textSize";
 import "../tokens.css";
@@ -20,13 +20,26 @@ export type AppShellProps = {
   onBack?: () => void;
   /** Hide Back on the first screen of a flow (home, language). */
   hideBack?: boolean;
+  /**
+   * Close (x) in the right slot, for the report flow: leaving is the only other thing to do there.
+   * It replaces Menu. The caller decides what Close does (usually a "keep this draft?" sheet).
+   */
+  onClose?: () => void;
+  closeLabel?: string;
+  /**
+   * Done in the right slot, for a receipt: nothing to go back to, so Back is gone and Done ends the flow.
+   * Pass a href or a handler.
+   */
+  done?: { label: string; href?: string; onClick?: () => void };
+  /** Bottom navigation, pinned under the content (Home, Report, My reports, Messages). */
+  bottomNav?: ReactNode;
   /** Opens the menu. Omit to hide the Menu button. */
   onMenu?: () => void;
   /** Replaces the Menu button with your own control. */
   menu?: ReactNode;
   /** Extra controls before the menu (outbox badge, language). */
   end?: ReactNode;
-  /** "home" shows the mark and name on the left instead of Back. */
+  /** "home" shows the mark in the centre of the bar and no Back (the root screen). */
   variant?: "home" | "task" | "plain";
   /** Banners shown under the top bar (intake paused, question waiting). */
   banner?: ReactNode;
@@ -61,6 +74,10 @@ export function AppShell({
   backHref,
   onBack,
   hideBack,
+  onClose,
+  closeLabel,
+  done,
+  bottomNav,
   onMenu,
   menu,
   end,
@@ -121,28 +138,64 @@ export function AppShell({
   }, [hasActions, preview]);
   const contentId = preview ? undefined : "eg-content";
 
-  const back = variant === "home" ? (
-    <span className={styles.brand}>
-      <BrandMark variant="lockup" size="bar" />
-    </span>
-  ) : hideBack ? (
-    <span />
-  ) : backHref ? (
-    <Link href={backHref} className={styles.back} data-testid="back">
-      <ArrowLeftIcon />
-      <span>{t("ui.back")}</span>
-    </Link>
-  ) : (
-    <button
-      type="button"
-      className={styles.back}
-      data-testid="back"
-      onClick={() => (onBack ? onBack() : window.history.back())}
-    >
-      <ArrowLeftIcon />
-      <span>{t("ui.back")}</span>
-    </button>
-  );
+  const back =
+    variant === "home" || hideBack || done ? (
+      <span />
+    ) : backHref ? (
+      <Link href={backHref} className={styles.barBtn} data-testid="back">
+        <ArrowLeftIcon />
+        <span className={styles.backLabel}>{t("ui.back")}</span>
+      </Link>
+    ) : (
+      <button
+        type="button"
+        className={styles.barBtn}
+        data-testid="back"
+        onClick={() => (onBack ? onBack() : window.history.back())}
+      >
+        <ArrowLeftIcon />
+        <span className={styles.backLabel}>{t("ui.back")}</span>
+      </button>
+    );
+
+  const centre =
+    variant === "home" ? (
+      <span className={styles.brand}>
+        <BrandMark variant="symbol" size="bar" />
+        <span className="eg-sr-only">{t("ui.productName")}</span>
+      </span>
+    ) : title ? (
+      <p className={styles.title}>{title}</p>
+    ) : (
+      <span />
+    );
+
+  const doneControl = done ? (
+    done.href ? (
+      <Link href={done.href} className={`${styles.barBtn} ${styles.done}`} onClick={done.onClick} data-testid="done">
+        {done.label}
+      </Link>
+    ) : (
+      <button type="button" className={`${styles.barBtn} ${styles.done}`} onClick={done.onClick} data-testid="done">
+        {done.label}
+      </button>
+    )
+  ) : null;
+
+  const rightControl =
+    menu ??
+    doneControl ??
+    (onClose ? (
+      <button type="button" className={styles.barBtn} onClick={onClose} data-testid="flow-close">
+        <CloseIcon />
+        <span>{closeLabel ?? t("ui.close")}</span>
+      </button>
+    ) : onMenu ? (
+      <button type="button" className={styles.barBtn} onClick={onMenu} data-testid="menu">
+        <MenuIcon />
+        <span>{t("ui.menu")}</span>
+      </button>
+    ) : null);
 
   return (
     <div
@@ -160,17 +213,11 @@ export function AppShell({
       <div ref={sentinelRef} className={styles.sentinel} aria-hidden="true" />
       <header className={styles.top} data-scrolled={scrolled || undefined}>
         <div className={styles.topInner}>
-          {back}
-          {title && variant !== "home" ? <p className={styles.title}>{title}</p> : <span />}
-          <div className={styles.end}>
+          <div className={styles.left}>{back}</div>
+          <div className={styles.centre}>{centre}</div>
+          <div className={styles.right}>
             {end}
-            {menu ??
-              (onMenu ? (
-                <button type="button" className={styles.menu} onClick={onMenu} data-testid="menu">
-                  <MenuIcon />
-                  <span>{t("ui.menu")}</span>
-                </button>
-              ) : null)}
+            {rightControl}
           </div>
         </div>
       </header>
@@ -201,6 +248,8 @@ export function AppShell({
           <div className={styles.actionsInner}>{actions}</div>
         </div>
       ) : null}
+
+      {bottomNav}
     </div>
   );
 }

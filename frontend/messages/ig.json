@@ -131,7 +131,11 @@
       "unknown": "Anyị elebeghị ọgbụgbụ ndekọ"
     },
     "nav": {
-      "main": "Isi"
+      "main": "Isi",
+      "report": "Kọọ akụkọ",
+      "newReport": "Akụkọ ọhụrụ",
+      "receipt": "Akwụkwọ nnata",
+      "needYou": "{count, plural, one {# chọrọ gị} other {# chọrọ gị}}"
     }
   },
   "common": {
@@ -348,7 +352,13 @@
   },
   "incident": {
     "draftKept": "Echekwara akụkọ gị na ekwentị a.",
-    "discard": "Hichapụ akụkọ a"
+    "discard": "Hichapụ akụkọ a",
+    "leave": {
+      "title": "Ị chọrọ ịhapụ akụkọ a?",
+      "body": "Echekwara ya na ekwentị a. Ị nwere ike ịga n'ihu site na Mbido.",
+      "save": "Chekwaa ma hapụ",
+      "keep": "Gaa n'ihu ide"
+    }
   },
   "o05": {
     "title": "Gịnị mere?",

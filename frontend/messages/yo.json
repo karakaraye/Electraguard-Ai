@@ -131,7 +131,11 @@
       "unknown": "A kò tíì ṣàyẹ̀wò ẹ̀wọ̀n àkọsílẹ̀"
     },
     "nav": {
-      "main": "Pàtàkì"
+      "main": "Pàtàkì",
+      "report": "Ròyìn",
+      "newReport": "Ìròyìn tuntun",
+      "receipt": "Ẹ̀rí gbígbà",
+      "needYou": "{count, plural, one {# nílò rẹ} other {# nílò rẹ}}"
     }
   },
   "common": {
@@ -348,7 +352,13 @@
   },
   "incident": {
     "draftKept": "A ti fi ìròyìn rẹ pamọ́ sórí fóònù yìí.",
-    "discard": "Pa ìròyìn yìí rẹ́"
+    "discard": "Pa ìròyìn yìí rẹ́",
+    "leave": {
+      "title": "Ṣé o fẹ́ kúrò nínú ìròyìn yìí?",
+      "body": "A ti fi pamọ́ sórí fóònù yìí. O lè tẹ̀ síwájú láti Ilé.",
+      "save": "Fi pamọ́ kí o jáde",
+      "keep": "Tẹ̀ síwájú láti kọ"
+    }
   },
   "o05": {
     "title": "Kí ló ṣẹlẹ̀?",

@@ -6,7 +6,6 @@ import type { Outcome, ReportStatus as ServerStatus } from "../../../../lib/api/
 import { useLocale, useT } from "../../../../lib/i18n/client";
 import { AppShell, Banner, Button, Field, ReceiptCard, Sheet, StatusBadge, SunRings, Switch, TextArea, UploadItem, UploadList } from "../../../../ui";
 import { CheckIcon, CloseIcon, PenIcon, ShieldCheckIcon } from "../../../../ui/icons";
-import { AppBarTitle } from "../_components/AppBarTitle";
 import { OUTCOME_KEY } from "../_lib/status";
 import type { ReceiptItem } from "./ReceiptView";
 import styles from "../_components/observer.module.css";
@@ -37,8 +36,8 @@ export function CitizenReceiptView(props: CitizenReceiptViewProps) {
   const shortCode = props.shortCode;
   return (
     <AppShell
-      title={<AppBarTitle />}
-      onBack={props.onBack}
+      title={t("ui.nav.receipt")}
+      done={{ label: t("common.done"), onClick: props.onBack }}
       offline={props.offline}
       actions={
         <Button block onClick={props.onCheckStatus} data-testid="c01-check">
@@ -229,7 +228,7 @@ export function StatusView(props: StatusViewProps) {
               : undefined;
 
   return (
-    <AppShell onBack={props.onBack} offline={props.offline} banner={props.banner ? <Banner tone="danger" title={t(props.banner)} /> : undefined} data-testid="p01">
+    <AppShell title={t("p01.title")} onBack={props.onBack} offline={props.offline} banner={props.banner ? <Banner tone="danger" title={t(props.banner)} /> : undefined} data-testid="p01">
       <div className={`${styles.screen} ${styles.wide}`}>
         <h1 className={styles.title}>{t("p01.title")}</h1>
         <div className={s.twoCol}>

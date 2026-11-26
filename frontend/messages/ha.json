@@ -131,7 +131,11 @@
       "unknown": "Ba a duba jerin bayanan ba tukuna"
     },
     "nav": {
-      "main": "Babba"
+      "main": "Babba",
+      "report": "Kai rahoto",
+      "newReport": "Sabon rahoto",
+      "receipt": "Rasit",
+      "needYou": "{count, plural, one {# yana bukatar ka} other {# suna bukatar ka}}"
     }
   },
   "common": {
@@ -348,7 +352,13 @@
   },
   "incident": {
     "draftKept": "An ajiye rahotonka a kan wannan wayar.",
-    "discard": "Goge wannan rahoton"
+    "discard": "Goge wannan rahoton",
+    "leave": {
+      "title": "Za ka bar wannan rahoton?",
+      "body": "An ajiye shi a kan wannan wayar. Za ka iya ci gaba daga Gida.",
+      "save": "Ajiye ka fita",
+      "keep": "Ci gaba da rubutu"
+    }
   },
   "o05": {
     "title": "Me ya faru?",

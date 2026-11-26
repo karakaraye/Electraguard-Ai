@@ -10,7 +10,6 @@ import type { ReportViewState } from "../../../../lib/outbox";
 import { AppShell, Banner, Button, ButtonLink, ReceiptCard, StatusBadge, SunRings, UploadItem, UploadList, type ReportStatus, type UploadState } from "../../../../ui";
 import { formatWatDateTime } from "../../../../ui/format";
 import { categoryPictograms, PlaceIcon, ClockIcon } from "../../../../ui/icons";
-import { AppBarTitle } from "../_components/AppBarTitle";
 import styles from "../_components/observer.module.css";
 import { categoryMeta } from "../_lib/categories";
 
@@ -49,8 +48,8 @@ export function ReceiptView({ code, receivedAt, justSent, citizen, items, remove
   const pending = items.some((item) => item.state !== "saved");
   return (
     <AppShell
-      title={<AppBarTitle />}
-      onBack={onHome}
+      title={t("ui.nav.receipt")}
+      done={{ label: t("common.done"), onClick: onHome }}
       offline={offline}
       actions={
         onView ? (
@@ -169,8 +168,8 @@ export function PendingView({ state, category, place, occurredAt, offline, onHom
   const Pictogram = meta ? categoryPictograms[meta.pictogram] : null;
   return (
     <AppShell
-      title={<AppBarTitle />}
-      onBack={onHome}
+      title={t("ui.nav.receipt")}
+      done={{ label: t("common.done"), onClick: onHome }}
       offline={offline}
       actions={
         action ?? (
