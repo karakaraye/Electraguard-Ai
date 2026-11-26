@@ -1,0 +1,842 @@
+<!doctype html>
+<html lang="en-NG">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Observer pages</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Display:wght@600;700;800&family=Noto+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+
+/* ElectraGuard AI vision mockups. Light theme tokens from frontend/ui/tokens.css. */
+:root{
+  --font:"Noto Sans",system-ui,"Segoe UI",sans-serif;
+  --font-display:"Noto Sans Display","Noto Sans",system-ui,sans-serif;
+  --ink:#0e0d0b; --ink-2:#45413a; --ink-3:#6e6a62;
+  --paper:#faf8f3; --paper-2:#f2efe7; --paper-raised:#ffffff; --paper-sunk:#f2efe7;
+  --rule:#e6e1d5; --rule-control:#8a857a; --on-ink:#faf8f3;
+  --sun:#e3b060; --sun-strong:#c98f2e; --sun-ink:#7a4e0e; --sun-tint:#f6e7c6; --sun-wash:#fbf4e4; --sun-line:#ead9b4;
+  --ok:#1b5e20; --ok-bg:#e7f3e8; --ok-solid:#2e7d32;
+  --attn:#8a3b00; --attn-bg:#fff1dc;
+  --danger:#a3161a; --danger-bg:#fdecec;
+  --wait:#45413a; --wait-bg:#eeebe4;
+  --info:#0d4a94; --info-bg:#e3eefb;
+  --scrim:rgb(14 13 11 / .4);
+  --shadow-sheet:0 -8px 32px rgb(14 13 11 / .18);
+  --shadow-raised:0 8px 24px rgb(14 13 11 / .14);
+  --shadow-pop:0 12px 32px rgb(14 13 11 / .16), 0 1px 2px rgb(14 13 11 / .08);
+  --board:#e9e5da;
+  --r-sm:6px; --r:10px; --r-md:14px; --r-lg:18px; --r-xl:22px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--paper);color:var(--ink);font-family:var(--font);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+body{font-size:16px;line-height:1.5}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+a{color:inherit}
+.tnum{font-variant-numeric:tabular-nums}
+svg.i{width:24px;height:24px;flex:none;fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
+svg.i.s20{width:20px;height:20px}
+svg.i.s16{width:16px;height:16px}
+svg.mark{fill:currentColor;display:block;flex:none}
+
+/* ---------- Unified components ---------- */
+/* Count: one component, two tones. Strong = needs action. Quiet = informational total. */
+.count{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;padding:0 6px;border-radius:10px;font:700 12px/1 var(--font);font-variant-numeric:tabular-nums;background:var(--ink);color:var(--on-ink)}
+.count.quiet{background:var(--paper-sunk);color:var(--ink-2);box-shadow:inset 0 0 0 1px var(--rule)}
+
+/* Status badge: shape + word, colour only for status. Square-ish, never a pill. */
+.badge{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 8px;border-radius:var(--r-sm);font:600 13px/1 var(--font);white-space:nowrap}
+.badge svg{width:14px;height:14px;stroke-width:2}
+.badge.ok{background:var(--ok-bg);color:var(--ok)}
+.badge.attn{background:var(--attn-bg);color:var(--attn)}
+.badge.danger{background:var(--danger-bg);color:var(--danger)}
+.badge.wait{background:var(--wait-bg);color:var(--wait)}
+.badge.info{background:var(--info-bg);color:var(--info)}
+
+/* Buttons */
+.btn{text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:8px;height:48px;padding:0 20px;border-radius:var(--r);font:600 16px/1 var(--font);white-space:nowrap}
+.btn.primary{background:var(--ink);color:var(--on-ink)}
+.btn.secondary{background:var(--paper-raised);color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--ink)}
+.btn.quiet{background:var(--paper-raised);color:var(--ink);box-shadow:inset 0 0 0 1px var(--rule-control)}
+.btn.disabled{background:var(--paper-sunk);color:var(--ink-3);box-shadow:none;cursor:not-allowed}
+.btn.h40{height:40px;padding:0 16px;font-size:15px}
+.btn.h36{height:36px;padding:0 12px;font-size:14px;gap:6px}
+.btn.h56{height:56px;padding:0 24px;font-size:17px}
+.btn.block{width:100%}
+.focus{outline:3px solid var(--ink);outline-offset:2px;box-shadow:0 0 0 2px var(--paper)}
+
+/* Toggle with clear off/on */
+.toggle{display:inline-flex;align-items:center;gap:8px;font:600 13px/1 var(--font)}
+.toggle .track{position:relative;width:44px;height:24px;border-radius:12px;background:var(--paper-raised);box-shadow:inset 0 0 0 1.5px var(--rule-control)}
+.toggle .track::after{content:"";position:absolute;top:4px;left:4px;width:16px;height:16px;border-radius:8px;background:var(--rule-control)}
+.toggle.on .track{background:var(--ink);box-shadow:none}
+.toggle.on .track::after{left:24px;background:var(--paper-raised)}
+
+/* Keycap */
+.kbd{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;padding:0 5px;border-radius:5px;font:600 12px/1 var(--font);color:var(--ink-2);background:var(--paper-raised);box-shadow:inset 0 0 0 1px var(--rule),0 1px 0 var(--rule)}
+
+/* ---------- Presentation board (annotation only, not product UI) ---------- */
+.board{background:var(--board);padding:64px;min-height:100vh}
+.board-head{max-width:1100px;margin-bottom:48px}
+.board-head h1{font:700 28px/1.2 var(--font-display);letter-spacing:-.01em}
+.board-head p{margin-top:8px;font-size:16px;color:var(--ink-2);max-width:72ch}
+.frames{display:flex;gap:48px;align-items:flex-start;flex-wrap:wrap}
+.frame-wrap{display:flex;flex-direction:column;gap:12px}
+.frame-label{font:600 14px/1.3 var(--font);color:var(--ink-2)}
+.frame-label b{color:var(--ink);font-weight:700}
+.frame-note{font-size:13px;line-height:1.45;color:var(--ink-2);max-width:390px}
+.phone{position:relative;width:390px;height:844px;overflow:hidden;background:var(--paper);border-radius:28px;box-shadow:0 0 0 1px rgb(14 13 11 / .12),var(--shadow-raised)}
+.crop{position:relative;overflow:hidden;background:var(--paper);border-radius:12px;box-shadow:0 0 0 1px rgb(14 13 11 / .12),var(--shadow-raised)}
+.safe-top{height:0}
+.home-ind{position:absolute;left:50%;bottom:8px;width:134px;height:5px;margin-left:-67px;border-radius:3px;background:var(--ink);opacity:.85;z-index:30}
+
+
+/* Observer app shell: shared by observer-home-phone and observer-flow-phone */
+.ab{position:relative;z-index:3;height:56px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:0 4px;background:var(--paper)}
+.ab .l{justify-self:start;display:flex;align-items:center}
+.ab .c{justify-self:center;font:700 17px/1.2 var(--font);color:var(--ink);display:flex;align-items:center}
+.ab .r{justify-self:end;display:flex;align-items:center}
+.abtn{display:inline-flex;align-items:center;gap:6px;height:44px;padding:0 12px;border-radius:var(--r);font:600 16px/1 var(--font);color:var(--ink)}
+.abtn.done{font-weight:700}
+.scroll{position:absolute;top:56px;left:0;right:0;bottom:0;overflow:hidden}
+
+/* Bottom navigation: 56 px + 34 px safe area */
+.bn{position:absolute;left:0;right:0;bottom:0;z-index:4;height:90px;padding-bottom:34px;display:grid;grid-template-columns:repeat(4,1fr);background:var(--paper-raised);box-shadow:inset 0 1px 0 var(--rule)}
+.bn a{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;height:56px;text-decoration:none;color:var(--ink-3);font:600 12px/16px var(--font)}
+.bn .ic{position:relative;display:flex;align-items:center;justify-content:center;width:56px;height:32px;border-radius:16px}
+.bn a[aria-current]{color:var(--ink)}
+.bn a[aria-current] .ic{background:var(--paper-sunk);box-shadow:inset 0 0 0 1px var(--rule)}
+.bn .ic .count{position:absolute;top:-2px;left:32px;box-shadow:0 0 0 2px var(--paper-raised)}
+.bn a.bn-rep{color:var(--ink)}
+.bn a.bn-rep .ic{background:var(--ink);color:var(--on-ink)}
+
+.pad{padding:0 16px}
+.greet{padding-top:16px}
+.greet h1{font:800 28px/1.15 var(--font-display);letter-spacing:-.01em}
+.greet p{margin-top:4px;font-size:14px;color:var(--ink-2)}
+
+/* Needs you: one card replaces the two stacked banners */
+.needs{margin-top:16px;background:var(--paper-raised);border-radius:var(--r-md);box-shadow:inset 0 0 0 1px var(--rule)}
+.needs-h{display:flex;align-items:center;gap:8px;padding:16px 16px 4px;font:700 17px/1.2 var(--font)}
+.need{display:grid;grid-template-columns:24px 1fr auto;gap:12px;align-items:center;padding:12px 16px;min-height:64px}
+.need + .need{box-shadow:inset 0 1px 0 var(--rule)}
+.need p{font:500 15px/1.4 var(--font);color:var(--ink)}
+.need .shape{display:flex;justify-content:center}
+.need .shape svg{width:16px;height:16px}
+.need .shape.wait{color:var(--ink-2)}
+.need .shape.attn{color:var(--attn)}
+
+/* Report card */
+.rep{position:relative;margin-top:16px;border-radius:var(--r-lg);background:var(--ink);color:var(--on-ink);overflow:hidden}
+.rep-main{position:relative;display:grid;grid-template-columns:1fr 56px;gap:16px;align-items:center;padding:20px}
+.rep h2{font:800 22px/1.2 var(--font-display)}
+.rep p{margin-top:4px;font-size:15px;line-height:1.4;color:#cfc9be}
+.plus{display:flex;align-items:center;justify-content:center;width:56px;height:56px;border-radius:28px;background:#ffffff;color:var(--ink)}
+.plus svg{width:28px;height:28px;stroke-width:2}
+.sun{position:absolute;right:-28px;top:-44px;width:132px;height:132px;border-radius:50%;background:#26231e}
+.sun::after{content:"";position:absolute;left:30px;top:52px;width:40px;height:40px;border-radius:50%;background:var(--sun)}
+.draft{display:grid;grid-template-columns:1fr 24px;align-items:center;gap:12px;padding:12px 20px 14px;box-shadow:inset 0 1px 0 rgb(250 248 243 / .14)}
+.draft b{display:block;font:600 15px/1.3 var(--font)}
+.draft span{font-size:13px;color:#cfc9be}
+
+/* My reports */
+.sec-h{display:flex;align-items:baseline;justify-content:space-between;margin-top:24px}
+.sec-h h2{font:700 20px/1.3 var(--font-display)}
+.sec-h a{font:600 15px/1 var(--font);text-underline-offset:3px;text-decoration-thickness:1.5px}
+.list{margin-top:12px;background:var(--paper-raised);border-radius:var(--r-md);box-shadow:inset 0 0 0 1px var(--rule)}
+.rrow{display:grid;grid-template-columns:40px minmax(0,1fr) 20px;gap:12px;align-items:center;height:88px;padding:8px 12px 8px 16px}
+.rrow + .rrow{box-shadow:inset 0 1px 0 var(--rule)}
+.rrow > svg{width:20px;height:20px;color:var(--ink-3)}
+.tile{display:flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:var(--r);background:var(--paper-sunk);color:var(--ink);align-self:start;margin-top:4px}
+.rrow h3{font:600 16px/20px var(--font);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rrow .m{margin-top:2px;font-size:14px;line-height:20px;color:var(--ink-3)}
+.rrow .st{display:flex;align-items:center;gap:8px;margin-top:6px}
+.rrow .code{font:500 13px/20px var(--font);color:var(--ink-2);letter-spacing:.02em;font-variant-numeric:tabular-nums}
+
+/* Menu sheet */
+.scrim{position:absolute;inset:0;background:var(--scrim);z-index:8}
+.sheet{position:absolute;left:0;right:0;bottom:0;z-index:9;background:var(--paper);border-radius:var(--r-xl) var(--r-xl) 0 0;box-shadow:var(--shadow-sheet);padding:0 0 34px}
+.handle{width:36px;height:4px;border-radius:2px;background:var(--rule-control);opacity:.5;margin:8px auto 0}
+.sh-h{display:flex;align-items:center;justify-content:space-between;height:52px;padding:0 4px 0 20px}
+.sh-h h2{font:700 20px/1 var(--font-display)}
+.who{margin:0 16px;padding:14px 16px;border-radius:var(--r-md);background:var(--paper-2)}
+.who b{display:block;font:700 16px/1.3 var(--font)}
+.who span{font-size:14px;color:var(--ink-2)}
+.grp{padding:8px 8px 0}
+.grp + .grp{margin-top:8px;box-shadow:inset 0 1px 0 var(--rule);margin-left:16px;margin-right:16px;padding-left:0;padding-right:0}
+.mrow{display:flex;align-items:center;gap:16px;height:52px;padding:0 12px;border-radius:var(--r);font:600 17px/1 var(--font);color:var(--ink)}
+.grp + .grp .mrow{padding:0 4px}
+.mrow .aside{margin-left:auto;display:flex;align-items:center;gap:4px;font:500 14px/1 var(--font);color:var(--ink-3)}
+.mrow .aside svg{width:20px;height:20px}
+.s112{display:flex;gap:10px;margin:4px 20px 0;font-size:13px;line-height:1.45;color:var(--ink-2)}
+.s112 svg{width:18px;height:18px;color:var(--danger);margin-top:1px}
+.s112 b{color:var(--ink)}
+.mrow.out{color:var(--danger)}
+.pad{padding:0 16px}
+.prog{padding-top:8px}
+.prog .lbl{display:flex;justify-content:space-between;font:600 14px/20px var(--font);color:var(--ink-2)}
+.prog .lbl span:last-child{font-weight:500;color:var(--ink-3)}
+.segs{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-top:8px}
+.segs i{height:4px;border-radius:2px;background:var(--rule)}
+.segs i.on{background:var(--ink)}
+.q{margin-top:24px}
+.q h1{font:800 28px/1.15 var(--font-display);letter-spacing:-.01em}
+.q p{margin-top:8px;font-size:16px;color:var(--ink-2)}
+.tiles{display:flex;flex-direction:column;gap:8px;margin-top:20px}
+
+/* ChoiceTile: one component for every single-choice step */
+.ct{display:grid;grid-template-columns:40px 1fr 24px;gap:12px;align-items:center;height:64px;padding:0 16px 0 12px;border-radius:var(--r-md);background:var(--paper-raised);box-shadow:inset 0 0 0 1px var(--rule);font:600 17px/1.25 var(--font);color:var(--ink)}
+.ct .ico{display:flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:20px;background:var(--paper-sunk)}
+.ct .tick{width:24px;height:24px;border-radius:12px;box-shadow:inset 0 0 0 1.5px var(--rule-control);display:flex;align-items:center;justify-content:center;color:transparent}
+.ct .tick svg{width:16px;height:16px;stroke-width:2.5}
+.ct.sel{box-shadow:inset 0 0 0 2px var(--ink)}
+.ct.sel .ico{background:var(--sun-tint)}
+.ct.sel .tick{background:var(--ink);box-shadow:none;color:var(--paper-raised)}
+.ct.kf{outline:3px solid var(--ink);outline-offset:2px}
+
+.foot{position:absolute;left:0;right:0;bottom:0;z-index:4;padding:12px 16px 34px;background:var(--paper);box-shadow:inset 0 1px 0 var(--rule)}
+
+/* Receipt */
+.ok-head{display:flex;flex-direction:column;align-items:center;padding-top:16px;text-align:center}
+.okdisc{display:flex;align-items:center;justify-content:center;width:56px;height:56px;border-radius:28px;background:var(--ok);color:#fff}
+.okdisc svg{width:28px;height:28px;stroke-width:2.5}
+.ok-head h1{margin-top:12px;font:800 28px/1.15 var(--font-display)}
+.rcard{margin-top:20px;padding:20px;border-radius:var(--r-md);background:var(--paper-raised);box-shadow:inset 0 0 0 1px var(--rule);text-align:center}
+.rcard .k{font-size:14px;color:var(--ink-2)}
+.rcard .code{margin-top:4px;font:800 32px/1.15 var(--font-display);letter-spacing:.02em;font-variant-numeric:tabular-nums}
+.rcard .t{margin-top:4px;font-size:14px;color:var(--ink-3)}
+.rcard .acts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:16px;padding-top:16px;box-shadow:inset 0 1px 0 var(--rule)}
+.rcard .btn{padding:0 12px;font-size:15px}
+.rcard .btn svg{width:20px;height:20px}
+.h3{margin-top:24px;font:700 17px/1.3 var(--font)}
+.files{margin-top:8px;background:var(--paper-raised);border-radius:var(--r-md);box-shadow:inset 0 0 0 1px var(--rule)}
+.frow{display:grid;grid-template-columns:40px 1fr auto;gap:12px;align-items:center;height:64px;padding:0 16px 0 12px}
+.frow + .frow{box-shadow:inset 0 1px 0 var(--rule)}
+.frow .ico{display:flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:var(--r);background:var(--paper-sunk)}
+.frow b{display:block;font:600 16px/20px var(--font)}
+.frow span{font-size:14px;line-height:20px;color:var(--ink-3)}
+.next{margin-top:12px;display:flex;flex-direction:column;gap:12px;list-style:none}
+.next li{display:grid;grid-template-columns:24px 1fr;gap:12px;font-size:16px;line-height:1.45}
+.next li i{font-style:normal;display:flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:12px;box-shadow:inset 0 0 0 1.5px var(--ink);font:700 13px/1 var(--font)}
+
+
+/* ---------- Additions for the finish-round boards (same tokens, same grammar) ---------- */
+.board{width:max-content}
+.board-head{max-width:1200px}
+.sect{margin-top:72px}
+.sect:first-of-type{margin-top:0}
+.sect-h{display:flex;align-items:baseline;gap:16px;margin-bottom:24px;padding-bottom:12px;box-shadow:inset 0 -1px 0 rgb(14 13 11 / .14)}
+.sect-h h2{font:700 20px/1.2 var(--font-display)}
+.sect-h p{font-size:14px;color:var(--ink-2)}
+.sect-h .fix{margin-left:auto;font:600 13px/1 var(--font);color:var(--ink-2)}
+.frames{flex-wrap:nowrap}
+.frame-note b{color:var(--ink)}
+
+/* Tag: neutral, outlined, 24 px. Never coloured. */
+.tag{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 8px;border-radius:var(--r-sm);box-shadow:inset 0 0 0 1px var(--rule);font:500 12px/1 var(--font);color:var(--ink-2);white-space:nowrap;background:var(--paper-raised)}
+.tag svg{width:14px;height:14px}
+
+/* Fields */
+.fld{display:flex;flex-direction:column;gap:8px}
+.fld > label,.fld > .lb{font:600 15px/1.3 var(--font);color:var(--ink)}
+.fld .hn{font-size:14px;line-height:1.4;color:var(--ink-3)}
+.fld .er{display:flex;gap:6px;align-items:flex-start;font:600 14px/1.4 var(--font);color:var(--danger);margin-top:-4px}
+.fld .er svg{width:16px;height:16px;margin-top:2px}
+.inp{display:flex;align-items:center;gap:8px;height:48px;padding:0 16px;border-radius:var(--r);background:var(--paper-raised);box-shadow:inset 0 0 0 1.5px var(--rule-control);font:500 16px/1 var(--font);color:var(--ink)}
+.inp.h40{height:40px;padding:0 12px;font-size:14px}
+.inp.bad{box-shadow:inset 0 0 0 2px var(--danger)}
+.inp .phd{color:var(--ink-3);font-weight:400}
+.inp svg{width:20px;height:20px;color:var(--ink-2)}
+.inp .end{margin-left:auto}
+.ta{min-height:112px;padding:12px 16px;border-radius:var(--r);background:var(--paper-raised);box-shadow:inset 0 0 0 1.5px var(--rule-control);font:400 16px/1.5 var(--font);color:var(--ink)}
+.ta .phd{color:var(--ink-3)}
+.cnt{font-size:13px;color:var(--ink-3);text-align:right;font-variant-numeric:tabular-nums}
+.sel-c{display:flex;align-items:center;justify-content:space-between;gap:8px;height:40px;padding:0 10px 0 12px;border-radius:var(--r);background:var(--paper-raised);box-shadow:inset 0 0 0 1px var(--rule-control);font:500 14px/1 var(--font);color:var(--ink);white-space:nowrap}
+.sel-c svg{width:16px;height:16px;color:var(--ink-2)}
+.lnk{font:600 15px/1.3 var(--font);color:var(--ink);text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1.5px}
+.lnk.sm{font-size:14px}
+.lnk.danger{color:var(--danger)}
+.muted{color:var(--ink-3)}
+.tn{font-variant-numeric:tabular-nums}
+
+/* Switch row: label and switch always on one row (audit 69) */
+.swrow{display:flex;align-items:center;gap:16px}
+.swrow .t{flex:1;min-width:0}
+.swrow .t b{display:block;font:600 15px/1.3 var(--font)}
+.swrow .t span{display:block;margin-top:2px;font-size:14px;line-height:1.4;color:var(--ink-2)}
+
+/* Art slot labelled with the Blender scene it takes */
+.artslot{position:relative;overflow:hidden;background:var(--paper)}
+.artslot .img{position:absolute;inset:0;background-repeat:no-repeat}
+.artslot .lbl{position:absolute;left:8px;bottom:8px;display:flex;align-items:center;gap:6px;height:24px;padding:0 8px;border-radius:6px;background:rgb(255 255 255 / .94);box-shadow:inset 0 0 0 1px var(--rule);font:600 12px/1 var(--font);color:var(--ink-2)}
+.artslot .lbl i{width:8px;height:8px;border-radius:2px;background:var(--sun-strong)}
+
+/* Generic surface */
+.card{background:var(--paper-raised);border-radius:16px;box-shadow:inset 0 0 0 1px var(--rule)}
+.hr{height:1px;background:var(--rule)}
+.kv{display:grid;grid-template-columns:136px 1fr;gap:12px;padding:10px 0;box-shadow:inset 0 1px 0 var(--rule);font-size:14px;line-height:1.45}
+.kv dt,.kv .k{color:var(--ink-3)}
+.kv .v{color:var(--ink)}
+.ovf{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:8px;color:var(--ink-2);box-shadow:inset 0 0 0 1px var(--rule-control);background:var(--paper-raised)}
+.ovf svg{width:20px;height:20px}
+.ovf.ghost{box-shadow:none;background:none}
+
+/* Notice line under bars: offline, paused */
+.strip{display:flex;align-items:flex-start;gap:10px;padding:12px 16px;font:500 14px/1.45 var(--font)}
+.strip svg{width:20px;height:20px;flex:none;margin-top:0}
+.strip.wait{background:var(--wait-bg);color:var(--ink)}
+.strip.attn{background:var(--attn-bg);color:var(--attn)}
+.strip.ok{background:var(--ok-bg);color:var(--ok)}
+.strip .act{margin-left:auto;font-weight:600;white-space:nowrap;text-decoration:underline;text-underline-offset:3px}
+
+/* ---------- Observer pages ---------- */
+.rowlbl{font:700 15px/1.3 var(--font);color:var(--ink);margin:0 0 16px}
+.scroll.bnpad{bottom:90px}
+.ab .c.t{font:700 17px/1.2 var(--font)}
+.h1{font:800 28px/1.15 var(--font-display);letter-spacing:-.01em}
+.sub{margin-top:4px;font-size:14px;color:var(--ink-2)}
+
+/* Equal-width segments with inline counts (audit 28, 36) */
+.segq{display:grid;grid-template-columns:repeat(3,1fr);padding:2px;margin-top:16px;border-radius:10px;background:var(--paper-sunk);box-shadow:inset 0 0 0 1px var(--rule)}
+.segq > span{display:flex;align-items:center;justify-content:center;gap:6px;height:40px;border-radius:8px;font:600 14px/1 var(--font);color:var(--ink-2);white-space:nowrap}
+.segq > span[aria-pressed="true"]{background:var(--paper-raised);color:var(--ink);box-shadow:0 0 0 1px var(--rule),0 1px 2px rgb(14 13 11 / .06)}
+.updated{display:flex;justify-content:space-between;margin-top:12px;font-size:13px;color:var(--ink-3)}
+
+/* Detail */
+.disc56{display:flex;align-items:center;justify-content:center;width:48px;height:48px;border-radius:24px;background:var(--paper-sunk);color:var(--ink)}
+.refrow{display:flex;align-items:center;gap:12px;margin-top:16px;padding:12px 8px 12px 16px;border-radius:var(--r-md);background:var(--paper-raised);box-shadow:inset 0 0 0 1px var(--rule)}
+.refrow .k{font-size:13px;color:var(--ink-3)}
+.refrow b{display:block;font:700 17px/1.2 var(--font);letter-spacing:.02em;font-variant-numeric:tabular-nums}
+.refrow .btn{margin-left:auto}
+.tl{margin-top:20px;display:grid;grid-template-columns:repeat(4,1fr);gap:4px}
+.tl div{display:flex;flex-direction:column;gap:6px;font:600 12px/1.3 var(--font);color:var(--ink-3)}
+.tl i{display:block;height:4px;border-radius:2px;background:var(--rule)}
+.tl .on{color:var(--ink)}
+.tl .on i{background:var(--ink)}
+.tl .cur{color:var(--attn)}
+.tl .cur i{background:var(--attn)}
+.qcard{margin-top:16px;padding:16px;border-radius:var(--r-md);background:var(--attn-bg)}
+.qcard .who2{display:flex;align-items:center;gap:8px;font:600 13px/1 var(--font);color:var(--attn)}
+.qcard .who2 svg{width:14px;height:14px}
+.qcard p{margin-top:8px;font:500 16px/1.45 var(--font);color:var(--ink)}
+.qcard .ta{margin-top:12px;min-height:72px;background:var(--paper-raised);font-size:15px}
+.qcard .btn{margin-top:12px}
+.list2{margin-top:8px;background:var(--paper-raised);border-radius:var(--r-md);box-shadow:inset 0 0 0 1px var(--rule)}
+.lr{display:grid;grid-template-columns:40px 1fr auto;gap:12px;align-items:center;min-height:64px;padding:8px 12px}
+.lr + .lr{box-shadow:inset 0 1px 0 var(--rule)}
+.lr .ico{display:flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:var(--r);background:var(--paper-sunk)}
+.lr b{display:block;font:600 15px/20px var(--font)}
+.lr span.m{display:block;font-size:13px;line-height:18px;color:var(--ink-3)}
+.lr > svg{width:20px;height:20px;color:var(--ink-3)}
+.dl2 .kv{grid-template-columns:104px 1fr;padding:10px 0}
+.qlink{display:inline-block;margin-top:20px;font:600 15px/1 var(--font);color:var(--danger);text-decoration:underline;text-underline-offset:3px}
+
+/* Receipt variant */
+.keep{margin-top:16px;padding:16px;border-radius:var(--r-md);background:var(--paper-raised);box-shadow:inset 0 0 0 1px var(--rule)}
+.fnote{margin-top:20px;padding-top:16px;box-shadow:inset 0 1px 0 var(--rule);font-size:13px;line-height:1.5;color:var(--ink-2)}
+.fnote p + p{margin-top:6px}
+
+/* Messages list */
+.grp-t{margin-top:20px;font:600 13px/1 var(--font);color:var(--ink-3)}
+.mr{display:grid;grid-template-columns:1fr auto;gap:4px 12px;padding:14px 16px}
+.mr + .mr{box-shadow:inset 0 1px 0 var(--rule)}
+.mr b{font:600 16px/20px var(--font)}
+.mr .tm{font-size:13px;color:var(--ink-3);text-align:right}
+.mr p{grid-column:1 / -1;font-size:14px;line-height:20px;color:var(--ink-2)}
+.mr .row3{grid-column:1 / -1;display:flex;align-items:center;gap:8px;margin-top:4px}
+
+/* Thread */
+.thr{display:flex;flex-direction:column;gap:12px;padding-top:12px}
+.day{align-self:center;font:600 12px/1 var(--font);color:var(--ink-3);padding:6px 0}
+.bub{max-width:84%;padding:10px 14px;border-radius:16px;font-size:15px;line-height:1.45}
+.bub .by{display:block;margin-bottom:4px;font:600 12px/1 var(--font);color:var(--ink-3)}
+.bub.them{align-self:flex-start;background:var(--paper-raised);box-shadow:inset 0 0 0 1px var(--rule);border-bottom-left-radius:6px}
+.bub.q{background:var(--attn-bg);box-shadow:none}
+.bub.q .by{color:var(--attn)}
+.bub.me{align-self:flex-end;background:var(--ink);color:var(--on-ink);border-bottom-right-radius:6px}
+.bub.me .by{color:#cfc9be}
+.stamp2{font-size:12px;color:var(--ink-3)}
+.stamp2.r{align-self:flex-end;margin-top:-6px}
+.att{display:flex;align-items:center;gap:10px;padding:8px 10px;margin-top:4px;border-radius:10px;background:rgb(250 248 243 / .12)}
+.compose{position:absolute;left:0;right:0;bottom:0;z-index:4;display:flex;align-items:flex-end;gap:8px;padding:8px 12px 42px;background:var(--paper);box-shadow:inset 0 1px 0 var(--rule)}
+.compose .addb{display:flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:22px;box-shadow:inset 0 0 0 1px var(--rule-control);color:var(--ink);flex:none}
+.compose .field{flex:1;min-height:44px;display:flex;align-items:center;padding:0 16px;border-radius:22px;background:var(--paper-raised);box-shadow:inset 0 0 0 1.5px var(--rule-control);font-size:15px;color:var(--ink-3)}
+.compose .sendb{display:flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:22px;background:var(--ink);color:var(--on-ink);flex:none}
+
+/* Checklist timeline */
+.tline{position:relative;margin-top:20px}
+.tline::before{content:"";position:absolute;left:19px;top:20px;bottom:36px;width:2px;background:var(--rule)}
+.tline .fill{position:absolute;left:19px;top:20px;width:2px;height:150px;background:var(--ink)}
+.stg{position:relative;display:grid;grid-template-columns:40px 1fr auto;gap:12px;align-items:center;min-height:72px}
+.stg .nd{position:relative;z-index:1;display:flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:20px;background:var(--paper);box-shadow:inset 0 0 0 2px var(--rule)}
+.stg .nd svg{width:18px;height:18px;stroke-width:2.5}
+.stg.done .nd{background:var(--ink);color:var(--on-ink);box-shadow:none}
+.stg.now .nd{background:var(--paper-raised);box-shadow:inset 0 0 0 2px var(--ink)}
+.stg.now .nd::after{content:"";width:10px;height:10px;border-radius:5px;background:var(--ink)}
+.stg b{display:block;font:600 16px/20px var(--font)}
+.stg span.m{display:block;font-size:13px;line-height:18px;color:var(--ink-3)}
+.stg.todo b{color:var(--ink-2)}
+.stg > svg{width:20px;height:20px;color:var(--ink-3)}
+
+/* Settings */
+.sgrp{margin-top:20px}
+.sgrp h2{font:600 13px/1 var(--font);color:var(--ink-3);margin-bottom:8px}
+.srow{display:flex;align-items:center;gap:12px;min-height:56px;padding:8px 16px}
+.srow + .srow{box-shadow:inset 0 1px 0 var(--rule)}
+.srow > svg{width:20px;height:20px;color:var(--ink-3)}
+.srow .t{flex:1}
+.srow .t b{display:block;font:600 16px/20px var(--font)}
+.srow .t span{display:block;font-size:13px;line-height:18px;color:var(--ink-3)}
+.srow .v{font-size:14px;color:var(--ink-2)}
+.segs2{display:inline-flex;padding:2px;border-radius:10px;background:var(--paper-sunk);box-shadow:inset 0 0 0 1px var(--rule)}
+.segs2 span{display:flex;align-items:center;height:32px;padding:0 12px;border-radius:8px;font:600 13px/1 var(--font);color:var(--ink-2)}
+.segs2 span[aria-pressed="true"]{background:var(--paper-raised);color:var(--ink);box-shadow:0 0 0 1px var(--rule)}
+
+/* Menu sheet: outbox row */
+.ob{position:relative;display:inline-flex}
+.ob .count{position:absolute;top:-2px;right:-2px;min-width:16px;height:16px;padding:0 4px;font-size:12px;box-shadow:0 0 0 2px var(--paper)}
+
+/* Sign in */
+.lng{display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 10px 0 8px;border-radius:8px;font:600 14px/1 var(--font);color:var(--ink);box-shadow:inset 0 0 0 1px var(--rule-control)}
+.lng svg{width:20px;height:20px}
+
+/* Leave sheet */
+.sheet2{position:absolute;left:0;right:0;bottom:0;z-index:9;padding:8px 16px 42px;background:var(--paper);border-radius:var(--r-xl) var(--r-xl) 0 0;box-shadow:var(--shadow-sheet)}
+
+/* Home states */
+.rep.paused{background:var(--paper-raised);color:var(--ink);box-shadow:inset 0 0 0 1px var(--rule)}
+.rep.paused p{color:var(--ink-2)}
+.rep.paused .plus{background:var(--paper-sunk);color:var(--ink-3)}
+.abtn .ob .count{top:-4px;right:-6px}
+
+/* Empty states */
+.empty{display:flex;flex-direction:column;align-items:center;text-align:center;padding:0 24px}
+.empty .artslot{width:342px;height:200px;margin-top:24px}
+.empty h2{margin-top:24px;font:700 20px/1.3 var(--font-display)}
+.empty p{margin-top:8px;font-size:15px;line-height:1.5;color:var(--ink-2)}
+.empty .btn{margin-top:20px}
+.rrow .code{white-space:nowrap}
+.abtn .ob{margin-right:6px}
+
+</style>
+</head>
+<body>
+<svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" style="position:absolute" aria-hidden="true">
+<symbol id="globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.4 2.5 3.6 5.5 3.6 9s-1.2 6.5-3.6 9c-2.4-2.5-3.6-5.5-3.6-9S9.6 5.5 12 3z"/></symbol>
+<symbol id="menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+<symbol id="close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+<symbol id="back" viewBox="0 0 24 24"><path d="M19 12H5M11 6l-6 6 6 6"/></symbol>
+<symbol id="plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+<symbol id="home" viewBox="0 0 24 24"><path d="M4 10.5 12 4l8 6.5V19a1 1 0 0 1-1 1h-4.5v-5.5h-5V20H5a1 1 0 0 1-1-1z"/></symbol>
+<symbol id="file" viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></symbol>
+<symbol id="chat" viewBox="0 0 24 24"><path d="M5 5h14a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1h-9l-5 4v-4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z"/></symbol>
+<symbol id="search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.4-4.4"/></symbol>
+<symbol id="check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
+<symbol id="chev" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></symbol>
+<symbol id="chevdown" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+<symbol id="book" viewBox="0 0 24 24"><path d="M12 6.5C10.5 5 8.3 4.5 4 4.5v13c4.3 0 6.5.5 8 2 1.5-1.5 3.7-2 8-2v-13c-4.3 0-6.5.5-8 2zM12 6.5v13"/></symbol>
+<symbol id="shield" viewBox="0 0 24 24"><path d="M12 3l7 3v5.5c0 4.4-2.9 8-7 9.5-4.1-1.5-7-5.1-7-9.5V6z"/></symbol>
+<symbol id="sliders" viewBox="0 0 24 24"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/></symbol>
+<symbol id="checklist" viewBox="0 0 24 24"><path d="M11 7h9M11 12h9M11 17h9M4 7l1.5 1.5L8 6M4 12l1.5 1.5L8 11M4 17l1.5 1.5L8 16"/></symbol>
+<symbol id="help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.4 2.3c-.6.3-.9.8-.9 1.5v.5"/><path d="M12 16.8v.2"/></symbol>
+<symbol id="users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6M15.5 4.6a3.5 3.5 0 0 1 0 6.8M18 14.4c1.8.8 3 2.9 3 5.6"/></symbol>
+<symbol id="signout" viewBox="0 0 24 24"><path d="M10 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h4M15 8l4 4-4 4M19 12H9"/></symbol>
+<symbol id="inbox" viewBox="0 0 24 24"><path d="M4 13 6.5 5h11L20 13v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1z"/><path d="M4 13h4.5l1 2h5l1-2H20"/></symbol>
+<symbol id="assign" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M3 20c0-3.3 2.7-6 6-6 1.6 0 3 .6 4.1 1.6M15 17l2 2 4-4"/></symbol>
+<symbol id="pulse" viewBox="0 0 24 24"><path d="M3 12h4l2.5-6 5 12 2.5-6h4"/></symbol>
+<symbol id="rumour" viewBox="0 0 24 24"><path d="M5 5h14a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1h-9l-5 4v-4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z"/><path d="M10 9.2a2 2 0 1 1 2.7 1.9c-.4.2-.7.5-.7 1v.3M12 14.3v.1"/></symbol>
+<symbol id="publish" viewBox="0 0 24 24"><path d="M12 15V4M7.5 8.5 12 4l4.5 4.5M5 14v5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-5"/></symbol>
+<symbol id="discuss" viewBox="0 0 24 24"><path d="M14 4H4a1 1 0 0 0-1 1v7a1 1 0 0 0 1 1h1v3l3.5-3H14a1 1 0 0 0 1-1V5a1 1 0 0 0-1-1z"/><path d="M18 8h2a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1h-1v3l-3.5-3H11a1 1 0 0 1-1-1v-1"/></symbol>
+<symbol id="key" viewBox="0 0 24 24"><circle cx="8" cy="15" r="4"/><path d="m11 12 8.5-8.5M16.5 6.5l2.5 2.5M14.5 8.5l2 2"/></symbol>
+<symbol id="staff" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M9 3v4M15 3v4"/><circle cx="12" cy="11.5" r="2.2"/><path d="M8 17c.6-1.7 2.1-2.8 4-2.8s3.4 1.1 4 2.8"/></symbol>
+<symbol id="lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></symbol>
+<symbol id="filter" viewBox="0 0 24 24"><path d="M4 6h16M7 12h10M10 18h4"/></symbol>
+<symbol id="copy" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></symbol>
+<symbol id="download" viewBox="0 0 24 24"><path d="M12 4v11M7.5 10.5 12 15l4.5-4.5M5 20h14"/></symbol>
+<symbol id="camera" viewBox="0 0 24 24"><path d="M4 8a1 1 0 0 1 1-1h3l1.5-2h5L16 7h3a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1z"/><circle cx="12" cy="12.5" r="3.2"/></symbol>
+<symbol id="video" viewBox="0 0 24 24"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="m16 10 5-3v10l-5-3"/></symbol>
+<symbol id="mic" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"/></symbol>
+<symbol id="box" viewBox="0 0 24 24"><path d="M4 9h16v10a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1z"/><path d="M3 9l2-4h14l2 4M10 13h4"/></symbol>
+<symbol id="device" viewBox="0 0 24 24"><rect x="6" y="3" width="12" height="18" rx="2"/><path d="m12.8 7.5-2.3 4h3l-2.3 4M10.5 18h3"/></symbol>
+<symbol id="people" viewBox="0 0 24 24"><circle cx="6" cy="8" r="2"/><circle cx="12" cy="7" r="2"/><circle cx="18" cy="8" r="2"/><path d="M3 17v-3a3 3 0 0 1 6 0M9 17v-4a3 3 0 0 1 6 0v4M15 17v-3a3 3 0 0 1 6 0v3M3 20h18"/></symbol>
+<symbol id="alert" viewBox="0 0 24 24"><path d="M10.3 4.3 2.8 17.5A2 2 0 0 0 4.5 20.5h15a2 2 0 0 0 1.7-3L13.7 4.3a2 2 0 0 0-3.4 0z"/><path d="M12 9.5v4.5M12 17v.1"/></symbol>
+<symbol id="access" viewBox="0 0 24 24"><circle cx="10" cy="4.5" r="1.6"/><path d="M10 8v6h5.5l2.5 5.5M10 11h5"/><path d="M14.5 18.2A5 5 0 1 1 7 11.8"/></symbol>
+<symbol id="infoq" viewBox="0 0 24 24"><path d="M4 5h16v11H11l-5 4v-4H4z"/><path d="M10 8.7a2 2 0 1 1 2.7 1.9c-.4.2-.7.5-.7 1v.2M12 13.4v.1"/></symbol>
+<symbol id="megaphone" viewBox="0 0 24 24"><path d="M4 10v4a1 1 0 0 0 1 1h2l8 4V5L7 9H5a1 1 0 0 0-1 1zM7 15l1.5 5h2.5L10 16M19 9a4 4 0 0 1 0 6"/></symbol>
+<symbol id="cash" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="1.5"/><circle cx="12" cy="12" r="2.6"/><path d="M6.5 9.5v.01M17.5 14.5v.01"/></symbol>
+<symbol id="thumb" viewBox="0 0 24 24"><path d="M7 11v9H4v-9zM7 11l4-7a2 2 0 0 1 2 2v4h5.2a2 2 0 0 1 2 2.3l-1.1 6.2a2 2 0 0 1-2 1.5H7"/></symbol>
+<symbol id="tri" viewBox="0 0 24 24"><path d="M12 4 21 20H3z" fill="currentColor" stroke="none"/></symbol>
+<symbol id="diamond" viewBox="0 0 24 24"><path d="m12 3 9 9-9 9-9-9z" fill="currentColor" stroke="none"/></symbol>
+<symbol id="ring" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7.5" stroke-width="3"/></symbol>
+<symbol id="okc" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="currentColor" stroke="none"/><path d="m7.5 12.3 3 3 6-6.3" stroke="#fff" stroke-width="2.4"/></symbol>
+<symbol id="question" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5M12 16.4v.1"/></symbol>
+<symbol id="clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></symbol>
+<symbol id="phone" viewBox="0 0 24 24"><path d="M6.5 3.5h3l1.5 4-2 1.5a11 11 0 0 0 6 6l1.5-2 4 1.5v3a2 2 0 0 1-2 2A16 16 0 0 1 4.5 5.5a2 2 0 0 1 2-2z"/></symbol>
+<symbol id="pin" viewBox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></symbol>
+<symbol id="more" viewBox="0 0 24 24"><path d="M6 12h.01M12 12h.01M18 12h.01" stroke-width="3"/></symbol>
+<symbol id="envelope" viewBox="0 0 24 24"><rect x="3" y="5.5" width="18" height="13" rx="1.5"/><path d="m3.5 6.5 8.5 6.5 8.5-6.5"/></symbol>
+<symbol id="wifioff" viewBox="0 0 24 24"><path d="M3 3l18 18M8.5 16.2a5 5 0 0 1 7 0M5.2 12.8a9.6 9.6 0 0 1 4-2.4M14.6 10.3a9.6 9.6 0 0 1 4.2 2.5M2 9.3a14.3 14.3 0 0 1 4.2-2.6M10.4 5.1A14.5 14.5 0 0 1 22 9.3M12 19.5v.1"/></symbol>
+<symbol id="pause" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M10 9v6M14 9v6"/></symbol>
+<symbol id="send" viewBox="0 0 24 24"><path d="M4 12 20 4l-5 16-3.5-6.5z"/><path d="m11.5 13.5 4-4"/></symbol>
+<symbol id="edit" viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="m13.5 6.5 4 4"/></symbol>
+<symbol id="userplus" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6M18 8v6M15 11h6"/></symbol>
+<symbol id="print" viewBox="0 0 24 24"><path d="M7 9V4h10v5M7 17H5a1 1 0 0 1-1-1v-6a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1h-2"/><rect x="7" y="14" width="10" height="6" rx="1"/></symbol>
+<symbol id="trendup" viewBox="0 0 24 24"><path d="m3 17 6-6 4 4 8-8M15 7h6v6"/></symbol>
+<symbol id="refresh" viewBox="0 0 24 24"><path d="M20 11a8 8 0 0 0-14.6-4.5L4 8M4 4v4h4M4 13a8 8 0 0 0 14.6 4.5L20 16M20 20v-4h-4"/></symbol>
+<symbol id="eye" viewBox="0 0 24 24"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/></symbol>
+<symbol id="calendar" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/></symbol>
+<symbol id="link" viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></symbol>
+<symbol id="flag" viewBox="0 0 24 24"><path d="M5 21V4M5 4h11l-2 4 2 4H5"/></symbol>
+<symbol id="checkin" viewBox="0 0 24 24"><path d="M5 5h14a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1h-9l-5 4v-4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z"/><path d="m8.5 11 2.2 2.2 4.8-4.7"/></symbol>
+<symbol id="hash" viewBox="0 0 24 24"><path d="M5 9h15M4 15h15M10 4 8 20M16 4l-2 16"/></symbol>
+<symbol id="x2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m9 9 6 6M15 9l-6 6"/></symbol>
+<symbol id="dash" viewBox="0 0 24 24"><path d="M6 12h12" stroke-width="3"/></symbol>
+<symbol id="square" viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" rx="1" fill="currentColor" stroke="none"/></symbol>
+</svg>
+<div class="board">
+  <div class="board-head">
+    <h1>Observer app: every other page</h1>
+    <p>Same shell as the approved home and flow: a true-centred 56 px bar with the screen name, the four-item bottom bar, 88 px rows, one Count, one status badge set. Every bar now has Menu or Done, so no screen is a dead end.</p>
+  </div>
+
+  <!-- ROW 1 -->
+  <section class="sect">
+    <div class="sect-h"><h2>Reports and messages</h2><p>The pages an observer opens all day.</p><span class="fix">Fixes audit 11, 28, 29, 30, 31, 32, 33, 34, 35, 36, 44, 45</span></div>
+    <div class="frames">
+
+      <div class="frame-wrap">
+        <div class="frame-label"><b>My reports.</b> Equal segments, counts inline.</div>
+        <div class="phone">
+          <header class="ab"><div class="l"></div><div class="c t">My reports</div><div class="r"><button class="abtn"><svg class="i" aria-hidden="true"><use href="#menu"/></svg>Menu</button></div></header>
+          <div class="scroll bnpad pad">
+            <div class="segq" role="group" aria-label="Show"><span aria-pressed="true">All <span class="count quiet">6</span></span><span>Needs you <span class="count">1</span></span><span>On this phone <span class="count quiet">1</span></span></div>
+            <div class="updated"><span>6 reports shown</span><span>Updated 09:16 WAT</span></div>
+            <div class="list">
+              <div class="rrow"><span class="tile"><svg class="i" aria-hidden="true"><use href="#box"/></svg></span><div><h3>Late or missing materials</h3><div class="m">Gwammaja, 5 Dec, 08:12 WAT</div><div class="st"><span class="badge attn"><svg class="i" aria-hidden="true"><use href="#diamond"/></svg>Question for you</span><span class="code">EG-9M2C-7TQA</span></div></div><svg class="i" aria-hidden="true"><use href="#chev"/></svg></div>
+              <div class="rrow"><span class="tile"><svg class="i" aria-hidden="true"><use href="#people"/></svg></span><div><h3>Queues or crowding</h3><div class="m">Kantudu, 5 Dec, 09:05 WAT</div><div class="st"><span class="badge wait"><svg class="i" aria-hidden="true"><use href="#ring"/></svg>On this phone</span><span class="code">Not sent yet</span></div></div><svg class="i" aria-hidden="true"><use href="#chev"/></svg></div>
+              <div class="rrow"><span class="tile"><svg class="i" aria-hidden="true"><use href="#alert"/></svg></span><div><h3>Intimidation or violence</h3><div class="m">Kantudu, 5 Dec, 08:41 WAT</div><div class="st"><span class="badge info"><svg class="i" aria-hidden="true"><use href="#clock"/></svg>In review</span><span class="code">EG-4H7Q-92KD</span></div></div><svg class="i" aria-hidden="true"><use href="#chev"/></svg></div>
+              <div class="rrow"><span class="tile"><svg class="i" aria-hidden="true"><use href="#checklist"/></svg></span><div><h3>Checklist: Opening</h3><div class="m">Kantudu Primary School I, 08:02 WAT</div><div class="st"><span class="badge ok"><svg class="i" aria-hidden="true"><use href="#check"/></svg>Received</span><span class="code">EG-2D8W-41RN</span></div></div><svg class="i" aria-hidden="true"><use href="#chev"/></svg></div>
+              <div class="rrow"><span class="tile"><svg class="i" aria-hidden="true"><use href="#checklist"/></svg></span><div><h3>Checklist: Arrival</h3><div class="m">Kantudu Primary School I, 07:18 WAT</div><div class="st"><span class="badge ok"><svg class="i" aria-hidden="true"><use href="#check"/></svg>Received</span><span class="code">EG-6K3P-05JA</span></div></div><svg class="i" aria-hidden="true"><use href="#chev"/></svg></div>
+            </div>
+          </div>
+          <nav class="bn" aria-label="Main"><a><span class="ic"><svg class="i" aria-hidden="true"><use href="#home"/></svg></span>Home</a><a class="bn-rep"><span class="ic"><svg class="i" aria-hidden="true"><use href="#plus"/></svg></span>Report</a><a aria-current="page"><span class="ic"><svg class="i" aria-hidden="true"><use href="#file"/></svg></span>My reports</a><a><span class="ic"><svg class="i" aria-hidden="true"><use href="#chat"/></svg><span class="count" aria-label="1 new">1</span></span>Messages</a></nav><div class="home-ind"></div>
+
+        </div>
+      </div>
+
+      <div class="frame-wrap">
+        <div class="frame-label"><b>Report, question waiting.</b> Disc above the H1.</div>
+        <div class="phone">
+          <header class="ab"><div class="l"><button class="abtn"><svg class="i" aria-hidden="true"><use href="#back"/></svg>Back</button></div><div class="c t">Report</div><div class="r"><button class="abtn"><svg class="i" aria-hidden="true"><use href="#menu"/></svg>Menu</button></div></header>
+          <div class="scroll bnpad pad">
+            <div style="padding-top:12px"><span class="disc56"><svg class="i" aria-hidden="true"><use href="#box"/></svg></span></div>
+            <h1 class="h1" style="margin-top:12px">Late or missing materials</h1>
+            <p class="sub">Happened 5 Dec, 08:12 WAT, Gwammaja</p>
+            <div class="refrow"><div><span class="k">Receipt code</span><b>EG-9M2C-7TQA</b></div><a class="btn quiet h36"><svg class="i s20" aria-hidden="true"><use href="#copy"/></svg>Copy</a></div>
+            <div class="tl" aria-label="Status"><div class="on"><i></i>Sent</div><div class="on"><i></i>Received</div><div class="cur"><i></i>Question</div><div><i></i>Closed</div></div>
+            <section class="qcard">
+              <div class="who2"><svg class="i" aria-hidden="true"><use href="#diamond"/></svg>Question for you · Asked 09:02 WAT</div>
+              <p>Which materials were missing when the unit opened? Were ballot papers there?</p>
+              <div class="ta"><span class="phd">Your answer</span></div>
+              <a class="btn primary h40 block">Send answer</a>
+            </section>
+            <div class="h3" style="margin-top:20px">Photos, video, voice</div>
+            <div class="list2"><div class="lr"><span class="ico"><svg class="i" aria-hidden="true"><use href="#camera"/></svg></span><div><b>Photo 1</b><span class="m">Open photo, 612 KB</span></div><svg class="i" aria-hidden="true"><use href="#chev"/></svg></div></div>
+          </div>
+          <nav class="bn" aria-label="Main"><a><span class="ic"><svg class="i" aria-hidden="true"><use href="#home"/></svg></span>Home</a><a class="bn-rep"><span class="ic"><svg class="i" aria-hidden="true"><use href="#plus"/></svg></span>Report</a><a aria-current="page"><span class="ic"><svg class="i" aria-hidden="true"><use href="#file"/></svg></span>My reports</a><a><span class="ic"><svg class="i" aria-hidden="true"><use href="#chat"/></svg><span class="count" aria-label="1 new">1</span></span>Messages</a></nav><div class="home-ind"></div>
+
+        </div>
+      </div>
+
+      <div class="frame-wrap">
+        <div class="frame-label"><b>Receipt, citizen.</b> One save prompt, one footnote.</div>
+        <div class="phone">
+          <header class="ab"><div class="l"></div><div class="c t">Receipt</div><div class="r"><button class="abtn done">Done</button></div></header>
+          <div class="scroll pad">
+            <div class="ok-head"><span class="okdisc"><svg class="i" aria-hidden="true"><use href="#check"/></svg></span><h1>Report received</h1></div>
+            <div class="rcard">
+              <div class="k">Your receipt code</div>
+              <div class="code">EG-7R2N-48VC</div>
+              <div class="t">Received 5 Dec 2026, 10:21 WAT</div>
+              <div class="acts"><a class="btn secondary"><svg class="i" aria-hidden="true"><use href="#copy"/></svg>Copy code</a><a class="btn secondary"><svg class="i" aria-hidden="true"><use href="#download"/></svg>Save as picture</a></div>
+            </div>
+            <div class="keep swrow"><div class="t"><b>Keep this code on this phone</b><span>Turn this off if other people use this phone.</span></div><span class="toggle on"><span class="track"></span></span></div>
+            <div class="h3">What happens next</div>
+            <ol class="next"><li><i>1</i>A reviewer will read your report.</li><li><i>2</i>Check its status with your code on this app, on the website, or by SMS.</li><li><i>3</i>If a reviewer asks a question, you can answer it when you check.</li></ol>
+            <div class="fnote"><p>Citizen report, not from an accredited observer.</p><p>By SMS: send STATUS EG-7R2N-48VC to 20384.</p></div>
+          </div>
+          <div class="foot"><a class="btn secondary h56 block">Report something else</a></div>
+          <div class="home-ind"></div>
+        </div>
+      </div>
+
+      <div class="frame-wrap">
+        <div class="frame-label"><b>Messages.</b> Grouped; one Count style.</div>
+        <div class="phone">
+          <header class="ab"><div class="l"></div><div class="c t">Messages</div><div class="r"><button class="abtn"><svg class="i" aria-hidden="true"><use href="#menu"/></svg>Menu</button></div></header>
+          <div class="scroll bnpad pad">
+            <p class="sub" style="margin-top:8px">Reports where a reviewer has written to you.</p>
+            <div class="grp-t">Questions for you</div>
+            <div class="list" style="margin-top:8px">
+              <div class="mr"><b>EG-9M2C-7TQA</b><span class="tm">09:02</span><p>Which materials were missing when the unit opened? Were ballot papers there?</p><div class="row3"><span class="badge attn"><svg class="i" aria-hidden="true"><use href="#diamond"/></svg>Question for you</span><span class="code" style="font-size:13px;color:var(--ink-3)">Late or missing materials</span></div></div>
+            </div>
+            <div class="grp-t">Unread</div>
+            <div class="list" style="margin-top:8px">
+              <div class="mr"><b>EG-4H7Q-92KD</b><span class="tm">08:57 <span class="count" aria-label="1 new" style="margin-left:6px">1</span></span><p>Thank you. Is everyone safe now? You can send a photo if it is safe to take one.</p></div>
+            </div>
+            <div class="grp-t">Earlier</div>
+            <div class="list" style="margin-top:8px">
+              <div class="mr"><b>EG-2D8W-41RN</b><span class="tm">08:20</span><p style="color:var(--ink-3)">You: The officials arrived at 07:55 and set up quickly.</p></div>
+            </div>
+          </div>
+          <nav class="bn" aria-label="Main"><a><span class="ic"><svg class="i" aria-hidden="true"><use href="#home"/></svg></span>Home</a><a class="bn-rep"><span class="ic"><svg class="i" aria-hidden="true"><use href="#plus"/></svg></span>Report</a><a><span class="ic"><svg class="i" aria-hidden="true"><use href="#file"/></svg></span>My reports</a><a aria-current="page"><span class="ic"><svg class="i" aria-hidden="true"><use href="#chat"/></svg><span class="count" aria-label="1 new">1</span></span>Messages</a></nav><div class="home-ind"></div>
+
+        </div>
+      </div>
+
+      <div class="frame-wrap">
+        <div class="frame-label"><b>Thread.</b> Composer pinned, one add control.</div>
+        <div class="phone">
+          <header class="ab"><div class="l"><button class="abtn"><svg class="i" aria-hidden="true"><use href="#back"/></svg>Back</button></div><div class="c t">EG-4H7Q-92KD</div><div class="r"><button class="abtn"><svg class="i" aria-hidden="true"><use href="#menu"/></svg>Menu</button></div></header>
+          <div class="scroll pad" style="bottom:98px">
+            <div class="thr">
+              <span class="day">Today</span>
+              <div class="bub them q"><span class="by">Reviewer · Question</span>Did you see this yourself, or did someone tell you?</div>
+              <span class="stamp2">08:49 WAT</span>
+              <div class="bub me"><span class="by">You</span>I saw it myself. Two men stood at the entrance and told people to go home.</div>
+              <span class="stamp2 r">08:52 WAT · Received</span>
+              <div class="bub me"><span class="by">You</span>Photo of the entrance<div class="att"><svg class="i s20" aria-hidden="true"><use href="#camera"/></svg>Photo 1, 612 KB</div></div>
+              <span class="stamp2 r">08:53 WAT · Received</span>
+              <div class="bub them"><span class="by">Reviewer</span>Thank you. Is everyone safe now? You can send a photo if it is safe to take one.</div>
+              <span class="stamp2">08:57 WAT</span>
+            </div>
+          </div>
+          <div class="compose"><button class="addb" aria-label="Add photo or voice"><svg class="i" aria-hidden="true"><use href="#plus"/></svg></button><div class="field">Write a message</div><button class="sendb" aria-label="Send message"><svg class="i s20" aria-hidden="true"><use href="#send"/></svg></button></div>
+          <div class="home-ind"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ROW 2 -->
+  <section class="sect">
+    <div class="sect-h"><h2>Checklist, settings, menu, sign-in, leaving the flow</h2><span class="fix">Fixes audit 4, 6, 7, 13, 20, 37, 38, 39, 40, 41, 42, 43</span></div>
+    <div class="frames">
+
+      <div class="frame-wrap">
+        <div class="frame-label"><b>Checklist.</b> One timeline; progress shown once.</div>
+        <div class="phone">
+          <header class="ab"><div class="l"><button class="abtn"><svg class="i" aria-hidden="true"><use href="#back"/></svg>Back</button></div><div class="c t">Checklist</div><div class="r"><button class="abtn"><svg class="i" aria-hidden="true"><use href="#menu"/></svg>Menu</button></div></header>
+          <div class="scroll bnpad pad">
+            <h1 class="h1" style="margin-top:12px">Polling-day checklist</h1>
+            <p class="sub">2 of 6 stages sent. Fill each stage when it happens; each stage sends on its own.</p>
+            <div class="tline">
+              <span class="fill" aria-hidden="true"></span>
+              <div class="stg done"><span class="nd"><svg class="i" aria-hidden="true"><use href="#check"/></svg></span><div><b>Arrival</b><span class="m">Received 07:18 WAT</span></div><svg class="i" aria-hidden="true"><use href="#chev"/></svg></div>
+              <div class="stg done"><span class="nd"><svg class="i" aria-hidden="true"><use href="#check"/></svg></span><div><b>Opening</b><span class="m">Received 08:02 WAT</span></div><svg class="i" aria-hidden="true"><use href="#chev"/></svg></div>
+              <div class="stg now"><span class="nd"></span><div><b>Accreditation</b><span class="m">Started. 3 of 4 answered</span></div><a class="btn primary h36">Continue</a></div>
+              <div class="stg todo"><span class="nd"></span><div><b>Voting</b><span class="m">Not started</span></div><svg class="i" aria-hidden="true"><use href="#chev"/></svg></div>
+              <div class="stg todo"><span class="nd"></span><div><b>Closing and counting</b><span class="m">Not started</span></div><svg class="i" aria-hidden="true"><use href="#chev"/></svg></div>
+              <div class="stg todo"><span class="nd"></span><div><b>Results posted</b><span class="m">Not started</span></div><svg class="i" aria-hidden="true"><use href="#chev"/></svg></div>
+            </div>
+          </div>
+          <nav class="bn" aria-label="Main"><a><span class="ic"><svg class="i" aria-hidden="true"><use href="#home"/></svg></span>Home</a><a class="bn-rep"><span class="ic"><svg class="i" aria-hidden="true"><use href="#plus"/></svg></span>Report</a><a><span class="ic"><svg class="i" aria-hidden="true"><use href="#file"/></svg></span>My reports</a><a><span class="ic"><svg class="i" aria-hidden="true"><use href="#chat"/></svg><span class="count" aria-label="1 new">1</span></span>Messages</a></nav><div class="home-ind"></div>
+
+        </div>
+      </div>
+
+      <div class="frame-wrap">
+        <div class="frame-label"><b>Settings.</b> No Appearance; one sign-out row.</div>
+        <div class="phone">
+          <header class="ab"><div class="l"><button class="abtn"><svg class="i" aria-hidden="true"><use href="#back"/></svg>Back</button></div><div class="c t">Settings</div><div class="r"><button class="abtn"><svg class="i" aria-hidden="true"><use href="#menu"/></svg>Menu</button></div></header>
+          <div class="scroll bnpad pad">
+            <div class="sgrp"><h2>Language and display</h2>
+              <div class="list">
+                <div class="srow"><div class="t"><b>Language</b></div><span class="v">English</span><svg class="i" aria-hidden="true"><use href="#chev"/></svg></div>
+                <div class="srow"><div class="t"><b>Text size</b></div><span class="segs2"><span aria-pressed="true">Normal</span><span>Large</span></span></div>
+                <div class="srow"><div class="t"><b>Vibration</b><span>A short buzz when you choose an answer or send a report.</span></div><span class="toggle on"><span class="track"></span></span></div>
+              </div>
+            </div>
+            <div class="sgrp"><h2>Account and privacy</h2>
+              <div class="list">
+                <div class="srow"><div class="t"><b>Change PIN</b></div><svg class="i" aria-hidden="true"><use href="#chev"/></svg></div>
+                <div class="srow"><div class="t"><b>Privacy notice</b></div><svg class="i" aria-hidden="true"><use href="#chev"/></svg></div>
+                <div class="srow"><div class="t"><b>On this phone</b><span>1 report waiting, 1.4 MB of media</span></div></div>
+                <div class="srow"><div class="t"><b style="color:var(--danger)">Sign out</b><span>Choose to keep or clear this phone</span></div><svg class="i" aria-hidden="true"><use href="#chev"/></svg></div>
+              </div>
+            </div>
+          </div>
+          <nav class="bn" aria-label="Main"><a><span class="ic"><svg class="i" aria-hidden="true"><use href="#home"/></svg></span>Home</a><a class="bn-rep"><span class="ic"><svg class="i" aria-hidden="true"><use href="#plus"/></svg></span>Report</a><a><span class="ic"><svg class="i" aria-hidden="true"><use href="#file"/></svg></span>My reports</a><a><span class="ic"><svg class="i" aria-hidden="true"><use href="#chat"/></svg><span class="count" aria-label="1 new">1</span></span>Messages</a></nav><div class="home-ind"></div>
+
+        </div>
+      </div>
+
+      <div class="frame-wrap">
+        <div class="frame-label"><b>Menu, with reports waiting.</b> Outbox badge spec.</div>
+        <div class="phone">
+          <header class="ab"><div class="l"></div><div class="c"><svg class="mark" viewBox="6 6 36 36" width="24" height="24" role="img" aria-label="ElectraGuard AI"><path d="M38 6A4 4 0 0 1 42 10V14H20A6 6 0 0 0 14 20H29V28H14A6 6 0 0 0 20 34H34V24H42V38A4 4 0 0 1 38 42H20A14 14 0 0 1 6 28V20A14 14 0 0 1 20 6Z"/></svg></div><div class="r"><button class="abtn"><span class="ob"><svg class="i" aria-hidden="true"><use href="#menu"/></svg><span class="count">2</span></span>Menu</button></div></header>
+          <nav class="bn" aria-label="Main"><a aria-current="page"><span class="ic"><svg class="i" aria-hidden="true"><use href="#home"/></svg></span>Home</a><a class="bn-rep"><span class="ic"><svg class="i" aria-hidden="true"><use href="#plus"/></svg></span>Report</a><a><span class="ic"><svg class="i" aria-hidden="true"><use href="#file"/></svg></span>My reports</a><a><span class="ic"><svg class="i" aria-hidden="true"><use href="#chat"/></svg><span class="count" aria-label="1 new">1</span></span>Messages</a></nav><div class="home-ind"></div>
+
+          <div class="scrim"></div>
+          <div class="sheet" role="dialog" aria-label="Menu">
+            <div class="handle"></div>
+            <div class="sh-h"><h2>Menu</h2><button class="abtn"><svg class="i" aria-hidden="true"><use href="#close"/></svg>Close</button></div>
+            <div class="who"><b>Observer OBS-7K2P9X</b><span>Kantudu Primary School I, Kantudu, Dala</span></div>
+            <div class="grp">
+              <div class="mrow"><span class="ob"><svg class="i" aria-hidden="true"><use href="#envelope"/></svg><span class="count">2</span></span>Waiting to send<span class="aside">Send now <svg class="i" aria-hidden="true"><use href="#chev"/></svg></span></div>
+              <div class="mrow"><svg class="i" aria-hidden="true"><use href="#checklist"/></svg>Polling-day checklist<span class="aside">2 of 6 sent</span></div>
+              <div class="mrow"><svg class="i" aria-hidden="true"><use href="#help"/></svg>Ask ElectraGuard</div>
+              <div class="mrow"><svg class="i" aria-hidden="true"><use href="#discuss"/></svg>Discussions</div>
+            </div>
+            <div class="grp">
+              <div class="mrow"><svg class="i" aria-hidden="true"><use href="#book"/></svg>Guides</div>
+              <div class="mrow"><svg class="i" aria-hidden="true"><use href="#shield"/></svg>Privacy notice</div>
+              <div class="mrow"><svg class="i" aria-hidden="true"><use href="#sliders"/></svg>Settings</div>
+            </div>
+            <p class="s112" style="margin-top:12px"><svg class="i" aria-hidden="true"><use href="#alert"/></svg><span>If someone may be in danger, call <b>112</b>. This app does not send help.</span></p>
+            <div class="grp"><div class="mrow out"><svg class="i" aria-hidden="true"><use href="#signout"/></svg>Sign out</div></div>
+            <div class="home-ind"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="frame-wrap">
+        <div class="frame-label"><b>Sign in, wrong PIN.</b> Language chip, quiet error.</div>
+        <div class="phone">
+          <header class="ab"><div class="l"><button class="abtn"><svg class="i" aria-hidden="true"><use href="#back"/></svg>Back</button></div><div class="c t">Sign in</div><div class="r" style="padding-right:8px"><button class="lng" aria-label="Language: English"><svg class="i" aria-hidden="true"><use href="#globe"/></svg>EN</button></div></header>
+          <div class="scroll pad">
+            <h1 class="h1" style="margin-top:16px">Sign in</h1>
+            <p class="sub" style="font-size:16px;line-height:1.5;margin-top:8px">Use the code and PIN on your observer card.</p>
+            <div class="fld" style="margin-top:24px"><label>Observer code</label><span class="hn">It is on your card. Example: OBS-7K2P9X</span><div class="inp" style="letter-spacing:.04em">OBS-7K2P9X</div></div>
+            <div class="fld" style="margin-top:20px"><label>PIN</label><span class="hn">6 numbers. The first time, use the 8-number setup PIN on your card.</span><div class="inp bad"><span style="letter-spacing:.3em">••••••</span><span class="end lnk sm" style="text-decoration:none">Show PIN</span></div><span class="er" style="margin-top:0"><svg class="i" aria-hidden="true"><use href="#alert"/></svg>The code or PIN is not right. 2 tries left before a short wait.</span></div>
+            <a class="lnk sm" style="display:inline-block;margin-top:16px">Forgot your PIN?</a>
+          </div>
+          <div class="foot"><a class="btn primary h56 block">Sign in</a></div>
+          <div class="home-ind"></div>
+        </div>
+      </div>
+
+      <div class="frame-wrap">
+        <div class="frame-label"><b>Close inside the report flow.</b> Keep the draft, or delete it.</div>
+        <div class="phone">
+          <header class="ab"><div class="l"><button class="abtn"><svg class="i" aria-hidden="true"><use href="#back"/></svg>Back</button></div><div class="c">New report</div><div class="r"><button class="abtn"><svg class="i" aria-hidden="true"><use href="#close"/></svg>Close</button></div></header>
+          <div class="scroll pad">
+            <div class="prog"><div class="lbl"><span>Step 4 of 7</span><span>Saved on this phone</span></div><div class="segs" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i><i></i></div></div>
+            <div class="q"><h1>When did it happen?</h1></div>
+          </div>
+          <div class="scrim"></div>
+          <div class="sheet2" role="dialog" aria-label="Leave the report">
+            <div class="handle"></div>
+            <h2 style="margin-top:16px;font:700 20px/1.3 var(--font-display)">Keep this draft and leave?</h2>
+            <p style="margin-top:8px;font-size:15px;line-height:1.5;color:var(--ink-2)">Your report is saved on this phone. You can continue it from Home.</p>
+            <a class="btn primary h56 block" style="margin-top:20px">Keep draft and leave</a>
+            <a class="btn quiet h56 block" style="margin-top:8px">Stay and finish</a>
+            <a class="btn h56 block" style="margin-top:4px;color:var(--danger)">Delete this report</a>
+            <div class="home-ind"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ROW 3 -->
+  <section class="sect">
+    <div class="sect-h"><h2>States: offline, intake paused, empty</h2><p>Empty states carry a slot for the Blender art, labelled with its scene.</p><span class="fix">Fixes audit 8, 9, 10, 26, system 8</span></div>
+    <div class="frames">
+
+      <div class="frame-wrap">
+        <div class="frame-label"><b>Offline.</b> One strip under the bar, badge on Menu.</div>
+        <div class="phone">
+          <header class="ab"><div class="l"></div><div class="c"><svg class="mark" viewBox="6 6 36 36" width="24" height="24" role="img" aria-label="ElectraGuard AI"><path d="M38 6A4 4 0 0 1 42 10V14H20A6 6 0 0 0 14 20H29V28H14A6 6 0 0 0 20 34H34V24H42V38A4 4 0 0 1 38 42H20A14 14 0 0 1 6 28V20A14 14 0 0 1 20 6Z"/></svg></div><div class="r"><button class="abtn"><span class="ob"><svg class="i" aria-hidden="true"><use href="#menu"/></svg><span class="count">1</span></span>Menu</button></div></header>
+          <div class="scroll bnpad">
+            <div class="strip wait"><svg class="i" aria-hidden="true"><use href="#wifioff"/></svg><span>Offline. 1 report is saved on this phone and will send when you have network.</span></div>
+            <div class="pad">
+              <div class="greet"><h1>Good morning</h1><p>Observer OBS-7K2P9X, Kantudu Primary School I</p></div>
+              <section class="rep"><div class="rep-main"><div><h2>Report something</h2><p>You can still report. It waits on this phone.</p></div><span class="plus"><svg class="i" aria-hidden="true"><use href="#plus"/></svg></span></div></section>
+              <div class="sec-h"><h2>My reports</h2><a href="#">See all</a></div>
+              <div class="list">
+                <div class="rrow"><span class="tile"><svg class="i" aria-hidden="true"><use href="#people"/></svg></span><div><h3>Queues or crowding</h3><div class="m">Kantudu, 5 Dec, 09:05 WAT</div><div class="st"><span class="badge wait"><svg class="i" aria-hidden="true"><use href="#ring"/></svg>On this phone</span><span class="code">Sends with network</span></div></div><svg class="i" aria-hidden="true"><use href="#chev"/></svg></div>
+                <div class="rrow"><span class="tile"><svg class="i" aria-hidden="true"><use href="#alert"/></svg></span><div><h3>Intimidation or violence</h3><div class="m">Kantudu, 5 Dec, 08:41 WAT</div><div class="st"><span class="badge info"><svg class="i" aria-hidden="true"><use href="#clock"/></svg>In review</span><span class="code">EG-4H7Q-92KD</span></div></div><svg class="i" aria-hidden="true"><use href="#chev"/></svg></div>
+              </div>
+            </div>
+          </div>
+          <nav class="bn" aria-label="Main"><a aria-current="page"><span class="ic"><svg class="i" aria-hidden="true"><use href="#home"/></svg></span>Home</a><a class="bn-rep"><span class="ic"><svg class="i" aria-hidden="true"><use href="#plus"/></svg></span>Report</a><a><span class="ic"><svg class="i" aria-hidden="true"><use href="#file"/></svg></span>My reports</a><a><span class="ic"><svg class="i" aria-hidden="true"><use href="#chat"/></svg><span class="count" aria-label="1 new">1</span></span>Messages</a></nav><div class="home-ind"></div>
+
+        </div>
+      </div>
+
+      <div class="frame-wrap">
+        <div class="frame-label"><b>Intake paused.</b> The report card itself says so.</div>
+        <div class="phone">
+          <header class="ab"><div class="l"></div><div class="c"><svg class="mark" viewBox="6 6 36 36" width="24" height="24" role="img" aria-label="ElectraGuard AI"><path d="M38 6A4 4 0 0 1 42 10V14H20A6 6 0 0 0 14 20H29V28H14A6 6 0 0 0 20 34H34V24H42V38A4 4 0 0 1 38 42H20A14 14 0 0 1 6 28V20A14 14 0 0 1 20 6Z"/></svg></div><div class="r"><button class="abtn"><svg class="i" aria-hidden="true"><use href="#menu"/></svg>Menu</button></div></header>
+          <div class="scroll bnpad">
+            <div class="strip attn"><svg class="i" aria-hidden="true"><use href="#pause"/></svg><span>Your organisation has paused new reports. You can still write reports. They will wait on this phone.</span></div>
+            <div class="pad">
+              <div class="greet"><h1>Good morning</h1><p>Observer OBS-7K2P9X, Kantudu Primary School I</p></div>
+              <section class="rep paused"><div class="rep-main"><div><h2>Report something</h2><p>New reports are paused. You can still write them. They will wait on this phone.</p></div><span class="plus"><svg class="i" aria-hidden="true"><use href="#plus"/></svg></span></div></section>
+              <div class="sec-h"><h2>My reports</h2><a href="#">See all</a></div>
+              <div class="list">
+                <div class="rrow"><span class="tile"><svg class="i" aria-hidden="true"><use href="#alert"/></svg></span><div><h3>Intimidation or violence</h3><div class="m">Kantudu, 5 Dec, 08:41 WAT</div><div class="st"><span class="badge info"><svg class="i" aria-hidden="true"><use href="#clock"/></svg>In review</span><span class="code">EG-4H7Q-92KD</span></div></div><svg class="i" aria-hidden="true"><use href="#chev"/></svg></div>
+              </div>
+            </div>
+          </div>
+          <nav class="bn" aria-label="Main"><a aria-current="page"><span class="ic"><svg class="i" aria-hidden="true"><use href="#home"/></svg></span>Home</a><a class="bn-rep"><span class="ic"><svg class="i" aria-hidden="true"><use href="#plus"/></svg></span>Report</a><a><span class="ic"><svg class="i" aria-hidden="true"><use href="#file"/></svg></span>My reports</a><a><span class="ic"><svg class="i" aria-hidden="true"><use href="#chat"/></svg><span class="count" aria-label="1 new">1</span></span>Messages</a></nav><div class="home-ind"></div>
+
+        </div>
+      </div>
+
+      <div class="frame-wrap">
+        <div class="frame-label"><b>My reports, empty.</b></div>
+        <div class="phone">
+          <header class="ab"><div class="l"></div><div class="c t">My reports</div><div class="r"><button class="abtn"><svg class="i" aria-hidden="true"><use href="#menu"/></svg>Menu</button></div></header>
+          <div class="scroll bnpad">
+            <div class="empty">
+              <div class="artslot"><div class="img" style="background-image:url(../../art/blender/renders/wip/story-02-transparent.png);background-size:auto 150%;background-position:0% 64%"></div><span class="lbl"><i></i>Art: story, panel a</span></div>
+              <h2>No reports yet</h2>
+              <p>When you send a report, it will show here with its receipt code and status.</p>
+              <a class="btn primary"><svg class="i s20" aria-hidden="true"><use href="#plus"/></svg>Report something</a>
+            </div>
+          </div>
+          <nav class="bn" aria-label="Main"><a><span class="ic"><svg class="i" aria-hidden="true"><use href="#home"/></svg></span>Home</a><a class="bn-rep"><span class="ic"><svg class="i" aria-hidden="true"><use href="#plus"/></svg></span>Report</a><a aria-current="page"><span class="ic"><svg class="i" aria-hidden="true"><use href="#file"/></svg></span>My reports</a><a><span class="ic"><svg class="i" aria-hidden="true"><use href="#chat"/></svg></span>Messages</a></nav><div class="home-ind"></div>
+
+        </div>
+      </div>
+
+      <div class="frame-wrap">
+        <div class="frame-label"><b>Messages, empty.</b></div>
+        <div class="phone">
+          <header class="ab"><div class="l"></div><div class="c t">Messages</div><div class="r"><button class="abtn"><svg class="i" aria-hidden="true"><use href="#menu"/></svg>Menu</button></div></header>
+          <div class="scroll bnpad">
+            <div class="empty">
+              <div class="artslot"><div class="img" style="background-image:url(../../art/blender/renders/wip/story-02-transparent.png);background-size:auto 150%;background-position:33% 52%"></div><span class="lbl"><i></i>Art: story, panel b</span></div>
+              <h2>No messages</h2>
+              <p>When a reviewer writes to you, it will show here. You will also see it on Home.</p>
+            </div>
+          </div>
+          <nav class="bn" aria-label="Main"><a><span class="ic"><svg class="i" aria-hidden="true"><use href="#home"/></svg></span>Home</a><a class="bn-rep"><span class="ic"><svg class="i" aria-hidden="true"><use href="#plus"/></svg></span>Report</a><a><span class="ic"><svg class="i" aria-hidden="true"><use href="#file"/></svg></span>My reports</a><a aria-current="page"><span class="ic"><svg class="i" aria-hidden="true"><use href="#chat"/></svg></span>Messages</a></nav><div class="home-ind"></div>
+
+        </div>
+      </div>
+
+      <div class="frame-wrap">
+        <div class="frame-label"><b>Discussions, empty.</b></div>
+        <div class="phone">
+          <header class="ab"><div class="l"><button class="abtn"><svg class="i" aria-hidden="true"><use href="#back"/></svg>Back</button></div><div class="c t">Discussions</div><div class="r"><button class="abtn"><svg class="i" aria-hidden="true"><use href="#menu"/></svg>Menu</button></div></header>
+          <div class="scroll bnpad">
+            <div class="empty">
+              <div class="artslot"><div class="img" style="background-image:url(../../art/blender/renders/wip/sheet-02-transparent.png);background-size:auto 210%;background-position:72% 100%"></div><span class="lbl"><i></i>Art: sheet, observers row</span></div>
+              <h2>No discussions</h2>
+              <p>A moderator may invite you if there is a shared problem in your area.</p>
+            </div>
+          </div>
+          <nav class="bn" aria-label="Main"><a><span class="ic"><svg class="i" aria-hidden="true"><use href="#home"/></svg></span>Home</a><a class="bn-rep"><span class="ic"><svg class="i" aria-hidden="true"><use href="#plus"/></svg></span>Report</a><a><span class="ic"><svg class="i" aria-hidden="true"><use href="#file"/></svg></span>My reports</a><a><span class="ic"><svg class="i" aria-hidden="true"><use href="#chat"/></svg><span class="count" aria-label="1 new">1</span></span>Messages</a></nav><div class="home-ind"></div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+</body>
+</html>
