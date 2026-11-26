@@ -31,6 +31,8 @@ class Post(models.Model):
     discussion = models.ForeignKey(Discussion, on_delete=models.CASCADE, related_name="posts")
     author = models.ForeignKey(Membership, on_delete=models.PROTECT)
     body = models.CharField(max_length=1000)
+    auto_redacted_body = models.CharField(max_length=2000, blank=True, default="")
+    auto_redactions = models.JSONField(default=list, blank=True)
     hidden_reason = models.CharField(max_length=32, blank=True)
     name_check = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)

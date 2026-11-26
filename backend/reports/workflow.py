@@ -57,6 +57,14 @@ def record_change(report, actor, action, change, field=None):
     ReviewEvent.objects.create(
         report=report, organisation_id=report.organisation_id, actor=actor, action=action, version=report.version, change=change
     )
+    from clocks.calculator import start_question_reply_clock, stop_open_clocks
+
+    if action in (Action.START, Action.REQUEST_CLARIFICATION, Action.CLOSE, Action.WITHDRAW):
+        stop_open_clocks(report)
+    elif action == Action.RESPOND:
+        start_question_reply_clock(report)
+    elif action == Action.MESSAGE and isinstance(change, dict) and change.get("author") == "reviewer":
+        stop_open_clocks(report)
 
 
 def closure_snapshot(report):
@@ -131,7 +139,7 @@ def assign(request, reference):
 @never_cache
 @api_view(["GET"])
 def review_queue(request):
-    return Response(ReportSerializer(assigned_reports(request), many=True).data)
+    return Response(ReportSerializer(assigned_reports(request), many=True, context={"staff": True}).data)
 
 
 @never_cache

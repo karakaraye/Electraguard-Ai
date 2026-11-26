@@ -12,7 +12,10 @@ from django.utils import timezone
 
 from accounts.models import User
 from accounts.observer_auth import endpoint, error, validation, wat
+from accounts.observer_credentials import rate_limit
 from accounts.organisations import org_scope
+from privacy.redactor import safe_text
+from staff.audit import record
 
 from .citizen_views import reply_message
 from .idempotency import idempotent
@@ -115,6 +118,8 @@ def queue_item(report, photo_count, events, video_count=0, audio_count=0):
     legacy_correction = LEGACY_CATEGORY.get(triage.corrected_category) if triage else None
     corrected = category["corrected_value"] or legacy_correction
     closing = next((event for event in reversed(events) if event.action == Action.CLOSE), None)
+    from clocks.calculator import clock_json
+    c_info = clock_json(report)
     return {
         **identity(report), "channel": channel(report),
         "category": {
@@ -133,6 +138,7 @@ def queue_item(report, photo_count, events, video_count=0, audio_count=0):
         "flags": {"possible_duplicate": False, "result_sheet_flags": 0, "possible_names": False},
         "last_activity_at": wat(events[-1].created_at if events else report.created_at),
         "outcome": closing.change.get("outcome") if closing else None,
+        "clock": c_info,
     }
 
 
@@ -141,7 +147,7 @@ def queue_parameters(query):
     choices = {
         "status": set(STATES.values()), "category": CATEGORIES, "urgency": set(URGENCIES),
         "channel": {"app", "citizen", "sms", "ussd"}, "kind": KINDS, "has_evidence": {"true", "false"},
-        "state_code": None, "lga_code": None,
+        "state_code": None, "lga_code": None, "clock_state": {"on_time", "due_soon", "overdue"},
     }
     for name, allowed in choices.items():
         values = sorted(set(query.getlist(name)))
@@ -163,6 +169,7 @@ def matches(item, filters):
     values = {
         **item, **(item["area"] or {}), "category": item["category"]["value"],
         "urgency": item["urgency"]["level"], "has_evidence": "true" if any(item["media_counts"].values()) else "false",
+        "clock_state": (item.get("clock") or {}).get("state"),
     }
     return all(values.get(name) in choices for name, choices in filters.items())
 
@@ -181,13 +188,22 @@ def queue(request):
     cursor = request.GET.get("cursor")
     boundary = None
     owner = str(request.user.public_id)
+    sort_by_due = "clock_state" in filters
     if cursor:
         try:
-            cursor_owner, cursor_filters, rank, danger, received, pk = signing.loads(cursor, salt=CURSOR)
-            when = aware_datetime(received)
-            if cursor_owner != owner or cursor_filters != filters or when is None:
-                raise ValueError
-            boundary = (rank, danger, when, str(UUID(pk)))
+            payload = signing.loads(cursor, salt=CURSOR)
+            if sort_by_due:
+                mode, cursor_owner, cursor_filters, due_str, pk = payload
+                due_when = aware_datetime(due_str)
+                if mode != "due" or cursor_owner != owner or cursor_filters != filters or due_when is None:
+                    raise ValueError
+                boundary = (due_when, str(UUID(pk)))
+            else:
+                cursor_owner, cursor_filters, rank, danger, received, pk = payload
+                when = aware_datetime(received)
+                if cursor_owner != owner or cursor_filters != filters or when is None:
+                    raise ValueError
+                boundary = (rank, danger, when, str(UUID(pk)))
         except (signing.BadSignature, ValueError, TypeError):
             problems["cursor"] = field("invalid", "Use the cursor returned for these filters.")
     if problems:
@@ -207,22 +223,35 @@ def queue(request):
     reports = reports.select_related("triage").annotate(
         photo_count=photo_count(MediaItem, kind="photo") + photo_count(Evidence),
         video_count=photo_count(MediaItem, kind="video"), audio_count=photo_count(MediaItem, kind="audio"),
-    ).defer("description", "redacted_description", "redactions").prefetch_related(Prefetch("review_events", queryset=report_events(request), to_attr="case_events"))
+    ).defer("description", "redacted_description", "redactions").prefetch_related(
+        "clocks", Prefetch("review_events", queryset=report_events(request), to_attr="case_events")
+    )
     ordered = []
     for report in reports:
         item = queue_item(report, report.photo_count, report.case_events, report.video_count, report.audio_count)
         if not matches(item, filters):
             continue
-        key = (-URGENCIES.index(item["urgency"]["level"]), not report.incident_details.get("danger_now", False),
-               report.created_at, str(report.pk))
-        if boundary is None or key > boundary:
-            ordered.append((key, item))
+        if sort_by_due:
+            due_str = (item.get("clock") or {}).get("due_at")
+            due_dt = aware_datetime(due_str) if due_str else datetime(9999, 12, 31, 23, 59, 59, tzinfo=dt_timezone.utc)
+            key = (due_dt, str(report.pk))
+            if boundary is None or key > boundary:
+                ordered.append((key, item))
+        else:
+            key = (-URGENCIES.index(item["urgency"]["level"]), not report.incident_details.get("danger_now", False),
+                   report.created_at, str(report.pk))
+            if boundary is None or key > boundary:
+                ordered.append((key, item))
     ordered.sort(key=lambda row: row[0])
     page = ordered[:limit]
     next_cursor = None
     if len(ordered) > limit:
-        rank, danger, received, pk = page[-1][0]
-        next_cursor = signing.dumps([owner, filters, rank, danger, received.isoformat(), pk], salt=CURSOR)
+        if sort_by_due:
+            due_dt, pk = page[-1][0]
+            next_cursor = signing.dumps(["due", owner, filters, due_dt.isoformat(), pk], salt=CURSOR)
+        else:
+            rank, danger, received, pk = page[-1][0]
+            next_cursor = signing.dumps([owner, filters, rank, danger, received.isoformat(), pk], salt=CURSOR)
     return JsonResponse({"items": [item for _, item in page], "counts": counts, "next_cursor": next_cursor})
 
 
@@ -254,19 +283,19 @@ def conversation(report, events):
         if event.action == Action.RESPOND:
             reply = getattr(event, "citizen_reply", None)
             if reply:
-                message = reply_message(reply)
+                message = reply_message(reply, viewer="reviewer")
                 replies[message["reply_to"]] = message
             elif messages and "note" in event.change:
                 identifier = messages[-1]["id"]
                 replies[identifier] = {
                     "id": question_id(report.pk, event.version), "kind": "reply", "author": "observer",
-                    "author_label": "Observer", "body": event.change["note"], "attachment": None,
+                    "author_label": "Observer", "body": safe_text(event, report.organisation_id), "attachment": None,
                     "question_state": None, "reply_to": identifier, "created_at": wat(event.created_at), "read": True,
                 }
         elif event.action == Action.REQUEST_CLARIFICATION:
             messages.append({
                 "id": question_id(report.pk, event.version), "kind": "formal_question", "author": "reviewer",
-                "author_label": "Reviewer", "body": event.change["note"], "attachment": None,
+                "author_label": "Reviewer", "body": safe_text(event, report.organisation_id), "attachment": None,
                 "question_state": "closed_unanswered", "reply_to": None, "created_at": wat(event.created_at), "read": True,
             })
     if messages and report.status == Status.NEEDS_CLARIFICATION:
@@ -303,17 +332,40 @@ def case(request, reference):
     }.get(row["channel"], "Citizen, not accredited")
     if details.get("simulated"):
         reporter_label += " (Simulated)"
+    safe_desc = safe_text(report)
+    original_available = bool(
+        report.redacted_description
+        or report.redactions
+        or report.auto_redactions
+        or (report.auto_redacted_description and report.auto_redacted_description != report.description)
+    )
+    raw_redactions = report.redactions or report.auto_redactions or []
+    cleaned_redactions = [
+        {k: v for k, v in r.items() if k not in ("original_start", "original_end")}
+        for r in raw_redactions
+    ]
     return JsonResponse({
         "id": row["id"], "receipt_code": row["receipt_code"], "kind": row["kind"], "channel": row["channel"],
         "status": row["status"], "outcome": row["outcome"], "version": report.version,
+        "clock": row["clock"],
+        "description": safe_desc,
+        "original_available": original_available,
+        "redaction": {
+            "automatic": bool(report.auto_redactions),
+            "count": len(report.auto_redactions or []),
+            "kinds": sorted(list(set(r.get("kind") for r in (report.auto_redactions or [])))),
+        },
         "reporter": {
             "type": "observer" if report.observer_id else "citizen", "accredited": bool(report.observer_id),
             "label": reporter_label,
         },
         "language": details.get("language"),
         "original": {
-            "description": report.description, "redacted_description": report.redacted_description,
-            "redactions": report.redactions,
+            "description": safe_desc,
+            "auto_redacted_description": report.auto_redacted_description or safe_desc,
+            "redacted_description": report.redacted_description or report.auto_redacted_description,
+            "redactions": cleaned_redactions,
+            "original_available": original_available,
         },
         "translation": {"status": "unavailable", "text": None},
         "category_observer": details.get("category_observer"), "access_barrier_details": details.get("access_barrier_details", []),
@@ -322,8 +374,16 @@ def case(request, reference):
             "occurred_at": row["occurred_at"], "device_saved_at": details.get("device_saved_at"),
             "received_at": row["received_at"], "clock_skew_seconds": None,
         },
-        "checklist": report.structured_details if report.kind == "checklist" else None,
-        "result_sheet": report.structured_details if report.kind == "result_sheet" else None, "media": media,
+        "checklist": (
+            {**report.structured_details, "note": safe_text({"note": report.structured_details.get("note"), "auto_redacted_body": report.structured_details.get("auto_redacted_note")}, report.organisation_id)}
+            if report.kind == "checklist" and isinstance(report.structured_details, dict) and report.structured_details.get("note")
+            else (report.structured_details if report.kind == "checklist" else None)
+        ),
+        "result_sheet": (
+            {**report.structured_details, "note": safe_text({"note": report.structured_details.get("note"), "auto_redacted_body": report.structured_details.get("auto_redacted_note")}, report.organisation_id)}
+            if report.kind == "result_sheet" and isinstance(report.structured_details, dict) and report.structured_details.get("note")
+            else (report.structured_details if report.kind == "result_sheet" else None)
+        ), "media": media,
         "pending_uploads": [
             {"id": str(upload.pk), "kind": upload.kind, "size_bytes": upload.size_bytes, "received_bytes": upload.received_bytes}
             for upload in pending
@@ -337,7 +397,13 @@ def case(request, reference):
                 "id": str(event.pk), "version": event.version, "action": event.action,
                 "actor_label": ("Citizen" if not event.actor_id else (
                     "Observer" if event.actor_id == report.observer_id else event.actor.get_full_name() or event.actor.role.title()
-                )), "created_at": wat(event.created_at), "change": event.change,
+                )), "created_at": wat(event.created_at), "change": (
+                    {**event.change, "note": safe_text(event, report.organisation_id)}
+                    if isinstance(event.change, dict) and "note" in event.change and event.action in (
+                        Action.RESPOND, Action.MESSAGE, Action.REQUEST_CLARIFICATION, Action.CLOSE
+                    )
+                    else event.change
+                ),
             } for event in events
         ]},
     })
@@ -405,7 +471,11 @@ def apply_action(request, report, data):
         if problem:
             problems[name] = problem
         else:
+            from privacy.redactor import redact as auto_redact
+            n_res = auto_redact(text, report.organisation_id)
             change["note"] = text
+            change["auto_redacted_body"] = n_res.text
+            change["auto_redactions"] = n_res.spans
     if action == "close":
         outcome = data.get("outcome")
         if outcome not in Report.Outcome.values:
@@ -460,6 +530,10 @@ def decide_suggestion(request, report, kind, data):
     if decision == "accept" and original is None:
         return error(409, "invalid_transition", "There is no ready suggestion to accept.")
     value = data.get("value")
+    if kind == "urgency":
+        target = value if decision == "correct" else original
+        if target is None or target == "none" or target not in URGENCIES:
+            return validation({"value": field("invalid_choice", "Choose a valid urgency level.")})
     if decision == "correct" and (
         not isinstance(value, str) or value not in (CATEGORIES if kind == "category" else URGENCIES) or value == original
     ):
@@ -467,6 +541,9 @@ def decide_suggestion(request, report, kind, data):
     output = {"value": original, "decision": "accepted" if decision == "accept" else "corrected",
               "corrected_value": value if decision == "correct" else None}
     report.review_suggestions = {**report.review_suggestions, kind: output}
+    if kind == "urgency":
+        from clocks.calculator import update_clock_urgency
+        update_clock_urgency(report, output["corrected_value"] or output["value"])
     record_change(
         report, request.user,
         Action.ACCEPT_SUGGESTION if decision == "accept" else Action.CORRECT_SUGGESTION,
@@ -484,7 +561,8 @@ def apply_redaction(request, report, data):
     spans = data.get("spans")
     if not isinstance(spans, list):
         return validation({"spans": field("invalid", "Provide a list of redaction spans.")})
-    length = len(report.description)
+    base_text = report.auto_redacted_description or report.description
+    length = len(base_text)
     intervals = []
     problems = {}
     for index, span in enumerate(spans):
@@ -497,25 +575,32 @@ def apply_redaction(request, report, data):
         elif type(end) is not int or end <= start:
             problems[f"spans.{index}.end"] = field("min_value", "End must be after start.", limit=start + 1)
         elif end > length:
-            problems[f"spans.{index}.end"] = field("max_value", "End exceeds the original text.", limit=length)
+            problems[f"spans.{index}.end"] = field("max_value", "End exceeds the redacted text.", limit=length)
         else:
             intervals.append((start, end, index))
     intervals.sort()
+    from privacy.redactor import EXISTING_TOKEN_PATTERN
+    token_spans = [(m.start(), m.end()) for m in EXISTING_TOKEN_PATTERN.finditer(base_text)]
+
     chunks, previous = [], 0
     for start, end, index in intervals:
+        for t_start, t_end in token_spans:
+            if max(start, t_start) < min(end, t_end):
+                problems[f"spans.{index}"] = field("field_invalid", "Redaction span must not cut through an existing token.")
+                break
         if start < previous:
             problems[f"spans.{index}.start"] = field("invalid", "Redaction spans must not overlap.")
-        chunks.extend((report.description[previous:start], "[name removed]"))
+        chunks.extend((base_text[previous:start], "[name removed]"))
         previous = max(previous, end)
     if problems:
         return validation(problems)
 
     report.redactions = [{"start": start, "end": end} for start, end, _ in intervals]
-    report.redacted_description = "".join([*chunks, report.description[previous:]]) if intervals else None
+    report.redacted_description = "".join([*chunks, base_text[previous:]]) if intervals else None
     report.save(update_fields=["redactions", "redacted_description"])
     record_change(report, request.user, Action.REDACT, {
         "spans": report.redactions,
-        "sha256": sha256((report.redacted_description or report.description).encode()).hexdigest(),
+        "sha256": sha256((report.redacted_description or base_text).encode()).hexdigest(),
     })
     return 200, {
         "version": report.version, "redacted_description": report.redacted_description, "redactions": report.redactions,
@@ -525,3 +610,44 @@ def apply_redaction(request, report, data):
 @endpoint("POST", max_body_bytes=65536)
 def redact(request, data, reference):
     return write_case(request, reference, "CASE-05", data, lambda report: apply_redaction(request, report, data))
+
+
+@endpoint("POST", max_body_bytes=16384)
+@transaction.atomic
+def original(request, data, reference):
+    if not request.user.is_authenticated:
+        return error(401, "not_authenticated", "Sign in to continue.")
+    report = org_scope(request, Report).filter(pk=reference).first()
+    if report is None:
+        return missing()
+    if not request.user.has_role(User.Role.REVIEWER) or report.assigned_reviewer_id != request.user.pk:
+        return error(403, "forbidden", "Only the assigned reviewer can view the original text.")
+
+    retry = rate_limit("case-original-view", str(request.user.public_id), 30, 3600)
+    if retry is not None:
+        return error(429, "rate_limited", "Too many requests. Try again later.", retry=retry)
+
+    raw_reason = data.get("reason") if isinstance(data, dict) else None
+    reason = str(raw_reason).strip() if raw_reason is not None else ""
+    if not (1 <= len(reason) <= 500):
+        return validation({"reason": field("invalid", "Provide a reason between 1 and 500 characters.")})
+
+    from privacy.models import OriginalAccess
+    OriginalAccess.objects.create(
+        organisation_id=report.organisation_id,
+        report=report,
+        actor=request.user,
+        reason=reason,
+    )
+    record(
+        report.organisation_id,
+        "case.original_viewed",
+        "report",
+        str(report.pk),
+        actor=request.user,
+        content={"reason": reason},
+    )
+    response = JsonResponse({"description": report.description})
+    response["Cache-Control"] = "no-store"
+    return response
+

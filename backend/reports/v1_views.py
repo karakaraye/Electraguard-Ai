@@ -25,6 +25,7 @@ from .result_checks import check_result_sheet
 from .structured_input import checklist_input, result_input
 from .triage import METHOD_VERSION
 from .workflow import record_change
+from privacy.redactor import redact
 
 Status = Report.Status
 STATES = {
@@ -188,6 +189,19 @@ def attach_ocr_photo(photo, report):
 def persist_report(actor, organisation, values, *, code="", secret_digest="", **extra):
     details = values["incident_details"]
     area = details["area"]
+    desc = values.get("description", "")
+    if desc:
+        res = redact(desc, organisation)
+        values["auto_redacted_description"] = res.text
+        values["auto_redactions"] = res.spans
+    structured = values.get("structured_details")
+    if isinstance(structured, dict) and structured.get("note"):
+        s_res = redact(structured["note"], organisation)
+        values["structured_details"] = {
+            **structured,
+            "auto_redacted_note": s_res.text,
+            "auto_redactions": s_res.spans,
+        }
     while True:
         reference = receipt()
         try:
@@ -199,20 +213,22 @@ def persist_report(actor, organisation, values, *, code="", secret_digest="", **
                     location=(area.get("polling_unit_name") or area.get("ward_name") or area.get("lga_name") or "")[:160],
                     polling_unit_code=(area.get("polling_unit_code") or ""), **values,
                 )
+                ReviewEvent.objects.create(
+                    report=report, organisation_id=report.organisation_id, actor=actor,
+                    version=0, action=ReviewEvent.Action.CREATE, change={"to_status": "received", **{
+                        key: details[key] for key in ("channel", "simulated") if key in details
+                    }},
+                )
+                Triage.objects.create(
+                    report=report, organisation_id=report.organisation_id, method_version=METHOD_VERSION,
+                )
+                from clocks.calculator import create_initial_clock
+                create_initial_clock(report)
             break
         except IntegrityError as exc:
             if getattr(getattr(exc.__cause__, "diag", None), "constraint_name", None) != "reports_report_receipt_code_key":
                 raise
 
-    ReviewEvent.objects.create(
-        report=report, organisation_id=report.organisation_id, actor=actor,
-        version=0, action=ReviewEvent.Action.CREATE, change={"to_status": "received", **{
-            key: details[key] for key in ("channel", "simulated") if key in details
-        }},
-    )
-    Triage.objects.create(
-        report=report, organisation_id=report.organisation_id, method_version=METHOD_VERSION,
-    )
     return 201, {
         **identity(report), "version": report.version,
         **({"channel": "citizen"} if report.observer_id is None else {}),
@@ -364,7 +380,12 @@ def detail(request, reference):
     )
     return JsonResponse({
         **identity(report), "channel": "app", "outcome": report.outcome,
-        **details, "description": (report.redacted_description if report.redacted_description is not None else report.description) if report.kind == "incident" else None,
+        **details, "description": report.description if report.kind == "incident" else None,
+        "redaction": {
+            "automatic": bool(report.auto_redactions),
+            "count": len(report.auto_redactions or []),
+            "kinds": sorted(list(set(r.get("kind") for r in (report.auto_redactions or [])))),
+        },
         "checklist": {k: v for k, v in report.structured_details.items() if k != "supersedes"} if report.kind == "checklist" else None,
         "result_sheet": report.structured_details if report.kind == "result_sheet" else None,
         "occurred_at": wat(report.occurred_at), "closed_at": wat(closure.created_at) if closure else None,
@@ -406,16 +427,22 @@ def withdraw_report(request, report, data, *, public=False):
     report.incident_details = report.review_suggestions = {}
     report.redacted_description = None
     report.redactions = []
+    report.auto_redacted_description = None
+    report.auto_redactions = []
     report.structured_details = {}
     report.result_flags = []
     report.save(update_fields=[
         "status", "withdrawn_at", "assigned_reviewer", "occurred_at", "description",
         "location", "polling_unit_code", "observer_code", "incident_details",
-        "review_suggestions", "redacted_description", "redactions", "structured_details", "result_flags",
+        "review_suggestions", "redacted_description", "redactions",
+        "auto_redacted_description", "auto_redactions",
+        "structured_details", "result_flags",
     ])
     record_change(report, None if public else request.user, ReviewEvent.Action.WITHDRAW, {
         "from_status": "received", "to_status": "withdrawn",
     })
+    from clocks.calculator import stop_open_clocks
+    stop_open_clocks(report)
     stub = withdrawn_stub(report)
     org_scope(request, ReportIdempotency, public=public).filter(report=report).update(body=stub)
     return 200, stub, report

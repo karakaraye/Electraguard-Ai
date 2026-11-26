@@ -41,6 +41,15 @@ Independently reconcile internal dashboard totals within the authorised database
 python backend/manage.py reconcile_observations --start YYYY-MM-DD --end YYYY-MM-DD
 ```
 
+After running database migrations on an existing deployment, backfill review clocks once (safe and idempotent):
+
+```powershell
+python backend/manage.py backfill_review_clocks
+```
+
+> [!NOTE]
+> When existing open reports created prior to C18 are past due, the backfill creates their clocks with `notified_at=None`. The first review clock background sweep (`run_review_clocks` or `sweep_review_clocks`) will raise one overdue alert (`case.overdue` audit event) per untouched old case that is past due.
+
 Use an isolated loopback database named `electraguard_qa` for browser regression. Migrate it and set five distinct local `QA_*_PASSWORD` variables for the administrator, observer, second observer, reviewer and second reviewer. Run `python backend/manage.py shell -c "exec(open('tests/fixtures/provision_browser_accounts.py').read())"`. Start Django and Next.js against that database. Install Playwright in an ignored local tool directory or use the installed package path, set `QA_FRONTEND_ORIGIN` to the loopback frontend, and run `node scripts/verify-core.cjs` on unused test dates. Keep the worker stopped for the worker-independence check.
 
 ## Release decision

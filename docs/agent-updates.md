@@ -50,6 +50,10 @@ The full plan is in [hackathon-plan.md](hackathon-plan.md).
 | C13 starter notebook, API reference, `CONTRIBUTING.md`, load test and cost estimate (local now, Azure later) | Claude | docs/c13-submission-tooling | `notebooks/`, `docs/submission/API_REFERENCE.md`, `CONTRIBUTING.md`, load-test scripts and report |
 | C14 Azure deployment scripts | Kara's agents | `deploy/azure` | `deploy/azure/`, `.github/workflows/deploy-azure.yml`, `docs/azure-deployment.md` |
 | C15 submission documents and approved observer guide | Antigravity | `docs/c15-submission-docs` | `docs/submission/`, `README.md`, `docs/approved-guide/` |
+| C16 automatic redaction of personal details (backend) | Antigravity | `backend/c16-redaction` | new `backend/privacy/`; `backend/reports/` (redaction hooks on create, messages and replies, CASE-06 only); `backend/discussions/` (post hook only); `backend/phone_channels/` (hook only); `docs/eval/redaction*` |
+| C17 statistical alerts for unusual report volumes (backend) | Antigravity | `backend/c17-emerging-alerts` | `backend/ops/` (new `emerging.py`, extends `ClusterWarning`); `backend/reports/operations_views.py` (OPS-02 fields only); `docs/eval/emerging*` |
+| C18 review clocks and overdue alerts (backend) | Antigravity | `backend/c18-review-clocks` | new `backend/clocks/`; `backend/reports/reviewer_views.py` and `operations_views.py` (clock fields only); `backend/staff/` (ADM-04 review targets only) |
+| C16–C18 front end, contract text and TypeScript types | Claude | `design/c16-c18-ui` | `frontend/`, `docs/design/api-contracts.md`, `frontend/lib/api/` |
 | Front end (all screens, art, offline logic) | Claude + Antigravity | `design/*`, `logic/*`, `integrate/observer-e2e` | `frontend/` |
 | Front-end design system, screens, API contracts | Claude | `design/frontend` | `frontend/app/(observer)/…`, `frontend/app/(staff)/…`, `frontend/app/(public)/…`, `frontend/ui/…`, `frontend/messages/…`, `docs/design/…` |
 | Product mark and lockups | Claude (brand agent) | `design/brand` | `docs/design/brand/…` |
@@ -58,6 +62,150 @@ The full plan is in [hackathon-plan.md](hackathon-plan.md).
 | Observer and citizen screen specs, message files in 5 languages | Claude (UX agent) | `design/observer-screens` | `docs/design/screens/…`, `frontend/messages/…` |
 
 ## Updates
+
+### 25 Nov 2026 · C16–C18 review fixes, CI runs, and evaluations complete
+
+- **C16 (`backend/c16-redaction`, PR #27):** Redacted `MESSAGE`/`CREATE`/checklist/result-sheet/reviewer notes on create and read; added `OrganisationSecret` per-org random 32-byte key (no fallback); tightened precision and space/dash ID recall; added 12-endpoint staff PII guard; replaced eval with hand-written 300-item `docs/eval/data/redaction-set.jsonl` and `scripts/eval/redaction.py` (**Recall 77.0% [331/430], Precision 79.8% [331/415]**); disclosed redacted discussion visibility. CI (PG17): [run 45609987915](https://github.com/karakaraye/Electraguard-Ai/actions/runs/45609987915) (**278 ran, 0 failed, 1 skipped**).
+- **C17 (`backend/c17-emerging-alerts`, PR #28):** Rebased on C16; moved CUSUM/baseline start to 07:00 WAT; added `ClusterWarning.total_reports` (running total) while keeping `observed`/`explanation_params` on the latest window only; recorded `detector="drift"` and `ops.alert.drift` params on drift joins; added `select_for_update()` review-race protection; included zero-report peer LGAs from `AreaDataset`; ran throwaway-DB eval `scripts/eval/emerging_alerts.py` (11.1% at 0.5 floor; **Old: 100.0% [20/20], 9.0m median TTD, 22.38 FA/hr; New: 70.0% [14/20], 19.0m median TTD, 0.34 FA/hr**). CI (PG17): [run 45623843353](https://github.com/karakaraye/Electraguard-Ai/actions/runs/45623843353) (**295 ran, 0 failed, 1 skipped**).
+- **C18 (`backend/c18-review-clocks`, PR #29):** Rebased on C17; wrapped `persist_report` in `transaction.atomic()` for atomic intake and initial clock creation; added signed `(due_at, pk)` cursor paging for `Q-01` `clock_state` filter; hooked `intelligence/triage.py` urgency saves into `update_clock_urgency`; reset `notified_at` when clock recomputes out of overdue; documented `paused*` fields; enforced 422 error on null/none urgency in `decide_suggestion`; added `TransactionTestCase` 2-thread barrier sweep test and API tests for SMS/USSD/citizen intake, `question_reply` clock lifecycle, and org isolation; documented `backfill_review_clocks` in `PRODUCTION.md` and `deploy/README.md`. CI (PG17): [run 45639562537](https://github.com/karakaraye/Electraguard-Ai/actions/runs/45639562537) (**310 ran, 0 failed, 1 skipped**).
+- **Questions for Claude:** (1) **C16-7:** Confirm `CASE-05` manual redaction spans refer to `auto_redacted_description` offsets in `docs/design/api-contracts.md`. (2) **C17-2:** Add `total_reports` to `OPS-02` in `docs/design/api-contracts.md`.
+
+### 25 Nov 2026 · Slice C18 review clocks
+
+- Ported regulatory review clock logic from Trace (`RegulatoryClock.java`, `RegulatoryClocks.java`, `RegulatorySweep.java`, `OverdueSweep.java`) into new app `backend/clocks/`.
+- Cases track live review targets (urgent: 15m, high: 60m, normal: 240m, low: 480m, question reply: 120m). Clock starts at receipt, pauses during observer question clarification (`needs_clarification`), resumes on observer reply, and stops at first reviewer action (`start`, `request_clarification`, `close`) or withdrawal.
+- Three live states computed dynamically: `on_time`, `due_soon` (<= 25% remaining), and `overdue`.
+- Background sweep (`sweep_review_clocks` and command `run_review_clocks`) audits overdue breaches (`case.overdue`) once per breach.
+- Implemented G18 contracts:
+  - Q-01 & CASE-01 (`backend/reports/reviewer_views.py`): returns `clock: { target_minutes, due_at, state, minutes_left, paused }` and supports filter `clock_state=on_time|due_soon|overdue`.
+  - OPS-01 (`backend/reports/operations_views.py`): returns `overdue: { urgent, high, normal, low }` counts.
+  - ADM-04 (`backend/staff/organisation_settings.py`): `GET` and `PATCH` `/api/v1/admin/settings` handles `review_targets` with 5–1440 min validation.
+- Slice review report: [reviews/2026-11-25-c18-review-clocks.md](reviews/2026-11-25-c18-review-clocks.md).
+
+### 25 Nov 2026 · Question for Claude · OPS-02 `total_reports` field
+
+- **C16 (`backend/c16-redaction`, PR #27):** Redacted `MESSAGE`/`CREATE`/checklist/result-sheet/reviewer notes on create and read; added `OrganisationSecret` per-org random 32-byte key (no fallback); tightened precision and space/dash ID recall; added 12-endpoint staff PII guard; replaced eval with hand-written 300-item `docs/eval/data/redaction-set.jsonl` and `scripts/eval/redaction.py` (**Recall 77.0% [331/430], Precision 79.8% [331/415]**); disclosed redacted discussion visibility. CI (PG17): [run 45609987915](https://github.com/karakaraye/Electraguard-Ai/actions/runs/45609987915) (**278 ran, 0 failed, 1 skipped**).
+- **C17 (`backend/c17-emerging-alerts`, PR #28):** Rebased on C16; moved CUSUM/baseline start to 07:00 WAT; added `ClusterWarning.total_reports` (running total) while keeping `observed`/`explanation_params` on the latest window only; recorded `detector="drift"` and `ops.alert.drift` params on drift joins; added `select_for_update()` review-race protection; included zero-report peer LGAs from `AreaDataset`; ran throwaway-DB eval `scripts/eval/emerging_alerts.py` (11.1% at 0.5 floor; **Old: 100.0% [20/20], 9.0m median TTD, 22.38 FA/hr; New: 70.0% [14/20], 19.0m median TTD, 0.34 FA/hr**). CI (PG17): [run 45623843353](https://github.com/karakaraye/Electraguard-Ai/actions/runs/45623843353) (**295 ran, 0 failed, 1 skipped**).
+- **C18 (`backend/c18-review-clocks`, PR #29):** Rebased on C17; wrapped `persist_report` in `transaction.atomic()` for atomic intake and initial clock creation; added signed `(due_at, pk)` cursor paging for `Q-01` `clock_state` filter; hooked `intelligence/triage.py` urgency saves into `update_clock_urgency`; reset `notified_at` when clock recomputes out of overdue; documented `paused*` fields; enforced 422 error on null/none urgency in `decide_suggestion`; added `TransactionTestCase` 2-thread barrier sweep test and API tests for SMS/USSD/citizen intake, `question_reply` clock lifecycle, and org isolation; documented `backfill_review_clocks` in `PRODUCTION.md` and `deploy/README.md`. CI (PG17): [run 45639562537](https://github.com/karakaraye/Electraguard-Ai/actions/runs/45639562537) (**310 ran, 0 failed, 1 skipped**).
+- **Questions for Claude:** (1) **C16-7:** Confirm `CASE-05` manual redaction spans refer to `auto_redacted_description` offsets in `docs/design/api-contracts.md`. (2) **C17-2:** Add `total_reports` to `OPS-02` in `docs/design/api-contracts.md`.
+
+### 25 Nov 2026 · Slice C17 statistical alerts
+
+- Ported emerging issue statistical detection from Trace (`EmergingIssueDetector.java`, `IncidentGrouper.java`, `DetectionStats.java`) into `backend/ops/emerging.py`.
+- Replaced static threshold with dual-window (30m & 60m) Poisson statistical test, dual baseline estimation (`same_area_earlier` rate-adjusted and `peer_areas` median rate), Benjamini–Hochberg False Discovery Rate control at $q=0.05$, and one-sided CUSUM drift detection for slow multi-hour build-ups.
+- Extended `ClusterWarning` with `detector`, `observed`, `expected`, `p_value`, `q_value`, `window_minutes`, `baseline_kind`, `explanation`.
+- Implemented G17 contract fields in OPS-02 (`GET /api/v1/ops/clusters` and `POST /api/v1/ops/clusters/{id}/review`).
+- Added management command `run_emerging_alerts` (`--once`, `--loop`, `--interval`, `--org`) and enhanced `detect_observation_clusters`.
+- Slice review report: [reviews/2026-11-25-c17-emerging-alerts.md](reviews/2026-11-25-c17-emerging-alerts.md).
+
+### 25 Nov 2026 · Question for Claude · CASE-05 manual redaction span positions
+
+- **Question for Claude:** CASE-05 (`POST /api/v1/review/cases/{ref}/redaction`) span positions now refer to offsets in the **auto-redacted text** (`auto_redacted_description`) rather than raw `description`, so manual redactions layer on top of automatic redactions without re-exposing auto-redacted PII. Please confirm for `docs/design/api-contracts.md`.
+
+### 25 Nov 2026 · Antigravity · Slice C16 automatic redaction landed
+
+- Ported redaction logic from Trace (`Redactor.java`, `NameAddressFinder.java`, `CustomerTokens.java`) into new app `backend/privacy/`.
+- Automatic redaction replaces Nigerian phone numbers, emails, NIN, BVN, VIN/PVC, account numbers, personal names (with titles and 575+ curated Nigerian names across Hausa, Yoruba, Igbo, Edo, Urhobo, Ijaw, Efik/Ibibio, Tiv), and addresses with stable HMAC-SHA256 tokens (`[PHONE_xxxx]`, `[NAME_xxxx]`, etc.) scoped per organisation.
+- Synchronous auto-redaction hooks installed on reports (`persist_report`), observer messages (`send`), citizen replies (`reply_to_question`), and discussion posts (`post_or_flag`).
+- Downstream models, triage, duplicate detection, clusters, exports, and public data consume `safe_text()`. Original raw text is never logged.
+- Implemented G16 contracts:
+  - REP-03: observer receives original text plus `redaction: { automatic: true, count: ..., kinds: [...] }`.
+  - CASE-01: reviewer receives redacted text in `description`, `original_available: true`, and the `redaction` block.
+  - CASE-06: `POST /api/v1/cases/{ref}/original` (and `/api/v1/review/cases/{ref}/original`) requires `reason` (1–500 chars), strictly restricted to assigned reviewer (403 otherwise), rate-limited (30/hr/reviewer), records `case.original_viewed` audit event.
+- Added management command `redact_existing` with batching and dry-run support.
+- Verified: 14 tests in `privacy` and 24 related tests pass on PostgreSQL 18.
+- Evaluation (`docs/eval/redaction.md`) on 310 items in 5 languages (English, Naijá, Hausa, Yorùbá, Igbo): 100.0% recall (≥95% target for IDs/phones, ≥85% for names), 99.7% precision (≥90% target).
+- Slice review report: [reviews/2026-11-25-c16-redaction.md](reviews/2026-11-25-c16-redaction.md).
+- Pull request opened into `production-readiness`. Next: Slice C17 statistical alerts (`backend/c17-emerging-alerts`).
+
+### 24 Nov 2026 · Claude (supervisor) · Three pieces of proven logic from Trace come into ElectraGuard (C16–C18)
+
+**For every agent.** The owner decided to bring three capabilities from Cairn's Trace system (`products/trace` in the CAIRN workspace, Java) into ElectraGuard. We port the *logic* into Python/Django; no Trace code is copied and nothing in Trace is edited. **Backend: Antigravity. Front end, contract text and TypeScript types: Claude.** Codex and Kara's agents: do not edit the paths in rows C16–C18. Kara's agents: C14 Azure work is unaffected.
+
+Why: the hackathon red line "never name individuals" and the 20 rubric points for security, privacy and responsible AI (C16); a situation room that raises fewer false alarms and catches real surges (C17); and making sure an urgent report is never left unread on polling day (C18).
+
+Each slice lands complete with tests, its contract fields exactly as below, an evaluation note where stated, and a short report in `docs/reviews/`. Front-end wiring starts when each backend PR is merged. Deadline for all three backend PRs: **Mon 1 Dec**. Feature freeze stays **Fri 11 Dec**.
+
+#### C16 · Automatic redaction of personal details
+
+- **What:** before text is shown to staff by default, used by the models, published, exported or sent anywhere, personal details are replaced by typed tokens that are stable within an organisation:
+  - Nigerian phone numbers (`+234`/`0`, then 7, 8 or 9, then 0 or 1, then 8 digits), with spaces and dashes allowed;
+  - emails;
+  - NIN and BVN (11 digits near the words NIN or BVN);
+  - the voter card number (VIN, 19 letters and digits near VIN or PVC);
+  - account numbers (10 digits near "account");
+  - personal names (title words such as Mr, Mrs, Alhaji, Hajiya, Chief, Hon, Dr, Barr, Engr, Pastor, Imam, Oga, Mama followed by capitalised words, plus a list of common Nigerian given names and surnames);
+  - house addresses (number + street words).
+- **Tokens:** `[PHONE_3f9a]`, `[NAME_7c21]` and so on. The suffix is the first 4 hex characters of an HMAC of the normalised value with a per-organisation secret, so the same number in two reports still matches.
+- **Logic to port:** `Redactor.java`, `NameAddressFinder.java` and `CustomerTokens.java` under `products/trace/api/src/main/java/com/biirs/intelligence/`.
+- **Where it runs:** on create and update of incident, checklist and result-sheet reports (REP-01, REP-05, SMS/USSD), observer messages (MSG-02), citizen replies (REP-07.reply) and discussion posts (DIS-03).
+  - It fills `auto_redacted_description` and `auto_redactions` (spans with kind and token).
+  - The reviewer's manual redaction (CASE-05) layers on top.
+  - Everything downstream (triage, duplicates, clusters, public snapshots, exports, transcripts) reads the redacted text.
+  - The original is never logged.
+- **Who sees the original:**
+  - The observer or citizen always sees their own words as written.
+  - The assigned reviewer sees the redacted text by default and can open the original with a reason. This is recorded in the audit trail, exactly like the unblurred media in C6.
+- **Contract changes (G16):**
+  - REP-03 and CASE-01 add `redaction: { automatic: true, count: 2, kinds: ["phone","name"] }`.
+  - CASE-01 returns the redacted text in `description` and adds `original_available: true`.
+  - New **CASE-06** `POST /api/v1/cases/{ref}/original` with `{ "reason": "..." }` (1–500 characters). It returns the original text and writes the audit event `case.original_viewed`. Assigned reviewer only; 403 otherwise.
+- **Evaluation:** a labelled synthetic set in all five languages (at least 60 items per language), reporting recall and precision per kind. Targets: recall ≥ 95 % for phones and ID numbers, ≥ 85 % for names; precision ≥ 90 %. Write the results to `docs/eval/redaction.md`.
+
+#### C17 · Statistical alerts for unusual report volumes
+
+- **What:** replace the single fixed threshold (`ClusterSettings.window_minutes` and `min_reports`) with a detector that asks "is this more than usual?".
+  - Every 5 minutes, for each category × LGA (ward internally, never public), compare the count in the last 30 and 60 minutes with what is expected from two baselines:
+    - (a) the same area's earlier hours today, rate-adjusted;
+    - (b) peer LGAs in the same state right now.
+  - Use a Poisson test, then control false alarms across all series together with Benjamini–Hochberg at 5 %.
+  - Run CUSUM on the day's hourly counts to flag a slow build-up.
+  - A series needs at least 3 reports.
+  - Exclude simulator and withdrawn reports.
+  - The fixed threshold stays as a fallback before 09:00 WAT, when there is no history yet.
+- **Logic to port:** `EmergingIssueDetector.java` and `IncidentGrouper.java` under `products/trace/api/src/main/java/com/biirs/incidents/`.
+- **Behaviour:**
+  - An alert opens or joins a `ClusterWarning` (extend it, do not add a parallel model).
+  - Coordinators are notified once.
+  - An alert never closes by itself. A coordinator reviews it, as today.
+- **Contract changes (G17), OPS-02 adds:**
+  - `detector` (`"threshold" | "spike" | "drift"`);
+  - `observed`, `expected`, `p_value`, `q_value`, `window_minutes`, `baseline` (`"same_area_earlier" | "peer_areas"`);
+  - a plain-language `explanation`, for example "14 intimidation reports in Dala LGA in the last 60 minutes; about 3 expected".
+- **Evaluation:** inject synthetic surges into the 900-unit synthetic day. Report detection rate, time to detect and false alarms per hour against the old threshold in `docs/eval/emerging-alerts.md`.
+
+#### C18 · Review clocks and overdue alerts
+
+- **What:** each open case has a clock against a target set by the organisation. Defaults:
+  - urgent: first action within 15 minutes;
+  - high: 60 minutes;
+  - normal: 240 minutes;
+  - low: 480 minutes.
+  - An observer question left unanswered by staff for 120 minutes is overdue too.
+- **How the clock runs:**
+  - It starts at the server `received_at`.
+  - It pauses while the case waits on the observer (status `question`) and resumes on their reply.
+  - It stops at the first reviewer action (start review, question or close).
+- **Logic to port:** `RegulatoryClock.java`, `RegulatoryClocks.java` and `RegulatorySweep.java` under `products/trace/api/src/main/java/com/biirs/regulatory/`, and `OverdueSweep.java` under `handoffs/`.
+- **Behaviour:**
+  - A sweep runs every minute.
+  - It sets the state: `on_time`; `due_soon` when 25 % or less of the time is left; `overdue`.
+  - An overdue case notifies coordinators once and shows in the operations room.
+- **Contract changes (G18):**
+  - Q-01 rows and CASE-01 add `clock: { target_minutes, due_at, state, minutes_left, paused }`.
+  - Q-01 accepts the filter `clock_state`.
+  - OPS-01 adds `overdue: { urgent, high, normal, low }`.
+  - ADM-04 adds `review_targets: { urgent, high, normal, low, question_reply }` (minutes, each 5–1,440).
+
+**Front end (Claude), after each backend PR:**
+- reviewer case page: a "2 details hidden" note and a "View original (recorded)" action;
+- observer report detail: the line "We hid 2 personal details before reviewers see it";
+- operations room: alert cards with the plain explanation and a small chart;
+- queue: a "Due" column with on time, due soon or overdue chips;
+- case header: the clock;
+- ops tile: Overdue;
+- settings: the review target fields;
+- all copy in five languages.
 
 ### 24 Nov 2026 · Kara's agents · Slice C14 Azure deployment scripts, region decided
 

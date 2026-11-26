@@ -358,11 +358,11 @@ def overview(request):
     closure = org_scope(request, ReviewEvent).filter(
         report_id=OuterRef("pk"), action=ReviewEvent.Action.CLOSE,
     ).order_by("-version").values("change__outcome")[:1]
-    active = active.select_related("triage").defer("description", "redacted_description", "redactions").annotate(
+    active = active.select_related("triage").prefetch_related("clocks").defer("description", "redacted_description", "redactions").annotate(
         closure_outcome=Subquery(closure),
     )
 
-    statuses, categories, channels, urgencies, outcomes = (Counter() for _ in range(5))
+    statuses, categories, channels, urgencies, outcomes, overdue_by_urgency = (Counter() for _ in range(6))
     lgas = {}
     references = []
     urgent_open = 0
@@ -382,6 +382,8 @@ def overview(request):
         urgencies[level] += 1
         if report.status in ACTIVE:
             urgent_open += level == "urgent"
+            if (item.get("clock") or {}).get("state") == "overdue":
+                overdue_by_urgency[level.lower()] += 1
         if report.status == Status.CLOSED:
             outcomes[report.closure_outcome or "unrecorded"] += 1
 
@@ -399,6 +401,12 @@ def overview(request):
 
     return JsonResponse({
         "range": {"from": start.isoformat(), "to": end.isoformat()}, "totals": totals,
+        "overdue": {
+            "urgent": overdue_by_urgency["urgent"],
+            "high": overdue_by_urgency["high"],
+            "normal": overdue_by_urgency["normal"],
+            "low": overdue_by_urgency["low"],
+        },
         "by_status": count_rows(statuses, "status"), "by_outcome": count_rows(outcomes, "outcome"),
         "by_category": count_rows(categories, "category"), "by_channel": count_rows(channels, "channel"),
         "by_urgency": count_rows(urgencies, "urgency"),

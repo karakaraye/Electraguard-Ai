@@ -15,6 +15,7 @@ from .models import Report, ReviewEvent
 from .structured_input import clean_text
 from .v1_views import STATES, Status, missing
 from .workflow import record_change
+from privacy.redactor import redact, safe_text
 
 Action = ReviewEvent.Action
 VISIBLE = (Action.REQUEST_CLARIFICATION, Action.RESPOND, Action.MESSAGE)
@@ -60,8 +61,10 @@ def messages(report, viewer):
         if author == viewer == "reviewer":
             label = event.actor.get_full_name() or "Reviewer"
         read_version = report.reviewer_read_version if viewer == "reviewer" else report.observer_read_version
+        note_body = event.change.get("note", "")
+        display_body = (event.change.get("auto_redacted_body") or safe_text(event, report.organisation_id)) if viewer == "reviewer" else note_body
         item = dict(id=identifier, kind=kind, author=author, author_label=label,
-                    body=event.change.get("note", ""), attachment=attachments.get(event.change.get("attachment_media_id")),
+                    body=display_body, attachment=attachments.get(event.change.get("attachment_media_id")),
                     question_state=state, reply_to=reply,
                     created_at=wat(event.created_at), read=author == viewer or event.version <= read_version)
         items.append(item)
@@ -165,7 +168,11 @@ def send(report, actor, role, data):
             errors["attachment_media_id"] = field("invalid", "Choose an available message attachment.")
     if errors:
         return validation(errors)
-    change = {"author": role, "note": body}
+    res = redact(body, report.organisation_id)
+    change = {
+        "author": role, "note": body,
+        "auto_redacted_body": res.text, "auto_redactions": res.spans,
+    }
     if attachment:
         change["attachment_media_id"] = attachment
     if kind == "reply":
@@ -177,6 +184,10 @@ def send(report, actor, role, data):
         record_change(report, actor, Action.RESPOND, change, "status")
     else:
         record_change(report, actor, Action.MESSAGE, change)
+        if role == "reviewer":
+            from clocks.calculator import stop_open_clocks
+
+            stop_open_clocks(report)
     return 201, {
         "message": messages(report, role)[-1],
         "status" if citizen else "report_status": STATES[report.status], "version": report.version,

@@ -140,7 +140,7 @@ def verify(request):
 
 EXPORT_FIELDS = (
     "id", "created_at", "actor_ref", "actor_label", "action", "object_type",
-    "object_id", "version", "content_digest", "prev_hash", "hash",
+    "object_id", "version", "content_digest", "prev_hash", "hash", "reason",
 )
 
 
@@ -156,9 +156,32 @@ def export_rows(events, format_name):
         data = event_data(event)
         data.pop("organisation_id")
         data.update(actor_label=event.actor_label, prev_hash=event.prev_hash, hash=event.hash)
+        if event.action == "case.original_viewed":
+            from privacy.models import OriginalAccess
+            access = (
+                OriginalAccess.objects.filter(
+                    organisation_id=event.organisation_id,
+                    report_id=event.object_id,
+                    created_at__lte=event.created_at + timedelta(seconds=10),
+                    created_at__gte=event.created_at - timedelta(seconds=10),
+                )
+                .order_by("-created_at")
+                .first()
+            ) or OriginalAccess.objects.filter(
+                organisation_id=event.organisation_id,
+                report_id=event.object_id,
+            ).order_by("-created_at").first()
+            data["reason"] = access.reason if access else ""
+        else:
+            data["reason"] = None
+
         if format_name == "jsonl":
+            if data.get("reason") is None:
+                data.pop("reason", None)
             yield json.dumps(data, ensure_ascii=False) + "\n"
         else:
+            if data.get("reason") is None:
+                data["reason"] = ""
             for key, value in data.items():
                 if isinstance(value, str) and value.lstrip().startswith(("=", "-", "+", "@")):
                     data[key] = "'" + value
