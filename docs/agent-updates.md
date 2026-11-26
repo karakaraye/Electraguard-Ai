@@ -34,6 +34,7 @@ The full plan is in [hackathon-plan.md](hackathon-plan.md).
 
 | Area | Owner | Branch / location | Files |
 |---|---|---|---|
+| Readable documentation overhaul (all guides, submission docs, README, video script, sitemap) | Antigravity | `docs/readable` | `docs/`, `README.md` |
 | Coordination log and licence (Slice A) | Codex | `codex/coordination-and-license` | `docs/agent-updates.md`, `docs/hackathon-plan.md`, `LICENSE` |
 | C1 observer code and PIN sign-in, organisation scoping | Codex | `codex/observer-sign-in` | `docs/agent-updates.md`, `backend/accounts/`, `backend/config/settings.py`, `backend/config/urls.py`, `backend/reports/` (organisation fields and scoping only) |
 | C2 PIN follow-ups and place reference | Codex | `backend/v1-contracts` | `docs/agent-updates.md`, `backend/accounts/`, `backend/reference/`, `backend/config/settings.py`, `backend/config/urls.py`, `data/reference/` |
@@ -63,6 +64,28 @@ The full plan is in [hackathon-plan.md](hackathon-plan.md).
 | Observer and citizen screen specs, message files in 5 languages | Claude (UX agent) | `design/observer-screens` | `docs/design/screens/…`, `frontend/messages/…` |
 
 ## Updates
+
+### 26 Nov 2026 · Antigravity · Readable documentation overhaul for every reader
+
+- **Branch:** `docs/readable`
+- **Goal:** Make the documentation accessible and authoritative for three distinct readers at once: non-technical citizens/voters/observers, election organisation staff (coordinators, reviewers, admins), and hackathon judges/software engineers.
+- **Root README Rewrite (`README.md`):**
+  - Layer 1 ("ElectraGuard in Two Minutes"): Plain English overview of what the platform is, who it is for, what problem it solves in Nigerian elections, what observers and voters actually do, and what is published vs. never published.
+  - Layer 2 ("For Judges"): Rubric-aligned breakdown addressing all 6 hackathon criteria (Technology & Innovation [25], Electoral Relevance [20], Security/Privacy/Responsible AI [20], Inclusion & Multilingual [15], Scalability [15], Demo & Documentation [5]), with direct pointers to files, UI screenshots, API contracts, and tests.
+  - Layer 3 ("For Engineers"): Complete local setup guide (PostgreSQL 17, Django 5.1, Next.js 15), exact test commands, benchmark commands, and links to in-depth guides.
+- **User & Staff Guides (`docs/guides/`):**
+  - Created `docs/guides/img/` containing 25 real UI screenshots from `docs/design/redesign/screens/`.
+  - Authored `observer-guide.md`: Language switching, anonymous batch code/PIN sign-in, guided 7-step incident reporting, offline outbox caching and auto-sync, Form EC8A arithmetic checks, and replying to situation room questions.
+  - Authored `citizen-guide.md`: Anonymous reporting, receipt tracking at `/receipt`, rumour checking at `/check`, and feature phone intake (USSD `*384*24#` and SMS on `/phone`).
+  - Authored `staff-guide.md`: RBAC permissions, queue triage with live review clocks, automated PII redaction (`[NAME_xxxx]`, `[PHONE_xxxx]`), CASE-06 elevation, 60-LGA surveillance, dual-coordinator safety notices, and SHA-256 audit chaining.
+  - Authored `glossary.md`: Plain-English definitions for 17 Nigerian electoral and technical terms.
+- **Submission Documents Refreshed (`docs/submission/`):**
+  - Prepended a 3–5 line "In plain words" summary to all 10 submission files while preserving technical depth below.
+  - Aligned files with current backend components (PostgreSQL 17, C16 automated PII redaction, C17 Poisson+CUSUM volume surveillance, C18 review clocks, community features) and frontend features (warm dawn visual identity, 5 languages, offline ServiceWorker outbox).
+- **Video Script (`docs/submission/VIDEO_SCRIPT.md`):**
+  - Rewrote 3-minute (180s) shot-by-shot demonstration video script specifying exact routes, visual actions, voiceover narration, and second-by-second timing across 6 scenes.
+- **Documentation Sitemap (`docs/README.md`):**
+  - Created complete reader guide mapping every document in the repository by reader persona (Citizen, Observer, Situation Room, Judge, Engineer).
 
 ### 25 Nov 2026 · Antigravity · Community features backend complete (Sections A, B, C, D)
 
