@@ -5,7 +5,7 @@
   "ui": {
     "back": "Go back",
     "offline": "No network",
-    "retry": "Try again",
+    "retry": "Try am again",
     "close": "Close",
     "cancel": "Cancel",
     "menu": "Menu",
@@ -36,7 +36,7 @@
       "remaining": "{remaining, plural, =0 {No letter remain.} one {# letter remain.} other {# letters remain.}}"
     },
     "select": {
-      "choose": "Choose one"
+      "choose": "Pick one"
     },
     "search": {
       "clear": "Clear am",
@@ -47,7 +47,7 @@
     "when": {
       "legend": "Wen e happen?",
       "justNow": "Just now",
-      "earlierToday": "Earlier today",
+      "earlierToday": "Early today",
       "anotherDay": "Another day",
       "time": "Time",
       "date": "Date",
@@ -86,7 +86,7 @@
       "saved": "E don save",
       "failed": "E never send",
       "missing": "File no dey this phone again",
-      "retry": "Try again",
+      "retry": "Try am again",
       "remove": "Remove",
       "chooseAgain": "Choose file again",
       "estimate": "{size} · about {time} to send",
@@ -98,7 +98,7 @@
     },
     "language": {
       "label": "Language",
-      "choose": "Choose your language"
+      "choose": "Choose the language you want"
     },
     "theme": {
       "label": "How the app dey look",
@@ -133,7 +133,7 @@
     "nav": {
       "main": "Main",
       "report": "Report am",
-      "newReport": "New report",
+      "newReport": "Make new report",
       "receipt": "Receipt",
       "needYou": "{count, plural, one {# dey wait for you} other {# dey wait for you}}"
     }
@@ -147,7 +147,7 @@
     "no": "No",
     "done": "I don finish",
     "home": "Home",
-    "showAll": "Show all",
+    "showAll": "Show everything",
     "showLess": "Show only few",
     "wat": "West Africa Time",
     "network": {
@@ -183,8 +183,8 @@
     },
     "time": {
       "justNow": "Just now",
-      "minutesAgo": "{count, plural, one {# minute ago} other {# minutes ago}}",
-      "hoursAgo": "{count, plural, one {# hour ago} other {# hours ago}}",
+      "minutesAgo": "{count, plural, one {# minute don pass} other {# minutes don pass}}",
+      "hoursAgo": "{count, plural, one {# hour don pass} other {# hours don pass}}",
       "at": "{time}, {date}"
     },
     "error": {
@@ -201,7 +201,7 @@
     "discard": {
       "title": "You wan delete this report?",
       "body": "Wetin you write and any photo, video or voice note go comot from this phone. You no fit bring am back.",
-      "confirm": "Delete report",
+      "confirm": "Delete am",
       "keep": "Keep am"
     },
     "pinSheet": {
@@ -214,7 +214,7 @@
     }
   },
   "o01": {
-    "title": "Choose your language",
+    "title": "Choose the language you want",
     "hint": "You fit change am later for Settings.",
     "en": "English",
     "pcm": "Naijá",
@@ -229,7 +229,7 @@
     "body3": "Your report go wait well for this phone, e go send by itself when network come back.",
     "next": "Next",
     "skip": "Skip",
-    "progress": "Page {current} of {total}"
+    "progress": "Page {current} for {total}"
   },
   "o02": {
     "title": "Wetin this app dey keep",
@@ -238,7 +238,7 @@
     "line3": "You fit withdraw your report (comot am) before review start.",
     "line4": "If person fit dey for danger, call 112. This app no dey send help.",
     "listen": "Listen to am",
-    "privacyLink": "Read the full privacy notice",
+    "privacyLink": "Read how we dey take care of your information",
     "continue": "I don understand",
     "line5": "If you use Talk am, your phone speech service fit process your voice to turn am to words."
   },
@@ -251,7 +251,7 @@
     "checkStatus": "Check report with receipt code",
     "signIn": {
       "title": "Sign in",
-      "codeLabel": "Observer code",
+      "codeLabel": "Your observer code",
       "codeHint": "E dey your card. Example: OBS-7K2P9X",
       "pinLabel": "PIN",
       "pinHint": "6 numbers. For the first time, use the 8-number setup PIN wey dey your card.",
@@ -271,7 +271,7 @@
       "lockedUntil": "You don try too many times. You fit try again by {time}."
     },
     "setPin": {
-      "title": "Choose your own PIN",
+      "title": "Make your own PIN",
       "body": "Pick 6 numbers wey you go remember. No use your birthday or 123456. No share am with anybody.",
       "newLabel": "New PIN",
       "confirmLabel": "Type the new PIN again",
@@ -296,7 +296,7 @@
       "clear": "Delete dem from this phone",
       "clearTitle": "You wan delete these reports from this phone?",
       "clearBody": "Dem never send at all. If you delete dem, dem don go for good. You no fit bring dem back.",
-      "clearConfirm": "Delete reports"
+      "clearConfirm": "Delete the reports"
     },
     "footer": "ElectraGuard AI by Cairn · E no dey for any party"
   },
@@ -308,15 +308,15 @@
       "afternoon": "Good afternoon",
       "evening": "Good evening"
     },
-    "citizenMode": "Citizen report",
-    "report": "Report something",
+    "citizenMode": "Report as citizen",
+    "report": "Report wetin you see",
     "heroBody": "Tell us wetin you see for your polling unit.",
     "heroOffline": "You fit still report. E go wait for this phone.",
-    "continueDraft": "Continue your report",
+    "continueDraft": "Continue the report wey you start",
     "draftSaved": "You start am {time}",
     "checklist": "Polling-day checklist",
     "checklistProgress": "{done} out of {total} stages don send",
-    "checklistNext": "Next: {stage}",
+    "checklistNext": "Next one: {stage}",
     "checklistDone": "All the stages don go",
     "stageNext": "Next",
     "myReports": "My reports",
@@ -324,7 +324,7 @@
     "messages": "Messages",
     "messagesCount": "{count, plural, =0 {Nothing new} one {# report need you} other {# reports need you}}",
     "discussions": "Discussions",
-    "discussionsInvite": "{count, plural, one {# invitation} other {# invitations}}",
+    "discussionsInvite": "{count, plural, one {# person invite you} other {# people invite you}}",
     "ask": "Ask ElectraGuard",
     "askHint": "Help and rules from guides wey dem approve",
     "unsent": "{count, plural, one {# report dey this phone. E never send.} other {# reports dey this phone. Dem never send.}}",
@@ -384,9 +384,9 @@
       "noAssistance": "No help for people wey need am",
       "noLargePrint": "No big print or braille",
       "noSignLanguage": "No sign language",
-      "other": "Something else"
+      "other": "Another thing"
     },
-    "error": "Choose one picture to continue."
+    "error": "Choose one picture before you go on."
   },
   "o06": {
     "title": "Anybody dey for danger now?",
@@ -397,7 +397,7 @@
     "emergency": {
       "title": "First, make you dey safe",
       "step1": "Comot from the danger. Go safe place.",
-      "step2": "Call 112 for police, fire or ambulance.",
+      "step2": "Call 112 if you need police, fire service or ambulance.",
       "step3": "Tell your coordinator if you fit.",
       "call": "Call 112",
       "noDispatch": "This app no dey send help. Your report dey go to reviewers. E no dey go to police.",
@@ -478,9 +478,9 @@
     "photo": "Snap photo",
     "video": "Record video",
     "videoLimit": "No pass 60 seconds",
-    "voice": "Record voice note",
+    "voice": "Record your voice",
     "voiceLimit": "No pass 2 minutes",
-    "file": "Choose file",
+    "file": "Pick file",
     "blur": "Hide faces (blur)",
     "blurHint": "We blur the faces wey we fit see. Check before you send.",
     "locationRemoved": "We don remove location",
@@ -529,7 +529,7 @@
     "needsAttention": "We no fit accept this report yet. Fix the parts wey dem mark below, then send am again.",
     "savedTitle": "We save am for this phone",
     "checkingTitle": "We dey check your report",
-    "summaryTitle": "Your report",
+    "summaryTitle": "Wetin you report",
     "sendOffline": "Keep am, send when network come",
     "checkThis": "Check am",
     "citizenNote": "You no need account. You go get receipt code.",
@@ -553,14 +553,14 @@
       "uploading": "E dey send {percent}%",
       "saved": "E don save",
       "failed": "E never send",
-      "retry": "Try again",
+      "retry": "Try am again",
       "missing": "This file no dey this phone again. Choose the file again.",
-      "chooseAgain": "Choose file again",
+      "chooseAgain": "Pick the file again",
       "closed": "The report don close, so you no fit add this file.",
       "cannotRemove": "Reviewer don start, so you no fit remove this file again."
     },
     "keepOpen": "Leave the app open until everything show \"E don save\".",
-    "viewReport": "See this report",
+    "viewReport": "Look this report",
     "another": "Report another thing",
     "home": "Go back home",
     "citizen": {
@@ -586,7 +586,7 @@
     "loading": "We dey bring your reports",
     "loadError": "We no fit bring your reports. Try again.",
     "checklistStage": "Checklist: {stage}",
-    "resultSheet": "Result-sheet check",
+    "resultSheet": "Result sheet check",
     "unknownPlace": "Na only ward",
     "filterLabel": "Show",
     "more": "Show more reports",
@@ -611,13 +611,13 @@
       "sendAsMessage": "Send am as message"
     },
     "conversation": {
-      "title": "Messages with your reviewer",
+      "title": "Your talk with the reviewer",
       "empty": "No message yet.",
       "you": "You",
       "reviewer": "Reviewer",
       "formalQuestion": "Question",
       "label": "Write message",
-      "send": "Send message",
+      "send": "Send your message",
       "attach": "Add photo or voice",
       "queued": "E dey this phone",
       "notAssigned": "Dem never give am to any reviewer yet. You fit still write. The reviewer go see am.",
@@ -625,7 +625,7 @@
       "loadError": "We no fit get the messages. Dem go show when we fit reach the server.",
       "offline": "No network. Messages go show when network come. You fit still write; e go send later.",
       "write": "Write message, or add photo or voice note.",
-      "attached": "Added: {name}",
+      "attached": "Dem don add: {name}",
       "openAttachment": "Open the file",
       "unsent": "Your message wey no send",
       "answered": "dem answer am",
@@ -684,7 +684,7 @@
       "opening": "Opening",
       "accreditation": "Accreditation",
       "voting": "Voting",
-      "closing": "Closing and counting",
+      "closing": "Close and count",
       "results": "Dem paste results"
     },
     "stageState": {
@@ -721,7 +721,7 @@
       "ink": "Ink",
       "device": "Accreditation machine",
       "register": "Voter register",
-      "stamps": "Stamps and seals",
+      "stamps": "Stamp and seal",
       "other": "Another thing"
     },
     "queue": {
@@ -769,14 +769,14 @@
       "title": "Snap the sheet wey dem paste",
       "take": "Snap photo",
       "retake": "Snap again",
-      "file": "Choose file",
+      "file": "Pick file",
       "tip": "Hold the phone straight. Make sure all the numbers clear well and light dey.",
       "reading": "We dey read the numbers from the photo",
       "readFailed": "We no fit read the numbers. Abeg type dem from the sheet.",
       "offline": "Network no dey, so we no fit read the photo now. Abeg type the numbers from the sheet.",
       "skip": "Type the numbers instead",
       "alt": "Photo of the result sheet wey dem paste",
-      "view": "See the photo",
+      "view": "Look the photo",
       "tooBig": "This photo too big. Snap am again small far.",
       "tooMany": "Dem don read too many photos for the last one hour. Type the numbers from the sheet.",
       "unavailable": "To read photo never ready yet. Type the numbers from the sheet.",
@@ -786,10 +786,10 @@
       "title": "Type exactly wetin dey the sheet",
       "hint": "Even if one number look like say e no correct, type wetin dem write. Reviewers go check am.",
       "suggested": "We read this from the photo. Check am with the sheet.",
-      "registered": "Registered voters",
-      "accredited": "Accredited voters",
+      "registered": "People wey register to vote",
+      "accredited": "People wey dem accredit",
       "party": "Votes for party {label}",
-      "rejected": "Rejected ballots",
+      "rejected": "Ballots wey dem reject",
       "blank": "Leave am empty if the sheet no show am",
       "notNumber": "Use only numbers, like 245.",
       "tooBig": "That number too big for one polling unit. Check am again.",
@@ -799,8 +799,8 @@
       "groupParties": "Votes for each party"
     },
     "confirm": "I don check every number with the sheet wey dem paste",
-    "confirmError": "Tick the box after you check every number.",
-    "send": "Send for review",
+    "confirmError": "Tick the box after you don check every number.",
+    "send": "Send am for review",
     "sending": "E dey send"
   },
   "o17": {
@@ -821,12 +821,12 @@
     "title": "Discussions",
     "hint": "Talk with other observers for your area about one problem wey una share. Na only your observer code dem go see.",
     "invitations": "Invitations",
-    "joined": "Your discussions",
+    "joined": "Discussions wey you dey inside",
     "invite": {
       "from": "Moderator invite you",
       "area": "Area: {area}",
       "join": "Join",
-      "decline": "No, thank you",
+      "decline": "No, I no want",
       "rules": "If you join, other people for this discussion go see your observer code and wetin you write. Dem no go ever see your reports."
     },
     "members": "{count, plural, one {# member} other {# members}}",
@@ -848,7 +848,7 @@
       "moderator": "Moderator",
       "empty": "No post yet.",
       "shareNote": "If you wan use something from here for your own report, write am for your report by yourself.",
-      "leave": "Leave discussion",
+      "leave": "Comot from discussion",
       "leaveTitle": "You wan leave this discussion?",
       "leaveBody": "You no go see new posts again. Your posts go remain, unless moderator remove dem.",
       "leaveConfirm": "Leave",
@@ -883,7 +883,7 @@
     "openSource": "Open the guide",
     "noAnswer": "I no get approved answer for that one. Contact your coordinator.",
     "offline": "You need network to ask question. The guides wey dey saved dey below.",
-    "savedGuides": "Saved guides",
+    "savedGuides": "Guides wey you save",
     "note": "Answers dey come only from guides wey dem approve. Dem no be legal advice.",
     "error": "We no fit get answer. Try again.",
     "empty": "Type question to ask.",
@@ -922,14 +922,14 @@
       "body": "Drafts, saved reports and messages for this phone go comot. Reports wey dem don receive go still dey safe with the reviewers.",
       "unsentWarning": "{count, plural, one {# report never send. E go lost.} other {# reports never send. Dem go lost.}}",
       "sendFirst": "{count, plural, one {Send am first} other {Send dem first}}",
-      "confirm": "Clear and sign out",
+      "confirm": "Clear am and sign out",
       "signedOut": "You don sign out.",
       "everywhere": "Sign out for every phone",
       "unsentKept": "{count, plural, one {# report never send. E go stay for this phone and send when you sign in again with this code.} other {# reports never send. Dem go stay for this phone and send when you sign in again with this code.}}"
     },
     "version": "Version {version}",
     "groupDisplay": "Language and how e dey show",
-    "groupAccount": "Account and privacy",
+    "groupAccount": "Your account and privacy",
     "textSize": "How big the writing be",
     "vibration": "Vibration",
     "vibrationHint": "Small buzz when you choose answer or send report.",
@@ -957,7 +957,7 @@
       "line3": "If reviewer ask question, you fit answer am when you check."
     },
     "sms": "By SMS: send STATUS {code} go {shortCode}",
-    "checkStatus": "Check status",
+    "checkStatus": "Check wetin dey happen",
     "another": "Report another thing",
     "citizenLabel": "Citizen report. E no come from accredited observer.",
     "secretMissing": "You no fit add this file from this phone."
@@ -1047,15 +1047,15 @@
       "keys": {
         "close": "Close di panel",
         "help": "Show shortcuts",
-        "search": "Search cases",
+        "search": "Find cases",
         "next": "Next case",
-        "previous": "Previous case",
+        "previous": "Case wey pass",
         "open": "Open di case"
       },
       "menu": "Open menu",
       "search": "Search",
-      "searchLabel": "Search cases by reference, place or category",
-      "searchPlaceholder": "Search cases",
+      "searchLabel": "Find case by reference, place or category",
+      "searchPlaceholder": "Find cases",
       "shortcuts": "Keyboard shortcuts"
     },
     "notFound": {
@@ -1064,17 +1064,17 @@
     }
   },
   "s01": {
-    "enrolScan": "Scan this code with your authenticator app.",
+    "enrolScan": "Use your authenticator app to scan this code.",
     "enrolTypeKey": "Or type this key put for the app.",
     "qrLabel": "QR code for your authenticator app",
     "qrUnavailable": "The QR code no show. Type the key wey dey below instead.",
     "codePaste": "You fit paste the whole code.",
     "footer": "Na for reviewers and coordinators of observation organisation. Observers dey sign in for the app with their observer code.",
     "strength": {
-      "empty": "Use at least {min} characters.",
+      "empty": "Use {min} characters at least.",
       "short": "E too short: {count} of {min} characters.",
       "fair": "E long reach. Longer password strong pass.",
-      "strong": "Strong password."
+      "strong": "This password strong."
     },
     "title": "[PCM draft] Staff sign-in",
     "subtitle": "[PCM draft] Official election observation review portal",
@@ -1171,7 +1171,7 @@
     "empty": "No case match these filters.",
     "emptySubtitle": "[PCM draft] New reports assigned to you will appear here.",
     "loadMore": "[PCM draft] Load more cases",
-    "tabsLabel": "Cases by status",
+    "tabsLabel": "Cases by how dem dey",
     "caption": "Cases wey dey the review queue",
     "simulated": "Practice",
     "noPlace": "Dem no give place",
@@ -1247,7 +1247,7 @@
       "clearSpans": "[PCM draft] Clear all redactions",
       "save": "[PCM draft] Save redactions",
       "preview": "[PCM draft] Redacted preview:",
-      "mode": "Hide names",
+      "mode": "Cover the names",
       "selected": "Wetin you select: “{text}”",
       "count": "{count, plural, =0 {Nothing hide yet} one {# part don hide} other {# parts don hide}}"
     },
@@ -1261,7 +1261,7 @@
       "skew": "[PCM draft] Phone clock skew: {seconds}s",
       "title": "Details",
       "categoryGiven": "Category wey dem give",
-      "dangerNow": "Danger now",
+      "dangerNow": "Danger dey now",
       "seenFirsthand": "Dem see am with their eye",
       "place": "Place",
       "occurred": "When e happen",
@@ -1394,7 +1394,7 @@
       "stale": "Another person don change this case. Reload am to see the latest one.",
       "invalid": "That action no fit happen again. The case don move.",
       "evidence": "New evidence don land. Check am before you close the case.",
-      "validation": "Check the fields and try again.",
+      "validation": "Check wetin you fill, then try again.",
       "reload": "Reload",
       "notFound": "We no find this case."
     }
@@ -1423,7 +1423,7 @@
     "casesTitle": "Cases",
     "scope": {
       "unassigned": "Never assign",
-      "all": "All open"
+      "all": "All wey open"
     },
     "refresh": "Refresh the list",
     "selected": "{count, plural, =0 {You never select anything} one {# don select} other {# don select}}",
@@ -1436,7 +1436,7 @@
       "received": "When we receive am",
       "reviewer": "Reviewer"
     },
-    "noSuggestion": "No suggestion",
+    "noSuggestion": "We no get suggestion",
     "result": {
       "assigned": "Dem give am to {name}",
       "none": "Dem never give anybody",
@@ -1472,7 +1472,7 @@
       "windowMinutes": "[PCM draft] Window (minutes)",
       "minReports": "[PCM draft] Minimum reports",
       "saveSettings": "[PCM draft] Update thresholds",
-      "openCount": "{count} open",
+      "openCount": "{count} still open",
       "reviewedBy": "{name} don review am, {time}"
     },
     "coverage": {
@@ -1513,7 +1513,7 @@
     "refresh": "Refresh",
     "totalsLabel": "Total",
     "notResult": "This no be result.",
-    "empty": "Nothing for this day yet.",
+    "empty": "Nothing dey for this day yet.",
     "lga": {
       "lga": "LGA",
       "reports": "Reports",
@@ -1534,7 +1534,7 @@
       "overview": "Overview",
       "checkins": "Check-ins",
       "coverage": "Coverage",
-      "late": "Late materials"
+      "late": "Materials wey late"
     }
   },
   "s06": {
@@ -1567,7 +1567,7 @@
     },
     "response": {
       "title": "Reply for di public",
-      "textLabel": "Reply text",
+      "textLabel": "Wetin we go reply",
       "saveDraft": "Save draft",
       "approve": "Approve reply",
       "reject": "Send am back",
@@ -1714,7 +1714,7 @@
     "createTitle": "Preview new release",
     "cutoffLabel": "Cutoff time (West Africa Time)",
     "cutoffHint": "Reports wey close after dis time no go enter. Pick time wey pass at least {minutes} minutes, or leave am empty make we use di latest time wey dem allow.",
-    "createButton": "Generate preview",
+    "createButton": "Make preview",
     "scheduleTitle": "Release every hour",
     "scheduleHint": "If e dey on, dem go build and publish snapshot every hour if di checks pass. Dem go record your name as di approver.",
     "scheduleOn": "On",
@@ -1727,10 +1727,10 @@
     "cutoffInvalid": "Put correct date and time.",
     "scheduleUnknown": "We no dey show di setting wey dey now. Choose on or off to set am.",
     "schedule": {
-      "confirmTitle": "Turn on hourly release?",
+      "confirmTitle": "Turn on release every hour?",
       "confirmBody": "Snapshots go publish by demsef every hour, with your name as di approver. You fit turn am off anytime.",
-      "confirmOn": "Turn on",
-      "turnOff": "Turn off",
+      "confirmOn": "Switch on",
+      "turnOff": "Switch off",
       "stale": "Dem don change di hourly release setting for another place. Reload dis page, then try again."
     },
     "notice": {
@@ -1797,7 +1797,7 @@
       "tooRecent": "Di cutoff too near now. Pick earlier time.",
       "invalid": "Check di details and try again."
     },
-    "retry": "Try again",
+    "retry": "Try am again",
     "cancel": "Cancel"
   },
   "s08": {
@@ -1849,7 +1849,7 @@
     "state": "State",
     "lga": "LGA",
     "ward": "Ward",
-    "wholeLga": "Whole LGA",
+    "wholeLga": "The whole LGA",
     "areaLoading": "Areas dey load...",
     "invites": "Invite observer codes",
     "invitesHint": "If you wan. One code for each line, no pass 200.",
@@ -1918,7 +1918,7 @@
       "printFor": "Print cards for {label}"
     },
     "cards": {
-      "heading": "{count, plural, one {# card} other {# cards}} ready to print",
+      "heading": "{count, plural, one {# card dey} other {# cards dey}} ready to print",
       "headingFor": "Card for {code}",
       "noticeMore": "Print now. If you close this page, dem no fit show the PINs again. Reset PIN to get new one.",
       "print": "Print",
@@ -1927,7 +1927,7 @@
       "pin": "Setup PIN",
       "expires": "PIN go expire {when}",
       "how": "Put this code and PIN the first time wey you open ElectraGuard AI.",
-      "cutLine": "Cut along the dashed line",
+      "cutLine": "Cut for the dashed line",
       "cutHere": "Cut here"
     },
     "searchPlaceholder": "OBS-",
@@ -1941,12 +1941,12 @@
         "actions": "Actions",
         "activity": "Activity"
       },
-      "never": "Not yet",
+      "never": "Never",
       "replacedBy": "{code} don replace am",
       "empty": "No observer code dey yet. Create batch to get some.",
       "emptyFilter": "No code match. Try another search or status.",
       "count": "{count, plural, one {# code} other {# codes}}",
-      "noBatch": "No batch",
+      "noBatch": "E no get batch",
       "lastActiveOn": "Last time e work: {date}"
     },
     "filter": {
@@ -1982,20 +1982,20 @@
       "confirm": "Reset PINs and print"
     },
     "cancel": "Cancel",
-    "retry": "Try again",
+    "retry": "Try am again",
     "errors": {
       "confirmation": "Confirm say make dem reset the setup PINs wey never claim, then try again.",
       "rateLimited": "This organisation don reach the daily limit of 2,000 new codes. Try again tomorrow.",
       "alreadyRevoked": "Dem don revoke this code before. We don refresh the list.",
       "notFound": "We no see that code. We don refresh the list.",
-      "invalid": "Check the details and try again.",
+      "invalid": "Check the details well, then try again.",
       "inProgress": "Dem still dey work on this request. Wait small and try again."
     },
     "notice": {
       "created": "Batch don create. Print the cards now; dem no go show the setup PINs again.",
       "revoked": "{code} don revoke.",
       "reissued": "{code} don revoke. The new card dey below.",
-      "pinReset": "New setup PIN ready for {code}.",
+      "pinReset": "New setup PIN dey ready for {code}.",
       "printed": "Cards for {label} ready. Dem dey show the setup PINs one time only."
     }
   },
@@ -2005,7 +2005,7 @@
     "createStaff": "Add staff",
     "reset2fa": "Reset 2FA",
     "offboard": "Offboard",
-    "retry": "Try again",
+    "retry": "Try am again",
     "cancel": "Cancel",
     "filter": {
       "label": "Show",
@@ -2037,7 +2037,7 @@
     "neverSignedIn": "Never yet",
     "you": "You",
     "reset2faFor": "Reset 2FA for {name}",
-    "offboardFor": "Offboard {name}",
+    "offboardFor": "Remove {name}",
     "selfNote": "You no fit offboard your own account.",
     "create": {
       "title": "Add one staff",
@@ -2065,7 +2065,7 @@
       "done": "We don reset two-step code for {name}."
     },
     "offboardDialog": {
-      "title": "Offboard {name}?",
+      "title": "Remove {name}?",
       "body": "{name} go lose access sharp-sharp and e go comot everywhere. Open cases wey dem give am go go back to the list of cases wey nobody carry. You no fit undo this.",
       "reason": "Reason",
       "reasons": {
@@ -2090,11 +2090,11 @@
   },
   "s11": {
     "title": "[PCM draft] Organisation settings",
-    "retry": "Try again",
+    "retry": "Try am again",
     "cancel": "Cancel",
     "saved": "We don save am.",
     "intakeCard": {
-      "title": "Report intake",
+      "title": "How reports dey enter",
       "open": "Dem dey receive reports",
       "paused": "Intake don stop",
       "hint": "If you stop am, citizens and observers no fit send new report. Reports wey don enter no go change.",
@@ -2116,11 +2116,11 @@
     },
     "retentionCard": {
       "title": "How long we keep records",
-      "label": "Keep records for (days)",
+      "label": "How long to keep records (days)",
       "hint": "From 30 to 730 days. Records wey pass this go delete for the next purge.",
       "save": "Save retention",
       "error": "Put whole number from 30 to 730.",
-      "confirmTitle": "Delete older records?",
+      "confirmTitle": "Delete the old records?",
       "confirmBody": "If you keep records for {days} days instead of {current}, we go delete {count, plural, one {# record} other {# records}} for good for the next purge. You no fit undo am.",
       "confirmUnknown": "If you keep records for {days} days instead of {current}, we go delete the older records for good for the next purge. The server no talk how many. You no fit undo am.",
       "confirm": "Shorten am and delete"
@@ -2150,7 +2150,7 @@
       "to": "To",
       "download": "Download",
       "rangeError": "Choose dates where From no pass To and the gap no pass 92 days.",
-      "rateLimited": "Too many exports this hour. Try again later.",
+      "rateLimited": "You don export too many times this hour. Try again later.",
       "started": "The download don start."
     },
     "meta": {
@@ -2307,8 +2307,8 @@
       "unavailable": "Check no dey work now. Try again after some minutes."
     },
     "results": {
-      "title": "Reviewed results",
-      "unit": "{count, plural, one {reviewed report} other {reviewed reports}}",
+      "title": "Results wey dem don review",
+      "unit": "{count, plural, one {report wey dem review} other {reports wey dem review}}",
       "suppressed": "Reviewed report never reach 5 yet",
       "published": "Dem publish am {time}.",
       "cutoff": "E cover reports wey people see before {time}.",
@@ -2354,7 +2354,7 @@
       "title": "Questions",
       "ask": "Ask ElectraGuard",
       "askHint": "Answer dey come only from approved guides, and e go show where e come from.",
-      "guide": "Approved guide",
+      "guide": "Guide wey dem approve",
       "guides": "Guides",
       "guidesHint": "Short approved guides for voters and observers.",
       "privacy": "Privacy notice",
@@ -2365,13 +2365,13 @@
     "notice": "Na only reviewed observations. No be official results. We no be INEC."
   },
   "p03": {
-    "title": "Reviewed observations",
+    "title": "Observations wey dem don review",
     "lead": "Total of election-day reports wey trained reviewers don finish. We dey hide small numbers to protect the people wey report.",
     "view": {
       "label": "Show results from",
       "combined": "All organisations together"
     },
-    "totalUnit": "{count, plural, one {reviewed report} other {reviewed reports}}",
+    "totalUnit": "{count, plural, one {report wey dem review} other {reports wey dem review}}",
     "totalSuppressed": "Reviewed report never reach 5",
     "source": "From",
     "publishedLabel": "Dem publish am",
@@ -2421,7 +2421,7 @@
       "title": "Results no fit load.",
       "body": "The problem dey our side or for network. Try again after one minute."
     },
-    "retry": "Try again"
+    "retry": "Try am again"
   },
   "p04": {
     "title": "Ask ElectraGuard",
@@ -2435,7 +2435,7 @@
     "tooLong": "No pass 500 letters.",
     "answered": "From the approved guides",
     "source": "Where e come from: {title}, {section}",
-    "version": "Approved version {version}",
+    "version": "Version wey dem approve: {version}",
     "openSource": "Read am for the guide",
     "fallback": "Dem only approve this answer for English, so na English e dey.",
     "abstain": {
@@ -2560,7 +2560,7 @@
     "home": {
       "title": "Practice phone",
       "label": "Number to dial",
-      "hint": "Dial {code} and press Call."
+      "hint": "Dial {code} then press Call."
     },
     "ussd": {
       "reply": "Your answer",
@@ -2610,7 +2610,7 @@
     "reset": "New practice number",
     "resetHint": "E go start again with another number and clear this screen.",
     "error": {
-      "network": "No network. Check your connection and try again.",
+      "network": "No network. Check your connection, then try again.",
       "server": "Phone service no answer. Try again after one minute.",
       "tooMany": "Too many messages from this phone. Wait some minutes.",
       "invalid": "Network no accept that message. Check am and try again."
@@ -2815,9 +2815,9 @@
       "openQueue": "Open queue"
     },
     "again": {
-      "title": "Ask the same question again",
+      "title": "Ask the same question one more time",
       "body": "E go send am to {area} again with new expiry time. Observers wey don answer fit answer again.",
-      "button": "Ask again"
+      "button": "Ask am again"
     },
     "approve": {
       "title": "Safety notice dey wait for second coordinator",
@@ -2846,7 +2846,7 @@
       "askCount": "{count, plural, one {ask} other {asks}}",
       "inLastHour": "{count} for the last hour",
       "noneInLastHour": "none for the last hour",
-      "evidenceTitle": "Check-in evidence, last 6 hours",
+      "evidenceTitle": "Evidence from check-ins, last 6 hours",
       "evidenceNone": "No ward check-in for this one yet.",
       "evidenceQuestion": "\"{question}\" ({area})",
       "evidenceNote": "If the number no reach 5, we dey show \"less than 5\". Check-ins no be reports, and dem no be proof by themselves."
