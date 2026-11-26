@@ -207,8 +207,25 @@
     color: var(--ink);
   }
 
-  .wideList a[aria-current="page"]::after {
+  .wideBar {
+    position: absolute;
+    inset-inline-start: 0;
+    bottom: 0;
+    width: 24px;
+    height: 2px;
+    border-radius: 1px;
     background: var(--ink);
+    pointer-events: none;
+    transition: opacity 120ms linear;
+  }
+
+  .wideBar[data-ready] {
+    transition: transform 200ms var(--ease-out), opacity 120ms linear;
+  }
+
+  /* The sliding bar replaces the static one on the current item. */
+  .wideList a[aria-current="page"]:not(:hover)::after {
+    background: transparent;
   }
 
   .wideList a:focus-visible {
@@ -235,6 +252,10 @@
 
   .wideList a:not([aria-current="page"]):hover::after {
     background: var(--rule-control);
+  }
+
+  .wideList a[aria-current="page"]:hover::after {
+    background: transparent;
   }
 }
 
@@ -314,4 +335,10 @@
   text-decoration-thickness: 1px;
   text-underline-offset: 0.2em;
   white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wideBar[data-ready] {
+    transition: opacity 80ms linear;
+  }
 }

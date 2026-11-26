@@ -36,7 +36,7 @@ export function PublicShell({ t, children, theme = THEME_LOCK ?? "light" }: { t:
             <BrandMark size="bar" />
           </Link>
           <nav className={styles.wideNav} aria-label={t("pub.nav.label")}>
-            <NavLinks items={items} className={styles.wideList} />
+            <NavLinks items={items} className={styles.wideList} indicatorClassName={styles.wideBar} />
           </nav>
           <div className={styles.wideLang}>
             <LanguageMenu />

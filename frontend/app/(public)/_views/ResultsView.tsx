@@ -23,6 +23,15 @@ function percent(value: number, tag: string) {
   return new Intl.NumberFormat(supported, { maximumFractionDigits: 1 }).format(value);
 }
 
+/** Largest first; suppressed ("fewer than 5") rows go last, in their original order. */
+function byCount<T>(items: T[], cell: (item: T) => { count: number | null; suppressed?: boolean }): T[] {
+  const value = (item: T) => {
+    const c = cell(item);
+    return c.suppressed || c.count === null ? -1 : c.count;
+  };
+  return items.map((item, index) => ({ item, index })).sort((a, b) => value(b.item) - value(a.item) || a.index - b.index).map((x) => x.item);
+}
+
 function BarTable({
   caption,
   first,
@@ -90,17 +99,18 @@ export function ResultsView({ t, locale, state }: { t: Translate; locale: Locale
     ...more,
   });
 
-  const header = (
+  const header = (noticeText: string) => (
     <header className={styles.header}>
       <h1 className={styles.title}>{t("p03.title")}</h1>
       <p className={styles.lead}>{t("p03.lead")}</p>
+      <p className={styles.notice} data-testid="results-notice">{noticeText}</p>
     </header>
   );
 
   if (state.kind !== "ok") {
     return (
       <div className={styles.page}>
-        {header}
+        {header(t("results.notice"))}
         {state.kind === "empty" ? (
           <EmptyState title={t("p03.empty.title")} data-testid="results-empty">
             <p>{t("p03.empty.body")}</p>
@@ -118,7 +128,6 @@ export function ResultsView({ t, locale, state }: { t: Translate; locale: Locale
             <p>{t("p03.error.body")}</p>
           </EmptyState>
         )}
-        <p className={styles.notice}>{t("results.notice")}</p>
       </div>
     );
   }
@@ -133,7 +142,7 @@ export function ResultsView({ t, locale, state }: { t: Translate; locale: Locale
 
   return (
     <div className={styles.page}>
-      {header}
+      {header(t(data.notice_key))}
 
       {choices.length > 1 ? (
         <nav className={styles.views} aria-label={t("p03.view.label")}>
@@ -191,7 +200,7 @@ export function ResultsView({ t, locale, state }: { t: Translate; locale: Locale
             caption={t("p03.byState.caption")}
             first={t("p03.col.state")}
             second={t("p03.col.reports")}
-            rows={view.by_state.map((s) => row(s.state_code, s.state_name, s.total))}
+            rows={byCount(view.by_state, (s) => s.total).map((s) => row(s.state_code, s.state_name, s.total))}
           />
         )}
       </section>
@@ -201,7 +210,7 @@ export function ResultsView({ t, locale, state }: { t: Translate; locale: Locale
           <h2 id="p03-categories" className={styles.heading}>{t("p03.categories.title")}</h2>
           <p className={styles.small}>{t("p03.categories.hint")}</p>
           <div className={styles.states}>
-            {view.by_state.map((s, index) => (
+            {byCount(view.by_state, (s) => s.total).map((s, index) => (
               <details key={s.state_code} className={styles.state} open={index === 0}>
                 <summary>
                   <span className={styles.stateName}>{s.state_name}</span>
@@ -229,7 +238,7 @@ export function ResultsView({ t, locale, state }: { t: Translate; locale: Locale
           first={t("p03.col.outcome")}
           extra={t("p03.col.share")}
           second={t("p03.col.reports")}
-          rows={view.outcomes.map((o) =>
+          rows={byCount(view.outcomes, (o) => ({ count: o.suppressed ? null : o.count, suppressed: o.suppressed })).map((o) =>
             o.suppressed
               ? row(o.outcome, t(OUTCOME_KEYS[o.outcome]), { count: null, suppressed: true })
               : row(o.outcome, t(OUTCOME_KEYS[o.outcome]), { count: o.count, suppressed: false }, { extra: t("p03.percent", { value: percent(o.share_percent, tag) }) }),
@@ -260,8 +269,6 @@ export function ResultsView({ t, locale, state }: { t: Translate; locale: Locale
           <p className={styles.small}>{t("p03.audit.explain")}</p>
         </section>
       ) : null}
-
-      <p className={styles.notice}>{t(data.notice_key)}</p>
     </div>
   );
 }
