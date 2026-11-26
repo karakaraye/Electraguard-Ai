@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { type ReactElement } from "react";
+import { useState, type ReactElement } from "react";
 import { useT } from "../../../../lib/i18n/client";
 import { StaffShell, type StaffNavItem } from "../../../../ui";
 import {
@@ -89,18 +89,25 @@ const SCREENS = [
   { id: "s12", name: "Security & audit monitoring" },
 ] as const;
 
+/** Which sidebar group each screen sits in, the same as the live layout. */
+const GROUP_OF: Record<string, "review" | "monitor" | "moderate" | "admin"> = {
+  s02: "review", s04: "review", s05: "monitor", s06: "monitor", s07: "monitor", s08: "moderate",
+  s09: "admin", s10: "admin", s11: "admin", s12: "admin",
+};
+
 export function StaffStateViewer(): ReactElement {
   const searchParams = useSearchParams();
   const screen = searchParams?.get("screen") ?? "s01";
   const state = searchParams?.get("state") ?? "default";
-  const themeParam = searchParams?.get("theme");
-  const theme = themeParam === "dark" ? "dark" : "light";
+  // Light only: the product has no other theme.
+  const theme = "light";
   const t = useT();
+  const [search, setSearch] = useState("");
 
   // The roles the viewer pretends to hold: ?role=reviewer|coordinator|moderator|org_admin|all (default all).
   const roleParam = searchParams?.get("role") ?? "all";
   const has = (role: string) => roleParam === "all" || roleParam === role;
-  const link = (id: string) => `/dev/staff?screen=${id}&state=${state}&theme=${theme}&role=${roleParam}`;
+  const link = (id: string) => `/dev/staff?screen=${id}&state=${state}&role=${roleParam}`;
   const groups = {
     review: t("staff.nav.groups.review"),
     monitor: t("staff.nav.groups.monitor"),
@@ -124,7 +131,6 @@ export function StaffStateViewer(): ReactElement {
   if (has("coordinator") || has("org_admin")) nav.push({ href: link("s12"), label: t("staff.nav.security"), icon: ShieldCheckIcon, group: groups.admin, current: screen === "s12" });
   const roleLabel = roleParam === "all" ? t("staff.roles.org_admin") : t(`staff.roles.${roleParam}`);
 
-  const currentScreenObj = SCREENS.find((s) => s.id === screen) ?? SCREENS[0];
 
   const renderContent = () => {
     switch (screen) {
@@ -176,6 +182,8 @@ export function StaffStateViewer(): ReactElement {
             onSaveView={() => {}}
             onRemoveView={() => {}}
             onOpenCase={() => {}}
+            search={search}
+            onClearSearch={() => setSearch("")}
             initialPreviewId={state === "default" || state === "new" || state === "more" ? FIXTURE_QUEUE_ITEMS[0].id : undefined}
           />
         );
@@ -316,13 +324,14 @@ export function StaffStateViewer(): ReactElement {
           flexWrap: "wrap",
           alignItems: "center",
           fontSize: "13px",
+          fontFamily: "var(--font)",
         }}
       >
         <strong style={{ marginRight: "8px" }}>Staff Dev Viewer:</strong>
         {SCREENS.map((s) => (
           <Link
             key={s.id}
-            href={`/dev/staff?screen=${s.id}&state=${state}&theme=${theme}`}
+            href={`/dev/staff?screen=${s.id}&state=${state}`}
             style={{
               color: screen === s.id ? "var(--ink)" : "var(--ink-2)",
               fontWeight: screen === s.id ? "bold" : "normal",
@@ -339,7 +348,7 @@ export function StaffStateViewer(): ReactElement {
             {(screen === "s01" ? S01_STATES : screen === "s02" ? S02_STATES : screen === "s03" ? S03_STATES : screen === "s04" ? S04_STATES : screen === "s05" ? S05_STATES : (PREVIEWS[screen]?.states ?? ["default", "loading", "empty", "error"])).map((st) => (
               <Link
                 key={st}
-                href={`/dev/staff?screen=${screen}&state=${st}&theme=${theme}`}
+                href={`/dev/staff?screen=${screen}&state=${st}`}
                 style={{
                   color: state === st ? "var(--ink)" : "var(--ink-2)",
                   fontWeight: state === st ? "bold" : "normal",
@@ -351,37 +360,23 @@ export function StaffStateViewer(): ReactElement {
             ))}
           </div>
 
-          <div style={{ display: "flex", gap: "6px", alignItems: "center", borderLeft: "1px solid var(--rule)", paddingLeft: "12px" }}>
-            <span style={{ color: "var(--ink-2)" }}>Theme:</span>
-            {(["light", "dark"] as const).map((th) => (
-              <Link
-                key={th}
-                href={`/dev/staff?screen=${screen}&state=${state}&theme=${th}`}
-                style={{
-                  color: theme === th ? "var(--ink)" : "var(--ink-2)",
-                  fontWeight: theme === th ? "bold" : "normal",
-                  textDecoration: theme === th ? "underline" : "none",
-                }}
-              >
-                {th}
-              </Link>
-            ))}
-          </div>
         </div>
       </div>
 
       {/* Screen Content wrapped in StaffShell if not sign-in */}
       {screen === "s01" ? (
-        <main data-theme={theme} data-density="staff">{renderContent()}</main>
+        <main data-theme={theme} data-density="staff" id="eg-staff-content">{renderContent()}</main>
       ) : (
         <StaffShell
           nav={nav}
-          title={currentScreenObj.name}
-          crumbs={screen === "s03" ? [{ label: t("staff.nav.queue"), href: link("s02") }] : undefined}
-          organisation="ElectraGuard"
+          preview
+          title={screen === "s03" ? FIXTURE_CASE_DETAIL.receipt_code : t(`${screen}.title`)}
+          crumbs={screen === "s03" ? [{ label: t("staff.nav.queue"), href: link("s02") }] : [{ label: groups[GROUP_OF[screen] ?? "review"] }]}
+          organisation="Kano observers network"
           intake={{ paused: state === "paused", href: link("s11") }}
           user={{ name: "Fatima Musa", role: roleLabel }}
           onSignOut={() => undefined}
+          onSearch={setSearch}
         >
           {renderContent()}
         </StaffShell>

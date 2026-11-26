@@ -217,7 +217,6 @@ export function PublishView({
             </>
           ) : (
             <div className={styles.switchRow}>
-              <StatusBadge tone={hourly ? "ok" : "wait"} label={hourly ? t("s07.scheduleOn") : t("s07.scheduleOff")} />
               <Switch
                 checked={hourly}
                 labelledBy={hourlyLabelId}
@@ -225,6 +224,7 @@ export function PublishView({
                 data-testid="s07-hourly-switch"
                 onToggle={() => (hourly ? void setHourly(false) : setDialog("schedule"))}
               />
+              <StatusBadge tone={hourly ? "ok" : "wait"} label={hourly ? t("s07.scheduleOn") : t("s07.scheduleOff")} />
             </div>
           )}
         </section>
@@ -428,7 +428,10 @@ function Detail({ record, onApprove, onDiscard }: { record: SnapshotRecord; onAp
         <div className={styles.detailText}>
           <div className={styles.titleRow}>
             <h2 id={titleId} className={styles.cardTitle}>{t("s07.previewTitle")}</h2>
-            <StatusBadge tone={STATUS_TONE[record.status]} label={t(`s07.status.${record.status}`)} />
+            {/* Keyed by status: when a draft becomes published the chip changes in place. */}
+            <span key={record.status} className={styles.chipMorph}>
+              <StatusBadge tone={STATUS_TONE[record.status]} label={t(`s07.status.${record.status}`)} />
+            </span>
           </div>
           <p className={styles.sub}>{t("s07.detail.by", { name: record.created_by, cutoff: formatWatDateTime(record.cutoff, locale) })}</p>
           <p className={styles.hint}>{statusNote}</p>

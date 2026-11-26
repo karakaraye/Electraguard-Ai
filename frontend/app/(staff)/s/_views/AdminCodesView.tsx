@@ -9,6 +9,7 @@ import { BrandMark, Banner, Button, EmptyState, Field, Select, Sheet, Skeleton, 
 import { formatWatDateTime } from "../../../../ui/format";
 import { useMediaQuery } from "../../../../ui/hooks";
 import { PlusIcon, RetryIcon } from "../../../../ui/icons";
+import { StaffPopover } from "../../../../ui/StaffShell/Popover";
 import styles from "./AdminCodesView.module.css";
 
 const REASONS: RevokeReason[] = ["lost_phone", "left_programme", "suspected_misuse", "other"];
@@ -395,20 +396,50 @@ function Day({ value, locale }: { value: string | null; locale: Locale }) {
 
 function RowActions({ row, onOpen }: { row: ObserverCodeRow; onOpen: (kind: "revoke" | "reissue" | "reset") => void }) {
   const t = useT();
-  if (row.status === "revoked") return <span className={styles.sub} aria-hidden="true">&mdash;</span>;
+  if (row.status === "revoked") return null;
   const code = row.observer_code;
+  const items: Array<{ kind: "reset" | "reissue" | "revoke"; label: string; aria: string; danger?: boolean }> = [
+    { kind: "reset", label: t("s09.actions.resetPin"), aria: t("s09.actions.resetPinFor", { code }) },
+    { kind: "reissue", label: t("s09.actions.reissue"), aria: t("s09.actions.reissueFor", { code }) },
+    { kind: "revoke", label: t("s09.actions.revoke"), aria: t("s09.actions.revokeFor", { code }), danger: true },
+  ];
   return (
-    <div className={styles.rowActions}>
-      <Button variant="quiet" onClick={() => onOpen("reset")} aria-label={t("s09.actions.resetPinFor", { code })} data-testid={`s09-reset-${code}`}>
-        {t("s09.actions.resetPin")}
-      </Button>
-      <Button variant="quiet" onClick={() => onOpen("reissue")} aria-label={t("s09.actions.reissueFor", { code })} data-testid={`s09-reissue-${code}`}>
-        {t("s09.actions.reissue")}
-      </Button>
-      <Button variant="quiet" onClick={() => onOpen("revoke")} aria-label={t("s09.actions.revokeFor", { code })} data-testid={`s09-revoke-${code}`}>
-        {t("s09.actions.revoke")}
-      </Button>
-    </div>
+    <StaffPopover
+      label={t("s09.actions.moreFor", { code })}
+      placement="below-end"
+      className={styles.rowActions}
+      trigger={(props) => (
+        <button type="button" className={styles.moreButton} {...props} aria-label={t("s09.actions.moreFor", { code })} data-testid={`s09-more-${code}`}>
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true" focusable="false">
+            <circle cx="5" cy="12" r="1.75" />
+            <circle cx="12" cy="12" r="1.75" />
+            <circle cx="19" cy="12" r="1.75" />
+          </svg>
+        </button>
+      )}
+    >
+      {(close) => (
+        <ul className={styles.menuList}>
+          {items.map((item) => (
+            <li key={item.kind}>
+              <button
+                type="button"
+                className={styles.menuItem}
+                data-danger={item.danger || undefined}
+                aria-label={item.aria}
+                onClick={() => {
+                  close();
+                  onOpen(item.kind);
+                }}
+                data-testid={`s09-${item.kind}-${code}`}
+              >
+                {item.label}
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </StaffPopover>
   );
 }
 

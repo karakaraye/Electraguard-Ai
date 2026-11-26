@@ -122,7 +122,6 @@ export function CaseView({
     <div className={styles.container} data-testid={testId}>
       <header className={styles.header}>
         <div className={styles.headMain}>
-          <h2 className={`${styles.caseTitle} eg-tnum`}>{t("s03.caseRef", { ref: c.receipt_code })}</h2>
           <p className={styles.reporter}>{reporter}</p>
         </div>
         <div className={styles.headBadges}>
@@ -532,7 +531,7 @@ function Suggestions({
     !value ? "" : type === "category" ? t(CATEGORY_KEY[value as Category]) : t(`s02.urgency.${value}`);
 
   return (
-    <div className={styles.stack}>
+    <div className={`${styles.stack} ${styles.suggestionHost}`}>
       <p className={styles.muted}>{t("s03.suggestions.notice")}</p>
       {s.status === "pending" ? <p className={styles.card}>{t("s03.suggestions.pending")}</p> : null}
       {s.status === "failed" ? <p className={styles.card}>{t("s03.suggestions.failed")}</p> : null}

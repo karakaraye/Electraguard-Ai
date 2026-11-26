@@ -988,17 +988,17 @@
   },
   "staff": {
     "nav": {
-      "queue": "[IG draft] Review Queue",
-      "cases": "[IG draft] Cases",
-      "assign": "[IG draft] Assign",
-      "ops": "[IG draft] Operations",
-      "rumours": "[IG draft] Rumour Desk",
-      "publish": "[IG draft] Publish",
-      "discussions": "[IG draft] Discussions",
-      "codes": "[IG draft] Observer Codes",
-      "staff": "[IG draft] Staff Accounts",
-      "settings": "[IG draft] Settings",
-      "security": "[IG draft] Security",
+      "queue": "Ahịrị",
+      "cases": "Okwu ndị a",
+      "assign": "Kekọta",
+      "ops": "Ọrụ ịdị",
+      "rumours": "Ọdụ asịrị",
+      "publish": "Bipụta",
+      "discussions": "Mkparịta ụka",
+      "codes": "Koodu ndị nlekọta",
+      "staff": "Ndị ọrụ",
+      "settings": "Ntọala",
+      "security": "Nchekwa",
       "groups": {
         "review": "Nyochaa",
         "monitor": "Nlele",
@@ -1043,12 +1043,13 @@
       },
       "menu": "Mepee nhọrọ",
       "search": "Chọọ",
-      "searchLabel": "Chọta okwu site na nọmba ya",
-      "searchPlaceholder": "Chọta okwu site na nọmba ya",
+      "searchLabel": "Chọọ okwu site na nọmba, ebe ma ọ bụ udi",
+      "searchPlaceholder": "Chọọ okwu",
       "shortcuts": "Ụzọ mkpirisi keyboard"
     },
     "notFound": {
-      "title": "Achọtaghị ibe a"
+      "title": "Achọtaghị ibe a",
+      "body": "Ikekwe adreesị ahụ ezighi ezi, ma ọ bụ peeji ahụ efuola. Laghachi na ahịrị iji gaa n'ihu."
     }
   },
   "s01": {
@@ -1115,7 +1116,14 @@
       "hasEvidence": "[IG draft] Has media",
       "clear": "[IG draft] Reset filters",
       "label": "Nzacha",
-      "anyCategory": "Ụdị ọ bụla"
+      "anyCategory": "Ụdị ọ bụla",
+      "priority": "Mkpa",
+      "any": "Ọ bụla",
+      "more": "Nzacha",
+      "clearAll": "Hichapụ",
+      "removeToken": "Wepụ nzacha {name}",
+      "search": "Chọọ",
+      "panel": "Zacha okwu ndị a"
     },
     "columns": {
       "urgency": "[IG draft] Urgency",
@@ -1125,7 +1133,9 @@
       "occurred": "[IG draft] Occurred",
       "evidence": "[IG draft] Evidence",
       "status": "[IG draft] Status",
-      "reasons": "Ihe kpatara ya"
+      "reasons": "Ihe kpatara ya",
+      "priority": "Mkpa",
+      "time": "Oge"
     },
     "urgency": {
       "urgent": "[IG draft] Urgent",
@@ -1168,7 +1178,8 @@
       "save": "Chekwaa echiche a",
       "name": "Aha echiche",
       "saveConfirm": "Chekwaa",
-      "remove": "Wepụ echiche {name}"
+      "remove": "Wepụ echiche {name}",
+      "empty": "Echekwabeghị ọhụụ ọ bụla."
     },
     "evidence": {
       "photo": "{count, plural, one {Foto #} other {Foto #}}",
@@ -1188,11 +1199,16 @@
       "place": "Ebe",
       "notGiven": "Enyeghị ya",
       "received": "Anatara ya",
-      "open": "Mepee okwu"
+      "open": "Mepee okwu",
+      "close": "Mechie ihe ngosi",
+      "orPress": "ma ọ bụ pịa"
     },
     "tabs": {
       "question": "Ajụjụ"
-    }
+    },
+    "shown": "ana-egosi {shown} n'ime {total}",
+    "keysMove": "na-aga n'etiti okwu ndị a.",
+    "keysOpen": "na-emeghe otu."
   },
   "s03": {
     "title": "[IG draft] Case review",
@@ -1428,7 +1444,7 @@
     "today": "[IG draft] Today",
     "totals": {
       "totalReports": "[IG draft] Total reports",
-      "incidents": "[IG draft] Incidents after links",
+      "incidents": "Ihe omume dị iche",
       "urgentOpen": "[IG draft] Urgent open",
       "openQuestions": "[IG draft] Questions open",
       "resultFlags": "[IG draft] Result sheet flags",
@@ -1667,7 +1683,12 @@
       "body": "Jiri nke a mgbe asịrị ahụ achọghị azịza. Enweghị ike ịgbanwe asịrị e setịpụrụ.",
       "noteLabel": "Gịnị mere eji setịpụ ya?"
     },
-    "noteHint": "Mkpụrụ edemede 1 ruo 500."
+    "noteHint": "Mkpụrụ edemede 1 ruo 500.",
+    "level": {
+      "high": "Elu",
+      "medium": "Etiti",
+      "low": "Ala"
+    }
   },
   "s07": {
     "title": "[IG draft] Publish snapshots",
@@ -1848,7 +1869,8 @@
       "resetPin": "Tọgharịa PIN",
       "revokeFor": "Kagbuo {code}",
       "reissueFor": "Nye {code} ọzọ",
-      "resetPinFor": "Tọgharịa PIN nke {code}"
+      "resetPinFor": "Tọgharịa PIN nke {code}",
+      "moreFor": "Ihe ndị ọzọ maka {code}"
     },
     "create": {
       "title": "Mepụta ngwugwu ọhụrụ",

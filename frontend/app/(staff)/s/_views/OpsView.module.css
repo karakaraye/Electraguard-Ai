@@ -58,7 +58,14 @@
 .tiles {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 9rem), 1fr));
+  grid-auto-rows: 1fr;
   gap: var(--s-3);
+}
+
+/* Every tile is the same height and the numbers sit on one line, whatever the label length. */
+.tiles > * {
+  grid-template-rows: 2.5rem auto auto;
+  align-content: start;
 }
 
 .dayLong {
@@ -83,7 +90,12 @@
   background: var(--paper-raised);
 }
 
+.tiles > .flagTile {
+  grid-template-rows: auto auto;
+}
+
 .flagTile > div {
+  grid-template-rows: 2.5rem auto auto;
   border: 0;
   border-radius: 0;
   background: transparent;

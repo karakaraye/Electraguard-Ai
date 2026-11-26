@@ -9,6 +9,7 @@
 
 .preview {
   min-height: 100%;
+  flex: 1 1 auto;
 }
 
 .skip {
@@ -64,6 +65,13 @@
   position: sticky;
   top: 0;
   height: 100dvh;
+}
+
+/* Previews (dev viewer, gallery): the rail stretches the full height of the page instead of one viewport. */
+.preview .side .rail {
+  position: static;
+  height: auto;
+  min-height: 100%;
 }
 
 .railTop {

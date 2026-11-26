@@ -988,17 +988,17 @@
   },
   "staff": {
     "nav": {
-      "queue": "[HA draft] Review Queue",
-      "cases": "[HA draft] Cases",
-      "assign": "[HA draft] Assign",
-      "ops": "[HA draft] Operations",
-      "rumours": "[HA draft] Rumour Desk",
-      "publish": "[HA draft] Publish",
-      "discussions": "[HA draft] Discussions",
-      "codes": "[HA draft] Observer Codes",
-      "staff": "[HA draft] Staff Accounts",
-      "settings": "[HA draft] Settings",
-      "security": "[HA draft] Security",
+      "queue": "Jerin shari'o'i",
+      "cases": "Shari'o'i",
+      "assign": "Rarraba",
+      "ops": "Ayyuka",
+      "rumours": "Teburin jita-jita",
+      "publish": "Wallafa",
+      "discussions": "Tattaunawa",
+      "codes": "Lambobin masu sa ido",
+      "staff": "Ma'aikata",
+      "settings": "Saituna",
+      "security": "Tsaro",
       "groups": {
         "review": "Dubawa",
         "monitor": "Sa ido",
@@ -1043,12 +1043,13 @@
       },
       "menu": "Buɗe menu",
       "search": "Nema",
-      "searchLabel": "Nemo shari'a da lambar ta",
-      "searchPlaceholder": "Nemo shari'a da lambar ta",
+      "searchLabel": "Nemi shari'o'i da lamba, wuri ko rukuni",
+      "searchPlaceholder": "Nemi shari'o'i",
       "shortcuts": "Gajerun hanyoyin maɓalli"
     },
     "notFound": {
-      "title": "Ba a samu shafin ba"
+      "title": "Ba a samu shafin ba",
+      "body": "Wataƙila adireshin ba daidai ba ne, ko shafin ya koma wani wuri. Koma jerin don ci gaba."
     }
   },
   "s01": {
@@ -1115,7 +1116,14 @@
       "hasEvidence": "[HA draft] Has media",
       "clear": "[HA draft] Reset filters",
       "label": "Matattarai",
-      "anyCategory": "Kowane rukuni"
+      "anyCategory": "Kowane rukuni",
+      "priority": "Mahimmanci",
+      "any": "Duka",
+      "more": "Tace",
+      "clearAll": "Share",
+      "removeToken": "Cire tacewa {name}",
+      "search": "Bincike",
+      "panel": "Tace shari'o'i"
     },
     "columns": {
       "urgency": "[HA draft] Urgency",
@@ -1125,7 +1133,9 @@
       "occurred": "[HA draft] Occurred",
       "evidence": "[HA draft] Evidence",
       "status": "[HA draft] Status",
-      "reasons": "Dalili"
+      "reasons": "Dalili",
+      "priority": "Mahimmanci",
+      "time": "Lokaci"
     },
     "urgency": {
       "urgent": "[HA draft] Urgent",
@@ -1168,7 +1178,8 @@
       "save": "Adana wannan ra'ayi",
       "name": "Sunan ra'ayi",
       "saveConfirm": "Adana",
-      "remove": "Cire ra'ayin {name}"
+      "remove": "Cire ra'ayin {name}",
+      "empty": "Ba a adana wani ra'ayi ba tukuna."
     },
     "evidence": {
       "photo": "{count, plural, one {Hoto #} other {Hotuna #}}",
@@ -1188,11 +1199,16 @@
       "place": "Wuri",
       "notGiven": "Ba a bayar ba",
       "received": "An karɓa",
-      "open": "Buɗe shari'a"
+      "open": "Buɗe shari'a",
+      "close": "Rufe samfoti",
+      "orPress": "ko danna"
     },
     "tabs": {
       "question": "Tambayoyi"
-    }
+    },
+    "shown": "ana nuna {shown} daga {total}",
+    "keysMove": "suna motsawa tsakanin shari'o'i.",
+    "keysOpen": "yana buɗe ɗaya."
   },
   "s03": {
     "title": "[HA draft] Case review",
@@ -1428,7 +1444,7 @@
     "today": "[HA draft] Today",
     "totals": {
       "totalReports": "[HA draft] Total reports",
-      "incidents": "[HA draft] Incidents after links",
+      "incidents": "Abubuwan da suka bambanta",
       "urgentOpen": "[HA draft] Urgent open",
       "openQuestions": "[HA draft] Questions open",
       "resultFlags": "[HA draft] Result sheet flags",
@@ -1667,7 +1683,12 @@
       "body": "Yi amfani da wannan idan da'awar ba ta buƙatar amsa. Ba za a iya canza da'awar da aka yi watsi da ita ba.",
       "noteLabel": "Me ya sa aka yi watsi da ita?"
     },
-    "noteHint": "Haruffa 1 zuwa 500."
+    "noteHint": "Haruffa 1 zuwa 500.",
+    "level": {
+      "high": "Babba",
+      "medium": "Matsakaici",
+      "low": "Ƙasa"
+    }
   },
   "s07": {
     "title": "[HA draft] Publish snapshots",
@@ -1848,7 +1869,8 @@
       "resetPin": "Sake saita PIN",
       "revokeFor": "Soke {code}",
       "reissueFor": "Sake bayar da {code}",
-      "resetPinFor": "Sake saita PIN na {code}"
+      "resetPinFor": "Sake saita PIN na {code}",
+      "moreFor": "Ƙarin ayyuka na {code}"
     },
     "create": {
       "title": "Ƙirƙiri sabon rukuni",
