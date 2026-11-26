@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="en-NG">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Observer home</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Display:wght@600;700;800&family=Noto+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ElectraGuard AI vision mockups. Light theme tokens from frontend/ui/tokens.css. */
+:root{
+  --font:"Noto Sans",system-ui,"Segoe UI",sans-serif;
+  --font-display:"Noto Sans Display","Noto Sans",system-ui,sans-serif;
+  --ink:#0e0d0b; --ink-2:#45413a; --ink-3:#6e6a62;
+  --paper:#faf8f3; --paper-2:#f2efe7; --paper-raised:#ffffff; --paper-sunk:#f2efe7;
+  --rule:#e6e1d5; --rule-control:#8a857a; --on-ink:#faf8f3;
+  --sun:#e3b060; --sun-strong:#c98f2e; --sun-ink:#7a4e0e; --sun-tint:#f6e7c6; --sun-wash:#fbf4e4; --sun-line:#ead9b4;
+  --ok:#1b5e20; --ok-bg:#e7f3e8; --ok-solid:#2e7d32;
+  --attn:#8a3b00; --attn-bg:#fff1dc;
+  --danger:#a3161a; --danger-bg:#fdecec;
+  --wait:#45413a; --wait-bg:#eeebe4;
+  --info:#0d4a94; --info-bg:#e3eefb;
+  --scrim:rgb(14 13 11 / .4);
+  --shadow-sheet:0 -8px 32px rgb(14 13 11 / .18);
+  --shadow-raised:0 8px 24px rgb(14 13 11 / .14);
+  --shadow-pop:0 12px 32px rgb(14 13 11 / .16), 0 1px 2px rgb(14 13 11 / .08);
+  --board:#e9e5da;
+  --r-sm:6px; --r:10px; --r-md:14px; --r-lg:18px; --r-xl:22px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--paper);color:var(--ink);font-family:var(--font);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+body{font-size:16px;line-height:1.5}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+a{color:inherit}
+.tnum{font-variant-numeric:tabular-nums}
+svg.i{width:24px;height:24px;flex:none;fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
+svg.i.s20{width:20px;height:20px}
+svg.i.s16{width:16px;height:16px}
+svg.mark{fill:currentColor;display:block;flex:none}
+
+/* ---------- Unified components ---------- */
+/* Count: one component, two tones. Strong = needs action. Quiet = informational total. */
+.count{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;padding:0 6px;border-radius:10px;font:700 12px/1 var(--font);font-variant-numeric:tabular-nums;background:var(--ink);color:var(--on-ink)}
+.count.quiet{background:var(--paper-sunk);color:var(--ink-2);box-shadow:inset 0 0 0 1px var(--rule)}
+
+/* Status badge: shape + word, colour only for status. Square-ish, never a pill. */
+.badge{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 8px;border-radius:var(--r-sm);font:600 13px/1 var(--font);white-space:nowrap}
+.badge svg{width:14px;height:14px;stroke-width:2}
+.badge.ok{background:var(--ok-bg);color:var(--ok)}
+.badge.attn{background:var(--attn-bg);color:var(--attn)}
+.badge.danger{background:var(--danger-bg);color:var(--danger)}
+.badge.wait{background:var(--wait-bg);color:var(--wait)}
+.badge.info{background:var(--info-bg);color:var(--info)}
+
+/* Buttons */
+.btn{text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:8px;height:48px;padding:0 20px;border-radius:var(--r);font:600 16px/1 var(--font);white-space:nowrap}
+.btn.primary{background:var(--ink);color:var(--on-ink)}
+.btn.secondary{background:var(--paper-raised);color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--ink)}
+.btn.quiet{background:var(--paper-raised);color:var(--ink);box-shadow:inset 0 0 0 1px var(--rule-control)}
+.btn.disabled{background:var(--paper-sunk);color:var(--ink-3);box-shadow:none;cursor:not-allowed}
+.btn.h40{height:40px;padding:0 16px;font-size:15px}
+.btn.h36{height:36px;padding:0 12px;font-size:14px;gap:6px}
+.btn.h56{height:56px;padding:0 24px;font-size:17px}
+.btn.block{width:100%}
+.focus{outline:3px solid var(--ink);outline-offset:2px;box-shadow:0 0 0 2px var(--paper)}
+
+/* Toggle with clear off/on */
+.toggle{display:inline-flex;align-items:center;gap:8px;font:600 13px/1 var(--font)}
+.toggle .track{position:relative;width:44px;height:24px;border-radius:12px;background:var(--paper-raised);box-shadow:inset 0 0 0 1.5px var(--rule-control)}
+.toggle .track::after{content:"";position:absolute;top:4px;left:4px;width:16px;height:16px;border-radius:8px;background:var(--rule-control)}
+.toggle.on .track{background:var(--ink);box-shadow:none}
+.toggle.on .track::after{left:24px;background:var(--paper-raised)}
+
+/* Keycap */
+.kbd{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;padding:0 5px;border-radius:5px;font:600 12px/1 var(--font);color:var(--ink-2);background:var(--paper-raised);box-shadow:inset 0 0 0 1px var(--rule),0 1px 0 var(--rule)}
+
+/* ---------- Presentation board (annotation only, not product UI) ---------- */
+.board{background:var(--board);padding:64px;min-height:100vh}
+.board-head{max-width:1100px;margin-bottom:48px}
+.board-head h1{font:700 28px/1.2 var(--font-display);letter-spacing:-.01em}
+.board-head p{margin-top:8px;font-size:16px;color:var(--ink-2);max-width:72ch}
+.frames{display:flex;gap:48px;align-items:flex-start;flex-wrap:wrap}
+.frame-wrap{display:flex;flex-direction:column;gap:12px}
+.frame-label{font:600 14px/1.3 var(--font);color:var(--ink-2)}
+.frame-label b{color:var(--ink);font-weight:700}
+.frame-note{font-size:13px;line-height:1.45;color:var(--ink-2);max-width:390px}
+.phone{position:relative;width:390px;height:844px;overflow:hidden;background:var(--paper);border-radius:28px;box-shadow:0 0 0 1px rgb(14 13 11 / .12),var(--shadow-raised)}
+.crop{position:relative;overflow:hidden;background:var(--paper);border-radius:12px;box-shadow:0 0 0 1px rgb(14 13 11 / .12),var(--shadow-raised)}
+.safe-top{height:0}
+.home-ind{position:absolute;left:50%;bottom:8px;width:134px;height:5px;margin-left:-67px;border-radius:3px;background:var(--ink);opacity:.85;z-index:30}
+
+/* Observer app shell: shared by observer-home-phone and observer-flow-phone */
+.ab{position:relative;z-index:3;height:56px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:0 4px;background:var(--paper)}
+.ab .l{justify-self:start;display:flex;align-items:center}
+.ab .c{justify-self:center;font:700 17px/1.2 var(--font);color:var(--ink);display:flex;align-items:center}
+.ab .r{justify-self:end;display:flex;align-items:center}
+.abtn{display:inline-flex;align-items:center;gap:6px;height:44px;padding:0 12px;border-radius:var(--r);font:600 16px/1 var(--font);color:var(--ink)}
+.abtn.done{font-weight:700}
+.scroll{position:absolute;top:56px;left:0;right:0;bottom:0;overflow:hidden}
+
+/* Bottom navigation: 56 px + 34 px safe area */
+.bn{position:absolute;left:0;right:0;bottom:0;z-index:4;height:90px;padding-bottom:34px;display:grid;grid-template-columns:repeat(4,1fr);background:var(--paper-raised);box-shadow:inset 0 1px 0 var(--rule)}
+.bn a{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;height:56px;text-decoration:none;color:var(--ink-3);font:600 12px/16px var(--font)}
+.bn .ic{position:relative;display:flex;align-items:center;justify-content:center;width:56px;height:32px;border-radius:16px}
+.bn a[aria-current]{color:var(--ink)}
+.bn a[aria-current] .ic{background:var(--paper-sunk);box-shadow:inset 0 0 0 1px var(--rule)}
+.bn .ic .count{position:absolute;top:-2px;left:32px;box-shadow:0 0 0 2px var(--paper-raised)}
+.bn a.bn-rep{color:var(--ink)}
+.bn a.bn-rep .ic{background:var(--ink);color:var(--on-ink)}
+
+.pad{padding:0 16px}
+.greet{padding-top:16px}
+.greet h1{font:800 28px/1.15 var(--font-display);letter-spacing:-.01em}
+.greet p{margin-top:4px;font-size:14px;color:var(--ink-2)}
+
+/* Needs you: one card replaces the two stacked banners */
+.needs{margin-top:16px;background:var(--paper-raised);border-radius:var(--r-md);box-shadow:inset 0 0 0 1px var(--rule)}
+.needs-h{display:flex;align-items:center;gap:8px;padding:16px 16px 4px;font:700 17px/1.2 var(--font)}
+.need{display:grid;grid-template-columns:24px 1fr auto;gap:12px;align-items:center;padding:12px 16px;min-height:64px}
+.need + .need{box-shadow:inset 0 1px 0 var(--rule)}
+.need p{font:500 15px/1.4 var(--font);color:var(--ink)}
+.need .shape{display:flex;justify-content:center}
+.need .shape svg{width:16px;height:16px}
+.need .shape.wait{color:var(--ink-2)}
+.need .shape.attn{color:var(--attn)}
+
+/* Report card */
+.rep{position:relative;margin-top:16px;border-radius:var(--r-lg);background:var(--ink);color:var(--on-ink);overflow:hidden}
+.rep-main{position:relative;display:grid;grid-template-columns:1fr 56px;gap:16px;align-items:center;padding:20px}
+.rep h2{font:800 22px/1.2 var(--font-display)}
+.rep p{margin-top:4px;font-size:15px;line-height:1.4;color:#cfc9be}
+.plus{display:flex;align-items:center;justify-content:center;width:56px;height:56px;border-radius:28px;background:#ffffff;color:var(--ink)}
+.plus svg{width:28px;height:28px;stroke-width:2}
+.sun{position:absolute;right:-28px;top:-44px;width:132px;height:132px;border-radius:50%;background:#26231e}
+.sun::after{content:"";position:absolute;left:30px;top:52px;width:40px;height:40px;border-radius:50%;background:var(--sun)}
+.draft{display:grid;grid-template-columns:1fr 24px;align-items:center;gap:12px;padding:12px 20px 14px;box-shadow:inset 0 1px 0 rgb(250 248 243 / .14)}
+.draft b{display:block;font:600 15px/1.3 var(--font)}
+.draft span{font-size:13px;color:#cfc9be}
+
+/* My reports */
+.sec-h{display:flex;align-items:baseline;justify-content:space-between;margin-top:24px}
+.sec-h h2{font:700 20px/1.3 var(--font-display)}
+.sec-h a{font:600 15px/1 var(--font);text-underline-offset:3px;text-decoration-thickness:1.5px}
+.list{margin-top:12px;background:var(--paper-raised);border-radius:var(--r-md);box-shadow:inset 0 0 0 1px var(--rule)}
+.rrow{display:grid;grid-template-columns:40px minmax(0,1fr) 20px;gap:12px;align-items:center;height:88px;padding:8px 12px 8px 16px}
+.rrow + .rrow{box-shadow:inset 0 1px 0 var(--rule)}
+.rrow > svg{width:20px;height:20px;color:var(--ink-3)}
+.tile{display:flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:var(--r);background:var(--paper-sunk);color:var(--ink);align-self:start;margin-top:4px}
+.rrow h3{font:600 16px/20px var(--font);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rrow .m{margin-top:2px;font-size:14px;line-height:20px;color:var(--ink-3)}
+.rrow .st{display:flex;align-items:center;gap:8px;margin-top:6px}
+.rrow .code{font:500 13px/20px var(--font);color:var(--ink-2);letter-spacing:.02em;font-variant-numeric:tabular-nums}
+
+/* Menu sheet */
+.scrim{position:absolute;inset:0;background:var(--scrim);z-index:8}
+.sheet{position:absolute;left:0;right:0;bottom:0;z-index:9;background:var(--paper);border-radius:var(--r-xl) var(--r-xl) 0 0;box-shadow:var(--shadow-sheet);padding:0 0 34px}
+.handle{width:36px;height:4px;border-radius:2px;background:var(--rule-control);opacity:.5;margin:8px auto 0}
+.sh-h{display:flex;align-items:center;justify-content:space-between;height:52px;padding:0 4px 0 20px}
+.sh-h h2{font:700 20px/1 var(--font-display)}
+.who{margin:0 16px;padding:14px 16px;border-radius:var(--r-md);background:var(--paper-2)}
+.who b{display:block;font:700 16px/1.3 var(--font)}
+.who span{font-size:14px;color:var(--ink-2)}
+.grp{padding:8px 8px 0}
+.grp + .grp{margin-top:8px;box-shadow:inset 0 1px 0 var(--rule);margin-left:16px;margin-right:16px;padding-left:0;padding-right:0}
+.mrow{display:flex;align-items:center;gap:16px;height:52px;padding:0 12px;border-radius:var(--r);font:600 17px/1 var(--font);color:var(--ink)}
+.grp + .grp .mrow{padding:0 4px}
+.mrow .aside{margin-left:auto;display:flex;align-items:center;gap:4px;font:500 14px/1 var(--font);color:var(--ink-3)}
+.mrow .aside svg{width:20px;height:20px}
+.s112{display:flex;gap:10px;margin:4px 20px 0;font-size:13px;line-height:1.45;color:var(--ink-2)}
+.s112 svg{width:18px;height:18px;color:var(--danger);margin-top:1px}
+.s112 b{color:var(--ink)}
+.mrow.out{color:var(--danger)}
+</style>
+</head>
+<body>
+<svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" style="position:absolute" aria-hidden="true">
+<symbol id="globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.4 2.5 3.6 5.5 3.6 9s-1.2 6.5-3.6 9c-2.4-2.5-3.6-5.5-3.6-9S9.6 5.5 12 3z"/></symbol>
+<symbol id="menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+<symbol id="close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+<symbol id="back" viewBox="0 0 24 24"><path d="M19 12H5M11 6l-6 6 6 6"/></symbol>
+<symbol id="plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+<symbol id="home" viewBox="0 0 24 24"><path d="M4 10.5 12 4l8 6.5V19a1 1 0 0 1-1 1h-4.5v-5.5h-5V20H5a1 1 0 0 1-1-1z"/></symbol>
+<symbol id="file" viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></symbol>
+<symbol id="chat" viewBox="0 0 24 24"><path d="M5 5h14a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1h-9l-5 4v-4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z"/></symbol>
+<symbol id="search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.4-4.4"/></symbol>
+<symbol id="check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
+<symbol id="chev" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></symbol>
+<symbol id="chevdown" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+<symbol id="book" viewBox="0 0 24 24"><path d="M12 6.5C10.5 5 8.3 4.5 4 4.5v13c4.3 0 6.5.5 8 2 1.5-1.5 3.7-2 8-2v-13c-4.3 0-6.5.5-8 2zM12 6.5v13"/></symbol>
+<symbol id="shield" viewBox="0 0 24 24"><path d="M12 3l7 3v5.5c0 4.4-2.9 8-7 9.5-4.1-1.5-7-5.1-7-9.5V6z"/></symbol>
+<symbol id="sliders" viewBox="0 0 24 24"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/></symbol>
+<symbol id="checklist" viewBox="0 0 24 24"><path d="M11 7h9M11 12h9M11 17h9M4 7l1.5 1.5L8 6M4 12l1.5 1.5L8 11M4 17l1.5 1.5L8 16"/></symbol>
+<symbol id="help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.4 2.3c-.6.3-.9.8-.9 1.5v.5"/><path d="M12 16.8v.2"/></symbol>
+<symbol id="users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6M15.5 4.6a3.5 3.5 0 0 1 0 6.8M18 14.4c1.8.8 3 2.9 3 5.6"/></symbol>
+<symbol id="signout" viewBox="0 0 24 24"><path d="M10 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h4M15 8l4 4-4 4M19 12H9"/></symbol>
+<symbol id="inbox" viewBox="0 0 24 24"><path d="M4 13 6.5 5h11L20 13v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1z"/><path d="M4 13h4.5l1 2h5l1-2H20"/></symbol>
+<symbol id="assign" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M3 20c0-3.3 2.7-6 6-6 1.6 0 3 .6 4.1 1.6M15 17l2 2 4-4"/></symbol>
+<symbol id="pulse" viewBox="0 0 24 24"><path d="M3 12h4l2.5-6 5 12 2.5-6h4"/></symbol>
+<symbol id="rumour" viewBox="0 0 24 24"><path d="M5 5h14a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1h-9l-5 4v-4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z"/><path d="M10 9.2a2 2 0 1 1 2.7 1.9c-.4.2-.7.5-.7 1v.3M12 14.3v.1"/></symbol>
+<symbol id="publish" viewBox="0 0 24 24"><path d="M12 15V4M7.5 8.5 12 4l4.5 4.5M5 14v5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-5"/></symbol>
+<symbol id="discuss" viewBox="0 0 24 24"><path d="M14 4H4a1 1 0 0 0-1 1v7a1 1 0 0 0 1 1h1v3l3.5-3H14a1 1 0 0 0 1-1V5a1 1 0 0 0-1-1z"/><path d="M18 8h2a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1h-1v3l-3.5-3H11a1 1 0 0 1-1-1v-1"/></symbol>
+<symbol id="key" viewBox="0 0 24 24"><circle cx="8" cy="15" r="4"/><path d="m11 12 8.5-8.5M16.5 6.5l2.5 2.5M14.5 8.5l2 2"/></symbol>
+<symbol id="staff" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M9 3v4M15 3v4"/><circle cx="12" cy="11.5" r="2.2"/><path d="M8 17c.6-1.7 2.1-2.8 4-2.8s3.4 1.1 4 2.8"/></symbol>
+<symbol id="lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></symbol>
+<symbol id="filter" viewBox="0 0 24 24"><path d="M4 6h16M7 12h10M10 18h4"/></symbol>
+<symbol id="copy" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></symbol>
+<symbol id="download" viewBox="0 0 24 24"><path d="M12 4v11M7.5 10.5 12 15l4.5-4.5M5 20h14"/></symbol>
+<symbol id="camera" viewBox="0 0 24 24"><path d="M4 8a1 1 0 0 1 1-1h3l1.5-2h5L16 7h3a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1z"/><circle cx="12" cy="12.5" r="3.2"/></symbol>
+<symbol id="video" viewBox="0 0 24 24"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="m16 10 5-3v10l-5-3"/></symbol>
+<symbol id="mic" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"/></symbol>
+<symbol id="box" viewBox="0 0 24 24"><path d="M4 9h16v10a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1z"/><path d="M3 9l2-4h14l2 4M10 13h4"/></symbol>
+<symbol id="device" viewBox="0 0 24 24"><rect x="6" y="3" width="12" height="18" rx="2"/><path d="m12.8 7.5-2.3 4h3l-2.3 4M10.5 18h3"/></symbol>
+<symbol id="people" viewBox="0 0 24 24"><circle cx="6" cy="8" r="2"/><circle cx="12" cy="7" r="2"/><circle cx="18" cy="8" r="2"/><path d="M3 17v-3a3 3 0 0 1 6 0M9 17v-4a3 3 0 0 1 6 0v4M15 17v-3a3 3 0 0 1 6 0v3M3 20h18"/></symbol>
+<symbol id="alert" viewBox="0 0 24 24"><path d="M10.3 4.3 2.8 17.5A2 2 0 0 0 4.5 20.5h15a2 2 0 0 0 1.7-3L13.7 4.3a2 2 0 0 0-3.4 0z"/><path d="M12 9.5v4.5M12 17v.1"/></symbol>
+<symbol id="access" viewBox="0 0 24 24"><circle cx="10" cy="4.5" r="1.6"/><path d="M10 8v6h5.5l2.5 5.5M10 11h5"/><path d="M14.5 18.2A5 5 0 1 1 7 11.8"/></symbol>
+<symbol id="infoq" viewBox="0 0 24 24"><path d="M4 5h16v11H11l-5 4v-4H4z"/><path d="M10 8.7a2 2 0 1 1 2.7 1.9c-.4.2-.7.5-.7 1v.2M12 13.4v.1"/></symbol>
+<symbol id="megaphone" viewBox="0 0 24 24"><path d="M4 10v4a1 1 0 0 0 1 1h2l8 4V5L7 9H5a1 1 0 0 0-1 1zM7 15l1.5 5h2.5L10 16M19 9a4 4 0 0 1 0 6"/></symbol>
+<symbol id="cash" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="1.5"/><circle cx="12" cy="12" r="2.6"/><path d="M6.5 9.5v.01M17.5 14.5v.01"/></symbol>
+<symbol id="thumb" viewBox="0 0 24 24"><path d="M7 11v9H4v-9zM7 11l4-7a2 2 0 0 1 2 2v4h5.2a2 2 0 0 1 2 2.3l-1.1 6.2a2 2 0 0 1-2 1.5H7"/></symbol>
+<symbol id="tri" viewBox="0 0 24 24"><path d="M12 4 21 20H3z" fill="currentColor" stroke="none"/></symbol>
+<symbol id="diamond" viewBox="0 0 24 24"><path d="m12 3 9 9-9 9-9-9z" fill="currentColor" stroke="none"/></symbol>
+<symbol id="ring" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7.5" stroke-width="3"/></symbol>
+<symbol id="okc" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="currentColor" stroke="none"/><path d="m7.5 12.3 3 3 6-6.3" stroke="#fff" stroke-width="2.4"/></symbol>
+<symbol id="question" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5M12 16.4v.1"/></symbol>
+<symbol id="clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></symbol>
+<symbol id="phone" viewBox="0 0 24 24"><path d="M6.5 3.5h3l1.5 4-2 1.5a11 11 0 0 0 6 6l1.5-2 4 1.5v3a2 2 0 0 1-2 2A16 16 0 0 1 4.5 5.5a2 2 0 0 1 2-2z"/></symbol>
+<symbol id="pin" viewBox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></symbol>
+<symbol id="more" viewBox="0 0 24 24"><path d="M6 12h.01M12 12h.01M18 12h.01" stroke-width="3"/></symbol>
+</svg>
+
+<div class="board">
+  <div class="board-head">
+    <h1>Observer app: home and menu</h1>
+    <p>Things waiting on the observer collapse into one "Needs you" card. A bottom bar carries the four places an observer goes all day; the menu keeps only what is occasional.</p>
+  </div>
+  <div class="frames">
+    <div class="frame-wrap">
+      <div class="frame-label"><b>Home.</b> Root screen: mark in the centre, no Back.</div>
+      <div class="phone">
+        <header class="ab">
+          <div class="l"></div>
+          <div class="c" style="color:var(--ink)"><svg class="mark" viewBox="6 6 36 36" width="24" height="24" role="img" aria-label="ElectraGuard AI"><path d="M38 6A4 4 0 0 1 42 10V14H20A6 6 0 0 0 14 20H29V28H14A6 6 0 0 0 20 34H34V24H42V38A4 4 0 0 1 38 42H20A14 14 0 0 1 6 28V20A14 14 0 0 1 20 6Z"/></svg></div>
+          <div class="r"><button class="abtn"><svg class="i" aria-hidden="true"><use href="#menu"/></svg>Menu</button></div>
+        </header>
+        <div class="scroll pad">
+          <div class="greet">
+            <h1>Good evening</h1>
+            <p>Observer OBS-7K2P9X, Kantudu Primary School I</p>
+          </div>
+
+          <section class="needs" aria-labelledby="nh">
+            <div class="needs-h" id="nh">Needs you <span class="count">2</span></div>
+            <div class="need">
+              <span class="shape wait"><svg class="i" aria-hidden="true"><use href="#ring"/></svg></span>
+              <p>1 report is on this phone and not sent yet.</p>
+              <a class="btn secondary h36">Send now</a>
+            </div>
+            <div class="need">
+              <span class="shape attn"><svg class="i" aria-hidden="true"><use href="#diamond"/></svg></span>
+              <p>A reviewer has a question about EG-9M2C-7TQA.</p>
+              <a class="btn secondary h36">Answer</a>
+            </div>
+          </section>
+
+          <section class="rep">
+                        <div class="rep-main">
+              <div><h2>Report something</h2><p>Tell us what you see at your polling unit.</p></div>
+              <span class="plus"><svg class="i" aria-hidden="true"><use href="#plus"/></svg></span>
+            </div>
+            <div class="draft">
+              <div><b>Continue your draft</b><span>Access barrier, started 09:05 WAT</span></div>
+              <svg class="i" aria-hidden="true"><use href="#chev"/></svg>
+            </div>
+          </section>
+
+          <div class="sec-h"><h2>My reports</h2><a href="#">See all</a></div>
+          <div class="list">
+            <div class="rrow">
+              <span class="tile"><svg class="i" aria-hidden="true"><use href="#people"/></svg></span>
+              <div><h3>Queues or crowding</h3><div class="m">Kantudu, 5 Dec, 09:05 WAT</div><div class="st"><span class="badge wait"><svg class="i" aria-hidden="true"><use href="#ring"/></svg>On this phone</span><span class="code">Not sent yet</span></div></div>
+              <svg class="i" aria-hidden="true"><use href="#chev"/></svg>
+            </div>
+            <div class="rrow">
+              <span class="tile"><svg class="i" aria-hidden="true"><use href="#alert"/></svg></span>
+              <div><h3>Intimidation or violence</h3><div class="m">Kantudu, 5 Dec, 08:41 WAT</div><div class="st"><span class="badge ok"><svg class="i" aria-hidden="true"><use href="#check"/></svg>Received</span><span class="code">EG-4H7Q-92KD</span></div></div>
+              <svg class="i" aria-hidden="true"><use href="#chev"/></svg>
+            </div>
+            <div class="rrow">
+              <span class="tile"><svg class="i" aria-hidden="true"><use href="#box"/></svg></span>
+              <div><h3>Late or missing materials</h3><div class="m">Gwammaja, 5 Dec, 08:12 WAT</div><div class="st"><span class="badge attn"><svg class="i" aria-hidden="true"><use href="#diamond"/></svg>Question for you</span><span class="code">EG-9M2C-7TQA</span></div></div>
+              <svg class="i" aria-hidden="true"><use href="#chev"/></svg>
+            </div>
+          </div>
+        </div>
+        <nav class="bn" aria-label="Main">
+          <a aria-current="page"><span class="ic"><svg class="i" aria-hidden="true"><use href="#home"/></svg></span>Home</a>
+          <a class="bn-rep"><span class="ic"><svg class="i" aria-hidden="true"><use href="#plus"/></svg></span>Report</a>
+          <a><span class="ic"><svg class="i" aria-hidden="true"><use href="#file"/></svg></span>My reports</a>
+          <a><span class="ic"><svg class="i" aria-hidden="true"><use href="#chat"/></svg><span class="count" aria-label="1 new">1</span></span>Messages</a>
+        </nav>
+        <div class="home-ind"></div>
+      </div>
+    </div>
+
+    <div class="frame-wrap">
+      <div class="frame-label"><b>Menu open.</b> Bottom sheet, reordered.</div>
+      <div class="phone">
+        <header class="ab">
+          <div class="l"></div>
+          <div class="c" style="color:var(--ink)"><svg class="mark" viewBox="6 6 36 36" width="24" height="24" role="img" aria-label="ElectraGuard AI"><path d="M38 6A4 4 0 0 1 42 10V14H20A6 6 0 0 0 14 20H29V28H14A6 6 0 0 0 20 34H34V24H42V38A4 4 0 0 1 38 42H20A14 14 0 0 1 6 28V20A14 14 0 0 1 20 6Z"/></svg></div>
+          <div class="r"><button class="abtn"><svg class="i" aria-hidden="true"><use href="#menu"/></svg>Menu</button></div>
+        </header>
+        <div class="scroll pad">
+          <div class="greet"><h1>Good evening</h1><p>Observer OBS-7K2P9X, Kantudu Primary School I</p></div>
+        </div>
+        <nav class="bn"><a aria-current="page"><span class="ic"><svg class="i" aria-hidden="true"><use href="#home"/></svg></span>Home</a><a class="bn-rep"><span class="ic"><svg class="i" aria-hidden="true"><use href="#plus"/></svg></span>Report</a><a><span class="ic"><svg class="i" aria-hidden="true"><use href="#file"/></svg></span>My reports</a><a><span class="ic"><svg class="i" aria-hidden="true"><use href="#chat"/></svg><span class="count">1</span></span>Messages</a></nav>
+        <div class="scrim"></div>
+        <div class="sheet" role="dialog" aria-label="Menu">
+          <div class="handle"></div>
+          <div class="sh-h"><h2>Menu</h2><button class="abtn"><svg class="i" aria-hidden="true"><use href="#close"/></svg>Close</button></div>
+          <div class="who"><b>Observer OBS-7K2P9X</b><span>Kantudu Primary School I, Kantudu, Dala</span></div>
+          <div class="grp">
+            <div class="mrow"><svg class="i" aria-hidden="true"><use href="#checklist"/></svg>Polling-day checklist<span class="aside">2 of 6 sent</span></div>
+            <div class="mrow"><svg class="i" aria-hidden="true"><use href="#help"/></svg>Ask ElectraGuard</div>
+            <div class="mrow"><svg class="i" aria-hidden="true"><use href="#discuss"/></svg>Discussions</div>
+          </div>
+          <div class="grp">
+            <div class="mrow"><svg class="i" aria-hidden="true"><use href="#book"/></svg>Guides</div>
+            <div class="mrow"><svg class="i" aria-hidden="true"><use href="#shield"/></svg>Privacy notice</div>
+            <div class="mrow"><svg class="i" aria-hidden="true"><use href="#sliders"/></svg>Settings</div>
+          </div>
+          <div class="grp">
+            <div class="mrow"><svg class="i" aria-hidden="true"><use href="#globe"/></svg>Language<span class="aside">English <svg class="i" aria-hidden="true"><use href="#chev"/></svg></span></div>
+          </div>
+          <p class="s112"><svg class="i" aria-hidden="true"><use href="#alert"/></svg><span>If someone may be in danger, call <b>112</b>. This app does not send help.</span></p>
+          <div class="grp"><div class="mrow out"><svg class="i" aria-hidden="true"><use href="#signout"/></svg>Sign out</div></div>
+          <div class="home-ind"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="frame-wrap" style="width:240px;padding-top:32px">
+      <div class="frame-note"><b>App bar.</b> Three-slot grid (1fr auto 1fr), so the title is centred on the screen, not between the buttons. Menu keeps its word: observers read labels faster than icons.</div>
+      <div class="frame-note" style="margin-top:16px"><b>Needs you.</b> One card, one count, one action per row. It disappears when nothing waits, so the home page is calm most of the day.</div>
+      <div class="frame-note" style="margin-top:16px"><b>Report rows.</b> 88 px, one list, no card per row. Title, place and time, then status (shape plus word) beside the receipt code, so the code is never mistaken for a heading.</div>
+      <div class="frame-note" style="margin-top:16px"><b>Bottom bar.</b> 56 px plus the safe area. Active: a 56 by 32 sunk pill behind the icon and ink label. Report is always the ink pill: it opens the flow and is never "current".</div>
+      <div class="frame-note" style="margin-top:16px"><b>Menu.</b> Home, My reports and Messages left the menu: they live in the bottom bar now. Sign out is last, in danger red, away from the thumb's usual path.</div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

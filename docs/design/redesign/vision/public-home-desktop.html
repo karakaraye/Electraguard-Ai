@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="en-NG">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Public home, desktop</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Display:wght@600;700;800&family=Noto+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ElectraGuard AI vision mockups. Light theme tokens from frontend/ui/tokens.css. */
+:root{
+  --font:"Noto Sans",system-ui,"Segoe UI",sans-serif;
+  --font-display:"Noto Sans Display","Noto Sans",system-ui,sans-serif;
+  --ink:#0e0d0b; --ink-2:#45413a; --ink-3:#6e6a62;
+  --paper:#faf8f3; --paper-2:#f2efe7; --paper-raised:#ffffff; --paper-sunk:#f2efe7;
+  --rule:#e6e1d5; --rule-control:#8a857a; --on-ink:#faf8f3;
+  --sun:#e3b060; --sun-strong:#c98f2e; --sun-ink:#7a4e0e; --sun-tint:#f6e7c6; --sun-wash:#fbf4e4; --sun-line:#ead9b4;
+  --ok:#1b5e20; --ok-bg:#e7f3e8; --ok-solid:#2e7d32;
+  --attn:#8a3b00; --attn-bg:#fff1dc;
+  --danger:#a3161a; --danger-bg:#fdecec;
+  --wait:#45413a; --wait-bg:#eeebe4;
+  --info:#0d4a94; --info-bg:#e3eefb;
+  --scrim:rgb(14 13 11 / .4);
+  --shadow-sheet:0 -8px 32px rgb(14 13 11 / .18);
+  --shadow-raised:0 8px 24px rgb(14 13 11 / .14);
+  --shadow-pop:0 12px 32px rgb(14 13 11 / .16), 0 1px 2px rgb(14 13 11 / .08);
+  --board:#e9e5da;
+  --r-sm:6px; --r:10px; --r-md:14px; --r-lg:18px; --r-xl:22px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--paper);color:var(--ink);font-family:var(--font);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+body{font-size:16px;line-height:1.5}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+a{color:inherit}
+.tnum{font-variant-numeric:tabular-nums}
+svg.i{width:24px;height:24px;flex:none;fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
+svg.i.s20{width:20px;height:20px}
+svg.i.s16{width:16px;height:16px}
+svg.mark{fill:currentColor;display:block;flex:none}
+
+/* ---------- Unified components ---------- */
+/* Count: one component, two tones. Strong = needs action. Quiet = informational total. */
+.count{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;padding:0 6px;border-radius:10px;font:700 12px/1 var(--font);font-variant-numeric:tabular-nums;background:var(--ink);color:var(--on-ink)}
+.count.quiet{background:var(--paper-sunk);color:var(--ink-2);box-shadow:inset 0 0 0 1px var(--rule)}
+
+/* Status badge: shape + word, colour only for status. Square-ish, never a pill. */
+.badge{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 8px;border-radius:var(--r-sm);font:600 13px/1 var(--font);white-space:nowrap}
+.badge svg{width:14px;height:14px;stroke-width:2}
+.badge.ok{background:var(--ok-bg);color:var(--ok)}
+.badge.attn{background:var(--attn-bg);color:var(--attn)}
+.badge.danger{background:var(--danger-bg);color:var(--danger)}
+.badge.wait{background:var(--wait-bg);color:var(--wait)}
+.badge.info{background:var(--info-bg);color:var(--info)}
+
+/* Buttons */
+.btn{text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:8px;height:48px;padding:0 20px;border-radius:var(--r);font:600 16px/1 var(--font);white-space:nowrap}
+.btn.primary{background:var(--ink);color:var(--on-ink)}
+.btn.secondary{background:var(--paper-raised);color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--ink)}
+.btn.quiet{background:var(--paper-raised);color:var(--ink);box-shadow:inset 0 0 0 1px var(--rule-control)}
+.btn.disabled{background:var(--paper-sunk);color:var(--ink-3);box-shadow:none;cursor:not-allowed}
+.btn.h40{height:40px;padding:0 16px;font-size:15px}
+.btn.h36{height:36px;padding:0 12px;font-size:14px;gap:6px}
+.btn.h56{height:56px;padding:0 24px;font-size:17px}
+.btn.block{width:100%}
+.focus{outline:3px solid var(--ink);outline-offset:2px;box-shadow:0 0 0 2px var(--paper)}
+
+/* Toggle with clear off/on */
+.toggle{display:inline-flex;align-items:center;gap:8px;font:600 13px/1 var(--font)}
+.toggle .track{position:relative;width:44px;height:24px;border-radius:12px;background:var(--paper-raised);box-shadow:inset 0 0 0 1.5px var(--rule-control)}
+.toggle .track::after{content:"";position:absolute;top:4px;left:4px;width:16px;height:16px;border-radius:8px;background:var(--rule-control)}
+.toggle.on .track{background:var(--ink);box-shadow:none}
+.toggle.on .track::after{left:24px;background:var(--paper-raised)}
+
+/* Keycap */
+.kbd{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;padding:0 5px;border-radius:5px;font:600 12px/1 var(--font);color:var(--ink-2);background:var(--paper-raised);box-shadow:inset 0 0 0 1px var(--rule),0 1px 0 var(--rule)}
+
+/* ---------- Presentation board (annotation only, not product UI) ---------- */
+.board{background:var(--board);padding:64px;min-height:100vh}
+.board-head{max-width:1100px;margin-bottom:48px}
+.board-head h1{font:700 28px/1.2 var(--font-display);letter-spacing:-.01em}
+.board-head p{margin-top:8px;font-size:16px;color:var(--ink-2);max-width:72ch}
+.frames{display:flex;gap:48px;align-items:flex-start;flex-wrap:wrap}
+.frame-wrap{display:flex;flex-direction:column;gap:12px}
+.frame-label{font:600 14px/1.3 var(--font);color:var(--ink-2)}
+.frame-label b{color:var(--ink);font-weight:700}
+.frame-note{font-size:13px;line-height:1.45;color:var(--ink-2);max-width:390px}
+.phone{position:relative;width:390px;height:844px;overflow:hidden;background:var(--paper);border-radius:28px;box-shadow:0 0 0 1px rgb(14 13 11 / .12),var(--shadow-raised)}
+.crop{position:relative;overflow:hidden;background:var(--paper);border-radius:12px;box-shadow:0 0 0 1px rgb(14 13 11 / .12),var(--shadow-raised)}
+.safe-top{height:0}
+.home-ind{position:absolute;left:50%;bottom:8px;width:134px;height:5px;margin-left:-67px;border-radius:3px;background:var(--ink);opacity:.85;z-index:30}
+
+/* ---------- Public header (64 px, sticky; border appears only after scroll) ---------- */
+.ph{position:sticky;top:0;z-index:10;height:64px;display:flex;align-items:center;gap:48px;padding:0 80px;background:var(--paper)}
+.ph.scrolled{box-shadow:inset 0 -1px 0 var(--rule)}
+.ph-nav{display:flex;align-items:stretch;height:64px;gap:4px}
+.ph-nav a{position:relative;display:flex;align-items:center;padding:0 12px;font:600 15px/1 var(--font);color:var(--ink-2);text-decoration:none;white-space:nowrap}
+.ph-nav a[aria-current]{color:var(--ink)}
+.ph-nav a[aria-current]::after{content:"";position:absolute;left:50%;bottom:0;width:24px;height:2px;margin-left:-12px;background:var(--ink);border-radius:1px}
+.ph-end{margin-left:auto;display:flex;align-items:center;gap:12px}
+.lang{display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 10px 0 8px;border-radius:8px;font:600 14px/1 var(--font);color:var(--ink);box-shadow:inset 0 0 0 1px var(--rule-control)}
+.lang svg{width:20px;height:20px}
+
+/* ---------- Page ---------- */
+.wrap{padding:0 80px}
+.hero{position:relative;display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:32px;min-height:536px}
+.hero-copy{grid-column:1 / span 6;padding-top:64px;position:relative;z-index:1}
+.hero h1{font:800 60px/1.04 var(--font-display);letter-spacing:-.022em}
+.lead{margin-top:24px;font-size:19px;line-height:1.55;color:var(--ink-2);max-width:34rem}
+.cta{display:flex;gap:12px;margin-top:32px}
+.fine{margin-top:16px;font-size:14px;color:var(--ink-3)}
+.nosmart{display:flex;align-items:flex-start;gap:12px;margin-top:24px;padding-top:20px;border-top:1px solid var(--rule);max-width:34rem;font-size:15px;color:var(--ink-2)}
+.nosmart svg{margin-top:1px;color:var(--ink)}
+.nosmart b{color:var(--ink);font-weight:700}
+.nosmart a{display:inline-block;margin-top:4px;white-space:nowrap;font-weight:600;color:var(--ink);text-underline-offset:3px;text-decoration-thickness:1.5px}
+
+.art{position:absolute;top:32px;right:-80px;width:calc(50% + 48px);height:504px;border-radius:var(--r-lg) 0 0 var(--r-lg);overflow:hidden;background:#efe7d9}
+.art img{width:100%;height:100%;object-fit:cover;object-position:38% 55%;display:block}
+.art::after{content:"";position:absolute;inset:0;border-radius:inherit;box-shadow:inset 0 0 0 1px rgb(14 13 11 / .08)}
+.slot{position:absolute;left:16px;bottom:16px;display:flex;align-items:center;gap:8px;height:32px;padding:0 12px;border-radius:8px;background:rgb(255 255 255 / .92);font:600 13px/1 var(--font);color:var(--ink-2);box-shadow:inset 0 0 0 1px var(--rule)}
+.slot i{width:8px;height:8px;border-radius:2px;background:var(--sun-strong)}
+
+/* Receipt check strip */
+.check{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:32px;align-items:end;margin-top:40px;padding:24px 32px;background:var(--paper-raised);border-radius:var(--r-md);box-shadow:inset 0 0 0 1px var(--rule)}
+.check-intro{grid-column:1 / span 5;align-self:center}
+.check-intro h2{font:700 20px/1.3 var(--font-display)}
+.check-intro p{margin-top:4px;font-size:15px;color:var(--ink-2)}
+.check-form{grid-column:6 / span 7}
+.check-form label{display:flex;align-items:baseline;gap:12px;font:600 15px/1.3 var(--font)}
+.check-form label span{font-weight:400;font-size:14px;color:var(--ink-3)}
+.row{display:flex;gap:12px;margin-top:8px}
+.input{flex:1;height:48px;border-radius:var(--r);background:var(--paper-raised);box-shadow:inset 0 0 0 1.5px var(--rule-control);display:flex;align-items:center;padding:0 16px;font:500 17px/1 var(--font);letter-spacing:.04em;color:var(--ink)}
+
+/* Results */
+.results{padding-top:56px}
+.res-head{display:flex;align-items:baseline;justify-content:space-between;padding-bottom:16px;border-bottom:1px solid var(--rule)}
+.res-head h2{font:800 32px/1.15 var(--font-display);letter-spacing:-.01em}
+.res-head a{font:600 15px/1 var(--font);text-underline-offset:3px;text-decoration-thickness:1.5px}
+.res-grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:32px;padding-top:32px}
+.res-total{grid-column:1 / span 5}
+.big{display:flex;align-items:baseline;gap:12px}
+.big b{font:800 64px/1 var(--font-display);letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.big span{font:600 18px/1.3 var(--font)}
+.stamp{margin-top:16px;font-size:14px;color:var(--ink-3)}
+.disc{margin-top:8px;font:600 15px/1.45 var(--font)}
+.bars{grid-column:7 / span 6;display:flex;flex-direction:column;gap:20px}
+.bar-top{display:flex;justify-content:space-between;font-size:15px}
+.bar-top b{font-weight:700;font-variant-numeric:tabular-nums}
+.track{margin-top:8px;height:8px;border-radius:4px;background:var(--sun-tint);overflow:hidden}
+.track i{display:block;height:100%;border-radius:4px;background:var(--sun-strong)}
+</style>
+</head>
+<body>
+<svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" style="position:absolute" aria-hidden="true">
+<symbol id="globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.4 2.5 3.6 5.5 3.6 9s-1.2 6.5-3.6 9c-2.4-2.5-3.6-5.5-3.6-9S9.6 5.5 12 3z"/></symbol>
+<symbol id="menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+<symbol id="close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+<symbol id="back" viewBox="0 0 24 24"><path d="M19 12H5M11 6l-6 6 6 6"/></symbol>
+<symbol id="plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+<symbol id="home" viewBox="0 0 24 24"><path d="M4 10.5 12 4l8 6.5V19a1 1 0 0 1-1 1h-4.5v-5.5h-5V20H5a1 1 0 0 1-1-1z"/></symbol>
+<symbol id="file" viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></symbol>
+<symbol id="chat" viewBox="0 0 24 24"><path d="M5 5h14a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1h-9l-5 4v-4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z"/></symbol>
+<symbol id="search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.4-4.4"/></symbol>
+<symbol id="check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
+<symbol id="chev" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></symbol>
+<symbol id="chevdown" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+<symbol id="book" viewBox="0 0 24 24"><path d="M12 6.5C10.5 5 8.3 4.5 4 4.5v13c4.3 0 6.5.5 8 2 1.5-1.5 3.7-2 8-2v-13c-4.3 0-6.5.5-8 2zM12 6.5v13"/></symbol>
+<symbol id="shield" viewBox="0 0 24 24"><path d="M12 3l7 3v5.5c0 4.4-2.9 8-7 9.5-4.1-1.5-7-5.1-7-9.5V6z"/></symbol>
+<symbol id="sliders" viewBox="0 0 24 24"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/></symbol>
+<symbol id="checklist" viewBox="0 0 24 24"><path d="M11 7h9M11 12h9M11 17h9M4 7l1.5 1.5L8 6M4 12l1.5 1.5L8 11M4 17l1.5 1.5L8 16"/></symbol>
+<symbol id="help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.4 2.3c-.6.3-.9.8-.9 1.5v.5"/><path d="M12 16.8v.2"/></symbol>
+<symbol id="users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6M15.5 4.6a3.5 3.5 0 0 1 0 6.8M18 14.4c1.8.8 3 2.9 3 5.6"/></symbol>
+<symbol id="signout" viewBox="0 0 24 24"><path d="M10 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h4M15 8l4 4-4 4M19 12H9"/></symbol>
+<symbol id="inbox" viewBox="0 0 24 24"><path d="M4 13 6.5 5h11L20 13v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1z"/><path d="M4 13h4.5l1 2h5l1-2H20"/></symbol>
+<symbol id="assign" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M3 20c0-3.3 2.7-6 6-6 1.6 0 3 .6 4.1 1.6M15 17l2 2 4-4"/></symbol>
+<symbol id="pulse" viewBox="0 0 24 24"><path d="M3 12h4l2.5-6 5 12 2.5-6h4"/></symbol>
+<symbol id="rumour" viewBox="0 0 24 24"><path d="M5 5h14a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1h-9l-5 4v-4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z"/><path d="M10 9.2a2 2 0 1 1 2.7 1.9c-.4.2-.7.5-.7 1v.3M12 14.3v.1"/></symbol>
+<symbol id="publish" viewBox="0 0 24 24"><path d="M12 15V4M7.5 8.5 12 4l4.5 4.5M5 14v5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-5"/></symbol>
+<symbol id="discuss" viewBox="0 0 24 24"><path d="M14 4H4a1 1 0 0 0-1 1v7a1 1 0 0 0 1 1h1v3l3.5-3H14a1 1 0 0 0 1-1V5a1 1 0 0 0-1-1z"/><path d="M18 8h2a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1h-1v3l-3.5-3H11a1 1 0 0 1-1-1v-1"/></symbol>
+<symbol id="key" viewBox="0 0 24 24"><circle cx="8" cy="15" r="4"/><path d="m11 12 8.5-8.5M16.5 6.5l2.5 2.5M14.5 8.5l2 2"/></symbol>
+<symbol id="staff" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M9 3v4M15 3v4"/><circle cx="12" cy="11.5" r="2.2"/><path d="M8 17c.6-1.7 2.1-2.8 4-2.8s3.4 1.1 4 2.8"/></symbol>
+<symbol id="lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></symbol>
+<symbol id="filter" viewBox="0 0 24 24"><path d="M4 6h16M7 12h10M10 18h4"/></symbol>
+<symbol id="copy" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></symbol>
+<symbol id="download" viewBox="0 0 24 24"><path d="M12 4v11M7.5 10.5 12 15l4.5-4.5M5 20h14"/></symbol>
+<symbol id="camera" viewBox="0 0 24 24"><path d="M4 8a1 1 0 0 1 1-1h3l1.5-2h5L16 7h3a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1z"/><circle cx="12" cy="12.5" r="3.2"/></symbol>
+<symbol id="video" viewBox="0 0 24 24"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="m16 10 5-3v10l-5-3"/></symbol>
+<symbol id="mic" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"/></symbol>
+<symbol id="box" viewBox="0 0 24 24"><path d="M4 9h16v10a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1z"/><path d="M3 9l2-4h14l2 4M10 13h4"/></symbol>
+<symbol id="device" viewBox="0 0 24 24"><rect x="6" y="3" width="12" height="18" rx="2"/><path d="m12.8 7.5-2.3 4h3l-2.3 4M10.5 18h3"/></symbol>
+<symbol id="people" viewBox="0 0 24 24"><circle cx="6" cy="8" r="2"/><circle cx="12" cy="7" r="2"/><circle cx="18" cy="8" r="2"/><path d="M3 17v-3a3 3 0 0 1 6 0M9 17v-4a3 3 0 0 1 6 0v4M15 17v-3a3 3 0 0 1 6 0v3M3 20h18"/></symbol>
+<symbol id="alert" viewBox="0 0 24 24"><path d="M10.3 4.3 2.8 17.5A2 2 0 0 0 4.5 20.5h15a2 2 0 0 0 1.7-3L13.7 4.3a2 2 0 0 0-3.4 0z"/><path d="M12 9.5v4.5M12 17v.1"/></symbol>
+<symbol id="access" viewBox="0 0 24 24"><circle cx="10" cy="4.5" r="1.6"/><path d="M10 8v6h5.5l2.5 5.5M10 11h5"/><path d="M14.5 18.2A5 5 0 1 1 7 11.8"/></symbol>
+<symbol id="infoq" viewBox="0 0 24 24"><path d="M4 5h16v11H11l-5 4v-4H4z"/><path d="M10 8.7a2 2 0 1 1 2.7 1.9c-.4.2-.7.5-.7 1v.2M12 13.4v.1"/></symbol>
+<symbol id="megaphone" viewBox="0 0 24 24"><path d="M4 10v4a1 1 0 0 0 1 1h2l8 4V5L7 9H5a1 1 0 0 0-1 1zM7 15l1.5 5h2.5L10 16M19 9a4 4 0 0 1 0 6"/></symbol>
+<symbol id="cash" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="1.5"/><circle cx="12" cy="12" r="2.6"/><path d="M6.5 9.5v.01M17.5 14.5v.01"/></symbol>
+<symbol id="thumb" viewBox="0 0 24 24"><path d="M7 11v9H4v-9zM7 11l4-7a2 2 0 0 1 2 2v4h5.2a2 2 0 0 1 2 2.3l-1.1 6.2a2 2 0 0 1-2 1.5H7"/></symbol>
+<symbol id="tri" viewBox="0 0 24 24"><path d="M12 4 21 20H3z" fill="currentColor" stroke="none"/></symbol>
+<symbol id="diamond" viewBox="0 0 24 24"><path d="m12 3 9 9-9 9-9-9z" fill="currentColor" stroke="none"/></symbol>
+<symbol id="ring" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7.5" stroke-width="3"/></symbol>
+<symbol id="okc" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="currentColor" stroke="none"/><path d="m7.5 12.3 3 3 6-6.3" stroke="#fff" stroke-width="2.4"/></symbol>
+<symbol id="question" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5M12 16.4v.1"/></symbol>
+<symbol id="clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></symbol>
+<symbol id="phone" viewBox="0 0 24 24"><path d="M6.5 3.5h3l1.5 4-2 1.5a11 11 0 0 0 6 6l1.5-2 4 1.5v3a2 2 0 0 1-2 2A16 16 0 0 1 4.5 5.5a2 2 0 0 1 2-2z"/></symbol>
+<symbol id="pin" viewBox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></symbol>
+<symbol id="more" viewBox="0 0 24 24"><path d="M6 12h.01M12 12h.01M18 12h.01" stroke-width="3"/></symbol>
+</svg>
+
+<header class="ph">
+  <a href="#" aria-label="ElectraGuard AI home" style="color:var(--ink)"><svg class="mark" viewBox="0 0 224.07 36" width="149.38" height="24" role="img" aria-label="ElectraGuard AI"><path d="M32 0A4 4 0 0 1 36 4V8H14A6 6 0 0 0 8 14H23V22H8A6 6 0 0 0 14 28H28V18H36V32A4 4 0 0 1 32 36H14A14 14 0 0 1 0 22V14A14 14 0 0 1 14 0Z"/><path d="M61.97 26.28H52.56V9.72H61.97V12.2H55.53V16.42H61.56V18.9H55.53V23.78H61.97ZM67.82 26.28H64.87V8.65H67.82ZM76.33 13.48Q78.02 13.48 79.25 14.15Q80.48 14.82 81.14 16.1Q81.8 17.37 81.8 19.18V20.69H73.52Q73.57 22.38 74.47 23.31Q75.38 24.24 77.05 24.24Q78.23 24.24 79.18 24.01Q80.13 23.78 81.13 23.33V25.65Q80.2 26.09 79.21 26.3Q78.21 26.51 76.79 26.51Q74.96 26.51 73.54 25.8Q72.11 25.1 71.31 23.66Q70.51 22.22 70.51 20.09Q70.51 17.93 71.24 16.46Q71.97 14.98 73.28 14.23Q74.59 13.48 76.33 13.48ZM76.38 15.66Q75.17 15.66 74.44 16.42Q73.71 17.19 73.59 18.63H78.95Q78.95 17.74 78.67 17.08Q78.39 16.42 77.83 16.04Q77.26 15.66 76.38 15.66ZM89.76 26.51Q88 26.51 86.65 25.83Q85.31 25.14 84.55 23.72Q83.8 22.29 83.8 20.06Q83.8 17.74 84.61 16.3Q85.42 14.85 86.81 14.16Q88.21 13.48 89.97 13.48Q91.01 13.48 91.96 13.69Q92.91 13.89 93.59 14.24L92.7 16.54Q92.08 16.28 91.36 16.09Q90.64 15.89 89.94 15.89Q88.92 15.89 88.22 16.35Q87.51 16.82 87.16 17.73Q86.81 18.65 86.81 20.04Q86.81 21.36 87.17 22.27Q87.53 23.17 88.22 23.62Q88.9 24.08 89.87 24.08Q90.87 24.08 91.72 23.83Q92.57 23.59 93.31 23.2V25.65Q92.61 26.05 91.77 26.28Q90.92 26.51 89.76 26.51ZM100.75 24.17Q101.31 24.17 101.82 24.07Q102.33 23.96 102.77 23.82V26Q102.31 26.21 101.56 26.36Q100.82 26.51 100.01 26.51Q98.94 26.51 98.07 26.15Q97.2 25.79 96.68 24.91Q96.16 24.03 96.16 22.45V15.91H94.47V14.64L96.32 13.62L97.25 10.95H99.08V13.71H102.65V15.91H99.08V22.43Q99.08 23.31 99.55 23.74Q100.01 24.17 100.75 24.17ZM111.49 13.48Q111.84 13.48 112.24 13.51Q112.65 13.55 112.91 13.62L112.6 16.35Q112.33 16.31 111.97 16.26Q111.61 16.21 111.19 16.21Q110.59 16.21 110.01 16.42Q109.43 16.63 108.94 17.07Q108.45 17.51 108.17 18.17Q107.9 18.83 107.9 19.76V26.28H104.95V13.71H107.22L107.64 15.89H107.78Q108.15 15.22 108.71 14.66Q109.26 14.1 109.97 13.79Q110.68 13.48 111.49 13.48ZM119.56 13.48Q121.9 13.48 123.1 14.56Q124.29 15.63 124.29 17.84V26.28H122.21L121.65 24.54H121.56Q121.02 25.21 120.46 25.65Q119.89 26.09 119.14 26.3Q118.4 26.51 117.36 26.51Q116.25 26.51 115.35 26.09Q114.46 25.68 113.95 24.82Q113.44 23.96 113.44 22.64Q113.44 20.71 114.89 19.7Q116.34 18.7 119.26 18.6L121.37 18.53V18Q121.37 16.72 120.79 16.2Q120.21 15.68 119.19 15.68Q118.29 15.68 117.39 15.97Q116.5 16.26 115.67 16.63L114.78 14.59Q115.71 14.08 116.94 13.78Q118.17 13.48 119.56 13.48ZM119.84 20.39Q117.94 20.48 117.2 21.03Q116.45 21.57 116.45 22.57Q116.45 23.45 116.99 23.88Q117.52 24.31 118.36 24.31Q119.63 24.31 120.5 23.57Q121.37 22.82 121.37 21.41V20.34ZM134.52 17.19H140.78V25.61Q139.46 26.05 138.07 26.28Q136.68 26.51 134.92 26.51Q132.41 26.51 130.67 25.51Q128.93 24.52 128.03 22.62Q127.12 20.71 127.12 17.98Q127.12 15.38 128.14 13.48Q129.16 11.58 131.08 10.53Q132.99 9.49 135.75 9.49Q137.1 9.49 138.36 9.75Q139.62 10.02 140.67 10.49L139.65 12.92Q138.86 12.53 137.83 12.26Q136.79 11.99 135.68 11.99Q133.99 11.99 132.76 12.74Q131.53 13.48 130.87 14.83Q130.21 16.19 130.21 18.02Q130.21 19.79 130.72 21.14Q131.23 22.5 132.34 23.25Q133.46 24.01 135.24 24.01Q136.12 24.01 136.74 23.93Q137.35 23.84 137.86 23.71V19.72H134.52ZM155.3 13.71V26.28H153.01L152.59 24.66H152.45Q152.06 25.31 151.43 25.71Q150.8 26.12 150.07 26.31Q149.34 26.51 148.53 26.51Q147.14 26.51 146.12 26.04Q145.1 25.56 144.56 24.54Q144.03 23.52 144.03 21.92V13.71H146.98V21.32Q146.98 22.71 147.53 23.42Q148.09 24.12 149.27 24.12Q150.46 24.12 151.13 23.64Q151.8 23.15 152.08 22.19Q152.36 21.22 152.36 19.83V13.71ZM163.93 13.48Q166.27 13.48 167.47 14.56Q168.66 15.63 168.66 17.84V26.28H166.58L166.02 24.54H165.93Q165.39 25.21 164.82 25.65Q164.26 26.09 163.51 26.3Q162.77 26.51 161.73 26.51Q160.61 26.51 159.72 26.09Q158.83 25.68 158.32 24.82Q157.81 23.96 157.81 22.64Q157.81 20.71 159.26 19.7Q160.71 18.7 163.63 18.6L165.74 18.53V18Q165.74 16.72 165.16 16.2Q164.58 15.68 163.56 15.68Q162.66 15.68 161.76 15.97Q160.87 16.26 160.03 16.63L159.15 14.59Q160.08 14.08 161.31 13.78Q162.54 13.48 163.93 13.48ZM164.21 20.39Q162.31 20.48 161.57 21.03Q160.82 21.57 160.82 22.57Q160.82 23.45 161.36 23.88Q161.89 24.31 162.73 24.31Q164 24.31 164.87 23.57Q165.74 22.82 165.74 21.41V20.34ZM178.47 13.48Q178.82 13.48 179.23 13.51Q179.63 13.55 179.89 13.62L179.59 16.35Q179.31 16.31 178.95 16.26Q178.59 16.21 178.17 16.21Q177.57 16.21 176.99 16.42Q176.41 16.63 175.92 17.07Q175.43 17.51 175.16 18.17Q174.88 18.83 174.88 19.76V26.28H171.93V13.71H174.21L174.62 15.89H174.76Q175.13 15.22 175.69 14.66Q176.25 14.1 176.95 13.79Q177.66 13.48 178.47 13.48ZM185.5 26.51Q183.32 26.51 181.96 24.87Q180.61 23.22 180.61 20.02Q180.61 16.77 181.98 15.12Q183.34 13.48 185.57 13.48Q186.5 13.48 187.18 13.72Q187.87 13.96 188.38 14.38Q188.89 14.8 189.23 15.31H189.35Q189.3 14.94 189.25 14.25Q189.19 13.57 189.19 13.04V8.65H192.16V26.28H189.86L189.3 24.63H189.19Q188.84 25.14 188.34 25.57Q187.84 26 187.14 26.26Q186.43 26.51 185.5 26.51ZM186.38 24.12Q188.01 24.12 188.68 23.21Q189.35 22.29 189.35 20.41V20.04Q189.35 18.02 188.71 16.94Q188.08 15.87 186.36 15.87Q185.04 15.87 184.33 16.97Q183.62 18.07 183.62 20.06Q183.62 22.06 184.33 23.09Q185.04 24.12 186.38 24.12ZM213.56 26.28 211.57 21.15H205.01L203.03 26.28H200.92L207.4 9.65H209.27L215.72 26.28ZM209.09 14.29Q209.02 14.1 208.86 13.62Q208.69 13.13 208.54 12.61Q208.39 12.09 208.3 11.81Q208.18 12.27 208.06 12.75Q207.93 13.22 207.8 13.62Q207.67 14.01 207.58 14.29L205.7 19.3H210.94ZM223.12 26.28H217.14V25.07L219.08 24.63V11.39L217.14 10.93V9.72H223.12V10.93L221.17 11.39V24.63L223.12 25.07Z"/></svg></a>
+  <nav class="ph-nav" aria-label="Main">
+    <a href="#">Results</a>
+    <a href="#">Check a rumour</a>
+    <a href="#">Ask</a>
+    <a href="#">Guides</a>
+    <a href="#">SMS and USSD</a>
+  </nav>
+  <div class="ph-end">
+    <button class="lang" aria-label="Language: English"><svg class="i" aria-hidden="true"><use href="#globe"/></svg>EN</button>
+    <a class="btn primary h40" href="#">Report what you saw</a>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <div class="hero-copy">
+      <h1>Saw a problem at a polling unit? Report it.</h1>
+      <p class="lead">ElectraGuard records what voters and accredited observers see on election day. Trained reviewers check every report, and reviewed totals are published here.</p>
+      <div class="cta">
+        <a class="btn primary h56" href="#">Report what you saw</a>
+        <a class="btn secondary h56" href="#">Check a rumour</a>
+      </div>
+      <p class="fine">No account and no name. You get a receipt code to check it later.</p>
+      <div class="nosmart">
+        <svg class="i" aria-hidden="true"><use href="#phone"/></svg>
+        <div>No smartphone? Dial <b class="tnum">*347*88#</b> or send an SMS to <b class="tnum">20384</b>.<br><a href="#">Try it on the on-screen phone</a></div>
+      </div>
+    </div>
+    <figure class="art" aria-label="Hero art slot">
+      <img src="../../art/blender/renders/concept-v1.png" alt="">
+      <figcaption class="slot"><i></i>Hero art slot. Placeholder: concept-v1 render</figcaption>
+    </figure>
+  </section>
+
+  <section class="check" aria-labelledby="chk">
+    <div class="check-intro">
+      <h2 id="chk">Check a report</h2>
+      <p>Enter the receipt code you got when you reported.</p>
+    </div>
+    <div class="check-form">
+      <label for="code">Receipt code <span>Looks like EG-4H7Q-92KD</span></label>
+      <div class="row">
+        <div class="input" id="code" role="textbox" aria-label="Receipt code"></div>
+        <a class="btn secondary" href="#">Check</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="results" aria-labelledby="res">
+    <div class="res-head">
+      <h2 id="res">Reviewed results</h2>
+      <a href="#">See results by state</a>
+    </div>
+    <div class="res-grid">
+      <div class="res-total">
+        <div class="big"><b>1,240</b><span>reviewed reports</span></div>
+        <p class="stamp">Published 5 Dec 2026, 14:00 WAT. Covers reports observed before 13:00 WAT.</p>
+        <p class="disc">Reviewed observations only. Not official results. Independent of INEC.</p>
+      </div>
+      <div class="bars">
+        <div><div class="bar-top"><span>Late or missing materials</span><b>380</b></div><div class="track"><i style="width:100%"></i></div></div>
+        <div><div class="bar-top"><span>Equipment failure</span><b>305</b></div><div class="track"><i style="width:80.3%"></i></div></div>
+        <div><div class="bar-top"><span>Queues or crowding</span><b>275</b></div><div class="track"><i style="width:72.4%"></i></div></div>
+      </div>
+    </div>
+  </section>
+</main>
+</body>
+</html>
