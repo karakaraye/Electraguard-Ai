@@ -217,8 +217,11 @@ export function useDraft(owner: string | null, mode: IncidentDraft["mode"], lang
       current.current = next;
       setDraft(next);
       pending.current = next;
-      // Never push the write back: the latest value reaches the phone within 250 ms of the first change.
+      // The first change after a quiet moment is written at once, so a reload or a closed tab right after a tap
+      // cannot lose it (a write started while the page unloads is not reliable). Changes that follow are
+      // batched, and never pushed back: the latest value reaches the phone within 250 ms.
       if (timer.current === undefined) {
+        void flush();
         timer.current = window.setTimeout(() => {
           timer.current = undefined;
           void flush();

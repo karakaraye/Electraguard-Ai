@@ -10,7 +10,7 @@
  * - Offline fallback: a small page in the five languages.
  */
 
-const VERSION = "v4";
+const VERSION = "v5";
 const SHELL = `eg-shell-${VERSION}`;
 const STATIC = `eg-static-${VERSION}`;
 const REFERENCE = `eg-reference-${VERSION}`;
@@ -90,6 +90,13 @@ async function cachePage(path, seen) {
     const source = await cacheStatic(statics, asset);
     const chunks = source.match(/static\/chunks\/[^"'\s\\,:;]+\.(?:js|css)/g) || [];
     await Promise.all(chunks.map((chunk) => visit(`/_next/${chunk}`)));
+    // The webpack runtime names on-demand chunks from a table ("static/chunks/"+id+"."+{id:hash}[id]+".js"),
+    // so their file names never appear whole: read the table, or the message files would not be cached.
+    const named = [];
+    for (const table of source.matchAll(/"static\/chunks\/"\s*\+\s*\w+\s*\+\s*"\."\s*\+\s*\(?\{([^}]*)\}\)?\[\w+\]\s*\+\s*"\.js"/g)) {
+      for (const [, id, hash] of table[1].matchAll(/["']?(\d+)["']?:\s*"([0-9a-f]+)"/g)) named.push(`/_next/static/chunks/${id}.${hash}.js`);
+    }
+    await Promise.all(named.map(visit));
   }
   // Route groups put parentheses in chunk paths, for example
   // /_next/static/chunks/app/(observer)/o/page-….js, so ")" is allowed inside a path;

@@ -51,7 +51,8 @@ test("after the first load, the app shell, every language and the polling-unit l
     await offline.getByTestId("o04-menu").locator("select").selectOption(locale);
     await expect(offline.locator("html")).toHaveAttribute("lang", new RegExp(`^${locale}`));
     await offline.keyboard.press("Escape");
-    await expect(offline.getByTestId("o04-report")).toHaveText(word);
+    // The card carries a subtitle too: the title is the word that must be in the chosen language.
+    await expect(offline.getByTestId("o04-report")).toContainText(word);
   }
   await context.setOffline(false);
 });
