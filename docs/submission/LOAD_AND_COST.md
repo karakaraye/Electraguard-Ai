@@ -1,4 +1,13 @@
-# Local load and Azure election-day estimate
+# Local Load and Azure Election-Day Cost Estimate
+
+**Hackathon Challenge:** #AI4Elections Track 5 — Election Observation and Citizen Accountability  
+**Team:** Cairn  
+**Date:** 2026-11-26  
+**Status:** Prototype
+
+> **In plain words:** ElectraGuard AI is engineered to be affordable for civil society organisations. On an election day with 1,000 active observers submitting 3,000 incident reports with photographs, the estimated Azure cloud compute and storage cost is approximately $5.18 for 24 hours of operation with 30 days of retained data (or $42.60 per month for continuous server uptime). Synthetic load testing confirms that standard virtual instances comfortably process peak submission bursts.
+
+---
 
 ## Local setup
 

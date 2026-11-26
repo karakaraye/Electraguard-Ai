@@ -1,4 +1,13 @@
-# ElectraGuard API reference
+# ElectraGuard API Reference
+
+**Hackathon Challenge:** #AI4Elections Track 5 — Election Observation and Citizen Accountability  
+**Team:** Cairn  
+**Date:** 2026-11-26  
+**Status:** Prototype
+
+> **In plain words:** This technical reference documents the REST API endpoints connecting ElectraGuard's observer web app, feature phone gateways, staff review consoles, and public transparency pages. All requests use structured JSON, ISO 8601 timestamps, role-based authentication, and cryptographic receipts. Data privacy rules, automated redaction, and small-cell suppression (< 5) are strictly enforced at the API boundary.
+
+---
 
 Base revision of `production-readiness` is `5adae65aa316`. The [design contract](../design/api-contracts.md) supplies the versioned request and response examples below. Availability annotations identify routes and features that need another merge. Contract fields can be ahead of the deployed base. The [versioned report URL table](../../backend/reports/v1_urls.py) and [root configuration](../../backend/config/urls.py) define the mounted paths.
 

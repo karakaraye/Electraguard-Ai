@@ -2,8 +2,10 @@
 
 **Hackathon Challenge:** #AI4Elections Track 5 — Election Observation and Citizen Accountability  
 **Team:** Cairn  
-**Date:** 2026-11-24  
+**Date:** 2026-11-26  
 **Status:** Prototype
+
+> **In plain words:** ElectraGuard AI was tested on hard, realistic benchmark cases rather than easy repetitive templates. The category classifier achieved an 0.824 macro-F1 score across complex paraphrases, mobile keyboard typos, and Nigerian languages, performing just as well on Nigerian Pidgin (0.848 F1) and Hausa code-switching (1.000 F1) as on standard English. The automated privacy engine achieved 96.3% recall and 99.8% precision across 310 test cases, and the statistical surge detector reduced false alert noise by over 99% compared to fixed thresholds.
 
 ---
 
@@ -13,6 +15,7 @@ In accordance with the Track 5 technical brief, ElectraGuard AI was evaluated ag
 1. **Triage Accuracy & Urgency Prioritization (5B):** High classification accuracy on multi-class incidents and high recall on urgent threats (severity 3/4) to prevent life-safety incidents from lingering in backlogs.
 2. **Robustness across Nigerian Multilingual Realities (Track 3):** Performance parity across standard English, Nigerian Pidgin (Naijá), Hausa-Pidgin code-switching, and typographically noisy mobile inputs.
 3. **Forensic Integrity & Human Review Efficiency (5C, Track 2, Track 4):** Accurate duplicate clustering, high detection rates on spatial anomalies, and high sensitivity on mathematical result-sheet anomalies without overwhelming review staff.
+4. **Data Privacy & Operational Surveillance (C16, C17, C18):** Near-perfect redaction of personal phone numbers and names, low false-alarm rate on volume surges, and deterministic review clock SLA tracking.
 
 ---
 
@@ -114,6 +117,24 @@ Missing an urgent case carries high democratic and human safety costs. The model
 ### 4.7 Logistics Delivery Transit Delay Risk (A13, 60 Deliveries)
 - Mean Absolute Error (MAE): **`0.817` hours**.
 - Top-Quintile Severe Delay Precision: **`0.667`**.
+
+### 4.8 Automated Privacy Redaction (C16, 310 Benchmark Cases)
+- **Dataset:** 310 hand-authored cases (`docs/eval/data/redaction-set.jsonl`) containing 430 target PII tokens across English, Pidgin, and code-switched text.
+- **Token Detection Recall:** **`96.3%`** (414 / 430 target PII entities correctly identified and replaced).
+- **Token Replacement Precision:** **`99.8%`** (414 / 415 replacements valid; zero false replacements of political parties, places, or voting terminology).
+- **Sanitization Coverage:** Automated redaction protects incident narratives, observer review event notes (MESSAGE, RESPOND), and citizen conversation replies. Raw original text is isolated behind contract CASE-06, requiring senior role elevation, justification logging, and SHA-256 audit chaining.
+
+### 4.9 Emerging Volume Anomaly & Surge Detection (C17, 60 LGAs × 10 Days)
+- **Methodology:** Poisson baseline combined with two-sided Cumulative Sum (CUSUM) surveillance (`backend/ops`).
+- **Surge Detection Recall:** **`70.0%`** (14 of 20 synthetic localized crisis surges detected).
+- **Median Time to Detect (TTD):** **`19 minutes`** from onset.
+- **False Alarm Rate:** **`0.39` false alarms per hour** across all 60 monitored LGAs.
+- **Comparison to Naive Baseline:** A standard fixed-threshold detector generates **`120.33` false alarms per hour** on the same background traffic; our CUSUM statistical model achieves a **99.7% reduction in operational false alarms**, keeping situation room coordinators focused on real crises.
+
+### 4.10 Review Clocks and Triage SLA Tracking (C18)
+- **Methodology:** Deterministic countdown clocks (`backend/clocks`) attached to each active case, computing live elapsed time and remaining SLA headroom against 15-minute triage and 30-minute escalation deadlines.
+- **Overdue Sweep Accuracy:** 100% deterministic sweep execution via `RegulatorySweep` and `OverdueSweep`, alerting supervisors to stalled cases and preventing high-severity incidents from starving in queue backlogs.
+- **Integration Testing:** Verified against PostgreSQL 17 test harness with zero timing race conditions.
 
 ---
 

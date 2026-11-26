@@ -1,11 +1,29 @@
 # Model / System Card: ElectraGuard AI Multi-Component Suite
 
-## Summary
-The ElectraGuard AI system is a modular suite of assistive statistical classifiers, rule-based heuristics, and grounded information retrieval models designed to support election observation and civic transparency in Nigeria. It comprises nine core intelligence components: Category Triage (A1), Urgency Ranking (A2), Uncertainty Abstention (A3), Duplicate Detection (A4), Cluster Detection (A5), Result-Sheet Verification (A6), Claim Ranking (A8), Materials Transit Risk (A13), and Grounded Guide Retrieval (Ask ElectraGuard), supported by server-side face obfuscation (OpenCV YuNet) and transcription safeguards.
+**Hackathon Challenge:** #AI4Elections Track 5 — Election Observation and Citizen Accountability  
+**Team:** Cairn  
+**Date:** 2026-11-26  
+**Status:** Prototype
 
-- **Model Types:** Calibrated Naive Bayes, Logistic Regression, Gradient Boosted Trees (LightGBM/XGBoost-equivalent), spatial density algorithms, and grounded vector semantic search.
+> **In plain words:** ElectraGuard AI uses transparent, specialized machine learning models and mathematical rules instead of black-box chatbots. These tools suggest incident categories, prioritize urgent threats like violence or polling delays, detect duplicate submissions, and check result sheets for impossible arithmetic. The AI never acts on its own—every suggestion must be confirmed by a human reviewer, and the system openly steps aside whenever confidence falls below 40%.
+
+---
+
+## Summary
+The ElectraGuard AI system is a modular suite of assistive statistical classifiers, rule-based heuristics, privacy engines, and grounded information retrieval models designed to support election observation and civic transparency in Nigeria. It comprises nine core intelligence and operational components:
+1. **Category Triage (A1):** Calibrated multi-class classification across 7 electoral incident categories.
+2. **Urgency Scoring (A2):** Cost-sensitive classifier and deterministic escalation rules prioritizing severity 3/4 threats.
+3. **Uncertainty Abstention (A3):** Calibrated confidence gating that abstains and prompts human review when confidence is below 0.40.
+4. **Duplicate Detection (A4):** Semantic text embedding combined with spatial-temporal clustering to collapse redundant submissions.
+5. **Spatial-Temporal Cluster & Surge Detection (A5 / C17):** Poisson + CUSUM statistical anomaly scanner (`backend/ops`) tracking abnormal LGA reporting surges.
+6. **Result-Sheet Consistency Verification (A6):** Deterministic audit checks flagging arithmetic anomalies, vote inflation, and impossible accreditation numbers on Form EC8A returns.
+7. **Automated PII Redaction (C16):** Regex and named-entity privacy engine (`backend/privacy`) masking phone numbers and personal names before human review.
+8. **Review & Regulatory Clocks (C18):** Deterministic queue SLA countdown timers and overdue sweeps (`backend/clocks`).
+9. **Claim Ranking & Multilingual Matching (A8):** Cross-lingual rumour matching (`backend/rumours/matching.py`) prioritizing check-worthiness and potential for public harm.
+
+- **Model Types:** Calibrated Naive Bayes, Logistic Regression, Gradient Boosted Trees, Poisson/CUSUM surveillance, deterministic arithmetic verifiers, and grounded TF-IDF/semantic retrieval.
 - **Version:** 1.0.0 (Release Candidate 1)
-- **Date:** 2026-11-24
+- **Date:** 2026-11-26
 - **Authors:** Cairn Team (Lead: Kara Wari Sylva)
 - **License:** Open Source (Apache 2.0 / MIT)
 
@@ -15,8 +33,8 @@ The ElectraGuard AI system is a modular suite of assistive statistical classifie
 
 ### Primary Users & Intended Tasks
 - **Reviewers & Triage Analysts:** Receive structured recommendations on report categories (A1) and urgency levels (A2) to prioritize urgent life-safety and voter-suppression incidents.
-- **Situation Room Coordinators:** Receive spatial-temporal anomaly alerts (A5) and delayed materials risk forecasts (A13) to dispatch ground support.
-- **Fact-Checkers & Rumour Desk Analysts:** Review social media claims prioritized by potential harm and check-worthiness (A8).
+- **Situation Room Coordinators:** Receive spatial-temporal anomaly alerts (A5 / C17) and delayed materials risk forecasts (A13) to dispatch ground support.
+- **Fact-Checkers & Rumour Desk Analysts:** Review social media claims prioritized by potential harm and check-worthiness (A8) and match incoming queries against verified debunks.
 - **Observers & Citizens:** Query accredited electoral rights and regulations via grounded retrieval (Ask ElectraGuard) and submit mathematical consistency checks on vote tallies (A6).
 
 ### Out-of-Scope and Prohibited Uses
@@ -31,7 +49,7 @@ The ElectraGuard AI system is a modular suite of assistive statistical classifie
 All training and evaluation data is synthetic or public:
 - **Synthetic Training Data:** 400 incidents from the official starter pack (`incident_reports_synthetic.csv`), 300 logistics deliveries (`logistics_deliveries_synthetic.csv`), and 900 synthetic EC8A result sheets.
 - **Linguistic Coverage:** English, Nigerian Pidgin (Naijá), Hausa, Yorùbá, and Igbo.
-- **Authored Robustness Sets:** 56 challenging hand-written synthetic incidents (`incident_paraphrases_authored.csv`) and 28 calibration samples.
+- **Authored Robustness Sets:** 56 challenging hand-written synthetic incidents (`incident_paraphrases_authored.csv`), 28 calibration samples, and 310 privacy redaction benchmark cases (`docs/eval/data/redaction-set.jsonl`).
 - **Synthetic/Real Proportion:** 100% synthetic in accordance with general challenge rule #3 (no live electoral data or personal records permitted).
 - **Detailed Data Documentation:** See [`docs/submission/DATASHEET.md`](DATASHEET.md).
 

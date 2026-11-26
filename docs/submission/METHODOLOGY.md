@@ -2,34 +2,41 @@
 
 **Hackathon Challenge:** #AI4Elections Track 5 — Election Observation and Citizen Accountability  
 **Team:** Cairn  
+**Date:** 2026-11-26  
 **Status:** Prototype
+
+> **In plain words:** ElectraGuard AI was engineered for the ground reality of Nigerian elections: spotty mobile connectivity, rich multilingual reporting, and serious privacy risks for observers. Instead of relying on an opaque, hallucination-prone chatbot, the system decomposes election observation into specialized statistical tools and deterministic arithmetic verifiers that operate reliably on modest hardware. Observers can work completely offline, and all AI recommendations require human confirmation before action is taken.
 
 ---
 
 ## 1. Technical Approach & Design Philosophy
 
-ElectraGuard AI is built upon five foundational engineering principles:
+ElectraGuard AI is built upon six foundational engineering principles:
 
 ### 1.1 Strict Human-in-the-Loop Oversight
 AI models inside ElectraGuard serve solely as assistive, ranking, and consistency-checking tools. **The AI never makes autonomous decisions.** All triage labels, urgency flags, cluster warnings, and claim assessments are marked visually and semantically as "Suggested" and require explicit human review, acceptance, correction, or rejection by situation room analysts.
 
 ### 1.2 Offline-First Edge & Resilient Telecom Ingestion
 Recognizing severe connectivity constraints across Nigerian polling units:
-- **Web Client (PWA):** Features an offline-first local outbox (IndexedDB) with backoff synchronization (client-side WebCrypto encryption planned for future release). The web app operates completely offline, allowing observers to record incidents, checklists, and result sheets without network.
+- **Web Client (PWA):** Features an offline-first local outbox (IndexedDB) with automatic background synchronization. The web app operates completely offline, allowing observers to record incidents, checklists, and result sheets without network connectivity.
 - **Feature Phone Channels:** Integrated SMS and USSD (`*384*24#`) ingestion via gateway callbacks (tested against Africa's Talking sandbox and simulator), normalizing structured inputs over 2G GSM networks.
 - **Privacy by Design:** Field observers authenticate using anonymous, random observer codes and 6-digit PINs. No names, phone numbers, or email addresses are ever stored with observer records. Phone numbers for SMS/USSD intake are immediately converted into cryptographic one-way hashes (`salted_hmac` with purpose-scoped salt and server secret key).
 
-### 1.3 Calibrated Multi-Task Intelligence
+### 1.3 Automated PII Redaction & Data Protection (C16)
+Narrative descriptions submitted by observers or citizens undergo automated privacy sanitization (`backend/privacy`) prior to display in reviewer consoles. Regex and named-entity matchers replace Nigerian phone numbers and personal names with deterministic tokens (`[PHONE_xxxx]`, `[NAME_xxxx]`). Unredacted original text is quarantined behind contract CASE-06, requiring senior role elevation, auditable justification, and SHA-256 hash chaining.
+
+### 1.4 Calibrated Multi-Task Intelligence
 Rather than deploying an opaque, ungrounded Large Language Model, ElectraGuard decomposes incident understanding into specialized, explainable modules:
 1. **Category Triage (A1):** Multi-class classifier across seven core election categories.
 2. **Urgency Scoring (A2):** Cost-sensitive model prioritizing recall of severe threats (safety, violence, voter suppression).
-3. **Abstention & Out-of-Scope Detection (A3):** Calibrated uncertainty mechanism that abstains and prompts human reviewers when confidence falls below calibrated thresholds.
+3. **Abstention & Out-of-Scope Detection (A3):** Calibrated uncertainty mechanism that abstains and prompts human reviewers when confidence falls below calibrated thresholds (0.40).
 4. **Duplicate & Near-Duplicate Detection (A4):** Semantic text embedding combined with temporal and geographic proximity matching to collapse concurrent reports of the same event.
-5. **Spatial Cluster Detection (A5):** Spatio-temporal anomaly scanner identifying localized incident spikes across wards and LGAs.
-6. **Result-Sheet Mathematical Consistency (A6):** Five deterministic checks testing accreditation ceilings, vote sums, digit transpositions, round-number anomalies, and cross-unit duplications.
-7. **Rumour & Claim Prioritization (A8):** Calibrated ranking prioritizing claims based on check-worthiness and potential for public harm.
-8. **Logistics Transit Risk (A13):** Gradient-boosted model forecasting delayed materials delivery based on route characteristics and transit history.
-9. **Grounded Retrieval ("Ask ElectraGuard"):** Retrieval-Augmented Generation (RAG) strictly restricted to approved, pre-vetted electoral guide documents with mandatory source passage attribution and honest refusal to answer out-of-scope inquiries.
+5. **Spatial Cluster & Surge Detection (A5 / C17):** Spatio-temporal anomaly scanner and Poisson + CUSUM statistical surveillance (`backend/ops`) tracking abnormal incident spikes across wards and LGAs.
+6. **Result-Sheet Mathematical Consistency (A6):** Five deterministic checks testing accreditation ceilings, vote sums, digit transpositions, round-number anomalies, and cross-unit duplications on Form EC8A returns.
+7. **Rumour & Claim Prioritization (A8):** Cross-lingual rumour matching (`backend/rumours/matching.py`) prioritizing claims based on check-worthiness and potential for public harm.
+8. **Review & Regulatory Clocks (C18):** Deterministic live SLA countdown timers and overdue sweeps (`backend/clocks`) preventing critical case starvation.
+9. **Logistics Transit Risk (A13):** Gradient-boosted model forecasting delayed materials delivery based on route characteristics and transit history.
+10. **Grounded Retrieval ("Ask ElectraGuard"):** Retrieval-Augmented Generation (RAG) strictly restricted to approved, pre-vetted electoral guide documents with mandatory source passage attribution and honest refusal to answer out-of-scope inquiries.
 
 ---
 
