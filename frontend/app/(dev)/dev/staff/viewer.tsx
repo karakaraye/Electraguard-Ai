@@ -9,12 +9,12 @@ import {
   DiscussionIcon,
   InboxIcon,
   KeyIcon,
-  LockIcon,
-  SearchIcon,
+  MapPulseIcon,
+  MegaphoneIcon,
   ShieldCheckIcon,
-  SignalIcon,
   SlidersIcon,
   UploadIcon,
+  UserPlusIcon,
   UsersIcon,
 } from "../../../../ui/icons";
 import { SignInView, type SignInStep } from "../../../(staff)/s/_views/SignInView";
@@ -97,18 +97,32 @@ export function StaffStateViewer(): ReactElement {
   const theme = themeParam === "dark" ? "dark" : "light";
   const t = useT();
 
-  const nav: StaffNavItem[] = [
-    { href: `/dev/staff?screen=s02&state=${state}&theme=${theme}`, label: t("staff.nav.queue"), icon: InboxIcon, current: screen === "s02" || screen === "s03", count: 2 },
-    { href: `/dev/staff?screen=s04&state=${state}&theme=${theme}`, label: t("staff.nav.assign"), icon: SearchIcon, current: screen === "s04" },
-    { href: `/dev/staff?screen=s05&state=${state}&theme=${theme}`, label: t("staff.nav.ops"), icon: SignalIcon, current: screen === "s05" },
-    { href: `/dev/staff?screen=s06&state=${state}&theme=${theme}`, label: t("staff.nav.rumours"), icon: DiscussionIcon, current: screen === "s06" },
-    { href: `/dev/staff?screen=s07&state=${state}&theme=${theme}`, label: t("staff.nav.publish"), icon: UploadIcon, current: screen === "s07" },
-    { href: `/dev/staff?screen=s08&state=${state}&theme=${theme}`, label: t("staff.nav.discussions"), icon: LockIcon, current: screen === "s08" },
-    { href: `/dev/staff?screen=s09&state=${state}&theme=${theme}`, label: t("staff.nav.codes"), icon: KeyIcon, current: screen === "s09" },
-    { href: `/dev/staff?screen=s10&state=${state}&theme=${theme}`, label: t("staff.nav.staff"), icon: UsersIcon, current: screen === "s10" },
-    { href: `/dev/staff?screen=s11&state=${state}&theme=${theme}`, label: t("staff.nav.settings"), icon: SlidersIcon, current: screen === "s11" },
-    { href: `/dev/staff?screen=s12&state=${state}&theme=${theme}`, label: t("staff.nav.security"), icon: ShieldCheckIcon, current: screen === "s12" },
-  ];
+  // The roles the viewer pretends to hold: ?role=reviewer|coordinator|moderator|org_admin|all (default all).
+  const roleParam = searchParams?.get("role") ?? "all";
+  const has = (role: string) => roleParam === "all" || roleParam === role;
+  const link = (id: string) => `/dev/staff?screen=${id}&state=${state}&theme=${theme}&role=${roleParam}`;
+  const groups = {
+    review: t("staff.nav.groups.review"),
+    monitor: t("staff.nav.groups.monitor"),
+    moderate: t("staff.nav.groups.moderate"),
+    admin: t("staff.nav.groups.admin"),
+  };
+  const nav: StaffNavItem[] = [];
+  if (has("reviewer")) nav.push({ href: link("s02"), label: t("staff.nav.queue"), icon: InboxIcon, group: groups.review, current: screen === "s02" || screen === "s03", count: 2, countTone: "needs" });
+  if (has("coordinator")) {
+    nav.push({ href: link("s04"), label: t("staff.nav.assign"), icon: UserPlusIcon, group: groups.review, current: screen === "s04" });
+    nav.push({ href: link("s05"), label: t("staff.nav.ops"), icon: MapPulseIcon, group: groups.monitor, current: screen === "s05" });
+    nav.push({ href: link("s06"), label: t("staff.nav.rumours"), icon: MegaphoneIcon, group: groups.monitor, current: screen === "s06" });
+    nav.push({ href: link("s07"), label: t("staff.nav.publish"), icon: UploadIcon, group: groups.monitor, current: screen === "s07" });
+  }
+  if (has("moderator")) nav.push({ href: link("s08"), label: t("staff.nav.discussions"), icon: DiscussionIcon, group: groups.moderate, current: screen === "s08" });
+  if (has("org_admin")) {
+    nav.push({ href: link("s09"), label: t("staff.nav.codes"), icon: KeyIcon, group: groups.admin, current: screen === "s09" });
+    nav.push({ href: link("s10"), label: t("staff.nav.staff"), icon: UsersIcon, group: groups.admin, current: screen === "s10" });
+    nav.push({ href: link("s11"), label: t("staff.nav.settings"), icon: SlidersIcon, group: groups.admin, current: screen === "s11" });
+  }
+  if (has("coordinator") || has("org_admin")) nav.push({ href: link("s12"), label: t("staff.nav.security"), icon: ShieldCheckIcon, group: groups.admin, current: screen === "s12" });
+  const roleLabel = roleParam === "all" ? t("staff.roles.org_admin") : t(`staff.roles.${roleParam}`);
 
   const currentScreenObj = SCREENS.find((s) => s.id === screen) ?? SCREENS[0];
 
@@ -360,7 +374,15 @@ export function StaffStateViewer(): ReactElement {
       {screen === "s01" ? (
         <main data-theme={theme} data-density="staff">{renderContent()}</main>
       ) : (
-        <StaffShell nav={nav} title={currentScreenObj.name} theme={theme}>
+        <StaffShell
+          nav={nav}
+          title={currentScreenObj.name}
+          crumbs={screen === "s03" ? [{ label: t("staff.nav.queue"), href: link("s02") }] : undefined}
+          organisation="ElectraGuard"
+          intake={{ paused: state === "paused", href: link("s11") }}
+          user={{ name: "Fatima Musa", role: roleLabel }}
+          onSignOut={() => undefined}
+        >
           {renderContent()}
         </StaffShell>
       )}

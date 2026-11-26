@@ -17,7 +17,7 @@ export { Sheet, type SheetProps } from "./Sheet/Sheet";
 export { Switch, type SwitchProps } from "./Switch/Switch";
 export { Count, type CountProps, type CountTone } from "./Count/Count";
 export { Tag, type TagProps } from "./Tag/Tag";
-export { StaffShell, type StaffNavItem, type StaffShellProps } from "./StaffShell/StaffShell";
+export { StaffShell, type StaffCrumb, type StaffNavItem, type StaffShellProps } from "./StaffShell/StaffShell";
 export { StatusBadge, StatusShape, type ReportStatus, type StatusBadgeProps, type StatusTone } from "./StatusBadge/StatusBadge";
 export { Stepper, type StepperProps } from "./Stepper/Stepper";
 export { SuggestionCard, type SuggestionCardProps, type SuggestionState } from "./SuggestionCard/SuggestionCard";

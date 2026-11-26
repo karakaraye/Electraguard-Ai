@@ -988,7 +988,13 @@
       "codes": "[HA draft] Observer Codes",
       "staff": "[HA draft] Staff Accounts",
       "settings": "[HA draft] Settings",
-      "security": "[HA draft] Security"
+      "security": "[HA draft] Security",
+      "groups": {
+        "review": "Dubawa",
+        "monitor": "Sa ido",
+        "moderate": "Daidaita tattaunawa",
+        "admin": "Gudanarwa"
+      }
     },
     "roles": {
       "reviewer": "[HA draft] Reviewer",
@@ -1009,7 +1015,30 @@
     "backToQueue": "[HA draft] Back to queue",
     "shell": {
       "more": "Ƙari",
-      "moreTitle": "Ƙarin sassa"
+      "moreTitle": "Ƙarin sassa",
+      "account": "Menu na asusu",
+      "breadcrumb": "Hanyar shafi",
+      "closeMenu": "Rufe menu",
+      "intake": {
+        "paused": "An dakatar da karɓar rahotanni",
+        "receiving": "Ana karɓar rahotanni"
+      },
+      "keys": {
+        "close": "Rufe taga",
+        "help": "Nuna gajerun hanyoyi",
+        "search": "Nemo shari'o'i",
+        "next": "Shari'a ta gaba",
+        "previous": "Shari'a ta baya",
+        "open": "Buɗe shari'ar"
+      },
+      "menu": "Buɗe menu",
+      "search": "Nema",
+      "searchLabel": "Nemo shari'a da lambar ta",
+      "searchPlaceholder": "Nemo shari'a da lambar ta",
+      "shortcuts": "Gajerun hanyoyin maɓalli"
+    },
+    "notFound": {
+      "title": "Ba a samu shafin ba"
     }
   },
   "s01": {

@@ -8,6 +8,7 @@ import { API_BASE } from "../../../../../lib/api/contracts";
 import type { CaseDetail, Category, Message, Outcome, Urgency } from "../../../../../lib/api/types";
 import { useT } from "../../../../../lib/i18n/client";
 import { ArrowLeftIcon } from "../../../../../ui/icons";
+import { useStaffTitle } from "../../_lib/header";
 import { CaseView, type CaseConflict, type CaseViewProps, type UnblurResult } from "../../_views/CaseView";
 import styles from "../../_views/CaseView.module.css";
 
@@ -88,6 +89,7 @@ export default function CaseDetailPage() {
   }
 
   const c = caseDetail;
+  useStaffTitle(c?.receipt_code);
   const version = c?.version ?? 0;
 
   async function viewUnblurred(mediaId: string, reason: string): Promise<UnblurResult> {
