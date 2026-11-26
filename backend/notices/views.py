@@ -398,10 +398,11 @@ def notice_results(request, notice_id):
                 for w in lga.get("wards", []):
                     w_code = w.get("ward_code")
                     if lga_match or (notice.scope_kind == "ward" and w_code == notice.scope_code):
-                        for u in w.get("polling_units", []):
-                            u_code = u.get("polling_unit_code")
+                        entry = wards_in_scope[w_code]  # a ward with no answers still appears
+                        for u in w.get("units", []):
+                            u_code = u[0] if isinstance(u, (list, tuple)) and u else None
                             if u_code:
-                                wards_in_scope[w_code]["units"].add(u_code)
+                                entry["units"].add(u_code)
 
     # Count answers
     for ans in answers:
@@ -414,7 +415,7 @@ def notice_results(request, notice_id):
         if rep and rep.incident_details and rep.incident_details.get("area"):
             area = rep.incident_details["area"]
             w_code = area.get("ward_code")
-            u_code = area.get("polling_unit_code")
+            u_code = area.get("polling_unit_code") or rep.polling_unit_code
         if not w_code and notice.scope_kind == "ward":
             w_code = notice.scope_code
 

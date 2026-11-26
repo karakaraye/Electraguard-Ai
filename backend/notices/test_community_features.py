@@ -373,3 +373,133 @@ class CommunityFeaturesTests(TestCase):
         self.assertIn("[PHONE_", claim.text)
         self.assertIn("[NAME_", claim.text)
 
+
+
+class CommunityBugfixTests(TestCase):
+    """Regressions found by the real-backend end-to-end run."""
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.org, _ = Organisation.objects.get_or_create(pk=INITIAL_ORGANISATION, defaults={"name": "Test Org"})
+        cls.coord = User.objects.create_user(
+            "bugfix-coord@example.test", "pass12345678", organisation=cls.org, role=User.Role.COORDINATOR,
+        )
+        cls.observer = User.objects.create_user(
+            "bugfix-obs@example.test", "pass12345678", organisation=cls.org, role=User.Role.OBSERVER,
+        )
+        cls.code = ObserverCode.objects.create(
+            user=cls.observer, organisation=cls.org, code="OBS-BUGFIX",
+            label="Observer", status=ObserverCode.Status.ACTIVE,
+        )
+        call_command("load_reference_areas", verbosity=0)
+
+    def setUp(self):
+        cache.clear()
+        self.addCleanup(cache.clear)
+
+    def coordinator_client(self):
+        client = Client()
+        client.force_login(self.coord)
+        session = client.session
+        session[VERIFIED] = True
+        session.save()
+        bind_staff_session(session, self.coord)
+        return client
+
+    def first_lga(self):
+        states = AreaDataset.objects.first().states
+        state = states[sorted(states)[0]]
+        lga = state["lgas"][0]
+        return state, lga
+
+    def test_results_list_every_ward_and_unit_that_has_not_answered(self):
+        state, lga = self.first_lga()
+        ward, other = lga["wards"][0], lga["wards"][1]
+        notice = Notice.objects.create(
+            organisation=self.org, scope_kind=Notice.ScopeKind.LGA, scope_code=lga["lga_code"],
+            type=Notice.NoticeType.LOGISTICS, text="Have materials arrived?",
+            question=Question.objects.get(id="materials_arrived"), created_by=self.coord,
+            status=Notice.Status.SENT, expires_at=timezone.now() + timedelta(hours=5),
+        )
+        client = self.coordinator_client()
+        data = client.get(f"/api/v1/notices/{notice.id}/results").json()
+        # No answers yet: every ward is present, every unit is unanswered.
+        self.assertEqual(set(data["wards"]), {w["ward_code"] for w in lga["wards"]})
+        self.assertEqual(data["wards"][ward["ward_code"]]["unanswered_units"], sorted(u[0] for u in ward["units"]))
+
+        answered = ward["units"][0][0]
+        Report.objects.create(
+            organisation=self.org, observer=self.observer, submission_key=uuid4(), status=Report.Status.SUBMITTED,
+            polling_unit_code=answered,
+            incident_details={"area": {"state_code": state["state_code"], "lga_code": lga["lga_code"],
+                                       "ward_code": ward["ward_code"], "polling_unit_code": answered}},
+        )
+        NoticeAnswer.objects.create(
+            organisation=self.org, notice=notice, observer_code=self.code.code,
+            answer=NoticeAnswer.AnswerChoice.YES, answered_at_device=timezone.now(),
+        )
+        data = client.get(f"/api/v1/notices/{notice.id}/results").json()
+        ward_out = data["wards"][ward["ward_code"]]
+        self.assertEqual(ward_out["yes"], 1)
+        self.assertNotIn(answered, ward_out["unanswered_units"])
+        self.assertEqual(len(ward_out["unanswered_units"]), len(ward["units"]) - 1)
+        self.assertEqual(data["wards"][other["ward_code"]]["yes"], 0)
+
+    def test_personal_name_is_blocked_and_failures_are_logged(self):
+        from unittest import mock
+        from notices import filtering
+
+        self.assertTrue(filtering.check_personal_names("Ask Mrs Funke Adebayo about the keys"))
+        self.assertFalse(filtering.check_personal_names("The keys are with the presiding officer"))
+        res = self.coordinator_client().post(
+            "/api/v1/notices",
+            {"scope": {"kind": "ward", "code": self.first_lga()[1]["wards"][0]["ward_code"]}, "type": "instruction",
+             "text": "Ask Mrs Funke Adebayo about the keys"},
+            content_type="application/json", HTTP_IDEMPOTENCY_KEY=str(uuid4()),
+        )
+        self.assertEqual(res.status_code, 400)
+        self.assertIn("contains_personal_name", res.json()["error"]["reasons"])
+        with mock.patch.object(filtering, "redact", side_effect=RuntimeError("boom")):
+            with self.assertLogs("notices.filtering", level="ERROR"):
+                self.assertFalse(filtering.check_personal_names("anything"))
+
+    def test_area_today_title_is_the_lga_name(self):
+        state, lga = self.first_lga()
+        client = Client()
+        client.force_login(self.observer)
+        data = client.get(f"/api/v1/observer/area-today?lga_code={lga['lga_code']}").json()
+        self.assertEqual(data["lga_code"], lga["lga_code"])
+        self.assertEqual(data["lga_name"], lga["name"])
+        self.assertNotEqual(data["lga_name"], lga["lga_code"])
+
+    def test_draft_sets_category_so_evidence_only_matches_that_question(self):
+        state, lga = self.first_lga()
+        now = timezone.now()
+        for qid in ("materials_arrived", "unit_calm"):
+            notice = Notice.objects.create(
+                organisation=self.org, scope_kind=Notice.ScopeKind.LGA, scope_code=lga["lga_code"],
+                type=Notice.NoticeType.LOGISTICS, text="Q", question=Question.objects.get(id=qid),
+                created_by=self.coord, status=Notice.Status.SENT, expires_at=now + timedelta(hours=5),
+            )
+            NoticeAnswer.objects.create(
+                organisation=self.org, notice=notice, observer_code=f"OBS-{qid}",
+                answer=NoticeAnswer.AnswerChoice.YES, answered_at_device=now,
+            )
+        claim = Claim.objects.create(
+            organisation=self.org, text="Election materials have not reached the ward", seen_on="facebook",
+            language="en", area={"state_code": state["state_code"], "lga_code": lga["lga_code"]},
+            harm={"level": "medium", "score": 0.5}, check_worthiness={"level": "medium", "score": 0.5},
+        )
+        client = self.coordinator_client()
+        res = client.put(
+            f"/api/v1/rumours/claims/{claim.id}/response",
+            {"version": claim.version, "text": "Materials are on the way.", "language": "en", "category": "late_materials"},
+            content_type="application/json",
+        )
+        self.assertEqual(res.status_code, 200, res.content)
+        self.assertEqual(res.json()["response"]["category"], "late_materials")
+        evidence = client.get(f"/api/v1/rumours/claims/{claim.id}").json()["checkin_evidence"]
+        self.assertEqual(len(evidence), 1)
+        self.assertEqual(evidence[0]["area"], lga["lga_code"])
+        # The area is also given by its official name; the code stays for compatibility.
+        self.assertEqual(evidence[0]["area_name"], lga["name"])

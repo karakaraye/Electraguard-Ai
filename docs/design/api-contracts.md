@@ -1416,7 +1416,7 @@ Create fields: `text` (0–4000; required if no image), `image` (JPEG/PNG/WebP �
 
 | Operation | Method and path | Body |
 |---|---|---|
-| `save_draft` | `PUT /api/v1/rumours/claims/{id}/response` | `{"text": "…" (1–1500), "language": "en", "version": 2}` |
+| `save_draft` | `PUT /api/v1/rumours/claims/{id}/response` | `{"text": "…" (1–1500), "language": "en", "version": 2, "category": "late_materials" (optional)}`. The saved response keeps the category (the one sent, else the commonest category among matching reviewed observations, else the previous one); check-in evidence on the claim matches ward check-in questions of that category |
 | `approve` | `POST /api/v1/rumours/claims/{id}/response/approve` | `{"version": 3}` |
 | `reject` | `POST /api/v1/rumours/claims/{id}/response/reject` | `{"note": "…" (1–500), "version": 3}` |
 | `dismiss` | `POST /api/v1/rumours/claims/{id}/dismiss` | `{"note": "…", "version": 3}` |
@@ -1762,7 +1762,8 @@ Gateway: Africa's Talking (sandbox for the hackathon). Callbacks are authenticat
 
 - **Status:** NEW. **Screens:** S-05.
 - **Auth:** coordinator only.
-- `GET /api/v1/notices` and `GET /api/v1/notices/{id}/results`.
+- `GET /api/v1/notices` and `GET /api/v1/notices/{id}/results`. Results list every ward in the notice's scope, including wards with no answers; `unanswered_units` holds the unit codes in each ward that have no answer yet.
+- Claim detail `checkin_evidence` items carry `area` (the code) and `area_name` (the official name; show this).
 - Results break down answers per ward (`yes`, `no`, `not_seen`) and list unanswered units.
 
 #### NOT-04 · Observer active notices
@@ -1804,6 +1805,7 @@ Gateway: Africa's Talking (sandbox for the hackathon). Callbacks are authenticat
     ]
   }
   ```
+- `lga_name` is the LGA's official name (the code only when the LGA is not in any reference release).
 - Reviewed reports only, 60-minute delay, counts under 5 suppressed to "fewer than 5" with secondary suppression.
 
 ---

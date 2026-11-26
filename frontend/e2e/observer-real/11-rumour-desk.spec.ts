@@ -60,6 +60,8 @@ test("From the public filter and Most asked sort list the public asks by demand,
   await expect(page.getByTestId("s06-ask-box")).toContainText("40");
   const evidence = page.getByTestId("s06-evidence");
   await expect(evidence).toContainText("Have materials arrived");
+  await expect(evidence).toContainText(`(${area.lga_name})`);
+  await expect(evidence).not.toContainText(`(${area.lga_code})`);
   await expect(evidence.locator("dl div").filter({ hasText: "Yes" })).toContainText("5");
   await expect(evidence.locator("dl div").filter({ hasText: "No" }).first()).toContainText("fewer than 5");
   await expect(evidence.locator("dl div").filter({ hasText: "Not seen" })).toContainText("fewer than 5");

@@ -14,7 +14,7 @@ from PIL import Image, ImageOps, UnidentifiedImageError
 
 from accounts.observer_auth import endpoint, error, wat
 from accounts.observer_credentials import rate_limit
-from reference.models import AreaDataset
+from reference.models import AreaDataset, area_name
 from reports.idempotency import lock_key, request_digest
 from reports.incident_input import aware_datetime
 from staff.access import COORDINATORS
@@ -47,6 +47,26 @@ def ask_trend_1h(claim) -> int:
         return total or 0
     except Exception:
         return 0
+
+
+def infer_category(claim, explicit=None):
+    """The incident category a claim is about, so check-in evidence can be matched on the question's category.
+
+    An explicit category from the desk wins when it is a known one; otherwise it is the most common category
+    among reviewed observations that match the claim text. Returns None when neither says anything.
+    """
+    from reports.incident_input import CATEGORIES
+
+    if isinstance(explicit, str) and explicit in CATEGORIES:
+        return explicit
+    query = tokens(claim.text)
+    counts = {}
+    for item in observations_for(claim, query) if query else []:
+        if item["category"] in CATEGORIES:
+            counts[item["category"]] = counts.get(item["category"], 0) + 1
+    if not counts:
+        return None
+    return sorted(counts.items(), key=lambda pair: (-pair[1], pair[0]))[0][0]
 
 
 def checkin_evidence_for(claim):
@@ -105,6 +125,7 @@ def checkin_evidence_for(claim):
         evidence.append({
             "question": q_text,
             "area": notice.scope_code,
+            "area_name": area_name(notice.scope_code),
             "yes": yes_count if yes_count >= 5 else "fewer than 5",
             "no": no_count if no_count >= 5 else "fewer than 5",
             "not_seen": not_seen_count if not_seen_count >= 5 else "fewer than 5",
@@ -399,12 +420,15 @@ def response_change(request, data, claim_id, operation):
             return invalid("text")
         if not isinstance(language, str) or language not in LANGUAGES:
             return invalid("language", "invalid_choice")
+        category = infer_category(claim, data.get("category")) or (claim.response or {}).get("category")
         claim.drafted_by = actor
         claim.status = "response_draft"
         claim.response = {
             "text": text, "language": language, "drafted_by": label(actor), "drafted_at": wat(timezone.now()),
             "approved_by": None, "approved_at": None, "rejection_note": None,
         }
+        if category:
+            claim.response["category"] = category
     elif operation == "approve":
         if claim.drafted_by_id == actor.pk:
             return error(403, "same_person_approval", "Another coordinator must approve a response you drafted.")

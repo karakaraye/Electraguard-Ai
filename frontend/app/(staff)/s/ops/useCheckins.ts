@@ -20,6 +20,10 @@ export function useCheckins(active: boolean) {
   const [places, setPlaces] = useState<Places>({ lgas: [], wards: [], names: {} });
   const [results, setResults] = useState<Section<NoticeResultsResponse>>({ data: null, loading: false, error: null });
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const selectedRef = useRef<string | null>(null);
+  useEffect(() => {
+    selectedRef.current = selectedId;
+  }, [selectedId]);
   const [currentUser, setCurrentUser] = useState("");
   const [serverReasons, setServerReasons] = useState<string[]>([]);
   const [composeError, setComposeError] = useState<string | null>(null);
@@ -113,6 +117,8 @@ export function useCheckins(active: boolean) {
   }, [active]);
 
   const select = useCallback((id: string) => {
+    // Choosing the notice that is already open must not blank its results: the loader only reruns when the id changes.
+    if (id === selectedRef.current) return;
     setResults({ data: null, loading: true, error: null });
     setActionError(null);
     setSelectedId(id);

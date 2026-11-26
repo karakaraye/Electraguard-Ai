@@ -1401,6 +1401,8 @@ export type SuppressedCount = number | "fewer than 5";
 export interface ClaimCheckinEvidence {
   question: string;
   area: string;
+  /** Official name of the area; show this and keep `area` as the code. */
+  area_name?: string;
   yes: SuppressedCount;
   no: SuppressedCount;
   not_seen: SuppressedCount;

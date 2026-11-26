@@ -432,7 +432,7 @@ function CheckinEvidence({ evidence }: { evidence: NonNullable<Claim["checkin_ev
         <ul className={styles.evidenceList}>
           {evidence.map((item, index) => (
             <li key={`${item.area}-${index}`} className={styles.evidence}>
-              <p className={styles.evidenceQ}>{t("notice.rumour.evidenceQuestion", { question: item.question, area: item.area })}</p>
+              <p className={styles.evidenceQ}>{t("notice.rumour.evidenceQuestion", { question: item.question, area: item.area_name ?? item.area })}</p>
               <dl className={styles.evidenceCounts}>
                 <div><dt>{t("notice.answer.yes")}</dt><dd className="eg-tnum">{show(item.yes)}</dd></div>
                 <div><dt>{t("notice.answer.no")}</dt><dd className="eg-tnum">{show(item.no)}</dd></div>

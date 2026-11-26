@@ -56,7 +56,7 @@ test("a coordinator asks a fixed question, the observer in that ward answers Yes
 
   // Nobody has answered yet.
   const wardRow = desk.page.getByTestId(`ci-ward-${ward.ward_code}`);
-  await expect(desk.page.getByTestId("ci-results")).toContainText("No answers yet.");
+  await expect(desk.page.getByTestId("ci-results")).toContainText(`0 of ${ward.units.length} units answered`);
 
   // The observer in that ward sees it under "Needs you" on Home and in Messages.
   await observerAt(page, ward.ward_code, first[0]);
@@ -99,12 +99,7 @@ test("a coordinator asks a fixed question, the observer in that ward answers Yes
   await desk.context.close();
 });
 
-// The server builds "units not answered" from `polling_units` / `polling_unit_code`, but the released
-// area data keeps units as `units: [[code, name], ...]`, so the list is always empty and a ward with no
-// answers is missing altogether. This test states what the screen is built to show; it is expected to
-// fail until the backend reads the right keys, and then it will tell us to drop the marker.
 test("results list the units that have not answered, and an answer removes its unit from that list", async ({ browser, context, page }) => {
-  test.fail(true, "backend notice_results reads polling_units/polling_unit_code; the area data uses units");
   const area = areaNumber(8);
   const ward = area.wards[0];
   const [first] = ward.units;
@@ -168,10 +163,7 @@ test("a free-text check-in with a phone number, an email, a link or a polling un
   await desk.context.close();
 });
 
-// The server's name check reads `span.kind` on spans that are dicts, hits an exception it swallows, and so
-// never reports a personal name. Expected to fail until that is fixed.
 test("a personal name in a free-text check-in is blocked", async ({ browser }) => {
-  test.fail(true, "backend check_personal_names never reports a name");
   const desk = await deskOf(browser, newCoordinator("Gbenga Ade"));
   await openCheckins(desk.page);
   await chooseScope(desk.page, "ward", areaNumber(2).wards[0].ward_code);
@@ -313,8 +305,7 @@ test("Your LGA today shows real counts and says \"fewer than 5\" for anything sm
 
   const card = page.getByTestId("o04-lga-today");
   await expect(card).toBeVisible();
-  // The server names the LGA by its code when it cannot find the name (backend note in the report).
-  await expect(card).toContainText(new RegExp(`(${area.lga_name}|${area.lga_code}) today`));
+  await expect(card).toContainText(`${area.lga_name} today`);
   const rows = card.locator("li");
   const total = await rows.count();
   expect(total).toBeGreaterThanOrEqual(6);
