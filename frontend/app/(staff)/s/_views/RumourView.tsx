@@ -320,7 +320,9 @@ export function RumourView({
                   rowKey={(row) => row.id}
                   selectedKey={selectedClaim?.id}
                   onRowActivate={(row) => pick(row.id)}
-                  initialSort={{ key: "created_at", direction: "descending" }}
+                  key={sort}
+                  // The table sorts what the server sent, so "Most asked" must start on the asks column.
+                  initialSort={{ key: sort === "demand" ? "asks" : "created_at", direction: "descending" }}
                   data-testid="s06-table"
                 />
               </div>

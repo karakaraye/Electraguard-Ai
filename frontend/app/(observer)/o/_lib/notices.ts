@@ -21,6 +21,12 @@ const subscribe = (listener: () => void) => {
   return () => listeners.delete(listener);
 };
 
+/**
+ * Every check-in this visit has shown, by id. A check-in that was answered offline and then closed or
+ * withdrawn drops out of the server's list; this keeps its wording so the answer can still say "Not counted".
+ */
+const seen = new Map<string, ObserverNotice>();
+
 /** Fixtures for the development viewer. */
 export function rememberNotices(list: ObserverNotice[]) {
   remembered = list;
@@ -52,7 +58,15 @@ export function useNotices(code: string | null, offline: boolean): { notices: No
   }, [items]);
   const kept = useSyncExternalStore(subscribe, () => remembered, () => remembered);
   const queue = useNoticeAnswers(code);
-  const notices = useMemo(() => merge(items ?? kept, queue), [items, kept, queue]);
+  const notices = useMemo(() => {
+    const base = items ?? kept;
+    for (const notice of base) seen.set(notice.id, notice);
+    const gone = queue.flatMap((entry) => {
+      const notice = seen.get(entry.notice_id);
+      return notice && !base.some((item) => item.id === notice.id) ? [notice] : [];
+    });
+    return merge([...base, ...gone], queue);
+  }, [items, kept, queue]);
   return { notices, load };
 }
 

@@ -49,7 +49,8 @@ export function useCheckins(active: boolean) {
     placesLoaded.current = true;
     void (async () => {
       const me = await api("AUTH-07", {});
-      if (me.ok && me.data.authenticated && me.data.user) setCurrentUser(me.data.user.display_name || "");
+      // The server names a notice's writer by full name, or by email when the account has no name.
+      if (me.ok && me.data.authenticated && me.data.user) setCurrentUser(me.data.user.display_name || me.data.user.email || "");
       const list = await api("NOT-06", {});
       if (list.ok) setQuestions(list.data.items);
       const index = await api("REF-01.index", {});
