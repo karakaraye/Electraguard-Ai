@@ -623,3 +623,20 @@
   margin: 0;
   font: var(--t-label);
 }
+
+/* Suggestions are help, not a status: a solid neutral card, no blue and no dashes. */
+.suggestionHost {
+  --info: var(--ink-2);
+  --info-bg: var(--paper-2);
+  --info-solid: var(--ink-2);
+}
+
+.suggestionHost [data-state] {
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+}
+
+.suggestionHost p.card {
+  border-style: solid;
+  border-color: var(--rule);
+}

@@ -978,17 +978,17 @@
   },
   "staff": {
     "nav": {
-      "queue": "[PCM draft] Review Queue",
-      "cases": "[PCM draft] Cases",
-      "assign": "[PCM draft] Assign",
-      "ops": "[PCM draft] Operations",
-      "rumours": "[PCM draft] Rumour Desk",
-      "publish": "[PCM draft] Publish",
-      "discussions": "[PCM draft] Discussions",
-      "codes": "[PCM draft] Observer Codes",
-      "staff": "[PCM draft] Staff Accounts",
-      "settings": "[PCM draft] Settings",
-      "security": "[PCM draft] Security",
+      "queue": "Queue",
+      "cases": "Cases",
+      "assign": "Assign",
+      "ops": "Operations",
+      "rumours": "Rumour desk",
+      "publish": "Publish",
+      "discussions": "Discussions",
+      "codes": "Observer codes",
+      "staff": "Staff",
+      "settings": "Settings",
+      "security": "Security",
       "groups": {
         "review": "Review",
         "monitor": "Monitor",
@@ -1033,12 +1033,13 @@
       },
       "menu": "Open menu",
       "search": "Search",
-      "searchLabel": "Find case with im reference",
-      "searchPlaceholder": "Find case with im reference",
+      "searchLabel": "Search cases by reference, place or category",
+      "searchPlaceholder": "Search cases",
       "shortcuts": "Keyboard shortcuts"
     },
     "notFound": {
-      "title": "We no see dis page"
+      "title": "We no see dis page",
+      "body": "Di address fit don wrong, or di page don move. Go back to di queue make you continue."
     }
   },
   "s01": {
@@ -1105,7 +1106,14 @@
       "hasEvidence": "[PCM draft] Has media",
       "clear": "[PCM draft] Reset filters",
       "label": "Filters",
-      "anyCategory": "Any category"
+      "anyCategory": "Any category",
+      "priority": "Wetin dey urgent",
+      "any": "Any one",
+      "more": "Filters",
+      "clearAll": "Clear am",
+      "removeToken": "Comot filter {name}",
+      "search": "Search",
+      "panel": "Filter di cases"
     },
     "columns": {
       "urgency": "[PCM draft] Urgency",
@@ -1115,7 +1123,9 @@
       "occurred": "[PCM draft] Occurred",
       "evidence": "[PCM draft] Evidence",
       "status": "[PCM draft] Status",
-      "reasons": "Why"
+      "reasons": "Why",
+      "priority": "How urgent",
+      "time": "Time"
     },
     "urgency": {
       "urgent": "[PCM draft] Urgent",
@@ -1158,7 +1168,8 @@
       "save": "Save this view",
       "name": "Name for the view",
       "saveConfirm": "Save",
-      "remove": "Remove the view {name}"
+      "remove": "Remove the view {name}",
+      "empty": "You never save any view yet."
     },
     "evidence": {
       "photo": "{count, plural, one {# photo} other {# photos}}",
@@ -1178,11 +1189,16 @@
       "place": "Place",
       "notGiven": "Dem no give am",
       "received": "Received",
-      "open": "Open the case"
+      "open": "Open the case",
+      "close": "Close di preview",
+      "orPress": "or press"
     },
     "tabs": {
       "question": "Questions"
-    }
+    },
+    "shown": "{shown} for {total} dey show",
+    "keysMove": "dey move between cases.",
+    "keysOpen": "dey open one."
   },
   "s03": {
     "title": "[PCM draft] Case review",
@@ -1418,7 +1434,7 @@
     "today": "[PCM draft] Today",
     "totals": {
       "totalReports": "[PCM draft] Total reports",
-      "incidents": "[PCM draft] Incidents after links",
+      "incidents": "Different incidents",
       "urgentOpen": "[PCM draft] Urgent open",
       "openQuestions": "[PCM draft] Questions open",
       "resultFlags": "[PCM draft] Result sheet flags",
@@ -1657,7 +1673,12 @@
       "body": "Use am when di claim no need reply. Dem no fit change claim wey dem don drop.",
       "noteLabel": "Why you drop am?"
     },
-    "noteHint": "1 to 500 characters."
+    "noteHint": "1 to 500 characters.",
+    "level": {
+      "high": "High",
+      "medium": "Medium",
+      "low": "Low"
+    }
   },
   "s07": {
     "title": "[PCM draft] Publish snapshots",
@@ -1838,7 +1859,8 @@
       "resetPin": "Reset PIN",
       "revokeFor": "Revoke {code}",
       "reissueFor": "Reissue {code}",
-      "resetPinFor": "Reset PIN for {code}"
+      "resetPinFor": "Reset PIN for {code}",
+      "moreFor": "More things wey you fit do for {code}"
     },
     "create": {
       "title": "Create new batch",

@@ -18,37 +18,9 @@
   max-width: 420px;
   overflow: hidden;
   border: 1px solid var(--rule);
-  border-radius: var(--radius);
+  border-radius: var(--radius-lg);
   background: var(--paper-raised);
-  box-shadow: var(--shadow-raised);
-}
-
-/* A thin strip of Plate A (the polling-day scene), anchored on the queue and the canopy. */
-.strip {
-  --art-image: url("/art/polling-day-light.svg");
-  height: 72px;
-  border-bottom: 1px solid var(--sun-line);
-  background-color: var(--sun-wash);
-  background-image: var(--art-image);
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: 46% 78%;
-}
-
-[data-theme="dark"] .strip {
-  --art-image: url("/art/polling-day-dark.svg");
-}
-
-@media (prefers-color-scheme: dark) {
-  [data-theme="system"] .strip {
-    --art-image: url("/art/polling-day-dark.svg");
-  }
-}
-
-@media (prefers-reduced-data: reduce), print, (forced-colors: active) {
-  .strip {
-    background-image: none;
-  }
+  box-shadow: var(--shadow-pop);
 }
 
 .inner {
@@ -69,19 +41,7 @@
 
 .head {
   display: grid;
-  grid-template-columns: 40px minmax(0, 1fr);
-  gap: var(--s-3);
-  align-items: start;
-}
-
-.disc {
-  display: grid;
-  place-items: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: var(--sun-tint);
-  color: var(--ink);
+  gap: var(--s-1);
 }
 
 .title {

@@ -73,7 +73,6 @@ export function OpsView({
           <span>{t("s05.filterDate")}</span>
           <input type="date" value={date} max={today} onChange={(e) => e.target.value && onDateChange?.(e.target.value)} data-testid="s05-date" />
         </label>
-        <span className={`${styles.dayLong} eg-tnum`}>{formatDay(date, locale)}</span>
         {date !== today ? <Button variant="quiet" onClick={() => onDateChange?.(today)}>{t("s05.today")}</Button> : null}
         <span className={styles.updated}>
           {overview.data ? <span className="eg-tnum">{t("s05.updated", { time: formatWatTime(overview.data.generated_at, locale) })}</span> : null}

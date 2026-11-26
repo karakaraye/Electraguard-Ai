@@ -977,15 +977,15 @@
   },
   "staff": {
     "nav": {
-      "queue": "Review Queue",
+      "queue": "Queue",
       "cases": "Cases",
       "assign": "Assign",
       "ops": "Operations",
-      "rumours": "Rumour Desk",
+      "rumours": "Rumour desk",
       "publish": "Publish",
       "discussions": "Discussions",
-      "codes": "Observer Codes",
-      "staff": "Staff Accounts",
+      "codes": "Observer codes",
+      "staff": "Staff",
       "settings": "Settings",
       "security": "Security",
       "groups": {
@@ -1032,12 +1032,13 @@
       },
       "menu": "Open menu",
       "search": "Search",
-      "searchLabel": "Find a case by reference",
-      "searchPlaceholder": "Find a case by reference",
+      "searchLabel": "Search cases by reference, place or category",
+      "searchPlaceholder": "Search cases",
       "shortcuts": "Keyboard shortcuts"
     },
     "notFound": {
-      "title": "Page not found"
+      "title": "Page not found",
+      "body": "The address may be wrong, or the page may have moved. Go back to the queue to carry on."
     }
   },
   "s01": {
@@ -1104,7 +1105,14 @@
       "hasEvidence": "Has media",
       "clear": "Reset filters",
       "label": "Filters",
-      "anyCategory": "Any category"
+      "anyCategory": "Any category",
+      "priority": "Priority",
+      "any": "Any",
+      "more": "Filters",
+      "clearAll": "Clear",
+      "removeToken": "Remove filter {name}",
+      "search": "Search",
+      "panel": "Filter cases"
     },
     "columns": {
       "urgency": "Urgency",
@@ -1114,7 +1122,9 @@
       "occurred": "Occurred",
       "evidence": "Evidence",
       "status": "Status",
-      "reasons": "Why"
+      "reasons": "Why",
+      "priority": "Priority",
+      "time": "Time"
     },
     "urgency": {
       "urgent": "Urgent",
@@ -1157,7 +1167,8 @@
       "save": "Save this view",
       "name": "View name",
       "saveConfirm": "Save",
-      "remove": "Remove saved view {name}"
+      "remove": "Remove saved view {name}",
+      "empty": "No saved views yet."
     },
     "evidence": {
       "photo": "{count, plural, one {# photo} other {# photos}}",
@@ -1177,11 +1188,16 @@
       "place": "Place",
       "notGiven": "Not given",
       "received": "Received",
-      "open": "Open case"
+      "open": "Open case",
+      "close": "Close preview",
+      "orPress": "or press"
     },
     "tabs": {
       "question": "Questions"
-    }
+    },
+    "shown": "{shown} of {total} shown",
+    "keysMove": "move between cases.",
+    "keysOpen": "opens one."
   },
   "s03": {
     "title": "Case review",
@@ -1417,7 +1433,7 @@
     "today": "Today",
     "totals": {
       "totalReports": "Total reports",
-      "incidents": "Incidents after links",
+      "incidents": "Distinct incidents",
       "urgentOpen": "Urgent open",
       "openQuestions": "Questions open",
       "resultFlags": "Result sheet flags",
@@ -1656,7 +1672,12 @@
       "body": "Use this when the claim needs no reply. A dismissed claim cannot be changed.",
       "noteLabel": "Why is it dismissed?"
     },
-    "noteHint": "1 to 500 characters."
+    "noteHint": "1 to 500 characters.",
+    "level": {
+      "high": "High",
+      "medium": "Medium",
+      "low": "Low"
+    }
   },
   "s07": {
     "title": "Publish snapshots",
@@ -1837,7 +1858,8 @@
       "resetPin": "Reset PIN",
       "revokeFor": "Revoke {code}",
       "reissueFor": "Reissue {code}",
-      "resetPinFor": "Reset the PIN for {code}"
+      "resetPinFor": "Reset the PIN for {code}",
+      "moreFor": "More actions for {code}"
     },
     "create": {
       "title": "Create a batch",

@@ -179,14 +179,14 @@ export function RumourView({
       header: t("s06.columns.harm"),
       sortable: true,
       sortValue: (row) => row.harm.score,
-      render: (row) => <StatusBadge tone={levelTone(row.harm.level, "danger")} label={t(`s06.harm.${row.harm.level}`)} />,
+      render: (row) => <StatusBadge tone={levelTone(row.harm.level, "danger")} label={t(`s06.level.${row.harm.level}`)} />,
     },
     {
       key: "check",
       header: t("s06.columns.check"),
       sortable: true,
       sortValue: (row) => row.check_worthiness.score,
-      render: (row) => <StatusBadge tone={levelTone(row.check_worthiness.level, "info")} label={t(`s06.check.${row.check_worthiness.level}`)} />,
+      render: (row) => <StatusBadge tone={levelTone(row.check_worthiness.level, "info")} label={t(`s06.level.${row.check_worthiness.level}`)} />,
     },
     {
       key: "status",
@@ -278,8 +278,14 @@ export function RumourView({
                     <button type="button" className={styles.card} onClick={() => pick(claim.id)} data-testid={`s06-card-${claim.id}`}>
                       <span className={styles.excerpt}>{excerpt(claim.text, 140) || t("s06.detail.noText")}</span>
                       <span className={styles.chips}>
-                        <StatusBadge tone={levelTone(claim.harm.level, "danger")} label={t(`s06.harm.${claim.harm.level}`)} />
-                        <StatusBadge tone={levelTone(claim.check_worthiness.level, "info")} label={t(`s06.check.${claim.check_worthiness.level}`)} />
+                        <span className={styles.levelPair}>
+                          <span className={styles.levelCap}>{t("s06.columns.harm")}</span>
+                          <StatusBadge tone={levelTone(claim.harm.level, "danger")} label={t(`s06.level.${claim.harm.level}`)} />
+                        </span>
+                        <span className={styles.levelPair}>
+                          <span className={styles.levelCap}>{t("s06.columns.check")}</span>
+                          <StatusBadge tone={levelTone(claim.check_worthiness.level, "info")} label={t(`s06.level.${claim.check_worthiness.level}`)} />
+                        </span>
                         <StatusBadge tone={statusTone(claim.status)} label={statusLabel(claim.status)} />
                       </span>
                       <span className={styles.sub}>{`${sourceLabel(claim.seen_on)} · ${formatWatDateTime(claim.created_at, locale)}`}</span>
@@ -520,9 +526,17 @@ function ClaimDetail({
         <section className={styles.panel}>
           <div className={styles.chips}>
             <StatusBadge tone={statusTone(claim.status)} label={t(`s06.status.${claim.status}`)} />
-            <StatusBadge tone={levelTone(claim.harm.level, "danger")} label={t(`s06.harm.${claim.harm.level}`)} />
-            <StatusBadge tone={levelTone(claim.check_worthiness.level, "info")} label={t(`s06.check.${claim.check_worthiness.level}`)} />
           </div>
+          <dl className={styles.levels}>
+            <div>
+              <dt>{t("s06.columns.harm")}</dt>
+              <dd><StatusBadge tone={levelTone(claim.harm.level, "danger")} label={t(`s06.level.${claim.harm.level}`)} /></dd>
+            </div>
+            <div>
+              <dt>{t("s06.columns.check")}</dt>
+              <dd><StatusBadge tone={levelTone(claim.check_worthiness.level, "info")} label={t(`s06.level.${claim.check_worthiness.level}`)} /></dd>
+            </div>
+          </dl>
           <h2 id={`s06-claim-${claim.id}`} className={styles.claimText}>
             {claim.text ? claim.text : <span className={styles.sub}>{t("s06.detail.noText")}</span>}
           </h2>

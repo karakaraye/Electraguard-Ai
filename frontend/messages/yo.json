@@ -978,17 +978,17 @@
   },
   "staff": {
     "nav": {
-      "queue": "[YO draft] Review Queue",
-      "cases": "[YO draft] Cases",
-      "assign": "[YO draft] Assign",
-      "ops": "[YO draft] Operations",
-      "rumours": "[YO draft] Rumour Desk",
-      "publish": "[YO draft] Publish",
-      "discussions": "[YO draft] Discussions",
-      "codes": "[YO draft] Observer Codes",
-      "staff": "[YO draft] Staff Accounts",
-      "settings": "[YO draft] Settings",
-      "security": "[YO draft] Security",
+      "queue": "Àtòjọ",
+      "cases": "Àwọn ẹjọ́",
+      "assign": "Pín iṣẹ́",
+      "ops": "Ìṣẹ́ àmójútó",
+      "rumours": "Ibùdó ọ̀rọ̀-àhesọ",
+      "publish": "Tẹ̀jáde",
+      "discussions": "Ìjíròrò",
+      "codes": "Kóòdù àwọn alákiyèsí",
+      "staff": "Òṣìṣẹ́",
+      "settings": "Ètò",
+      "security": "Ààbò",
       "groups": {
         "review": "Àyẹ̀wò",
         "monitor": "Ìtọ́pinpin",
@@ -1033,12 +1033,13 @@
       },
       "menu": "Ṣí àtòjọ",
       "search": "Wá",
-      "searchLabel": "Wá ẹjọ́ nípa nọ́mbà rẹ̀",
-      "searchPlaceholder": "Wá ẹjọ́ nípa nọ́mbà rẹ̀",
+      "searchLabel": "Wá àwọn ẹjọ́ nípa nọ́mbà, ibi tàbí ẹ̀ka",
+      "searchPlaceholder": "Wá àwọn ẹjọ́",
       "shortcuts": "Àwọn ọ̀nà àbùjá kọ̀ǹpútà"
     },
     "notFound": {
-      "title": "A kò rí ojú-ìwé náà"
+      "title": "A kò rí ojú-ìwé náà",
+      "body": "Àdírẹ́sì náà lè jẹ́ àṣìṣe, tàbí kí ojú-ìwé náà ti lọ sí ibòmíràn. Padà sí àtòjọ láti tẹ̀síwájú."
     }
   },
   "s01": {
@@ -1105,7 +1106,14 @@
       "hasEvidence": "[YO draft] Has media",
       "clear": "[YO draft] Reset filters",
       "label": "Àwọn àlẹ̀mọ́",
-      "anyCategory": "Ẹ̀ka èyíkéyìí"
+      "anyCategory": "Ẹ̀ka èyíkéyìí",
+      "priority": "Pataki",
+      "any": "Gbogbo",
+      "more": "Àwọn àṣàyàn",
+      "clearAll": "Pa rẹ́",
+      "removeToken": "Yọ àṣàyàn {name} kúrò",
+      "search": "Ìwádìí",
+      "panel": "Ṣàlẹ̀ àwọn ẹjọ́"
     },
     "columns": {
       "urgency": "[YO draft] Urgency",
@@ -1115,7 +1123,9 @@
       "occurred": "[YO draft] Occurred",
       "evidence": "[YO draft] Evidence",
       "status": "[YO draft] Status",
-      "reasons": "Ìdí"
+      "reasons": "Ìdí",
+      "priority": "Pàtàkì",
+      "time": "Àkókò"
     },
     "urgency": {
       "urgent": "[YO draft] Urgent",
@@ -1158,7 +1168,8 @@
       "save": "Fi ìwò yìí pamọ́",
       "name": "Orúkọ ìwò",
       "saveConfirm": "Fipamọ́",
-      "remove": "Yọ ìwò {name} kúrò"
+      "remove": "Yọ ìwò {name} kúrò",
+      "empty": "A kò tíì fi ìwòye kankan pamọ́."
     },
     "evidence": {
       "photo": "{count, plural, one {Fọ́tò #} other {Fọ́tò #}}",
@@ -1178,11 +1189,16 @@
       "place": "Ibi",
       "notGiven": "A kò fún wa",
       "received": "A gbà á",
-      "open": "Ṣí ẹjọ́"
+      "open": "Ṣí ẹjọ́",
+      "close": "Ti àkọ́wò náà",
+      "orPress": "tàbí tẹ̀"
     },
     "tabs": {
       "question": "Ìbéèrè"
-    }
+    },
+    "shown": "{shown} nínú {total} ni a fihàn",
+    "keysMove": "ń lọ láàrin àwọn ẹjọ́.",
+    "keysOpen": "ń ṣí ọ̀kan."
   },
   "s03": {
     "title": "[YO draft] Case review",
@@ -1418,7 +1434,7 @@
     "today": "[YO draft] Today",
     "totals": {
       "totalReports": "[YO draft] Total reports",
-      "incidents": "[YO draft] Incidents after links",
+      "incidents": "Àwọn ìṣẹ̀lẹ̀ tó yàtọ̀",
       "urgentOpen": "[YO draft] Urgent open",
       "openQuestions": "[YO draft] Questions open",
       "resultFlags": "[YO draft] Result sheet flags",
@@ -1657,7 +1673,12 @@
       "body": "Lo èyí nígbà tí àhesọ náà kò nílò ìdáhùn. A kò lè yí àhesọ tí a pa tì padà.",
       "noteLabel": "Kí ló fà á tí a fi pa á tì?"
     },
-    "noteHint": "Ọ̀rọ̀ 1 sí 500."
+    "noteHint": "Ọ̀rọ̀ 1 sí 500.",
+    "level": {
+      "high": "Gíga",
+      "medium": "Àárín",
+      "low": "Kékeré"
+    }
   },
   "s07": {
     "title": "[YO draft] Publish snapshots",
@@ -1838,7 +1859,8 @@
       "resetPin": "Tún PIN ṣe",
       "revokeFor": "Fagilé {code}",
       "reissueFor": "Tún {code} fúnni",
-      "resetPinFor": "Tún PIN {code} ṣe"
+      "resetPinFor": "Tún PIN {code} ṣe",
+      "moreFor": "Àwọn ìgbésẹ̀ míràn fún {code}"
     },
     "create": {
       "title": "Ṣẹ̀dá àpapọ̀ tuntun",

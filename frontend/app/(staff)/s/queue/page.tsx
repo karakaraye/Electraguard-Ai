@@ -5,6 +5,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { api } from "../../../../lib/api/client";
 import type { QueueItem, QueueQuery, QueueResponse, ReportStatus } from "../../../../lib/api/types";
 import { useT } from "../../../../lib/i18n/client";
+import { CATEGORY_ROWS } from "../../../(public)/_lib/public";
 import { useStaffHeaderState } from "../_lib/header";
 import {
   EMPTY_QUEUE_FILTERS,
@@ -16,6 +17,8 @@ import {
 /** How often the queue checks for new cases. New ones wait behind a pill; rows never jump (I-18). */
 const POLL_MS = 30_000;
 const VIEWS_KEY = "eg.s02.savedViews";
+
+const CATEGORY_KEY = Object.fromEntries(CATEGORY_ROWS.map((row) => [row.value, row.key])) as Record<string, string>;
 
 function toQuery(filters: QueueTableFilters, cursor?: string): QueueQuery {
   return {
@@ -50,7 +53,7 @@ export default function QueuePage() {
   const router = useRouter();
   const t = useT();
 
-  const { search } = useStaffHeaderState();
+  const { search, setSearch } = useStaffHeaderState();
   const [filters, setFilters] = useState<QueueTableFilters>(EMPTY_QUEUE_FILTERS);
   const [data, setData] = useState<QueueResponse | null>(null);
   const [loading, setLoading] = useState(true);
@@ -145,12 +148,28 @@ export default function QueuePage() {
     writeViews(next);
   }
 
-  // The header search narrows the loaded rows by case reference.
+  // The header search narrows the loaded rows by reference, place or category. There is no
+  // search endpoint yet, so this matches the cases already loaded in the queue.
   const shown = useMemo(() => {
     const needle = search.trim().toLowerCase();
     if (!data || !needle) return data;
-    return { ...data, items: data.items.filter((item) => item.receipt_code.toLowerCase().includes(needle)) };
-  }, [data, search]);
+    const matches = (item: QueueItem) => {
+      const area = item.area;
+      const haystack = [
+        item.receipt_code,
+        t(CATEGORY_KEY[item.category.value]),
+        area?.polling_unit_name,
+        area?.ward_name,
+        area?.lga_name,
+        area?.state_name,
+      ]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase();
+      return haystack.includes(needle);
+    };
+    return { ...data, items: data.items.filter(matches) };
+  }, [data, search, t]);
 
   return (
     <QueueTableView
@@ -168,6 +187,8 @@ export default function QueuePage() {
       onSaveView={saveView}
       onRemoveView={removeView}
       onOpenCase={(id) => router.push(`/s/cases/${id}`)}
+      search={search}
+      onClearSearch={() => setSearch("")}
     />
   );
 }

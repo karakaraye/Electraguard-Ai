@@ -289,26 +289,27 @@ function TwoFa({ on }: { on: boolean }) {
   return <StatusBadge tone={on ? "ok" : "attn"} label={on ? t("s10.twofa.on") : t("s10.twofa.off")} />;
 }
 
+/** Only the actions that can be used: no lone dash for offboarded people, no disabled Offboard for yourself. */
 function RowActions({ staff, self, onReset, onOffboard }: { staff: StaffAccount; self: boolean; onReset: () => void; onOffboard: () => void }) {
   const t = useT();
-  const noteId = useId();
-  if (staff.status === "offboarded") return <span className={styles.sub} aria-hidden="true">&mdash;</span>;
+  if (staff.status === "offboarded") return null;
   return (
     <div className={styles.rowActions}>
       <Button variant="secondary" onClick={onReset} aria-label={t("s10.reset2faFor", { name: staff.display_name })} data-testid={`s10-reset-${staff.id}`}>
         {t("s10.reset2fa")}
       </Button>
-      <Button
-        variant="secondary"
-        onClick={onOffboard}
-        disabled={self}
-        aria-describedby={self ? noteId : undefined}
-        aria-label={t("s10.offboardFor", { name: staff.display_name })}
-        data-testid={`s10-offboard-${staff.id}`}
-      >
-        {t("s10.offboard")}
-      </Button>
-      {self ? <span id={noteId} className={styles.selfNote}>{t("s10.selfNote")}</span> : null}
+      {self ? (
+        <span className={styles.selfNote}>{t("s10.selfNote")}</span>
+      ) : (
+        <Button
+          variant="secondary"
+          onClick={onOffboard}
+          aria-label={t("s10.offboardFor", { name: staff.display_name })}
+          data-testid={`s10-offboard-${staff.id}`}
+        >
+          {t("s10.offboard")}
+        </Button>
+      )}
     </div>
   );
 }

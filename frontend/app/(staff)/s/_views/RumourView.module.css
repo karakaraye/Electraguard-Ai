@@ -331,3 +331,37 @@
 .tableFrame table td:first-child {
   padding-left: var(--s-3);
 }
+
+/* Harm and check priority: a caption and a plain word, never "Harm: high" on a chip. */
+.levels {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2) var(--s-5);
+  margin: 0;
+}
+
+.levels > div {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+}
+
+.levels dt {
+  color: var(--ink-3);
+  font: var(--t-small);
+}
+
+.levels dd {
+  margin: 0;
+}
+
+.levelPair {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+}
+
+.levelCap {
+  color: var(--ink-3);
+  font: var(--t-small);
+}

@@ -13,23 +13,14 @@
   background: var(--paper-raised);
 }
 
+/* One 720 px column: cards stack in reading order and never stretch to match a neighbour. */
 .grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: var(--s-4);
-  align-items: stretch;
+  width: 100%;
+  max-width: 720px;
   min-width: 0;
-}
-
-@media (min-width: 900px) {
-  .grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .grid > [data-wide],
-  .grid > .meta {
-    grid-column: 1 / -1;
-  }
 }
 
 /* A form wraps a card; the card fills the form so paired cards stay the same height. */

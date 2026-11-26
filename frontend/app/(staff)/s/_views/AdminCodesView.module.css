@@ -506,3 +506,64 @@
     transition: background-color 120ms ease-out;
   }
 }
+
+/* Row actions: one "..." button that opens Reset PIN, Reissue and Revoke. */
+.moreButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background: none;
+  color: var(--ink-2);
+  cursor: pointer;
+}
+
+.moreButton[aria-expanded="true"] {
+  background: var(--paper-2);
+  color: var(--ink);
+}
+
+.moreButton:focus-visible,
+.menuItem:focus-visible {
+  outline: var(--focus-outline);
+  outline-offset: var(--focus-offset);
+  box-shadow: var(--focus-halo);
+}
+
+.menuList {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.menuItem {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: 40px;
+  margin: 0;
+  padding: 0 var(--s-3);
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: none;
+  color: var(--ink);
+  font: 500 0.875rem/1 var(--font);
+  text-align: left;
+  cursor: pointer;
+}
+
+.menuItem[data-danger] {
+  color: var(--danger);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .menuItem:hover {
+    background: var(--paper-2);
+  }
+}

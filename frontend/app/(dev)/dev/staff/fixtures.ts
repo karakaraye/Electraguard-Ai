@@ -30,7 +30,7 @@ export const FIXTURE_STAFF_ACCOUNT: StaffAccount = {
 
 export const FIXTURE_QUEUE_ITEM: QueueItem = {
   id: "rep-001",
-  receipt_code: "RC-7K2P9D",
+  receipt_code: "EG-7K2P-9DNQ",
   kind: "incident",
   channel: "app",
   status: "received",
@@ -80,7 +80,7 @@ export const FIXTURE_QUEUE_RESPONSE: QueueResponse = {
 
 export const FIXTURE_CASE_DETAIL: CaseDetail = {
   id: "rep-001",
-  receipt_code: "RC-7K2P9D",
+  receipt_code: "EG-7K2P-9DNQ",
   kind: "incident",
   channel: "app",
   status: "received",
