@@ -3,6 +3,7 @@ import type { GuideDocument, GuideListResponse } from "../../../lib/api/types";
 import type { Locale, Translate } from "../../../lib/i18n";
 import { localeTags } from "../../../lib/i18n";
 import { EmptyState } from "../../../ui/EmptyState/EmptyState";
+import { RichText } from "../../../ui/RichText/RichText";
 import { ArrowLeftIcon, ChevronRightIcon, FileIcon } from "../../../ui/icons";
 import { formatWatDate } from "../_lib/public";
 import page from "./page.module.css";
@@ -13,28 +14,6 @@ type GuideListItem = GuideListResponse["documents"][number] & { approved_on?: st
 
 export type GuideIndexState = { kind: "ok"; data: GuideListResponse } | { kind: "error" };
 export type GuideDocState = { kind: "ok"; data: GuideDocument } | { kind: "not_found" } | { kind: "error" };
-
-/** Plain-text body (GUIDE-01): blank line = new paragraph, "- " = list item. Rendered as text, never HTML. */
-function Body({ text }: { text: string }) {
-  const blocks = text.replace(/\r\n/g, "\n").split(/\n{2,}/).map((block) => block.trim()).filter(Boolean);
-  return (
-    <>
-      {blocks.map((block, index) => {
-        const lines = block.split("\n");
-        if (lines.every((line) => line.trimStart().startsWith("- "))) {
-          return (
-            <ul key={index}>
-              {lines.map((line, i) => (
-                <li key={i}>{line.trimStart().slice(2)}</li>
-              ))}
-            </ul>
-          );
-        }
-        return <p key={index}>{block}</p>;
-      })}
-    </>
-  );
-}
 
 /** P-05 guide list. */
 export function GuideIndexView({ t, locale = "en", state }: { t: Translate; locale?: Locale; state: GuideIndexState }) {
@@ -105,6 +84,8 @@ export function GuideDocumentView({ t, locale, state }: { t: Translate; locale: 
     );
   }
   const doc = state.data;
+  // The first block of a guide sits under the document's own title; the page title already says so.
+  const sections = doc.sections.map((section, index) => ({ ...section, intro: index === 0 && section.heading.trim() === doc.title.trim() }));
   return (
     <div className={page.page}>
       {back}
@@ -118,11 +99,11 @@ export function GuideDocumentView({ t, locale, state }: { t: Translate; locale: 
             <p className={styles.fallback} lang={localeTags[locale]}>{t("p05.fallback")}</p>
           ) : null}
         </header>
-        {doc.sections.length > 2 ? (
+        {sections.length > 2 ? (
           <nav className={styles.toc} aria-label={t("p05.contents")} lang={localeTags[locale]}>
             <p className={styles.tocTitle}>{t("p05.contents")}</p>
             <ol>
-              {doc.sections.map((section) => (
+              {sections.filter((section) => !section.intro).map((section) => (
                 <li key={section.id}>
                   <a href={`#${section.id}`} lang={localeTags[doc.language]}>{section.heading}</a>
                 </li>
@@ -130,10 +111,10 @@ export function GuideDocumentView({ t, locale, state }: { t: Translate; locale: 
             </ol>
           </nav>
         ) : null}
-        {doc.sections.map((section) => (
-          <section key={section.id} id={section.id} className={styles.section} aria-labelledby={`${section.id}-h`}>
-            <h2 id={`${section.id}-h`}>{section.heading}</h2>
-            <Body text={section.body} />
+        {sections.map((section) => (
+          <section key={section.id} id={section.id} className={styles.section} aria-labelledby={section.intro ? undefined : `${section.id}-h`} aria-label={section.intro ? doc.title : undefined}>
+            {section.intro ? null : <h2 id={`${section.id}-h`}>{section.heading}</h2>}
+            <RichText text={section.body} />
           </section>
         ))}
       </article>

@@ -33,9 +33,17 @@ def slugify(text):
     return re.sub(r"[^a-z0-9]+", "-", "".join(c for c in folded if not unicodedata.combining(c))).strip("-") or "section"
 
 
+LIST_ITEM = re.compile(r"\s*(?:[-*]|\d+[.)])\s+\S")
+
+
 def blocks(body):
-    """Split a guide into (heading, text) blocks: a block is the lines between blank lines or headings."""
+    """Split a guide into (heading, text) blocks: a block is the lines between blank lines or headings.
+
+    A paragraph that ends with a colon introduces the list after it, so the two stay one block (with the
+    blank line kept): a quoted answer never stops at "Bring the following items:" without the items.
+    """
     heading, lines, out = "", [], []
+    lead_in = False
 
     def flush():
         text = "\n".join(lines).strip()
@@ -47,10 +55,20 @@ def blocks(body):
         match = re.match(r"#{1,6}\s+(.*\S)\s*$", line)
         if match:
             flush()
+            lead_in = False
             heading = match.group(1)
         elif not line.strip():
-            flush()
+            if lines and lines[-1].rstrip().endswith(":"):
+                lead_in = True
+            elif not lead_in:
+                flush()
         else:
+            if lead_in:
+                if LIST_ITEM.match(line):
+                    lines.append("")
+                else:
+                    flush()
+                lead_in = False
             lines.append(line)
     flush()
     return out

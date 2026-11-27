@@ -9,6 +9,7 @@ import { localeTags } from "../../../lib/i18n";
 import { Button } from "../../../ui/Button/Button";
 import { TextArea } from "../../../ui/Field/TextArea";
 import { DictationCorner, DictationStatus, useDictation } from "../../../ui/DictationButton/DictationButton";
+import { RichText } from "../../../ui/RichText/RichText";
 import { FileIcon } from "../../../ui/icons";
 import { StatusShape } from "../../../ui/StatusBadge/StatusBadge";
 import styles from "./ask.module.css";
@@ -113,7 +114,7 @@ export function AskScreen({ initial = { kind: "idle" }, initialQuestion = "" }: 
                 <li key={`${passage.source.document_id}-${index}`}>
                   <figure className={styles.passage}>
                     <blockquote lang={localeTags[passage.source.language]} cite={passage.source.url}>
-                      <p>{passage.text}</p>
+                      <RichText text={passage.text} />
                     </blockquote>
                     <figcaption className={styles.source}>
                       <span className={styles.sourceTitle}>
