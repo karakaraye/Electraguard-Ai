@@ -1,12 +1,13 @@
 from datetime import timedelta
 from hashlib import sha256
 from io import BytesIO, StringIO
+from unittest import skipUnless
 from unittest.mock import patch
 from uuid import uuid4
 
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.management import call_command
-from django.test import TestCase
+from django.test import SimpleTestCase, TestCase
 from django.utils import timezone
 from PIL import Image
 
@@ -142,3 +143,37 @@ class OcrEndpointTests(TestCase):
         call_command("purge_expired_ocr", stdout=out)
         self.assertFalse(OcrRead.objects.exists())
         self.assertIn("Deleted 1", out.getvalue())
+
+
+def tesseract_installed():
+    try:
+        import pytesseract
+
+        pytesseract.get_tesseract_version()
+        return True
+    except Exception:
+        return False
+
+
+@skipUnless(tesseract_installed(), "Needs the Tesseract engine (installed in the backend image and in CI).")
+class RealEngineTests(SimpleTestCase):
+    """Reads a drawn result sheet with the real engine, so the photo path is proven, not only the parser."""
+
+    def test_reads_every_number_from_a_printed_sheet(self):
+        from PIL import ImageDraw, ImageFont
+
+        from .result_ocr import recognise_lines
+
+        rows = ["Registered voters 1,250", "Accredited voters 640", "Party A 210", "Party B 180",
+                "Party C 95", "Rejected ballots 12"]
+        sheet = Image.new("RGB", (1400, 120 * len(rows) + 80), "white")
+        draw = ImageDraw.Draw(sheet)
+        font = ImageFont.load_default(size=56)
+        for index, row in enumerate(rows):
+            draw.text((60, 60 + index * 120), row, fill="black", font=font)
+        fields = parse_lines(recognise_lines(sheet), ["A", "B", "C"])
+        self.assertEqual(fields["registered"]["value"], 1250)
+        self.assertEqual(fields["accredited"]["value"], 640)
+        self.assertEqual(fields["rejected"]["value"], 12)
+        self.assertEqual({label: fields["votes"][label]["value"] for label in "ABC"}, {"A": 210, "B": 180, "C": 95})
+        self.assertGreater(fields["registered"]["confidence"], 0.5)
