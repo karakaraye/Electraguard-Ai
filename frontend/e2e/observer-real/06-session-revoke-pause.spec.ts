@@ -16,6 +16,8 @@ test("session expired: the report waits, the PIN sheet signs in again, then it s
   // 401: queue kept, outbox paused, the PIN sheet asks once. "Not now" leaves it on the phone.
   await expect(page.getByTestId("pin-sheet")).toBeVisible({ timeout: 30_000 });
   await page.getByTestId("pin-sheet-later").click();
+  // The app takes itself home about two seconds later; a goto at that moment is aborted by its navigation.
+  await page.waitForURL((url) => url.pathname === "/o", { timeout: 8_000 }).catch(() => undefined);
   await page.goto("/o");
   await expect(page.getByTestId("o04-unsent")).toBeVisible();
   let [item] = await outboxItems(page);
