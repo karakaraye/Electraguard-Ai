@@ -103,18 +103,7 @@ The public sees totals of reviewed reports, released at least an hour later, wit
 
 ## How a report travels
 
-```mermaid
-flowchart LR
-    A["Observer or citizen<br/>app, web, SMS, USSD"] -->|"saved on the phone,<br/>sent when online"| B["Privacy engine<br/>names and numbers<br/>become tokens"]
-    B --> C["Suggestions<br/>category, urgency,<br/>duplicates"]
-    C --> D{"Reviewer<br/>decides"}
-    D -->|"question"| A
-    D --> E["Coordinator<br/>check-ins, surges,<br/>safety notices"]
-    D --> F["Publish<br/>reviewed totals,<br/>an hour later"]
-    F --> G["Public page<br/>numbers below 5 hidden"]
-    D -.-> H[("Tamper-evident<br/>audit record")]
-    E -.-> H
-```
+<p align="center"><img src="docs/media/how-a-report-travels.svg" alt="How a report travels: an observer or citizen reports by app, web, SMS or USSD; the privacy engine turns names and numbers into tokens; the system suggests a category and urgency; a reviewer accepts, corrects or asks; reviewed totals are published at least an hour later; the public page hides numbers below 5. Coordinators send check-ins and safety notices that need a second approver, and every action goes into a tamper-evident audit record." width="100%"></p>
 
 Each step links to its code in [For judges](#2-for-judges) below. The full design is in [`docs/submission/ARCHITECTURE.md`](docs/submission/ARCHITECTURE.md).
 
