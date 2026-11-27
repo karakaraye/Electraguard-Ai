@@ -1,6 +1,6 @@
 # ElectraGuard AI: production design specification
 
-**Version 1 · 24 November 2026 · Owner of this document: Claude (design lead)**
+**Version 1 · 24 November 2026 · Owner of this document: the design lead**
 **Applies to:** the working system on `origin/production-readiness`. The logic stays and the design is rebuilt.
 **Companion:** `REDESIGN-PLAN.md` (order of work and calendar). This file is the *what* and the *why*. Everything a builder needs to make a screen production-ready is here. If something is not here, the builder asks and does not guess.
 
@@ -1115,7 +1115,7 @@ A screen is done only when all of these are true:
 - One screen at a time, in the order in Part F. Each screen is a branch `redesign/NN-name`, cut from the trunk `redesign/base`, which is itself cut from `origin/production-readiness`.
 - **Phase 0** builds the foundations and every component in Part D before screen 1. After that, a screen may change a shared component only with a note, and every finished screen's screenshots are then re-checked.
 - **Who:**
-  - Claude writes each screen's final notes and reviews.
+  - The design lead writes each screen's final notes and reviews.
   - One builder at a time implements, from this spec.
   - The UI Finish-Gate Reviewer checks each screen.
   - Kara reviews the final pull request into `production-readiness`. Nobody merges their own work.

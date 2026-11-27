@@ -67,4 +67,4 @@ Every claim regarding cryptographic primitives, storage architecture, privacy me
 - **Before:** Pre-filled literal signature block.
 - **After:** Replaced with formal un-signed submission line:
   `Signed: ____________ (Kara Wari Sylva, team lead), date: ________`
-- **Evidence Path:** Instructions in `HANDOFF-PROMPTS.md` section ANTIGRAVITY 7.
+- **Evidence Path:** The team's documentation task brief (internal).

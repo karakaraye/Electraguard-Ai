@@ -8,7 +8,7 @@ The shared GitHub branch is `production-readiness`. Fetch that branch before con
 
 Product, planning and design set requirements, priorities, field journeys and interface direction. Engineering owns architecture, implementation, migrations, release checks and operational evidence. Treat new guidance from the project owner or the designated product/design lead as the input to technical delivery. Bring contradictions and privacy implications back with a concrete decision request and keep independent work moving.
 
-When the project owner hands over coordination to Claude, Claude supervises product, planning and design and may restructure the backlog, ownership map, handoff and review cadence. The supervising engineering agent directs technical work and verifies delivery against that structure. Update the ownership map before overlapping edits.
+When the project owner hands over coordination, the product lead supervises product, planning and design and may restructure the backlog, ownership map, handoff and review cadence. The engineering lead directs technical work and verifies delivery against that structure. Update the ownership map before overlapping edits.
 
 ## Current work
 

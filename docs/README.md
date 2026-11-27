@@ -75,7 +75,6 @@ Screenshots in the guides are from the current "Ink and Paper" interface, captur
 | [`field-operations.md`](field-operations.md) | Runbook for a restricted deployment: sign-off, accounts and devices, intake and support, evidence and retention, field acceptance. |
 | [`azure-deployment.md`](azure-deployment.md) | Azure Container Apps deployment scripts and templates (not yet deployed). |
 | [`engineering-handoff.md`](engineering-handoff.md) | State of the work, verification steps and decisions for the next engineer. |
-| [`agent-updates.md`](agent-updates.md) | Change log and ownership table. |
 | [`design/api-contracts.md`](design/api-contracts.md) | The API contracts (REP, CASE, OPS, CHK, ADM, SEC and others). |
 | [`design/design-contract.md`](design/design-contract.md) | Design contract for the earlier design; the current "Ink and Paper" specification is in [`design/redesign/DESIGN-SPEC.md`](design/redesign/DESIGN-SPEC.md). |
 | [`eval/`](eval/results.md) | Evaluation outputs and data. |

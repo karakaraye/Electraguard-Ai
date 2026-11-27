@@ -1,6 +1,6 @@
 # ElectraGuard AI: design contract
 
-**Status:** READY · 22 Nov 2026 · Owner of this document: product/design (Claude)
+**Status:** READY · 22 Nov 2026 · Owner of this document: product and design
 Every screen, component and API in the new front end follows this contract. If something here is wrong, change this document first, then the code.
 
 Read with: [hackathon-plan.md](../hackathon-plan.md) (sections 2–8 define behaviour) and [api-contracts.md](api-contracts.md) (written alongside the screens).
