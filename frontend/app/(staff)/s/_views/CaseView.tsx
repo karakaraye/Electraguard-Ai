@@ -23,6 +23,10 @@ const FLAG_KEYS: Record<string, string> = {
   round_numbers: "s03.resultSheet.roundNumbers",
   identical_to_other_unit: "s03.resultSheet.identical",
   possible_digit_swap: "s03.resultSheet.digitSwap",
+  // The names the server sends today.
+  count_mismatch: "s03.resultSheet.sumDiffers",
+  likely_digit_swap: "s03.resultSheet.digitSwap",
+  identical_sheet: "s03.resultSheet.identical",
 };
 
 /** What the server said when an action could not be saved. */
@@ -745,14 +749,20 @@ function ResultSheetFlags({ flags }: { flags: ResultSheetFlag[] }) {
         <p className={styles.muted}>{t("s03.resultSheet.noFlags")}</p>
       ) : (
         <ul className={styles.flagList}>
-          {flags.map((flag) => (
-            <li key={flag.type}>
-              <p className={styles.flagTitle}><StatusShape tone="attn" size={14} />{t(FLAG_KEYS[flag.type] ?? "s03.resultSheet.flags")}</p>
-              <p className={`${styles.muted} eg-tnum`}>
-                {Object.entries(flag.values).map(([key, val]) => `${key.replace(/_/g, " ")}: ${val}`).join(" · ")}
-              </p>
-            </li>
-          ))}
+          {flags.map((flag) => {
+            // The server sends a code and a plain explanation; older fixtures send a type and numbers.
+            const loose = flag as Partial<ResultSheetFlag> & { code?: string; explanation?: string };
+            const code = loose.code ?? loose.type ?? "";
+            const detail = loose.values
+              ? Object.entries(loose.values).map(([key, val]) => `${key.replace(/_/g, " ")}: ${val}`).join(" · ")
+              : loose.explanation ?? "";
+            return (
+              <li key={code}>
+                <p className={styles.flagTitle}><StatusShape tone="attn" size={14} />{t(FLAG_KEYS[code] ?? "s03.resultSheet.flags")}</p>
+                <p className={`${styles.muted} eg-tnum`}>{detail}</p>
+              </li>
+            );
+          })}
         </ul>
       )}
       {flags.length ? <p className={styles.muted}>{t("s03.resultSheet.benignCauses")}</p> : null}
