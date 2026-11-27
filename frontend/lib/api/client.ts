@@ -228,7 +228,7 @@ async function send<Op extends OperationId>(op: Op, rawInput: CallInput<Op>, wit
     };
   }
 
-  const error = (payload as { error?: { code?: string; message?: string; fields?: unknown } } | null)?.error;
+  const error = (payload as { error?: { code?: string; message?: string; fields?: unknown; reasons?: unknown } } | null)?.error;
   const code = (error?.code ??
     (response.status >= 500 ? "service_unavailable" : response.status === 404 ? "not_found" : "bad_request")) as ErrorCode;
   if (code === "not_authenticated") emit({ type: "not_authenticated", op });
@@ -240,6 +240,7 @@ async function send<Op extends OperationId>(op: Op, rawInput: CallInput<Op>, wit
       code,
       message: error?.message ?? response.statusText,
       ...(error?.fields ? { fields: error.fields as Record<string, never> } : {}),
+      ...(Array.isArray(error?.reasons) ? { reasons: error.reasons.map(String) } : {}),
     },
     retry_after_seconds: parseRetryAfter(response.headers.get("Retry-After")),
   };

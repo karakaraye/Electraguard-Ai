@@ -8,7 +8,8 @@
 
 import { useRef } from "react";
 import { useT } from "../../../../lib/i18n/client";
-import { AppShell, Banner, Button, Field, Sheet } from "../../../../ui";
+import { Banner, Button, Field, Sheet } from "../../../../ui";
+import { ObserverShell } from "../_components/ObserverShell";
 import { CameraIcon, ImageIcon } from "../../../../ui/icons";
 import styles from "../_components/observer.module.css";
 import s from "../_components/screens.module.css";
@@ -107,7 +108,7 @@ export function ResultSheetView(props: ResultSheetViewProps) {
 
   if (props.view === "photo") {
     return (
-      <AppShell
+      <ObserverShell
         title={t("o16.title")}
         onBack={props.onBack}
         offline={props.offline}
@@ -164,12 +165,12 @@ export function ResultSheetView(props: ResultSheetViewProps) {
           </section>
           {fileInputs}
         </div>
-      </AppShell>
+      </ObserverShell>
     );
   }
 
   return (
-    <AppShell
+    <ObserverShell
       title={t("o16.title")}
       onBack={props.onBack}
       offline={props.offline}
@@ -256,6 +257,6 @@ export function ResultSheetView(props: ResultSheetViewProps) {
           <img className={s.sheetPhoto} src={props.photoUrl} alt={t("o16.photo.alt")} />
         ) : null}
       </Sheet>
-    </AppShell>
+    </ObserverShell>
   );
 }

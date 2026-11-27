@@ -54,8 +54,8 @@
   --display-tracking: -0.02em;
 
   /* ---------- Type scale: weight size/line-height family ---------- */
-  --t-display: 800 2.5rem/1.1 var(--font-display);
-  --t-title: 800 2rem/1.1 var(--font-display);
+  --t-display: 700 2.5rem/1.1 var(--font-display);
+  --t-title: 700 2rem/1.1 var(--font-display);
   --t-headline: 700 1.5rem/1.25 var(--font-display);
   --t-heading: 700 1.25rem/1.3 var(--font-display);
   --t-eyebrow: 700 0.8125rem/1.2 var(--font);
@@ -65,6 +65,8 @@
   --t-small: 400 0.875rem/1.4 var(--font);
   --t-label: 600 1rem/1.25 var(--font);
   --t-label-tracking: 0.02em;
+  --t-nav: 600 0.9375rem/1.2 var(--font);
+  --t-count: 600 0.75rem/1 var(--font);
 
   /* Body text for the current audience (observer and citizen default) */
   --t-base: var(--t-body-lg);
@@ -122,6 +124,7 @@
   --focus-ring: #0e0d0b;
   --focus-gap: #faf8f3;
   --shadow-sheet: 0 -8px 32px rgb(14 13 11 / 0.18);
+  --shadow-pop: 0 8px 24px rgb(14 13 11 / 0.12);
   --shadow-raised: 0 8px 24px rgb(14 13 11 / 0.14);
   --scrim: rgb(14 13 11 / 0.4);
 
@@ -143,9 +146,9 @@
   --measure: 34rem;
 
   /* ---------- Shape and elevation ---------- */
-  --radius-sm: 10px;
-  --radius: 14px;
-  --radius-lg: 18px;
+  --radius-sm: 6px;
+  --radius: 10px;
+  --radius-lg: 16px;
   --radius-xl: 22px;
   --radius-pill: 999px;
 
@@ -242,7 +245,6 @@
     --paper-2: #1b1a17;
     --paper-raised: #1b1a17;
     --paper-sunk: #0c0b0a;
-  --paper-sunk: #0c0b0a;
     --rule: #312e28;
     --rule-control: #7d776c;
     --on-ink: #121110;

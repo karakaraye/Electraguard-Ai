@@ -2,16 +2,18 @@
 
 /* O-14 Report detail: status, formal question, what was reported, attachments, conversation, withdraw. */
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { Category, MessageKind, QuestionState, ReportKind } from "../../../../lib/api/types";
 import { useLocale, useT } from "../../../../lib/i18n/client";
-import { AppShell, Banner, Button, ButtonLink, Sheet, StatusBadge, TextArea, UploadItem, UploadList, type ReportStatus, type StatusTone, type UploadState } from "../../../../ui";
-import { formatWatDateTime } from "../../../../ui/format";
-import { categoryPictograms, CheckIcon, ClockIcon, ImageIcon, PlaceIcon, ShieldCheckIcon } from "../../../../ui/icons";
+import { Banner, Button, ButtonLink, Sheet, StatusBadge, TextArea, UploadItem, type ReportStatus, type StatusTone, type UploadState } from "../../../../ui";
+import { ObserverShell } from "../_components/ObserverShell";
+import { formatBytes, formatWatDateTime, formatWatShort } from "../../../../ui/format";
+import { ArrowRightIcon, categoryPictograms, ChevronRightIcon, CopyIcon, FileIcon, ImageIcon, PlusIcon, ShieldCheckIcon } from "../../../../ui/icons";
 import { categoryMeta } from "../_lib/categories";
 import { ChecklistPictogram, SheetPictogram } from "../_components/pictograms";
 import styles from "../_components/observer.module.css";
 import s from "../_components/screens.module.css";
+import p3 from "../_components/p3.module.css";
 
 export type DetailMessage = {
   id: string;
@@ -118,6 +120,17 @@ export function ReportDetailView(props: ReportDetailViewProps) {
   const addInput = useRef<HTMLInputElement>(null);
   const attachInput = useRef<HTMLInputElement>(null);
   const { offline, load, source, receiptCode, status, kind, category } = props;
+  const [copied, setCopied] = useState(false);
+  const copyCode = async () => {
+    if (!receiptCode) return;
+    try {
+      await navigator.clipboard.writeText(receiptCode);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 3000);
+    } catch {
+      /* The code stays on screen to read out or write down. */
+    }
+  };
   // Opened from Messages (#o14-conversation): scroll to the thread once it has loaded.
   useEffect(() => {
     if (props.conversation === "ok" && window.location.hash === "#o14-conversation") {
@@ -130,7 +143,9 @@ export function ReportDetailView(props: ReportDetailViewProps) {
   const title = label;
 
   const shell = (content: React.ReactNode, actions?: React.ReactNode) => (
-    <AppShell
+    <ObserverShell
+      tab="reports"
+      title={t("ui.nav.report")}
       onBack={props.onBack}
       offline={offline}
       banner={props.banner ? <Banner tone={props.banner.tone} title={t(props.banner.key)} data-testid="o14-banner" /> : undefined}
@@ -138,7 +153,7 @@ export function ReportDetailView(props: ReportDetailViewProps) {
       data-testid="o14"
     >
       {content}
-    </AppShell>
+    </ObserverShell>
   );
 
   if (load === "loading") {
@@ -185,7 +200,6 @@ export function ReportDetailView(props: ReportDetailViewProps) {
     );
   }
 
-  const questionOpen = Boolean(props.question) && props.replyState !== "sent";
   /* Received · Being reviewed · Question for you · Closed. The question step only appears if one was ever asked. */
   const askedEver = status === "question" || Boolean(props.question) || props.messages.some((message) => message.kind === "formal_question");
   const journeySteps: Array<{ key: "received" | "inReview" | "question" | "closed"; status: ReportStatus }> = [
@@ -197,21 +211,19 @@ export function ReportDetailView(props: ReportDetailViewProps) {
   const current = journeySteps.findIndex((step) => step.status === status);
   const journey =
     source === "server" && current >= 0 ? (
-      <ol className={s.journey} aria-label={t("common.status.label")} data-testid="o14-journey">
+      <ol className={p3.timeline} aria-label={t("common.status.label")} data-testid="o14-journey">
         {journeySteps.map((step, index) => {
           const state = index < current || status === "closed" ? "done" : index === current ? "current" : "later";
           return (
-            <li key={step.key} className={s.journeyStep} data-state={state} aria-current={state === "current" ? "step" : undefined}>
-              <span className={s.journeyDot} aria-hidden="true">
-                {state === "done" ? <CheckIcon size={14} strokeWidth={3} /> : null}
-              </span>
-              <span className={s.journeyLabel}>{t(`common.status.${step.key}`)}</span>
+            <li key={step.key} className={p3.timelineStep} data-state={state} data-step={step.key} aria-current={state === "current" ? "step" : undefined}>
+              <span className={p3.timelineBar} aria-hidden="true" />
+              <span className={p3.timelineLabel}>{t(`common.statusShort.${step.key}`)}</span>
             </li>
           );
         })}
       </ol>
     ) : (
-      <StatusBadge status={status} size="lg" />
+      <StatusBadge status={status} size="lg" morph />
     );
   const outcomeWhy = props.outcomeKey ? `o14.outcomeWhy.${props.outcomeKey.split(".").pop()}` : null;
   const statusBlock = (
@@ -237,17 +249,13 @@ export function ReportDetailView(props: ReportDetailViewProps) {
   );
 
   const questionBlock = props.question ? (
-    <section className={s.question} aria-labelledby="o14-question" data-testid="o14-question">
-      <h2 className={s.questionHead} id="o14-question" tabIndex={-1}>
+    <section className={p3.qcard} aria-labelledby="o14-question" data-testid="o14-question">
+      <h2 className={p3.qHead} id="o14-question" tabIndex={-1}>
         <Diamond />
-        {t("o14.question.title")}
+        <span>{t("o14.question.title")}</span>
+        {props.question.body ? <span className={p3.qAsked}>{t("o14.question.asked", { time: when(props.question.askedAt, locale) })}</span> : null}
       </h2>
-      {props.question.body ? (
-        <>
-          <p className={s.questionBody}>{props.question.body}</p>
-          <p className={styles.meta}>{t("o14.question.asked", { time: when(props.question.askedAt, locale) })}</p>
-        </>
-      ) : null}
+      {props.question.body ? <p className={p3.qBody}>{props.question.body}</p> : null}
       {props.replyState === "sent" ? (
         <p className={styles.tag} role="status" data-testid="o14-reply-sent">
           {t("o14.question.sent")}
@@ -259,7 +267,7 @@ export function ReportDetailView(props: ReportDetailViewProps) {
             value={props.reply}
             onChange={(event) => props.onReply(event.target.value)}
             maxLength={2000}
-            rows={4}
+            rows={2}
             error={props.replyError ?? undefined}
             data-testid="o14-reply"
           />
@@ -305,42 +313,50 @@ export function ReportDetailView(props: ReportDetailViewProps) {
     </section>
   );
 
+  // One add control on the screen: the composer's "+" when there is a composer, else the button under the files.
+  const hasComposer = source === "server" && props.canMessage && !props.writesRefused;
   const attachments =
-    props.attachments.length || props.canAddMedia ? (
+    props.attachments.length || (props.canAddMedia && !hasComposer) ? (
       <section aria-labelledby="o14-attachments" className={styles.tight}>
         <h2 className={styles.sectionTitle} id="o14-attachments">
           {t("o14.attachments")}
         </h2>
         {props.attachmentBlocked ? <Banner tone="attn" title={t("o12.upload.cannotRemove")} /> : null}
         {props.attachments.length ? (
-          <UploadList label={t("o14.attachments")}>
-            {props.attachments.map((item) => (
-              <UploadItem
-                key={item.id}
-                kind={item.kind === "audio" ? "voice" : item.kind}
-                name={item.name}
-                sizeBytes={item.sizeBytes}
-                state={item.state}
-                progress={item.progress}
-                reason={item.reasonKey ? t(item.reasonKey) : undefined}
-                onRemove={item.removable ? () => props.onRemoveAttachment(item.id) : undefined}
-                data-testid="o14-attachment"
-              />
-            ))}
-          </UploadList>
-        ) : null}
-        {props.attachments.some((item) => item.viewUrl) ? (
-          <div className={styles.itemActions}>
+          <ul className={p3.files} aria-label={t("o14.attachments")}>
             {props.attachments.map((item, index) =>
-              item.viewUrl ? (
-                <a key={item.id} className={s.textLink} href={item.viewUrl} target="_blank" rel="noopener" data-testid="o14-view">
-                  {t("o14.view", { kind: item.kind, n: index + 1 })}
-                </a>
-              ) : null,
+              item.viewUrl && item.state === "saved" ? (
+                <li key={item.id}>
+                  <a className={p3.fileRow} href={item.viewUrl} target="_blank" rel="noopener" data-testid="o14-view">
+                    <span className={p3.fileIcon} aria-hidden="true">
+                      <FileIcon size={20} />
+                    </span>
+                    <span className={p3.fileText}>
+                      <span className={p3.fileName}>{item.name}</span>
+                      <span className={p3.fileSub}>
+                        {t("o14.view", { kind: item.kind, n: index + 1 })}, <span className="eg-tnum">{formatBytes(item.sizeBytes, locale)}</span>
+                      </span>
+                    </span>
+                    <ChevronRightIcon className={p3.fileChevron} aria-hidden="true" />
+                  </a>
+                </li>
+              ) : (
+                <UploadItem
+                  key={item.id}
+                  kind={item.kind === "audio" ? "voice" : item.kind}
+                  name={item.name}
+                  sizeBytes={item.sizeBytes}
+                  state={item.state}
+                  progress={item.progress}
+                  reason={item.reasonKey ? t(item.reasonKey) : undefined}
+                  onRemove={item.removable ? () => props.onRemoveAttachment(item.id) : undefined}
+                  data-testid="o14-attachment"
+                />
+              ),
             )}
-          </div>
+          </ul>
         ) : null}
-        {props.canAddMedia ? (
+        {props.canAddMedia && !hasComposer ? (
           <div>
             <Button variant="secondary" icon={<ImageIcon />} loading={props.adding} disabled={offline} onClick={() => addInput.current?.click()} data-testid="o14-add">
               {t("o14.add")}
@@ -380,31 +396,38 @@ export function ReportDetailView(props: ReportDetailViewProps) {
           <p className={styles.meta}>{t("o14.conversation.empty")}</p>
         ) : null}
         {props.messages.length ? (
-          <ol className={s.thread} aria-label={t("o14.conversation.title")} data-testid="o14-thread">
+          <ol className={p3.thread} aria-label={t("o14.conversation.title")} data-testid="o14-thread">
             {props.messages.map((message) => (
               <MessageItem key={message.id} message={message} />
             ))}
           </ol>
         ) : null}
-        {props.canMessage && !props.writesRefused ? (
-          <div className={s.composer}>
-            <TextArea
-              label={t("o14.conversation.label")}
-              value={props.draft}
-              onChange={(event) => props.onDraft(event.target.value)}
-              maxLength={2000}
-              rows={3}
-              error={props.messageError ?? undefined}
-              data-testid="o14-message"
-            />
-            {props.attachedName ? <p className={styles.tag}>{t("o14.conversation.attached", { name: props.attachedName })}</p> : null}
-            <div className={s.composerActions}>
-              <Button variant="quiet" icon={<ImageIcon />} loading={props.attaching} disabled={offline} onClick={() => attachInput.current?.click()} data-testid="o14-attach">
-                {t("o14.conversation.attach")}
-              </Button>
-              <Button variant={questionOpen ? "secondary" : "primary"} loading={props.messageState === "sending"} loadingLabel={t("o14.question.sending")} onClick={props.onSendMessage} data-testid="o14-message-send">
-                {t("o14.conversation.send")}
-              </Button>
+        {hasComposer ? (
+          <div className={p3.composer}>
+            {props.attachedName ? <p className={p3.composerNote}>{t("o14.conversation.attached", { name: props.attachedName })}</p> : null}
+            {props.messageError ? (
+              <p className={p3.composerError} role="alert">
+                {props.messageError}
+              </p>
+            ) : null}
+            <div className={p3.composerRow}>
+              <button type="button" className={p3.composerAdd} disabled={offline || props.attaching} onClick={() => attachInput.current?.click()} aria-label={t("o14.conversation.attach")} data-testid="o14-attach">
+                <PlusIcon size={22} />
+              </button>
+              <textarea
+                className={p3.composerField}
+                value={props.draft}
+                onChange={(event) => props.onDraft(event.target.value)}
+                maxLength={2000}
+                rows={1}
+                placeholder={t("o14.conversation.label")}
+                aria-label={t("o14.conversation.label")}
+                aria-invalid={props.messageError ? true : undefined}
+                data-testid="o14-message"
+              />
+              <button type="button" className={p3.composerSend} disabled={props.messageState === "sending"} onClick={props.onSendMessage} aria-label={t("o14.conversation.send")} data-testid="o14-message-send">
+                <ArrowRightIcon size={22} />
+              </button>
             </div>
             <input
               ref={attachInput}
@@ -448,33 +471,33 @@ export function ReportDetailView(props: ReportDetailViewProps) {
     <>
       {shell(
         <div className={`${styles.screen} ${styles.wide}`}>
-          <div className={s.detailHead}>
-            <h1 className={`${styles.title} ${styles.valueRow}`}>
-              <Pictogram size={36} aria-hidden="true" />
-              <span>{title}</span>
-            </h1>
-            <p className={s.detailMeta}>
-              {props.place ? (
-                <span className={styles.valueRow}>
-                  <PlaceIcon size={18} aria-hidden="true" />
-                  {props.place}
-                </span>
-              ) : null}
-              {props.observedAt !== null ? (
-                <span className={`${styles.valueRow} eg-tnum`}>
-                  <ClockIcon size={18} aria-hidden="true" />
-                  {t("o14.observed", { time: when(props.observedAt, locale) })}
-                </span>
-              ) : null}
-              <span className="eg-tnum" data-testid="o14-code">
-                {receiptCode ?? t("o14.notSentYet")}
-              </span>
+          <div className={p3.detailHead}>
+            <span className={p3.headDisc} aria-hidden="true">
+              <Pictogram size={28} />
+            </span>
+            <h1 className={p3.h1}>{title}</h1>
+            <p className={p3.headMeta}>
+              {props.observedAt !== null ? <span className="eg-tnum">{t("o14.observed", { time: formatWatShort(props.observedAt, locale) })}</span> : null}
+              {props.place ? <span>{props.place}</span> : null}
             </p>
+            <div className={p3.refRow}>
+              <div className={p3.refText}>
+                <span className={p3.refLabel}>{t("o12.codeLabel")}</span>
+                <span className={`${p3.refCode} eg-tnum`} data-testid="o14-code">
+                  {receiptCode ?? t("o14.notSentYet")}
+                </span>
+              </div>
+              {receiptCode ? (
+                <Button variant="secondary" className={p3.smallBtn} icon={<CopyIcon size={18} />} onClick={copyCode} data-testid="o14-copy">
+                  {copied ? t("o12.copied") : t("o14.copyShort")}
+                </Button>
+              ) : null}
+            </div>
           </div>
           <div className={s.detail}>
             <div className={s.column}>
-              {questionBlock}
               {statusBlock}
+              {questionBlock}
               {details}
               {attachments}
             </div>
@@ -555,39 +578,37 @@ function MessageItem({ message }: { message: DetailMessage }) {
   const at = formatWatDateTime(message.at, locale);
   if (message.kind === "system") {
     return (
-      <li className={s.system}>
+      <li className={p3.sysLine}>
         {message.body} · <span className="eg-tnum">{at}</span>
       </li>
     );
   }
-  if (message.kind === "formal_question") {
-    return (
-      <li className={s.formal}>
-        <span className={s.formalTag}>
-          <Diamond />
-          {t("o14.conversation.formalQuestion")}
-          {message.questionState === "answered" ? ` · ${t("o14.conversation.answered")}` : message.questionState === "closed_unanswered" ? ` · ${t("o14.conversation.closedUnanswered")}` : ""}
-        </span>
-        <p className={s.bubbleText}>{message.body}</p>
-        <span className={s.bubbleMeta}>
-          <span className={s.bubbleAuthor}>{t("o14.conversation.reviewer")}</span>
-          <span>{at}</span>
-        </span>
-      </li>
-    );
-  }
+  const formal = message.kind === "formal_question";
+  const mine = !formal && message.mine;
+  const who = mine ? t("o14.conversation.you") : t("o14.conversation.reviewer");
+  const state =
+    formal && message.questionState === "answered"
+      ? ` · ${t("o14.conversation.answered")}`
+      : formal && message.questionState === "closed_unanswered"
+        ? ` · ${t("o14.conversation.closedUnanswered")}`
+        : "";
   return (
-    <li className={`${s.bubble} ${message.mine ? s.bubbleMine : ""}`}>
-      <p className={s.bubbleText}>{message.body}</p>
-      {message.attachmentUrl ? (
-        <a className={s.textLink} href={message.attachmentUrl} target="_blank" rel="noopener">
-          {t("o14.conversation.openAttachment")}
-        </a>
-      ) : null}
-      <span className={s.bubbleMeta}>
-        <span className={s.bubbleAuthor}>{message.mine ? t("o14.conversation.you") : t("o14.conversation.reviewer")}</span>
-        <span>{message.queued ? t("o14.conversation.queued") : at}</span>
-      </span>
+    <li className={p3.msgItem} data-mine={mine || undefined}>
+      <div className={p3.bub} data-kind={formal ? "question" : mine ? "mine" : "them"}>
+        <span className={p3.bubBy}>
+          {formal ? <Diamond /> : null}
+          {who}
+          {formal ? ` · ${t("o14.conversation.formalQuestion")}${state}` : ""}
+        </span>
+        <p className={p3.bubText}>{message.body}</p>
+        {message.attachmentUrl ? (
+          <a className={p3.bubFile} href={message.attachmentUrl} target="_blank" rel="noopener">
+            <ImageIcon size={18} aria-hidden="true" />
+            {t("o14.conversation.openAttachment")}
+          </a>
+        ) : null}
+      </div>
+      <span className={`${p3.bubTime} eg-tnum`}>{message.queued ? t("o14.conversation.queued") : at}</span>
     </li>
   );
 }

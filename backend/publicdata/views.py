@@ -275,9 +275,8 @@ def observer_area_today(request):
     if not lga_code:
         return error(400, "lga_required", "Specify an LGA or file a report first.")
 
-    from reference.models import resolve_place
-    place = resolve_place(lga_code) or {}
-    lga_name = place.get("lga_name") or lga_code
+    from reference.models import resolve_lga
+    lga_name = (resolve_lga(lga_code) or {}).get("lga_name") or lga_code
 
     cutoff = timezone.now() - timezone.timedelta(minutes=60)
     reports = Report.objects.filter(

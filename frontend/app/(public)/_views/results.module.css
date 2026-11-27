@@ -1,6 +1,6 @@
 .page {
   display: grid;
-  gap: var(--s-7);
+  gap: var(--s-6);
   padding-top: var(--s-6);
 }
 
@@ -311,8 +311,14 @@
 }
 
 .notice {
-  border-color: var(--sun-strong);
-  background: var(--sun-tint);
+  max-width: 40rem;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  font: var(--t-label);
+  font-size: 0.9375rem;
+  color: var(--ink);
 }
 
 /* Phones: give the label column room so words never break mid-word. */

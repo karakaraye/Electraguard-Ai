@@ -1,11 +1,12 @@
 "use client";
 
-import { useId, useState } from "react";
+import { useId, useLayoutEffect, useRef, useState } from "react";
 import type { Cell, PublicResultsResponse, SnapshotRecord, SnapshotStatus } from "../../../../lib/api/types";
 import { useLocale, useT } from "../../../../lib/i18n/client";
-import { Banner, Button, EmptyState, Field, Sheet, Skeleton, StatusBadge, useNow, type StatusTone } from "../../../../ui";
+import { Banner, Button, EmptyState, Field, Sheet, Skeleton, StatusBadge, Switch, useNow, type StatusTone } from "../../../../ui";
 import { formatWatDateTime } from "../../../../ui/format";
 import { RetryIcon } from "../../../../ui/icons";
+import { animate } from "../../../../ui/motion";
 import { ResultsView } from "../../../(public)/_views/ResultsView";
 import styles from "./PublishView.module.css";
 
@@ -66,26 +67,6 @@ export function fingerprint(hash: string): string {
   return (hash.slice(0, 16).match(/.{1,4}/g) ?? []).join(" ");
 }
 
-function Switch({ checked, onToggle, labelledBy, busy }: { checked: boolean; onToggle: () => void; labelledBy: string; busy?: boolean }) {
-  return (
-    <button
-      type="button"
-      role="switch"
-      aria-checked={checked}
-      aria-labelledby={labelledBy}
-      aria-busy={busy || undefined}
-      className={styles.switch}
-      onClick={onToggle}
-      disabled={busy}
-      data-testid="s07-hourly-switch"
-    >
-      <span className={styles.track} aria-hidden="true">
-        <span className={styles.thumb} />
-      </span>
-    </button>
-  );
-}
-
 /** S-07 publish snapshots: preview exactly what the public page will show, then approve it. */
 export function PublishView({
   snapshots,
@@ -122,6 +103,34 @@ export function PublishView({
   const [scheduling, setScheduling] = useState(false);
 
   const selected = snapshots.find((s) => s.id === selectedId) ?? snapshots[0] ?? null;
+
+  // A new release arriving at the top of the history slides in from 8 px above while the older rows
+  // step down one row (FLIP). Anything else that changes the list (paging, first load) is instant.
+  const historyBody = useRef<HTMLTableSectionElement>(null);
+  const rowTops = useRef<Map<string, number>>(new Map());
+  useLayoutEffect(() => {
+    const rows = Array.from(historyBody.current?.querySelectorAll<HTMLElement>("tr[data-row-key]") ?? []);
+    const next = new Map<string, number>();
+    for (const row of rows) next.set(row.dataset.rowKey ?? "", row.getBoundingClientRect().top + window.scrollY);
+    const before = rowTops.current;
+    const head = rows[0];
+    if (before.size > 0 && head && !before.has(head.dataset.rowKey ?? "")) {
+      animate(
+        head,
+        [
+          { opacity: 0, transform: "translateY(-8px)" },
+          { opacity: 1, transform: "translateY(0)" },
+        ],
+        { duration: 200, easing: "out" },
+      );
+      for (const row of rows.slice(1)) {
+        const key = row.dataset.rowKey ?? "";
+        const dy = (before.get(key) ?? next.get(key) ?? 0) - (next.get(key) ?? 0);
+        if (Math.abs(dy) > 1) animate(row, [{ transform: `translateY(${dy}px)` }, { transform: "translateY(0)" }], { duration: 200, easing: "out" });
+      }
+    }
+    rowTops.current = next;
+  });
 
   /* ---- Cutoff checks, derived on every render ---- */
   const instant = cutoff ? watInstant(cutoff) : null;
@@ -237,13 +246,14 @@ export function PublishView({
             </>
           ) : (
             <div className={styles.switchRow}>
-              <StatusBadge tone={hourly ? "ok" : "wait"} label={hourly ? t("s07.scheduleOn") : t("s07.scheduleOff")} />
               <Switch
                 checked={hourly}
                 labelledBy={hourlyLabelId}
                 busy={scheduling}
+                data-testid="s07-hourly-switch"
                 onToggle={() => (hourly ? void setHourly(false) : setDialog("schedule"))}
               />
+              <StatusBadge tone={hourly ? "ok" : "wait"} label={hourly ? t("s07.scheduleOn") : t("s07.scheduleOff")} />
             </div>
           )}
         </section>
@@ -292,11 +302,11 @@ export function PublishView({
                     <th scope="col">{t("s07.columns.published")}</th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody ref={historyBody}>
                   {snapshots.map((snap) => {
                     const isSelected = snap.id === selected?.id;
                     return (
-                      <tr key={snap.id} data-selected={isSelected ? "" : undefined}>
+                      <tr key={snap.id} data-row-key={snap.id} data-selected={isSelected ? "" : undefined}>
                         <th scope="row" data-label={t("s07.columns.cutoff")}>
                           <button
                             type="button"
@@ -447,7 +457,8 @@ function Detail({ record, onApprove, onDiscard }: { record: SnapshotRecord; onAp
         <div className={styles.detailText}>
           <div className={styles.titleRow}>
             <h2 id={titleId} className={styles.cardTitle}>{t("s07.previewTitle")}</h2>
-            <StatusBadge tone={STATUS_TONE[record.status]} label={t(`s07.status.${record.status}`)} />
+            {/* Keyed by release: when this release goes from draft to published the chip morphs in place. */}
+            <StatusBadge key={record.id} morph tone={STATUS_TONE[record.status]} label={t(`s07.status.${record.status}`)} />
           </div>
           <p className={styles.sub}>{t("s07.detail.by", { name: record.created_by, cutoff: formatWatDateTime(record.cutoff, locale) })}</p>
           <p className={styles.hint}>{statusNote}</p>
@@ -461,7 +472,7 @@ function Detail({ record, onApprove, onDiscard }: { record: SnapshotRecord; onAp
       </header>
 
       <div className={styles.split}>
-        <aside className={styles.excluded} aria-labelledby={`${titleId}-left`} data-testid="s07-exclusions">
+        <section className={styles.excluded} aria-labelledby={`${titleId}-left`} data-testid="s07-exclusions">
           <h3 id={`${titleId}-left`} className={styles.miniTitle}>{t("s07.exclusions.title")}</h3>
           <p className={styles.hint}>{t("s07.exclusions.note")}</p>
           <ul className={styles.leftList}>
@@ -471,7 +482,7 @@ function Detail({ record, onApprove, onDiscard }: { record: SnapshotRecord; onAp
               </li>
             ))}
           </ul>
-        </aside>
+        </section>
 
         <div className={styles.previewCol}>
           <div className={styles.previewCaption}>

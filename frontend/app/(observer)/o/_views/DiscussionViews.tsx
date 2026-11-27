@@ -5,7 +5,9 @@
 import Link from "next/link";
 import type { DiscussionSummary, FlagReason, Post } from "../../../../lib/api/types";
 import { useLocale, useT } from "../../../../lib/i18n/client";
-import { AppShell, Banner, Button, EmptyState, Sheet, TextArea, SunRings } from "../../../../ui";
+import { Banner, Button, Sheet, TextArea } from "../../../../ui";
+import { ObserverEmpty } from "../_components/ObserverEmpty";
+import { ObserverShell } from "../_components/ObserverShell";
 import { formatWatDateTime } from "../../../../ui/format";
 import { ChevronRightIcon, InfoIcon, UsersIcon } from "../../../../ui/icons";
 import styles from "../_components/observer.module.css";
@@ -33,7 +35,9 @@ export function DiscussionListView({ offline, load, items, busy, notice, onAnswe
   const invited = items.filter((item) => item.membership === "invited");
   const joined = items.filter((item) => item.membership === "member");
   return (
-    <AppShell
+    <ObserverShell
+      tab="other"
+      title={t("o18.title")}
       onBack={onBack}
       offline={offline}
       banner={
@@ -53,17 +57,9 @@ export function DiscussionListView({ offline, load, items, busy, notice, onAnswe
         {load === "loading" ? <p className={styles.meta}>{t("o18.loading")}</p> : null}
         {load === "offline" && !items.length ? <p className={styles.note}>{t("o18.offline")}</p> : null}
         {load === "ok" && !items.length ? (
-          <EmptyState
-            title={t("o18.empty")}
-            art={
-              <SunRings size={128}>
-                <span className={s.emptyDisc}>
-                  <UsersIcon size={30} aria-hidden="true" />
-                </span>
-              </SunRings>
-            }
-            data-testid="o18-empty"
-          />
+          <ObserverEmpty art="discussionsEmpty" title={t("o18.emptyTitle")} data-testid="o18-empty">
+            {t("o18.emptyBody")}
+          </ObserverEmpty>
         ) : null}
         {invited.length ? (
           <section className={styles.stack} aria-labelledby="o18-invitations">
@@ -124,7 +120,7 @@ export function DiscussionListView({ offline, load, items, busy, notice, onAnswe
           </section>
         ) : null}
       </div>
-    </AppShell>
+    </ObserverShell>
   );
 }
 
@@ -175,7 +171,7 @@ export function ThreadView(props: ThreadViewProps) {
 
   if (load === "removed" || load === "loading" || (load !== "ok" && !props.title)) {
     return (
-      <AppShell onBack={props.onBack} offline={offline} data-testid="o18-thread">
+      <ObserverShell tab="other" title={t("o18.title")} onBack={props.onBack} offline={offline} data-testid="o18-thread">
         <div className={styles.screen}>
           <h1 className={styles.title}>{load === "removed" ? t("o18.thread.removed") : load === "loading" ? t("o18.loading") : t("o18.loadError")}</h1>
           {load === "error" || load === "offline" ? (
@@ -186,13 +182,14 @@ export function ThreadView(props: ThreadViewProps) {
             </div>
           ) : null}
         </div>
-      </AppShell>
+      </ObserverShell>
     );
   }
 
   const canPost = !closed && !invited;
   return (
-    <AppShell
+    <ObserverShell
+      title={t("o18.title")}
       onBack={props.onBack}
       offline={offline}
       banner={closed ? <Banner tone="wait" title={t("o18.closed")} critical data-testid="o18-closed" /> : props.flagged ? <Banner tone="ok" title={t("o18.thread.flagged")} /> : undefined}
@@ -312,6 +309,6 @@ export function ThreadView(props: ThreadViewProps) {
           </>
         }
       />
-    </AppShell>
+    </ObserverShell>
   );
 }

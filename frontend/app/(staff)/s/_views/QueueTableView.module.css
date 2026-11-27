@@ -1,4 +1,4 @@
-/* S-02 review queue. Staff type is one step smaller; colour only for status. */
+/* S-02 review queue, after the staff-queue-desktop mockup. Colour only for status. */
 
 .page {
   display: grid;
@@ -6,12 +6,82 @@
   min-width: 0;
 }
 
+/* ---------- Status tabs ---------- */
+
 .tabs {
-  max-width: 44rem;
+  display: flex;
+  gap: var(--s-5);
+  min-height: 44px;
   overflow-x: auto;
+  scrollbar-width: none;
+  box-shadow: inset 0 -1px 0 var(--rule);
 }
 
-/* ---------- Filter chips ---------- */
+.tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.tab {
+  position: relative;
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: var(--s-2);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--ink-2);
+  font: 600 0.875rem/1 var(--font);
+  cursor: pointer;
+}
+
+.tab[aria-selected="true"] {
+  color: var(--ink);
+}
+
+/* The 24 px ink bar grows from the middle: transform only. */
+.tab::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 24px;
+  height: 2px;
+  margin-left: -12px;
+  border-radius: 1px;
+  background: var(--ink);
+  transform: scaleX(0);
+  transition: transform var(--dur-step) var(--ease-out);
+}
+
+.tab[aria-selected="true"]::after {
+  transform: scaleX(1);
+}
+
+.tab:focus-visible,
+.control:focus-visible,
+.sortButton:focus-visible,
+.clear:focus-visible,
+.token button:focus-visible,
+.linkButton:focus-visible,
+.viewApply:focus-visible,
+.viewRemove:focus-visible,
+.previewClose:focus-visible,
+.newPill:focus-visible,
+.open:focus-visible,
+.card:focus-visible,
+.table tbody tr:focus-visible {
+  outline: var(--focus-outline);
+  outline-offset: var(--focus-offset);
+  box-shadow: var(--focus-halo);
+}
+
+.table tbody tr:focus-visible {
+  outline-offset: -3px;
+}
+
+/* ---------- Filter row ---------- */
 
 .filters {
   display: flex;
@@ -20,131 +90,317 @@
   gap: var(--s-2) var(--s-3);
 }
 
-.chipGroup {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--s-1);
+/* Saved views: icon only on phones, so it stays on the filter row; the label shows from 560 px. */
+.viewsLabel {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
-.chip,
-.selectChip select {
-  min-height: var(--control-h);
-  padding: 0 var(--s-3);
-  border: 1px solid var(--rule-control);
-  border-radius: var(--radius-pill);
-  background: var(--paper-raised);
-  color: var(--ink);
-  font: var(--t-label);
-  font-size: 0.875rem;
-  cursor: pointer;
-  transition: background-color var(--dur-fade) ease, border-color var(--dur-fade) ease;
-}
+@media (min-width: 560px) {
+  .viewsLabel {
+    position: static;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    clip-path: none;
+  }
 
-.chip[aria-pressed="true"],
-.selectChip[data-on] select {
-  border-color: var(--ink);
-  background: var(--ink);
-  color: var(--on-ink);
-}
-
-.chip:focus-visible,
-.selectChip select:focus-visible,
-.viewChip button:focus-visible,
-.newPill:focus-visible,
-.open:focus-visible {
-  outline: var(--focus-outline);
-  outline-offset: var(--focus-offset);
-  box-shadow: var(--focus-halo);
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .chip:not([aria-pressed="true"]):hover {
-    border-color: var(--ink-2);
+  .viewsIcon {
+    display: none;
   }
 }
 
-.selectChip {
+@media (max-width: 559px) {
+  .filters {
+    flex-wrap: nowrap;
+    gap: var(--s-2);
+  }
+
+  .filters > * {
+    flex: none;
+  }
+
+  .filters .viewsRoot {
+    margin-inline-start: auto;
+  }
+}
+
+/* A hint that more tabs wait off the right edge. */
+.tabs {
+  -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent);
+  mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent);
+}
+
+@media (min-width: 900px) {
+  .tabs {
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+}
+
+.priority {
   display: inline-flex;
-}
-
-.selectChip select {
-  padding-inline-end: var(--s-5);
-  appearance: none;
-  background-image: linear-gradient(45deg, transparent 50%, currentColor 50%), linear-gradient(135deg, currentColor 50%, transparent 50%);
-  background-position: calc(100% - 15px) 50%, calc(100% - 10px) 50%;
-  background-size: 5px 5px;
-  background-repeat: no-repeat;
-}
-
-/* ---------- Saved views ---------- */
-
-.views {
-  display: flex;
-  flex-wrap: wrap;
   align-items: center;
   gap: var(--s-2);
-  padding-top: var(--s-2);
-  border-top: 1px solid var(--rule);
 }
 
-.viewsLabel {
-  color: var(--ink-2);
-  font: var(--t-label);
-  font-size: 0.875rem;
+.priorityLabel {
+  color: var(--ink-3);
+  font: 600 0.8125rem/1 var(--font);
 }
 
-.viewList {
-  display: contents;
-  list-style: none;
+/* The shared segmented control, sized for a desktop toolbar: 36 px track, 32 px options. */
+.priority [role="tablist"] {
+  padding: 2px;
+  border-radius: 10px;
+  box-shadow: inset 0 0 0 1px var(--rule);
 }
 
-.viewChip {
+.priority [role="tab"] {
+  min-height: 32px;
+  padding: 0 14px;
+  border-radius: 8px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow-wrap: normal;
+}
+
+.priority [role="tablist"] > span {
+  top: 2px;
+  bottom: 2px;
+  left: 2px;
+  width: calc((100% - 4px) / var(--count));
+  border-radius: 8px;
+  box-shadow: 0 0 0 1px var(--rule), 0 1px 2px rgb(14 13 11 / 0.06);
+}
+
+.control {
   display: inline-flex;
   align-items: center;
-  border: 1px solid var(--ink);
-  border-radius: var(--radius-pill);
-  background: var(--paper-sunk);
-}
-
-.viewChip button {
-  min-height: var(--control-h);
-  padding: 0 var(--s-2) 0 var(--s-3);
+  gap: var(--s-2);
+  height: 36px;
+  margin: 0;
+  padding: 0 var(--s-3);
   border: 0;
-  border-radius: var(--radius-pill);
-  background: transparent;
+  border-radius: 8px;
+  background: var(--paper-raised);
+  box-shadow: inset 0 0 0 1px var(--rule-control);
   color: var(--ink);
-  font: var(--t-label);
-  font-size: 0.875rem;
+  font: 600 0.875rem/1 var(--font);
+  white-space: nowrap;
   cursor: pointer;
 }
 
-.viewChip .viewRemove {
+.control[aria-expanded="true"] {
+  box-shadow: inset 0 0 0 1.5px var(--ink);
+}
+
+.viewsRoot {
+  margin-left: auto;
+}
+
+.token {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 4px 0 10px;
+  border-radius: var(--radius-sm);
+  background: var(--paper-raised);
+  box-shadow: inset 0 0 0 1px var(--rule);
+  color: var(--ink);
+  font: 500 0.8125rem/1 var(--font);
+  max-width: 100%;
+  white-space: nowrap;
+  animation: token-in var(--dur-fade) var(--ease-enter) both;
+}
+
+.token em {
+  color: var(--ink-3);
+  font-style: normal;
+}
+
+.token button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: none;
+  color: var(--ink-2);
+  cursor: pointer;
+}
+
+@keyframes token-in {
+  from {
+    opacity: 0;
+    transform: translateY(2px);
+  }
+}
+
+.clear {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--ink);
+  font: 600 0.8125rem/1 var(--font);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+/* ---------- Popover contents ---------- */
+
+.panel {
+  display: grid;
+  gap: var(--s-3);
+  min-width: 15rem;
+  padding: var(--s-2);
+}
+
+.panelField {
+  display: grid;
+  gap: var(--s-2);
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font: 600 0.8125rem/1.2 var(--font);
+  color: var(--ink-3);
+}
+
+.panelField legend {
+  padding: 0;
+  margin-bottom: var(--s-2);
+}
+
+.panelEmpty {
+  margin: 0;
+  color: var(--ink-3);
+  font: 400 0.875rem/1.4 var(--font);
+}
+
+.select,
+.viewInput {
+  height: 36px;
+  padding: 0 var(--s-3);
+  border: 1px solid var(--rule-control);
+  border-radius: 8px;
+  background: var(--paper-raised);
+  color: var(--ink);
+  font: 400 0.875rem/1 var(--font);
+}
+
+.select:focus-visible,
+.viewInput:focus-visible,
+.check input:focus-visible {
+  outline: var(--focus-outline);
+  outline-offset: 1px;
+}
+
+.check {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  min-height: 32px;
+  color: var(--ink);
+  font: 500 0.875rem/1.2 var(--font);
+  cursor: pointer;
+}
+
+.check input {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  accent-color: var(--ink);
+}
+
+.linkButton {
+  justify-self: start;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--ink);
+  font: 600 0.8125rem/1 var(--font);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.viewList {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.viewRow {
+  display: flex;
+  align-items: center;
+}
+
+.viewApply[data-on] {
+  background: var(--paper-2);
+  font-weight: 700;
+}
+
+.viewApply {
+  flex: 1;
+  min-height: 36px;
+  margin: 0;
+  padding: 0 var(--s-2);
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: none;
+  color: var(--ink);
+  font: 500 0.875rem/1.2 var(--font);
+  text-align: left;
+  cursor: pointer;
+}
+
+.viewRemove {
   display: grid;
   place-items: center;
-  width: var(--control-h);
+  width: 36px;
+  height: 36px;
+  margin: 0;
   padding: 0;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: none;
   color: var(--ink-2);
+  cursor: pointer;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .viewApply:hover,
+  .viewRemove:hover {
+    background: var(--paper-2);
+  }
 }
 
 .viewForm {
   display: flex;
   gap: var(--s-2);
+  padding-top: var(--s-2);
+  border-top: 1px solid var(--rule);
 }
 
 .viewInput {
-  min-height: var(--control-h);
-  width: 12rem;
-  padding: 0 var(--s-3);
-  border: var(--border-w) solid var(--rule-control);
-  border-radius: var(--radius);
-  background: var(--paper-raised);
-  color: var(--ink);
-  font: var(--t-body);
-}
-
-.viewInput:focus-visible {
-  outline: var(--focus-outline);
-  outline-offset: 1px;
+  flex: 1;
+  min-width: 0;
 }
 
 /* ---------- New cases pill (I-18) ---------- */
@@ -153,21 +409,28 @@
   display: flex;
   justify-content: center;
   position: sticky;
-  top: var(--s-2);
+  top: 64px;
   z-index: 2;
 }
 
 .newPill {
-  min-height: var(--control-h);
+  min-height: 36px;
   padding: 0 var(--s-4);
   border: 0;
   border-radius: var(--radius-pill);
   background: var(--ink);
   color: var(--on-ink);
-  font: var(--t-label);
-  font-size: 0.875rem;
-  box-shadow: var(--shadow-raised);
+  font: 600 0.875rem/1 var(--font);
+  box-shadow: var(--shadow-pop);
   cursor: pointer;
+  animation: pill-in var(--dur-exit) var(--ease-out) both;
+}
+
+@keyframes pill-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
 }
 
 /* ---------- Table and preview ---------- */
@@ -179,9 +442,10 @@
   min-width: 0;
 }
 
-@media (min-width: 1280px) {
+@media (min-width: 1400px) {
   .work[data-preview] {
-    grid-template-columns: minmax(0, 1fr) 19rem;
+    grid-template-columns: minmax(0, 1fr) 280px;
+    gap: var(--s-5);
   }
 }
 
@@ -191,68 +455,212 @@
   min-width: 0;
 }
 
-/* Tighter cells so every column fits inside the card, with the preview open or closed. */
-.tableCol table :is(th, td) {
-  padding-inline: var(--s-2);
-}
-
-.tableCol table :is(th, td):first-child {
-  padding-inline-start: var(--s-3);
-}
-
-.tableCol tbody tr[aria-selected="true"] > * {
-  background: var(--paper-sunk);
-}
-
-.tableCol tbody tr[aria-selected="true"] > :first-child {
-  box-shadow: inset 3px 0 0 var(--ink);
-}
-
-.loadingRows {
-  padding: var(--s-4);
-  border: 1px solid var(--rule);
-  border-radius: var(--radius-lg);
+.tableCard {
+  overflow-x: auto;
+  border-radius: 14px;
   background: var(--paper-raised);
+  box-shadow: inset 0 0 0 1px var(--rule);
+}
+
+.table {
+  width: 100%;
+  min-width: 46rem;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.colPri {
+  width: 92px;
+}
+
+.colRef {
+  width: 134px;
+}
+
+.colPlace {
+  width: 148px;
+}
+
+.colTime {
+  width: 60px;
+}
+
+.colStatus {
+  width: 170px;
+}
+
+.table th {
+  height: 40px;
+  padding: 0 12px;
+  background: var(--paper-raised);
+  box-shadow: inset 0 -1px 0 var(--rule);
+  color: var(--ink-3);
+  font: 600 0.75rem/1 var(--font);
+  text-align: left;
+  white-space: nowrap;
+}
+
+.table th[data-sorted] {
+  color: var(--ink);
+}
+
+.sortButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.table td,
+.table tbody th {
+  height: 48px;
+  padding: 0 12px;
+  box-shadow: inset 0 -1px 0 var(--rule);
+  color: var(--ink);
+  font: 400 0.875rem/1.3 var(--font);
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.table tbody tr:last-child td,
+.table tbody tr:last-child th {
+  box-shadow: none;
+}
+
+.table tbody tr {
+  position: relative;
+  cursor: pointer;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .table tbody tr:hover > * {
+    background: var(--paper-2);
+  }
+}
+
+.table tbody tr[aria-selected="true"] > * {
+  background: var(--sun-wash);
+  box-shadow: inset 0 -1px 0 var(--sun-line), inset 0 1px 0 var(--sun-line);
+}
+
+/* A case that has just arrived glows once, then settles. Opacity only. */
+.table tbody tr[data-new] > :first-child::before,
+.cards > li[data-new] .card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--sun-tint);
+  opacity: 0;
+  pointer-events: none;
+  animation: arrive 1.6s linear 1 both;
+}
+
+.table tbody tr[data-new] > :first-child {
+  position: relative;
+}
+
+@keyframes arrive {
+  0% {
+    opacity: 0;
+  }
+  12% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* Reduced motion: the glow stays still for 600 ms, then fades in 80 ms. */
+@media (prefers-reduced-motion: reduce) {
+  .table tbody tr[data-new] > :first-child::before,
+  .cards > li[data-new] .card::before {
+    animation: arrive-still 680ms linear 1 both;
+  }
+}
+
+@keyframes arrive-still {
+  0%,
+  88% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0;
+  }
 }
 
 .ref {
-  display: inline-flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--s-1) var(--s-2);
+  font-weight: 600 !important;
+  letter-spacing: 0.01em;
+}
+
+.time {
+  color: var(--ink-2) !important;
 }
 
 .simulated {
+  margin-left: var(--s-2);
   padding: 0 var(--s-1);
-  border: 1px dashed var(--rule-control);
   border-radius: 4px;
+  box-shadow: inset 0 0 0 1px var(--rule-control);
   color: var(--ink-2);
-  font: var(--t-small);
-  font-weight: 600;
+  font: 600 0.6875rem/1.4 var(--font);
+}
+
+.pri {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font: 600 0.8125rem/1 var(--font);
+}
+
+.pri[data-level="urgent"] {
+  color: var(--danger);
+}
+
+.pri[data-level="high"] {
+  color: var(--attn);
+}
+
+.pri[data-level="normal"] {
+  color: var(--ink-2);
+}
+
+.pri[data-level="low"] {
+  color: var(--ink-3);
+}
+
+.pri[data-level="low"] svg {
+  opacity: 0.7;
 }
 
 .place {
   display: grid;
+  min-width: 0;
+}
+
+.place > * {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ward {
+  font: 400 0.875rem/18px var(--font);
 }
 
 .sub {
-  color: var(--ink-2);
-  font: var(--t-small);
-}
-
-.reasons {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--s-1);
-}
-
-.reason {
-  padding: 1px var(--s-2);
-  border-radius: var(--radius-pill);
-  background: var(--paper-2);
-  color: var(--ink);
-  font: var(--t-small);
-  font-weight: 600;
+  color: var(--ink-3);
+  font: 400 0.75rem/16px var(--font);
 }
 
 .evidence {
@@ -268,9 +676,33 @@
 }
 
 .keys {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-2);
   margin: 0;
+  color: var(--ink-3);
+  font: 400 0.8125rem/1.4 var(--font);
+}
+
+.kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  margin-right: 4px;
+  padding: 0 5px;
+  border-radius: 5px;
+  background: var(--paper-raised);
+  box-shadow: inset 0 0 0 1px var(--rule), 0 1px 0 var(--rule);
   color: var(--ink-2);
-  font: var(--t-small);
+  font: 600 0.75rem/1 var(--font);
+}
+
+.shown {
+  font-variant-numeric: tabular-nums;
 }
 
 .more {
@@ -278,156 +710,207 @@
   justify-content: center;
 }
 
-.nowrap {
-  white-space: nowrap;
+.loadingRows {
+  padding: var(--s-4);
+  border-radius: 14px;
+  background: var(--paper-raised);
+  box-shadow: inset 0 0 0 1px var(--rule);
 }
 
-@media (min-width: 1280px) {
-  .preview {
-    position: sticky;
-    top: var(--s-4);
-    display: grid;
-    gap: var(--s-4);
-    padding: var(--s-5);
-    border: 1px solid var(--rule);
-    border-radius: var(--radius-lg);
-    background: var(--paper-raised);
-  }
+/* ---------- Preview panel ---------- */
+
+.preview {
+  display: grid;
+  gap: 0;
+  padding: var(--s-5);
+  border-radius: 14px;
+  background: var(--paper-raised);
+  box-shadow: inset 0 0 0 1px var(--rule);
+  position: sticky;
+  top: 72px;
 }
 
 .previewHead {
-  display: grid;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   gap: var(--s-2);
-}
-
-.previewEyebrow {
-  margin: 0;
-  color: var(--ink-2);
-  font: var(--t-label);
-  font-size: 0.8125rem;
-  letter-spacing: var(--t-label-tracking);
-  text-transform: uppercase;
 }
 
 .previewRef {
   margin: 0;
-  font: var(--t-headline);
+  font: 700 1.25rem/1.2 var(--font-display);
+  letter-spacing: 0.01em;
+  overflow-wrap: anywhere;
+}
+
+.previewClose {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 32px;
+  height: 32px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background: none;
+  color: var(--ink-2);
+  cursor: pointer;
 }
 
 .previewBadges {
   display: flex;
   flex-wrap: wrap;
   gap: var(--s-2);
+  margin-top: var(--s-3);
+}
+
+.reasons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: var(--s-3);
 }
 
 .facts {
-  display: grid;
-  gap: var(--s-2);
-  margin: 0;
+  margin: var(--s-4) 0 0;
 }
 
-.facts div {
+.facts > div {
   display: grid;
-  grid-template-columns: 7rem minmax(0, 1fr);
-  gap: var(--s-2);
-  padding-bottom: var(--s-2);
-  border-bottom: 1px solid var(--rule);
+  grid-template-columns: 72px minmax(0, 1fr);
+  gap: var(--s-3);
+  padding: var(--s-2) 0;
+  box-shadow: inset 0 1px 0 var(--rule);
+  font: 400 0.875rem/1.4 var(--font);
 }
 
 .facts dt {
-  color: var(--ink-2);
-  font: var(--t-small);
+  color: var(--ink-3);
 }
 
 .facts dd {
   margin: 0;
-  font: var(--t-body);
-  font-size: 0.9375rem;
+  overflow-wrap: anywhere;
 }
 
 .flags {
   display: grid;
-  gap: var(--s-1);
-  margin: 0;
+  gap: 6px;
+  margin: var(--s-3) 0 0;
   padding: var(--s-3);
   border-radius: var(--radius);
   background: var(--attn-bg);
-  color: var(--ink);
-  font: var(--t-small);
+  color: var(--attn);
+  font: 500 0.8125rem/1.4 var(--font);
   list-style: none;
+}
+
+.flags li {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--s-2);
+}
+
+.flags svg {
+  flex: none;
+  margin-top: 4px;
 }
 
 .open {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   justify-content: center;
-  gap: var(--s-2);
-  min-height: var(--target-min);
+  height: 40px;
+  margin-top: var(--s-4);
   border-radius: var(--radius);
   background: var(--ink);
   color: var(--on-ink);
-  font: var(--t-label);
+  font: 600 0.9375rem/1 var(--font);
   text-decoration: none;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .chip,
-  .selectChip select {
-    transition: none;
-  }
+.orPress {
+  margin: var(--s-2) 0 0;
+  color: var(--ink-3);
+  font: 400 0.75rem/1.4 var(--font);
+  text-align: center;
 }
 
-/* ---------- Phones: status dropdown and cards (read-only use) ---------- */
-
-.statusSelect {
-  display: grid;
-  gap: var(--s-1);
-  font: var(--t-label);
-}
-
-.statusSelect select {
-  min-height: var(--target-min);
-  padding: 0 var(--s-3);
-  border: var(--border-w) solid var(--rule-control);
-  border-radius: var(--radius);
-  background: var(--paper-raised);
-  color: var(--ink);
-  font: var(--t-body);
-}
+/* ---------- Phones: cards ---------- */
 
 .cards {
   display: grid;
-  gap: var(--s-2);
   margin: 0;
   padding: 0;
   list-style: none;
+  border-radius: 14px;
+  background: var(--paper-raised);
+  box-shadow: inset 0 0 0 1px var(--rule);
+  overflow: hidden;
+}
+
+.cards > li + li {
+  box-shadow: inset 0 1px 0 var(--rule);
 }
 
 .card {
+  position: relative;
   display: grid;
-  gap: var(--s-1);
+  gap: 4px;
+  min-height: 88px;
   padding: var(--s-3) var(--s-4);
-  border: 1px solid var(--rule);
-  border-radius: var(--radius);
-  background: var(--paper-raised);
   color: var(--ink);
   text-decoration: none;
-}
-
-.card:focus-visible {
-  outline: var(--focus-outline);
-  outline-offset: var(--focus-offset);
-  box-shadow: var(--focus-halo);
 }
 
 .cardTop {
   display: flex;
-  flex-wrap: wrap;
-  gap: var(--s-2);
-  margin-bottom: var(--s-1);
+  align-items: center;
+  gap: var(--s-3);
 }
 
 .cardRef {
-  font: var(--t-label);
-  font-size: 1.0625rem;
+  font: 600 0.8125rem/1 var(--font);
+}
+
+.cardTime {
+  margin-left: auto;
+  color: var(--ink-2);
+  font: 400 0.8125rem/1 var(--font);
+}
+
+.cardTitle {
+  font: 600 1.0625rem/1.3 var(--font);
+}
+
+.cardBottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-2);
+}
+
+.cardPlace {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--ink-2);
+  font: 400 0.875rem/1.3 var(--font);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tab::after {
+    transition: none;
+  }
+
+  .table tbody tr[data-new] > :first-child::before,
+  .cards > li[data-new] .card::before,
+  .newPill,
+  .token {
+    animation: none;
+  }
 }

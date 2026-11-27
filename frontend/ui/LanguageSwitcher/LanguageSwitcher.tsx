@@ -13,6 +13,8 @@ export type LanguageSwitcherProps = {
   onChanged?: (locale: Locale) => void;
   /** Render the legend as the screen's <h1> (first-open screen). */
   asHeading?: boolean;
+  /** Compact only: keep the label for screen readers but do not draw it (the control sits in a bar). */
+  hideLabel?: boolean;
   "data-testid"?: string;
 };
 
@@ -20,7 +22,7 @@ export type LanguageSwitcherProps = {
  * Each language in its own name, marked with its own lang attribute so screen
  * readers pronounce it correctly. The choice is stored on this device.
  */
-export function LanguageSwitcher({ variant = "list", onChanged, asHeading, "data-testid": testId = "language-switcher" }: LanguageSwitcherProps) {
+export function LanguageSwitcher({ variant = "list", onChanged, asHeading, hideLabel, "data-testid": testId = "language-switcher" }: LanguageSwitcherProps) {
   const t = useT();
   const id = useId();
   const { locale, setLocale, loading } = useLocale();
@@ -33,7 +35,7 @@ export function LanguageSwitcher({ variant = "list", onChanged, asHeading, "data
   if (variant === "compact") {
     return (
       <div className={styles.compact} data-testid={testId}>
-        <label className={styles.compactLabel} htmlFor={`${id}-select`}>
+        <label className={`${styles.compactLabel} ${hideLabel ? styles.labelHidden : ""}`} htmlFor={`${id}-select`}>
           <LanguageIcon size={20} />
           <span>{t("ui.language.label")}</span>
         </label>

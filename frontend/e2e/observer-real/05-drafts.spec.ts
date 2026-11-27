@@ -49,7 +49,8 @@ test("draft: reload and Back keep every value, one draft per code, a language ch
   await reloadAt(page, "check");
   const summary = (await page.getByTestId("o11").textContent()) ?? "";
   expect(summary).toContain(TEXT);
-  expect(summary).toContain(place.split(",")[0]);
+  // The summary names the place without the "Selected:" lead-in of the Where step.
+  expect(summary).toContain(place.replace(/^Selected:\s*/, "").split(",")[0]);
 
   // Back walks every step with its value kept, then Home keeps the draft.
   await page.getByTestId("back").click();

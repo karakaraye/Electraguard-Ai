@@ -6,6 +6,68 @@
   min-width: 0;
 }
 
+/* One row that scrolls sideways when the tabs do not fit; a fade at the edge says there is more. */
+.tabs {
+  display: flex;
+  gap: var(--s-5);
+  overflow-x: auto;
+  scrollbar-width: none;
+  box-shadow: inset 0 -1px 0 var(--rule);
+  -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent);
+  mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent);
+}
+
+.tabs::-webkit-scrollbar {
+  display: none;
+}
+
+@media (min-width: 640px) {
+  .tabs {
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+}
+
+.tab {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  white-space: nowrap;
+  gap: var(--s-2);
+  min-height: 44px;
+  margin: 0;
+  padding: 0 2px;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: none;
+  color: var(--ink-2);
+  font: var(--t-label);
+  font-size: 0.9375rem;
+  cursor: pointer;
+}
+
+.tab[aria-selected="true"] {
+  border-bottom-color: var(--ink);
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.tab:hover {
+  color: var(--ink);
+}
+
+.tab:focus-visible {
+  outline: var(--focus-outline);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.panel {
+  display: grid;
+  gap: var(--s-5);
+  min-width: 0;
+}
+
 .toolbar {
   display: flex;
   flex-wrap: wrap;
@@ -58,7 +120,14 @@
 .tiles {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 9rem), 1fr));
+  grid-auto-rows: 1fr;
   gap: var(--s-3);
+}
+
+/* Every tile is the same height and the numbers sit on one line, whatever the label length. */
+.tiles > * {
+  grid-template-rows: 2.5rem auto auto;
+  align-content: start;
 }
 
 .dayLong {
@@ -83,7 +152,12 @@
   background: var(--paper-raised);
 }
 
+.tiles > .flagTile {
+  grid-template-rows: auto auto;
+}
+
 .flagTile > div {
+  grid-template-rows: 2.5rem auto auto;
   border: 0;
   border-radius: 0;
   background: transparent;

@@ -8,16 +8,15 @@
 .ticket {
   position: relative;
   border: 1px solid var(--rule);
-  border-radius: var(--radius-xl);
+  border-radius: var(--radius-lg);
   background: var(--paper-raised);
-  box-shadow: 0 0 0 6px var(--sun-wash);
 }
 
 .top {
   display: grid;
   justify-items: center;
   gap: 6px;
-  padding: 20px 16px 18px;
+  padding: 20px 16px 20px;
   text-align: center;
 }
 
@@ -30,7 +29,8 @@
 .code {
   margin: 0;
   font: var(--t-display);
-  font-size: clamp(1.75rem, 9.5vw, 2.5rem);
+  font-size: clamp(1.75rem, 8.5vw, 2rem);
+  font-weight: 700;
   font-variant-numeric: tabular-nums slashed-zero;
   letter-spacing: 0.02em;
   overflow-wrap: anywhere;
@@ -39,6 +39,45 @@
 
 .segment {
   display: inline-block;
+}
+
+.char {
+  display: inline-block;
+}
+
+/* Right after the server confirms, the characters fade in and rise 4 px, 24 ms apart, once the tick has drawn. */
+.code[data-rise] .char {
+  animation: char-in 160ms var(--ease-out) backwards;
+  animation-delay: calc(360ms + var(--i, 0) * 24ms);
+}
+
+@keyframes char-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+}
+
+/* Copy and Copied swap words with a 160 ms cross-fade. */
+.swap {
+  display: inline-flex;
+  animation: swap-in 160ms linear backwards;
+}
+
+@keyframes swap-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .code[data-rise] .char {
+    animation: swap-in 80ms linear backwards;
+    animation-delay: 0ms;
+  }
+  .swap {
+    animation-duration: 80ms;
+  }
 }
 
 .received {
@@ -54,32 +93,17 @@
   border-top: 1.5px dashed var(--rule-control);
 }
 
-.tear::before,
-.tear::after {
-  content: "";
-  position: absolute;
-  top: -12px;
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  background: var(--paper);
-}
-
-.tear::before {
-  left: -29px;
-  border-right: 1px solid var(--rule);
-}
-
-.tear::after {
-  right: -29px;
-  border-left: 1px solid var(--rule);
-}
-
 .actions {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(8.5rem, 1fr));
   gap: 10px;
   padding: 14px 16px 16px;
+}
+
+.actions button {
+  min-height: 48px;
+  padding-inline: 12px;
+  font-size: 0.9375rem;
 }
 
 .copyStatus {

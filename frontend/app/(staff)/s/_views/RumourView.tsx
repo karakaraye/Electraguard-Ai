@@ -8,6 +8,7 @@ import {
   Button,
   DataTable,
   EmptyState,
+  SegmentedControl,
   Select,
   Sheet,
   Skeleton,
@@ -47,6 +48,8 @@ const PROMPT_KEYS: Record<string, string> = {
 };
 
 export type ClaimStatusFilter = ClaimStatus | "all";
+export type ClaimSourceFilter = "all" | "public" | "desk" | "sms";
+export type ClaimSort = "recent" | "demand";
 
 export interface NewClaimFields {
   text: string;
@@ -74,6 +77,10 @@ export interface RumourViewProps {
   notice?: string | null;
   currentUserName?: string;
   statusFilter?: ClaimStatusFilter;
+  sourceFilter?: ClaimSourceFilter;
+  sort?: ClaimSort;
+  onSourceFilter?: (source: ClaimSourceFilter) => void;
+  onSort?: (sort: ClaimSort) => void;
   hasMore?: boolean;
   loadingMore?: boolean;
   onStatusFilter?: (status: ClaimStatusFilter) => void;
@@ -117,6 +124,10 @@ export function RumourView({
   notice,
   currentUserName,
   statusFilter = "all",
+  sourceFilter = "all",
+  sort = "recent",
+  onSourceFilter,
+  onSort,
   hasMore,
   loadingMore,
   onStatusFilter,
@@ -169,7 +180,7 @@ export function RumourView({
       rowHeader: true,
       render: (row) => (
         <span className={styles.claimCell}>
-          <span className={`${styles.excerpt} ${styles.truncate}`} title={row.text ?? undefined}>{excerpt(row.text, 110) || t("s06.detail.noText")}</span>
+          <span className={`${styles.excerpt} ${styles.excerptWrap}`} title={row.text ?? undefined}>{excerpt(row.text, 160) || t("s06.detail.noText")}</span>
           <span className={`${styles.sub} ${styles.truncate}`}>{`${sourceLabel(row.seen_on)} · ${t(`s06.lang.${row.language}`)}`}</span>
         </span>
       ),
@@ -179,14 +190,22 @@ export function RumourView({
       header: t("s06.columns.harm"),
       sortable: true,
       sortValue: (row) => row.harm.score,
-      render: (row) => <StatusBadge tone={levelTone(row.harm.level, "danger")} label={t(`s06.harm.${row.harm.level}`)} />,
+      render: (row) => <StatusBadge tone={levelTone(row.harm.level, "danger")} label={t(`s06.level.${row.harm.level}`)} />,
+    },
+    {
+      key: "asks",
+      header: t("notice.rumour.asks"),
+      numeric: true,
+      sortable: true,
+      sortValue: (row) => row.ask_count ?? 0,
+      render: (row) => <AskCount claim={row} />,
     },
     {
       key: "check",
       header: t("s06.columns.check"),
       sortable: true,
       sortValue: (row) => row.check_worthiness.score,
-      render: (row) => <StatusBadge tone={levelTone(row.check_worthiness.level, "info")} label={t(`s06.check.${row.check_worthiness.level}`)} />,
+      render: (row) => <StatusBadge tone={levelTone(row.check_worthiness.level, "info")} label={t(`s06.level.${row.check_worthiness.level}`)} />,
     },
     {
       key: "status",
@@ -246,6 +265,40 @@ export function RumourView({
               ) : null}
             </div>
           </div>
+          <div className={styles.filters} data-testid="s06-filters">
+            {onSourceFilter ? (
+              <div className={styles.filterGroup}>
+                <span className={styles.sub}>{t("notice.rumour.source")}</span>
+                <SegmentedControl
+                  label={t("notice.rumour.source")}
+                  value={sourceFilter}
+                  onChange={(value) => onSourceFilter(value as ClaimSourceFilter)}
+                  options={[
+                    { value: "all", label: t("notice.rumour.sourceAll") },
+                    { value: "public", label: t("notice.rumour.sourcePublic") },
+                    { value: "desk", label: t("notice.rumour.sourceDesk") },
+                    { value: "sms", label: t("notice.rumour.sourceSms") },
+                  ]}
+                  data-testid="s06-source"
+                />
+              </div>
+            ) : null}
+            {onSort ? (
+              <div className={styles.filterGroup}>
+                <span className={styles.sub}>{t("notice.rumour.sort")}</span>
+                <SegmentedControl
+                  label={t("notice.rumour.sort")}
+                  value={sort}
+                  onChange={(value) => onSort(value as ClaimSort)}
+                  options={[
+                    { value: "recent", label: t("notice.rumour.sortRecent") },
+                    { value: "demand", label: t("notice.rumour.sortDemand") },
+                  ]}
+                  data-testid="s06-sort"
+                />
+              </div>
+            ) : null}
+          </div>
           <p className={styles.sub}>{t("s06.suggestedNote")}</p>
 
           {loading && claims.length === 0 && !error ? (
@@ -267,7 +320,9 @@ export function RumourView({
                   rowKey={(row) => row.id}
                   selectedKey={selectedClaim?.id}
                   onRowActivate={(row) => pick(row.id)}
-                  initialSort={{ key: "created_at", direction: "descending" }}
+                  key={sort}
+                  // The table sorts what the server sent, so "Most asked" must start on the asks column.
+                  initialSort={{ key: sort === "demand" ? "asks" : "created_at", direction: "descending" }}
                   data-testid="s06-table"
                 />
               </div>
@@ -278,11 +333,18 @@ export function RumourView({
                     <button type="button" className={styles.card} onClick={() => pick(claim.id)} data-testid={`s06-card-${claim.id}`}>
                       <span className={styles.excerpt}>{excerpt(claim.text, 140) || t("s06.detail.noText")}</span>
                       <span className={styles.chips}>
-                        <StatusBadge tone={levelTone(claim.harm.level, "danger")} label={t(`s06.harm.${claim.harm.level}`)} />
-                        <StatusBadge tone={levelTone(claim.check_worthiness.level, "info")} label={t(`s06.check.${claim.check_worthiness.level}`)} />
+                        <span className={styles.levelPair}>
+                          <span className={styles.levelCap}>{t("s06.columns.harm")}</span>
+                          <StatusBadge tone={levelTone(claim.harm.level, "danger")} label={t(`s06.level.${claim.harm.level}`)} />
+                        </span>
+                        <span className={styles.levelPair}>
+                          <span className={styles.levelCap}>{t("s06.columns.check")}</span>
+                          <StatusBadge tone={levelTone(claim.check_worthiness.level, "info")} label={t(`s06.level.${claim.check_worthiness.level}`)} />
+                        </span>
                         <StatusBadge tone={statusTone(claim.status)} label={statusLabel(claim.status)} />
                       </span>
                       <span className={styles.sub}>{`${sourceLabel(claim.seen_on)} · ${formatWatDateTime(claim.created_at, locale)}`}</span>
+                      {claim.ask_count ? <AskCount claim={claim} /> : null}
                     </button>
                   </li>
                 ))}
@@ -322,6 +384,66 @@ export function RumourView({
 
       <NewClaimSheet open={creating} error={createError} onClose={() => setCreating(false)} onCreate={onCreateClaim} />
     </div>
+  );
+}
+
+/* ---------- Public asks and check-in evidence ---------- */
+
+/** The ask count, and beside it the last hour's asks in the attention colour. */
+function AskCount({ claim }: { claim: Claim }) {
+  const t = useT();
+  const count = claim.ask_count ?? 0;
+  const hour = claim.ask_trend_1h ?? 0;
+  return (
+    <span className={`${styles.asks} eg-tnum`} data-testid={`s06-asks-${claim.id}`}>
+      <strong>{count}</strong>
+      {hour > 0 ? <span className={styles.trend}>{t("notice.rumour.inHour", { count: hour })}</span> : <span className={styles.sub}>{t("notice.rumour.noneInHour")}</span>}
+    </span>
+  );
+}
+
+function AskBox({ claim }: { claim: Claim }) {
+  const t = useT();
+  const { locale } = useLocale();
+  const count = claim.ask_count ?? 0;
+  const hour = claim.ask_trend_1h ?? 0;
+  return (
+    <div className={styles.askBox} data-testid="s06-ask-box">
+      <p className={styles.sub}>{claim.source === "public" ? t("notice.rumour.fromPublic", { time: formatWatDateTime(claim.created_at, locale) }) : t("notice.rumour.asked")}</p>
+      <div className={styles.askRow}>
+        <span className={`${styles.askBig} eg-tnum`}>{count}</span>
+        <span className={styles.askLabel}>{t("notice.rumour.askCount", { count })}</span>
+        <span className={`${hour > 0 ? styles.trend : styles.sub} eg-tnum`}>{hour > 0 ? t("notice.rumour.inLastHour", { count: hour }) : t("notice.rumour.noneInLastHour")}</span>
+      </div>
+    </div>
+  );
+}
+
+/** Ward check-in answers from the last six hours that bear on this claim. Counts under 5 arrive already hidden as "fewer than 5". */
+function CheckinEvidence({ evidence }: { evidence: NonNullable<Claim["checkin_evidence"]> }) {
+  const t = useT();
+  const show = (value: number | "fewer than 5") => (typeof value === "number" ? value : t("notice.fewerThan5"));
+  return (
+    <section className={styles.panel} aria-labelledby="s06-evidence" data-testid="s06-evidence">
+      <h3 id="s06-evidence" className={styles.panelTitle}>{t("notice.rumour.evidenceTitle")}</h3>
+      {evidence.length === 0 ? (
+        <p className={styles.sub}>{t("notice.rumour.evidenceNone")}</p>
+      ) : (
+        <ul className={styles.evidenceList}>
+          {evidence.map((item, index) => (
+            <li key={`${item.area}-${index}`} className={styles.evidence}>
+              <p className={styles.evidenceQ}>{t("notice.rumour.evidenceQuestion", { question: item.question, area: item.area_name ?? item.area })}</p>
+              <dl className={styles.evidenceCounts}>
+                <div><dt>{t("notice.answer.yes")}</dt><dd className="eg-tnum">{show(item.yes)}</dd></div>
+                <div><dt>{t("notice.answer.no")}</dt><dd className="eg-tnum">{show(item.no)}</dd></div>
+                <div><dt>{t("notice.answer.not_seen")}</dt><dd className="eg-tnum">{show(item.not_seen)}</dd></div>
+              </dl>
+            </li>
+          ))}
+        </ul>
+      )}
+      <p className={styles.sub}>{t("notice.rumour.evidenceNote")}</p>
+    </section>
   );
 }
 
@@ -520,9 +642,19 @@ function ClaimDetail({
         <section className={styles.panel}>
           <div className={styles.chips}>
             <StatusBadge tone={statusTone(claim.status)} label={t(`s06.status.${claim.status}`)} />
-            <StatusBadge tone={levelTone(claim.harm.level, "danger")} label={t(`s06.harm.${claim.harm.level}`)} />
-            <StatusBadge tone={levelTone(claim.check_worthiness.level, "info")} label={t(`s06.check.${claim.check_worthiness.level}`)} />
+            {claim.source === "public" ? <StatusBadge tone="info" label={t("notice.rumour.sourcePublic")} /> : null}
           </div>
+          {claim.source === "public" || (claim.ask_count ?? 0) > 0 ? <AskBox claim={claim} /> : null}
+          <dl className={styles.levels}>
+            <div>
+              <dt>{t("s06.columns.harm")}</dt>
+              <dd><StatusBadge tone={levelTone(claim.harm.level, "danger")} label={t(`s06.level.${claim.harm.level}`)} /></dd>
+            </div>
+            <div>
+              <dt>{t("s06.columns.check")}</dt>
+              <dd><StatusBadge tone={levelTone(claim.check_worthiness.level, "info")} label={t(`s06.level.${claim.check_worthiness.level}`)} /></dd>
+            </div>
+          </dl>
           <h2 id={`s06-claim-${claim.id}`} className={styles.claimText}>
             {claim.text ? claim.text : <span className={styles.sub}>{t("s06.detail.noText")}</span>}
           </h2>
@@ -543,6 +675,8 @@ function ClaimDetail({
             </div>
           ) : null}
         </section>
+
+        {claim.checkin_evidence ? <CheckinEvidence evidence={claim.checkin_evidence} /> : null}
 
         <section className={styles.panel} aria-labelledby={`s06-matches-${claim.id}`}>
           <h3 id={`s06-matches-${claim.id}`} className={styles.panelTitle}>{t("s06.matches.title")}</h3>

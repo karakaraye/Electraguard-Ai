@@ -2,10 +2,10 @@
 
 import { useId } from "react";
 import { useT } from "../../lib/i18n/client";
-import { GroupError, GroupLegend, type ChoiceGroupChrome } from "../ChoiceTile/ChoiceTile";
+import { ChoiceTile, GroupError, GroupLegend, type ChoiceGroupChrome } from "../ChoiceTile/ChoiceTile";
 import { Field } from "../Field/Field";
 import { fromWat, useNow, watParts } from "../hooks";
-import { AlertIcon, CheckIcon, ClockIcon } from "../icons";
+import { AlertIcon, ClockIcon } from "../icons";
 import styles from "./WhenPicker.module.css";
 
 export type WhenMode = "now" | "today" | "day";
@@ -108,28 +108,18 @@ export function WhenPicker({
       {/* The error sits under the question, never below a long list where it can be hidden. */}
       {errorText ? <GroupError error={errorText} id={errorId} /> : null}
       <div className={styles.modes}>
-        {modes.map((option) => {
-          const checked = value.mode === option.mode;
-          return (
-            <label key={option.mode} className={styles.mode} data-checked={checked || undefined} data-testid={`${testId}-${option.mode}`}>
-              <input
-                className={styles.input}
-                type="radio"
-                name={name}
-                value={option.mode}
-                checked={checked}
-                onChange={() => onChange({ mode: option.mode, date: value.date, time: value.time })}
-              />
-              <span className={styles.radio} aria-hidden="true">
-                <CheckIcon size={14} strokeWidth={2.75} />
-              </span>
-              <span className={styles.modeText}>
-                <span className={styles.modeLabel}>{option.label}</span>
-                {option.detail ? <span className={`${styles.modeDetail} eg-tnum`}>{option.detail}</span> : null}
-              </span>
-            </label>
-          );
-        })}
+        {modes.map((option) => (
+          <ChoiceTile
+            key={option.mode}
+            name={name}
+            value={option.mode}
+            checked={value.mode === option.mode}
+            onChange={() => onChange({ mode: option.mode, date: value.date, time: value.time })}
+            label={option.label}
+            description={option.detail ? <span className="eg-tnum">{option.detail}</span> : undefined}
+            data-testid={`${testId}-${option.mode}`}
+          />
+        ))}
       </div>
 
       {value.mode !== "now" ? (

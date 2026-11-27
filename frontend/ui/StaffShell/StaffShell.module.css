@@ -1,7 +1,6 @@
 .shell {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  grid-template-rows: minmax(0, 1fr) auto;
   min-height: 100dvh;
   background: var(--paper);
   color: var(--ink);
@@ -10,6 +9,7 @@
 
 .preview {
   min-height: 100%;
+  flex: 1 1 auto;
 }
 
 .skip {
@@ -31,142 +31,604 @@
   outline-offset: var(--focus-offset);
 }
 
-/* ---------- Side navigation (from 1024px) ---------- */
-
-.side {
-  display: none;
-}
-
-.brand {
-  color: var(--hero-ink);
-  display: flex;
-  align-items: center;
-  margin: 0 0 var(--s-5);
-  padding: 0 var(--s-3);
-}
-
-.sideList,
-.tabList {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.sideList {
-  display: grid;
-  gap: 2px;
-}
-
-.sideLink {
-  display: flex;
-  align-items: center;
-  gap: var(--s-3);
-  min-height: var(--target-min);
-  padding: 0 var(--s-3);
-  border-radius: var(--radius);
-  color: var(--hero-ink-2);
-  font: var(--t-label);
-  font-size: 0.9375rem;
-  text-decoration: none;
-}
-
-.sideLink[aria-current="page"] {
-  background: var(--hero-ink);
-  color: var(--fixed-ink);
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .sideLink:not([aria-current="page"]):hover {
-    background: rgb(244 241 234 / 0.1);
-    color: var(--hero-ink);
-  }
-}
-
-.sideLink:focus-visible {
-  outline: 3px solid var(--sun-strong);
-  outline-offset: 2px;
-}
-
-.tabLink:focus-visible {
+.iconButton:focus-visible,
+.item:focus-visible,
+.intake:focus-visible,
+.me:focus-visible,
+.menuItem:focus-visible,
+.helpButton:focus-visible,
+.crumbList a:focus-visible,
+.backLink:focus-visible,
+.searchInput:focus-visible {
   outline: var(--focus-outline);
   outline-offset: var(--focus-offset);
   box-shadow: var(--focus-halo);
 }
 
-.linkLabel {
+/* ---------- Rail (shared by the desktop rail and the phone's left sheet) ---------- */
+
+.side {
+  display: none;
+  background: var(--paper-2);
+  border-right: 1px solid var(--rule);
+}
+
+.rail {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  background: var(--paper-2);
+}
+
+.side .rail {
+  position: sticky;
+  top: 0;
+  height: 100dvh;
+}
+
+/* Previews (dev viewer, gallery): the rail stretches the full height of the page instead of one viewport. */
+.preview .side .rail {
+  position: static;
+  height: auto;
+  min-height: 100%;
+}
+
+.railTop {
+  display: grid;
+  gap: 2px;
+  padding: var(--s-4) var(--s-4) var(--s-3);
+}
+
+.brandRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 32px;
+}
+
+.brandMark {
+  display: inline-flex;
+  color: var(--ink);
+}
+
+.brandName {
   flex: 1;
   min-width: 0;
+  font: 700 0.9375rem/1.2 var(--font);
+  color: var(--ink);
+}
+
+.organisation {
+  margin: 0;
+  padding-left: 34px;
+  font: 400 0.8125rem/1.35 var(--font);
+  color: var(--ink-3);
   overflow-wrap: anywhere;
 }
 
-.count {
-  min-width: 24px;
-  padding: 0 6px;
-  border: 1px solid currentColor;
-  border-radius: var(--radius-pill);
-  font: var(--t-label);
-  font-size: 0.8125rem;
-  line-height: 20px;
-  text-align: center;
+.iconButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius);
+  background: none;
+  color: var(--ink);
+  cursor: pointer;
 }
 
-@media (min-width: 1024px) {
-  .shell {
-    grid-template-columns: 15rem minmax(0, 1fr);
-    grid-template-rows: minmax(0, 1fr);
-  }
+.railTop .iconButton {
+  width: 36px;
+  height: 36px;
+  margin-right: -6px;
+  color: var(--ink-2);
+}
 
-  .side {
-    display: block;
-    position: sticky;
-    top: 0;
-    align-self: start;
-    height: 100dvh;
-    padding: var(--s-5) var(--s-3);
-    border-right: 1px solid var(--hero);
-    background: var(--hero);
-    color: var(--hero-ink);
-    overflow-y: auto;
-  }
+.railNav {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  padding: 0 var(--s-3) var(--s-3);
+  overflow-y: auto;
+}
 
-  /* Preview (embedded, full-page captures): the rail stretches the whole height of the page. In the
-     live app it is sticky and one viewport tall, which covers the page the same way as you scroll. */
-  .preview .side {
-    height: auto;
-    min-height: 100%;
-    align-self: stretch;
-    position: static;
-  }
+.itemWrap {
+  position: static;
+}
 
-  .tabs {
+.groupLabel {
+  margin: 0;
+  padding: var(--s-4) var(--s-2) var(--s-1);
+  font: 600 0.75rem/16px var(--font);
+  color: var(--ink-3);
+}
+
+.itemWrap:first-of-type .groupLabel {
+  padding-top: var(--s-2);
+}
+
+.indicator {
+  position: absolute;
+  top: 0;
+  left: var(--s-3);
+  right: var(--s-3);
+  border-radius: 8px;
+  background: var(--paper-raised);
+  box-shadow: inset 0 0 0 1px var(--rule);
+  pointer-events: none;
+  will-change: transform;
+}
+
+.indicator[data-ready] {
+  transition: transform var(--dur-step) var(--ease-out);
+}
+
+.item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 36px;
+  padding: 0 var(--s-2);
+  border-radius: 8px;
+  color: var(--ink-2);
+  font: 500 0.875rem/1 var(--font);
+  text-decoration: none;
+  transition: color var(--dur-fade) ease;
+}
+
+.item[aria-current="page"] {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.item > svg {
+  flex: none;
+}
+
+.itemLabel {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.itemCount {
+  margin-left: auto;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .item:not([aria-current="page"]):hover {
+    background: var(--paper-sunk);
+    color: var(--ink);
+    box-shadow: inset 0 0 0 1px var(--rule);
+  }
+}
+
+.railFoot {
+  display: grid;
+  gap: var(--s-1);
+  padding: var(--s-3);
+  border-top: 1px solid var(--rule);
+}
+
+.intake {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  height: 36px;
+  padding: 0 var(--s-2);
+  border-radius: 8px;
+  color: var(--ok);
+  font: 600 0.8125rem/1 var(--font);
+  text-decoration: none;
+  /* Green gives way to amber in 200 ms; the ring below is the only other movement. */
+  transition: color var(--dur-exit) linear;
+}
+
+.intake[data-state="paused"] {
+  color: var(--attn);
+}
+
+.dot {
+  position: relative;
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--ok-solid);
+  box-shadow: 0 0 0 3px var(--ok-bg);
+  transition:
+    background-color var(--dur-exit) linear,
+    box-shadow var(--dur-exit) linear;
+}
+
+.intake[data-state="paused"] .dot {
+  background: var(--attn-solid);
+  box-shadow: 0 0 0 3px var(--attn-bg);
+}
+
+/* In the phone's left drawer the rail's rows rise and fade in one after the other (30 ms apart). */
+.rail[data-variant="sheet"] .itemWrap {
+  animation: row-in var(--dur-exit) var(--ease-out) backwards;
+}
+
+.rail[data-variant="sheet"] .itemWrap:nth-child(1) { animation-delay: 120ms; }
+.rail[data-variant="sheet"] .itemWrap:nth-child(2) { animation-delay: 150ms; }
+.rail[data-variant="sheet"] .itemWrap:nth-child(3) { animation-delay: 180ms; }
+.rail[data-variant="sheet"] .itemWrap:nth-child(4) { animation-delay: 210ms; }
+.rail[data-variant="sheet"] .itemWrap:nth-child(5) { animation-delay: 240ms; }
+.rail[data-variant="sheet"] .itemWrap:nth-child(n + 6) { animation-delay: 270ms; }
+
+@keyframes row-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+/* One ring when intake pauses: transform and opacity only. */
+.intake[data-pulse] .dot::after {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  border: 2px solid var(--attn-solid);
+  animation: ring 600ms var(--ease-out) 1 both;
+}
+
+@keyframes ring {
+  from {
+    opacity: 0.55;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(2.8);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .intake[data-pulse] .dot::after {
+    animation: none;
     display: none;
   }
 }
 
-/* ---------- Header and content ---------- */
+.meRoot {
+  display: flex;
+  width: 100%;
+}
+
+.me {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  height: 48px;
+  margin: 0;
+  padding: 0 var(--s-2);
+  border: 0;
+  border-radius: 8px;
+  background: none;
+  color: var(--ink);
+  text-align: left;
+  cursor: pointer;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .me:hover {
+    background: var(--paper-sunk);
+  }
+}
+
+.disc {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--ink);
+  color: var(--on-ink);
+  font: 700 0.75rem/1 var(--font);
+  letter-spacing: 0.02em;
+}
+
+.meText {
+  display: grid;
+  flex: 1;
+  min-width: 0;
+}
+
+.meName,
+.meRole {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.meName {
+  font: 600 0.875rem/18px var(--font);
+}
+
+.meRole {
+  font: 400 0.75rem/16px var(--font);
+  color: var(--ink-3);
+}
+
+.meChevron {
+  flex: none;
+  color: var(--ink-3);
+}
+
+.menu {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.menuItem {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  width: 100%;
+  min-height: 40px;
+  padding: 0 var(--s-3);
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: none;
+  color: var(--ink);
+  font: 500 0.875rem/1 var(--font);
+  text-align: left;
+  cursor: pointer;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .menuItem:hover {
+    background: var(--paper-2);
+  }
+}
+
+/* Rail in the phone's sheet: full height, scrolls inside */
+.rail[data-variant="sheet"] {
+  height: 100dvh;
+}
+
+/* ---------- Column, header and top bar ---------- */
 
 .column {
+  position: relative;
   display: flex;
   flex-direction: column;
   min-width: 0;
 }
 
+.sentinel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: 1px;
+  pointer-events: none;
+}
+
 .header {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--s-3);
-  min-height: 64px;
-  padding: var(--s-3) var(--gutter);
-  border-bottom: 1px solid var(--rule);
+  display: none;
+}
+
+.topBar {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-sticky);
   background: var(--paper);
+}
+
+.header::after,
+.topBar::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 1px;
+  background: var(--rule);
+  opacity: 0;
+  transition: opacity var(--dur-fade) ease;
+  pointer-events: none;
+}
+
+.header[data-scrolled]::after,
+.topBar[data-scrolled]::after {
+  opacity: 1;
+}
+
+.topBarRow {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  min-height: 56px;
+  padding: env(safe-area-inset-top) var(--s-2) 0;
+}
+
+.topTitle {
+  margin: 0;
+  max-width: 62vw;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font: 700 1.0625rem/1.2 var(--font-display);
+  text-align: center;
+}
+
+.topEnd {
+  justify-self: end;
+}
+
+.phoneSearch {
+  padding: 0 var(--gutter) var(--s-3);
+}
+
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-1);
+  min-height: 36px;
+  margin: 0 var(--s-2) var(--s-1);
+  padding: 0 var(--s-2);
+  border-radius: var(--radius-sm);
+  color: var(--ink-2);
+  font: 500 0.875rem/1 var(--font);
+  text-decoration: none;
+}
+
+.backIcon {
+  transform: scaleX(-1);
+}
+
+.crumbs {
+  display: flex;
+  align-items: center;
+  gap: var(--s-1);
+  min-width: 0;
+}
+
+.crumbList {
+  display: flex;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font: 500 0.875rem/1 var(--font);
+  color: var(--ink-3);
+}
+
+.crumbList li {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-1);
+}
+
+.crumbList a {
+  border-radius: var(--radius-sm);
+  color: inherit;
+  text-decoration: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .crumbList a:hover {
+    color: var(--ink);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+}
+
+.crumbList svg {
+  margin-right: var(--s-1);
+  color: var(--ink-3);
 }
 
 .title {
   margin: 0;
-  font: var(--t-heading);
-  overflow-wrap: anywhere;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font: 700 1.125rem/1.2 var(--font-display);
+  letter-spacing: 0;
+}
+
+.search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  width: 100%;
+  height: 36px;
+  padding: 0 var(--s-2) 0 10px;
+  border-radius: 8px;
+  background: var(--paper-raised);
+  box-shadow: inset 0 0 0 1px var(--rule-control);
+  color: var(--ink-3);
+}
+
+.search:focus-within {
+  box-shadow: inset 0 0 0 1.5px var(--ink);
+}
+
+.searchIcon {
+  flex: none;
+  color: var(--ink-2);
+}
+
+.searchInput {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--ink);
+  font: 400 0.875rem/1 var(--font);
+  appearance: none;
+}
+
+.searchInput:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
+.searchInput::placeholder {
+  color: var(--ink-3);
+}
+
+.searchInput::-webkit-search-cancel-button {
+  display: none;
+}
+
+.kbd,
+.kbdLarge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px;
+  border-radius: 5px;
+  background: var(--paper-raised);
+  box-shadow: inset 0 0 0 1px var(--rule), 0 1px 0 var(--rule);
+  color: var(--ink-2);
+  font: 600 0.75rem/1 var(--font);
+}
+
+.kbdLarge {
+  min-width: 36px;
+  height: 28px;
+  font-size: 0.8125rem;
+}
+
+.helpButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 36px;
+  height: 36px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background: var(--paper-raised);
+  box-shadow: inset 0 0 0 1px var(--rule-control);
+  color: var(--ink);
+  font: 700 0.9375rem/1 var(--font);
+  cursor: pointer;
 }
 
 .headerEnd {
@@ -176,14 +638,33 @@
   gap: var(--s-2);
 }
 
+.keyList {
+  display: grid;
+  gap: var(--s-2);
+  margin: 0;
+}
+
+.keyList > div {
+  display: grid;
+  grid-template-columns: 5rem minmax(0, 1fr);
+  align-items: center;
+  gap: var(--s-3);
+  min-height: 40px;
+}
+
+.keyList dt,
+.keyList dd {
+  margin: 0;
+}
+
 .main {
   flex: 1 0 auto;
   min-width: 0;
-  padding: var(--s-5) var(--gutter) var(--s-6);
+  padding: var(--s-4) var(--gutter) var(--s-6);
   outline: none;
 }
 
-/* ---------- Queue and case split ---------- */
+/* ---------- Two-pane layout ---------- */
 
 .split {
   display: grid;
@@ -212,196 +693,234 @@
   min-width: 0;
 }
 
-/* ---------- Bottom tabs (phones and tablets) ---------- */
+/* ---------- 1024 px and up: rail and header ---------- */
 
-.tabs {
-  position: sticky;
-  bottom: 0;
-  z-index: var(--z-sticky);
-  padding-bottom: env(safe-area-inset-bottom);
-  border-top: 1px solid var(--rule);
-  background: var(--paper);
-}
+@media (min-width: 1024px) {
+  .shell {
+    grid-template-columns: 4rem minmax(0, 1fr);
+  }
 
-.tabList {
-  display: grid;
-  grid-auto-columns: minmax(0, 1fr);
-  grid-auto-flow: column;
-}
-
-.tabLink {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 2px;
-  min-height: 60px;
-  padding: var(--s-1) 2px;
-  color: var(--ink-2);
-  font: var(--t-label);
-  line-height: 1.15;
-  text-align: center;
-  text-decoration: none;
-}
-
-.tabLink[aria-current="page"] {
-  color: var(--ink);
-}
-
-.tabLink[aria-current="page"]::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 20%;
-  right: 20%;
-  height: 3px;
-  background: var(--ink);
-}
-
-.tabLink .count {
-  position: absolute;
-  top: 4px;
-  left: calc(50% + 14px);
-  background: var(--paper);
-}
-
-.tabLink .linkLabel {
-  flex: none;
-}
-
-/* ---------- Theme switcher ---------- */
-
-.themeSelect {
-  min-height: var(--target-min);
-  margin: 0;
-  padding: 0 var(--s-6) 0 var(--s-3);
-  border: var(--border-w) solid var(--rule-control);
-  border-radius: var(--radius);
-  background: var(--paper-raised)
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%235f5f63' stroke-width='1.75' stroke-linecap='square'%3E%3Cpath d='m6.5 9.5 5.5 5.5 5.5-5.5'/%3E%3C/svg%3E")
-    no-repeat right 8px center / 20px;
-  color: var(--ink);
-  font: var(--t-small);
-  font-weight: 600;
-  appearance: none;
-  cursor: pointer;
-}
-
-.themeSelect:focus-visible {
-  outline: var(--focus-outline);
-  outline-offset: var(--focus-offset);
-  box-shadow: var(--focus-halo);
-}
-
-.themeSwitcher {
-  display: inline-flex;
-}
-
-/* Tab labels: whole words, hyphenated only when a word cannot fit */
-.tabLink .linkLabel {
-  flex: none;
-  max-width: 100%;
-  overflow-wrap: normal;
-  hyphens: auto;
-}
-
-/* ---------- "More" tab and its sheet (phones and tablets) ---------- */
-
-/* Always a real button, styled like the links. */
-button.tabLink {
-  width: 100%;
-  margin: 0;
-  border: 0;
-  background: none;
-  cursor: pointer;
-}
-
-.tabList > li {
-  min-width: 0;
-}
-
-/* Tabs beyond the phone limit: tablets from 640px show some, nothing shows past 6. */
-.tabList > li[data-tier="tablet"],
-.tabList > li[data-tier="hidden"] {
-  display: none;
-}
-
-@media (min-width: 640px) {
-  .tabList > li[data-tier="tablet"] {
+  .side {
     display: block;
   }
 
-  .tabList > li[data-more="phone-only"] {
+  .topBar {
+    display: none;
+  }
+
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: var(--z-sticky);
+    display: flex;
+    align-items: center;
+    gap: var(--s-4);
+    height: 56px;
+    padding: 0 var(--s-6);
+    background: var(--paper);
+  }
+
+  .crumbs {
+    flex: 1;
+  }
+
+  .search {
+    flex: none;
+    width: 240px;
+  }
+
+  .headerEnd {
+    flex: none;
+  }
+
+  .main {
+    padding: var(--s-4) var(--s-6) var(--s-6);
+  }
+
+  /* Collapsed rail: icons with tooltips */
+  .side .rail {
+    z-index: var(--z-menu);
+    overflow: visible;
+  }
+
+  .side .railTop {
+    justify-items: center;
+    padding: var(--s-4) 0 var(--s-3);
+  }
+
+  .side .brandName,
+  .side .organisation,
+  .side .itemLabel,
+  .side .intakeLabel,
+  .side .meText,
+  .side .meChevron {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .side .railNav {
+    overflow: visible;
+    padding-inline: var(--s-3);
+  }
+
+  .side .groupLabel {
+    height: 1px;
+    margin: var(--s-3) var(--s-2) var(--s-2);
+    padding: 0;
+    overflow: hidden;
+    background: var(--rule);
+    font-size: 0;
+  }
+
+  .side .itemWrap:first-of-type .groupLabel {
+    display: none;
+  }
+
+  .side .item {
+    justify-content: center;
+    padding: 0;
+  }
+
+  .side .itemCount {
+    position: absolute;
+    top: 1px;
+    right: 1px;
+    min-width: 16px;
+    height: 16px;
+    padding: 0 4px;
+    font-size: 0.6875rem;
+  }
+
+  .side .intake,
+  .side .me {
+    justify-content: center;
+    padding: 0;
+  }
+
+  .side .railFoot {
+    padding-inline: var(--s-3);
+  }
+
+  .side [data-tip]::before {
+    content: attr(data-tip);
+    position: absolute;
+    left: calc(100% + 10px);
+    top: 50%;
+    z-index: var(--z-menu);
+    padding: 6px 10px;
+    border-radius: var(--radius-sm);
+    background: var(--ink);
+    color: var(--on-ink);
+    font: 600 0.8125rem/1 var(--font);
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(-4px, -50%);
+    transition:
+      opacity var(--dur-fade) ease,
+      transform var(--dur-fade) var(--ease-out);
+  }
+
+  .side [data-tip]:hover::before,
+  .side [data-tip]:focus-visible::before {
+    opacity: 1;
+    transform: translate(0, -50%);
+  }
+
+  .side .meRoot {
+    position: relative;
+  }
+}
+
+/* ---------- 1280 px and up: full rail ---------- */
+
+@media (min-width: 1280px) {
+  .shell {
+    grid-template-columns: 15rem minmax(0, 1fr);
+  }
+
+  .side .rail {
+    overflow: hidden;
+  }
+
+  .side .railTop {
+    justify-items: stretch;
+    padding: var(--s-4) var(--s-4) var(--s-3);
+  }
+
+  .side .brandName,
+  .side .organisation,
+  .side .itemLabel,
+  .side .intakeLabel,
+  .side .meText,
+  .side .meChevron {
+    position: static;
+    width: auto;
+    height: auto;
+    margin: 0;
+    overflow: hidden;
+    clip-path: none;
+  }
+
+  .side .organisation {
+    padding-left: 34px;
+  }
+
+  .side .meText {
+    overflow: visible;
+  }
+
+  .side .railNav {
+    overflow-y: auto;
+  }
+
+  .side .groupLabel {
+    height: auto;
+    margin: 0;
+    padding: var(--s-4) var(--s-2) var(--s-1);
+    overflow: visible;
+    background: none;
+    font-size: 0.75rem;
+  }
+
+  .side .itemWrap:first-of-type .groupLabel {
+    display: block;
+    padding-top: var(--s-2);
+  }
+
+  .side .item {
+    justify-content: flex-start;
+    padding: 0 var(--s-2);
+  }
+
+  .side .itemCount {
+    position: static;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 6px;
+    font-size: 0.75rem;
+  }
+
+  .side .intake,
+  .side .me {
+    justify-content: flex-start;
+    padding: 0 var(--s-2);
+  }
+
+  .side [data-tip]::before {
     display: none;
   }
 }
 
-/* Current section sits behind More: mark the More tab the same way. */
-button.tabLink[aria-current="true"] {
-  color: var(--ink);
-}
-
-button.tabLink[aria-current="true"]::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 20%;
-  right: 20%;
-  height: 3px;
-  background: var(--ink);
-}
-
-.moreList {
-  display: grid;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.moreList > li {
-  border-bottom: 1px solid var(--rule);
-}
-
-.moreList > li:last-child {
-  border-bottom: 0;
-}
-
-@media (min-width: 640px) {
-  .moreList > li[data-tablet-tab] {
-    display: none;
+@media (prefers-reduced-motion: reduce) {
+  .indicator[data-ready],
+  .item {
+    transition: none;
   }
-}
-
-.moreLink {
-  display: flex;
-  align-items: center;
-  gap: var(--s-3);
-  min-height: 52px;
-  padding: 0 var(--s-2);
-  color: var(--ink);
-  font: var(--t-label);
-  font-size: 1rem;
-  text-decoration: none;
-}
-
-.moreLink[aria-current="page"] {
-  background: var(--paper-sunk);
-  box-shadow: inset 3px 0 0 var(--ink);
-}
-
-.moreLink:focus-visible {
-  outline: var(--focus-outline);
-  outline-offset: calc(var(--focus-offset) * -1);
-  box-shadow: var(--focus-halo);
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .moreLink:not([aria-current="page"]):hover {
-    background: var(--paper-2);
-  }
-}
-
-.moreLink .count {
-  background: var(--paper);
 }

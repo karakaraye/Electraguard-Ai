@@ -44,3 +44,35 @@ def resolve_place(unit_code, ward_code=None):
                         "polling_unit_code": unit_code, "polling_unit_name": name,
                     }
     return None
+
+
+def resolve_lga(lga_code):
+    """Resolve an LGA (and its state) from the newest release that lists it."""
+    if not lga_code:
+        return None
+    for states in AreaDataset.objects.values_list("states", flat=True).iterator(chunk_size=1):
+        for state in states.values():
+            for lga in state["lgas"]:
+                if lga["lga_code"] == lga_code:
+                    return {
+                        "state_code": state["state_code"], "state_name": state["name"],
+                        "lga_code": lga["lga_code"], "lga_name": lga["name"],
+                    }
+    return None
+
+
+def area_name(code):
+    """Official name for a state, LGA or ward code, or the code itself when it is not in any release."""
+    if not code:
+        return code
+    for states in AreaDataset.objects.values_list("states", flat=True).iterator(chunk_size=1):
+        for state in states.values():
+            if state["state_code"] == code:
+                return state["name"]
+            for lga in state["lgas"]:
+                if lga["lga_code"] == code:
+                    return lga["name"]
+                for ward in lga["wards"]:
+                    if ward["ward_code"] == code:
+                        return ward["name"]
+    return code

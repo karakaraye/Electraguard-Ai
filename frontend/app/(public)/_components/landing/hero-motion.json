@@ -1,0 +1,264 @@
+{
+  "about": "Hero motion (landing plan 4.2), world metres and seconds. One beat is one voter: accredited at the card reader, ballot into the box, walks off behind the queue; the next voter steps up, the queue moves forward one place, a newcomer walks in from the road and joins the back. Two beats make the 36 s loop; the observer's report plays once per loop.",
+  "beat": 18,
+  "units": [
+    {
+      "id": "wheel",
+      "set": "wheel",
+      "h": 1.62,
+      "speed": 0.74,
+      "kind": "roll",
+      "cycle": 0.95,
+      "size": 1
+    },
+    {
+      "id": "elder",
+      "set": "elder",
+      "h": 1.74,
+      "speed": 0.66,
+      "kind": "walk",
+      "cycle": 0.73,
+      "size": 1
+    },
+    {
+      "id": "gele",
+      "set": "gele",
+      "h": 1.66,
+      "speed": 0.96,
+      "kind": "walk",
+      "cycle": 0.86,
+      "size": 1
+    },
+    {
+      "id": "agbada",
+      "set": "agbada",
+      "h": 1.8,
+      "speed": 1.04,
+      "kind": "walk",
+      "cycle": 0.94,
+      "size": 1
+    },
+    {
+      "id": "youngw",
+      "set": "youngw",
+      "h": 1.65,
+      "speed": 0.99,
+      "kind": "walk",
+      "cycle": 0.86,
+      "size": 1
+    },
+    {
+      "id": "mother",
+      "set": "mother",
+      "h": 1.64,
+      "speed": 0.8,
+      "kind": "walk",
+      "cycle": 0.85,
+      "size": 2
+    },
+    {
+      "id": "senator",
+      "set": "senator",
+      "h": 1.75,
+      "speed": 0.93,
+      "kind": "walk",
+      "cycle": 0.91,
+      "size": 1
+    },
+    {
+      "id": "george",
+      "set": "george",
+      "h": 1.76,
+      "speed": 1.02,
+      "kind": "walk",
+      "cycle": 0.92,
+      "size": 1
+    },
+    {
+      "id": "youngm",
+      "set": "youngm",
+      "h": 1.78,
+      "speed": 1.06,
+      "kind": "walk",
+      "cycle": 0.93,
+      "size": 1
+    },
+    {
+      "id": "youngm2",
+      "set": "youngm",
+      "h": 1.78,
+      "speed": 0.97,
+      "kind": "walk",
+      "cycle": 0.93,
+      "size": 1,
+      "startFrame": "arrive"
+    },
+    {
+      "id": "hijab",
+      "set": "hijab",
+      "h": 1.68,
+      "speed": 0.92,
+      "kind": "walk",
+      "cycle": 0.87,
+      "size": 1
+    }
+  ],
+  "queueCurve": {
+    "p0": [
+      5.2,
+      2.4
+    ],
+    "p1": [
+      9.2,
+      1.0
+    ],
+    "p2": [
+      11.0,
+      3.8
+    ],
+    "n": 10,
+    "spacing": 0.6
+  },
+  "stillSlots": {
+    "elder": 1,
+    "gele": 2,
+    "agbada": 3,
+    "youngw": 4,
+    "mother": 5,
+    "senator": 7,
+    "george": 8,
+    "youngm": 9
+  },
+  "reader": [
+    4.15,
+    2.9
+  ],
+  "wheelReader": [
+    3.9,
+    2.55
+  ],
+  "box": [
+    5.15,
+    2.95
+  ],
+  "arriving": [
+    2.9,
+    -0.4
+  ],
+  "entry": [
+    [
+      0.3,
+      -1.9
+    ],
+    [
+      3.0,
+      -0.4
+    ],
+    [
+      5.0,
+      0.2
+    ],
+    [
+      7.35,
+      0.88
+    ],
+    [
+      9.3,
+      1.42
+    ],
+    [
+      10.55,
+      2.45
+    ]
+  ],
+  "exit": [
+    [
+      6.4,
+      3.85
+    ],
+    [
+      9.2,
+      4.7
+    ],
+    [
+      11.2,
+      5.6
+    ],
+    [
+      13.0,
+      6.3
+    ],
+    [
+      16.0,
+      7.2
+    ]
+  ],
+  "shade": [
+    [
+      4.11,
+      3.92
+    ],
+    [
+      9.99,
+      3.41
+    ],
+    [
+      10.37,
+      7.69
+    ],
+    [
+      4.49,
+      8.22
+    ]
+  ],
+  "timing": {
+    "reach": 0.6,
+    "blink": [
+      1.0,
+      1.55
+    ],
+    "leaveReader": 3.6,
+    "dropHold": 1.5,
+    "paperDelay": 0.35,
+    "paperFall": 0.8,
+    "nextStepsUp": 6.8,
+    "ripple": 7.4,
+    "rippleGap": 0.16,
+    "shuffleSpeed": 0.62,
+    "shuffleStep": 0.3,
+    "walkerStart": 1.2,
+    "firstWalkerStart": 0.8,
+    "report": {
+      "everyOtherBeat": 1,
+      "card": 10.0,
+      "travel": 2.0,
+      "tickHold": 3.8,
+      "lookUp": [
+        12.3,
+        15.6
+      ]
+    },
+    "newcomer": {
+      "note": "the newcomer reaches the back of the queue only after the voter walking off has passed it, so no more than three figures meet there",
+      "passDistance": 7.0,
+      "gap": 0.8,
+      "zone": 2.0,
+      "slotFree": 9.5
+    }
+  },
+  "observerPhone": [
+    7.44,
+    0.1,
+    1.14
+  ],
+  "readerLed": [
+    4.23,
+    3.3,
+    0.83
+  ],
+  "boxSlot": [
+    5.15,
+    3.34,
+    1.335
+  ]
+}

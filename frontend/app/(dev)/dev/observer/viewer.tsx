@@ -43,6 +43,7 @@ import {
   FIXTURE_STATES,
   FIXTURE_TEXT,
 } from "./fixtures";
+import { AREA_TODAY, NOTICE_LOGISTICS, NOTICE_SAFETY } from "./notices.fixtures";
 import { MORE_SCREENS } from "./viewer-more";
 
 const noop = () => undefined;
@@ -289,6 +290,7 @@ export const SCREENS: Record<string, Record<string, (t: Translate) => ReactEleme
     new: () => <HomeView {...homeBase} />,
     filled: () => <HomeView {...homeBase} draft={{ category: "access_barrier", startedAt: Date.parse(FIXTURE_OCCURRED_AT) }} unsentCount={1} queuedCount={1} questionCount={1} rows={homeRows} />,
     offline: () => <HomeView {...homeBase} offline unsentCount={2} queuedCount={2} rows={homeRows} />,
+    checkin: () => <HomeView {...homeBase} notices={[{ id: NOTICE_SAFETY.id, title: NOTICE_SAFETY.text, type: "safety" }, { id: NOTICE_LOGISTICS.id, title: NOTICE_LOGISTICS.text, type: "logistics" }]} lgaToday={AREA_TODAY} rows={homeRows} />,
     "intake-paused": () => <HomeView {...homeBase} intakePaused rows={homeRows} />,
     "after-closing": () => (
       <HomeView

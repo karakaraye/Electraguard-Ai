@@ -1,6 +1,6 @@
 "use client";
 
-import { Fragment, useEffect, useRef, useState, type ReactNode } from "react";
+import { Fragment, useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import { useLocale, useT } from "../../lib/i18n/client";
 import { Button } from "../Button/Button";
 import { formatWatDateTime } from "../format";
@@ -109,20 +109,21 @@ export function ReceiptCard({ code, receivedAt, next, animate: rise = true, "dat
   const t = useT();
   const { locale } = useLocale();
   const [copy, setCopy] = useState<CopyState>("idle");
+  const [swapped, setSwapped] = useState(false);
   const resetTimer = useRef<number | undefined>(undefined);
   const ticketRef = useRef<HTMLDivElement>(null);
   const received = t("ui.receipt.receivedAt", { time: formatWatDateTime(receivedAt, locale) });
 
-  // The ticket rises 24px into place once (I-9).
+  // The ticket settles in once: 8 px up and a fade (240 ms). The code's characters follow it.
   useEffect(() => {
     if (!rise) return;
     const anim = animate(
       ticketRef.current,
       [
-        { opacity: 0, transform: "translateY(24px)" },
+        { opacity: 0, transform: "translateY(8px)" },
         { opacity: 1, transform: "translateY(0)" },
       ],
-      { duration: 500, easing: "enter" },
+      { duration: 240, easing: "out" },
     );
     return () => anim?.cancel();
   }, [rise]);
@@ -130,6 +131,7 @@ export function ReceiptCard({ code, receivedAt, next, animate: rise = true, "dat
   useEffect(() => () => window.clearTimeout(resetTimer.current), []);
 
   const segments = code.split("-");
+  let charIndex = 0;
 
   return (
     <section className={styles.card} data-testid={testId} aria-labelledby={`${testId}-label`}>
@@ -138,7 +140,7 @@ export function ReceiptCard({ code, receivedAt, next, animate: rise = true, "dat
           <p className={styles.eyebrow} id={`${testId}-label`}>
             {t("ui.receipt.label")}
           </p>
-          <p className={`${styles.code} eg-tnum`} data-testid={`${testId}-code`} aria-hidden="true">
+          <p className={`${styles.code} eg-tnum`} data-testid={`${testId}-code`} aria-hidden="true" data-rise={rise || undefined}>
             {segments.map((segment, index) => (
               <Fragment key={index}>
                 {index > 0 ? (
@@ -146,7 +148,13 @@ export function ReceiptCard({ code, receivedAt, next, animate: rise = true, "dat
                     -<wbr />
                   </>
                 ) : null}
-                <span className={styles.segment}>{segment}</span>
+                <span className={styles.segment}>
+                  {segment.split("").map((char, at) => (
+                    <span key={at} className={styles.char} style={{ "--i": charIndex++ } as CSSProperties}>
+                      {char}
+                    </span>
+                  ))}
+                </span>
               </Fragment>
             ))}
           </p>
@@ -159,16 +167,19 @@ export function ReceiptCard({ code, receivedAt, next, animate: rise = true, "dat
         <div className={styles.actions}>
           <Button
             variant="secondary"
-            icon={copy === "copied" ? <CheckIcon /> : <CopyIcon />}
+            icon={<span key={copy} className={swapped ? styles.swap : undefined}>{copy === "copied" ? <CheckIcon /> : <CopyIcon />}</span>}
             onClick={async () => {
               const ok = await copyText(code);
+              setSwapped(true);
               setCopy(ok ? "copied" : "failed");
               window.clearTimeout(resetTimer.current);
               resetTimer.current = window.setTimeout(() => setCopy("idle"), 2000);
             }}
             data-testid={`${testId}-copy`}
           >
-            {copy === "copied" ? t("ui.receipt.copied") : t("ui.receipt.copy")}
+            <span key={copy} className={swapped ? styles.swap : undefined}>
+              {copy === "copied" ? t("ui.receipt.copied") : t("ui.receipt.copy")}
+            </span>
           </Button>
           <Button
             variant="secondary"

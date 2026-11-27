@@ -1,41 +1,15 @@
-"use client";
-
-import { useEffect, useRef } from "react";
-import { usePathname } from "next/navigation";
 import Link from "next/link";
 
 /**
- * The compact "Report what you saw" button in the header. It exists on the home page only and
- * appears once the hero has scrolled away, so the one action is never out of reach (landing plan
- * §12). On the home page the header also sticks to the top; elsewhere it scrolls as before.
+ * The "Report what you saw" button in the header, on every public page. The full label shows on
+ * wide screens and the short one on phones (the shell's CSS decides which). It is the only solid
+ * black button in the bar, and its accessible name is always the full label.
  */
-export function HeaderReport({ href, label, className }: { href: string; label: string; className: string }) {
-  const pathname = usePathname();
-  const home = pathname === "/";
-  const ref = useRef<HTMLAnchorElement>(null);
-
-  useEffect(() => {
-    if (!home) return;
-    const link = ref.current;
-    const header = link?.closest("header");
-    const hero = document.getElementById("home-hero");
-    if (!link || !header || !hero) return;
-    header.setAttribute("data-sticky", "");
-    const observer = new IntersectionObserver(([entry]) => {
-      link.toggleAttribute("data-shown", !entry.isIntersecting && entry.boundingClientRect.bottom < 80);
-    });
-    observer.observe(hero);
-    return () => {
-      observer.disconnect();
-      header.removeAttribute("data-sticky");
-      link.removeAttribute("data-shown");
-    };
-  }, [home]);
-
-  if (!home) return null;
+export function HeaderReport({ href, label, shortLabel, className }: { href: string; label: string; shortLabel: string; className: string }) {
   return (
-    <Link ref={ref} href={href} className={className} data-testid="header-report">
-      {label}
+    <Link href={href} className={className} data-testid="header-report" aria-label={label}>
+      <span data-full aria-hidden="true">{label}</span>
+      <span data-short aria-hidden="true">{shortLabel}</span>
     </Link>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useSyncExternalStore } from "react";
+import { useEffect, useState, useSyncExternalStore, type RefObject } from "react";
 
 /* ---------- Network: navigator.onLine with online/offline events ---------- */
 
@@ -112,4 +112,21 @@ export function watParts(epochMs: number): { date: string; time: string } {
 /** Epoch ms for a WAT wall-clock date and time. */
 export function fromWat(date: string, time = "00:00"): number {
   return Date.parse(`${date}T${time}:00+01:00`);
+}
+
+/**
+ * True once content has scrolled under a sticky bar. Put a 1 px sentinel element
+ * at the top of the scrolling content and pass its ref: the bar shows its bottom
+ * rule only while the sentinel is out of view.
+ */
+export function useScrolled(sentinelRef: RefObject<Element | null>): boolean {
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(() => {
+    const sentinel = sentinelRef.current;
+    if (!sentinel || typeof IntersectionObserver === "undefined") return;
+    const observer = new IntersectionObserver(([entry]) => setScrolled(!entry.isIntersecting));
+    observer.observe(sentinel);
+    return () => observer.disconnect();
+  }, [sentinelRef]);
+  return scrolled;
 }

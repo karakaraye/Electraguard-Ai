@@ -463,74 +463,12 @@
 
 .answers {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--s-2);
 }
 
 .answersTwo {
   grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-
-.answer {
-  position: relative;
-  display: grid;
-  place-items: center;
-  min-height: 56px;
-  padding: var(--s-2);
-  border: var(--border-w) solid var(--rule-control);
-  border-radius: var(--radius);
-  background: var(--paper);
-  color: var(--ink);
-  font: var(--t-label);
-  font-size: 1rem;
-  line-height: 1.2;
-  text-align: center;
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-  transition: transform var(--dur-press) var(--ease-out);
-}
-
-.answer:active {
-  transform: scale(0.97);
-}
-
-.answer input {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  margin: 0;
-  opacity: 0;
-  cursor: pointer;
-}
-
-/* Chosen: sunlight fill and an ink edge, like every other choice. */
-.answer:has(input:checked) {
-  border: 2px solid var(--ink);
-  background: var(--sun-tint);
-  box-shadow: inset 0 0 0 1px var(--ink);
-}
-
-.answer:has(input:focus-visible) {
-  outline: var(--focus-outline);
-  outline-offset: var(--focus-offset);
-}
-
-.answerTick {
-  display: none;
-}
-
-.answer:has(input:checked) .answerTick {
-  position: absolute;
-  top: 5px;
-  right: 5px;
-  display: grid;
-  place-items: center;
-  width: 18px;
-  height: 18px;
-  border-radius: var(--radius-pill);
-  background: var(--ink);
-  color: var(--on-ink);
 }
 
 /* Under a problem answer: a quiet link and its one-line hint, inside the question's card. */
@@ -791,7 +729,7 @@
 
 .settingLabel {
   font: var(--t-label);
-  font-size: var(--t-base-size);
+  font-size: 1rem;
 }
 
 .switchText {
@@ -818,7 +756,7 @@
   background: none;
   color: var(--ink);
   font: var(--t-label);
-  font-size: var(--t-base-size);
+  font-size: 1rem;
   text-align: start;
   text-decoration: none;
   cursor: pointer;
@@ -1129,17 +1067,17 @@
   padding-bottom: var(--s-5);
 }
 
-.stageItem:not(:last-child)::before {
-  content: "";
+.stageLine {
   position: absolute;
   top: 30px;
   bottom: 2px;
   left: 13px;
   width: 2px;
   background: var(--rule-control);
+  transform-origin: top center;
 }
 
-.stageItem[data-position="done"]:not(:last-child)::before {
+.stageItem[data-position="done"] .stageLine {
   background: var(--ok);
 }
 
@@ -1255,15 +1193,6 @@
 .followUpLink {
   justify-self: start;
   margin-left: calc(var(--s-3) * -1);
-}
-
-/* The tick sits on the chip's corner, so it never covers the label ("I did not see"). */
-.answer:has(input:checked) .answerTick {
-  top: -8px;
-  right: -8px;
-  width: 22px;
-  height: 22px;
-  box-shadow: 0 0 0 2px var(--paper-raised);
 }
 
 /* The missing-materials list sits flat inside its question's card, not as a box in a box. */

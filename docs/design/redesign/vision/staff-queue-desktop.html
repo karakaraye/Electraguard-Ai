@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="en-NG">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Review queue</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Display:wght@600;700;800&family=Noto+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ElectraGuard AI vision mockups. Light theme tokens from frontend/ui/tokens.css. */
+:root{
+  --font:"Noto Sans",system-ui,"Segoe UI",sans-serif;
+  --font-display:"Noto Sans Display","Noto Sans",system-ui,sans-serif;
+  --ink:#0e0d0b; --ink-2:#45413a; --ink-3:#6e6a62;
+  --paper:#faf8f3; --paper-2:#f2efe7; --paper-raised:#ffffff; --paper-sunk:#f2efe7;
+  --rule:#e6e1d5; --rule-control:#8a857a; --on-ink:#faf8f3;
+  --sun:#e3b060; --sun-strong:#c98f2e; --sun-ink:#7a4e0e; --sun-tint:#f6e7c6; --sun-wash:#fbf4e4; --sun-line:#ead9b4;
+  --ok:#1b5e20; --ok-bg:#e7f3e8; --ok-solid:#2e7d32;
+  --attn:#8a3b00; --attn-bg:#fff1dc;
+  --danger:#a3161a; --danger-bg:#fdecec;
+  --wait:#45413a; --wait-bg:#eeebe4;
+  --info:#0d4a94; --info-bg:#e3eefb;
+  --scrim:rgb(14 13 11 / .4);
+  --shadow-sheet:0 -8px 32px rgb(14 13 11 / .18);
+  --shadow-raised:0 8px 24px rgb(14 13 11 / .14);
+  --shadow-pop:0 12px 32px rgb(14 13 11 / .16), 0 1px 2px rgb(14 13 11 / .08);
+  --board:#e9e5da;
+  --r-sm:6px; --r:10px; --r-md:14px; --r-lg:18px; --r-xl:22px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--paper);color:var(--ink);font-family:var(--font);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+body{font-size:16px;line-height:1.5}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+a{color:inherit}
+.tnum{font-variant-numeric:tabular-nums}
+svg.i{width:24px;height:24px;flex:none;fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
+svg.i.s20{width:20px;height:20px}
+svg.i.s16{width:16px;height:16px}
+svg.mark{fill:currentColor;display:block;flex:none}
+
+/* ---------- Unified components ---------- */
+/* Count: one component, two tones. Strong = needs action. Quiet = informational total. */
+.count{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;padding:0 6px;border-radius:10px;font:700 12px/1 var(--font);font-variant-numeric:tabular-nums;background:var(--ink);color:var(--on-ink)}
+.count.quiet{background:var(--paper-sunk);color:var(--ink-2);box-shadow:inset 0 0 0 1px var(--rule)}
+
+/* Status badge: shape + word, colour only for status. Square-ish, never a pill. */
+.badge{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 8px;border-radius:var(--r-sm);font:600 13px/1 var(--font);white-space:nowrap}
+.badge svg{width:14px;height:14px;stroke-width:2}
+.badge.ok{background:var(--ok-bg);color:var(--ok)}
+.badge.attn{background:var(--attn-bg);color:var(--attn)}
+.badge.danger{background:var(--danger-bg);color:var(--danger)}
+.badge.wait{background:var(--wait-bg);color:var(--wait)}
+.badge.info{background:var(--info-bg);color:var(--info)}
+
+/* Buttons */
+.btn{text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:8px;height:48px;padding:0 20px;border-radius:var(--r);font:600 16px/1 var(--font);white-space:nowrap}
+.btn.primary{background:var(--ink);color:var(--on-ink)}
+.btn.secondary{background:var(--paper-raised);color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--ink)}
+.btn.quiet{background:var(--paper-raised);color:var(--ink);box-shadow:inset 0 0 0 1px var(--rule-control)}
+.btn.disabled{background:var(--paper-sunk);color:var(--ink-3);box-shadow:none;cursor:not-allowed}
+.btn.h40{height:40px;padding:0 16px;font-size:15px}
+.btn.h36{height:36px;padding:0 12px;font-size:14px;gap:6px}
+.btn.h56{height:56px;padding:0 24px;font-size:17px}
+.btn.block{width:100%}
+.focus{outline:3px solid var(--ink);outline-offset:2px;box-shadow:0 0 0 2px var(--paper)}
+
+/* Toggle with clear off/on */
+.toggle{display:inline-flex;align-items:center;gap:8px;font:600 13px/1 var(--font)}
+.toggle .track{position:relative;width:44px;height:24px;border-radius:12px;background:var(--paper-raised);box-shadow:inset 0 0 0 1.5px var(--rule-control)}
+.toggle .track::after{content:"";position:absolute;top:4px;left:4px;width:16px;height:16px;border-radius:8px;background:var(--rule-control)}
+.toggle.on .track{background:var(--ink);box-shadow:none}
+.toggle.on .track::after{left:24px;background:var(--paper-raised)}
+
+/* Keycap */
+.kbd{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;padding:0 5px;border-radius:5px;font:600 12px/1 var(--font);color:var(--ink-2);background:var(--paper-raised);box-shadow:inset 0 0 0 1px var(--rule),0 1px 0 var(--rule)}
+
+/* ---------- Presentation board (annotation only, not product UI) ---------- */
+.board{background:var(--board);padding:64px;min-height:100vh}
+.board-head{max-width:1100px;margin-bottom:48px}
+.board-head h1{font:700 28px/1.2 var(--font-display);letter-spacing:-.01em}
+.board-head p{margin-top:8px;font-size:16px;color:var(--ink-2);max-width:72ch}
+.frames{display:flex;gap:48px;align-items:flex-start;flex-wrap:wrap}
+.frame-wrap{display:flex;flex-direction:column;gap:12px}
+.frame-label{font:600 14px/1.3 var(--font);color:var(--ink-2)}
+.frame-label b{color:var(--ink);font-weight:700}
+.frame-note{font-size:13px;line-height:1.45;color:var(--ink-2);max-width:390px}
+.phone{position:relative;width:390px;height:844px;overflow:hidden;background:var(--paper);border-radius:28px;box-shadow:0 0 0 1px rgb(14 13 11 / .12),var(--shadow-raised)}
+.crop{position:relative;overflow:hidden;background:var(--paper);border-radius:12px;box-shadow:0 0 0 1px rgb(14 13 11 / .12),var(--shadow-raised)}
+.safe-top{height:0}
+.home-ind{position:absolute;left:50%;bottom:8px;width:134px;height:5px;margin-left:-67px;border-radius:3px;background:var(--ink);opacity:.85;z-index:30}
+
+/* Staff review desk shell: shared by staff-queue-desktop and staff-phone */
+.rail{display:flex;flex-direction:column;width:240px;background:var(--paper-2);box-shadow:inset -1px 0 0 var(--rule)}
+.rail-top{display:flex;flex-direction:column;gap:4px;padding:16px 16px 12px}
+.rail-top .brand{display:flex;align-items:center;gap:10px;font:700 15px/1 var(--font);color:var(--ink)}
+.rail-top .el{padding-left:34px;font-size:13px;line-height:1.35;color:var(--ink-3)}
+.rail-nav{flex:1;padding:4px 12px 0}
+.grp-l{padding:16px 8px 4px;font:600 12px/16px var(--font);color:var(--ink-3)}
+.ri{display:flex;align-items:center;gap:10px;height:36px;padding:0 8px;border-radius:8px;font:500 14px/1 var(--font);color:var(--ink-2);text-decoration:none}
+.ri svg{width:20px;height:20px}
+.ri .count{margin-left:auto}
+.ri[aria-current]{background:var(--paper-raised);color:var(--ink);font-weight:600;box-shadow:inset 0 0 0 1px var(--rule)}
+.rail-foot{padding:12px;box-shadow:inset 0 1px 0 var(--rule)}
+.intake{display:flex;align-items:center;gap:8px;height:36px;padding:0 8px;font:600 13px/1 var(--font);color:var(--ok)}
+.intake .dot{width:8px;height:8px;border-radius:4px;background:var(--ok-solid);box-shadow:0 0 0 3px var(--ok-bg)}
+.intake .when{margin-left:auto;font-weight:500;color:var(--ink-3)}
+.me{display:flex;align-items:center;gap:10px;height:48px;padding:0 8px;margin-top:4px;border-radius:8px}
+.disc{display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:16px;background:var(--ink);color:var(--on-ink);font:700 12px/1 var(--font);letter-spacing:.02em;flex:none}
+.me div b{display:block;font:600 14px/18px var(--font)}
+.me div span{display:block;font-size:12px;line-height:16px;color:var(--ink-3)}
+.me > svg{margin-left:auto;width:20px;height:20px;color:var(--ink-3)}
+
+body{font-size:14px}
+.shell{display:flex;height:900px}
+.main{flex:1;min-width:0;display:flex;flex-direction:column}
+.sh{position:sticky;top:0;z-index:2;height:56px;display:flex;align-items:center;gap:16px;padding:0 32px;background:var(--paper);box-shadow:inset 0 -1px 0 var(--rule)}
+.crumb{display:flex;align-items:center;gap:4px;font:500 14px/1 var(--font);color:var(--ink-3)}
+.crumb svg{width:16px;height:16px}
+.crumb h1{font:700 16px/1 var(--font);color:var(--ink)}
+.search{margin-left:auto;display:flex;align-items:center;gap:8px;width:360px;height:36px;padding:0 8px 0 10px;border-radius:8px;background:var(--paper-raised);box-shadow:inset 0 0 0 1px var(--rule-control);color:var(--ink-3);font-size:14px}
+.search svg{width:20px;height:20px;color:var(--ink-2)}
+.search .kbd{margin-left:auto}
+.qbtn{display:flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:8px;box-shadow:inset 0 0 0 1px var(--rule-control);font:700 15px/1 var(--font);color:var(--ink);background:var(--paper-raised)}
+.body{padding:16px 32px 0;flex:1;min-height:0}
+.tabs{display:flex;gap:28px;height:44px;box-shadow:inset 0 -1px 0 var(--rule)}
+.tab{position:relative;display:flex;align-items:center;gap:8px;font:600 14px/1 var(--font);color:var(--ink-2)}
+.tab[aria-selected]{color:var(--ink)}
+.tab[aria-selected]::after{content:"";position:absolute;left:50%;width:24px;margin-left:-12px;bottom:0;height:2px;background:var(--ink);border-radius:1px}
+.filters{display:flex;align-items:center;gap:12px;margin-top:16px}
+.seg{display:flex;padding:2px;border-radius:10px;background:var(--paper-sunk);box-shadow:inset 0 0 0 1px var(--rule)}
+.seg span{display:flex;align-items:center;height:32px;padding:0 12px;border-radius:8px;font:600 13px/1 var(--font);color:var(--ink-2)}
+.seg span[aria-pressed="true"]{background:var(--paper-raised);color:var(--ink);box-shadow:0 0 0 1px var(--rule),0 1px 2px rgb(14 13 11 / .06)}
+.seg-l{font:600 13px/1 var(--font);color:var(--ink-3)}
+.token{display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 6px 0 10px;border-radius:6px;background:var(--paper-raised);box-shadow:inset 0 0 0 1px var(--rule);font:500 13px/1 var(--font);color:var(--ink)}
+.token em{font-style:normal;color:var(--ink-3)}
+.token svg{width:16px;height:16px;color:var(--ink-2)}
+.clear{font:600 13px/1 var(--font);color:var(--ink);text-underline-offset:3px}
+.fr{margin-left:auto}
+.work{display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:24px;margin-top:16px;align-items:start}
+.tbl{background:var(--paper-raised);border-radius:var(--r-md);box-shadow:inset 0 0 0 1px var(--rule);overflow:hidden}
+table{width:100%;border-collapse:collapse;table-layout:fixed}
+th{height:40px;padding:0 12px;text-align:left;font:600 12px/1 var(--font);color:var(--ink-3);box-shadow:inset 0 -1px 0 var(--rule);white-space:nowrap}
+th svg.i{width:14px;height:14px;vertical-align:-3px;margin-left:2px;color:var(--ink)}
+th.sorted{color:var(--ink)}
+td{height:48px;padding:0 12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:14px;color:var(--ink);box-shadow:inset 0 -1px 0 var(--rule)}
+tr:last-child td{box-shadow:none}
+td.ref{font-weight:600;font-variant-numeric:tabular-nums;letter-spacing:.01em}
+td.tm{font-variant-numeric:tabular-nums;color:var(--ink-2)}
+td .lga{display:block;font-size:12px;line-height:16px;color:var(--ink-3)}
+td .ward{display:block;line-height:18px}
+tr.sel td{background:var(--sun-wash);box-shadow:inset 0 -1px 0 var(--sun-line),inset 0 1px 0 var(--sun-line)}
+.pri{display:inline-flex;align-items:center;gap:6px;font:600 13px/1 var(--font)}
+.pri svg{width:12px;height:12px}
+.pri.danger{color:var(--danger)}
+.pri.attn{color:var(--attn)}
+.pri.normal{color:var(--ink-2)}
+.pri.normal svg{stroke-width:3}
+.pri.low{color:var(--ink-3)}
+.pri.low svg{stroke-width:3;opacity:.7}
+.hint{display:flex;align-items:center;gap:6px;margin-top:12px;font-size:13px;color:var(--ink-3)}
+.hint .r{margin-left:auto}
+
+.pv{background:var(--paper-raised);border-radius:var(--r-md);box-shadow:inset 0 0 0 1px var(--rule);padding:20px}
+.pv-h{display:flex;align-items:center;justify-content:space-between}
+.pv-h h2{font:700 20px/1.2 var(--font-display);font-variant-numeric:tabular-nums;letter-spacing:.01em}
+.pv-h button{display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:8px;color:var(--ink-2)}
+.pv-h button svg{width:20px;height:20px}
+.pv .bad{display:flex;gap:8px;margin-top:12px}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.tags span{height:24px;padding:0 8px;display:inline-flex;align-items:center;border-radius:6px;box-shadow:inset 0 0 0 1px var(--rule);font:500 12px/1 var(--font);color:var(--ink-2)}
+dl{margin-top:16px}
+dl div{display:grid;grid-template-columns:72px 1fr;gap:12px;padding:8px 0;box-shadow:inset 0 1px 0 var(--rule);font-size:14px;line-height:1.4}
+dt{color:var(--ink-3)}
+dd{color:var(--ink)}
+dd .ev{display:inline-flex;align-items:center;gap:4px;margin-right:12px}
+dd .ev svg{width:16px;height:16px}
+.flags{margin-top:12px;padding:12px;border-radius:var(--r);background:var(--attn-bg);color:var(--attn);display:flex;flex-direction:column;gap:6px;font:500 13px/1.4 var(--font)}
+.flags div{display:flex;gap:8px;align-items:flex-start}
+.flags svg{width:12px;height:12px;margin-top:4px;flex:none}
+.pv .btn{margin-top:16px}
+.pv .sub{display:flex;justify-content:center;gap:6px;align-items:center;margin-top:8px;font-size:12px;color:var(--ink-3)}
+</style>
+</head>
+<body>
+<svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" style="position:absolute" aria-hidden="true">
+<symbol id="globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.4 2.5 3.6 5.5 3.6 9s-1.2 6.5-3.6 9c-2.4-2.5-3.6-5.5-3.6-9S9.6 5.5 12 3z"/></symbol>
+<symbol id="menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+<symbol id="close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+<symbol id="back" viewBox="0 0 24 24"><path d="M19 12H5M11 6l-6 6 6 6"/></symbol>
+<symbol id="plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+<symbol id="home" viewBox="0 0 24 24"><path d="M4 10.5 12 4l8 6.5V19a1 1 0 0 1-1 1h-4.5v-5.5h-5V20H5a1 1 0 0 1-1-1z"/></symbol>
+<symbol id="file" viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></symbol>
+<symbol id="chat" viewBox="0 0 24 24"><path d="M5 5h14a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1h-9l-5 4v-4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z"/></symbol>
+<symbol id="search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.4-4.4"/></symbol>
+<symbol id="check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
+<symbol id="chev" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></symbol>
+<symbol id="chevdown" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+<symbol id="book" viewBox="0 0 24 24"><path d="M12 6.5C10.5 5 8.3 4.5 4 4.5v13c4.3 0 6.5.5 8 2 1.5-1.5 3.7-2 8-2v-13c-4.3 0-6.5.5-8 2zM12 6.5v13"/></symbol>
+<symbol id="shield" viewBox="0 0 24 24"><path d="M12 3l7 3v5.5c0 4.4-2.9 8-7 9.5-4.1-1.5-7-5.1-7-9.5V6z"/></symbol>
+<symbol id="sliders" viewBox="0 0 24 24"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/></symbol>
+<symbol id="checklist" viewBox="0 0 24 24"><path d="M11 7h9M11 12h9M11 17h9M4 7l1.5 1.5L8 6M4 12l1.5 1.5L8 11M4 17l1.5 1.5L8 16"/></symbol>
+<symbol id="help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.4 2.3c-.6.3-.9.8-.9 1.5v.5"/><path d="M12 16.8v.2"/></symbol>
+<symbol id="users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6M15.5 4.6a3.5 3.5 0 0 1 0 6.8M18 14.4c1.8.8 3 2.9 3 5.6"/></symbol>
+<symbol id="signout" viewBox="0 0 24 24"><path d="M10 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h4M15 8l4 4-4 4M19 12H9"/></symbol>
+<symbol id="inbox" viewBox="0 0 24 24"><path d="M4 13 6.5 5h11L20 13v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1z"/><path d="M4 13h4.5l1 2h5l1-2H20"/></symbol>
+<symbol id="assign" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M3 20c0-3.3 2.7-6 6-6 1.6 0 3 .6 4.1 1.6M15 17l2 2 4-4"/></symbol>
+<symbol id="pulse" viewBox="0 0 24 24"><path d="M3 12h4l2.5-6 5 12 2.5-6h4"/></symbol>
+<symbol id="rumour" viewBox="0 0 24 24"><path d="M5 5h14a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1h-9l-5 4v-4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z"/><path d="M10 9.2a2 2 0 1 1 2.7 1.9c-.4.2-.7.5-.7 1v.3M12 14.3v.1"/></symbol>
+<symbol id="publish" viewBox="0 0 24 24"><path d="M12 15V4M7.5 8.5 12 4l4.5 4.5M5 14v5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-5"/></symbol>
+<symbol id="discuss" viewBox="0 0 24 24"><path d="M14 4H4a1 1 0 0 0-1 1v7a1 1 0 0 0 1 1h1v3l3.5-3H14a1 1 0 0 0 1-1V5a1 1 0 0 0-1-1z"/><path d="M18 8h2a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1h-1v3l-3.5-3H11a1 1 0 0 1-1-1v-1"/></symbol>
+<symbol id="key" viewBox="0 0 24 24"><circle cx="8" cy="15" r="4"/><path d="m11 12 8.5-8.5M16.5 6.5l2.5 2.5M14.5 8.5l2 2"/></symbol>
+<symbol id="staff" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M9 3v4M15 3v4"/><circle cx="12" cy="11.5" r="2.2"/><path d="M8 17c.6-1.7 2.1-2.8 4-2.8s3.4 1.1 4 2.8"/></symbol>
+<symbol id="lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></symbol>
+<symbol id="filter" viewBox="0 0 24 24"><path d="M4 6h16M7 12h10M10 18h4"/></symbol>
+<symbol id="copy" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></symbol>
+<symbol id="download" viewBox="0 0 24 24"><path d="M12 4v11M7.5 10.5 12 15l4.5-4.5M5 20h14"/></symbol>
+<symbol id="camera" viewBox="0 0 24 24"><path d="M4 8a1 1 0 0 1 1-1h3l1.5-2h5L16 7h3a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1z"/><circle cx="12" cy="12.5" r="3.2"/></symbol>
+<symbol id="video" viewBox="0 0 24 24"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="m16 10 5-3v10l-5-3"/></symbol>
+<symbol id="mic" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"/></symbol>
+<symbol id="box" viewBox="0 0 24 24"><path d="M4 9h16v10a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1z"/><path d="M3 9l2-4h14l2 4M10 13h4"/></symbol>
+<symbol id="device" viewBox="0 0 24 24"><rect x="6" y="3" width="12" height="18" rx="2"/><path d="m12.8 7.5-2.3 4h3l-2.3 4M10.5 18h3"/></symbol>
+<symbol id="people" viewBox="0 0 24 24"><circle cx="6" cy="8" r="2"/><circle cx="12" cy="7" r="2"/><circle cx="18" cy="8" r="2"/><path d="M3 17v-3a3 3 0 0 1 6 0M9 17v-4a3 3 0 0 1 6 0v4M15 17v-3a3 3 0 0 1 6 0v3M3 20h18"/></symbol>
+<symbol id="alert" viewBox="0 0 24 24"><path d="M10.3 4.3 2.8 17.5A2 2 0 0 0 4.5 20.5h15a2 2 0 0 0 1.7-3L13.7 4.3a2 2 0 0 0-3.4 0z"/><path d="M12 9.5v4.5M12 17v.1"/></symbol>
+<symbol id="access" viewBox="0 0 24 24"><circle cx="10" cy="4.5" r="1.6"/><path d="M10 8v6h5.5l2.5 5.5M10 11h5"/><path d="M14.5 18.2A5 5 0 1 1 7 11.8"/></symbol>
+<symbol id="infoq" viewBox="0 0 24 24"><path d="M4 5h16v11H11l-5 4v-4H4z"/><path d="M10 8.7a2 2 0 1 1 2.7 1.9c-.4.2-.7.5-.7 1v.2M12 13.4v.1"/></symbol>
+<symbol id="megaphone" viewBox="0 0 24 24"><path d="M4 10v4a1 1 0 0 0 1 1h2l8 4V5L7 9H5a1 1 0 0 0-1 1zM7 15l1.5 5h2.5L10 16M19 9a4 4 0 0 1 0 6"/></symbol>
+<symbol id="cash" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="1.5"/><circle cx="12" cy="12" r="2.6"/><path d="M6.5 9.5v.01M17.5 14.5v.01"/></symbol>
+<symbol id="thumb" viewBox="0 0 24 24"><path d="M7 11v9H4v-9zM7 11l4-7a2 2 0 0 1 2 2v4h5.2a2 2 0 0 1 2 2.3l-1.1 6.2a2 2 0 0 1-2 1.5H7"/></symbol>
+<symbol id="tri" viewBox="0 0 24 24"><path d="M12 4 21 20H3z" fill="currentColor" stroke="none"/></symbol>
+<symbol id="diamond" viewBox="0 0 24 24"><path d="m12 3 9 9-9 9-9-9z" fill="currentColor" stroke="none"/></symbol>
+<symbol id="ring" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7.5" stroke-width="3"/></symbol>
+<symbol id="okc" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="currentColor" stroke="none"/><path d="m7.5 12.3 3 3 6-6.3" stroke="#fff" stroke-width="2.4"/></symbol>
+<symbol id="question" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5M12 16.4v.1"/></symbol>
+<symbol id="clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></symbol>
+<symbol id="phone" viewBox="0 0 24 24"><path d="M6.5 3.5h3l1.5 4-2 1.5a11 11 0 0 0 6 6l1.5-2 4 1.5v3a2 2 0 0 1-2 2A16 16 0 0 1 4.5 5.5a2 2 0 0 1 2-2z"/></symbol>
+<symbol id="pin" viewBox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></symbol>
+<symbol id="more" viewBox="0 0 24 24"><path d="M6 12h.01M12 12h.01M18 12h.01" stroke-width="3"/></symbol>
+</svg>
+
+<div class="shell">
+<aside class="rail" aria-label="Review desk">
+  <div class="rail-top">
+    <div class="brand"><svg class="mark" viewBox="6 6 36 36" width="24" height="24" role="img" aria-label="ElectraGuard AI"><path d="M38 6A4 4 0 0 1 42 10V14H20A6 6 0 0 0 14 20H29V28H14A6 6 0 0 0 20 34H34V24H42V38A4 4 0 0 1 38 42H20A14 14 0 0 1 6 28V20A14 14 0 0 1 20 6Z"/></svg>ElectraGuard</div>
+    <div class="el">Kano governorship election, 5 Dec 2026</div>
+  </div>
+  <nav class="rail-nav">
+    <div class="grp-l">Review</div>
+    <a class="ri" aria-current="page"><svg class="i" aria-hidden="true"><use href="#inbox"/></svg>Queue<span class="count">18</span></a>
+    <a class="ri"><svg class="i" aria-hidden="true"><use href="#assign"/></svg>Assign</a>
+    <div class="grp-l">Monitor</div>
+    <a class="ri"><svg class="i" aria-hidden="true"><use href="#pulse"/></svg>Operations</a>
+    <a class="ri"><svg class="i" aria-hidden="true"><use href="#rumour"/></svg>Rumour desk<span class="count quiet">4</span></a>
+    <a class="ri"><svg class="i" aria-hidden="true"><use href="#publish"/></svg>Publish</a>
+    <div class="grp-l">Moderate</div>
+    <a class="ri"><svg class="i" aria-hidden="true"><use href="#discuss"/></svg>Discussions<span class="count">3</span></a>
+    <div class="grp-l">Admin</div>
+    <a class="ri"><svg class="i" aria-hidden="true"><use href="#key"/></svg>Observer codes</a>
+    <a class="ri"><svg class="i" aria-hidden="true"><use href="#users"/></svg>Staff</a>
+    <a class="ri"><svg class="i" aria-hidden="true"><use href="#sliders"/></svg>Settings</a>
+    <a class="ri"><svg class="i" aria-hidden="true"><use href="#lock"/></svg>Security</a>
+  </nav>
+  <div class="rail-foot">
+    <div class="intake"><span class="dot"></span>Receiving reports</div>
+    <div class="me"><span class="disc">HY</span><div><b>Hadiza Yusuf</b><span>Coordinator</span></div><svg class="i" aria-hidden="true"><use href="#chevdown"/></svg></div>
+  </div>
+</aside>
+
+  <div class="main">
+    <header class="sh">
+      <div class="crumb"><span>Review</span><svg class="i" aria-hidden="true"><use href="#chev"/></svg><h1>Review queue</h1></div>
+      <div class="search" role="search"><svg class="i" aria-hidden="true"><use href="#search"/></svg><span>Search reference, place or category</span><span class="kbd">/</span></div>
+      <button class="qbtn" aria-label="Keyboard shortcuts">?</button>
+    </header>
+    <div class="body">
+      <div class="tabs" role="tablist">
+        <span class="tab" aria-selected="true">All <span class="count quiet">64</span></span>
+        <span class="tab">Received <span class="count quiet">18</span></span>
+        <span class="tab">In review <span class="count quiet">9</span></span>
+        <span class="tab">Questions <span class="count quiet">3</span></span>
+        <span class="tab">Closed <span class="count quiet">34</span></span>
+      </div>
+      <div class="filters">
+        <span class="seg-l">Priority</span>
+        <div class="seg" role="group" aria-label="Priority"><span aria-pressed="true">Any</span><span>Urgent</span><span>High</span><span>Normal</span><span>Low</span></div>
+        <a class="btn quiet h36"><svg class="i s20" aria-hidden="true"><use href="#filter"/></svg>Filters<span class="count">2</span></a>
+        <span class="token"><em>State</em> Kano <svg class="i" aria-hidden="true"><use href="#close"/></svg></span>
+        <span class="token"><em>Channel</em> Observer app <svg class="i" aria-hidden="true"><use href="#close"/></svg></span>
+        <a class="clear" href="#">Clear</a>
+        <a class="btn quiet h36 fr">Saved views <svg class="i s16" aria-hidden="true"><use href="#chevdown"/></svg></a>
+      </div>
+      <div class="work">
+        <div>
+          <div class="tbl">
+            <table>
+              <colgroup><col style="width:96px"><col style="width:136px"><col><col style="width:168px"><col style="width:64px"><col style="width:152px"></colgroup>
+              <thead><tr><th class="sorted">Priority <svg class="i s16" aria-hidden="true"><use href="#chevdown"/></svg></th><th>Reference</th><th>Category</th><th>Place</th><th>Time</th><th>Status</th></tr></thead>
+              <tbody>
+<tr class="sel" aria-selected="true"><td><span class="pri danger"><svg class="i" aria-hidden="true"><use href="#tri"/></svg>Urgent</span></td><td class="ref">EG-4H7Q-92KD</td><td>Intimidation or violence</td><td><span class="ward">Zango</span><span class="lga">Kano Municipal</span></td><td class="tm">08:41</td><td><span class="badge wait"><svg class="i" aria-hidden="true"><use href="#ring"/></svg>Received</span></td></tr>
+<tr><td><span class="pri danger"><svg class="i" aria-hidden="true"><use href="#tri"/></svg>Urgent</span></td><td class="ref">EG-9M2C-61TA</td><td>Vote buying or inducement</td><td><span class="ward">Gwammaja</span><span class="lga">Dala</span></td><td class="tm">08:30</td><td><span class="badge info"><svg class="i" aria-hidden="true"><use href="#clock"/></svg>In review</span></td></tr>
+<tr><td><span class="pri attn"><svg class="i" aria-hidden="true"><use href="#diamond"/></svg>High</span></td><td class="ref">EG-2P8R-07LW</td><td>Late or missing materials</td><td><span class="ward">Kantudu</span><span class="lga">Dala</span></td><td class="tm">08:12</td><td><span class="badge wait"><svg class="i" aria-hidden="true"><use href="#ring"/></svg>Received</span></td></tr>
+<tr><td><span class="pri attn"><svg class="i" aria-hidden="true"><use href="#diamond"/></svg>High</span></td><td class="ref">EG-6T4N-38QE</td><td>Not sure</td><td><span class="ward">Sharada</span><span class="lga">Gwale</span></td><td class="tm">07:58</td><td><span class="badge attn"><svg class="i" aria-hidden="true"><use href="#diamond"/></svg>Question sent</span></td></tr>
+<tr><td><span class="pri attn"><svg class="i" aria-hidden="true"><use href="#diamond"/></svg>High</span></td><td class="ref">EG-1R7K-09DN</td><td>Equipment failure</td><td><span class="ward">Kofar Mazugal</span><span class="lga">Dala</span></td><td class="tm">07:52</td><td><span class="badge wait"><svg class="i" aria-hidden="true"><use href="#ring"/></svg>Received</span></td></tr>
+<tr><td><span class="pri normal"><svg class="i" aria-hidden="true"><use href="#ring"/></svg>Normal</span></td><td class="ref">EG-8K1D-54VB</td><td>Misinformation seen here</td><td><span class="ward">Fagge D2</span><span class="lga">Fagge</span></td><td class="tm">07:44</td><td><span class="badge wait"><svg class="i" aria-hidden="true"><use href="#ring"/></svg>Received</span></td></tr>
+<tr><td><span class="pri normal"><svg class="i" aria-hidden="true"><use href="#ring"/></svg>Normal</span></td><td class="ref">EG-3W9F-20HC</td><td>Access barrier</td><td><span class="ward">Gandun Albasa</span><span class="lga">Kano Municipal</span></td><td class="tm">07:31</td><td><span class="badge info"><svg class="i" aria-hidden="true"><use href="#clock"/></svg>In review</span></td></tr>
+<tr><td><span class="pri normal"><svg class="i" aria-hidden="true"><use href="#ring"/></svg>Normal</span></td><td class="ref">EG-7J5L-12PW</td><td>People lack information</td><td><span class="ward">Tudun Wada</span><span class="lga">Nassarawa</span></td><td class="tm">07:26</td><td><span class="badge wait"><svg class="i" aria-hidden="true"><use href="#ring"/></svg>Received</span></td></tr>
+<tr><td><span class="pri normal"><svg class="i" aria-hidden="true"><use href="#ring"/></svg>Normal</span></td><td class="ref">EG-0N3S-88KT</td><td>Queues or crowding</td><td><span class="ward">Yakasai</span><span class="lga">Kano Municipal</span></td><td class="tm">07:18</td><td><span class="badge attn"><svg class="i" aria-hidden="true"><use href="#diamond"/></svg>Question sent</span></td></tr>
+<tr><td><span class="pri low"><svg class="i" aria-hidden="true"><use href="#ring"/></svg>Low</span></td><td class="ref">EG-5B6J-83XR</td><td>Queues or crowding</td><td><span class="ward">Kantudu</span><span class="lga">Dala</span></td><td class="tm">07:20</td><td><span class="badge wait"><svg class="i" aria-hidden="true"><use href="#ring"/></svg>Received</span></td></tr>
+<tr><td><span class="pri low"><svg class="i" aria-hidden="true"><use href="#ring"/></svg>Low</span></td><td class="ref">EG-7C3V-46MP</td><td>Good practice</td><td><span class="ward">Dorayi</span><span class="lga">Gwale</span></td><td class="tm">07:05</td><td><span class="badge wait"><svg class="i" aria-hidden="true"><use href="#ring"/></svg>Received</span></td></tr>
+<tr><td><span class="pri low"><svg class="i" aria-hidden="true"><use href="#ring"/></svg>Low</span></td><td class="ref">EG-4Q2Z-71HM</td><td>Good practice</td><td><span class="ward">Hotoro North</span><span class="lga">Nassarawa</span></td><td class="tm">06:58</td><td><span class="badge wait"><svg class="i" aria-hidden="true"><use href="#ring"/></svg>Received</span></td></tr>
+
+              </tbody>
+            </table>
+          </div>
+          <div class="hint"><span class="kbd">J</span><span class="kbd">K</span> move between cases. <span class="kbd">Enter</span> opens one.<span class="r">12 of 64 shown</span></div>
+        </div>
+        <aside class="pv" aria-label="Case preview">
+          <div class="pv-h"><h2>EG-4H7Q-92KD</h2><button aria-label="Close preview"><svg class="i" aria-hidden="true"><use href="#close"/></svg></button></div>
+          <div class="bad"><span class="badge danger"><svg class="i" aria-hidden="true"><use href="#tri"/></svg>Urgent</span><span class="badge wait"><svg class="i" aria-hidden="true"><use href="#ring"/></svg>Received</span></div>
+          <div class="tags"><span>Danger reported</span><span>Firsthand</span><span>Video</span></div>
+          <dl>
+                        <div><dt>Place</dt><dd>Zango Primary School I, Kano Municipal</dd></div>
+            <div><dt>Occurred</dt><dd>08:41 WAT, sent 2 min later</dd></div>
+            <div><dt>Channel</dt><dd>Observer app</dd></div>
+            <div><dt>Evidence</dt><dd><span class="ev"><svg class="i" aria-hidden="true"><use href="#camera"/></svg>1</span><span class="ev"><svg class="i" aria-hidden="true"><use href="#video"/></svg>1</span></dd></div>
+          </dl>
+          <div class="flags">
+            <div><svg class="i" aria-hidden="true"><use href="#diamond"/></svg>Possible duplicate of <span style="white-space:nowrap">EG-9M2C-61TA</span></div>
+            <div><svg class="i" aria-hidden="true"><use href="#diamond"/></svg>The text may contain names</div>
+          </div>
+          <a class="btn primary h40 block">Open case</a>
+          <div class="sub">or press <span class="kbd">Enter</span></div>
+        </aside>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

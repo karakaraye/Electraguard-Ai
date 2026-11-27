@@ -1,0 +1,199 @@
+/* Ward check-ins on the phone: the answer screen, the Messages group and the LGA card. Tokens only; colour is for status. */
+
+.screen {
+  display: grid;
+  gap: var(--s-4);
+  align-content: start;
+}
+
+.source {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-2);
+  margin: 0;
+  color: var(--ink-3);
+  font: var(--t-small);
+}
+
+.question {
+  margin: 0;
+  font: 700 1.75rem/1.2 var(--font-display);
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+.unit {
+  margin: calc(var(--s-2) * -1) 0 0;
+  color: var(--ink-2);
+  font: var(--t-body);
+}
+
+.hint {
+  margin: 0;
+  color: var(--ink-3);
+  font: var(--t-small);
+}
+
+.choices {
+  display: grid;
+  gap: var(--s-3);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+
+.summary {
+  display: grid;
+  margin: 0;
+  padding: 0 var(--s-4);
+  border-radius: var(--radius-lg);
+  background: var(--paper-raised);
+  box-shadow: inset 0 0 0 1px var(--rule);
+}
+
+.summary > div {
+  display: grid;
+  grid-template-columns: 6.5rem minmax(0, 1fr);
+  align-items: center;
+  gap: var(--s-3);
+  min-height: 48px;
+}
+
+.summary > div + div {
+  box-shadow: inset 0 1px 0 var(--rule);
+}
+
+.summary dt {
+  color: var(--ink-3);
+  font: var(--t-small);
+}
+
+.summary dd {
+  margin: 0;
+  font: 600 1rem/1.3 var(--font);
+}
+
+.change {
+  justify-self: start;
+  padding: var(--s-2) 0;
+  border: 0;
+  background: none;
+  color: var(--ink);
+  font: 600 1rem/1.3 var(--font);
+  text-decoration: underline;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 3px;
+  cursor: pointer;
+  min-height: 44px;
+}
+
+.change:focus-visible {
+  outline: var(--focus-outline);
+  outline-offset: var(--focus-offset);
+}
+
+.closed {
+  margin: 0;
+  padding: var(--s-4);
+  border-radius: var(--radius-lg);
+  background: var(--wait-bg);
+  color: var(--wait);
+  font: var(--t-body);
+}
+
+/* Messages: notices on top. */
+.rowTitle {
+  grid-column: 1;
+  grid-row: 1;
+  margin: 0;
+  font: 600 1rem/1.3 var(--font);
+  text-wrap: pretty;
+}
+
+.rowTime {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.rowBody {
+  grid-column: 1 / -1;
+  margin: 0;
+  color: var(--ink-2);
+  font: var(--t-small);
+}
+
+.tags {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-1) var(--s-2);
+  margin-top: 2px;
+  color: var(--ink-3);
+  font: var(--t-small);
+}
+
+/* Your LGA today. */
+.lga {
+  display: grid;
+  gap: var(--s-1);
+  padding: var(--s-4);
+  border-radius: var(--radius-lg);
+  background: var(--paper-raised);
+  box-shadow: inset 0 0 0 1px var(--rule);
+}
+
+.lgaHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s-1) var(--s-3);
+}
+
+.lgaTitle {
+  margin: 0;
+  font: 700 1.25rem/1.3 var(--font-display);
+}
+
+.lgaUpdated {
+  color: var(--ink-3);
+  font: var(--t-small);
+}
+
+.lgaList {
+  display: grid;
+  margin: var(--s-2) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.lgaList li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-3);
+  min-height: 44px;
+}
+
+.lgaList li + li {
+  box-shadow: inset 0 1px 0 var(--rule);
+}
+
+.lgaCount {
+  font: 700 1.0625rem/1 var(--font);
+  white-space: nowrap;
+}
+
+.lgaCount[data-small] {
+  color: var(--ink-2);
+  font: 500 0.9375rem/1 var(--font);
+}
+
+.lgaNote {
+  margin: var(--s-2) 0 0;
+  color: var(--ink-3);
+  font: var(--t-small);
+}

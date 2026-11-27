@@ -30,7 +30,7 @@ export interface SystemPageProps {
  * title takes focus so a screen reader announces where you are.
  */
 export function SystemPage({ icon: Icon, spot: Spot, tone = "plain", title, body, action, secondary, "data-testid": testId = "system-page" }: SystemPageProps) {
-  const theme = useThemePreference("system");
+  const theme = useThemePreference("light");
   const heading = useRef<HTMLHeadingElement>(null);
   useEffect(() => {
     heading.current?.focus({ preventScroll: true });

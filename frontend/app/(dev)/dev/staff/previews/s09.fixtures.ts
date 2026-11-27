@@ -16,7 +16,7 @@ export const S09_BATCHES: CodeBatch[] = [
   },
   {
     id: "7d2b1a40-0000-4000-8000-000000000002",
-    label: "Enugu training group B",
+    label: "Dala training group B",
     count: 40,
     created_at: "2026-11-22T14:30:00+01:00",
     created_by: "Adaeze Okafor",
@@ -27,7 +27,7 @@ export const S09_BATCHES: CodeBatch[] = [
   },
   {
     id: "7d2b1a40-0000-4000-8000-000000000003",
-    label: "Lagos Island rapid response",
+    label: "Fagge rapid response",
     count: 25,
     created_at: "2026-11-23T09:05:00+01:00",
     created_by: "Ibrahim Sule",

@@ -1,0 +1,75 @@
+.switch {
+  position: relative;
+  flex: none;
+  width: 44px;
+  height: 44px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.switch:disabled {
+  cursor: not-allowed;
+}
+
+.switch[aria-busy="true"] {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+.track {
+  position: absolute;
+  top: 10px;
+  left: 0;
+  width: 44px;
+  height: 24px;
+  border-radius: var(--radius-pill);
+  background: var(--paper-2);
+  box-shadow: inset 0 0 0 1.5px var(--rule-control);
+  transition: background-color var(--dur-fade) var(--ease-out);
+}
+
+.knob {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--fixed-paper);
+  box-shadow: 0 0 0 1px var(--rule-control);
+  transition: transform var(--dur-fade) var(--ease-out), box-shadow var(--dur-fade) var(--ease-out);
+}
+
+.switch[aria-checked="true"] .track {
+  background: var(--ink);
+  box-shadow: none;
+}
+
+.switch[aria-checked="true"][data-tone="danger"] .track {
+  background: var(--danger);
+}
+
+.switch[aria-checked="true"] .knob {
+  transform: translateX(20px);
+  box-shadow: none;
+}
+
+.switch:focus-visible {
+  outline: none;
+}
+
+.switch:focus-visible .track {
+  outline: var(--focus-outline);
+  outline-offset: var(--focus-offset);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .track,
+  .knob {
+    transition: none;
+  }
+}

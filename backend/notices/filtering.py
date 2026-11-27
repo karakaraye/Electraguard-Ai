@@ -11,7 +11,7 @@ Rejects:
 Returns all reasons found, not just the first.
 """
 
-import os
+import logging
 import re
 from functools import lru_cache
 from pathlib import Path
@@ -28,6 +28,8 @@ LINK_PATTERN = re.compile(
     r"(?:https?://[^\s]+|www\.[^\s]+|\b[a-zA-Z0-9-]+\.(?:com|org|gov|ng|net|io|edu|co)(?:/[^\s]*)?\b)",
     re.IGNORECASE,
 )
+
+logger = logging.getLogger(__name__)
 
 TERMS_FILE = Path(__file__).resolve().parent / "data" / "political_terms.txt"
 
@@ -57,8 +59,9 @@ def check_personal_names(text: str) -> bool:
     try:
         dummy_secret = b"notices-filter-name-check-secret!"
         res = redact(text, dummy_secret)
-        return any(s.kind == "name" for s in res.spans)
+        return any(s["kind"].lower() == "name" for s in res.spans)
     except Exception:
+        logger.exception("Personal name check failed; the text was not screened for names.")
         return False
 
 

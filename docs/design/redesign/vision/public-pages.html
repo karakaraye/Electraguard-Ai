@@ -1,0 +1,799 @@
+<!doctype html>
+<html lang="en-NG">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Public pages</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Display:wght@600;700;800&family=Noto+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+
+/* ElectraGuard AI vision mockups. Light theme tokens from frontend/ui/tokens.css. */
+:root{
+  --font:"Noto Sans",system-ui,"Segoe UI",sans-serif;
+  --font-display:"Noto Sans Display","Noto Sans",system-ui,sans-serif;
+  --ink:#0e0d0b; --ink-2:#45413a; --ink-3:#6e6a62;
+  --paper:#faf8f3; --paper-2:#f2efe7; --paper-raised:#ffffff; --paper-sunk:#f2efe7;
+  --rule:#e6e1d5; --rule-control:#8a857a; --on-ink:#faf8f3;
+  --sun:#e3b060; --sun-strong:#c98f2e; --sun-ink:#7a4e0e; --sun-tint:#f6e7c6; --sun-wash:#fbf4e4; --sun-line:#ead9b4;
+  --ok:#1b5e20; --ok-bg:#e7f3e8; --ok-solid:#2e7d32;
+  --attn:#8a3b00; --attn-bg:#fff1dc;
+  --danger:#a3161a; --danger-bg:#fdecec;
+  --wait:#45413a; --wait-bg:#eeebe4;
+  --info:#0d4a94; --info-bg:#e3eefb;
+  --scrim:rgb(14 13 11 / .4);
+  --shadow-sheet:0 -8px 32px rgb(14 13 11 / .18);
+  --shadow-raised:0 8px 24px rgb(14 13 11 / .14);
+  --shadow-pop:0 12px 32px rgb(14 13 11 / .16), 0 1px 2px rgb(14 13 11 / .08);
+  --board:#e9e5da;
+  --r-sm:6px; --r:10px; --r-md:14px; --r-lg:18px; --r-xl:22px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--paper);color:var(--ink);font-family:var(--font);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+body{font-size:16px;line-height:1.5}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+a{color:inherit}
+.tnum{font-variant-numeric:tabular-nums}
+svg.i{width:24px;height:24px;flex:none;fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
+svg.i.s20{width:20px;height:20px}
+svg.i.s16{width:16px;height:16px}
+svg.mark{fill:currentColor;display:block;flex:none}
+
+/* ---------- Unified components ---------- */
+/* Count: one component, two tones. Strong = needs action. Quiet = informational total. */
+.count{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;padding:0 6px;border-radius:10px;font:700 12px/1 var(--font);font-variant-numeric:tabular-nums;background:var(--ink);color:var(--on-ink)}
+.count.quiet{background:var(--paper-sunk);color:var(--ink-2);box-shadow:inset 0 0 0 1px var(--rule)}
+
+/* Status badge: shape + word, colour only for status. Square-ish, never a pill. */
+.badge{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 8px;border-radius:var(--r-sm);font:600 13px/1 var(--font);white-space:nowrap}
+.badge svg{width:14px;height:14px;stroke-width:2}
+.badge.ok{background:var(--ok-bg);color:var(--ok)}
+.badge.attn{background:var(--attn-bg);color:var(--attn)}
+.badge.danger{background:var(--danger-bg);color:var(--danger)}
+.badge.wait{background:var(--wait-bg);color:var(--wait)}
+.badge.info{background:var(--info-bg);color:var(--info)}
+
+/* Buttons */
+.btn{text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:8px;height:48px;padding:0 20px;border-radius:var(--r);font:600 16px/1 var(--font);white-space:nowrap}
+.btn.primary{background:var(--ink);color:var(--on-ink)}
+.btn.secondary{background:var(--paper-raised);color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--ink)}
+.btn.quiet{background:var(--paper-raised);color:var(--ink);box-shadow:inset 0 0 0 1px var(--rule-control)}
+.btn.disabled{background:var(--paper-sunk);color:var(--ink-3);box-shadow:none;cursor:not-allowed}
+.btn.h40{height:40px;padding:0 16px;font-size:15px}
+.btn.h36{height:36px;padding:0 12px;font-size:14px;gap:6px}
+.btn.h56{height:56px;padding:0 24px;font-size:17px}
+.btn.block{width:100%}
+.focus{outline:3px solid var(--ink);outline-offset:2px;box-shadow:0 0 0 2px var(--paper)}
+
+/* Toggle with clear off/on */
+.toggle{display:inline-flex;align-items:center;gap:8px;font:600 13px/1 var(--font)}
+.toggle .track{position:relative;width:44px;height:24px;border-radius:12px;background:var(--paper-raised);box-shadow:inset 0 0 0 1.5px var(--rule-control)}
+.toggle .track::after{content:"";position:absolute;top:4px;left:4px;width:16px;height:16px;border-radius:8px;background:var(--rule-control)}
+.toggle.on .track{background:var(--ink);box-shadow:none}
+.toggle.on .track::after{left:24px;background:var(--paper-raised)}
+
+/* Keycap */
+.kbd{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;padding:0 5px;border-radius:5px;font:600 12px/1 var(--font);color:var(--ink-2);background:var(--paper-raised);box-shadow:inset 0 0 0 1px var(--rule),0 1px 0 var(--rule)}
+
+/* ---------- Presentation board (annotation only, not product UI) ---------- */
+.board{background:var(--board);padding:64px;min-height:100vh}
+.board-head{max-width:1100px;margin-bottom:48px}
+.board-head h1{font:700 28px/1.2 var(--font-display);letter-spacing:-.01em}
+.board-head p{margin-top:8px;font-size:16px;color:var(--ink-2);max-width:72ch}
+.frames{display:flex;gap:48px;align-items:flex-start;flex-wrap:wrap}
+.frame-wrap{display:flex;flex-direction:column;gap:12px}
+.frame-label{font:600 14px/1.3 var(--font);color:var(--ink-2)}
+.frame-label b{color:var(--ink);font-weight:700}
+.frame-note{font-size:13px;line-height:1.45;color:var(--ink-2);max-width:390px}
+.phone{position:relative;width:390px;height:844px;overflow:hidden;background:var(--paper);border-radius:28px;box-shadow:0 0 0 1px rgb(14 13 11 / .12),var(--shadow-raised)}
+.crop{position:relative;overflow:hidden;background:var(--paper);border-radius:12px;box-shadow:0 0 0 1px rgb(14 13 11 / .12),var(--shadow-raised)}
+.safe-top{height:0}
+.home-ind{position:absolute;left:50%;bottom:8px;width:134px;height:5px;margin-left:-67px;border-radius:3px;background:var(--ink);opacity:.85;z-index:30}
+
+
+/* ---------- Public header (64 px, sticky; border appears only after scroll) ---------- */
+.ph{position:sticky;top:0;z-index:10;height:64px;display:flex;align-items:center;gap:48px;padding:0 80px;background:var(--paper)}
+.ph.scrolled{box-shadow:inset 0 -1px 0 var(--rule)}
+.ph-nav{display:flex;align-items:stretch;height:64px;gap:4px}
+.ph-nav a{position:relative;display:flex;align-items:center;padding:0 12px;font:600 15px/1 var(--font);color:var(--ink-2);text-decoration:none;white-space:nowrap}
+.ph-nav a[aria-current]{color:var(--ink)}
+.ph-nav a[aria-current]::after{content:"";position:absolute;left:50%;bottom:0;width:24px;height:2px;margin-left:-12px;background:var(--ink);border-radius:1px}
+.ph-end{margin-left:auto;display:flex;align-items:center;gap:12px}
+.lang{display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 10px 0 8px;border-radius:8px;font:600 14px/1 var(--font);color:var(--ink);box-shadow:inset 0 0 0 1px var(--rule-control)}
+.lang svg{width:20px;height:20px}
+
+
+/* ---------- Additions for the finish-round boards (same tokens, same grammar) ---------- */
+.board{width:max-content}
+.board-head{max-width:1200px}
+.sect{margin-top:72px}
+.sect:first-of-type{margin-top:0}
+.sect-h{display:flex;align-items:baseline;gap:16px;margin-bottom:24px;padding-bottom:12px;box-shadow:inset 0 -1px 0 rgb(14 13 11 / .14)}
+.sect-h h2{font:700 20px/1.2 var(--font-display)}
+.sect-h p{font-size:14px;color:var(--ink-2)}
+.sect-h .fix{margin-left:auto;font:600 13px/1 var(--font);color:var(--ink-2)}
+.frames{flex-wrap:nowrap}
+.frame-note b{color:var(--ink)}
+
+/* Tag: neutral, outlined, 24 px. Never coloured. */
+.tag{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 8px;border-radius:var(--r-sm);box-shadow:inset 0 0 0 1px var(--rule);font:500 12px/1 var(--font);color:var(--ink-2);white-space:nowrap;background:var(--paper-raised)}
+.tag svg{width:14px;height:14px}
+
+/* Fields */
+.fld{display:flex;flex-direction:column;gap:8px}
+.fld > label,.fld > .lb{font:600 15px/1.3 var(--font);color:var(--ink)}
+.fld .hn{font-size:14px;line-height:1.4;color:var(--ink-3)}
+.fld .er{display:flex;gap:6px;align-items:flex-start;font:600 14px/1.4 var(--font);color:var(--danger);margin-top:-4px}
+.fld .er svg{width:16px;height:16px;margin-top:2px}
+.inp{display:flex;align-items:center;gap:8px;height:48px;padding:0 16px;border-radius:var(--r);background:var(--paper-raised);box-shadow:inset 0 0 0 1.5px var(--rule-control);font:500 16px/1 var(--font);color:var(--ink)}
+.inp.h40{height:40px;padding:0 12px;font-size:14px}
+.inp.bad{box-shadow:inset 0 0 0 2px var(--danger)}
+.inp .phd{color:var(--ink-3);font-weight:400}
+.inp svg{width:20px;height:20px;color:var(--ink-2)}
+.inp .end{margin-left:auto}
+.ta{min-height:112px;padding:12px 16px;border-radius:var(--r);background:var(--paper-raised);box-shadow:inset 0 0 0 1.5px var(--rule-control);font:400 16px/1.5 var(--font);color:var(--ink)}
+.ta .phd{color:var(--ink-3)}
+.cnt{font-size:13px;color:var(--ink-3);text-align:right;font-variant-numeric:tabular-nums}
+.sel-c{display:flex;align-items:center;justify-content:space-between;gap:8px;height:40px;padding:0 10px 0 12px;border-radius:var(--r);background:var(--paper-raised);box-shadow:inset 0 0 0 1px var(--rule-control);font:500 14px/1 var(--font);color:var(--ink);white-space:nowrap}
+.sel-c svg{width:16px;height:16px;color:var(--ink-2)}
+.lnk{font:600 15px/1.3 var(--font);color:var(--ink);text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1.5px}
+.lnk.sm{font-size:14px}
+.lnk.danger{color:var(--danger)}
+.muted{color:var(--ink-3)}
+.tn{font-variant-numeric:tabular-nums}
+
+/* Switch row: label and switch always on one row (audit 69) */
+.swrow{display:flex;align-items:center;gap:16px}
+.swrow .t{flex:1;min-width:0}
+.swrow .t b{display:block;font:600 15px/1.3 var(--font)}
+.swrow .t span{display:block;margin-top:2px;font-size:14px;line-height:1.4;color:var(--ink-2)}
+
+/* Art slot labelled with the Blender scene it takes */
+.artslot{position:relative;overflow:hidden;background:var(--paper)}
+.artslot .img{position:absolute;inset:0;background-repeat:no-repeat}
+.artslot .lbl{position:absolute;left:8px;bottom:8px;display:flex;align-items:center;gap:6px;height:24px;padding:0 8px;border-radius:6px;background:rgb(255 255 255 / .94);box-shadow:inset 0 0 0 1px var(--rule);font:600 12px/1 var(--font);color:var(--ink-2)}
+.artslot .lbl i{width:8px;height:8px;border-radius:2px;background:var(--sun-strong)}
+
+/* Generic surface */
+.card{background:var(--paper-raised);border-radius:16px;box-shadow:inset 0 0 0 1px var(--rule)}
+.hr{height:1px;background:var(--rule)}
+.kv{display:grid;grid-template-columns:136px 1fr;gap:12px;padding:10px 0;box-shadow:inset 0 1px 0 var(--rule);font-size:14px;line-height:1.45}
+.kv dt,.kv .k{color:var(--ink-3)}
+.kv .v{color:var(--ink)}
+.ovf{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:8px;color:var(--ink-2);box-shadow:inset 0 0 0 1px var(--rule-control);background:var(--paper-raised)}
+.ovf svg{width:20px;height:20px}
+.ovf.ghost{box-shadow:none;background:none}
+
+/* Notice line under bars: offline, paused */
+.strip{display:flex;align-items:flex-start;gap:10px;padding:12px 16px;font:500 14px/1.45 var(--font)}
+.strip svg{width:20px;height:20px;flex:none;margin-top:0}
+.strip.wait{background:var(--wait-bg);color:var(--ink)}
+.strip.attn{background:var(--attn-bg);color:var(--attn)}
+.strip.ok{background:var(--ok-bg);color:var(--ok)}
+.strip .act{margin-left:auto;font-weight:600;white-space:nowrap;text-decoration:underline;text-underline-offset:3px}
+
+/* ---------- Public pages ---------- */
+.desk{width:1440px;flex:none}
+.ph{position:relative}
+.ph.scrolled{box-shadow:inset 0 -1px 0 var(--rule)}
+.pw{padding:0 80px}
+.g12{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:32px}
+.eyebrow{font:600 14px/1.3 var(--font);color:var(--ink-3)}
+.pt{padding-top:48px}
+.pt h1{font:800 60px/1.04 var(--font-display);letter-spacing:-.02em}
+.pt .lead{margin-top:16px;font-size:17px;line-height:1.55;color:var(--ink-2);max-width:40rem}
+.notice{display:flex;align-items:center;gap:10px;margin-top:20px;font:600 15px/1.4 var(--font);color:var(--ink)}
+.notice svg{width:20px;height:20px}
+.meta{display:flex;flex-wrap:wrap;gap:8px 24px;margin-top:12px;font-size:14px;color:var(--ink-3)}
+.meta b{font-weight:600;color:var(--ink-2)}
+
+/* Footer: links in one inline row (audit 51) */
+.pf{margin-top:64px;padding:32px 80px 40px;background:var(--paper-2);box-shadow:inset 0 1px 0 var(--rule)}
+.pf-top{display:flex;align-items:center;gap:32px}
+.pf-links{display:flex;gap:24px;margin-left:auto}
+.pf-links a{font:600 14px/1 var(--font);color:var(--ink);text-underline-offset:3px;text-decoration-thickness:1.5px}
+.pf p{margin-top:16px;font-size:14px;line-height:1.5;color:var(--ink-2);max-width:72ch}
+
+/* Results */
+.seg2{display:inline-flex;padding:2px;border-radius:10px;background:var(--paper-sunk);box-shadow:inset 0 0 0 1px var(--rule)}
+.seg2 span{display:flex;align-items:center;height:36px;padding:0 14px;border-radius:8px;font:600 14px/1 var(--font);color:var(--ink-2);white-space:nowrap}
+.seg2 span[aria-pressed="true"]{background:var(--paper-raised);color:var(--ink);box-shadow:0 0 0 1px var(--rule),0 1px 2px rgb(14 13 11 / .06)}
+.rtop{display:flex;align-items:flex-end;justify-content:space-between;margin-top:32px;padding-bottom:24px;box-shadow:inset 0 -1px 0 var(--rule)}
+.big{display:flex;align-items:baseline;gap:12px}
+.big b{font:800 60px/1 var(--font-display);letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.big span{font:600 17px/1.3 var(--font)}
+.rgrid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:32px;row-gap:40px;padding-top:32px}
+.rblk{grid-column:span 6}
+.rblk h2{font:700 20px/1.3 var(--font-display)}
+.rblk .hn{margin-top:4px;font-size:14px;color:var(--ink-3)}
+.hbars{margin-top:16px;display:flex;flex-direction:column}
+.hb{display:grid;grid-template-columns:128px 1fr 96px;gap:16px;align-items:center;height:36px;font-size:15px}
+.hb .tr{height:8px;border-radius:4px;background:var(--sun-tint);overflow:hidden}
+.hb .tr i{display:block;height:100%;border-radius:4px;background:var(--sun-strong)}
+.hb b{text-align:right;font-weight:700;font-variant-numeric:tabular-nums}
+.hb.sup{color:var(--ink-3)}
+.hb.sup b{font-weight:500;font-size:13px;color:var(--ink-3)}
+.hb.sup .tr{background:repeating-linear-gradient(90deg,var(--rule) 0 4px,transparent 4px 8px)}
+.cols{display:flex;align-items:flex-end;gap:12px;height:148px;margin-top:20px;padding-bottom:0;box-shadow:inset 0 -1px 0 var(--rule)}
+.cols div{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:6px;font:700 13px/1 var(--font);font-variant-numeric:tabular-nums}
+.cols i{display:block;width:100%;border-radius:4px 4px 0 0;background:var(--sun-strong)}
+.cols-x{display:flex;gap:12px;margin-top:8px}
+.cols-x span{flex:1;text-align:center;font-size:13px;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.outc{margin-top:16px}
+.oc{display:grid;grid-template-columns:1fr 72px 56px;gap:12px;align-items:center;height:44px;box-shadow:inset 0 -1px 0 var(--rule);font-size:15px}
+.oc b{text-align:right;font-weight:700;font-variant-numeric:tabular-nums}
+.oc span:last-child{text-align:right;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.audit{grid-column:1 / -1;display:flex;gap:24px;align-items:center;padding:16px 20px;border-radius:var(--r-md);background:var(--paper-2);font-size:14px;color:var(--ink-2)}
+.audit code{font:600 14px/1 ui-monospace,"Cascadia Mono",Consolas,monospace;color:var(--ink);letter-spacing:.02em}
+.audit svg{width:20px;height:20px;color:var(--ink)}
+
+/* Phone public bar */
+.pbar{height:56px;display:flex;align-items:center;gap:8px;padding:0 4px 0 16px;background:var(--paper)}
+.pbar .r{margin-left:auto;display:flex;align-items:center;gap:4px}
+.ibtn{display:flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:10px;color:var(--ink)}
+.pp{padding:0 16px}
+.pp h1{font:800 32px/1.12 var(--font-display);letter-spacing:-.015em}
+.pp .lead{margin-top:12px;font-size:16px;line-height:1.5;color:var(--ink-2)}
+
+/* Rumour / ask */
+.qcol{grid-column:1 / span 7}
+.scol{grid-column:9 / span 4}
+.ask-row{display:flex;gap:12px;align-items:flex-start;margin-top:8px}
+.ans{margin-top:32px;padding:24px;border-radius:16px;background:var(--paper-raised);box-shadow:inset 0 0 0 1px var(--rule)}
+.ans-h{display:flex;align-items:center;gap:12px}
+.ans-h h2{font:700 20px/1.3 var(--font-display)}
+.quote{margin-top:16px;padding-left:20px;box-shadow:inset 3px 0 0 var(--ink);font:500 20px/1.5 var(--font);color:var(--ink)}
+.ans .src{margin-top:16px;display:flex;flex-wrap:wrap;gap:6px 20px;font-size:14px;color:var(--ink-3)}
+.ans .src b{color:var(--ink-2);font-weight:600}
+.ans .foot2{display:flex;gap:16px;align-items:center;margin-top:20px;padding-top:16px;box-shadow:inset 0 1px 0 var(--rule)}
+.evb{margin-top:20px;padding:16px;border-radius:var(--r);background:var(--paper-2)}
+.evb h3{font:600 14px/1.3 var(--font);color:var(--ink)}
+.evb p{margin-top:2px;font-size:13px;color:var(--ink-3)}
+.yn{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.yn div{padding:10px 12px;border-radius:8px;background:var(--paper-raised);box-shadow:inset 0 0 0 1px var(--rule)}
+.yn span{display:block;font-size:13px;color:var(--ink-3)}
+.yn b{display:block;margin-top:4px;font:700 20px/1 var(--font-display);font-variant-numeric:tabular-nums}
+.yn b.s{font:600 14px/20px var(--font);color:var(--ink-2)}
+.side h3{font:700 15px/1.3 var(--font)}
+.side p{margin-top:6px;font-size:14px;line-height:1.5;color:var(--ink-2)}
+.side .blk{padding:20px 0;box-shadow:inset 0 1px 0 var(--rule)}
+.side .blk:first-child{padding-top:0;box-shadow:none}
+.s112b{display:flex;gap:10px;font-size:14px;line-height:1.5;color:var(--ink-2)}
+.s112b svg{width:20px;height:20px;color:var(--danger);flex:none}
+.s112b b{color:var(--ink)}
+
+/* Guides */
+.toc{position:sticky;top:96px;padding-left:24px;box-shadow:inset 1px 0 0 var(--rule)}
+.toc h3{font:600 13px/1 var(--font);color:var(--ink-3)}
+.toc a{display:block;margin-top:14px;font:500 15px/1.3 var(--font);color:var(--ink-2);text-decoration:none}
+.toc a[aria-current]{color:var(--ink);font-weight:600}
+.doc h2{margin-top:40px;font:700 20px/1.3 var(--font-display)}
+.doc p{margin-top:12px;font-size:17px;line-height:1.65;color:var(--ink)}
+.doc ul{margin-top:12px;padding-left:22px;font-size:17px;line-height:1.65}
+.doc li + li{margin-top:6px}
+.back{display:inline-flex;align-items:center;gap:6px;font:600 15px/1 var(--font);color:var(--ink);text-decoration:none}
+.back svg{width:20px;height:20px}
+.glist{margin-top:24px;border-radius:16px;background:var(--paper-raised);box-shadow:inset 0 0 0 1px var(--rule)}
+.gr{display:grid;grid-template-columns:40px 1fr 20px;gap:12px;align-items:center;min-height:80px;padding:12px 12px 12px 16px}
+.gr + .gr{box-shadow:inset 0 1px 0 var(--rule)}
+.gr .ico{display:flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:var(--r);background:var(--paper-sunk)}
+.gr h3{font:600 16px/1.3 var(--font)}
+.gr .m{display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px;margin-top:4px;font-size:13px;color:var(--ink-3)}
+.gr > svg{width:20px;height:20px;color:var(--ink-3)}
+
+/* On-screen phone */
+.sim{display:flex;justify-content:center}
+.dev{width:300px;padding:24px 20px 20px;border-radius:40px;background:#2a2722;box-shadow:inset 0 0 0 2px #3b3730,var(--shadow-raised)}
+.dev .spk{width:48px;height:5px;margin:0 auto 16px;border-radius:3px;background:#4a453d}
+.scr{height:220px;padding:14px 16px;border-radius:10px;background:#dfe3d0;box-shadow:inset 0 0 0 2px #1b1a17;font:500 15px/1.4 ui-monospace,"Cascadia Mono",Consolas,monospace;color:#1b1a17;overflow:hidden}
+.scr .st{display:flex;justify-content:space-between;font-size:12px;opacity:.7;margin-bottom:8px}
+.scr .rp{margin-top:6px;padding:2px 6px;box-shadow:inset 0 0 0 1.5px #1b1a17;border-radius:3px}
+.keys{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:16px}
+.keys span{display:flex;flex-direction:column;align-items:center;justify-content:center;height:44px;border-radius:12px;background:#3b3730;color:#f2efe7;font:600 17px/1 var(--font)}
+.keys span small{font:500 9px/1 var(--font);letter-spacing:.08em;opacity:.7;margin-top:2px}
+.keys .soft{height:40px;font-size:13px;background:#4a453d}
+.keys .call{background:#2e7d32}
+.keys .end{background:#a3161a}
+.steps{margin-top:24px;display:flex;flex-direction:column}
+.stp{display:grid;grid-template-columns:32px 1fr;gap:16px;padding:16px 0;box-shadow:inset 0 1px 0 var(--rule)}
+.stp i{font-style:normal;display:flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:14px;box-shadow:inset 0 0 0 1.5px var(--ink);font:700 13px/1 var(--font)}
+.stp b{display:block;font:600 16px/1.4 var(--font)}
+.stp p{margin-top:4px;font-size:15px;line-height:1.5;color:var(--ink-2)}
+.stp code,.mono{font:600 14px/1.5 ui-monospace,"Cascadia Mono",Consolas,monospace;color:var(--ink);background:var(--paper-2);padding:2px 6px;border-radius:4px}
+.cats{display:grid;grid-template-columns:1fr 1fr;gap:0 24px;margin-top:12px}
+.cats div{display:flex;gap:12px;height:36px;align-items:center;box-shadow:inset 0 -1px 0 var(--rule);font-size:14px}
+.cats b{width:16px;font-variant-numeric:tabular-nums}
+.simnote{display:flex;align-items:center;gap:10px;height:48px;padding:0 16px;border-radius:var(--r);background:var(--wait-bg);font:500 14px/1.4 var(--font);color:var(--ink)}
+.simnote svg{width:20px;height:20px}
+
+/* Privacy */
+.pv-never{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:16px}
+.pv-never div{padding:20px;border-radius:16px;background:var(--paper-raised);box-shadow:inset 0 0 0 1px var(--rule)}
+.pv-never svg{width:24px;height:24px}
+.pv-never b{display:block;margin-top:12px;font:600 16px/1.35 var(--font)}
+.pv-never p{margin-top:4px!important;font-size:14px!important;line-height:1.5!important;color:var(--ink-2)!important}
+.pt h1,h1{text-wrap:balance}
+.doc{max-width:40rem}
+
+</style>
+</head>
+<body>
+<svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" style="position:absolute" aria-hidden="true">
+<symbol id="globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.4 2.5 3.6 5.5 3.6 9s-1.2 6.5-3.6 9c-2.4-2.5-3.6-5.5-3.6-9S9.6 5.5 12 3z"/></symbol>
+<symbol id="menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+<symbol id="close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+<symbol id="back" viewBox="0 0 24 24"><path d="M19 12H5M11 6l-6 6 6 6"/></symbol>
+<symbol id="plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+<symbol id="home" viewBox="0 0 24 24"><path d="M4 10.5 12 4l8 6.5V19a1 1 0 0 1-1 1h-4.5v-5.5h-5V20H5a1 1 0 0 1-1-1z"/></symbol>
+<symbol id="file" viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></symbol>
+<symbol id="chat" viewBox="0 0 24 24"><path d="M5 5h14a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1h-9l-5 4v-4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z"/></symbol>
+<symbol id="search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.4-4.4"/></symbol>
+<symbol id="check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
+<symbol id="chev" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></symbol>
+<symbol id="chevdown" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+<symbol id="book" viewBox="0 0 24 24"><path d="M12 6.5C10.5 5 8.3 4.5 4 4.5v13c4.3 0 6.5.5 8 2 1.5-1.5 3.7-2 8-2v-13c-4.3 0-6.5.5-8 2zM12 6.5v13"/></symbol>
+<symbol id="shield" viewBox="0 0 24 24"><path d="M12 3l7 3v5.5c0 4.4-2.9 8-7 9.5-4.1-1.5-7-5.1-7-9.5V6z"/></symbol>
+<symbol id="sliders" viewBox="0 0 24 24"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/></symbol>
+<symbol id="checklist" viewBox="0 0 24 24"><path d="M11 7h9M11 12h9M11 17h9M4 7l1.5 1.5L8 6M4 12l1.5 1.5L8 11M4 17l1.5 1.5L8 16"/></symbol>
+<symbol id="help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.4 2.3c-.6.3-.9.8-.9 1.5v.5"/><path d="M12 16.8v.2"/></symbol>
+<symbol id="users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6M15.5 4.6a3.5 3.5 0 0 1 0 6.8M18 14.4c1.8.8 3 2.9 3 5.6"/></symbol>
+<symbol id="signout" viewBox="0 0 24 24"><path d="M10 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h4M15 8l4 4-4 4M19 12H9"/></symbol>
+<symbol id="inbox" viewBox="0 0 24 24"><path d="M4 13 6.5 5h11L20 13v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1z"/><path d="M4 13h4.5l1 2h5l1-2H20"/></symbol>
+<symbol id="assign" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M3 20c0-3.3 2.7-6 6-6 1.6 0 3 .6 4.1 1.6M15 17l2 2 4-4"/></symbol>
+<symbol id="pulse" viewBox="0 0 24 24"><path d="M3 12h4l2.5-6 5 12 2.5-6h4"/></symbol>
+<symbol id="rumour" viewBox="0 0 24 24"><path d="M5 5h14a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1h-9l-5 4v-4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z"/><path d="M10 9.2a2 2 0 1 1 2.7 1.9c-.4.2-.7.5-.7 1v.3M12 14.3v.1"/></symbol>
+<symbol id="publish" viewBox="0 0 24 24"><path d="M12 15V4M7.5 8.5 12 4l4.5 4.5M5 14v5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-5"/></symbol>
+<symbol id="discuss" viewBox="0 0 24 24"><path d="M14 4H4a1 1 0 0 0-1 1v7a1 1 0 0 0 1 1h1v3l3.5-3H14a1 1 0 0 0 1-1V5a1 1 0 0 0-1-1z"/><path d="M18 8h2a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1h-1v3l-3.5-3H11a1 1 0 0 1-1-1v-1"/></symbol>
+<symbol id="key" viewBox="0 0 24 24"><circle cx="8" cy="15" r="4"/><path d="m11 12 8.5-8.5M16.5 6.5l2.5 2.5M14.5 8.5l2 2"/></symbol>
+<symbol id="staff" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M9 3v4M15 3v4"/><circle cx="12" cy="11.5" r="2.2"/><path d="M8 17c.6-1.7 2.1-2.8 4-2.8s3.4 1.1 4 2.8"/></symbol>
+<symbol id="lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></symbol>
+<symbol id="filter" viewBox="0 0 24 24"><path d="M4 6h16M7 12h10M10 18h4"/></symbol>
+<symbol id="copy" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></symbol>
+<symbol id="download" viewBox="0 0 24 24"><path d="M12 4v11M7.5 10.5 12 15l4.5-4.5M5 20h14"/></symbol>
+<symbol id="camera" viewBox="0 0 24 24"><path d="M4 8a1 1 0 0 1 1-1h3l1.5-2h5L16 7h3a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1z"/><circle cx="12" cy="12.5" r="3.2"/></symbol>
+<symbol id="video" viewBox="0 0 24 24"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="m16 10 5-3v10l-5-3"/></symbol>
+<symbol id="mic" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"/></symbol>
+<symbol id="box" viewBox="0 0 24 24"><path d="M4 9h16v10a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1z"/><path d="M3 9l2-4h14l2 4M10 13h4"/></symbol>
+<symbol id="device" viewBox="0 0 24 24"><rect x="6" y="3" width="12" height="18" rx="2"/><path d="m12.8 7.5-2.3 4h3l-2.3 4M10.5 18h3"/></symbol>
+<symbol id="people" viewBox="0 0 24 24"><circle cx="6" cy="8" r="2"/><circle cx="12" cy="7" r="2"/><circle cx="18" cy="8" r="2"/><path d="M3 17v-3a3 3 0 0 1 6 0M9 17v-4a3 3 0 0 1 6 0v4M15 17v-3a3 3 0 0 1 6 0v3M3 20h18"/></symbol>
+<symbol id="alert" viewBox="0 0 24 24"><path d="M10.3 4.3 2.8 17.5A2 2 0 0 0 4.5 20.5h15a2 2 0 0 0 1.7-3L13.7 4.3a2 2 0 0 0-3.4 0z"/><path d="M12 9.5v4.5M12 17v.1"/></symbol>
+<symbol id="access" viewBox="0 0 24 24"><circle cx="10" cy="4.5" r="1.6"/><path d="M10 8v6h5.5l2.5 5.5M10 11h5"/><path d="M14.5 18.2A5 5 0 1 1 7 11.8"/></symbol>
+<symbol id="infoq" viewBox="0 0 24 24"><path d="M4 5h16v11H11l-5 4v-4H4z"/><path d="M10 8.7a2 2 0 1 1 2.7 1.9c-.4.2-.7.5-.7 1v.2M12 13.4v.1"/></symbol>
+<symbol id="megaphone" viewBox="0 0 24 24"><path d="M4 10v4a1 1 0 0 0 1 1h2l8 4V5L7 9H5a1 1 0 0 0-1 1zM7 15l1.5 5h2.5L10 16M19 9a4 4 0 0 1 0 6"/></symbol>
+<symbol id="cash" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="1.5"/><circle cx="12" cy="12" r="2.6"/><path d="M6.5 9.5v.01M17.5 14.5v.01"/></symbol>
+<symbol id="thumb" viewBox="0 0 24 24"><path d="M7 11v9H4v-9zM7 11l4-7a2 2 0 0 1 2 2v4h5.2a2 2 0 0 1 2 2.3l-1.1 6.2a2 2 0 0 1-2 1.5H7"/></symbol>
+<symbol id="tri" viewBox="0 0 24 24"><path d="M12 4 21 20H3z" fill="currentColor" stroke="none"/></symbol>
+<symbol id="diamond" viewBox="0 0 24 24"><path d="m12 3 9 9-9 9-9-9z" fill="currentColor" stroke="none"/></symbol>
+<symbol id="ring" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7.5" stroke-width="3"/></symbol>
+<symbol id="okc" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="currentColor" stroke="none"/><path d="m7.5 12.3 3 3 6-6.3" stroke="#fff" stroke-width="2.4"/></symbol>
+<symbol id="question" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5M12 16.4v.1"/></symbol>
+<symbol id="clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></symbol>
+<symbol id="phone" viewBox="0 0 24 24"><path d="M6.5 3.5h3l1.5 4-2 1.5a11 11 0 0 0 6 6l1.5-2 4 1.5v3a2 2 0 0 1-2 2A16 16 0 0 1 4.5 5.5a2 2 0 0 1 2-2z"/></symbol>
+<symbol id="pin" viewBox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></symbol>
+<symbol id="more" viewBox="0 0 24 24"><path d="M6 12h.01M12 12h.01M18 12h.01" stroke-width="3"/></symbol>
+<symbol id="envelope" viewBox="0 0 24 24"><rect x="3" y="5.5" width="18" height="13" rx="1.5"/><path d="m3.5 6.5 8.5 6.5 8.5-6.5"/></symbol>
+<symbol id="wifioff" viewBox="0 0 24 24"><path d="M3 3l18 18M8.5 16.2a5 5 0 0 1 7 0M5.2 12.8a9.6 9.6 0 0 1 4-2.4M14.6 10.3a9.6 9.6 0 0 1 4.2 2.5M2 9.3a14.3 14.3 0 0 1 4.2-2.6M10.4 5.1A14.5 14.5 0 0 1 22 9.3M12 19.5v.1"/></symbol>
+<symbol id="pause" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M10 9v6M14 9v6"/></symbol>
+<symbol id="send" viewBox="0 0 24 24"><path d="M4 12 20 4l-5 16-3.5-6.5z"/><path d="m11.5 13.5 4-4"/></symbol>
+<symbol id="edit" viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="m13.5 6.5 4 4"/></symbol>
+<symbol id="userplus" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6M18 8v6M15 11h6"/></symbol>
+<symbol id="print" viewBox="0 0 24 24"><path d="M7 9V4h10v5M7 17H5a1 1 0 0 1-1-1v-6a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1h-2"/><rect x="7" y="14" width="10" height="6" rx="1"/></symbol>
+<symbol id="trendup" viewBox="0 0 24 24"><path d="m3 17 6-6 4 4 8-8M15 7h6v6"/></symbol>
+<symbol id="refresh" viewBox="0 0 24 24"><path d="M20 11a8 8 0 0 0-14.6-4.5L4 8M4 4v4h4M4 13a8 8 0 0 0 14.6 4.5L20 16M20 20v-4h-4"/></symbol>
+<symbol id="eye" viewBox="0 0 24 24"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/></symbol>
+<symbol id="calendar" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/></symbol>
+<symbol id="link" viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></symbol>
+<symbol id="flag" viewBox="0 0 24 24"><path d="M5 21V4M5 4h11l-2 4 2 4H5"/></symbol>
+<symbol id="checkin" viewBox="0 0 24 24"><path d="M5 5h14a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1h-9l-5 4v-4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z"/><path d="m8.5 11 2.2 2.2 4.8-4.7"/></symbol>
+<symbol id="hash" viewBox="0 0 24 24"><path d="M5 9h15M4 15h15M10 4 8 20M16 4l-2 16"/></symbol>
+<symbol id="x2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m9 9 6 6M15 9l-6 6"/></symbol>
+<symbol id="dash" viewBox="0 0 24 24"><path d="M6 12h12" stroke-width="3"/></symbol>
+<symbol id="square" viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" rx="1" fill="currentColor" stroke="none"/></symbol>
+</svg>
+<div class="board">
+  <div class="board-head">
+    <h1>Public pages</h1>
+    <p>Every public page in the 64 px header from the approved home: five destinations with the 24 px ink bar on the current one, the EN chip, and "Report what you saw" on every page. Pages share one column grid (80 px margins, 12 columns), one heading scale and the inline footer.</p>
+  </div>
+
+  <!-- ===================== RESULTS ===================== -->
+  <section class="sect">
+    <div class="sect-h"><h2>Results</h2><p>With published totals (desktop) and before anything is published (phone).</p><span class="fix">Fixes audit 47, 48, 52, 53</span></div>
+    <div class="frames">
+      <div class="frame-wrap">
+        <div class="frame-label"><b>Results, published.</b> Disclaimer sits under the H1; every list is sorted largest first.</div>
+        <div class="crop desk" style="padding-bottom:48px">
+          <header class="ph scrolled">
+            <a href="#" aria-label="ElectraGuard AI home" style="color:var(--ink)"><svg class="mark" viewBox="0 0 224.07 36" width="149.38" height="24" role="img" aria-label="ElectraGuard AI"><path d="M32 0A4 4 0 0 1 36 4V8H14A6 6 0 0 0 8 14H23V22H8A6 6 0 0 0 14 28H28V18H36V32A4 4 0 0 1 32 36H14A14 14 0 0 1 0 22V14A14 14 0 0 1 14 0Z"/><path d="M61.97 26.28H52.56V9.72H61.97V12.2H55.53V16.42H61.56V18.9H55.53V23.78H61.97ZM67.82 26.28H64.87V8.65H67.82ZM76.33 13.48Q78.02 13.48 79.25 14.15Q80.48 14.82 81.14 16.1Q81.8 17.37 81.8 19.18V20.69H73.52Q73.57 22.38 74.47 23.31Q75.38 24.24 77.05 24.24Q78.23 24.24 79.18 24.01Q80.13 23.78 81.13 23.33V25.65Q80.2 26.09 79.21 26.3Q78.21 26.51 76.79 26.51Q74.96 26.51 73.54 25.8Q72.11 25.1 71.31 23.66Q70.51 22.22 70.51 20.09Q70.51 17.93 71.24 16.46Q71.97 14.98 73.28 14.23Q74.59 13.48 76.33 13.48ZM76.38 15.66Q75.17 15.66 74.44 16.42Q73.71 17.19 73.59 18.63H78.95Q78.95 17.74 78.67 17.08Q78.39 16.42 77.83 16.04Q77.26 15.66 76.38 15.66ZM89.76 26.51Q88 26.51 86.65 25.83Q85.31 25.14 84.55 23.72Q83.8 22.29 83.8 20.06Q83.8 17.74 84.61 16.3Q85.42 14.85 86.81 14.16Q88.21 13.48 89.97 13.48Q91.01 13.48 91.96 13.69Q92.91 13.89 93.59 14.24L92.7 16.54Q92.08 16.28 91.36 16.09Q90.64 15.89 89.94 15.89Q88.92 15.89 88.22 16.35Q87.51 16.82 87.16 17.73Q86.81 18.65 86.81 20.04Q86.81 21.36 87.17 22.27Q87.53 23.17 88.22 23.62Q88.9 24.08 89.87 24.08Q90.87 24.08 91.72 23.83Q92.57 23.59 93.31 23.2V25.65Q92.61 26.05 91.77 26.28Q90.92 26.51 89.76 26.51ZM100.75 24.17Q101.31 24.17 101.82 24.07Q102.33 23.96 102.77 23.82V26Q102.31 26.21 101.56 26.36Q100.82 26.51 100.01 26.51Q98.94 26.51 98.07 26.15Q97.2 25.79 96.68 24.91Q96.16 24.03 96.16 22.45V15.91H94.47V14.64L96.32 13.62L97.25 10.95H99.08V13.71H102.65V15.91H99.08V22.43Q99.08 23.31 99.55 23.74Q100.01 24.17 100.75 24.17ZM111.49 13.48Q111.84 13.48 112.24 13.51Q112.65 13.55 112.91 13.62L112.6 16.35Q112.33 16.31 111.97 16.26Q111.61 16.21 111.19 16.21Q110.59 16.21 110.01 16.42Q109.43 16.63 108.94 17.07Q108.45 17.51 108.17 18.17Q107.9 18.83 107.9 19.76V26.28H104.95V13.71H107.22L107.64 15.89H107.78Q108.15 15.22 108.71 14.66Q109.26 14.1 109.97 13.79Q110.68 13.48 111.49 13.48ZM119.56 13.48Q121.9 13.48 123.1 14.56Q124.29 15.63 124.29 17.84V26.28H122.21L121.65 24.54H121.56Q121.02 25.21 120.46 25.65Q119.89 26.09 119.14 26.3Q118.4 26.51 117.36 26.51Q116.25 26.51 115.35 26.09Q114.46 25.68 113.95 24.82Q113.44 23.96 113.44 22.64Q113.44 20.71 114.89 19.7Q116.34 18.7 119.26 18.6L121.37 18.53V18Q121.37 16.72 120.79 16.2Q120.21 15.68 119.19 15.68Q118.29 15.68 117.39 15.97Q116.5 16.26 115.67 16.63L114.78 14.59Q115.71 14.08 116.94 13.78Q118.17 13.48 119.56 13.48ZM119.84 20.39Q117.94 20.48 117.2 21.03Q116.45 21.57 116.45 22.57Q116.45 23.45 116.99 23.88Q117.52 24.31 118.36 24.31Q119.63 24.31 120.5 23.57Q121.37 22.82 121.37 21.41V20.34ZM134.52 17.19H140.78V25.61Q139.46 26.05 138.07 26.28Q136.68 26.51 134.92 26.51Q132.41 26.51 130.67 25.51Q128.93 24.52 128.03 22.62Q127.12 20.71 127.12 17.98Q127.12 15.38 128.14 13.48Q129.16 11.58 131.08 10.53Q132.99 9.49 135.75 9.49Q137.1 9.49 138.36 9.75Q139.62 10.02 140.67 10.49L139.65 12.92Q138.86 12.53 137.83 12.26Q136.79 11.99 135.68 11.99Q133.99 11.99 132.76 12.74Q131.53 13.48 130.87 14.83Q130.21 16.19 130.21 18.02Q130.21 19.79 130.72 21.14Q131.23 22.5 132.34 23.25Q133.46 24.01 135.24 24.01Q136.12 24.01 136.74 23.93Q137.35 23.84 137.86 23.71V19.72H134.52ZM155.3 13.71V26.28H153.01L152.59 24.66H152.45Q152.06 25.31 151.43 25.71Q150.8 26.12 150.07 26.31Q149.34 26.51 148.53 26.51Q147.14 26.51 146.12 26.04Q145.1 25.56 144.56 24.54Q144.03 23.52 144.03 21.92V13.71H146.98V21.32Q146.98 22.71 147.53 23.42Q148.09 24.12 149.27 24.12Q150.46 24.12 151.13 23.64Q151.8 23.15 152.08 22.19Q152.36 21.22 152.36 19.83V13.71ZM163.93 13.48Q166.27 13.48 167.47 14.56Q168.66 15.63 168.66 17.84V26.28H166.58L166.02 24.54H165.93Q165.39 25.21 164.82 25.65Q164.26 26.09 163.51 26.3Q162.77 26.51 161.73 26.51Q160.61 26.51 159.72 26.09Q158.83 25.68 158.32 24.82Q157.81 23.96 157.81 22.64Q157.81 20.71 159.26 19.7Q160.71 18.7 163.63 18.6L165.74 18.53V18Q165.74 16.72 165.16 16.2Q164.58 15.68 163.56 15.68Q162.66 15.68 161.76 15.97Q160.87 16.26 160.03 16.63L159.15 14.59Q160.08 14.08 161.31 13.78Q162.54 13.48 163.93 13.48ZM164.21 20.39Q162.31 20.48 161.57 21.03Q160.82 21.57 160.82 22.57Q160.82 23.45 161.36 23.88Q161.89 24.31 162.73 24.31Q164 24.31 164.87 23.57Q165.74 22.82 165.74 21.41V20.34ZM178.47 13.48Q178.82 13.48 179.23 13.51Q179.63 13.55 179.89 13.62L179.59 16.35Q179.31 16.31 178.95 16.26Q178.59 16.21 178.17 16.21Q177.57 16.21 176.99 16.42Q176.41 16.63 175.92 17.07Q175.43 17.51 175.16 18.17Q174.88 18.83 174.88 19.76V26.28H171.93V13.71H174.21L174.62 15.89H174.76Q175.13 15.22 175.69 14.66Q176.25 14.1 176.95 13.79Q177.66 13.48 178.47 13.48ZM185.5 26.51Q183.32 26.51 181.96 24.87Q180.61 23.22 180.61 20.02Q180.61 16.77 181.98 15.12Q183.34 13.48 185.57 13.48Q186.5 13.48 187.18 13.72Q187.87 13.96 188.38 14.38Q188.89 14.8 189.23 15.31H189.35Q189.3 14.94 189.25 14.25Q189.19 13.57 189.19 13.04V8.65H192.16V26.28H189.86L189.3 24.63H189.19Q188.84 25.14 188.34 25.57Q187.84 26 187.14 26.26Q186.43 26.51 185.5 26.51ZM186.38 24.12Q188.01 24.12 188.68 23.21Q189.35 22.29 189.35 20.41V20.04Q189.35 18.02 188.71 16.94Q188.08 15.87 186.36 15.87Q185.04 15.87 184.33 16.97Q183.62 18.07 183.62 20.06Q183.62 22.06 184.33 23.09Q185.04 24.12 186.38 24.12ZM213.56 26.28 211.57 21.15H205.01L203.03 26.28H200.92L207.4 9.65H209.27L215.72 26.28ZM209.09 14.29Q209.02 14.1 208.86 13.62Q208.69 13.13 208.54 12.61Q208.39 12.09 208.3 11.81Q208.18 12.27 208.06 12.75Q207.93 13.22 207.8 13.62Q207.67 14.01 207.58 14.29L205.7 19.3H210.94ZM223.12 26.28H217.14V25.07L219.08 24.63V11.39L217.14 10.93V9.72H223.12V10.93L221.17 11.39V24.63L223.12 25.07Z"/></svg></a>
+            <nav class="ph-nav" aria-label="Main"><a aria-current="page">Results</a><a>Check a rumour</a><a>Ask</a><a>Guides</a><a>SMS and USSD</a></nav>
+            <div class="ph-end"><button class="lang" aria-label="Language: English"><svg class="i" aria-hidden="true"><use href="#globe"/></svg>EN</button><a class="btn primary h40">Report what you saw</a></div>
+          </header>
+          <main class="pw">
+            <div class="pt">
+              <h1>Reviewed observations</h1>
+              <p class="lead">Totals of election-day reports that trained reviewers have finished. Small numbers are hidden to protect the people who reported.</p>
+              <p class="notice"><svg class="i" aria-hidden="true"><use href="#shield"/></svg>Reviewed observations only. Not official results. Independent of INEC.</p>
+            </div>
+            <div class="rtop">
+              <div>
+                <div class="big"><b>1,240</b><span>reviewed reports</span></div>
+                <div class="meta"><span><b>Published</b> 5 Dec 2026, 14:00 WAT</span><span><b>Reports observed before</b> 13:00 WAT</span><span>Published at least 60 minutes after the reports, so no one can be traced from them.</span></div>
+              </div>
+              <div class="fld" style="gap:6px"><span class="lb" style="font-size:13px;color:var(--ink-3);font-weight:600">Show results from</span><span class="sel-c" style="width:280px">All organisations combined<svg class="i" aria-hidden="true"><use href="#chevdown"/></svg></span></div>
+            </div>
+            <div class="rgrid">
+              <div class="rblk">
+                <h2>Reports by state</h2>
+                <p class="hn">Reviewed reports in each state, largest first.</p>
+                <div class="hbars">
+                  <div class="hb"><span>Kano</span><span class="tr"><i style="width:100%"></i></span><b>556</b></div>
+                  <div class="hb"><span>Rivers</span><span class="tr"><i style="width:43.2%"></i></span><b>240</b></div>
+                  <div class="hb"><span>Lagos</span><span class="tr"><i style="width:38.5%"></i></span><b>214</b></div>
+                  <div class="hb"><span>Enugu</span><span class="tr"><i style="width:16.5%"></i></span><b>92</b></div>
+                  <div class="hb"><span>FCT</span><span class="tr"><i style="width:14.6%"></i></span><b>81</b></div>
+                  <div class="hb"><span>Oyo</span><span class="tr"><i style="width:10.3%"></i></span><b>57</b></div>
+                  <div class="hb sup"><span>Kaduna</span><span class="tr"></span><b>fewer than 5</b></div>
+                </div>
+              </div>
+              <div class="rblk">
+                <h2>What happened</h2>
+                <p class="hn">All states. Open a state to see its reports by type.</p>
+                <div class="hbars">
+                  <div class="hb" style="grid-template-columns:200px 1fr 64px"><span>Late or missing materials</span><span class="tr"><i style="width:100%"></i></span><b>380</b></div>
+                  <div class="hb" style="grid-template-columns:200px 1fr 64px"><span>Equipment failure</span><span class="tr"><i style="width:80.3%"></i></span><b>305</b></div>
+                  <div class="hb" style="grid-template-columns:200px 1fr 64px"><span>Queues or crowding</span><span class="tr"><i style="width:72.4%"></i></span><b>275</b></div>
+                  <div class="hb" style="grid-template-columns:200px 1fr 64px"><span>Access barrier</span><span class="tr"><i style="width:25.3%"></i></span><b>96</b></div>
+                  <div class="hb" style="grid-template-columns:200px 1fr 64px"><span>Intimidation or violence</span><span class="tr"><i style="width:19.5%"></i></span><b>74</b></div>
+                  <div class="hb" style="grid-template-columns:200px 1fr 64px"><span>People lack information</span><span class="tr"><i style="width:13.7%"></i></span><b>52</b></div>
+                  <div class="hb" style="grid-template-columns:200px 1fr 64px"><span>Vote buying or inducement</span><span class="tr"><i style="width:8.2%"></i></span><b>31</b></div>
+                </div>
+              </div>
+              <div class="rblk">
+                <h2>Reports by hour</h2>
+                <p class="hn">By the hour the reports were observed, West Africa Time.</p>
+                <div class="cols">
+                  <div>86<i style="height:30%"></i></div><div>214<i style="height:75%"></i></div><div>286<i style="height:100%"></i></div><div>241<i style="height:84%"></i></div><div>188<i style="height:66%"></i></div><div>139<i style="height:49%"></i></div><div>86<i style="height:30%"></i></div>
+                </div>
+                <div class="cols-x"><span>07:00</span><span>08:00</span><span>09:00</span><span>10:00</span><span>11:00</span><span>12:00</span><span>13:00</span></div>
+              </div>
+              <div class="rblk">
+                <h2>Outcomes</h2>
+                <p class="hn">How reviewers closed the reports.</p>
+                <div class="outc">
+                  <div class="oc"><span>Corroborated</span><b>612</b><span>49%</span></div>
+                  <div class="oc"><span>Insufficient evidence</span><b>498</b><span>40%</span></div>
+                  <div class="oc"><span>Out of scope</span><b>130</b><span>10%</span></div>
+                </div>
+              </div>
+              <div class="audit"><svg class="i" aria-hidden="true"><use href="#lock"/></svg><span><b style="color:var(--ink)">Audit record.</b> 18,422 recorded events up to 13:00 WAT. Fingerprint:</span><code>9f3c 61a2 e07b 4d18</code><a class="lnk sm" style="margin-left:auto">What this means</a></div>
+            </div>
+          </main>
+        </div>
+      </div>
+      <div class="frame-wrap">
+        <div class="frame-label"><b>Nothing published yet.</b> Phone, 390.</div>
+        <div class="phone">
+          <div class="pbar"><a style="color:var(--ink)"><svg class="mark" viewBox="6 6 36 36" width="24" height="24" role="img" aria-label="ElectraGuard AI"><path d="M38 6A4 4 0 0 1 42 10V14H20A6 6 0 0 0 14 20H29V28H14A6 6 0 0 0 20 34H34V24H42V38A4 4 0 0 1 38 42H20A14 14 0 0 1 6 28V20A14 14 0 0 1 20 6Z"/></svg></a><div class="r"><a class="btn primary h36">Report</a><button class="ibtn" aria-label="Menu"><svg class="i" aria-hidden="true"><use href="#menu"/></svg></button></div></div>
+          <div class="pp" style="padding-top:24px">
+            <h1>Reviewed observations</h1>
+            <p class="notice" style="font-size:14px;align-items:flex-start"><svg class="i" aria-hidden="true" style="margin-top:1px"><use href="#shield"/></svg>Reviewed observations only. Not official results. Independent of INEC.</p>
+            <div class="artslot" style="height:220px;margin:32px -16px 0"><div class="img" style="background-image:url(../../art/blender/renders/wip/evening-03-transparent.png);background-size:auto 128%;background-position:62% 70%"></div><span class="lbl"><i></i>Art: evening</span></div>
+            <h2 style="margin-top:24px;font:700 20px/1.3 var(--font-display)">Nothing has been published yet.</h2>
+            <p style="margin-top:8px;font-size:16px;line-height:1.5;color:var(--ink-2)">Totals appear after reviewers finish reports, and at least 60 minutes after the reports were made.</p>
+            <div style="display:flex;flex-direction:column;gap:12px;margin-top:24px"><a class="btn secondary block">Check a report</a><a class="lnk" style="align-self:center">How reports are reviewed</a></div>
+          </div>
+          <div class="home-ind"></div>
+        </div>
+        <div class="frame-note" style="margin-top:4px"><b>Empty state.</b> The evening scene (counting done, the sheet posted) tells people what they are waiting for. No zero is ever shown as a total.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== CHECK A RUMOUR ===================== -->
+  <section class="sect">
+    <div class="sect-h"><h2>Check a rumour</h2><p>Checked answer (desktop), the empty input and no match (phone).</p><span class="fix">Fixes audit 47, 51, 76, 77</span></div>
+    <div class="frames">
+      <div class="frame-wrap">
+        <div class="frame-label"><b>Approved answer.</b> The reply is a quotation with a 3 px ink rule, not a box in a card.</div>
+        <div class="crop desk" style="padding-bottom:48px">
+          <header class="ph scrolled">
+            <a href="#" aria-label="ElectraGuard AI home" style="color:var(--ink)"><svg class="mark" viewBox="0 0 224.07 36" width="149.38" height="24" role="img" aria-label="ElectraGuard AI"><path d="M32 0A4 4 0 0 1 36 4V8H14A6 6 0 0 0 8 14H23V22H8A6 6 0 0 0 14 28H28V18H36V32A4 4 0 0 1 32 36H14A14 14 0 0 1 0 22V14A14 14 0 0 1 14 0Z"/><path d="M61.97 26.28H52.56V9.72H61.97V12.2H55.53V16.42H61.56V18.9H55.53V23.78H61.97ZM67.82 26.28H64.87V8.65H67.82ZM76.33 13.48Q78.02 13.48 79.25 14.15Q80.48 14.82 81.14 16.1Q81.8 17.37 81.8 19.18V20.69H73.52Q73.57 22.38 74.47 23.31Q75.38 24.24 77.05 24.24Q78.23 24.24 79.18 24.01Q80.13 23.78 81.13 23.33V25.65Q80.2 26.09 79.21 26.3Q78.21 26.51 76.79 26.51Q74.96 26.51 73.54 25.8Q72.11 25.1 71.31 23.66Q70.51 22.22 70.51 20.09Q70.51 17.93 71.24 16.46Q71.97 14.98 73.28 14.23Q74.59 13.48 76.33 13.48ZM76.38 15.66Q75.17 15.66 74.44 16.42Q73.71 17.19 73.59 18.63H78.95Q78.95 17.74 78.67 17.08Q78.39 16.42 77.83 16.04Q77.26 15.66 76.38 15.66ZM89.76 26.51Q88 26.51 86.65 25.83Q85.31 25.14 84.55 23.72Q83.8 22.29 83.8 20.06Q83.8 17.74 84.61 16.3Q85.42 14.85 86.81 14.16Q88.21 13.48 89.97 13.48Q91.01 13.48 91.96 13.69Q92.91 13.89 93.59 14.24L92.7 16.54Q92.08 16.28 91.36 16.09Q90.64 15.89 89.94 15.89Q88.92 15.89 88.22 16.35Q87.51 16.82 87.16 17.73Q86.81 18.65 86.81 20.04Q86.81 21.36 87.17 22.27Q87.53 23.17 88.22 23.62Q88.9 24.08 89.87 24.08Q90.87 24.08 91.72 23.83Q92.57 23.59 93.31 23.2V25.65Q92.61 26.05 91.77 26.28Q90.92 26.51 89.76 26.51ZM100.75 24.17Q101.31 24.17 101.82 24.07Q102.33 23.96 102.77 23.82V26Q102.31 26.21 101.56 26.36Q100.82 26.51 100.01 26.51Q98.94 26.51 98.07 26.15Q97.2 25.79 96.68 24.91Q96.16 24.03 96.16 22.45V15.91H94.47V14.64L96.32 13.62L97.25 10.95H99.08V13.71H102.65V15.91H99.08V22.43Q99.08 23.31 99.55 23.74Q100.01 24.17 100.75 24.17ZM111.49 13.48Q111.84 13.48 112.24 13.51Q112.65 13.55 112.91 13.62L112.6 16.35Q112.33 16.31 111.97 16.26Q111.61 16.21 111.19 16.21Q110.59 16.21 110.01 16.42Q109.43 16.63 108.94 17.07Q108.45 17.51 108.17 18.17Q107.9 18.83 107.9 19.76V26.28H104.95V13.71H107.22L107.64 15.89H107.78Q108.15 15.22 108.71 14.66Q109.26 14.1 109.97 13.79Q110.68 13.48 111.49 13.48ZM119.56 13.48Q121.9 13.48 123.1 14.56Q124.29 15.63 124.29 17.84V26.28H122.21L121.65 24.54H121.56Q121.02 25.21 120.46 25.65Q119.89 26.09 119.14 26.3Q118.4 26.51 117.36 26.51Q116.25 26.51 115.35 26.09Q114.46 25.68 113.95 24.82Q113.44 23.96 113.44 22.64Q113.44 20.71 114.89 19.7Q116.34 18.7 119.26 18.6L121.37 18.53V18Q121.37 16.72 120.79 16.2Q120.21 15.68 119.19 15.68Q118.29 15.68 117.39 15.97Q116.5 16.26 115.67 16.63L114.78 14.59Q115.71 14.08 116.94 13.78Q118.17 13.48 119.56 13.48ZM119.84 20.39Q117.94 20.48 117.2 21.03Q116.45 21.57 116.45 22.57Q116.45 23.45 116.99 23.88Q117.52 24.31 118.36 24.31Q119.63 24.31 120.5 23.57Q121.37 22.82 121.37 21.41V20.34ZM134.52 17.19H140.78V25.61Q139.46 26.05 138.07 26.28Q136.68 26.51 134.92 26.51Q132.41 26.51 130.67 25.51Q128.93 24.52 128.03 22.62Q127.12 20.71 127.12 17.98Q127.12 15.38 128.14 13.48Q129.16 11.58 131.08 10.53Q132.99 9.49 135.75 9.49Q137.1 9.49 138.36 9.75Q139.62 10.02 140.67 10.49L139.65 12.92Q138.86 12.53 137.83 12.26Q136.79 11.99 135.68 11.99Q133.99 11.99 132.76 12.74Q131.53 13.48 130.87 14.83Q130.21 16.19 130.21 18.02Q130.21 19.79 130.72 21.14Q131.23 22.5 132.34 23.25Q133.46 24.01 135.24 24.01Q136.12 24.01 136.74 23.93Q137.35 23.84 137.86 23.71V19.72H134.52ZM155.3 13.71V26.28H153.01L152.59 24.66H152.45Q152.06 25.31 151.43 25.71Q150.8 26.12 150.07 26.31Q149.34 26.51 148.53 26.51Q147.14 26.51 146.12 26.04Q145.1 25.56 144.56 24.54Q144.03 23.52 144.03 21.92V13.71H146.98V21.32Q146.98 22.71 147.53 23.42Q148.09 24.12 149.27 24.12Q150.46 24.12 151.13 23.64Q151.8 23.15 152.08 22.19Q152.36 21.22 152.36 19.83V13.71ZM163.93 13.48Q166.27 13.48 167.47 14.56Q168.66 15.63 168.66 17.84V26.28H166.58L166.02 24.54H165.93Q165.39 25.21 164.82 25.65Q164.26 26.09 163.51 26.3Q162.77 26.51 161.73 26.51Q160.61 26.51 159.72 26.09Q158.83 25.68 158.32 24.82Q157.81 23.96 157.81 22.64Q157.81 20.71 159.26 19.7Q160.71 18.7 163.63 18.6L165.74 18.53V18Q165.74 16.72 165.16 16.2Q164.58 15.68 163.56 15.68Q162.66 15.68 161.76 15.97Q160.87 16.26 160.03 16.63L159.15 14.59Q160.08 14.08 161.31 13.78Q162.54 13.48 163.93 13.48ZM164.21 20.39Q162.31 20.48 161.57 21.03Q160.82 21.57 160.82 22.57Q160.82 23.45 161.36 23.88Q161.89 24.31 162.73 24.31Q164 24.31 164.87 23.57Q165.74 22.82 165.74 21.41V20.34ZM178.47 13.48Q178.82 13.48 179.23 13.51Q179.63 13.55 179.89 13.62L179.59 16.35Q179.31 16.31 178.95 16.26Q178.59 16.21 178.17 16.21Q177.57 16.21 176.99 16.42Q176.41 16.63 175.92 17.07Q175.43 17.51 175.16 18.17Q174.88 18.83 174.88 19.76V26.28H171.93V13.71H174.21L174.62 15.89H174.76Q175.13 15.22 175.69 14.66Q176.25 14.1 176.95 13.79Q177.66 13.48 178.47 13.48ZM185.5 26.51Q183.32 26.51 181.96 24.87Q180.61 23.22 180.61 20.02Q180.61 16.77 181.98 15.12Q183.34 13.48 185.57 13.48Q186.5 13.48 187.18 13.72Q187.87 13.96 188.38 14.38Q188.89 14.8 189.23 15.31H189.35Q189.3 14.94 189.25 14.25Q189.19 13.57 189.19 13.04V8.65H192.16V26.28H189.86L189.3 24.63H189.19Q188.84 25.14 188.34 25.57Q187.84 26 187.14 26.26Q186.43 26.51 185.5 26.51ZM186.38 24.12Q188.01 24.12 188.68 23.21Q189.35 22.29 189.35 20.41V20.04Q189.35 18.02 188.71 16.94Q188.08 15.87 186.36 15.87Q185.04 15.87 184.33 16.97Q183.62 18.07 183.62 20.06Q183.62 22.06 184.33 23.09Q185.04 24.12 186.38 24.12ZM213.56 26.28 211.57 21.15H205.01L203.03 26.28H200.92L207.4 9.65H209.27L215.72 26.28ZM209.09 14.29Q209.02 14.1 208.86 13.62Q208.69 13.13 208.54 12.61Q208.39 12.09 208.3 11.81Q208.18 12.27 208.06 12.75Q207.93 13.22 207.8 13.62Q207.67 14.01 207.58 14.29L205.7 19.3H210.94ZM223.12 26.28H217.14V25.07L219.08 24.63V11.39L217.14 10.93V9.72H223.12V10.93L221.17 11.39V24.63L223.12 25.07Z"/></svg></a>
+            <nav class="ph-nav" aria-label="Main"><a>Results</a><a aria-current="page">Check a rumour</a><a>Ask</a><a>Guides</a><a>SMS and USSD</a></nav>
+            <div class="ph-end"><button class="lang" aria-label="Language: English"><svg class="i" aria-hidden="true"><use href="#globe"/></svg>EN</button><a class="btn primary h40">Report what you saw</a></div>
+          </header>
+          <main class="pw g12">
+            <div class="qcol">
+              <div class="pt"><h1>Check a rumour</h1><p class="lead">Paste a message you heard or saw. If our reviewers have approved an answer, we show it here.</p></div>
+              <div class="fld" style="margin-top:32px">
+                <label>What did you hear or see?</label>
+                <span class="hn">Paste or type the message. 5 to 500 characters.</span>
+                <div class="ta">They have cancelled the results in Kano. Nobody should go to the collation centre, it is finished.</div>
+                <div style="display:flex;align-items:center;gap:16px"><a class="btn primary">Check</a><span class="cnt" style="margin-left:auto">98 of 500</span></div>
+              </div>
+              <section class="ans" aria-labelledby="aa">
+                <div class="ans-h"><span class="badge ok"><svg class="i" aria-hidden="true"><use href="#check"/></svg>Checked</span><h2 id="aa">Approved answer</h2></div>
+                <p class="quote">INEC has not cancelled any results. Collation is active and proceeding under observation.</p>
+                <div class="src"><span><b>Approved on</b> 5 Dec 2026</span><span>Checked by ElectraGuard reviewers. Not an INEC statement.</span></div>
+                <div class="evb">
+                  <h3>What observers saw</h3>
+                  <p>Observers reported this in 3 states and 11 wards. Ward check-ins, last 6 hours: "Have results been posted publicly at your unit?"</p>
+                  <div class="yn"><div><span>Yes</span><b>23</b></div><div><span>No</span><b class="s">fewer than 5</b></div><div><span>Not seen</span><b>6</b></div></div>
+                </div>
+                <div class="foot2"><a class="btn quiet h40"><svg class="i s20" aria-hidden="true"><use href="#copy"/></svg>Copy answer</a><a class="lnk sm">Check another message</a></div>
+              </section>
+            </div>
+            <aside class="scol side" style="padding-top:64px">
+              <div class="blk"><div class="s112b"><svg class="i" aria-hidden="true"><use href="#alert"/></svg><span><b>If someone is in danger, call 112 now.</b> ElectraGuard records reports. It does not send help.</span></div></div>
+              <div class="blk"><h3>Saw it happen yourself?</h3><p>Report what you saw at the polling unit. A reviewer checks every report.</p><a class="btn secondary h40" style="margin-top:12px">Report what you saw</a></div>
+              <div class="blk"><h3>By SMS</h3><p>Send <span class="mono">CHECK</span> and the message to <b class="tn" style="color:var(--ink)">20384</b>. The reply comes in under 160 characters.</p></div>
+            </aside>
+          </main>
+        </div>
+      </div>
+      <div class="frame-wrap">
+        <div class="frame-label"><b>Before checking.</b> Disabled is solid.</div>
+        <div class="phone">
+          <div class="pbar"><a style="color:var(--ink)"><svg class="mark" viewBox="6 6 36 36" width="24" height="24" role="img" aria-label="ElectraGuard AI"><path d="M38 6A4 4 0 0 1 42 10V14H20A6 6 0 0 0 14 20H29V28H14A6 6 0 0 0 20 34H34V24H42V38A4 4 0 0 1 38 42H20A14 14 0 0 1 6 28V20A14 14 0 0 1 20 6Z"/></svg></a><div class="r"><a class="btn primary h36">Report</a><button class="ibtn" aria-label="Menu"><svg class="i" aria-hidden="true"><use href="#menu"/></svg></button></div></div>
+          <div class="pp" style="padding-top:24px">
+            <h1>Check a rumour</h1>
+            <p class="lead">Paste a message you heard or saw. If our reviewers have approved an answer, we show it here.</p>
+            <div class="fld" style="margin-top:24px">
+              <label>What did you hear or see?</label>
+              <span class="hn">Paste or type the message. 5 to 500 characters.</span>
+              <div class="ta" style="min-height:144px"><span class="phd">Paste the message here</span></div>
+              <span class="cnt">0 of 500</span>
+              <a class="btn disabled block" aria-disabled="true">Check</a>
+            </div>
+            <div class="s112b" style="margin-top:32px;padding-top:20px;box-shadow:inset 0 1px 0 var(--rule)"><svg class="i" aria-hidden="true"><use href="#alert"/></svg><span><b>If someone is in danger, call 112 now.</b> ElectraGuard does not send help.</span></div>
+          </div>
+          <div class="home-ind"></div>
+        </div>
+      </div>
+      <div class="frame-wrap">
+        <div class="frame-label"><b>No approved answer.</b> One clear next step.</div>
+        <div class="phone">
+          <div class="pbar"><a style="color:var(--ink)"><svg class="mark" viewBox="6 6 36 36" width="24" height="24" role="img" aria-label="ElectraGuard AI"><path d="M38 6A4 4 0 0 1 42 10V14H20A6 6 0 0 0 14 20H29V28H14A6 6 0 0 0 20 34H34V24H42V38A4 4 0 0 1 38 42H20A14 14 0 0 1 6 28V20A14 14 0 0 1 20 6Z"/></svg></a><div class="r"><a class="btn primary h36">Report</a><button class="ibtn" aria-label="Menu"><svg class="i" aria-hidden="true"><use href="#menu"/></svg></button></div></div>
+          <div class="pp" style="padding-top:24px">
+            <div class="ta" style="min-height:96px;font-size:15px">Voting in Gwale has been moved to Sunday because of the rain.</div>
+            <div style="margin-top:24px;padding-top:24px;box-shadow:inset 0 1px 0 var(--rule)">
+              <span class="badge wait"><svg class="i" aria-hidden="true"><use href="#ring"/></svg>Not checked</span>
+              <h2 style="margin-top:12px;font:700 20px/1.3 var(--font-display)">We have not checked this yet.</h2>
+              <p style="margin-top:8px;font-size:16px;line-height:1.5;color:var(--ink-2)">Our reviewers can look at it. Nothing you type here is linked to you.</p>
+              <a class="btn primary block" style="margin-top:20px">Ask our reviewers to check it</a>
+              <div class="strip wait" style="margin-top:16px;border-radius:var(--r)"><svg class="i" aria-hidden="true"><use href="#users"/></svg><span>Others have asked about this too. Our reviewers are already looking at it.</span></div>
+              <a class="lnk" style="display:inline-block;margin-top:20px">Check another message</a>
+            </div>
+          </div>
+          <div class="home-ind"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== ASK ===================== -->
+  <section class="sect">
+    <div class="sect-h"><h2>Ask</h2><p>A quoted answer (desktop) and the honest "no approved answer" (phone).</p><span class="fix">Fixes audit 47, 51</span></div>
+    <div class="frames">
+      <div class="frame-wrap">
+        <div class="frame-label"><b>Answered.</b> Word for word from a guide, with section and version.</div>
+        <div class="crop desk" style="padding-bottom:48px">
+          <header class="ph scrolled">
+            <a href="#" aria-label="ElectraGuard AI home" style="color:var(--ink)"><svg class="mark" viewBox="0 0 224.07 36" width="149.38" height="24" role="img" aria-label="ElectraGuard AI"><path d="M32 0A4 4 0 0 1 36 4V8H14A6 6 0 0 0 8 14H23V22H8A6 6 0 0 0 14 28H28V18H36V32A4 4 0 0 1 32 36H14A14 14 0 0 1 0 22V14A14 14 0 0 1 14 0Z"/><path d="M61.97 26.28H52.56V9.72H61.97V12.2H55.53V16.42H61.56V18.9H55.53V23.78H61.97ZM67.82 26.28H64.87V8.65H67.82ZM76.33 13.48Q78.02 13.48 79.25 14.15Q80.48 14.82 81.14 16.1Q81.8 17.37 81.8 19.18V20.69H73.52Q73.57 22.38 74.47 23.31Q75.38 24.24 77.05 24.24Q78.23 24.24 79.18 24.01Q80.13 23.78 81.13 23.33V25.65Q80.2 26.09 79.21 26.3Q78.21 26.51 76.79 26.51Q74.96 26.51 73.54 25.8Q72.11 25.1 71.31 23.66Q70.51 22.22 70.51 20.09Q70.51 17.93 71.24 16.46Q71.97 14.98 73.28 14.23Q74.59 13.48 76.33 13.48ZM76.38 15.66Q75.17 15.66 74.44 16.42Q73.71 17.19 73.59 18.63H78.95Q78.95 17.74 78.67 17.08Q78.39 16.42 77.83 16.04Q77.26 15.66 76.38 15.66ZM89.76 26.51Q88 26.51 86.65 25.83Q85.31 25.14 84.55 23.72Q83.8 22.29 83.8 20.06Q83.8 17.74 84.61 16.3Q85.42 14.85 86.81 14.16Q88.21 13.48 89.97 13.48Q91.01 13.48 91.96 13.69Q92.91 13.89 93.59 14.24L92.7 16.54Q92.08 16.28 91.36 16.09Q90.64 15.89 89.94 15.89Q88.92 15.89 88.22 16.35Q87.51 16.82 87.16 17.73Q86.81 18.65 86.81 20.04Q86.81 21.36 87.17 22.27Q87.53 23.17 88.22 23.62Q88.9 24.08 89.87 24.08Q90.87 24.08 91.72 23.83Q92.57 23.59 93.31 23.2V25.65Q92.61 26.05 91.77 26.28Q90.92 26.51 89.76 26.51ZM100.75 24.17Q101.31 24.17 101.82 24.07Q102.33 23.96 102.77 23.82V26Q102.31 26.21 101.56 26.36Q100.82 26.51 100.01 26.51Q98.94 26.51 98.07 26.15Q97.2 25.79 96.68 24.91Q96.16 24.03 96.16 22.45V15.91H94.47V14.64L96.32 13.62L97.25 10.95H99.08V13.71H102.65V15.91H99.08V22.43Q99.08 23.31 99.55 23.74Q100.01 24.17 100.75 24.17ZM111.49 13.48Q111.84 13.48 112.24 13.51Q112.65 13.55 112.91 13.62L112.6 16.35Q112.33 16.31 111.97 16.26Q111.61 16.21 111.19 16.21Q110.59 16.21 110.01 16.42Q109.43 16.63 108.94 17.07Q108.45 17.51 108.17 18.17Q107.9 18.83 107.9 19.76V26.28H104.95V13.71H107.22L107.64 15.89H107.78Q108.15 15.22 108.71 14.66Q109.26 14.1 109.97 13.79Q110.68 13.48 111.49 13.48ZM119.56 13.48Q121.9 13.48 123.1 14.56Q124.29 15.63 124.29 17.84V26.28H122.21L121.65 24.54H121.56Q121.02 25.21 120.46 25.65Q119.89 26.09 119.14 26.3Q118.4 26.51 117.36 26.51Q116.25 26.51 115.35 26.09Q114.46 25.68 113.95 24.82Q113.44 23.96 113.44 22.64Q113.44 20.71 114.89 19.7Q116.34 18.7 119.26 18.6L121.37 18.53V18Q121.37 16.72 120.79 16.2Q120.21 15.68 119.19 15.68Q118.29 15.68 117.39 15.97Q116.5 16.26 115.67 16.63L114.78 14.59Q115.71 14.08 116.94 13.78Q118.17 13.48 119.56 13.48ZM119.84 20.39Q117.94 20.48 117.2 21.03Q116.45 21.57 116.45 22.57Q116.45 23.45 116.99 23.88Q117.52 24.31 118.36 24.31Q119.63 24.31 120.5 23.57Q121.37 22.82 121.37 21.41V20.34ZM134.52 17.19H140.78V25.61Q139.46 26.05 138.07 26.28Q136.68 26.51 134.92 26.51Q132.41 26.51 130.67 25.51Q128.93 24.52 128.03 22.62Q127.12 20.71 127.12 17.98Q127.12 15.38 128.14 13.48Q129.16 11.58 131.08 10.53Q132.99 9.49 135.75 9.49Q137.1 9.49 138.36 9.75Q139.62 10.02 140.67 10.49L139.65 12.92Q138.86 12.53 137.83 12.26Q136.79 11.99 135.68 11.99Q133.99 11.99 132.76 12.74Q131.53 13.48 130.87 14.83Q130.21 16.19 130.21 18.02Q130.21 19.79 130.72 21.14Q131.23 22.5 132.34 23.25Q133.46 24.01 135.24 24.01Q136.12 24.01 136.74 23.93Q137.35 23.84 137.86 23.71V19.72H134.52ZM155.3 13.71V26.28H153.01L152.59 24.66H152.45Q152.06 25.31 151.43 25.71Q150.8 26.12 150.07 26.31Q149.34 26.51 148.53 26.51Q147.14 26.51 146.12 26.04Q145.1 25.56 144.56 24.54Q144.03 23.52 144.03 21.92V13.71H146.98V21.32Q146.98 22.71 147.53 23.42Q148.09 24.12 149.27 24.12Q150.46 24.12 151.13 23.64Q151.8 23.15 152.08 22.19Q152.36 21.22 152.36 19.83V13.71ZM163.93 13.48Q166.27 13.48 167.47 14.56Q168.66 15.63 168.66 17.84V26.28H166.58L166.02 24.54H165.93Q165.39 25.21 164.82 25.65Q164.26 26.09 163.51 26.3Q162.77 26.51 161.73 26.51Q160.61 26.51 159.72 26.09Q158.83 25.68 158.32 24.82Q157.81 23.96 157.81 22.64Q157.81 20.71 159.26 19.7Q160.71 18.7 163.63 18.6L165.74 18.53V18Q165.74 16.72 165.16 16.2Q164.58 15.68 163.56 15.68Q162.66 15.68 161.76 15.97Q160.87 16.26 160.03 16.63L159.15 14.59Q160.08 14.08 161.31 13.78Q162.54 13.48 163.93 13.48ZM164.21 20.39Q162.31 20.48 161.57 21.03Q160.82 21.57 160.82 22.57Q160.82 23.45 161.36 23.88Q161.89 24.31 162.73 24.31Q164 24.31 164.87 23.57Q165.74 22.82 165.74 21.41V20.34ZM178.47 13.48Q178.82 13.48 179.23 13.51Q179.63 13.55 179.89 13.62L179.59 16.35Q179.31 16.31 178.95 16.26Q178.59 16.21 178.17 16.21Q177.57 16.21 176.99 16.42Q176.41 16.63 175.92 17.07Q175.43 17.51 175.16 18.17Q174.88 18.83 174.88 19.76V26.28H171.93V13.71H174.21L174.62 15.89H174.76Q175.13 15.22 175.69 14.66Q176.25 14.1 176.95 13.79Q177.66 13.48 178.47 13.48ZM185.5 26.51Q183.32 26.51 181.96 24.87Q180.61 23.22 180.61 20.02Q180.61 16.77 181.98 15.12Q183.34 13.48 185.57 13.48Q186.5 13.48 187.18 13.72Q187.87 13.96 188.38 14.38Q188.89 14.8 189.23 15.31H189.35Q189.3 14.94 189.25 14.25Q189.19 13.57 189.19 13.04V8.65H192.16V26.28H189.86L189.3 24.63H189.19Q188.84 25.14 188.34 25.57Q187.84 26 187.14 26.26Q186.43 26.51 185.5 26.51ZM186.38 24.12Q188.01 24.12 188.68 23.21Q189.35 22.29 189.35 20.41V20.04Q189.35 18.02 188.71 16.94Q188.08 15.87 186.36 15.87Q185.04 15.87 184.33 16.97Q183.62 18.07 183.62 20.06Q183.62 22.06 184.33 23.09Q185.04 24.12 186.38 24.12ZM213.56 26.28 211.57 21.15H205.01L203.03 26.28H200.92L207.4 9.65H209.27L215.72 26.28ZM209.09 14.29Q209.02 14.1 208.86 13.62Q208.69 13.13 208.54 12.61Q208.39 12.09 208.3 11.81Q208.18 12.27 208.06 12.75Q207.93 13.22 207.8 13.62Q207.67 14.01 207.58 14.29L205.7 19.3H210.94ZM223.12 26.28H217.14V25.07L219.08 24.63V11.39L217.14 10.93V9.72H223.12V10.93L221.17 11.39V24.63L223.12 25.07Z"/></svg></a>
+            <nav class="ph-nav" aria-label="Main"><a>Results</a><a>Check a rumour</a><a aria-current="page">Ask</a><a>Guides</a><a>SMS and USSD</a></nav>
+            <div class="ph-end"><button class="lang" aria-label="Language: English"><svg class="i" aria-hidden="true"><use href="#globe"/></svg>EN</button><a class="btn primary h40">Report what you saw</a></div>
+          </header>
+          <main class="pw g12">
+            <div class="qcol">
+              <div class="pt"><p class="eyebrow">Ask ElectraGuard</p><h1 style="margin-top:8px">What do you want to know?</h1><p class="lead">Answers are quoted word for word from approved guides, with the source. If there is no approved answer, ElectraGuard says so.</p></div>
+              <div class="fld" style="margin-top:32px">
+                <label>Your question</label>
+                <div class="ask-row"><div class="inp" style="flex:1">Do I need an account to report?</div><a class="btn primary">Ask</a></div>
+                <span class="hn">Not legal advice. Your questions are not stored.</span>
+              </div>
+              <section class="ans">
+                <div class="ans-h"><span class="tag"><svg class="i" aria-hidden="true"><use href="#book"/></svg>From the approved guides</span></div>
+                <p class="quote">You can report on ElectraGuard without an account. Describe roles, not names, and you will get a receipt code to check your report.</p>
+                <div class="src"><span><b>Source:</b> Your rights at the polling unit, Report what you saw</span><span>Approved version 2026.1</span></div>
+                <div class="foot2"><a class="btn quiet h40"><svg class="i s20" aria-hidden="true"><use href="#book"/></svg>Read this in the guide</a><a class="lnk sm">Ask another question</a></div>
+              </section>
+            </div>
+            <aside class="scol side" style="padding-top:64px">
+              <div class="blk"><h3>Often asked</h3>
+                <p><a class="lnk sm">How do I check my report?</a></p>
+                <p><a class="lnk sm">What if opening is delayed?</a></p>
+                <p><a class="lnk sm">Can I vote if my fingerprint fails?</a></p>
+              </div>
+              <div class="blk"><h3>Guides</h3><p>Three approved guides for voters and observers.</p><a class="lnk sm" style="display:inline-block;margin-top:8px">Read the guides</a></div>
+            </aside>
+          </main>
+        </div>
+      </div>
+      <div class="frame-wrap">
+        <div class="frame-label"><b>No approved answer.</b> ElectraGuard does not guess.</div>
+        <div class="phone">
+          <div class="pbar"><a style="color:var(--ink)"><svg class="mark" viewBox="6 6 36 36" width="24" height="24" role="img" aria-label="ElectraGuard AI"><path d="M38 6A4 4 0 0 1 42 10V14H20A6 6 0 0 0 14 20H29V28H14A6 6 0 0 0 20 34H34V24H42V38A4 4 0 0 1 38 42H20A14 14 0 0 1 6 28V20A14 14 0 0 1 20 6Z"/></svg></a><div class="r"><a class="btn primary h36">Report</a><button class="ibtn" aria-label="Menu"><svg class="i" aria-hidden="true"><use href="#menu"/></svg></button></div></div>
+          <div class="pp" style="padding-top:24px">
+            <p class="eyebrow">Ask ElectraGuard</p>
+            <div class="inp" style="margin-top:12px">Who will win in Kano?</div>
+            <div style="margin-top:24px;padding-top:24px;box-shadow:inset 0 1px 0 var(--rule)">
+              <span class="tag"><svg class="i" aria-hidden="true"><use href="#book"/></svg>No approved answer</span>
+              <h2 style="margin-top:12px;font:700 20px/1.3 var(--font-display)">I don't have an approved answer to that.</h2>
+              <p style="margin-top:8px;font-size:16px;line-height:1.5;color:var(--ink-2)">Nothing in the approved guides answers this question, so ElectraGuard will not guess. Try other words, or read the guides.</p>
+              <div style="display:flex;flex-direction:column;gap:12px;margin-top:24px"><a class="btn secondary block">Read the guides</a><a class="btn quiet block">Ask another question</a></div>
+            </div>
+            <p style="margin-top:24px;font-size:13px;color:var(--ink-3)">Not legal advice. Your questions are not stored.</p>
+          </div>
+          <div class="home-ind"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== GUIDES ===================== -->
+  <section class="sect">
+    <div class="sect-h"><h2>Guides</h2><p>One guide (desktop) and the list (phone).</p><span class="fix">Fixes audit 47, 48, 51</span></div>
+    <div class="frames">
+      <div class="frame-wrap">
+        <div class="frame-label"><b>A guide.</b> 68-character measure; the contents rail marks where you are.</div>
+        <div class="crop desk" style="padding-bottom:48px">
+          <header class="ph scrolled">
+            <a href="#" aria-label="ElectraGuard AI home" style="color:var(--ink)"><svg class="mark" viewBox="0 0 224.07 36" width="149.38" height="24" role="img" aria-label="ElectraGuard AI"><path d="M32 0A4 4 0 0 1 36 4V8H14A6 6 0 0 0 8 14H23V22H8A6 6 0 0 0 14 28H28V18H36V32A4 4 0 0 1 32 36H14A14 14 0 0 1 0 22V14A14 14 0 0 1 14 0Z"/><path d="M61.97 26.28H52.56V9.72H61.97V12.2H55.53V16.42H61.56V18.9H55.53V23.78H61.97ZM67.82 26.28H64.87V8.65H67.82ZM76.33 13.48Q78.02 13.48 79.25 14.15Q80.48 14.82 81.14 16.1Q81.8 17.37 81.8 19.18V20.69H73.52Q73.57 22.38 74.47 23.31Q75.38 24.24 77.05 24.24Q78.23 24.24 79.18 24.01Q80.13 23.78 81.13 23.33V25.65Q80.2 26.09 79.21 26.3Q78.21 26.51 76.79 26.51Q74.96 26.51 73.54 25.8Q72.11 25.1 71.31 23.66Q70.51 22.22 70.51 20.09Q70.51 17.93 71.24 16.46Q71.97 14.98 73.28 14.23Q74.59 13.48 76.33 13.48ZM76.38 15.66Q75.17 15.66 74.44 16.42Q73.71 17.19 73.59 18.63H78.95Q78.95 17.74 78.67 17.08Q78.39 16.42 77.83 16.04Q77.26 15.66 76.38 15.66ZM89.76 26.51Q88 26.51 86.65 25.83Q85.31 25.14 84.55 23.72Q83.8 22.29 83.8 20.06Q83.8 17.74 84.61 16.3Q85.42 14.85 86.81 14.16Q88.21 13.48 89.97 13.48Q91.01 13.48 91.96 13.69Q92.91 13.89 93.59 14.24L92.7 16.54Q92.08 16.28 91.36 16.09Q90.64 15.89 89.94 15.89Q88.92 15.89 88.22 16.35Q87.51 16.82 87.16 17.73Q86.81 18.65 86.81 20.04Q86.81 21.36 87.17 22.27Q87.53 23.17 88.22 23.62Q88.9 24.08 89.87 24.08Q90.87 24.08 91.72 23.83Q92.57 23.59 93.31 23.2V25.65Q92.61 26.05 91.77 26.28Q90.92 26.51 89.76 26.51ZM100.75 24.17Q101.31 24.17 101.82 24.07Q102.33 23.96 102.77 23.82V26Q102.31 26.21 101.56 26.36Q100.82 26.51 100.01 26.51Q98.94 26.51 98.07 26.15Q97.2 25.79 96.68 24.91Q96.16 24.03 96.16 22.45V15.91H94.47V14.64L96.32 13.62L97.25 10.95H99.08V13.71H102.65V15.91H99.08V22.43Q99.08 23.31 99.55 23.74Q100.01 24.17 100.75 24.17ZM111.49 13.48Q111.84 13.48 112.24 13.51Q112.65 13.55 112.91 13.62L112.6 16.35Q112.33 16.31 111.97 16.26Q111.61 16.21 111.19 16.21Q110.59 16.21 110.01 16.42Q109.43 16.63 108.94 17.07Q108.45 17.51 108.17 18.17Q107.9 18.83 107.9 19.76V26.28H104.95V13.71H107.22L107.64 15.89H107.78Q108.15 15.22 108.71 14.66Q109.26 14.1 109.97 13.79Q110.68 13.48 111.49 13.48ZM119.56 13.48Q121.9 13.48 123.1 14.56Q124.29 15.63 124.29 17.84V26.28H122.21L121.65 24.54H121.56Q121.02 25.21 120.46 25.65Q119.89 26.09 119.14 26.3Q118.4 26.51 117.36 26.51Q116.25 26.51 115.35 26.09Q114.46 25.68 113.95 24.82Q113.44 23.96 113.44 22.64Q113.44 20.71 114.89 19.7Q116.34 18.7 119.26 18.6L121.37 18.53V18Q121.37 16.72 120.79 16.2Q120.21 15.68 119.19 15.68Q118.29 15.68 117.39 15.97Q116.5 16.26 115.67 16.63L114.78 14.59Q115.71 14.08 116.94 13.78Q118.17 13.48 119.56 13.48ZM119.84 20.39Q117.94 20.48 117.2 21.03Q116.45 21.57 116.45 22.57Q116.45 23.45 116.99 23.88Q117.52 24.31 118.36 24.31Q119.63 24.31 120.5 23.57Q121.37 22.82 121.37 21.41V20.34ZM134.52 17.19H140.78V25.61Q139.46 26.05 138.07 26.28Q136.68 26.51 134.92 26.51Q132.41 26.51 130.67 25.51Q128.93 24.52 128.03 22.62Q127.12 20.71 127.12 17.98Q127.12 15.38 128.14 13.48Q129.16 11.58 131.08 10.53Q132.99 9.49 135.75 9.49Q137.1 9.49 138.36 9.75Q139.62 10.02 140.67 10.49L139.65 12.92Q138.86 12.53 137.83 12.26Q136.79 11.99 135.68 11.99Q133.99 11.99 132.76 12.74Q131.53 13.48 130.87 14.83Q130.21 16.19 130.21 18.02Q130.21 19.79 130.72 21.14Q131.23 22.5 132.34 23.25Q133.46 24.01 135.24 24.01Q136.12 24.01 136.74 23.93Q137.35 23.84 137.86 23.71V19.72H134.52ZM155.3 13.71V26.28H153.01L152.59 24.66H152.45Q152.06 25.31 151.43 25.71Q150.8 26.12 150.07 26.31Q149.34 26.51 148.53 26.51Q147.14 26.51 146.12 26.04Q145.1 25.56 144.56 24.54Q144.03 23.52 144.03 21.92V13.71H146.98V21.32Q146.98 22.71 147.53 23.42Q148.09 24.12 149.27 24.12Q150.46 24.12 151.13 23.64Q151.8 23.15 152.08 22.19Q152.36 21.22 152.36 19.83V13.71ZM163.93 13.48Q166.27 13.48 167.47 14.56Q168.66 15.63 168.66 17.84V26.28H166.58L166.02 24.54H165.93Q165.39 25.21 164.82 25.65Q164.26 26.09 163.51 26.3Q162.77 26.51 161.73 26.51Q160.61 26.51 159.72 26.09Q158.83 25.68 158.32 24.82Q157.81 23.96 157.81 22.64Q157.81 20.71 159.26 19.7Q160.71 18.7 163.63 18.6L165.74 18.53V18Q165.74 16.72 165.16 16.2Q164.58 15.68 163.56 15.68Q162.66 15.68 161.76 15.97Q160.87 16.26 160.03 16.63L159.15 14.59Q160.08 14.08 161.31 13.78Q162.54 13.48 163.93 13.48ZM164.21 20.39Q162.31 20.48 161.57 21.03Q160.82 21.57 160.82 22.57Q160.82 23.45 161.36 23.88Q161.89 24.31 162.73 24.31Q164 24.31 164.87 23.57Q165.74 22.82 165.74 21.41V20.34ZM178.47 13.48Q178.82 13.48 179.23 13.51Q179.63 13.55 179.89 13.62L179.59 16.35Q179.31 16.31 178.95 16.26Q178.59 16.21 178.17 16.21Q177.57 16.21 176.99 16.42Q176.41 16.63 175.92 17.07Q175.43 17.51 175.16 18.17Q174.88 18.83 174.88 19.76V26.28H171.93V13.71H174.21L174.62 15.89H174.76Q175.13 15.22 175.69 14.66Q176.25 14.1 176.95 13.79Q177.66 13.48 178.47 13.48ZM185.5 26.51Q183.32 26.51 181.96 24.87Q180.61 23.22 180.61 20.02Q180.61 16.77 181.98 15.12Q183.34 13.48 185.57 13.48Q186.5 13.48 187.18 13.72Q187.87 13.96 188.38 14.38Q188.89 14.8 189.23 15.31H189.35Q189.3 14.94 189.25 14.25Q189.19 13.57 189.19 13.04V8.65H192.16V26.28H189.86L189.3 24.63H189.19Q188.84 25.14 188.34 25.57Q187.84 26 187.14 26.26Q186.43 26.51 185.5 26.51ZM186.38 24.12Q188.01 24.12 188.68 23.21Q189.35 22.29 189.35 20.41V20.04Q189.35 18.02 188.71 16.94Q188.08 15.87 186.36 15.87Q185.04 15.87 184.33 16.97Q183.62 18.07 183.62 20.06Q183.62 22.06 184.33 23.09Q185.04 24.12 186.38 24.12ZM213.56 26.28 211.57 21.15H205.01L203.03 26.28H200.92L207.4 9.65H209.27L215.72 26.28ZM209.09 14.29Q209.02 14.1 208.86 13.62Q208.69 13.13 208.54 12.61Q208.39 12.09 208.3 11.81Q208.18 12.27 208.06 12.75Q207.93 13.22 207.8 13.62Q207.67 14.01 207.58 14.29L205.7 19.3H210.94ZM223.12 26.28H217.14V25.07L219.08 24.63V11.39L217.14 10.93V9.72H223.12V10.93L221.17 11.39V24.63L223.12 25.07Z"/></svg></a>
+            <nav class="ph-nav" aria-label="Main"><a>Results</a><a>Check a rumour</a><a>Ask</a><a aria-current="page">Guides</a><a>SMS and USSD</a></nav>
+            <div class="ph-end"><button class="lang" aria-label="Language: English"><svg class="i" aria-hidden="true"><use href="#globe"/></svg>EN</button><a class="btn primary h40">Report what you saw</a></div>
+          </header>
+          <main class="pw g12" style="padding-top:32px">
+            <div style="grid-column:1 / span 7">
+              <a class="back"><svg class="i" aria-hidden="true"><use href="#back"/></svg>All guides</a>
+              <h1 style="margin-top:24px;font:800 60px/1.04 var(--font-display);letter-spacing:-.022em">Your rights at the polling unit</h1>
+              <div class="meta" style="margin-top:16px"><span><b>Approved</b> 20 Nov 2026</span><span><b>Version</b> 2026.1</span><span>For voters and observers</span></div>
+              <div class="doc">
+                <h2>Voter rights</h2>
+                <p>Every registered voter has the right to cast a ballot in secret and without intimidation.</p>
+                <ul><li>Arrive at your designated polling unit before accreditation ends.</li><li>Present your voter card to the official for BVAS verification.</li><li>If your fingerprint fails, facial recognition must be attempted.</li><li>You are entitled to see that the ballot box is empty before voting begins.</li></ul>
+                <p>Never accept money or gifts in exchange for your vote. Report any pressure to our team.</p>
+                <h2>Accreditation</h2>
+                <p>Officials check your voter card and confirm who you are before you can vote.</p>
+              </div>
+            </div>
+            <aside style="grid-column:10 / span 3;padding-top:96px">
+              <nav class="toc" aria-label="On this page"><h3>On this page</h3><a aria-current="true">Voter rights</a><a>Accreditation</a><a>If something goes wrong</a><a>Report what you saw</a></nav>
+              <a class="btn quiet h40" style="margin-top:32px"><svg class="i s20" aria-hidden="true"><use href="#help"/></svg>Ask about this guide</a>
+            </aside>
+          </main>
+        </div>
+      </div>
+      <div class="frame-wrap">
+        <div class="frame-label"><b>Guides list.</b> One list, rows not cards.</div>
+        <div class="phone">
+          <div class="pbar"><a style="color:var(--ink)"><svg class="mark" viewBox="6 6 36 36" width="24" height="24" role="img" aria-label="ElectraGuard AI"><path d="M38 6A4 4 0 0 1 42 10V14H20A6 6 0 0 0 14 20H29V28H14A6 6 0 0 0 20 34H34V24H42V38A4 4 0 0 1 38 42H20A14 14 0 0 1 6 28V20A14 14 0 0 1 20 6Z"/></svg></a><div class="r"><a class="btn primary h36">Report</a><button class="ibtn" aria-label="Menu"><svg class="i" aria-hidden="true"><use href="#menu"/></svg></button></div></div>
+          <div class="pp" style="padding-top:24px">
+            <h1>Guides</h1>
+            <p class="lead">Short, approved guides for voters and observers.</p>
+            <div class="glist">
+              <div class="gr"><span class="ico"><svg class="i" aria-hidden="true"><use href="#book"/></svg></span><div><h3>Your rights at the polling unit</h3><div class="m"><span>Approved 20 Nov 2026</span><span>Version 2026.1</span></div></div><svg class="i" aria-hidden="true"><use href="#chev"/></svg></div>
+              <div class="gr"><span class="ico"><svg class="i" aria-hidden="true"><use href="#book"/></svg></span><div><h3>What to do if opening is delayed</h3><div class="m"><span>Approved 18 Nov 2026</span><span class="tag">English only</span></div></div><svg class="i" aria-hidden="true"><use href="#chev"/></svg></div>
+              <div class="gr"><span class="ico"><svg class="i" aria-hidden="true"><use href="#book"/></svg></span><div><h3>Official vote-counting procedure</h3><div class="m"><span>Approved 12 Nov 2026</span><span>Version 2026.1</span></div></div><svg class="i" aria-hidden="true"><use href="#chev"/></svg></div>
+            </div>
+            <a class="btn quiet block" style="margin-top:24px"><svg class="i s20" aria-hidden="true"><use href="#help"/></svg>Ask a question about the guides</a>
+          </div>
+          <div class="home-ind"></div>
+        </div>
+        <div class="frame-note" style="margin-top:4px"><b>English only</b> is a neutral Tag, not a sun-coloured pill: the sun stays for the brand and the selected state.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== SMS AND USSD ===================== -->
+  <section class="sect">
+    <div class="sect-h"><h2>SMS and USSD, on-screen phone</h2><p>USSD session (desktop) and a written SMS (phone).</p><span class="fix">Fixes audit 47, 54, 55</span></div>
+    <div class="frames">
+      <div class="frame-wrap">
+        <div class="frame-label"><b>USSD session.</b> The simulated-number note appears once, 24 px below the bar.</div>
+        <div class="crop desk" style="padding-bottom:48px">
+          <header class="ph scrolled">
+            <a href="#" aria-label="ElectraGuard AI home" style="color:var(--ink)"><svg class="mark" viewBox="0 0 224.07 36" width="149.38" height="24" role="img" aria-label="ElectraGuard AI"><path d="M32 0A4 4 0 0 1 36 4V8H14A6 6 0 0 0 8 14H23V22H8A6 6 0 0 0 14 28H28V18H36V32A4 4 0 0 1 32 36H14A14 14 0 0 1 0 22V14A14 14 0 0 1 14 0Z"/><path d="M61.97 26.28H52.56V9.72H61.97V12.2H55.53V16.42H61.56V18.9H55.53V23.78H61.97ZM67.82 26.28H64.87V8.65H67.82ZM76.33 13.48Q78.02 13.48 79.25 14.15Q80.48 14.82 81.14 16.1Q81.8 17.37 81.8 19.18V20.69H73.52Q73.57 22.38 74.47 23.31Q75.38 24.24 77.05 24.24Q78.23 24.24 79.18 24.01Q80.13 23.78 81.13 23.33V25.65Q80.2 26.09 79.21 26.3Q78.21 26.51 76.79 26.51Q74.96 26.51 73.54 25.8Q72.11 25.1 71.31 23.66Q70.51 22.22 70.51 20.09Q70.51 17.93 71.24 16.46Q71.97 14.98 73.28 14.23Q74.59 13.48 76.33 13.48ZM76.38 15.66Q75.17 15.66 74.44 16.42Q73.71 17.19 73.59 18.63H78.95Q78.95 17.74 78.67 17.08Q78.39 16.42 77.83 16.04Q77.26 15.66 76.38 15.66ZM89.76 26.51Q88 26.51 86.65 25.83Q85.31 25.14 84.55 23.72Q83.8 22.29 83.8 20.06Q83.8 17.74 84.61 16.3Q85.42 14.85 86.81 14.16Q88.21 13.48 89.97 13.48Q91.01 13.48 91.96 13.69Q92.91 13.89 93.59 14.24L92.7 16.54Q92.08 16.28 91.36 16.09Q90.64 15.89 89.94 15.89Q88.92 15.89 88.22 16.35Q87.51 16.82 87.16 17.73Q86.81 18.65 86.81 20.04Q86.81 21.36 87.17 22.27Q87.53 23.17 88.22 23.62Q88.9 24.08 89.87 24.08Q90.87 24.08 91.72 23.83Q92.57 23.59 93.31 23.2V25.65Q92.61 26.05 91.77 26.28Q90.92 26.51 89.76 26.51ZM100.75 24.17Q101.31 24.17 101.82 24.07Q102.33 23.96 102.77 23.82V26Q102.31 26.21 101.56 26.36Q100.82 26.51 100.01 26.51Q98.94 26.51 98.07 26.15Q97.2 25.79 96.68 24.91Q96.16 24.03 96.16 22.45V15.91H94.47V14.64L96.32 13.62L97.25 10.95H99.08V13.71H102.65V15.91H99.08V22.43Q99.08 23.31 99.55 23.74Q100.01 24.17 100.75 24.17ZM111.49 13.48Q111.84 13.48 112.24 13.51Q112.65 13.55 112.91 13.62L112.6 16.35Q112.33 16.31 111.97 16.26Q111.61 16.21 111.19 16.21Q110.59 16.21 110.01 16.42Q109.43 16.63 108.94 17.07Q108.45 17.51 108.17 18.17Q107.9 18.83 107.9 19.76V26.28H104.95V13.71H107.22L107.64 15.89H107.78Q108.15 15.22 108.71 14.66Q109.26 14.1 109.97 13.79Q110.68 13.48 111.49 13.48ZM119.56 13.48Q121.9 13.48 123.1 14.56Q124.29 15.63 124.29 17.84V26.28H122.21L121.65 24.54H121.56Q121.02 25.21 120.46 25.65Q119.89 26.09 119.14 26.3Q118.4 26.51 117.36 26.51Q116.25 26.51 115.35 26.09Q114.46 25.68 113.95 24.82Q113.44 23.96 113.44 22.64Q113.44 20.71 114.89 19.7Q116.34 18.7 119.26 18.6L121.37 18.53V18Q121.37 16.72 120.79 16.2Q120.21 15.68 119.19 15.68Q118.29 15.68 117.39 15.97Q116.5 16.26 115.67 16.63L114.78 14.59Q115.71 14.08 116.94 13.78Q118.17 13.48 119.56 13.48ZM119.84 20.39Q117.94 20.48 117.2 21.03Q116.45 21.57 116.45 22.57Q116.45 23.45 116.99 23.88Q117.52 24.31 118.36 24.31Q119.63 24.31 120.5 23.57Q121.37 22.82 121.37 21.41V20.34ZM134.52 17.19H140.78V25.61Q139.46 26.05 138.07 26.28Q136.68 26.51 134.92 26.51Q132.41 26.51 130.67 25.51Q128.93 24.52 128.03 22.62Q127.12 20.71 127.12 17.98Q127.12 15.38 128.14 13.48Q129.16 11.58 131.08 10.53Q132.99 9.49 135.75 9.49Q137.1 9.49 138.36 9.75Q139.62 10.02 140.67 10.49L139.65 12.92Q138.86 12.53 137.83 12.26Q136.79 11.99 135.68 11.99Q133.99 11.99 132.76 12.74Q131.53 13.48 130.87 14.83Q130.21 16.19 130.21 18.02Q130.21 19.79 130.72 21.14Q131.23 22.5 132.34 23.25Q133.46 24.01 135.24 24.01Q136.12 24.01 136.74 23.93Q137.35 23.84 137.86 23.71V19.72H134.52ZM155.3 13.71V26.28H153.01L152.59 24.66H152.45Q152.06 25.31 151.43 25.71Q150.8 26.12 150.07 26.31Q149.34 26.51 148.53 26.51Q147.14 26.51 146.12 26.04Q145.1 25.56 144.56 24.54Q144.03 23.52 144.03 21.92V13.71H146.98V21.32Q146.98 22.71 147.53 23.42Q148.09 24.12 149.27 24.12Q150.46 24.12 151.13 23.64Q151.8 23.15 152.08 22.19Q152.36 21.22 152.36 19.83V13.71ZM163.93 13.48Q166.27 13.48 167.47 14.56Q168.66 15.63 168.66 17.84V26.28H166.58L166.02 24.54H165.93Q165.39 25.21 164.82 25.65Q164.26 26.09 163.51 26.3Q162.77 26.51 161.73 26.51Q160.61 26.51 159.72 26.09Q158.83 25.68 158.32 24.82Q157.81 23.96 157.81 22.64Q157.81 20.71 159.26 19.7Q160.71 18.7 163.63 18.6L165.74 18.53V18Q165.74 16.72 165.16 16.2Q164.58 15.68 163.56 15.68Q162.66 15.68 161.76 15.97Q160.87 16.26 160.03 16.63L159.15 14.59Q160.08 14.08 161.31 13.78Q162.54 13.48 163.93 13.48ZM164.21 20.39Q162.31 20.48 161.57 21.03Q160.82 21.57 160.82 22.57Q160.82 23.45 161.36 23.88Q161.89 24.31 162.73 24.31Q164 24.31 164.87 23.57Q165.74 22.82 165.74 21.41V20.34ZM178.47 13.48Q178.82 13.48 179.23 13.51Q179.63 13.55 179.89 13.62L179.59 16.35Q179.31 16.31 178.95 16.26Q178.59 16.21 178.17 16.21Q177.57 16.21 176.99 16.42Q176.41 16.63 175.92 17.07Q175.43 17.51 175.16 18.17Q174.88 18.83 174.88 19.76V26.28H171.93V13.71H174.21L174.62 15.89H174.76Q175.13 15.22 175.69 14.66Q176.25 14.1 176.95 13.79Q177.66 13.48 178.47 13.48ZM185.5 26.51Q183.32 26.51 181.96 24.87Q180.61 23.22 180.61 20.02Q180.61 16.77 181.98 15.12Q183.34 13.48 185.57 13.48Q186.5 13.48 187.18 13.72Q187.87 13.96 188.38 14.38Q188.89 14.8 189.23 15.31H189.35Q189.3 14.94 189.25 14.25Q189.19 13.57 189.19 13.04V8.65H192.16V26.28H189.86L189.3 24.63H189.19Q188.84 25.14 188.34 25.57Q187.84 26 187.14 26.26Q186.43 26.51 185.5 26.51ZM186.38 24.12Q188.01 24.12 188.68 23.21Q189.35 22.29 189.35 20.41V20.04Q189.35 18.02 188.71 16.94Q188.08 15.87 186.36 15.87Q185.04 15.87 184.33 16.97Q183.62 18.07 183.62 20.06Q183.62 22.06 184.33 23.09Q185.04 24.12 186.38 24.12ZM213.56 26.28 211.57 21.15H205.01L203.03 26.28H200.92L207.4 9.65H209.27L215.72 26.28ZM209.09 14.29Q209.02 14.1 208.86 13.62Q208.69 13.13 208.54 12.61Q208.39 12.09 208.3 11.81Q208.18 12.27 208.06 12.75Q207.93 13.22 207.8 13.62Q207.67 14.01 207.58 14.29L205.7 19.3H210.94ZM223.12 26.28H217.14V25.07L219.08 24.63V11.39L217.14 10.93V9.72H223.12V10.93L221.17 11.39V24.63L223.12 25.07Z"/></svg></a>
+            <nav class="ph-nav" aria-label="Main"><a>Results</a><a>Check a rumour</a><a>Ask</a><a>Guides</a><a aria-current="page">SMS and USSD</a></nav>
+            <div class="ph-end"><button class="lang" aria-label="Language: English"><svg class="i" aria-hidden="true"><use href="#globe"/></svg>EN</button><a class="btn primary h40">Report what you saw</a></div>
+          </header>
+          <main class="pw" style="padding-top:24px">
+            <div class="simnote"><svg class="i" aria-hidden="true"><use href="#phone"/></svg>Simulated number +234 700 000 4417. Reports sent from here are marked Simulated and never appear in public results.<a class="lnk sm" style="margin-left:auto">New simulated number</a></div>
+            <div class="g12" style="margin-top:8px">
+              <div style="grid-column:1 / span 7">
+                <div class="pt" style="padding-top:32px"><h1>Try reporting by SMS and USSD</h1><p class="lead">Use this on-screen phone to try ElectraGuard the way a basic phone does. It runs on the same system as real SMS and USSD.</p></div>
+                <div class="steps">
+                  <div class="stp"><i>1</i><div><b>Dial <span class="tn">*347*88#</span> and press Call.</b><p>Answer each menu with the keypad, then press Send.</p></div></div>
+                  <div class="stp"><i>2</i><div><b>Or write a message to 20384.</b><p>REPORT, a category number, a polling unit code if you know it, then what happened.</p><p style="margin-top:8px"><code>REPORT 3 Long queue and only one official checking names</code></p></div></div>
+                  <div class="stp"><i>3</i><div><b>Check or answer later.</b><p><code>STATUS</code> and the receipt code. <code>REPLY</code>, the code, then your answer.</p></div></div>
+                </div>
+              </div>
+              <div style="grid-column:8 / span 5;padding-top:32px">
+                <div class="sim">
+                  <div class="dev" role="group" aria-label="Simulated basic phone">
+                    <div class="spk"></div>
+                    <div class="scr" aria-label="Phone screen"><div class="st"><span>ElectraGuard</span><span>USSD</span></div>What happened?<br>1 Materials late<br>2 Equipment failed<br>3 Queues<br>4 Violence/threats<br>5 Access barrier ...<div class="rp">Reply: 3</div></div>
+                    <div class="keys" aria-label="Phone keys">
+                      <span class="soft">Back</span><span class="soft">OK</span><span class="soft">Clear</span>
+                      <span>1</span><span>2<small>ABC</small></span><span>3<small>DEF</small></span>
+                      <span>4<small>GHI</small></span><span>5<small>JKL</small></span><span>6<small>MNO</small></span>
+                      <span>7<small>PQRS</small></span><span>8<small>TUV</small></span><span>9<small>WXYZ</small></span>
+                      <span>*</span><span>0</span><span>#</span>
+                      <span class="call">Call</span><span class="soft">Send</span><span class="end">End</span>
+                    </div>
+                  </div>
+                </div>
+                <p style="margin-top:16px;text-align:center;font-size:13px;color:var(--ink-3)">You can use your keyboard: numbers, * and #, Enter for Call or OK, Escape for End.</p>
+              </div>
+            </div>
+          </main>
+        </div>
+      </div>
+      <div class="frame-wrap">
+        <div class="frame-label"><b>SMS, phone.</b> Same keys on every step.</div>
+        <div class="phone">
+          <div class="pbar"><a style="color:var(--ink)"><svg class="mark" viewBox="6 6 36 36" width="24" height="24" role="img" aria-label="ElectraGuard AI"><path d="M38 6A4 4 0 0 1 42 10V14H20A6 6 0 0 0 14 20H29V28H14A6 6 0 0 0 20 34H34V24H42V38A4 4 0 0 1 38 42H20A14 14 0 0 1 6 28V20A14 14 0 0 1 20 6Z"/></svg></a><div class="r"><a class="btn primary h36">Report</a><button class="ibtn" aria-label="Menu"><svg class="i" aria-hidden="true"><use href="#menu"/></svg></button></div></div>
+          <div class="pp" style="padding-top:16px">
+            <div class="simnote" style="height:auto;padding:10px 12px;align-items:flex-start;font-size:13px"><svg class="i" aria-hidden="true" style="margin-top:1px"><use href="#phone"/></svg><span>Simulated phone. Reports made here are marked and never counted in public results.</span></div>
+            <div class="sim" style="margin-top:16px">
+              <div class="dev" style="width:300px;padding:20px 16px 16px">
+                <div class="scr" style="height:188px;font-size:14px"><div class="st"><span>New message</span><span>58 of 160</span></div>To: 20384<br>REPORT 3 Long queue and only one official checking names</div>
+                <div class="keys">
+                  <span class="soft">Back</span><span class="soft">Write</span><span class="soft">Clear</span>
+                  <span>1</span><span>2<small>ABC</small></span><span>3<small>DEF</small></span>
+                  <span>4<small>GHI</small></span><span>5<small>JKL</small></span><span>6<small>MNO</small></span>
+                  <span>7<small>PQRS</small></span><span>8<small>TUV</small></span><span>9<small>WXYZ</small></span>
+                  <span>*</span><span>0</span><span>#</span>
+                  <span class="call">Call</span><span class="soft">Send</span><span class="end">End</span>
+                </div>
+              </div>
+            </div>
+            <a class="lnk sm" style="display:block;margin-top:16px;text-align:center">How to write a report message</a>
+          </div>
+          <div class="home-ind"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== PRIVACY ===================== -->
+  <section class="sect">
+    <div class="sect-h"><h2>Privacy</h2><p>Long-form page with the inline footer.</p><span class="fix">Fixes audit 47, 51</span></div>
+    <div class="frames">
+      <div class="frame-wrap">
+        <div class="frame-label"><b>Privacy notice.</b> Not in the main nav any more; it lives in the footer row and the phone menu.</div>
+        <div class="crop desk" style="padding-bottom:48px">
+          <header class="ph scrolled">
+            <a href="#" aria-label="ElectraGuard AI home" style="color:var(--ink)"><svg class="mark" viewBox="0 0 224.07 36" width="149.38" height="24" role="img" aria-label="ElectraGuard AI"><path d="M32 0A4 4 0 0 1 36 4V8H14A6 6 0 0 0 8 14H23V22H8A6 6 0 0 0 14 28H28V18H36V32A4 4 0 0 1 32 36H14A14 14 0 0 1 0 22V14A14 14 0 0 1 14 0Z"/><path d="M61.97 26.28H52.56V9.72H61.97V12.2H55.53V16.42H61.56V18.9H55.53V23.78H61.97ZM67.82 26.28H64.87V8.65H67.82ZM76.33 13.48Q78.02 13.48 79.25 14.15Q80.48 14.82 81.14 16.1Q81.8 17.37 81.8 19.18V20.69H73.52Q73.57 22.38 74.47 23.31Q75.38 24.24 77.05 24.24Q78.23 24.24 79.18 24.01Q80.13 23.78 81.13 23.33V25.65Q80.2 26.09 79.21 26.3Q78.21 26.51 76.79 26.51Q74.96 26.51 73.54 25.8Q72.11 25.1 71.31 23.66Q70.51 22.22 70.51 20.09Q70.51 17.93 71.24 16.46Q71.97 14.98 73.28 14.23Q74.59 13.48 76.33 13.48ZM76.38 15.66Q75.17 15.66 74.44 16.42Q73.71 17.19 73.59 18.63H78.95Q78.95 17.74 78.67 17.08Q78.39 16.42 77.83 16.04Q77.26 15.66 76.38 15.66ZM89.76 26.51Q88 26.51 86.65 25.83Q85.31 25.14 84.55 23.72Q83.8 22.29 83.8 20.06Q83.8 17.74 84.61 16.3Q85.42 14.85 86.81 14.16Q88.21 13.48 89.97 13.48Q91.01 13.48 91.96 13.69Q92.91 13.89 93.59 14.24L92.7 16.54Q92.08 16.28 91.36 16.09Q90.64 15.89 89.94 15.89Q88.92 15.89 88.22 16.35Q87.51 16.82 87.16 17.73Q86.81 18.65 86.81 20.04Q86.81 21.36 87.17 22.27Q87.53 23.17 88.22 23.62Q88.9 24.08 89.87 24.08Q90.87 24.08 91.72 23.83Q92.57 23.59 93.31 23.2V25.65Q92.61 26.05 91.77 26.28Q90.92 26.51 89.76 26.51ZM100.75 24.17Q101.31 24.17 101.82 24.07Q102.33 23.96 102.77 23.82V26Q102.31 26.21 101.56 26.36Q100.82 26.51 100.01 26.51Q98.94 26.51 98.07 26.15Q97.2 25.79 96.68 24.91Q96.16 24.03 96.16 22.45V15.91H94.47V14.64L96.32 13.62L97.25 10.95H99.08V13.71H102.65V15.91H99.08V22.43Q99.08 23.31 99.55 23.74Q100.01 24.17 100.75 24.17ZM111.49 13.48Q111.84 13.48 112.24 13.51Q112.65 13.55 112.91 13.62L112.6 16.35Q112.33 16.31 111.97 16.26Q111.61 16.21 111.19 16.21Q110.59 16.21 110.01 16.42Q109.43 16.63 108.94 17.07Q108.45 17.51 108.17 18.17Q107.9 18.83 107.9 19.76V26.28H104.95V13.71H107.22L107.64 15.89H107.78Q108.15 15.22 108.71 14.66Q109.26 14.1 109.97 13.79Q110.68 13.48 111.49 13.48ZM119.56 13.48Q121.9 13.48 123.1 14.56Q124.29 15.63 124.29 17.84V26.28H122.21L121.65 24.54H121.56Q121.02 25.21 120.46 25.65Q119.89 26.09 119.14 26.3Q118.4 26.51 117.36 26.51Q116.25 26.51 115.35 26.09Q114.46 25.68 113.95 24.82Q113.44 23.96 113.44 22.64Q113.44 20.71 114.89 19.7Q116.34 18.7 119.26 18.6L121.37 18.53V18Q121.37 16.72 120.79 16.2Q120.21 15.68 119.19 15.68Q118.29 15.68 117.39 15.97Q116.5 16.26 115.67 16.63L114.78 14.59Q115.71 14.08 116.94 13.78Q118.17 13.48 119.56 13.48ZM119.84 20.39Q117.94 20.48 117.2 21.03Q116.45 21.57 116.45 22.57Q116.45 23.45 116.99 23.88Q117.52 24.31 118.36 24.31Q119.63 24.31 120.5 23.57Q121.37 22.82 121.37 21.41V20.34ZM134.52 17.19H140.78V25.61Q139.46 26.05 138.07 26.28Q136.68 26.51 134.92 26.51Q132.41 26.51 130.67 25.51Q128.93 24.52 128.03 22.62Q127.12 20.71 127.12 17.98Q127.12 15.38 128.14 13.48Q129.16 11.58 131.08 10.53Q132.99 9.49 135.75 9.49Q137.1 9.49 138.36 9.75Q139.62 10.02 140.67 10.49L139.65 12.92Q138.86 12.53 137.83 12.26Q136.79 11.99 135.68 11.99Q133.99 11.99 132.76 12.74Q131.53 13.48 130.87 14.83Q130.21 16.19 130.21 18.02Q130.21 19.79 130.72 21.14Q131.23 22.5 132.34 23.25Q133.46 24.01 135.24 24.01Q136.12 24.01 136.74 23.93Q137.35 23.84 137.86 23.71V19.72H134.52ZM155.3 13.71V26.28H153.01L152.59 24.66H152.45Q152.06 25.31 151.43 25.71Q150.8 26.12 150.07 26.31Q149.34 26.51 148.53 26.51Q147.14 26.51 146.12 26.04Q145.1 25.56 144.56 24.54Q144.03 23.52 144.03 21.92V13.71H146.98V21.32Q146.98 22.71 147.53 23.42Q148.09 24.12 149.27 24.12Q150.46 24.12 151.13 23.64Q151.8 23.15 152.08 22.19Q152.36 21.22 152.36 19.83V13.71ZM163.93 13.48Q166.27 13.48 167.47 14.56Q168.66 15.63 168.66 17.84V26.28H166.58L166.02 24.54H165.93Q165.39 25.21 164.82 25.65Q164.26 26.09 163.51 26.3Q162.77 26.51 161.73 26.51Q160.61 26.51 159.72 26.09Q158.83 25.68 158.32 24.82Q157.81 23.96 157.81 22.64Q157.81 20.71 159.26 19.7Q160.71 18.7 163.63 18.6L165.74 18.53V18Q165.74 16.72 165.16 16.2Q164.58 15.68 163.56 15.68Q162.66 15.68 161.76 15.97Q160.87 16.26 160.03 16.63L159.15 14.59Q160.08 14.08 161.31 13.78Q162.54 13.48 163.93 13.48ZM164.21 20.39Q162.31 20.48 161.57 21.03Q160.82 21.57 160.82 22.57Q160.82 23.45 161.36 23.88Q161.89 24.31 162.73 24.31Q164 24.31 164.87 23.57Q165.74 22.82 165.74 21.41V20.34ZM178.47 13.48Q178.82 13.48 179.23 13.51Q179.63 13.55 179.89 13.62L179.59 16.35Q179.31 16.31 178.95 16.26Q178.59 16.21 178.17 16.21Q177.57 16.21 176.99 16.42Q176.41 16.63 175.92 17.07Q175.43 17.51 175.16 18.17Q174.88 18.83 174.88 19.76V26.28H171.93V13.71H174.21L174.62 15.89H174.76Q175.13 15.22 175.69 14.66Q176.25 14.1 176.95 13.79Q177.66 13.48 178.47 13.48ZM185.5 26.51Q183.32 26.51 181.96 24.87Q180.61 23.22 180.61 20.02Q180.61 16.77 181.98 15.12Q183.34 13.48 185.57 13.48Q186.5 13.48 187.18 13.72Q187.87 13.96 188.38 14.38Q188.89 14.8 189.23 15.31H189.35Q189.3 14.94 189.25 14.25Q189.19 13.57 189.19 13.04V8.65H192.16V26.28H189.86L189.3 24.63H189.19Q188.84 25.14 188.34 25.57Q187.84 26 187.14 26.26Q186.43 26.51 185.5 26.51ZM186.38 24.12Q188.01 24.12 188.68 23.21Q189.35 22.29 189.35 20.41V20.04Q189.35 18.02 188.71 16.94Q188.08 15.87 186.36 15.87Q185.04 15.87 184.33 16.97Q183.62 18.07 183.62 20.06Q183.62 22.06 184.33 23.09Q185.04 24.12 186.38 24.12ZM213.56 26.28 211.57 21.15H205.01L203.03 26.28H200.92L207.4 9.65H209.27L215.72 26.28ZM209.09 14.29Q209.02 14.1 208.86 13.62Q208.69 13.13 208.54 12.61Q208.39 12.09 208.3 11.81Q208.18 12.27 208.06 12.75Q207.93 13.22 207.8 13.62Q207.67 14.01 207.58 14.29L205.7 19.3H210.94ZM223.12 26.28H217.14V25.07L219.08 24.63V11.39L217.14 10.93V9.72H223.12V10.93L221.17 11.39V24.63L223.12 25.07Z"/></svg></a>
+            <nav class="ph-nav" aria-label="Main"><a>Results</a><a>Check a rumour</a><a>Ask</a><a>Guides</a><a>SMS and USSD</a></nav>
+            <div class="ph-end"><button class="lang" aria-label="Language: English"><svg class="i" aria-hidden="true"><use href="#globe"/></svg>EN</button><a class="btn primary h40">Report what you saw</a></div>
+          </header>
+          <main class="pw g12">
+            <div style="grid-column:1 / span 7">
+              <div class="pt"><h1>Privacy notice</h1><p class="lead">What ElectraGuard keeps, what it never collects, and what you can do. In plain words.</p><div class="meta"><span>Last updated 20 Nov 2026</span></div></div>
+              <div class="doc">
+                <h2>What we never collect</h2>
+                <div class="pv-never">
+                  <div><svg class="i" aria-hidden="true"><use href="#users"/></svg><b>Your name</b><p>Citizens and observers do not give a name.</p></div>
+                  <div><svg class="i" aria-hidden="true"><use href="#pin"/></svg><b>GPS location</b><p>The app never reads it.</p></div>
+                  <div><svg class="i" aria-hidden="true"><use href="#phone"/></svg><b>Your number</b><p>For SMS and USSD it is kept only as a scrambled code.</p></div>
+                </div>
+                <h2>What is made public</h2>
+                <p>Only totals of reviewed reports, by state, type and hour, published at least 60 minutes later. Any number below 5 is shown as "fewer than 5". Never your words, photos, polling unit, ward, receipt code or observer code.</p>
+              </div>
+            </div>
+            <aside style="grid-column:10 / span 3;padding-top:64px">
+              <nav class="toc" aria-label="On this page"><h3>On this page</h3><a>Who runs ElectraGuard</a><a aria-current="true">What we never collect</a><a>What we keep</a><a>Who can see your report</a><a>What is made public</a><a>What you can do</a><a>Where it is stored</a></nav>
+            </aside>
+          </main>
+          <footer class="pf" style="margin-bottom:-48px">
+            <div class="pf-top"><span style="color:var(--ink)"><svg class="mark" viewBox="0 0 224.07 36" width="149.38" height="24" role="img" aria-label="ElectraGuard AI"><path d="M32 0A4 4 0 0 1 36 4V8H14A6 6 0 0 0 8 14H23V22H8A6 6 0 0 0 14 28H28V18H36V32A4 4 0 0 1 32 36H14A14 14 0 0 1 0 22V14A14 14 0 0 1 14 0Z"/><path d="M61.97 26.28H52.56V9.72H61.97V12.2H55.53V16.42H61.56V18.9H55.53V23.78H61.97ZM67.82 26.28H64.87V8.65H67.82ZM76.33 13.48Q78.02 13.48 79.25 14.15Q80.48 14.82 81.14 16.1Q81.8 17.37 81.8 19.18V20.69H73.52Q73.57 22.38 74.47 23.31Q75.38 24.24 77.05 24.24Q78.23 24.24 79.18 24.01Q80.13 23.78 81.13 23.33V25.65Q80.2 26.09 79.21 26.3Q78.21 26.51 76.79 26.51Q74.96 26.51 73.54 25.8Q72.11 25.1 71.31 23.66Q70.51 22.22 70.51 20.09Q70.51 17.93 71.24 16.46Q71.97 14.98 73.28 14.23Q74.59 13.48 76.33 13.48ZM76.38 15.66Q75.17 15.66 74.44 16.42Q73.71 17.19 73.59 18.63H78.95Q78.95 17.74 78.67 17.08Q78.39 16.42 77.83 16.04Q77.26 15.66 76.38 15.66ZM89.76 26.51Q88 26.51 86.65 25.83Q85.31 25.14 84.55 23.72Q83.8 22.29 83.8 20.06Q83.8 17.74 84.61 16.3Q85.42 14.85 86.81 14.16Q88.21 13.48 89.97 13.48Q91.01 13.48 91.96 13.69Q92.91 13.89 93.59 14.24L92.7 16.54Q92.08 16.28 91.36 16.09Q90.64 15.89 89.94 15.89Q88.92 15.89 88.22 16.35Q87.51 16.82 87.16 17.73Q86.81 18.65 86.81 20.04Q86.81 21.36 87.17 22.27Q87.53 23.17 88.22 23.62Q88.9 24.08 89.87 24.08Q90.87 24.08 91.72 23.83Q92.57 23.59 93.31 23.2V25.65Q92.61 26.05 91.77 26.28Q90.92 26.51 89.76 26.51ZM100.75 24.17Q101.31 24.17 101.82 24.07Q102.33 23.96 102.77 23.82V26Q102.31 26.21 101.56 26.36Q100.82 26.51 100.01 26.51Q98.94 26.51 98.07 26.15Q97.2 25.79 96.68 24.91Q96.16 24.03 96.16 22.45V15.91H94.47V14.64L96.32 13.62L97.25 10.95H99.08V13.71H102.65V15.91H99.08V22.43Q99.08 23.31 99.55 23.74Q100.01 24.17 100.75 24.17ZM111.49 13.48Q111.84 13.48 112.24 13.51Q112.65 13.55 112.91 13.62L112.6 16.35Q112.33 16.31 111.97 16.26Q111.61 16.21 111.19 16.21Q110.59 16.21 110.01 16.42Q109.43 16.63 108.94 17.07Q108.45 17.51 108.17 18.17Q107.9 18.83 107.9 19.76V26.28H104.95V13.71H107.22L107.64 15.89H107.78Q108.15 15.22 108.71 14.66Q109.26 14.1 109.97 13.79Q110.68 13.48 111.49 13.48ZM119.56 13.48Q121.9 13.48 123.1 14.56Q124.29 15.63 124.29 17.84V26.28H122.21L121.65 24.54H121.56Q121.02 25.21 120.46 25.65Q119.89 26.09 119.14 26.3Q118.4 26.51 117.36 26.51Q116.25 26.51 115.35 26.09Q114.46 25.68 113.95 24.82Q113.44 23.96 113.44 22.64Q113.44 20.71 114.89 19.7Q116.34 18.7 119.26 18.6L121.37 18.53V18Q121.37 16.72 120.79 16.2Q120.21 15.68 119.19 15.68Q118.29 15.68 117.39 15.97Q116.5 16.26 115.67 16.63L114.78 14.59Q115.71 14.08 116.94 13.78Q118.17 13.48 119.56 13.48ZM119.84 20.39Q117.94 20.48 117.2 21.03Q116.45 21.57 116.45 22.57Q116.45 23.45 116.99 23.88Q117.52 24.31 118.36 24.31Q119.63 24.31 120.5 23.57Q121.37 22.82 121.37 21.41V20.34ZM134.52 17.19H140.78V25.61Q139.46 26.05 138.07 26.28Q136.68 26.51 134.92 26.51Q132.41 26.51 130.67 25.51Q128.93 24.52 128.03 22.62Q127.12 20.71 127.12 17.98Q127.12 15.38 128.14 13.48Q129.16 11.58 131.08 10.53Q132.99 9.49 135.75 9.49Q137.1 9.49 138.36 9.75Q139.62 10.02 140.67 10.49L139.65 12.92Q138.86 12.53 137.83 12.26Q136.79 11.99 135.68 11.99Q133.99 11.99 132.76 12.74Q131.53 13.48 130.87 14.83Q130.21 16.19 130.21 18.02Q130.21 19.79 130.72 21.14Q131.23 22.5 132.34 23.25Q133.46 24.01 135.24 24.01Q136.12 24.01 136.74 23.93Q137.35 23.84 137.86 23.71V19.72H134.52ZM155.3 13.71V26.28H153.01L152.59 24.66H152.45Q152.06 25.31 151.43 25.71Q150.8 26.12 150.07 26.31Q149.34 26.51 148.53 26.51Q147.14 26.51 146.12 26.04Q145.1 25.56 144.56 24.54Q144.03 23.52 144.03 21.92V13.71H146.98V21.32Q146.98 22.71 147.53 23.42Q148.09 24.12 149.27 24.12Q150.46 24.12 151.13 23.64Q151.8 23.15 152.08 22.19Q152.36 21.22 152.36 19.83V13.71ZM163.93 13.48Q166.27 13.48 167.47 14.56Q168.66 15.63 168.66 17.84V26.28H166.58L166.02 24.54H165.93Q165.39 25.21 164.82 25.65Q164.26 26.09 163.51 26.3Q162.77 26.51 161.73 26.51Q160.61 26.51 159.72 26.09Q158.83 25.68 158.32 24.82Q157.81 23.96 157.81 22.64Q157.81 20.71 159.26 19.7Q160.71 18.7 163.63 18.6L165.74 18.53V18Q165.74 16.72 165.16 16.2Q164.58 15.68 163.56 15.68Q162.66 15.68 161.76 15.97Q160.87 16.26 160.03 16.63L159.15 14.59Q160.08 14.08 161.31 13.78Q162.54 13.48 163.93 13.48ZM164.21 20.39Q162.31 20.48 161.57 21.03Q160.82 21.57 160.82 22.57Q160.82 23.45 161.36 23.88Q161.89 24.31 162.73 24.31Q164 24.31 164.87 23.57Q165.74 22.82 165.74 21.41V20.34ZM178.47 13.48Q178.82 13.48 179.23 13.51Q179.63 13.55 179.89 13.62L179.59 16.35Q179.31 16.31 178.95 16.26Q178.59 16.21 178.17 16.21Q177.57 16.21 176.99 16.42Q176.41 16.63 175.92 17.07Q175.43 17.51 175.16 18.17Q174.88 18.83 174.88 19.76V26.28H171.93V13.71H174.21L174.62 15.89H174.76Q175.13 15.22 175.69 14.66Q176.25 14.1 176.95 13.79Q177.66 13.48 178.47 13.48ZM185.5 26.51Q183.32 26.51 181.96 24.87Q180.61 23.22 180.61 20.02Q180.61 16.77 181.98 15.12Q183.34 13.48 185.57 13.48Q186.5 13.48 187.18 13.72Q187.87 13.96 188.38 14.38Q188.89 14.8 189.23 15.31H189.35Q189.3 14.94 189.25 14.25Q189.19 13.57 189.19 13.04V8.65H192.16V26.28H189.86L189.3 24.63H189.19Q188.84 25.14 188.34 25.57Q187.84 26 187.14 26.26Q186.43 26.51 185.5 26.51ZM186.38 24.12Q188.01 24.12 188.68 23.21Q189.35 22.29 189.35 20.41V20.04Q189.35 18.02 188.71 16.94Q188.08 15.87 186.36 15.87Q185.04 15.87 184.33 16.97Q183.62 18.07 183.62 20.06Q183.62 22.06 184.33 23.09Q185.04 24.12 186.38 24.12ZM213.56 26.28 211.57 21.15H205.01L203.03 26.28H200.92L207.4 9.65H209.27L215.72 26.28ZM209.09 14.29Q209.02 14.1 208.86 13.62Q208.69 13.13 208.54 12.61Q208.39 12.09 208.3 11.81Q208.18 12.27 208.06 12.75Q207.93 13.22 207.8 13.62Q207.67 14.01 207.58 14.29L205.7 19.3H210.94ZM223.12 26.28H217.14V25.07L219.08 24.63V11.39L217.14 10.93V9.72H223.12V10.93L221.17 11.39V24.63L223.12 25.07Z"/></svg></span><nav class="pf-links" aria-label="More"><a>Privacy</a><a>Guides</a><a>Try SMS and USSD</a><a>Observer app</a><a>Staff sign in</a></nav></div>
+            <p>Nonpartisan. Not linked to any party or candidate. Independent of INEC. If someone is in danger, call 112. ElectraGuard records reports. It does not send help.</p>
+          </footer>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+</body>
+</html>

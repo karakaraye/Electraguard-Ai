@@ -4,13 +4,14 @@
 
 import type { Outcome, ReportStatus as ServerStatus } from "../../../../lib/api/types";
 import { useLocale, useT } from "../../../../lib/i18n/client";
-import { AppShell, Banner, Button, Field, ReceiptCard, Sheet, StatusBadge, SunRings, TextArea, UploadItem, UploadList } from "../../../../ui";
-import { CheckIcon, CloseIcon, PenIcon, ShieldCheckIcon } from "../../../../ui/icons";
-import { AppBarTitle } from "../_components/AppBarTitle";
+import { AppShell, Banner, Button, Field, ReceiptCard, Sheet, StatusBadge, Switch, TextArea, UploadItem, UploadList } from "../../../../ui";
+import { CheckIcon, CloseIcon, ShieldCheckIcon } from "../../../../ui/icons";
+import { TestNumberNote } from "../../../../ui/TestNumberNote/TestNumberNote";
 import { OUTCOME_KEY } from "../_lib/status";
 import type { ReceiptItem } from "./ReceiptView";
 import styles from "../_components/observer.module.css";
 import s from "../_components/screens.module.css";
+import p3 from "../_components/p3.module.css";
 
 /* ---------- C-01 Citizen receipt ---------- */
 
@@ -36,84 +37,76 @@ export function CitizenReceiptView(props: CitizenReceiptViewProps) {
   // The short code is printed plainly (one config value, lib/config.ts); shortCodeIsTest is kept only for callers.
   const shortCode = props.shortCode;
   return (
-    <AppShell
-      title={<AppBarTitle />}
-      onBack={props.onBack}
-      offline={props.offline}
-      actions={
-        <Button block onClick={props.onCheckStatus} data-testid="c01-check">
-          {t("c01.checkStatus")}
-        </Button>
-      }
-      data-testid="c01"
-    >
-      <div className={`${styles.screen} ${styles.wide}`}>
-        <div className={styles.receivedHead}>
-          <SunRings size={152} ripple={props.justSent}>
-            <span className={styles.receivedDisc} data-draw={props.justSent || undefined}>
-              <svg viewBox="0 0 24 24" width="40" height="40" aria-hidden="true">
-                <path d="m5 12.5 4.5 4.5L19 7.5" pathLength={1} />
-              </svg>
-            </span>
-          </SunRings>
-          <h1 className={styles.title}>{t("c01.title")}</h1>
+    <AppShell title={t("ui.nav.receipt")} done={{ label: t("common.done"), onClick: props.onBack, testId: "c01-done" }} offline={props.offline} data-testid="c01">
+      <div className={p3.receiptPage}>
+        <div className={p3.okHead}>
+          <span className={`${styles.receivedDisc} ${p3.okDisc}`} data-draw={props.justSent || undefined}>
+            <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true">
+              <path d="m5 12.5 4.5 4.5L19 7.5" pathLength={1} />
+            </svg>
+          </span>
+          <h1 className={p3.h1}>{t("c01.title")}</h1>
         </div>
-        <div className={styles.receipt}>
-          <div className={styles.receiptSide}>
-            <ReceiptCard code={props.code} receivedAt={props.receivedAt} animate={props.justSent} />
-            <p className={s.writeDown} data-testid="c01-write-down">
-              <PenIcon size={22} aria-hidden="true" />
-              <span>{t("c01.writeDown")}</span>
-            </p>
-            <label className={`${styles.switch} ${s.keepRow}`} data-testid="c01-keep">
-              <span className={s.switchText}>
-                <span>{t("c01.keepOnPhone")}</span>
-                <span className={styles.meta}>{t("c01.keepOnPhoneHint")}</span>
+        <div className={p3.receiptStack}>
+          <ReceiptCard code={props.code} receivedAt={props.receivedAt} animate={props.justSent} />
+          <div className={p3.keep} data-testid="c01-keep">
+            <span className={p3.keepText}>
+              <span className={p3.keepTitle} id="c01-keep-label">
+                {t("c01.keepOnPhone")}
               </span>
-              <input type="checkbox" role="switch" checked={props.keep} onChange={(event) => props.onKeep(event.target.checked)} />
-            </label>
+              <span className={p3.keepHint} id="c01-keep-hint">
+                {t("c01.keepOnPhoneHint")}
+              </span>
+            </span>
+            <Switch checked={props.keep} onToggle={() => props.onKeep(!props.keep)} labelledBy="c01-keep-label" aria-describedby="c01-keep-hint" />
           </div>
-          <div className={styles.receiptSide}>
-            {props.items.length ? (
-              <section className={styles.tight} aria-labelledby="c01-attachments">
-                <h2 className={styles.sectionTitle} id="c01-attachments">
-                  {t("o12.attachments")}
-                </h2>
-                <UploadList label={t("o12.attachments")}>
-                  {props.items.map((item) => (
-                    <UploadItem
-                      key={item.id}
-                      kind={item.kind === "audio" ? "voice" : item.kind}
-                      name={item.name}
-                      sizeBytes={item.sizeBytes}
-                      state={item.state}
-                      progress={item.progress}
-                      reason={item.reasonKey ? t(item.reasonKey, item.reasonVars) : undefined}
-                      onRetry={item.state === "failed" && !item.reasonKey ? () => props.onRetry(item.id) : undefined}
-                    />
-                  ))}
-                </UploadList>
-                {pending ? <p className={styles.note}>{t("o12.keepOpen")}</p> : null}
-              </section>
-            ) : null}
-            <section className={styles.tight} aria-labelledby="c01-next">
-              <h2 className={styles.sectionTitle} id="c01-next">
-                {t("c01.next.title")}
+          {props.items.length ? (
+            <section className={styles.tight} aria-labelledby="c01-attachments">
+              <h2 className={p3.h3} id="c01-attachments">
+                {t("o12.attachments")}
               </h2>
-              <ol className={styles.steps}>
-                <li>{t("c01.next.line1")}</li>
-                <li>{t("c01.next.line2")}</li>
-                <li>{t("c01.next.line3")}</li>
-              </ol>
-              <p className={`${styles.meta} eg-tnum`} data-testid="c01-sms">
-                {t("c01.sms", { code: props.code, shortCode })}
-              </p>
+              <UploadList label={t("o12.attachments")}>
+                {props.items.map((item) => (
+                  <UploadItem
+                    key={item.id}
+                    kind={item.kind === "audio" ? "voice" : item.kind}
+                    name={item.name}
+                    sizeBytes={item.sizeBytes}
+                    state={item.state}
+                    progress={item.progress}
+                    reason={item.reasonKey ? t(item.reasonKey, item.reasonVars) : undefined}
+                    onRetry={item.state === "failed" && !item.reasonKey ? () => props.onRetry(item.id) : undefined}
+                  />
+                ))}
+              </UploadList>
+              {pending ? <p className={styles.note}>{t("o12.keepOpen")}</p> : null}
             </section>
-            <p className={styles.meta}>{t("c01.citizenLabel")}</p>
-            <Button variant="quiet" className={styles.another} onClick={props.onAnother} data-testid="c01-another">
-              {t("c01.another")}
-            </Button>
-          </div>
+          ) : null}
+        </div>
+        <section className={p3.nextSteps} aria-labelledby="c01-next">
+          <h2 className={p3.h3} id="c01-next">
+            {t("c01.next.title")}
+          </h2>
+          <ol className={p3.nextList}>
+            <li>{t("c01.next.line1")}</li>
+            <li>{t("c01.next.line2")}</li>
+            <li>{t("c01.next.line3")}</li>
+          </ol>
+        </section>
+        <div className={p3.footnote} data-testid="c01-write-down">
+          <p className="eg-tnum" data-testid="c01-sms">
+            {t("c01.sms", { code: props.code, shortCode })}
+            <TestNumberNote label={t("pub.testNumber")} />
+          </p>
+          <p>{t("c01.citizenLabel")}</p>
+        </div>
+        <div className={p3.receiptFoot}>
+          <Button variant="secondary" block onClick={props.onCheckStatus} data-testid="c01-check">
+            {t("c01.checkStatus")}
+          </Button>
+          <Button variant="secondary" block onClick={props.onAnother} data-testid="c01-another">
+            {t("c01.another")}
+          </Button>
         </div>
       </div>
     </AppShell>
@@ -229,7 +222,7 @@ export function StatusView(props: StatusViewProps) {
               : undefined;
 
   return (
-    <AppShell onBack={props.onBack} offline={props.offline} banner={props.banner ? <Banner tone="danger" title={t(props.banner)} /> : undefined} data-testid="p01">
+    <AppShell title={t("p01.title")} onBack={props.onBack} offline={props.offline} banner={props.banner ? <Banner tone="danger" title={t(props.banner)} /> : undefined} data-testid="p01">
       <div className={`${styles.screen} ${styles.wide}`}>
         <h1 className={styles.title}>{t("p01.title")}</h1>
         <div className={s.twoCol}>
@@ -347,7 +340,10 @@ export function StatusView(props: StatusViewProps) {
             ) : null}
           </div>
         </div>
-        <p className={styles.meta}>{t("p01.sms", { shortCode: props.shortCode })}</p>
+        <p className={styles.meta}>
+          {t("p01.sms", { shortCode: props.shortCode })}
+          <TestNumberNote label={t("pub.testNumber")} />
+        </p>
       </div>
 
       <Sheet

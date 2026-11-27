@@ -7,11 +7,11 @@ import type { AccessBarrierDetail, Category } from "../../../../lib/api/types";
 import { EMERGENCY_NUMBER } from "../../../../lib/config";
 import { useLocale, useT } from "../../../../lib/i18n/client";
 import {
-  AppShell,
   Banner,
   Button,
   ButtonLink,
   ChoiceTileGroup,
+  OutboxBadge,
   DictationCorner,
   DictationStatus,
   MediaCapture,
@@ -19,8 +19,10 @@ import {
   Sheet,
   StatusBadge,
   Stepper,
+  useStepTravel,
   TextArea,
   WhenPicker,
+  Switch,
   YesNo,
   type CaptureSource,
   type DictationState,
@@ -35,7 +37,6 @@ import {
   CameraIcon,
   categoryPictograms,
   CheckIcon,
-  ClockIcon,
   MicIcon,
   PhoneIcon,
   PlaceIcon,
@@ -46,8 +47,9 @@ import {
   EyeIcon,
   MessageIcon,
 } from "../../../../ui/icons";
-import { AppBarTitle } from "../_components/AppBarTitle";
+import { ObserverShell } from "../_components/ObserverShell";
 import styles from "../_components/observer.module.css";
+import p3 from "../_components/p3.module.css";
 import { ACCESS_DETAILS, CATEGORIES, categoryMeta } from "../_lib/categories";
 
 export const TOTAL_STEPS = 7;
@@ -57,49 +59,71 @@ export const TOTAL_STEPS = 7;
 export type StepShellProps = {
   step: number;
   onBack: () => void;
-  /** Delete the draft (confirmed in a sheet). Omit to hide the menu. */
+  /** Delete the draft (confirmed in a sheet). Omit when there is no draft yet. */
   onDiscard?: () => void;
+  /** Close: keep the draft on this phone and go Home. */
+  onLeave?: () => void;
   offline?: boolean;
   banner?: ReactNode;
   actions?: ReactNode;
   testId: string;
   citizen?: boolean;
+  /** Extra control in the bar before Close (the outbox badge after a report is saved on the phone). */
+  end?: ReactNode;
   children: ReactNode;
 };
 
-export function StepShell({ step, onBack, onDiscard, offline, banner, actions, testId, citizen, children }: StepShellProps) {
+export function StepShell({ step, onBack, onDiscard, onLeave, offline, banner, actions, testId, citizen, end, children }: StepShellProps) {
   const t = useT();
-  const [menu, setMenu] = useState(false);
+  const [leaving, setLeaving] = useState(false);
   const [confirm, setConfirm] = useState(false);
+  const leave = onLeave ?? onBack;
+  const travel = useStepTravel(step);
   return (
-    <AppShell
-      title={citizen ? <span data-testid="citizen-title">{t("o04.citizenMode")}</span> : <AppBarTitle />}
+    <ObserverShell
+      title={citizen ? <span data-testid="citizen-title">{t("o04.citizenMode")}</span> : t("ui.nav.newReport")}
       onBack={onBack}
-      onMenu={onDiscard ? () => setMenu(true) : undefined}
+      onClose={onDiscard ? () => setLeaving(true) : leave}
       offline={offline}
       banner={banner}
+      end={end}
       actions={actions}
       data-testid={testId}
     >
-      <div className={`${styles.screen} ${styles.wide}`}>
-        {step > 0 ? <Stepper current={step} total={TOTAL_STEPS} /> : null}
+      <div className={`${styles.screen} ${styles.wide}`} data-travel={step > 0 && travel.direction ? travel.direction : undefined}>
+        {step > 0 ? <Stepper current={step} total={TOTAL_STEPS} from={travel.from} /> : null}
         {children}
       </div>
       {onDiscard ? (
         <>
-          <Sheet open={menu} onClose={() => setMenu(false)} title={t("ui.menu")} data-testid="step-menu">
-            <Button
-              variant="secondary"
-              block
-              icon={<TrashIcon />}
-              onClick={() => {
-                setMenu(false);
-                setConfirm(true);
-              }}
-              data-testid="step-menu-discard"
-            >
-              {t("incident.discard")}
-            </Button>
+          <Sheet open={leaving} onClose={() => setLeaving(false)} title={t("incident.leave.title")} description={t("incident.leave.body")} data-testid="step-leave">
+            <div className={styles.stack}>
+              <Button
+                block
+                onClick={() => {
+                  setLeaving(false);
+                  leave();
+                }}
+                data-testid="step-leave-keep"
+              >
+                {t("incident.leave.save")}
+              </Button>
+              <Button variant="secondary" block onClick={() => setLeaving(false)} data-testid="step-leave-continue">
+                {t("incident.leave.keep")}
+              </Button>
+              <Button
+                variant="quiet"
+                block
+                className={p3.dangerLink}
+                onClick={() => {
+                  setLeaving(false);
+                  setConfirm(true);
+                }}
+                data-testid="step-menu-discard"
+              >
+                {t("incident.discard")}
+              </Button>
+            </div>
           </Sheet>
           <Sheet
             open={confirm}
@@ -128,12 +152,12 @@ export function StepShell({ step, onBack, onDiscard, offline, banner, actions, t
           />
         </>
       ) : null}
-    </AppShell>
+    </ObserverShell>
   );
 }
 
 /** `citizen`: a report without an account (screen 29): the bar names it, and Check and send explains the receipt. */
-type Common = { onBack: () => void; onDiscard?: () => void; offline?: boolean; banner?: ReactNode; citizen?: boolean };
+type Common = { onBack: () => void; onDiscard?: () => void; onLeave?: () => void; offline?: boolean; banner?: ReactNode; citizen?: boolean };
 
 /* ---------- O-05 What happened? ---------- */
 
@@ -449,21 +473,22 @@ export function DescribeView({
     >
       <h1 className={styles.title}>{t("o09.title")}</h1>
       <div className={styles.describe}>
-        <ul className={styles.hints} id="o09-hints">
-          <li>{t("o09.hint1")}</li>
-          <li>{t("o09.hint2")}</li>
-          <li>{t("o09.hint3")}</li>
-        </ul>
         <div className={styles.stack}>
           <TextArea
             ref={textRef}
             label={t("o09.label")}
+            hint={
+              <>
+                <span className={styles.hintLine}>{t("o09.hint1")}</span>
+                <span className={styles.hintLine}>{t("o09.hint2")}</span>
+                <span className={styles.hintLine}>{t("o09.hint3")}</span>
+              </>
+            }
             value={text}
             onChange={(event) => onText(event.target.value)}
             rows={6}
             lang={locale}
             autoCorrect="on"
-            aria-describedby="o09-hints"
             error={errorText}
             adornment={<DictationCorner dictation={dictation} />}
             data-testid="o09-text"
@@ -596,12 +621,11 @@ export function EvidenceView({ items, recorder, onPick, onBlur, onRetake, onRemo
                       ) : null}
                       {item.kind !== "audio" ? (
                         <label className={styles.switch}>
-                          <span>{t("o10.blur")}</span>
-                          <input
-                            type="checkbox"
-                            role="switch"
+                          <span id={`o10-blur-label-${item.id}`}>{t("o10.blur")}</span>
+                          <Switch
                             checked={item.blur}
-                            onChange={(event) => onBlur(item.id, event.target.checked)}
+                            onToggle={() => onBlur(item.id, !item.blur)}
+                            labelledBy={`o10-blur-label-${item.id}`}
                             aria-describedby="o10-blur-note"
                             data-testid="o10-blur"
                           />
@@ -691,6 +715,8 @@ export type CheckViewProps = Common & {
   onEdit: (block: CheckBlock) => void;
   onSend: () => void;
   onHome?: () => void;
+  /** Reports waiting on this phone, shown on the outbox badge once this one is saved here. */
+  outboxCount?: number;
 };
 
 export function CheckView({
@@ -708,13 +734,15 @@ export function CheckView({
   onEdit,
   onSend,
   onHome,
+  outboxCount = 0,
   ...shell
 }: CheckViewProps) {
   const t = useT();
+  // Where the Send button was when it was pressed: the saved-on-phone envelope leaves from there.
+  const [sendBox, setSendBox] = useState<DOMRect | null>(null);
   const { locale } = useLocale();
   const [all, setAll] = useState(false);
   const meta = category ? categoryMeta(category) : null;
-  const Pictogram = meta ? categoryPictograms[meta.pictogram] : null;
   const long = description.split("\n").length > 3 || description.length > 150;
   const busy = status === "sending" || status === "notConfirmed";
   const finished = status === "savedOffline" || status === "intakePaused" || status === "server" || status === "withdrawn";
@@ -777,6 +805,11 @@ export function CheckView({
       step={outcome ? 0 : 7}
       testId="o11"
       {...shell}
+      end={
+        status === "savedOffline" && outboxCount > 0 ? (
+          <OutboxBadge count={outboxCount} flyFrom={sendBox} label={t("o04.outboxLabel", { count: outboxCount })} data-testid="o11-outbox-badge" />
+        ) : undefined
+      }
       actions={
         finished && onHome ? (
           <Button block onClick={onHome} data-testid="o11-home">
@@ -785,8 +818,12 @@ export function CheckView({
         ) : (
           <Button
             block
-            onClick={onSend}
+            onClick={(event) => {
+              setSendBox(event.currentTarget.getBoundingClientRect());
+              onSend();
+            }}
             loading={busy}
+            ring
             loadingLabel={t("o11.sending")}
             disabled={status === "queueFull" || status === "storageFull"}
             data-testid="o11-send"
@@ -819,12 +856,9 @@ export function CheckView({
         {block(
           "what",
           t("o11.what"),
-          meta && Pictogram ? (
+          meta ? (
             <span className={styles.tight}>
-              <span className={styles.valueRow}>
-                <Pictogram size={32} aria-hidden="true" />
-                <span>{t(`o05.tile.${meta.tile}`)}</span>
-              </span>
+              <span>{t(`o05.tile.${meta.tile}`)}</span>
               {category === "access_barrier" && access.length ? (
                 <span className={styles.meta}>{access.map((value) => t(`o05.access.${ACCESS_DETAILS.find((d) => d.value === value)?.key}`)).join(", ")}</span>
               ) : null}
@@ -834,30 +868,17 @@ export function CheckView({
         {block(
           "danger",
           t("o11.danger"),
-          danger === null ? null : danger ? (
-            <span className={styles.valueRow}>
-              <AlertIcon size={20} aria-hidden="true" />
-              {t("o11.dangerYes")}
-            </span>
-          ) : (
-            t("o11.dangerNo")
-          ),
+          danger === null ? null : danger ? t("o11.dangerYes") : t("o11.dangerNo"),
         )}
         {block(
           "where",
           t("o11.where"),
-          place ? (
-            <span className={styles.valueRow}>
-              <PlaceIcon size={20} aria-hidden="true" />
-              {place}
-            </span>
-          ) : null,
+          place || null,
         )}
         {block(
           "when",
           t("o11.when"),
-          <span className={`${styles.valueRow} eg-tnum`}>
-            <ClockIcon size={20} aria-hidden="true" />
+          <span className="eg-tnum">
             {justNow ? `${t("o08.justNow")} · ` : ""}
             {occurredAt ? formatWatDateTime(occurredAt, locale) : null}
           </span>,

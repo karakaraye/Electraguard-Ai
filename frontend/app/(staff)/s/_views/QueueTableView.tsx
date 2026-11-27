@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState, type FormEvent } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState, type FormEvent, type KeyboardEvent } from "react";
 import type {
   Category,
   Channel,
@@ -14,26 +14,32 @@ import { useLocale, useT } from "../../../../lib/i18n/client";
 import {
   Banner,
   Button,
-  DataTable,
+  Count,
   EmptyState,
   SegmentedControl,
   Skeleton,
   StatusBadge,
-  type Column,
+  StatusShape,
+  Tag,
   type ReportStatus as BadgeStatus,
   type StatusTone,
 } from "../../../../ui";
 import { formatWatDateTime } from "../../../../ui/format";
 import { useMediaQuery } from "../../../../ui/hooks";
+import { animate } from "../../../../ui/motion";
 import {
-  ArrowRightIcon,
   CameraIcon,
+  ChevronDownIcon,
+  ListIcon,
   CloseIcon,
   MicIcon,
-  PlusIcon,
   RetryIcon,
+  SlidersIcon,
+  SortDownIcon,
+  SortUpIcon,
   VideoIcon,
 } from "../../../../ui/icons";
+import { StaffPopover } from "../../../../ui/StaffShell/Popover";
 import { CATEGORY_ROWS } from "../../../(public)/_lib/public";
 import styles from "./QueueTableView.module.css";
 
@@ -78,6 +84,9 @@ export interface QueueTableViewProps {
   onRemoveView?: (name: string) => void;
   /** Opens a case (Enter or click). */
   onOpenCase: (id: string) => void;
+  /** Text from the header search that narrows the rows. */
+  search?: string;
+  onClearSearch?: () => void;
   /** Preview only: the row shown in the preview pane at first. */
   initialPreviewId?: string;
   "data-testid"?: string;
@@ -105,13 +114,13 @@ export function urgencyTone(level: Urgency): StatusTone {
   return level === "urgent" ? "danger" : level === "high" ? "attn" : "wait";
 }
 
+/** Filters other than status and priority, which have their own controls. */
+function moreFilterCount(f: QueueTableFilters): number {
+  return (f.category ? 1 : 0) + f.channel.length + (f.hasEvidence ? 1 : 0);
+}
+
 function isFiltered(f: QueueTableFilters): boolean {
-  return (
-    f.urgency.length > 0 ||
-    f.category !== "" ||
-    f.channel.length > 0 ||
-    f.hasEvidence
-  );
+  return f.urgency.length > 0 || moreFilterCount(f) > 0;
 }
 
 function toggle<T>(list: T[], value: T): T[] {
@@ -120,7 +129,28 @@ function toggle<T>(list: T[], value: T): T[] {
     : [...list, value];
 }
 
-/** S-02 review queue: status tabs, filter chips, the case table and, on wide screens, a preview. */
+const clockFormat = new Intl.DateTimeFormat("en-GB", {
+  hour: "2-digit",
+  minute: "2-digit",
+  hourCycle: "h23",
+  timeZone: "Africa/Lagos",
+});
+
+type SortKey = "urgency" | "reference" | "time";
+type Sort = { key: SortKey; dir: 1 | -1 };
+
+/** Priority as a shape and a word, so it never depends on colour alone. */
+function Priority({ level }: { level: Urgency }) {
+  const t = useT();
+  return (
+    <span className={styles.pri} data-level={level}>
+      <StatusShape tone={urgencyTone(level)} size={12} />
+      {t(`s02.urgency.${level}`)}
+    </span>
+  );
+}
+
+/** S-02 review queue: status tabs, priority, filters, the case table and, on wide screens, a preview. */
 export function QueueTableView({
   data,
   loading,
@@ -136,6 +166,8 @@ export function QueueTableView({
   onSaveView,
   onRemoveView,
   onOpenCase,
+  search = "",
+  onClearSearch,
   initialPreviewId,
   "data-testid": testId = "queue-table-view",
 }: QueueTableViewProps) {
@@ -144,10 +176,73 @@ export function QueueTableView({
   const [previewId, setPreviewId] = useState<string | null>(
     initialPreviewId ?? null,
   );
-  const [naming, setNaming] = useState(false);
-  const [viewName, setViewName] = useState("");
+  const [sort, setSort] = useState<Sort>({ key: "urgency", dir: 1 });
+  const bodyRef = useRef<HTMLTableSectionElement>(null);
 
-  const items = data?.items ?? [];
+  const rawItems = useMemo(() => data?.items ?? [], [data]);
+  const items = useMemo(() => {
+    const factor = sort.dir;
+    const value = (row: QueueItem): string | number =>
+      sort.key === "urgency"
+        ? URGENCIES.indexOf(row.urgency.level)
+        : sort.key === "reference"
+          ? row.receipt_code
+          : Date.parse(row.occurred_at ?? row.received_at);
+    // Priority keeps the server's order inside a level (newest first); other sorts are plain.
+    return sort.key === "urgency" && sort.dir === 1
+      ? rawItems
+      : [...rawItems].sort((a, b) => {
+          const va = value(a);
+          const vb = value(b);
+          if (va === vb) return 0;
+          return (va < vb ? -1 : 1) * factor;
+        });
+  }, [rawItems, sort]);
+
+  // When the "n new" pill is pressed, the rows already on screen step down to make room (FLIP:
+  // measured, then moved back to where they were and released), and the new rows fade in.
+  const tops = useRef<Map<string, number>>(new Map());
+  const revealing = useRef(false);
+  useLayoutEffect(() => {
+    const rows = Array.from(bodyRef.current?.querySelectorAll<HTMLElement>("tr[data-row-key]") ?? []);
+    const next = new Map<string, number>();
+    for (const row of rows) next.set(row.dataset.rowKey ?? "", row.getBoundingClientRect().top + window.scrollY);
+    if (revealing.current && tops.current.size > 0) {
+      revealing.current = false;
+      for (const row of rows) {
+        const key = row.dataset.rowKey ?? "";
+        const was = tops.current.get(key);
+        if (was === undefined) {
+          animate(row, [{ opacity: 0 }, { opacity: 1 }], { duration: 240, easing: "out" });
+        } else {
+          const dy = was - (next.get(key) ?? was);
+          if (Math.abs(dy) > 1) animate(row, [{ transform: `translateY(${dy}px)` }, { transform: "translateY(0)" }], { duration: 240, easing: "out" });
+        }
+      }
+    }
+    tops.current = next;
+  });
+
+  // Rows that were not here at the last render glow once (a cue, not a jump).
+  const seen = useRef<Set<string> | null>(null);
+  const [fresh, setFresh] = useState<Set<string>>(new Set());
+  useEffect(() => {
+    const ids = new Set(rawItems.map((item) => item.id));
+    if (seen.current && ids.size > 0) {
+      const added = [...ids].filter((id) => !seen.current!.has(id));
+      if (added.length > 0 && seen.current.size > 0) {
+        const start = window.setTimeout(() => setFresh(new Set(added)), 0);
+        const stop = window.setTimeout(() => setFresh(new Set()), 1800);
+        seen.current = ids;
+        return () => {
+          window.clearTimeout(start);
+          window.clearTimeout(stop);
+        };
+      }
+    }
+    seen.current = ids;
+  }, [rawItems]);
+
   const counts = data?.counts ?? {};
   const countOf = (tab: QueueStatusTab) =>
     tab === "all"
@@ -166,150 +261,170 @@ export function QueueTableView({
             ? t("s02.tabs.question")
             : t("ui.status.closed");
 
-  const wide = useMediaQuery("(min-width: 1280px)");
-  /** Phones get cards and a status dropdown; the table needs at least a tablet's width. */
+  const wide = useMediaQuery("(min-width: 1400px)");
+  const roomy = useMediaQuery("(min-width: 640px)", true);
+  /** Phones get cards; the table needs at least a tablet's width. */
   const tableWidth = useMediaQuery("(min-width: 768px)", true);
   const preview = items.find((item) => item.id === previewId) ?? null;
-  /** With the preview open, the columns it repeats (why, evidence, status) step out of the table. */
-  const previewOpen = wide && preview !== null;
+  const previewOpen = wide && preview !== null && tableWidth;
   const set = (patch: Partial<QueueTableFilters>) =>
     onFiltersChange({ ...filters, ...patch });
 
-  function saveView(event: FormEvent) {
+  const resetMore = () =>
+    onFiltersChange({
+      ...filters,
+      category: "",
+      channel: [],
+      hasEvidence: false,
+    });
+  const resetAll = () => {
+    onFiltersChange({ ...EMPTY_QUEUE_FILTERS, status: filters.status });
+    onClearSearch?.();
+  };
+
+  const tokens: Array<{ key: string; label: string; value: string; remove: () => void }> = [];
+  if (search)
+    tokens.push({
+      key: "search",
+      label: t("s02.filters.search"),
+      value: search,
+      remove: () => onClearSearch?.(),
+    });
+  if (filters.category)
+    tokens.push({
+      key: "category",
+      label: t("s02.filters.category"),
+      value: t(CATEGORY_KEY[filters.category]),
+      remove: () => set({ category: "" }),
+    });
+  for (const channel of filters.channel)
+    tokens.push({
+      key: `channel-${channel}`,
+      label: t("s02.filters.channel"),
+      value: t(`s02.channel.${channel}`),
+      remove: () => set({ channel: filters.channel.filter((c) => c !== channel) }),
+    });
+  if (filters.hasEvidence)
+    tokens.push({
+      key: "evidence",
+      label: t("s02.columns.evidence"),
+      value: t("s02.filters.hasEvidence"),
+      remove: () => set({ hasEvidence: false }),
+    });
+
+  const priorityValue = filters.urgency.length === 1 ? filters.urgency[0] : "any";
+  const filtering = isFiltered(filters) || Boolean(search);
+  const priorityOptions = [
+    { value: "any", label: t("s02.filters.any") },
+    ...URGENCIES.map((level) => ({
+      value: level as string,
+      label: t(`s02.urgency.${level}`),
+    })),
+  ];
+
+  function onTabKey(event: KeyboardEvent, index: number) {
+    const next =
+      event.key === "ArrowRight"
+        ? (index + 1) % TABS.length
+        : event.key === "ArrowLeft"
+          ? (index - 1 + TABS.length) % TABS.length
+          : event.key === "Home"
+            ? 0
+            : event.key === "End"
+              ? TABS.length - 1
+              : -1;
+    if (next < 0) return;
     event.preventDefault();
-    const name = viewName.trim();
-    if (!name) return;
-    onSaveView?.(name);
-    setViewName("");
-    setNaming(false);
+    set({ status: TABS[next] });
+    (event.currentTarget.parentElement?.children[next] as HTMLElement | undefined)?.focus();
   }
 
-  const columns: Column<QueueItem>[] = [
-    {
-      key: "urgency",
-      header: t("s02.columns.urgency"),
-      sortable: true,
-      sortValue: (row) => URGENCIES.indexOf(row.urgency.level),
-      render: (row) => (
-        <span className={styles.nowrap}>
-          <StatusBadge
-            tone={urgencyTone(row.urgency.level)}
-            label={t(`s02.urgency.${row.urgency.level}`)}
-          />
-        </span>
-      ),
-    },
-    {
-      key: "reasons",
-      header: t("s02.columns.reasons"),
-      render: (row) => <Reasons reasons={row.urgency.reasons} />,
-    },
-    {
-      key: "reference",
-      header: t("s02.columns.reference"),
-      rowHeader: true,
-      sortable: true,
-      sortValue: (row) => row.receipt_code,
-      render: (row) => (
-        <span className={styles.ref}>
-          <span className="eg-tnum">{row.receipt_code}</span>
-          {row.simulated ? (
-            <span className={styles.simulated}>{t("s02.simulated")}</span>
+  function onRowKey(event: KeyboardEvent<HTMLElement>, row: QueueItem, index: number) {
+    if (event.altKey || event.ctrlKey || event.metaKey) return;
+    const focusRow = (next: number) => {
+      const rows = bodyRef.current?.querySelectorAll<HTMLElement>("[data-row]");
+      rows?.[Math.max(0, Math.min((rows?.length ?? 1) - 1, next))]?.focus();
+    };
+    switch (event.key) {
+      case "Enter":
+      case " ":
+        event.preventDefault();
+        onOpenCase(row.id);
+        break;
+      case "ArrowDown":
+      case "j":
+        event.preventDefault();
+        focusRow(index + 1);
+        break;
+      case "ArrowUp":
+      case "k":
+        event.preventDefault();
+        focusRow(index - 1);
+        break;
+      case "Home":
+        event.preventDefault();
+        focusRow(0);
+        break;
+      case "End":
+        event.preventDefault();
+        focusRow(items.length - 1);
+        break;
+    }
+  }
+
+  const sortHead = (key: SortKey, label: string) => {
+    const active = sort.key === key;
+    return (
+      <th
+        scope="col"
+        aria-sort={active ? (sort.dir === 1 ? "ascending" : "descending") : "none"}
+        data-sorted={active || undefined}
+        className={key === "time" ? styles.thTime : undefined}
+      >
+        <button
+          type="button"
+          className={styles.sortButton}
+          onClick={() =>
+            setSort(active ? { key, dir: sort.dir === 1 ? -1 : 1 } : { key, dir: 1 })
+          }
+          data-testid={`s02-sort-${key}`}
+        >
+          {label}
+          {active ? (
+            sort.dir === 1 ? <SortDownIcon size={14} /> : <SortUpIcon size={14} />
           ) : null}
-        </span>
-      ),
-    },
-    {
-      key: "category",
-      header: t("s02.columns.category"),
-      sortable: true,
-      sortValue: (row) => t(CATEGORY_KEY[row.category.value]),
-      render: (row) => t(CATEGORY_KEY[row.category.value]),
-    },
-    {
-      key: "place",
-      header: t("s02.columns.location"),
-      sortable: true,
-      sortValue: (row) => row.area?.lga_name ?? row.area?.state_name ?? null,
-      render: (row) =>
-        row.area ? (
-          <span className={styles.place}>
-            <span>{row.area.lga_name ?? row.area.state_name}</span>
-            {row.area.lga_name ? (
-              <span className={styles.sub}>{row.area.state_name}</span>
-            ) : null}
-          </span>
-        ) : (
-          <span className={styles.sub}>{t("s02.noPlace")}</span>
-        ),
-    },
-    {
-      key: "occurred",
-      header: t("s02.columns.occurred"),
-      sortable: true,
-      sortValue: (row) => row.occurred_at ?? row.received_at,
-      render: (row) => (
-        <span className="eg-tnum">
-          {formatWatDateTime(row.occurred_at ?? row.received_at, locale)}
-        </span>
-      ),
-    },
-    {
-      key: "evidence",
-      header: t("s02.columns.evidence"),
-      sortable: true,
-      sortValue: (row) =>
-        row.media_counts.photo +
-        row.media_counts.video +
-        row.media_counts.audio,
-      render: (row) => <Evidence counts={row.media_counts} />,
-    },
-    {
-      key: "status",
-      header: t("s02.columns.status"),
-      sortable: true,
-      sortValue: (row) => row.status,
-      render: (row) => (
-        <span className={styles.nowrap}>
-          <StatusBadge status={badgeStatus(row.status)} />
-        </span>
-      ),
-    },
-  ];
+        </button>
+      </th>
+    );
+  };
 
   return (
     <div className={styles.page} data-testid={testId}>
-      <div className={styles.tabs}>
-        {tableWidth ? (
-          <SegmentedControl
-            label={t("s02.tabsLabel")}
-            value={filters.status}
-            onChange={(value) => set({ status: value as QueueStatusTab })}
-            options={TABS.map((tab) => ({
-              value: tab,
-              label: `${tabLabel(tab)} ${countOf(tab)}`,
-            }))}
-            data-testid="s02-tabs"
-          />
-        ) : (
-          <label className={styles.statusSelect}>
-            <span>{t("s02.filters.status")}</span>
-            <select
-              value={filters.status}
-              onChange={(e) =>
-                set({ status: e.target.value as QueueStatusTab })
-              }
-              data-testid="s02-status-select"
+      <div
+        className={styles.tabs}
+        role="tablist"
+        aria-label={t("s02.tabsLabel")}
+        data-testid="s02-tabs"
+      >
+        {TABS.map((tab, index) => {
+          const selected = filters.status === tab;
+          return (
+            <button
+              key={tab}
+              type="button"
+              role="tab"
+              aria-selected={selected}
+              tabIndex={selected ? 0 : -1}
+              className={styles.tab}
+              onClick={() => set({ status: tab })}
+              onKeyDown={(event) => onTabKey(event, index)}
+              data-testid={`s02-tab-${tab}`}
             >
-              {TABS.map((tab) => (
-                <option
-                  key={tab}
-                  value={tab}
-                >{`${tabLabel(tab)} (${countOf(tab)})`}</option>
-              ))}
-            </select>
-          </label>
-        )}
+              {tabLabel(tab)}
+              <Count value={countOf(tab)} />
+            </button>
+          );
+        })}
       </div>
 
       <div
@@ -317,150 +432,172 @@ export function QueueTableView({
         role="group"
         aria-label={t("s02.filters.label")}
       >
-        <div
-          className={styles.chipGroup}
-          role="group"
-          aria-label={t("s02.filters.urgency")}
-        >
-          {URGENCIES.map((level) => (
-            <button
-              key={level}
-              type="button"
-              className={styles.chip}
-              aria-pressed={filters.urgency.includes(level)}
-              onClick={() => set({ urgency: toggle(filters.urgency, level) })}
-              data-testid={`s02-urgency-${level}`}
-            >
-              {t(`s02.urgency.${level}`)}
-            </button>
-          ))}
-        </div>
-
-        <label
-          className={styles.selectChip}
-          data-on={filters.category ? "" : undefined}
-        >
-          <span className="eg-sr-only">{t("s02.filters.category")}</span>
-          <select
-            value={filters.category}
-            onChange={(e) => set({ category: e.target.value as Category | "" })}
-            data-testid="s02-category"
+        {roomy ? (
+          <div className={styles.priority}>
+            <span className={styles.priorityLabel}>{t("s02.filters.priority")}</span>
+            <SegmentedControl
+              label={t("s02.filters.priority")}
+              value={priorityValue}
+              onChange={(value) =>
+                set({ urgency: value === "any" ? [] : [value as Urgency] })
+              }
+              options={priorityOptions}
+              data-testid="s02-priority"
+            />
+          </div>
+        ) : (
+          <StaffPopover
+            label={t("s02.filters.priority")}
+            trigger={(props) => (
+              <button
+                type="button"
+                className={styles.control}
+                {...props}
+                data-testid="s02-priority-button"
+              >
+                {t("s02.filters.priority")}:{" "}
+                {priorityOptions.find((o) => o.value === priorityValue)?.label}
+                <ChevronDownIcon size={16} />
+              </button>
+            )}
           >
-            <option value="">{t("s02.filters.anyCategory")}</option>
-            {CATEGORY_ROWS.map((row) => (
-              <option key={row.value} value={row.value}>
-                {t(row.key)}
-              </option>
-            ))}
-          </select>
-        </label>
+            {(close) => (
+              <ul className={styles.viewList}>
+                {priorityOptions.map((option) => (
+                  <li key={option.value}>
+                    <button
+                      type="button"
+                      className={styles.viewApply}
+                      aria-pressed={priorityValue === option.value}
+                      data-on={priorityValue === option.value || undefined}
+                      onClick={() => {
+                        set({
+                          urgency:
+                            option.value === "any"
+                              ? []
+                              : [option.value as Urgency],
+                        });
+                        close();
+                      }}
+                    >
+                      {option.label}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </StaffPopover>
+        )}
 
-        <div
-          className={styles.chipGroup}
-          role="group"
-          aria-label={t("s02.filters.channel")}
-        >
-          {CHANNELS.map((channel) => (
+        <StaffPopover
+          label={t("s02.filters.panel")}
+          trigger={(props) => (
             <button
-              key={channel}
               type="button"
-              className={styles.chip}
-              aria-pressed={filters.channel.includes(channel)}
-              onClick={() => set({ channel: toggle(filters.channel, channel) })}
-              data-testid={`s02-channel-${channel}`}
+              className={styles.control}
+              {...props}
+              data-testid="s02-filters-button"
             >
-              {t(`s02.channel.${channel}`)}
+              <SlidersIcon size={18} />
+              {t("s02.filters.more")}
+              {moreFilterCount(filters) > 0 ? (
+                <Count value={moreFilterCount(filters)} tone="needs" />
+              ) : null}
             </button>
-          ))}
-        </div>
-
-        <button
-          type="button"
-          className={styles.chip}
-          aria-pressed={filters.hasEvidence}
-          onClick={() => set({ hasEvidence: !filters.hasEvidence })}
-          data-testid="s02-has-media"
+          )}
         >
-          {t("s02.filters.hasEvidence")}
-        </button>
+          {() => (
+            <div className={styles.panel}>
+              <label className={styles.panelField}>
+                <span>{t("s02.filters.category")}</span>
+                <select
+                  className={styles.select}
+                  value={filters.category}
+                  onChange={(e) =>
+                    set({ category: e.target.value as Category | "" })
+                  }
+                  data-testid="s02-category"
+                >
+                  <option value="">{t("s02.filters.anyCategory")}</option>
+                  {CATEGORY_ROWS.map((row) => (
+                    <option key={row.value} value={row.value}>
+                      {t(row.key)}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <fieldset className={styles.panelField}>
+                <legend>{t("s02.filters.channel")}</legend>
+                {CHANNELS.map((channel) => (
+                  <label key={channel} className={styles.check}>
+                    <input
+                      type="checkbox"
+                      checked={filters.channel.includes(channel)}
+                      onChange={() =>
+                        set({ channel: toggle(filters.channel, channel) })
+                      }
+                      data-testid={`s02-channel-${channel}`}
+                    />
+                    {t(`s02.channel.${channel}`)}
+                  </label>
+                ))}
+              </fieldset>
+              <label className={styles.check}>
+                <input
+                  type="checkbox"
+                  checked={filters.hasEvidence}
+                  onChange={() => set({ hasEvidence: !filters.hasEvidence })}
+                  data-testid="s02-has-media"
+                />
+                {t("s02.filters.hasEvidence")}
+              </label>
+              {moreFilterCount(filters) > 0 ? (
+                <button
+                  type="button"
+                  className={styles.linkButton}
+                  onClick={resetMore}
+                >
+                  {t("s02.filters.clearAll")}
+                </button>
+              ) : null}
+            </div>
+          )}
+        </StaffPopover>
 
-        {isFiltered(filters) ? (
-          <Button
-            variant="quiet"
-            onClick={() =>
-              onFiltersChange({
-                ...EMPTY_QUEUE_FILTERS,
-                status: filters.status,
-              })
-            }
+        {tokens.map((token) => (
+          <span key={token.key} className={styles.token}>
+            <em>{token.label}</em> {token.value}
+            <button
+              type="button"
+              onClick={token.remove}
+              aria-label={t("s02.filters.removeToken", {
+                name: `${token.label} ${token.value}`,
+              })}
+            >
+              <CloseIcon size={14} />
+            </button>
+          </span>
+        ))}
+        {filtering ? (
+          <button
+            type="button"
+            className={styles.clear}
+            onClick={resetAll}
             data-testid="s02-reset"
           >
-            {t("s02.filters.clear")}
-          </Button>
+            {t("s02.filters.clearAll")}
+          </button>
+        ) : null}
+
+        {onSaveView ? (
+          <SavedViews
+            views={savedViews}
+            onApply={(view) => onFiltersChange(view.filters)}
+            onSave={onSaveView}
+            onRemove={onRemoveView}
+          />
         ) : null}
       </div>
-
-      {onSaveView ? (
-        <div className={styles.views}>
-          <span className={styles.viewsLabel} id="s02-views">
-            {t("s02.views.title")}
-          </span>
-          <ul className={styles.viewList} aria-labelledby="s02-views">
-            {savedViews.map((view) => (
-              <li key={view.name} className={styles.viewChip}>
-                <button
-                  type="button"
-                  onClick={() => onFiltersChange(view.filters)}
-                >
-                  {view.name}
-                </button>
-                <button
-                  type="button"
-                  className={styles.viewRemove}
-                  onClick={() => onRemoveView?.(view.name)}
-                  aria-label={t("s02.views.remove", { name: view.name })}
-                >
-                  <CloseIcon size={14} />
-                </button>
-              </li>
-            ))}
-          </ul>
-          {naming ? (
-            <form className={styles.viewForm} onSubmit={saveView}>
-              <label className="eg-sr-only" htmlFor="s02-view-name">
-                {t("s02.views.name")}
-              </label>
-              <input
-                id="s02-view-name"
-                className={styles.viewInput}
-                value={viewName}
-                onChange={(e) => setViewName(e.target.value.slice(0, 40))}
-                placeholder={t("s02.views.name")}
-                autoFocus
-                onKeyDown={(e) => {
-                  if (e.key === "Escape") setNaming(false);
-                }}
-              />
-              <Button
-                type="submit"
-                variant="secondary"
-                disabled={!viewName.trim()}
-              >
-                {t("s02.views.saveConfirm")}
-              </Button>
-            </form>
-          ) : (
-            <Button
-              variant="quiet"
-              icon={<PlusIcon />}
-              onClick={() => setNaming(true)}
-              data-testid="s02-save-view"
-            >
-              {t("s02.views.save")}
-            </Button>
-          )}
-        </div>
-      ) : null}
 
       {error ? (
         <Banner
@@ -487,7 +624,10 @@ export function QueueTableView({
           <button
             type="button"
             className={styles.newPill}
-            onClick={onShowNew}
+            onClick={() => {
+              revealing.current = true;
+              onShowNew?.();
+            }}
             data-testid="s02-new-pill"
           >
             {t("s02.newCases", { count: newCount })}
@@ -511,45 +651,98 @@ export function QueueTableView({
             <EmptyState
               title={t("s02.empty")}
               action={
-                isFiltered(filters) ? (
-                  <Button
-                    variant="secondary"
-                    onClick={() =>
-                      onFiltersChange({
-                        ...EMPTY_QUEUE_FILTERS,
-                        status: filters.status,
-                      })
-                    }
-                  >
+                filtering ? (
+                  <Button variant="secondary" onClick={resetAll}>
                     {t("s02.filters.clear")}
                   </Button>
                 ) : undefined
               }
               data-testid="s02-empty"
             >
-              {isFiltered(filters) ? null : t("s02.emptySubtitle")}
+              {filtering ? null : t("s02.emptySubtitle")}
             </EmptyState>
           ) : items.length > 0 ? (
             <>
               {tableWidth ? (
-                <DataTable
-                  caption={t("s02.caption")}
-                  captionHidden
-                  columns={
-                    previewOpen
-                      ? columns.filter(
-                          (c) =>
-                            !["reasons", "evidence", "status"].includes(c.key),
-                        )
-                      : columns
-                  }
-                  rows={items}
-                  rowKey={(row) => row.id}
-                  selectedKey={previewId ?? undefined}
-                  onRowFocus={(row) => setPreviewId(row.id)}
-                  onRowActivate={(row) => onOpenCase(row.id)}
+                <div
+                  className={styles.tableCard}
+                  role="region"
+                  aria-label={t("s02.caption")}
                   data-testid="s02-table"
-                />
+                >
+                  <table className={styles.table}>
+                    <caption className="eg-sr-only">{t("s02.caption")}</caption>
+                    <colgroup>
+                      <col className={styles.colPri} />
+                      <col className={styles.colRef} />
+                      <col />
+                      <col className={styles.colPlace} />
+                      <col className={styles.colTime} />
+                      <col className={styles.colStatus} />
+                    </colgroup>
+                    <thead>
+                      <tr>
+                        {sortHead("urgency", t("s02.columns.priority"))}
+                        {sortHead("reference", t("s02.columns.reference"))}
+                        <th scope="col">{t("s02.columns.category")}</th>
+                        <th scope="col">{t("s02.columns.location")}</th>
+                        {sortHead("time", t("s02.columns.time"))}
+                        <th scope="col">{t("s02.columns.status")}</th>
+                      </tr>
+                    </thead>
+                    <tbody ref={bodyRef}>
+                      {items.map((row, index) => (
+                        <tr
+                          key={row.id}
+                          data-row
+                          data-row-key={row.id}
+                          tabIndex={0}
+                          aria-selected={previewId === row.id}
+                          data-new={fresh.has(row.id) || undefined}
+                          onClick={() => onOpenCase(row.id)}
+                          onFocus={() => setPreviewId(row.id)}
+                          onKeyDown={(event) => onRowKey(event, row, index)}
+                        >
+                          <td>
+                            <Priority level={row.urgency.level} />
+                          </td>
+                          <th scope="row" className={`${styles.ref} eg-tnum`}>
+                            {row.receipt_code}
+                          </th>
+                          <td>
+                            <span className={styles.place}>
+                              <span className={styles.ward}>
+                                {t(CATEGORY_KEY[row.category.value])}
+                              </span>
+                              {row.simulated ? (
+                                <span className={styles.sub}>
+                                  {t("s02.simulated")}
+                                </span>
+                              ) : null}
+                            </span>
+                          </td>
+                          <td>
+                            <Place item={row} />
+                          </td>
+                          <td
+                            className={`${styles.time} eg-tnum`}
+                            title={formatWatDateTime(
+                              row.occurred_at ?? row.received_at,
+                              locale,
+                            )}
+                          >
+                            {clockFormat.format(
+                              new Date(row.occurred_at ?? row.received_at),
+                            )}
+                          </td>
+                          <td>
+                            <StatusBadge status={badgeStatus(row.status)} />
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               ) : (
                 <ul
                   className={styles.cards}
@@ -557,7 +750,7 @@ export function QueueTableView({
                   data-testid="s02-cards"
                 >
                   {items.map((item) => (
-                    <li key={item.id}>
+                    <li key={item.id} data-new={fresh.has(item.id) || undefined}>
                       <Link
                         href={`/s/cases/${item.id}`}
                         className={styles.card}
@@ -567,36 +760,46 @@ export function QueueTableView({
                         }}
                       >
                         <span className={styles.cardTop}>
-                          <StatusBadge
-                            tone={urgencyTone(item.urgency.level)}
-                            label={t(`s02.urgency.${item.urgency.level}`)}
-                          />
-                          <StatusBadge status={badgeStatus(item.status)} />
-                        </span>
-                        <span className={`${styles.cardRef} eg-tnum`}>
-                          {item.receipt_code}
-                        </span>
-                        <span>{t(CATEGORY_KEY[item.category.value])}</span>
-                        <span className={styles.sub}>
-                          {[item.area?.lga_name, item.area?.state_name]
-                            .filter(Boolean)
-                            .join(", ") || t("s02.noPlace")}
-                          {" · "}
-                          <span className="eg-tnum">
-                            {formatWatDateTime(
-                              item.occurred_at ?? item.received_at,
-                              locale,
+                          <Priority level={item.urgency.level} />
+                          <span className={`${styles.cardRef} eg-tnum`}>
+                            {item.receipt_code}
+                          </span>
+                          <span className={`${styles.cardTime} eg-tnum`}>
+                            {clockFormat.format(
+                              new Date(item.occurred_at ?? item.received_at),
                             )}
                           </span>
                         </span>
-                        <Reasons reasons={item.urgency.reasons} />
+                        <span className={styles.cardTitle}>
+                          {t(CATEGORY_KEY[item.category.value])}
+                        </span>
+                        <span className={styles.cardBottom}>
+                          <span className={styles.cardPlace}>
+                            {[item.area?.ward_name, item.area?.lga_name ?? item.area?.state_name]
+                              .filter(Boolean)
+                              .join(", ") || t("s02.noPlace")}
+                          </span>
+                          <StatusBadge status={badgeStatus(item.status)} />
+                        </span>
                       </Link>
                     </li>
                   ))}
                 </ul>
               )}
               {tableWidth ? (
-                <p className={styles.keys}>{t("s02.keys")}</p>
+                <p className={styles.keys}>
+                  <span>
+                    <kbd className={styles.kbd}>J</kbd>
+                    <kbd className={styles.kbd}>K</kbd> {t("s02.keysMove")}{" "}
+                    <kbd className={styles.kbd}>Enter</kbd> {t("s02.keysOpen")}
+                  </span>
+                  <span className={styles.shown}>
+                    {t("s02.shown", {
+                      shown: items.length,
+                      total: countOf("all"),
+                    })}
+                  </span>
+                </p>
               ) : null}
               {data?.next_cursor ? (
                 <div className={styles.more}>
@@ -615,36 +818,127 @@ export function QueueTableView({
         </div>
 
         {previewOpen && preview ? (
-          <Preview item={preview} onOpen={() => onOpenCase(preview.id)} />
+          <Preview
+            item={preview}
+            onOpen={() => onOpenCase(preview.id)}
+            onClose={() => setPreviewId(null)}
+          />
         ) : null}
       </div>
     </div>
   );
 }
 
-function Reasons({ reasons }: { reasons: QueueItem["urgency"]["reasons"] }) {
+/** Ward on the first line, local government area on the second. */
+function Place({ item }: { item: QueueItem }) {
   const t = useT();
-  if (reasons.length === 0) return null;
-  const shown = reasons.slice(0, 2);
+  const area = item.area;
+  if (!area) return <span className={styles.sub}>{t("s02.noPlace")}</span>;
+  const ward = area.ward_name ?? area.lga_name ?? area.state_name;
+  const second = area.ward_name ? (area.lga_name ?? area.state_name) : area.lga_name ? area.state_name : null;
   return (
-    <span className={styles.reasons}>
-      {shown.map((reason) => (
-        <span key={reason} className={styles.reason}>
-          {t(`s02.reasons.${reason}`)}
-        </span>
-      ))}
-      {reasons.length > shown.length ? (
-        <span
-          className={styles.reason}
-          title={reasons
-            .slice(2)
-            .map((r) => t(`s02.reasons.${r}`))
-            .join(", ")}
-        >
-          {t("s02.moreReasons", { count: reasons.length - shown.length })}
-        </span>
-      ) : null}
+    <span className={styles.place}>
+      <span className={styles.ward}>{ward}</span>
+      {second ? <span className={styles.sub}>{second}</span> : null}
     </span>
+  );
+}
+
+function SavedViews({
+  views,
+  onApply,
+  onSave,
+  onRemove,
+}: {
+  views: SavedQueueView[];
+  onApply: (view: SavedQueueView) => void;
+  onSave: (name: string) => void;
+  onRemove?: (name: string) => void;
+}) {
+  const t = useT();
+  const [name, setName] = useState("");
+
+  function submit(event: FormEvent) {
+    event.preventDefault();
+    const trimmed = name.trim();
+    if (!trimmed) return;
+    onSave(trimmed);
+    setName("");
+  }
+
+  return (
+    <StaffPopover
+      label={t("s02.views.title")}
+      placement="below-end"
+      className={styles.viewsRoot}
+      trigger={(props) => (
+        <button
+          type="button"
+          className={styles.control}
+          {...props}
+          aria-label={t("s02.views.title")}
+          data-testid="s02-views-button"
+        >
+          <ListIcon size={18} className={styles.viewsIcon} aria-hidden="true" />
+          <span className={styles.viewsLabel}>{t("s02.views.title")}</span>
+          <ChevronDownIcon size={16} />
+        </button>
+      )}
+    >
+      {(close) => (
+        <div className={styles.panel}>
+          {views.length === 0 ? (
+            <p className={styles.panelEmpty}>{t("s02.views.empty")}</p>
+          ) : (
+            <ul className={styles.viewList}>
+              {views.map((view) => (
+                <li key={view.name} className={styles.viewRow}>
+                  <button
+                    type="button"
+                    className={styles.viewApply}
+                    onClick={() => {
+                      onApply(view);
+                      close();
+                    }}
+                  >
+                    {view.name}
+                  </button>
+                  <button
+                    type="button"
+                    className={styles.viewRemove}
+                    onClick={() => onRemove?.(view.name)}
+                    aria-label={t("s02.views.remove", { name: view.name })}
+                  >
+                    <CloseIcon size={14} />
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+          <form className={styles.viewForm} onSubmit={submit}>
+            <label className="eg-sr-only" htmlFor="s02-view-name">
+              {t("s02.views.name")}
+            </label>
+            <input
+              id="s02-view-name"
+              className={styles.viewInput}
+              value={name}
+              onChange={(e) => setName(e.target.value.slice(0, 40))}
+              placeholder={t("s02.views.name")}
+              data-testid="s02-view-name"
+            />
+            <Button
+              type="submit"
+              variant="secondary"
+              disabled={!name.trim()}
+              data-testid="s02-save-view"
+            >
+              {t("s02.views.saveConfirm")}
+            </Button>
+          </form>
+        </div>
+      )}
+    </StaffPopover>
   );
 }
 
@@ -683,7 +977,15 @@ function Evidence({ counts }: { counts: QueueItem["media_counts"] }) {
 }
 
 /** Wide screens: what a reviewer needs to decide whether to open the case now. */
-function Preview({ item, onOpen }: { item: QueueItem; onOpen: () => void }) {
+function Preview({
+  item,
+  onOpen,
+  onClose,
+}: {
+  item: QueueItem;
+  onOpen: () => void;
+  onClose: () => void;
+}) {
   const t = useT();
   const { locale } = useLocale();
   const area = item.area;
@@ -711,30 +1013,31 @@ function Preview({ item, onOpen }: { item: QueueItem; onOpen: () => void }) {
       data-testid="s02-preview"
     >
       <div className={styles.previewHead}>
-        <p className={styles.previewEyebrow}>{t("s02.preview.title")}</p>
-        <p className={`${styles.previewRef} eg-tnum`}>{item.receipt_code}</p>
-        <div className={styles.previewBadges}>
-          <StatusBadge
-            tone={urgencyTone(item.urgency.level)}
-            label={t(`s02.urgency.${item.urgency.level}`)}
-          />
-          <StatusBadge status={badgeStatus(item.status)} />
-        </div>
+        <h2 className={`${styles.previewRef} eg-tnum`}>{item.receipt_code}</h2>
+        <button
+          type="button"
+          className={styles.previewClose}
+          onClick={onClose}
+          aria-label={t("s02.preview.close")}
+        >
+          <CloseIcon size={20} />
+        </button>
+      </div>
+      <div className={styles.previewBadges}>
+        <StatusBadge
+          tone={urgencyTone(item.urgency.level)}
+          label={t(`s02.urgency.${item.urgency.level}`)}
+        />
+        <StatusBadge status={badgeStatus(item.status)} />
       </div>
       {item.urgency.reasons.length ? (
         <div className={styles.reasons}>
           {item.urgency.reasons.map((reason) => (
-            <span key={reason} className={styles.reason}>
-              {t(`s02.reasons.${reason}`)}
-            </span>
+            <Tag key={reason}>{t(`s02.reasons.${reason}`)}</Tag>
           ))}
         </div>
       ) : null}
       <dl className={styles.facts}>
-        <div>
-          <dt>{t("s02.columns.category")}</dt>
-          <dd>{t(CATEGORY_KEY[item.category.value])}</dd>
-        </div>
         <div>
           <dt>{t("s02.preview.place")}</dt>
           <dd>{place}</dd>
@@ -745,12 +1048,6 @@ function Preview({ item, onOpen }: { item: QueueItem; onOpen: () => void }) {
             {item.occurred_at
               ? formatWatDateTime(item.occurred_at, locale)
               : t("s02.preview.notGiven")}
-          </dd>
-        </div>
-        <div>
-          <dt>{t("s02.preview.received")}</dt>
-          <dd className="eg-tnum">
-            {formatWatDateTime(item.received_at, locale)}
           </dd>
         </div>
         <div>
@@ -767,7 +1064,10 @@ function Preview({ item, onOpen }: { item: QueueItem; onOpen: () => void }) {
       {flags.length ? (
         <ul className={styles.flags}>
           {flags.map((flag) => (
-            <li key={flag}>{flag}</li>
+            <li key={flag}>
+              <StatusShape tone="attn" size={10} />
+              {flag}
+            </li>
           ))}
         </ul>
       ) : null}
@@ -781,8 +1081,10 @@ function Preview({ item, onOpen }: { item: QueueItem; onOpen: () => void }) {
         data-testid="s02-open"
       >
         {t("s02.preview.open")}
-        <ArrowRightIcon size={18} />
       </Link>
+      <p className={styles.orPress}>
+        {t("s02.preview.orPress")} <kbd className={styles.kbd}>Enter</kbd>
+      </p>
     </aside>
   );
 }

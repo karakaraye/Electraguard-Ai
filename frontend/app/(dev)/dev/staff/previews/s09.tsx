@@ -34,14 +34,14 @@ export function Preview({ state }: { state: string }) {
   const t = useT();
 
   const dialogs: Record<string, CodesDialogSeed> = {
-    create_sheet: { kind: "create", label: "Kaduna North observers", count: "60" },
+    create_sheet: { kind: "create", label: "Gwale observers", count: "60" },
     create_invalid: {
       kind: "create",
       label: "",
       count: "900",
       fields: { label: t("s09.create.errors.label"), count: t("s09.create.errors.count") },
     },
-    create_rate_limited: { kind: "create", label: "Kaduna North observers", count: "500", message: t("s09.errors.rateLimited") },
+    create_rate_limited: { kind: "create", label: "Gwale observers", count: "500", message: t("s09.errors.rateLimited") },
     confirm_required: { kind: "print", batchId: S09_BATCHES[0].id },
     confirm_failed: { kind: "print", batchId: S09_BATCHES[0].id, message: t("s09.errors.confirmation") },
     revoke_sheet: { kind: "revoke", code: "OBS-AB2C3D" },
@@ -53,7 +53,7 @@ export function Preview({ state }: { state: string }) {
   const failed = state === "error" ? t("staff.networkError") : state === "forbidden" ? t("staff.forbidden") : state === "not-ready" ? t("staff.endpointNotReady") : null;
 
   const cardSet: CardSet | null =
-    state === "batch_created" ? { cards: S09_CARDS, kind: "batch", label: "Kaduna North observers" }
+    state === "batch_created" ? { cards: S09_CARDS, kind: "batch", label: "Gwale observers" }
     : state === "print" ? { cards: S09_CARDS, kind: "batch", label: S09_BATCHES[0].label }
     : state === "single_card" ? { cards: S09_ONE_CARD, kind: "single" }
     : null;

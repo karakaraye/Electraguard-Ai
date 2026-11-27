@@ -23,7 +23,7 @@ export function serverRow(item: ReportListItem, t: Translate): ListRow {
     at: item.status === "withdrawn" ? item.received_at : (item.occurred_at ?? item.received_at),
     reference: item.receipt_code,
     status: item.has_open_question ? "question" : SERVER_BADGE[item.status],
-    note: item.unread_messages > 0 ? t("o17.newMessage", { count: item.unread_messages }) : undefined,
+    unread: item.unread_messages > 0 ? item.unread_messages : undefined,
   };
 }
 

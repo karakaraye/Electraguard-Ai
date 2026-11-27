@@ -4,17 +4,20 @@ import { BackgroundArt } from "../../../../ui/BackgroundArt/BackgroundArt";
 /* O-04 Home */
 
 import Link from "next/link";
-import { useState, type ComponentType } from "react";
+import { useState, type ReactNode } from "react";
 import { useLocale, useT } from "../../../../lib/i18n/client";
 import type { Category } from "../../../../lib/api/types";
-import { AppShell, Banner, Button, ButtonLink, DayArc, HeroCard, LanguageSwitcher, OutboxBadge, ReportList, ReportRow, Sheet, StatusBadge, type ReportStatus } from "../../../../ui";
-import { formatWatDateTime } from "../../../../ui/format";
-import { AlertIcon, categoryPictograms, ChevronRightIcon, FileIcon, GearIcon, HelpIcon, InfoIcon, MessageIcon, ShieldCheckIcon, SignOutIcon, UsersIcon, type IconProps } from "../../../../ui/icons";
-import { AskPictogram, DiscussionsPictogram, MessagesPictogram } from "../_components/pictograms";
+import { Banner, Button, ButtonLink, Count, HeroCard, OutboxBadge, ReportList, ReportRow, Sheet, StatusBadge, type ReportStatus } from "../../../../ui";
+import { StatusShape } from "../../../../ui/StatusBadge/StatusBadge";
+import { formatWatDateTime, formatWatTime } from "../../../../ui/format";
+import { categoryPictograms, ChevronRightIcon } from "../../../../ui/icons";
+import { ObserverShell } from "../_components/ObserverShell";
 import styles from "../_components/observer.module.css";
-import o1 from "../_components/obs1.module.css";
+import p3 from "../_components/p3.module.css";
 import s from "../_components/screens.module.css";
 import { categoryMeta } from "../_lib/categories";
+import type { NoticeType } from "../../../../lib/api/types";
+import { LgaTodayCard, type LgaToday } from "../_components/LgaTodayCard";
 
 export type HomeRow = {
   href: string;
@@ -39,6 +42,10 @@ export type HomeViewProps = {
   unreadCount?: number;
   /** Discussions: null when the observer has none (the row is hidden, O-18), else invitations + unread posts. */
   discussions?: { count: number } | null;
+  /** Check-ins waiting for an answer, newest first (NOT-04). Safety ones are red. */
+  notices?: Array<{ id: string; title: string; type: NoticeType }>;
+  /** "Your LGA today" (AREA-01); null when it could not be read. */
+  lgaToday?: LgaToday | null;
   pinSaved: boolean;
   draftKept: boolean;
   draft: { category: Category | null; startedAt: number } | null;
@@ -61,7 +68,6 @@ export type HomeViewProps = {
 export function HomeView(props: HomeViewProps) {
   const t = useT();
   const { locale } = useLocale();
-  const [menu, setMenu] = useState(false);
   const [outboxOpen, setOutboxOpen] = useState(false);
   const [deleting, setDeleting] = useState<string | null>(null);
   const outbox = props.outbox ?? [];
@@ -81,80 +87,95 @@ export function HomeView(props: HomeViewProps) {
     rows,
   } = props;
   const DraftPictogram = draft ? categoryPictograms[categoryMeta(draft.category).pictogram] : null;
-  const sentCount = props.checklist.stages.filter((stage) => stage.state === "sent").length;
-  const nextStage = props.checklist.stages.find((stage) => stage.state === "next");
 
+  /* Confirmations stay as short banners; everything that waits on the observer moves into one "Needs you" card. */
   const banners = (
     <div className={styles.tight}>
       {networkBack ? <Banner tone="ok" title={t("common.network.back")} data-testid="o04-network-back" /> : null}
       {pinSaved ? <Banner tone="ok" title={t("o03.setPin.done")} data-testid="o04-pin-saved" /> : null}
       {draftKept ? <Banner tone="ok" title={t("incident.draftKept")} data-testid="o04-draft-kept" /> : null}
-      {waitingCodeCount > 0 ? (
-        <Banner
-          tone="attn"
-          critical
-          title={t("o04.waitingCode", { count: waitingCodeCount })}
-          action={
-            <div className={styles.itemActions}>
-              <Button variant="secondary" onClick={props.onSendWaiting} data-testid="o04-send-waiting">
-                {t("o04.sendWaiting")}
-              </Button>
-              <Button variant="quiet" onClick={props.onDeleteWaiting} data-testid="o04-delete-waiting">
-                {t("o04.deleteWaiting")}
-              </Button>
-            </div>
-          }
-          data-testid="o04-waiting-code"
-        />
-      ) : null}
-      {intakePaused ? <Banner tone="attn" critical title={t("o04.intakePaused")} data-testid="o04-intake-paused" /> : null}
-      {unsentCount > 0 ? (
-        <Banner
-          tone="wait"
-          title={t("o04.unsent", { count: unsentCount })}
-          action={
-            <div className={styles.itemActions}>
-              <Button variant="secondary" disabled={offline} onClick={props.onSendNow} data-testid="o04-send-now">
-                {t("o04.sendNow")}
-              </Button>
-            </div>
-          }
-          data-testid="o04-unsent"
-        />
-      ) : null}
-      {needsAttentionCount > 0 ? (
-        <Banner
-          tone="attn"
-          title={t("o04.needsAttention", { count: needsAttentionCount })}
-          action={
-            <Button variant="secondary" onClick={props.onFix} data-testid="o04-fix">
-              {t("o04.fix")}
-            </Button>
-          }
-          data-testid="o04-needs-attention"
-        />
-      ) : null}
-      {questionCount > 0 ? (
-        <Banner
-          tone="attn"
-          title={t("o04.questionBanner", { count: questionCount })}
-          action={
-            <ButtonLink href="/o/messages" variant="secondary" data-testid="o04-answer">
-              {t("o04.answer")}
-            </ButtonLink>
-          }
-          data-testid="o04-question"
-        />
-      ) : null}
     </div>
   );
-  const hasBanner =
-    networkBack || pinSaved || draftKept || waitingCodeCount > 0 || intakePaused || unsentCount > 0 || needsAttentionCount > 0 || questionCount > 0;
+  const hasBanner = networkBack || pinSaved || draftKept;
+  const needs: Array<{ key: string; tone: "wait" | "attn" | "danger"; testId: string; text: string; actions: ReactNode }> = [];
+  for (const notice of props.notices ?? []) {
+    needs.push({
+      key: `notice-${notice.id}`,
+      tone: notice.type === "safety" ? "danger" : "wait",
+      testId: `o04-notice-${notice.id}`,
+      text: t("notice.needsYou", { question: notice.title }),
+      actions: (
+        <ButtonLink href={`/o/checkin/${notice.id}`} variant="secondary" className={p3.smallBtn} data-testid="o04-notice-answer">
+          {t("o04.answer")}
+        </ButtonLink>
+      ),
+    });
+  }
+  if (waitingCodeCount > 0) {
+    needs.push({
+      key: "waiting",
+      tone: "attn",
+      testId: "o04-waiting-code",
+      text: t("o04.waitingCode", { count: waitingCodeCount }),
+      actions: (
+        <>
+          <Button variant="secondary" className={p3.smallBtn} onClick={props.onSendWaiting} data-testid="o04-send-waiting">
+            {t("o04.sendWaiting")}
+          </Button>
+          <Button variant="quiet" className={p3.smallQuiet} onClick={props.onDeleteWaiting} data-testid="o04-delete-waiting">
+            {t("o04.deleteWaiting")}
+          </Button>
+        </>
+      ),
+    });
+  }
+  if (unsentCount > 0) {
+    needs.push({
+      key: "unsent",
+      tone: "wait",
+      testId: "o04-unsent",
+      text: t("o04.unsent", { count: unsentCount }),
+      actions: (
+        <Button variant="secondary" className={p3.smallBtn} disabled={offline} onClick={props.onSendNow} data-testid="o04-send-now">
+          {t("o04.sendNow")}
+        </Button>
+      ),
+    });
+  }
+  if (needsAttentionCount > 0) {
+    needs.push({
+      key: "attention",
+      tone: "attn",
+      testId: "o04-needs-attention",
+      text: t("o04.needsAttention", { count: needsAttentionCount }),
+      actions: (
+        <Button variant="secondary" className={p3.smallBtn} onClick={props.onFix} data-testid="o04-fix">
+          {t("o04.fix")}
+        </Button>
+      ),
+    });
+  }
+  if (questionCount > 0) {
+    needs.push({
+      key: "question",
+      tone: "attn",
+      testId: "o04-question",
+      text: t("o04.questionBanner", { count: questionCount }),
+      actions: (
+        <ButtonLink href="/o/messages" variant="secondary" className={p3.smallBtn} data-testid="o04-answer">
+          {t("o04.answer")}
+        </ButtonLink>
+      ),
+    });
+  }
 
   return (
-    <AppShell
+    <ObserverShell
       variant="home"
-      onMenu={() => setMenu(true)}
+      tab="home"
+      menuCode={code}
+      menuUnit={props.checklist.unitLabel}
+      counts={{ questions: questionCount, unread: props.unreadCount ?? 0 }}
       end={
         outbox.length ? (
           <OutboxBadge
@@ -169,63 +190,80 @@ export function HomeView(props: HomeViewProps) {
       offline={offline}
       queuedCount={queuedCount}
       banner={hasBanner ? banners : undefined}
+      strip={
+        intakePaused ? (
+          <p className={p3.pausedStrip} role="alert" data-testid="o04-intake-paused">
+            <StatusShape tone="attn" size={16} />
+            <span>{t("o04.intakePaused")}</span>
+          </p>
+        ) : undefined
+      }
       data-testid="o04"
     >
       {rows.length === 0 ? <BackgroundArt variant="soft" clear="none" /> : null}
-      <div className={styles.home}>
+      <div className={p3.home}>
         <header className={styles.homeHead}>
-          <h1 className={styles.homeGreeting}>{t(`o04.greeting.${greetingFor(new Date())}`)}</h1>
+          <h1 className={p3.greeting}>{t(`o04.greeting.${greetingFor(props.now ?? new Date())}`)}</h1>
           <p className={styles.meta} data-testid="o04-signed-in">
             {t("o04.signedInAs", { code })}
-            {props.checklist.unitLabel ? ` · ${props.checklist.unitLabel}` : ""}
+            {props.checklist.unitLabel ? `, ${props.checklist.unitLabel}` : ""}
           </p>
         </header>
 
-        {draft && DraftPictogram ? (
-          <div className={styles.draftCard} data-testid="o04-draft">
-            <div className={styles.draftHead}>
-              <DraftPictogram size={32} aria-hidden="true" />
-              <div className={styles.tight}>
-                <p className={styles.itemName}>{t(`o05.tile.${categoryMeta(draft.category).tile}`)}</p>
-                <p className={styles.meta}>{t("o04.draftSaved", { time: formatWatDateTime(draft.startedAt, locale) })}</p>
-              </div>
-            </div>
-            <Button variant="secondary" block icon={<ChevronRightIcon />} onClick={props.onContinue} data-testid="o04-continue">
-              {t("o04.continueDraft")}
-            </Button>
-          </div>
+        {needs.length ? (
+          <section className={p3.needs} aria-labelledby="o04-needs">
+            <h2 className={p3.needsHead} id="o04-needs">
+              {t("o13.filter.needsYou")}
+              <Count value={needs.length} tone="needs" data-testid="o04-needs-count" />
+            </h2>
+            <ul className={p3.needList}>
+              {needs.map((need) => (
+                <li key={need.key} className={p3.need} data-testid={need.testId}>
+                  <span className={p3.needShape} data-tone={need.tone} aria-hidden="true">
+                    <StatusShape tone={need.tone} size={16} />
+                  </span>
+                  <p className={p3.needText}>{need.text}</p>
+                  <div className={p3.needActions}>{need.actions}</div>
+                </li>
+              ))}
+            </ul>
+          </section>
         ) : null}
 
         {/* Stays tappable when intake is paused: reports can still be written and wait on the phone. */}
-        {intakePaused ? (
-          <button type="button" className={o1.pausedHero} onClick={props.onReport} data-testid="o04-report">
-            <HeroCard paused title={t("o04.report")} pausedText={t("o04.heroPaused")} data-testid="o04-report-card" />
-          </button>
-        ) : (
-          <HeroCard title={t("o04.report")} body={t("o04.heroBody")} onClick={props.onReport} data-testid="o04-report" />
-        )}
+        <HeroCard
+          title={t("o04.report")}
+          body={offline ? t("o04.heroOffline") : t("o04.heroBody")}
+          paused={intakePaused}
+          pausedText={t("o04.heroPaused")}
+          onClick={props.onReport}
+          data-testid="o04-report"
+          footer={
+            draft && DraftPictogram ? (
+              <div className={p3.draftRow} data-testid="o04-draft">
+                <button type="button" className={p3.draftBtn} onClick={props.onContinue} data-testid="o04-continue">
+                  <span className={p3.draftText}>
+                    <span className={p3.draftTitle}>{t("o04.continueDraft")}</span>
+                    <span className={p3.draftMeta}>
+                      {t(`o05.tile.${categoryMeta(draft.category).tile}`)}, {t("o04.draftSaved", { time: formatWatTime(draft.startedAt, locale) })}
+                    </span>
+                  </span>
+                  <ChevronRightIcon aria-hidden="true" />
+                </button>
+              </div>
+            ) : undefined
+          }
+        />
 
-        <Link href="/o/checklist" className={styles.arcCard} data-testid="o04-checklist">
-          <span className={styles.arcHead}>
-            <span className={styles.arcTitle}>{t("o04.checklist")}</span>
-            <span className={styles.meta}>{t("o04.checklistProgress", { done: sentCount, total: props.checklist.stages.length })}</span>
-          </span>
-          <DayArc
-            now={props.now}
-            stages={props.checklist.stages.map((stage) => ({ id: stage.slug, label: t(`o15.stage.${stage.slug}`), state: stage.state }))}
-            nextLabel={nextStage ? t("o04.checklistNext", { stage: t(`o15.stage.${nextStage.slug}`) }) : t("o04.checklistDone")}
-            listLabel={t("o04.checklist")}
-            stateLabels={{ sent: t("o15.stageState.received"), next: t("o04.stageNext"), later: t("o15.stageState.notStarted") }}
-          />
-        </Link>
+        {props.lgaToday ? <LgaTodayCard data={props.lgaToday} /> : null}
 
-        <section aria-labelledby="o04-reports" className={styles.tight}>
-          <div className={styles.sectionHead}>
-            <h2 className={styles.sectionTitle} id="o04-reports">
+        <section aria-labelledby="o04-reports" className={p3.reports}>
+          <div className={p3.sectionHead}>
+            <h2 className={p3.sectionTitle} id="o04-reports">
               {t("o04.myReports")}
             </h2>
             {rows.length ? (
-              <Link href="/o/reports" className={s.textLink} data-testid="o04-all-reports">
+              <Link href="/o/reports" className={p3.seeAll} data-testid="o04-all-reports">
                 {t("o04.allReports")}
               </Link>
             ) : null}
@@ -244,6 +282,7 @@ export function HomeView(props: HomeViewProps) {
                     observedAt={row.at}
                     reference={row.reference}
                     status={row.status}
+                    note={row.reference ? undefined : t("o14.notSentYet")}
                   />
                 );
               })}
@@ -259,37 +298,7 @@ export function HomeView(props: HomeViewProps) {
             </>
           )}
         </section>
-
-        <nav aria-label={t("o04.tasks")}>
-          <ul className={styles.quickTiles}>
-            <QuickTile
-              href="/o/messages"
-              icon={MessagesPictogram}
-              label={t("o04.messages")}
-              count={questionCount + (props.unreadCount ?? 0)}
-              attn={questionCount > 0}
-              countLabel={questionCount > 0 ? t("o04.questionBanner", { count: questionCount }) : t("o17.newMessage", { count: props.unreadCount ?? 0 })}
-              testId="o04-messages"
-            />
-            <QuickTile href="/o/ask" icon={AskPictogram} label={t("o04.ask")} testId="o04-ask" />
-            {props.discussions ? (
-              <QuickTile
-                href="/o/discussions"
-                icon={DiscussionsPictogram}
-                label={t("o04.discussions")}
-                count={props.discussions.count}
-                countLabel={t("o18.unread", { count: props.discussions.count })}
-                testId="o04-discussions"
-              />
-            ) : null}
-          </ul>
-        </nav>
       </div>
-
-      <Sheet open={menu} onClose={() => setMenu(false)} title={t("ui.menu")} data-testid="o04-menu">
-        <ObserverMenu code={code} unitLabel={props.checklist.unitLabel} />
-        <LanguageSwitcher variant="compact" />
-      </Sheet>
 
       <Sheet
         open={outboxOpen}
@@ -353,7 +362,7 @@ export function HomeView(props: HomeViewProps) {
         </ul>
         {offline && !deleting ? <p className={styles.note}>{t("ui.network.offline")}</p> : null}
       </Sheet>
-    </AppShell>
+    </ObserverShell>
   );
 }
 
@@ -361,77 +370,4 @@ export function HomeView(props: HomeViewProps) {
 function greetingFor(now: Date): "morning" | "afternoon" | "evening" {
   const hour = Number(new Intl.DateTimeFormat("en-GB", { timeZone: "Africa/Lagos", hour: "numeric", hourCycle: "h23" }).format(now));
   return hour < 12 ? "morning" : hour < 17 ? "afternoon" : "evening";
-}
-
-function QuickTile({
-  href,
-  icon: Icon,
-  label,
-  count = 0,
-  attn,
-  countLabel,
-  testId,
-}: {
-  href: string;
-  icon: ComponentType<IconProps>;
-  label: string;
-  count?: number;
-  attn?: boolean;
-  countLabel?: string;
-  testId: string;
-}) {
-  return (
-    <li>
-      <Link href={href} className={styles.quickTile} data-testid={testId}>
-        <span className={styles.quickDisc} aria-hidden="true">
-          <Icon size={26} />
-          {count > 0 ? <span className={`${styles.quickCount} ${attn ? styles.quickCountAttn : ""} eg-tnum`}>{count}</span> : null}
-        </span>
-        <span>{label}</span>
-        {count > 0 && countLabel ? <span className="eg-sr-only">{countLabel}</span> : null}
-      </Link>
-    </li>
-  );
-}
-
-/** The top-bar menu: who is signed in, every place in the app, the 112 line and sign out (spec screen 28). */
-export function ObserverMenu({ code, unitLabel }: { code?: string; unitLabel?: string | null }) {
-  const t = useT();
-  const links: Array<{ href: string; key: string; icon: ComponentType<IconProps>; testId: string }> = [
-    { href: "/o/settings", key: "o20.title", icon: GearIcon, testId: "settings" },
-    { href: "/o/reports", key: "o13.title", icon: FileIcon, testId: "reports" },
-    { href: "/o/messages", key: "o17.title", icon: MessageIcon, testId: "messages" },
-    { href: "/o/ask", key: "o04.ask", icon: HelpIcon, testId: "ask" },
-    { href: "/o/discussions", key: "o18.title", icon: UsersIcon, testId: "discussions" },
-    { href: "/guide", key: "pub.nav.guide", icon: InfoIcon, testId: "guide" },
-    { href: "/o/start?view=notice&from=settings", key: "o20.privacy", icon: ShieldCheckIcon, testId: "privacy" },
-  ];
-  return (
-    <div className={s.menu}>
-      {code ? (
-        <p className={s.menuWho} data-testid="menu-who">
-          <span className="eg-tnum">{t("o04.signedInAs", { code })}</span>
-          {unitLabel ? <span className={styles.meta}>{unitLabel}</span> : null}
-        </p>
-      ) : null}
-      <ul className={s.menuList}>
-        {links.map((link) => (
-          <li key={link.href}>
-            <Link href={link.href} className={s.menuLink} data-testid={`menu-${link.testId}`}>
-              <link.icon size={22} aria-hidden="true" />
-              <span>{t(link.key)}</span>
-            </Link>
-          </li>
-        ))}
-      </ul>
-      <p className={s.menu112} data-testid="menu-112">
-        <AlertIcon size={20} aria-hidden="true" />
-        <span>{t("o02.line4")}</span>
-      </p>
-      <Link href="/o/settings#sign-out" className={s.menuLink} data-testid="menu-sign-out">
-        <SignOutIcon size={22} aria-hidden="true" />
-        <span>{t("o20.signOut.button")}</span>
-      </Link>
-    </div>
-  );
 }

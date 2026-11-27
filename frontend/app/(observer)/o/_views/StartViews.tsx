@@ -16,15 +16,14 @@ import {
   CheckIcon,
   ChevronRightIcon,
   EyeIcon,
-  LockIcon,
   MicIcon,
   PhoneIcon,
   PlaceIcon,
   ShieldCheckIcon,
 } from "../../../../ui/icons";
 import { pinTooSimple } from "../_lib/codes";
-import { AppBarTitle } from "../_components/AppBarTitle";
 import { LangChip } from "../_components/LangChip";
+import p3 from "../_components/p3.module.css";
 import { BadgePictogram, PersonPictogram } from "../_components/pictograms";
 import styles from "../_components/observer.module.css";
 import o1 from "../_components/obs1.module.css";
@@ -53,7 +52,7 @@ export function LanguageView({ selected, onChoose, offline, banner }: LanguageVi
   }
 
   return (
-    <AppShell title={<AppBarTitle />} hideBack offline={offline} banner={banner} data-testid="o01">
+    <AppShell title={t("ui.language.label")} hideBack offline={offline} banner={banner} data-testid="o01">
       <BackgroundArt variant="hero" />
       <div className={styles.screen}>
         <h1 className={styles.title} id="o01-title" lang="en">
@@ -120,11 +119,16 @@ export function WelcomeView({ onBack, onNext, onSkip, offline, banner }: Welcome
   const start = useRef<{ x: number; y: number } | null>(null);
   return (
     <AppShell
-      title={<AppBarTitle />}
+      title={t("ui.productName")}
       onBack={onBack}
       offline={offline}
       banner={banner}
-      actions={<WelcomeBar page={1} onNext={onNext} onSkip={onSkip} />}
+      end={
+        <Button variant="quiet" onClick={onSkip} data-testid="ob1-skip">
+          {t("ob.skip")}
+        </Button>
+      }
+      actions={<WelcomeBar page={1} onNext={onNext} />}
       data-testid="ob1"
     >
       <div
@@ -156,7 +160,7 @@ export function OfflineWelcomeView({ onBack, onContinue, offline, banner }: Shel
   const t = useT();
   return (
     <AppShell
-      title={<AppBarTitle />}
+      title={t("ui.productName")}
       onBack={onBack}
       offline={offline}
       banner={banner}
@@ -198,8 +202,8 @@ function OfflineArt() {
   );
 }
 
-/** Page dots, Skip and Next: the welcome pages' action bar. */
-export function WelcomeBar({ page, onNext, onSkip, nextLabel, nextTestId }: { page: 1 | 2 | 3; onNext: () => void; onSkip?: () => void; nextLabel?: string; nextTestId?: string }) {
+/** Page dots centred above Next: the welcome pages' action bar (Skip lives in the app bar). */
+export function WelcomeBar({ page, onNext, nextLabel, nextTestId }: { page: 1 | 2 | 3; onNext: () => void; nextLabel?: string; nextTestId?: string }) {
   const t = useT();
   return (
     <div className={styles.welcomeBar}>
@@ -208,12 +212,7 @@ export function WelcomeBar({ page, onNext, onSkip, nextLabel, nextTestId }: { pa
           <i key={n} data-on={n === page || undefined} />
         ))}
       </span>
-      {onSkip ? (
-        <Button variant="quiet" onClick={onSkip} data-testid={`ob${page}-skip`}>
-          {t("ob.skip")}
-        </Button>
-      ) : null}
-      <Button onClick={onNext} data-testid={nextTestId ?? `ob${page}-next`}>
+      <Button block onClick={onNext} data-testid={nextTestId ?? `ob${page}-next`}>
         {nextLabel ?? t("ob.next")}
       </Button>
     </div>
@@ -240,7 +239,7 @@ export function NoticeView({ onBack, onContinue, readOnly, offline, banner }: No
   ];
   return (
     <AppShell
-      title={<AppBarTitle />}
+      title={t("o20.privacy")}
       onBack={onBack}
       offline={offline}
       banner={banner}
@@ -397,8 +396,9 @@ export function SignInView({ code, pin, onCode, onCodeBlur, onPin, onSubmit, onB
       : null;
   return (
     <AppShell
-      title={<AppBarTitle />}
+      title={t("o03.signIn.title")}
       onBack={onBack}
+      end={<LangChip />}
       offline={offline}
       banner={banner}
       actions={
@@ -436,7 +436,6 @@ export function SignInView({ code, pin, onCode, onCodeBlur, onPin, onSubmit, onB
         }}
       >
         <h1 className={styles.title}>{t("o03.signIn.title")}</h1>
-        <ObserverCardArt />
         <Field
           className={styles.codeField}
           label={t("o03.signIn.codeLabel")}
@@ -473,41 +472,9 @@ export function SignInView({ code, pin, onCode, onCodeBlur, onPin, onSubmit, onB
             {show ? t("o03.signIn.hidePin") : t("o03.signIn.showPin")}
           </Button>
         </div>
-        <p className={styles.noteCard}>
-          <LockIcon />
-          <span>{t("o03.signIn.forgot")}</span>
-        </p>
+        <p className={p3.forgot}>{t("o03.signIn.forgot")}</p>
       </form>
     </AppShell>
-  );
-}
-
-/**
- * The observer card, drawn so people see where the code (top) and PIN (bottom) are
- * printed. Only the sample code and dots appear in it, so it needs no translation.
- */
-function ObserverCardArt() {
-  return (
-    <svg className={styles.cardArt} viewBox="0 0 320 120" aria-hidden="true" focusable="false">
-      <rect x="40" y="8" width="240" height="104" rx="12" fill="var(--paper-raised)" stroke="var(--rule-control)" />
-      <rect x="40" y="8" width="240" height="22" rx="12" fill="var(--sun-tint)" />
-      <rect x="40" y="20" width="240" height="10" fill="var(--sun-tint)" />
-      <path
-        fill="var(--ink)"
-        transform="translate(52 12) scale(0.29)"
-        d="M38 6A4 4 0 0 1 42 10V14H20A6 6 0 0 0 14 20H29V28H14A6 6 0 0 0 20 34H34V24H42V38A4 4 0 0 1 38 42H20A14 14 0 0 1 6 28V20A14 14 0 0 1 20 6Z"
-      />
-      <rect x="56" y="42" width="160" height="28" rx="6" fill="var(--sun-wash)" stroke="var(--sun-strong)" strokeDasharray="4 3" />
-      <text x="66" y="62" fontFamily="var(--font-display)" fontWeight="800" fontSize="16" letterSpacing="1.5" fill="var(--ink)">
-        OBS-7K2P9X
-      </text>
-      <rect x="56" y="78" width="120" height="24" rx="6" fill="var(--sun-wash)" stroke="var(--sun-strong)" strokeDasharray="4 3" />
-      <text x="66" y="95" fontFamily="var(--font)" fontWeight="700" fontSize="14" letterSpacing="3" fill="var(--ink-2)">
-        ••••••••
-      </text>
-      <circle cx="248" cy="78" r="18" fill="var(--paper-2)" stroke="var(--rule)" />
-      <path d="M241 88 Q248 79 255 88 M248 76 a4 4 0 1 0 0.01 0" fill="none" stroke="var(--art-line)" strokeWidth="1.6" />
-    </svg>
   );
 }
 
@@ -537,7 +504,7 @@ export function SetPinView({ first, second, onFirst, onSecond, onSubmit, onBack,
   ];
   return (
     <AppShell
-      title={<AppBarTitle />}
+      title={t("o03.setPin.title")}
       onBack={onBack}
       offline={offline}
       banner={banner}
@@ -633,7 +600,7 @@ export function RevokedView({ unsentCount, onSignInNew, onClear, offline, banner
   const opener = useRef<HTMLButtonElement>(null);
   return (
     <AppShell
-      title={<AppBarTitle />}
+      title={t("ui.productName")}
       hideBack
       offline={offline}
       banner={banner}

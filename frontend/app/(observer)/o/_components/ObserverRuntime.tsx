@@ -11,6 +11,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState, useSyncExternalStore, type ReactNode } from "react";
 import { api, onApiEvent } from "../../../../lib/api/client";
 import { useT } from "../../../../lib/i18n/client";
+import { flushNoticeAnswers } from "../../../../lib/outbox/notices";
 import { kick, markWaitingCode, resumeAfterIntakePause, setPaused, startSync, useOutbox } from "../../../../lib/outbox";
 import { Button, Field, Sheet } from "../../../../ui";
 import { resumeAfterSignIn, startPending } from "../_lib/pending";
@@ -62,6 +63,20 @@ export function ObserverRuntime({ children }: { children: ReactNode }) {
     startSync({ owners });
     // Checklist stages, result sheets, messages and posts (lib/outbox carries incident reports only).
     startPending(owners);
+  }, [session?.code]);
+
+  // Check-in answers saved offline go out when the phone has a network and a session.
+  useEffect(() => {
+    if (!session?.code) return;
+    const code = session.code;
+    const send = () => void flushNoticeAnswers([code]);
+    send();
+    window.addEventListener("online", send);
+    const timer = window.setInterval(send, 60_000);
+    return () => {
+      window.removeEventListener("online", send);
+      window.clearInterval(timer);
+    };
   }, [session?.code]);
 
   // Keep the polling-unit list on the phone so a report can name its unit offline.

@@ -1,0 +1,25 @@
+.count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: var(--radius-pill);
+  font: var(--t-count);
+  font-variant-numeric: tabular-nums;
+  background: var(--paper-2);
+  color: var(--ink-2);
+  vertical-align: middle;
+}
+
+.count[data-tone="urgent"] {
+  background: var(--danger-bg);
+  color: var(--danger);
+}
+
+.count[data-tone="needs"] {
+  background: var(--ink);
+  color: var(--on-ink);
+}

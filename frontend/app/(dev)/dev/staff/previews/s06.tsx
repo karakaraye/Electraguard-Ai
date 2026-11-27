@@ -1,12 +1,15 @@
 "use client";
 
+import type { Claim } from "../../../../../lib/api/types";
 import { useT } from "../../../../../lib/i18n/client";
 import { RumourView } from "../../../../(staff)/s/_views/RumourView";
-import { S06_CLAIMS, S06_MATCHES, S06_NO_MATCHES, S06_USER } from "./s06.fixtures";
+import { S06_ASKS, S06_CLAIMS, S06_MATCHES, S06_NO_MATCHES, S06_USER } from "./s06.fixtures";
 
 /** Screen 43 (S-06) preview states. Each state is one screenshot. */
 export const states = [
   "default",
+  "public",
+  "public-no-evidence",
   "same_person",
   "new_claim",
   "approved",
@@ -22,8 +25,11 @@ export const states = [
 
 const byId = (id: string) => S06_CLAIMS.find((claim) => claim.id === id) ?? S06_CLAIMS[0];
 
+
+
 export function Preview({ state }: { state: string }) {
   const t = useT();
+  const isPublic = state.startsWith("public");
   const selected =
     state === "empty" || state === "loading" || state === "error"
       ? null
@@ -34,10 +40,30 @@ export function Preview({ state }: { state: string }) {
           : state === "filtered"
             ? byId("c2")
             : byId("c1");
+  const withAsks = (claim: Claim): Claim =>
+    ({ ...claim, ...(isPublic ? { source: "public" as const } : {}), ...(S06_ASKS[claim.id] ?? { ask_count: 0, ask_trend_1h: 0 }) });
+  const list = (state === "empty" ? [] : state === "filtered" ? S06_CLAIMS.filter((claim) => claim.status === "new") : S06_CLAIMS).map(withAsks);
+  const open = selected ? withAsks(selected) : null;
+  const shown = isPublic ? [...list].sort((a, b) => (b.ask_count ?? 0) - (a.ask_count ?? 0)) : list;
   return (
     <RumourView
-      claims={state === "empty" ? [] : state === "filtered" ? S06_CLAIMS.filter((claim) => claim.status === "new") : S06_CLAIMS}
-      selectedClaim={selected}
+      claims={shown}
+      sourceFilter={isPublic ? "public" : "all"}
+      sort={isPublic ? "demand" : "recent"}
+      onSourceFilter={() => {}}
+      onSort={() => {}}
+      selectedClaim={
+        open && state === "public"
+          ? {
+              ...open,
+              checkin_evidence: [
+                { question: "Have results been posted publicly at your unit?", area: "KN-04", yes: 23, no: "fewer than 5", not_seen: 6, window: "6h" },
+              ],
+            }
+          : open && state === "public-no-evidence"
+            ? { ...open, checkin_evidence: [] }
+            : open
+      }
       matches={state === "no_matches" ? S06_NO_MATCHES : state === "matches_loading" ? null : S06_MATCHES}
       matchesLoading={state === "matches_loading"}
       loading={state === "loading"}

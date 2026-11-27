@@ -5,7 +5,9 @@ import { api } from "../../../../lib/api/client";
 import type { ChecklistStage, Cluster, CoverageResponse, LateMaterialsResponse, OverviewResponse } from "../../../../lib/api/types";
 import { useT } from "../../../../lib/i18n/client";
 import { watParts } from "../../../../ui/hooks";
-import { OpsView, type Section } from "../_views/OpsView";
+import { CheckinsView } from "../_views/CheckinsView";
+import { OpsView, type OpsTab, type Section } from "../_views/OpsView";
+import { useCheckins } from "./useCheckins";
 
 /** The ops room refreshes itself while it is on screen. */
 const REFRESH_MS = 60_000;
@@ -27,6 +29,22 @@ export default function OpsPage() {
   const [late, setLate] = useState<Section<LateMaterialsResponse>>(idle);
   const [reviewing, setReviewing] = useState<string | null>(null);
   const [tick, setTick] = useState(0);
+  const [tab, setTab] = useState<OpsTab>("overview");
+  const checkins = useCheckins(tab === "checkins");
+
+  // The tab is part of the address, so a link to Check-ins opens on it. Read after mount to match the server render.
+  useEffect(() => {
+    const wanted = new URLSearchParams(window.location.search).get("tab");
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    if (wanted === "checkins" || wanted === "coverage" || wanted === "late") setTab(wanted);
+  }, []);
+  const changeTab = (next: OpsTab) => {
+    setTab(next);
+    const url = new URL(window.location.href);
+    if (next === "overview") url.searchParams.delete("tab");
+    else url.searchParams.set("tab", next);
+    window.history.replaceState(null, "", url);
+  };
 
   const problem = useCallback(
     (res: { status: number }) =>
@@ -96,6 +114,10 @@ export default function OpsPage() {
       reviewing={reviewing}
       onReviewCluster={(id, note) => void review(id, note)}
       onRefresh={() => setTick((n) => n + 1)}
+      tab={tab}
+      onTabChange={changeTab}
+      checkinsWaiting={checkins.waiting}
+      checkins={<CheckinsView {...checkins.viewProps} />}
     />
   );
 }

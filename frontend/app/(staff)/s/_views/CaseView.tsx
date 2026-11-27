@@ -122,11 +122,10 @@ export function CaseView({
     <div className={styles.container} data-testid={testId}>
       <header className={styles.header}>
         <div className={styles.headMain}>
-          <h2 className={`${styles.caseTitle} eg-tnum`}>{t("s03.caseRef", { ref: c.receipt_code })}</h2>
           <p className={styles.reporter}>{reporter}</p>
         </div>
         <div className={styles.headBadges}>
-          <StatusBadge status={badgeStatus(c.status)} size="lg" />
+          <StatusBadge status={badgeStatus(c.status)} size="lg" morph />
           {c.simulated ? <span className={styles.simulated}>{t("s03.simulated")}</span> : null}
         </div>
       </header>
@@ -136,12 +135,12 @@ export function CaseView({
       <div className={styles.columns}>
         {/* ---------- Left: the report ---------- */}
         <section className={styles.column} aria-labelledby="s03-report">
-          <h3 id="s03-report" className={styles.columnTitle}>{t("s03.columns.report")}</h3>
+          <h2 id="s03-report" className={styles.columnTitle}>{t("s03.columns.report")}</h2>
 
           <ReportText caseData={c} busy={busy === "redaction"} onSaveRedaction={onSaveRedaction} />
 
           <div className={styles.card}>
-            <h4 className={styles.cardTitle}>{t("s03.details.title")}</h4>
+            <h3 className={styles.cardTitle}>{t("s03.details.title")}</h3>
             <dl className={styles.facts}>
               <Fact label={t("s03.details.categoryGiven")}>{c.category_observer ? t(CATEGORY_KEY[c.category_observer]) : t("s03.details.unknown")}</Fact>
               <Fact label={t("s03.details.dangerNow")}>
@@ -158,7 +157,7 @@ export function CaseView({
           </div>
 
           <div className={styles.card}>
-            <h4 className={styles.cardTitle}>{t("s03.evidence.title")}</h4>
+            <h3 className={styles.cardTitle}>{t("s03.evidence.title")}</h3>
             {c.media.length === 0 && c.pending_uploads.length === 0 ? (
               <p className={styles.muted}>{t("s03.evidence.noEvidence")}</p>
             ) : (
@@ -181,7 +180,7 @@ export function CaseView({
 
         {/* ---------- Middle: help ---------- */}
         <section className={styles.column} aria-labelledby="s03-help">
-          <h3 id="s03-help" className={styles.columnTitle}>{t("s03.columns.help")}</h3>
+          <h2 id="s03-help" className={styles.columnTitle}>{t("s03.columns.help")}</h2>
           <Suggestions caseData={c} busy={busy === "suggestion"} onAccept={onAcceptSuggestion} onCorrect={onCorrectSuggestion} />
 
           {c.name_check.possible_names ? (
@@ -195,11 +194,11 @@ export function CaseView({
 
         {/* ---------- Right: the decision ---------- */}
         <section className={styles.column} aria-labelledby="s03-decision">
-          <h3 id="s03-decision" className={styles.columnTitle}>{t("s03.columns.decision")}</h3>
+          <h2 id="s03-decision" className={styles.columnTitle}>{t("s03.columns.decision")}</h2>
           <Decision caseData={c} busy={busy ?? null} onStart={onStartReview} onAsk={onAskQuestion} onClose={onCloseCase} />
           <Conversation messages={messages} busy={busy === "message"} onSend={onSendMessage} />
           <div className={styles.card}>
-            <h4 className={styles.cardTitle}>{t("s03.history.title")}</h4>
+            <h3 className={styles.cardTitle}>{t("s03.history.title")}</h3>
             <Timeline
               events={c.history.events.map((event) => ({
                 id: event.id,
@@ -330,7 +329,7 @@ function ReportText({
   return (
     <div className={styles.card}>
       <div className={styles.cardHead}>
-        <h4 className={styles.cardTitle}>{t("s03.originalText")}</h4>
+        <h3 className={styles.cardTitle}>{t("s03.originalText")}</h3>
         {language ? <span className={styles.muted}>{t("s03.language", { lang: language })}</span> : null}
       </div>
 
@@ -532,7 +531,7 @@ function Suggestions({
     !value ? "" : type === "category" ? t(CATEGORY_KEY[value as Category]) : t(`s02.urgency.${value}`);
 
   return (
-    <div className={styles.stack}>
+    <div className={`${styles.stack} ${styles.suggestionHost}`}>
       <p className={styles.muted}>{t("s03.suggestions.notice")}</p>
       {s.status === "pending" ? <p className={styles.card}>{t("s03.suggestions.pending")}</p> : null}
       {s.status === "failed" ? <p className={styles.card}>{t("s03.suggestions.failed")}</p> : null}
@@ -685,7 +684,7 @@ function Duplicates({
 
   return (
     <div className={styles.card}>
-      <h4 className={styles.cardTitle}>{t("s03.duplicates.title")}</h4>
+      <h3 className={styles.cardTitle}>{t("s03.duplicates.title")}</h3>
       <p className={styles.muted}>{t("s03.duplicates.notice")}</p>
       {caseData.duplicates.map((dup) => (
         <div key={dup.report_id} className={styles.dup} data-testid={`s03-dup-${dup.report_id}`}>
@@ -740,7 +739,7 @@ function ResultSheetFlags({ flags }: { flags: ResultSheetFlag[] }) {
   const t = useT();
   return (
     <div className={styles.sheet} data-testid="s03-result-sheet">
-      <h4 className={styles.cardTitle}>{t("s03.resultSheet.title")}</h4>
+      <h3 className={styles.cardTitle}>{t("s03.resultSheet.title")}</h3>
       <p className={styles.disclaimer}>{t("s03.resultSheet.disclaimer")}</p>
       {flags.length === 0 ? (
         <p className={styles.muted}>{t("s03.resultSheet.noFlags")}</p>
@@ -789,7 +788,7 @@ function Decision({
   return (
     <div className={styles.stack}>
       <div className={styles.card}>
-        <h4 className={styles.cardTitle}>{t("s03.decision.status")}</h4>
+        <h3 className={styles.cardTitle}>{t("s03.decision.status")}</h3>
         {caseData.outcome ? <p className={styles.outcomeLine}>{t("s03.decision.outcome", { outcome: t(`s03.actions.outcome.${caseData.outcome}`) })}</p> : null}
         {q ? (
           <div className={styles.openQuestion}>
@@ -818,7 +817,7 @@ function Decision({
             setQuestion("");
           }}
         >
-          <h4 className={styles.cardTitle}>{t("s03.actions.askQuestion")}</h4>
+          <h3 className={styles.cardTitle}>{t("s03.actions.askQuestion")}</h3>
           <TextArea
             id="s03-question"
             label={t("s03.actions.questionLabel")}
@@ -845,7 +844,7 @@ function Decision({
             onClose?.(outcome, rationale.trim(), caseData.media.map((m) => m.id));
           }}
         >
-          <h4 className={styles.cardTitle}>{t("s03.actions.closeCase")}</h4>
+          <h3 className={styles.cardTitle}>{t("s03.actions.closeCase")}</h3>
           <fieldset className={styles.outcomes}>
             <legend>{t("s03.actions.outcomeLabel")}</legend>
             {OUTCOMES.map((value) => (
@@ -887,7 +886,7 @@ function Conversation({ messages, busy, onSend }: { messages?: Message[] | null;
   const [body, setBody] = useState("");
   return (
     <div className={styles.card}>
-      <h4 className={styles.cardTitle}><MessageIcon size={18} />{t("s03.conversation.title")}</h4>
+      <h3 className={styles.cardTitle}><MessageIcon size={18} />{t("s03.conversation.title")}</h3>
       {messages === undefined ? null : messages === null ? (
         <p className={styles.muted}>{t("staff.loading")}</p>
       ) : messages.length === 0 ? (

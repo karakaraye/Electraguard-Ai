@@ -13,23 +13,14 @@
   background: var(--paper-raised);
 }
 
+/* One 720 px column: cards stack in reading order and never stretch to match a neighbour. */
 .grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: var(--s-4);
-  align-items: stretch;
+  width: 100%;
+  max-width: 720px;
   min-width: 0;
-}
-
-@media (min-width: 900px) {
-  .grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .grid > [data-wide],
-  .grid > .meta {
-    grid-column: 1 / -1;
-  }
 }
 
 /* A form wraps a card; the card fills the form so paired cards stay the same height. */
@@ -140,80 +131,6 @@
 .switchLabel {
   font: var(--t-label);
   overflow-wrap: break-word;
-}
-
-.switch {
-  --sw-w: 56px;
-  --sw-h: 32px;
-  --sw-pad: 4px;
-  position: relative;
-  flex: none;
-  box-sizing: border-box;
-  width: var(--sw-w);
-  min-width: var(--sw-w);
-  height: var(--sw-h);
-  padding: 0;
-  border: 2px solid var(--rule-control);
-  border-radius: var(--radius-pill);
-  background: var(--paper-sunk);
-  cursor: pointer;
-  transition: background-color var(--dur-fade) ease, border-color var(--dur-fade) ease;
-  -webkit-tap-highlight-color: transparent;
-}
-
-/* A 48 px touch target around the 32 px track. */
-.switch::before {
-  content: "";
-  position: absolute;
-  inset: -8px -4px;
-}
-
-.switch:focus-visible {
-  outline: var(--focus-outline);
-  outline-offset: var(--focus-offset);
-}
-
-.thumb {
-  position: absolute;
-  top: 50%;
-  left: var(--sw-pad);
-  width: 20px;
-  height: 20px;
-  margin-top: -10px;
-  border-radius: 50%;
-  background: var(--ink-2);
-  transition: transform var(--dur-step) var(--ease-out), background-color var(--dur-fade) ease;
-}
-
-.switch[aria-checked="true"] {
-  border-color: var(--ink);
-  background: var(--ink);
-}
-
-.switch[aria-checked="true"] .thumb {
-  background: var(--paper);
-  transform: translateX(calc(var(--sw-w) - 2 * var(--sw-pad) - 4px - 20px));
-}
-
-.switch[data-tone="danger"][aria-checked="true"] {
-  border-color: var(--danger-solid);
-  background: var(--danger-solid);
-}
-
-.switch[data-tone="danger"][aria-checked="true"] .thumb {
-  background: var(--fixed-paper);
-}
-
-.switch[aria-busy="true"] {
-  opacity: 0.6;
-  cursor: progress;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .switch,
-  .thumb {
-    transition: none;
-  }
 }
 
 /* ---------- Status line, problems, locks ---------- */

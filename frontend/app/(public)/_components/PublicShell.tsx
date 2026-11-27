@@ -2,61 +2,60 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 import type { Translate } from "../../../lib/i18n";
 import { BrandMark } from "../../../ui/BrandMark/BrandMark";
-import { MenuIcon } from "../../../ui/icons";
+import { THEME_LOCK } from "../../../ui/theme";
 import { LanguageMenu } from "./LanguageMenu";
+import { HeaderFrame } from "./HeaderFrame";
+import { MobileMenu } from "./MobileMenu";
 import { NavLinks } from "./NavLinks";
 import { HeaderReport } from "./landing/HeaderReport";
 import styles from "./shell.module.css";
 
 export const NAV = [
-  { href: "/", key: "pub.nav.home" },
   { href: "/results", key: "pub.nav.results" },
-  { href: "/ask", key: "pub.nav.ask" },
   { href: "/check", key: "pub.nav.check" },
+  { href: "/ask", key: "pub.nav.ask" },
   { href: "/guide", key: "pub.nav.guide" },
   { href: "/phone", key: "pub.nav.phone" },
-  { href: "/privacy", key: "pub.nav.privacy" },
 ] as const;
 
 /**
- * Public shell: mark and navigation on top, one reading column, and a footer that
+ * Public shell: a sticky 64 px header (five destinations, language chip, Report) on top, one reading column, and a footer that
  * carries the credit line, the nonpartisan statement and the emergency number.
- * Follows the device's light or dark setting. The shell owns the landmarks.
+ * Always light. The shell owns the landmarks.
  */
-export function PublicShell({ t, children, theme = "system" }: { t: Translate; children: ReactNode; theme?: "system" | "light" | "dark" }) {
+export function PublicShell({ t, children, theme = THEME_LOCK ?? "light" }: { t: Translate; children: ReactNode; theme?: "system" | "light" | "dark" }) {
   const items = NAV.map((item) => ({ href: item.href, label: t(item.key) }));
   return (
-    // The theme script sets the person's saved theme on this element before the page hydrates.
-    <div className={`eg-public ${styles.shell}`} data-theme={theme} suppressHydrationWarning>
+    <div className={`eg-public ${styles.shell}`} data-theme={THEME_LOCK ?? theme} suppressHydrationWarning>
       <a className={styles.skip} href="#eg-main">
         {t("ui.skipToContent")}
       </a>
-      <header className={styles.top}>
+      <HeaderFrame>
         <div className={styles.topInner}>
           <Link href="/" className={styles.home} aria-label={t("pub.homeLink")}>
             <BrandMark size="bar" />
           </Link>
           <nav className={styles.wideNav} aria-label={t("pub.nav.label")}>
-            <NavLinks items={items} className={styles.wideList} />
+            <NavLinks items={items} className={styles.wideList} indicatorClassName={styles.wideBar} />
           </nav>
           <div className={styles.wideLang}>
             <LanguageMenu />
           </div>
-          <HeaderReport href="/o/new/what?as=citizen" label={t("pub.reportShort")} className={styles.headReport} />
-          <details className={styles.menu}>
-            <summary className={styles.menuButton}>
-              <MenuIcon size={22} />
-              <span className={styles.menuText}>{t("pub.menu")}</span>
-            </summary>
-            <div className={styles.menuPanel}>
-              <nav aria-label={t("pub.nav.label")}>
-                <NavLinks items={items} className={styles.menuList} />
-              </nav>
-              <LanguageMenu />
-            </div>
-          </details>
+          <HeaderReport href="/o/new/what?as=citizen" label={t("p02.report")} shortLabel={t("pub.reportShort")} className={styles.headReport} />
+          <div className={styles.menuSlot}>
+            <MobileMenu
+              items={items}
+              menuLabel={t("pub.menu")}
+              closeLabel={t("pub.menuClose")}
+              homeLabel={t("pub.homeLink")}
+              hereLabel={t("pub.nav.here")}
+              languageLabel={t("ui.language.label")}
+              navLabel={t("pub.nav.label")}
+              emergency={t("pub.footer.emergency")}
+            />
+          </div>
         </div>
-      </header>
+      </HeaderFrame>
 
       <main id="eg-main" tabIndex={-1} className={styles.main}>
         {children}

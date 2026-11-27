@@ -2,19 +2,19 @@
 
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { type ReactElement } from "react";
+import { useState, type ReactElement } from "react";
 import { useT } from "../../../../lib/i18n/client";
 import { StaffShell, type StaffNavItem } from "../../../../ui";
 import {
   DiscussionIcon,
   InboxIcon,
   KeyIcon,
-  LockIcon,
-  SearchIcon,
+  MapPulseIcon,
+  MegaphoneIcon,
   ShieldCheckIcon,
-  SignalIcon,
   SlidersIcon,
   UploadIcon,
+  UserPlusIcon,
   UsersIcon,
 } from "../../../../ui/icons";
 import { SignInView, type SignInStep } from "../../../(staff)/s/_views/SignInView";
@@ -36,11 +36,13 @@ import {
   FIXTURE_QUEUE_ITEMS,
   FIXTURE_QUEUE_PAGE,
 } from "./fixtures";
+import { CheckinsView } from "../../../(staff)/s/_views/CheckinsView";
+import { CHECKINS_NOTICES, CHECKINS_NOW, CHECKINS_PLACES, CHECKINS_QUESTIONS, CHECKINS_RESULTS, CHECKINS_USER } from "./previews/checkins.fixtures";
 import { PREVIEWS } from "./previews";
 
 /** Screen 38 (S-01) states, from the spec's list. */
 const S01_STATES = [
-  "default", "loading", "invalid_credentials", "account_locked", "rate_limited",
+  "default", "filled", "loading", "invalid_credentials", "account_locked", "rate_limited",
   "totp", "totp_typing", "totp_invalid", "enrol", "invite", "invite_short", "invite_fair", "invite_strong", "invite_invalid",
 ] as const;
 
@@ -52,7 +54,7 @@ const S03_STATES = ["default", "in_review", "result_sheet", "pending_help", "clo
 const S04_STATES = ["default", "results", "loading", "empty", "error"] as const;
 
 /** Screen 42 (S-05) states. */
-const S05_STATES = ["default", "loading", "empty", "partial", "error"] as const;
+const S05_STATES = ["default", "loading", "empty", "partial", "error", "checkins", "checkins-approval", "checkins-mine"] as const;
 
 const S02_STATES = ["default", "loading", "empty", "empty_filtered", "error", "forbidden", "new", "more"] as const;
 
@@ -89,28 +91,48 @@ const SCREENS = [
   { id: "s12", name: "Security & audit monitoring" },
 ] as const;
 
+/** Which sidebar group each screen sits in, the same as the live layout. */
+const GROUP_OF: Record<string, "review" | "monitor" | "moderate" | "admin"> = {
+  s02: "review", s04: "review", s05: "monitor", s06: "monitor", s07: "monitor", s08: "moderate",
+  s09: "admin", s10: "admin", s11: "admin", s12: "admin",
+};
+
 export function StaffStateViewer(): ReactElement {
   const searchParams = useSearchParams();
   const screen = searchParams?.get("screen") ?? "s01";
   const state = searchParams?.get("state") ?? "default";
-  const themeParam = searchParams?.get("theme");
-  const theme = themeParam === "dark" ? "dark" : "light";
+  // Light only: the product has no other theme.
+  const theme = "light";
   const t = useT();
+  const [search, setSearch] = useState("");
 
-  const nav: StaffNavItem[] = [
-    { href: `/dev/staff?screen=s02&state=${state}&theme=${theme}`, label: t("staff.nav.queue"), icon: InboxIcon, current: screen === "s02" || screen === "s03", count: 2 },
-    { href: `/dev/staff?screen=s04&state=${state}&theme=${theme}`, label: t("staff.nav.assign"), icon: SearchIcon, current: screen === "s04" },
-    { href: `/dev/staff?screen=s05&state=${state}&theme=${theme}`, label: t("staff.nav.ops"), icon: SignalIcon, current: screen === "s05" },
-    { href: `/dev/staff?screen=s06&state=${state}&theme=${theme}`, label: t("staff.nav.rumours"), icon: DiscussionIcon, current: screen === "s06" },
-    { href: `/dev/staff?screen=s07&state=${state}&theme=${theme}`, label: t("staff.nav.publish"), icon: UploadIcon, current: screen === "s07" },
-    { href: `/dev/staff?screen=s08&state=${state}&theme=${theme}`, label: t("staff.nav.discussions"), icon: LockIcon, current: screen === "s08" },
-    { href: `/dev/staff?screen=s09&state=${state}&theme=${theme}`, label: t("staff.nav.codes"), icon: KeyIcon, current: screen === "s09" },
-    { href: `/dev/staff?screen=s10&state=${state}&theme=${theme}`, label: t("staff.nav.staff"), icon: UsersIcon, current: screen === "s10" },
-    { href: `/dev/staff?screen=s11&state=${state}&theme=${theme}`, label: t("staff.nav.settings"), icon: SlidersIcon, current: screen === "s11" },
-    { href: `/dev/staff?screen=s12&state=${state}&theme=${theme}`, label: t("staff.nav.security"), icon: ShieldCheckIcon, current: screen === "s12" },
-  ];
+  // The roles the viewer pretends to hold: ?role=reviewer|coordinator|moderator|org_admin|all (default all).
+  const roleParam = searchParams?.get("role") ?? "all";
+  const has = (role: string) => roleParam === "all" || roleParam === role;
+  const link = (id: string) => `/dev/staff?screen=${id}&state=${state}&role=${roleParam}`;
+  const groups = {
+    review: t("staff.nav.groups.review"),
+    monitor: t("staff.nav.groups.monitor"),
+    moderate: t("staff.nav.groups.moderate"),
+    admin: t("staff.nav.groups.admin"),
+  };
+  const nav: StaffNavItem[] = [];
+  if (has("reviewer")) nav.push({ href: link("s02"), label: t("staff.nav.queue"), icon: InboxIcon, group: groups.review, current: screen === "s02" || screen === "s03", count: 2, countTone: "needs" });
+  if (has("coordinator")) {
+    nav.push({ href: link("s04"), label: t("staff.nav.assign"), icon: UserPlusIcon, group: groups.review, current: screen === "s04" });
+    nav.push({ href: link("s05"), label: t("staff.nav.ops"), icon: MapPulseIcon, group: groups.monitor, current: screen === "s05" });
+    nav.push({ href: link("s06"), label: t("staff.nav.rumours"), icon: MegaphoneIcon, group: groups.monitor, current: screen === "s06" });
+    nav.push({ href: link("s07"), label: t("staff.nav.publish"), icon: UploadIcon, group: groups.monitor, current: screen === "s07" });
+  }
+  if (has("moderator")) nav.push({ href: link("s08"), label: t("staff.nav.discussions"), icon: DiscussionIcon, group: groups.moderate, current: screen === "s08" });
+  if (has("org_admin")) {
+    nav.push({ href: link("s09"), label: t("staff.nav.codes"), icon: KeyIcon, group: groups.admin, current: screen === "s09" });
+    nav.push({ href: link("s10"), label: t("staff.nav.staff"), icon: UsersIcon, group: groups.admin, current: screen === "s10" });
+    nav.push({ href: link("s11"), label: t("staff.nav.settings"), icon: SlidersIcon, group: groups.admin, current: screen === "s11" });
+  }
+  if (has("coordinator") || has("org_admin")) nav.push({ href: link("s12"), label: t("staff.nav.security"), icon: ShieldCheckIcon, group: groups.admin, current: screen === "s12" });
+  const roleLabel = roleParam === "all" ? t("staff.roles.reviewer") : t(`staff.roles.${roleParam}`);
 
-  const currentScreenObj = SCREENS.find((s) => s.id === screen) ?? SCREENS[0];
 
   const renderContent = () => {
     switch (screen) {
@@ -119,7 +141,7 @@ export function StaffStateViewer(): ReactElement {
           <SignInView
             key={state}
             step={signInStep(state)}
-            email="f.musa@electraguard.ng"
+            email={state === "default" ? "" : "f.musa@electraguard.ng"}
             loading={state === "loading"}
             error={signInError(state, t)}
             enrolData={{
@@ -162,6 +184,8 @@ export function StaffStateViewer(): ReactElement {
             onSaveView={() => {}}
             onRemoveView={() => {}}
             onOpenCase={() => {}}
+            search={search}
+            onClearSearch={() => setSearch("")}
             initialPreviewId={state === "default" || state === "new" || state === "more" ? FIXTURE_QUEUE_ITEMS[0].id : undefined}
           />
         );
@@ -241,6 +265,38 @@ export function StaffStateViewer(): ReactElement {
           state === "loading" ? { data: null, loading: true, error: null }
             : state === "error" ? { data: null, loading: false, error: t("staff.networkError") }
               : { data, loading: false, error: null };
+        if (state.startsWith("checkins")) {
+          const pending = state !== "checkins";
+          return (
+            <OpsView
+              key={state}
+              date="2026-12-05"
+              today="2026-12-05"
+              stage="voting"
+              tab="checkins"
+              checkinsWaiting={1}
+              overview={sec(FIXTURE_OVERVIEW)}
+              clusters={sec(FIXTURE_CLUSTERS)}
+              coverage={sec(FIXTURE_COVERAGE)}
+              lateMaterials={sec(FIXTURE_LATE_MATERIALS)}
+              checkins={
+                <CheckinsView
+                  places={CHECKINS_PLACES}
+                  questions={CHECKINS_QUESTIONS}
+                  notices={{ data: CHECKINS_NOTICES, loading: false, error: null }}
+                  selectedId={pending ? "n-junction" : "n-voting"}
+                  results={{ data: CHECKINS_RESULTS, loading: false, error: null }}
+                  currentUser={state === "checkins-mine" ? "Musa Bello" : CHECKINS_USER}
+                  now={CHECKINS_NOW}
+                  onSend={() => true}
+                  onApprove={() => true}
+                  onReject={() => true}
+                  onAskAgain={() => true}
+                />
+              }
+            />
+          );
+        }
         return (
           <OpsView
             key={state}
@@ -292,6 +348,8 @@ export function StaffStateViewer(): ReactElement {
       {/* Dev Navigation Bar */}
       <div
         data-dev-bar
+        role="navigation"
+        aria-label="Viewer"
         style={{
           background: "var(--paper)",
           color: "var(--ink)",
@@ -302,13 +360,14 @@ export function StaffStateViewer(): ReactElement {
           flexWrap: "wrap",
           alignItems: "center",
           fontSize: "13px",
+          fontFamily: "var(--font)",
         }}
       >
         <strong style={{ marginRight: "8px" }}>Staff Dev Viewer:</strong>
         {SCREENS.map((s) => (
           <Link
             key={s.id}
-            href={`/dev/staff?screen=${s.id}&state=${state}&theme=${theme}`}
+            href={`/dev/staff?screen=${s.id}&state=${state}`}
             style={{
               color: screen === s.id ? "var(--ink)" : "var(--ink-2)",
               fontWeight: screen === s.id ? "bold" : "normal",
@@ -325,7 +384,7 @@ export function StaffStateViewer(): ReactElement {
             {(screen === "s01" ? S01_STATES : screen === "s02" ? S02_STATES : screen === "s03" ? S03_STATES : screen === "s04" ? S04_STATES : screen === "s05" ? S05_STATES : (PREVIEWS[screen]?.states ?? ["default", "loading", "empty", "error"])).map((st) => (
               <Link
                 key={st}
-                href={`/dev/staff?screen=${screen}&state=${st}&theme=${theme}`}
+                href={`/dev/staff?screen=${screen}&state=${st}`}
                 style={{
                   color: state === st ? "var(--ink)" : "var(--ink-2)",
                   fontWeight: state === st ? "bold" : "normal",
@@ -337,30 +396,24 @@ export function StaffStateViewer(): ReactElement {
             ))}
           </div>
 
-          <div style={{ display: "flex", gap: "6px", alignItems: "center", borderLeft: "1px solid var(--rule)", paddingLeft: "12px" }}>
-            <span style={{ color: "var(--ink-2)" }}>Theme:</span>
-            {(["light", "dark"] as const).map((th) => (
-              <Link
-                key={th}
-                href={`/dev/staff?screen=${screen}&state=${state}&theme=${th}`}
-                style={{
-                  color: theme === th ? "var(--ink)" : "var(--ink-2)",
-                  fontWeight: theme === th ? "bold" : "normal",
-                  textDecoration: theme === th ? "underline" : "none",
-                }}
-              >
-                {th}
-              </Link>
-            ))}
-          </div>
         </div>
       </div>
 
       {/* Screen Content wrapped in StaffShell if not sign-in */}
       {screen === "s01" ? (
-        <main data-theme={theme} data-density="staff">{renderContent()}</main>
+        <main data-theme={theme} data-density="staff" id="eg-staff-content">{renderContent()}</main>
       ) : (
-        <StaffShell nav={nav} title={currentScreenObj.name} theme={theme}>
+        <StaffShell
+          nav={nav}
+          preview
+          title={screen === "s03" ? FIXTURE_CASE_DETAIL.receipt_code : t(`${screen}.title`)}
+          crumbs={screen === "s03" ? [{ label: t("staff.nav.queue"), href: link("s02") }] : [{ label: groups[GROUP_OF[screen] ?? "review"] }]}
+          organisation="Kano observers network"
+          intake={{ paused: state === "paused", href: link("s11") }}
+          user={{ name: "F. Musa", role: roleLabel }}
+          onSignOut={() => undefined}
+          onSearch={setSearch}
+        >
           {renderContent()}
         </StaffShell>
       )}

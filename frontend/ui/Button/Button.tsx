@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import type { ButtonHTMLAttributes, ReactNode, Ref } from "react";
+import { useLayoutEffect, useRef, type ButtonHTMLAttributes, type ReactNode, type Ref } from "react";
 import { useT } from "../../lib/i18n/client";
 import styles from "./Button.module.css";
 
@@ -17,6 +17,11 @@ type CommonProps = {
   loading?: boolean;
   /** Text shown while loading. Defaults to "Please wait". */
   loadingLabel?: string;
+  /**
+   * For the one send action: while loading, the bar closes into a ring that turns until the work
+   * ends. The loading text stays for screen readers. Reduced motion keeps the plain loading text.
+   */
+  ring?: boolean;
   children: ReactNode;
   "data-testid"?: string;
 };
@@ -35,10 +40,18 @@ function classes(variant: ButtonVariant, block?: boolean, extra?: string) {
   return [styles.button, styles[variant], block ? styles.block : "", extra ?? ""].filter(Boolean).join(" ");
 }
 
-function Content({ icon, children, loading, loadingLabel }: Pick<CommonProps, "icon" | "children" | "loading" | "loadingLabel">) {
+function Content({ icon, children, loading, loadingLabel, ring }: Pick<CommonProps, "icon" | "children" | "loading" | "loadingLabel" | "ring">) {
   return (
     <span className={styles.stack}>
-      <span className={styles.label} data-hidden={loading || undefined}>
+      {ring ? (
+        <span className={styles.ringLayer} aria-hidden="true">
+          <span className={styles.ringBg} />
+          <span className={styles.ringDisc}>
+            <span className={styles.ringSpin} />
+          </span>
+        </span>
+      ) : null}
+      <span className={styles.label} data-hidden={loading || undefined} aria-hidden={loading || undefined}>
         {icon ? <span className={styles.icon}>{icon}</span> : null}
         <span>{children}</span>
       </span>
@@ -62,6 +75,7 @@ export function Button({
   block,
   loading,
   loadingLabel,
+  ring,
   children,
   disabled,
   className,
@@ -72,13 +86,25 @@ export function Button({
 }: ButtonProps) {
   const t = useT();
   const inert = disabled || loading;
+  const own = useRef<HTMLButtonElement | null>(null);
+  // The bar closes to a disc as wide as it is tall: remember how much narrower that is.
+  useLayoutEffect(() => {
+    const el = own.current;
+    if (!ring || !loading || !el) return;
+    el.style.setProperty("--ring-k", String(Math.min(1, el.offsetHeight / Math.max(1, el.offsetWidth))));
+  }, [ring, loading]);
   return (
     <button
-      ref={ref}
+      ref={(node) => {
+        own.current = node;
+        if (typeof ref === "function") ref(node);
+        else if (ref) (ref as { current: HTMLButtonElement | null }).current = node;
+      }}
       type={type}
       className={classes(variant, block, className)}
       aria-disabled={inert || undefined}
       aria-busy={loading || undefined}
+      data-ring={ring || undefined}
       onClick={(event) => {
         if (inert) {
           event.preventDefault();
@@ -88,7 +114,7 @@ export function Button({
       }}
       {...rest}
     >
-      <Content icon={icon} loading={loading} loadingLabel={loadingLabel ?? t("ui.pleaseWait")}>
+      <Content icon={icon} loading={loading} loadingLabel={loadingLabel ?? t("ui.pleaseWait")} ring={ring}>
         {children}
       </Content>
     </button>

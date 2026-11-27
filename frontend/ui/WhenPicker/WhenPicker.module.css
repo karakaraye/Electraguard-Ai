@@ -5,111 +5,11 @@
   border: 0;
 }
 
-/* Stacked rows on phones (long translations fit); a segmented row from 600px */
+/* One ChoiceTile per row */
 .modes {
   clear: both;
   display: grid;
-  border: var(--border-w) solid var(--rule-control);
-  border-radius: var(--radius);
-  overflow: hidden;
-}
-
-@media (min-width: 600px) {
-  .modes {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-}
-
-.mode {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: var(--s-3);
-  min-height: var(--control-h);
-  padding: var(--s-3) var(--s-4);
-  background: var(--paper-raised);
-  color: var(--ink);
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-}
-
-.mode + .mode {
-  border-top: 1px solid var(--rule);
-}
-
-@media (min-width: 600px) {
-  .mode + .mode {
-    border-top: 0;
-    border-left: 1px solid var(--rule);
-  }
-}
-
-/* Chosen: sunlight fill, an ink edge and an ink tick, the same as the choice tiles (I-3). */
-.mode[data-checked] {
-  background: var(--sun-tint);
-  box-shadow: inset 0 0 0 2px var(--ink);
-  color: var(--ink);
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .mode:hover:not([data-checked]) {
-    background: var(--paper-2);
-  }
-}
-
-.mode:has(.input:focus-visible) {
-  outline: var(--focus-outline);
-  outline-offset: -5px;
-  z-index: 1;
-}
-
-.input {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  margin: 0;
-  opacity: 0;
-  cursor: inherit;
-}
-
-.radio {
-  display: grid;
-  place-items: center;
-  flex: none;
-  width: 22px;
-  height: 22px;
-  border: var(--border-w) solid currentColor;
-  border-radius: 50%;
-  color: transparent;
-}
-
-.mode:not([data-checked]) .radio {
-  border-color: var(--rule-control);
-}
-
-.mode[data-checked] .radio {
-  background: var(--ink);
-  border-color: var(--ink);
-  color: var(--paper);
-}
-
-.modeText {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  column-gap: var(--s-2);
-}
-
-.modeLabel {
-  font: var(--t-label);
-  font-size: var(--t-base-size);
-  line-height: 1.3;
-}
-
-.modeDetail {
-  font: var(--t-small);
-  opacity: 0.85;
+  gap: var(--s-2);
 }
 
 .inputs {

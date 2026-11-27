@@ -27,7 +27,6 @@ import {
   Stepper,
   SuggestionCard,
   TextArea,
-  ThemeSwitcher,
   ToastProvider,
   Timeline,
   UploadItem,
@@ -482,7 +481,6 @@ export function Gallery() {
             preview
             theme={theme}
             title="Queue"
-            headerEnd={<ThemeSwitcher />}
             nav={[
               { href: "#staff", label: "Queue", icon: Icons.InboxIcon, current: true, count: 4 },
               { href: "#staff", label: "Operations", icon: Icons.ListIcon },

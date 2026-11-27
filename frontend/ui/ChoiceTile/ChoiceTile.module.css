@@ -43,91 +43,67 @@
   line-height: 1.45;
 }
 
+/* ChoiceTile list: one tile per row on phones, two columns on wide screens */
 .grid {
-  --tile-gap: var(--s-3);
-  --tile-max-cols: 2;
   clear: both;
   display: grid;
-  /* Two columns on a 320px phone; one column when text is enlarged (the minimum is in rem) */
-  grid-template-columns: repeat(
-    auto-fill,
-    minmax(min(100%, max(9.25rem, (100% - (var(--tile-max-cols) - 1) * var(--tile-gap)) / var(--tile-max-cols))), 1fr)
-  );
-  gap: var(--tile-gap);
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--s-2);
 }
 
-@media (min-width: 600px) {
+@media (min-width: 720px) {
+  .grid[data-columns="2"],
   .grid[data-columns="3"] {
-    --tile-max-cols: 3;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
+/* ---------- ChoiceTile ---------- */
+
 .tile {
-  --sweep-x: 36px;
-  --sweep-y: 36px;
   position: relative;
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: space-between;
+  align-items: center;
   gap: var(--s-3);
-  min-height: 112px;
-  padding: 12px;
-  border: 1px solid var(--rule);
+  box-sizing: border-box;
+  min-height: 64px;
+  padding: 8px 16px 8px 12px;
   border-radius: var(--radius-lg);
   background: var(--paper-raised);
+  box-shadow: inset 0 0 0 1px var(--rule);
   color: var(--ink);
-  overflow: hidden;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   transition:
     transform var(--dur-press) var(--ease-out),
-    border-color var(--dur-fade) ease;
+    box-shadow 120ms ease;
+}
+
+.tile[data-bare] {
+  padding-left: 16px;
 }
 
 .tile:active:not([data-disabled]) {
-  transform: scale(0.98);
+  transform: scale(0.99);
 }
 
 @media (hover: hover) and (pointer: fine) {
   .tile:hover:not([data-disabled]):not([data-checked]) {
-    border-color: var(--rule-control);
+    box-shadow: inset 0 0 0 1px var(--rule-control);
   }
 }
 
-/* Sunlight sweeps out from the icon disc and fills the tile (I-3) */
-.sweep {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  background: var(--sun-tint);
-  clip-path: circle(0 at var(--sweep-x) var(--sweep-y));
-  transition: clip-path var(--dur-step) var(--ease-out);
-  pointer-events: none;
-}
-
-.tile[data-checked] .sweep {
-  clip-path: circle(150% at var(--sweep-x) var(--sweep-y));
-}
-
+/* Chosen: 2 px ink edge, an ink tick and a sun-tint icon disc. Never colour alone. */
 .tile[data-checked] {
-  border-color: var(--ink);
-  /* 1px border + 1px inset = the 2px ink border, with no layout shift */
-  box-shadow: inset 0 0 0 1px var(--ink);
-}
-
-.tile > :not(.sweep):not(.input):not(.tick) {
-  position: relative;
-  z-index: 1;
+  box-shadow: inset 0 0 0 2px var(--ink);
 }
 
 .tile:has(.input:focus-visible) {
   outline: var(--focus-outline);
-  outline-offset: calc(var(--focus-offset) + 1px);
+  outline-offset: var(--focus-offset);
 }
 
 .tile[data-disabled] {
-  border-style: dashed;
   color: var(--ink-3);
   cursor: not-allowed;
 }
@@ -154,35 +130,48 @@
 }
 
 .disc {
-  display: inline-flex;
+  display: grid;
   flex: none;
-  align-items: center;
-  justify-content: center;
-  width: 48px;
-  height: 48px;
+  place-items: center;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
-  background: var(--sun-tint);
+  background: var(--paper-2);
   color: var(--ink);
-  transition: background-color var(--dur-step) var(--ease-out);
+  transition: background-color 120ms ease;
+}
+
+.disc svg {
+  width: 24px;
+  height: 24px;
 }
 
 .tile[data-checked] .disc {
-  background: var(--paper-raised);
+  background: var(--sun-tint);
+}
+
+.tile[data-tone="danger"] .disc {
+  background: var(--danger-bg);
+  color: var(--danger);
+}
+
+/* Neutral edge until chosen; the danger colour shows only on the selected tile. */
+.tile[data-tone="danger"][data-checked] {
+  box-shadow: inset 0 0 0 2px var(--danger);
 }
 
 .tileText {
   display: grid;
+  flex: 1 1 auto;
   grid-template-columns: minmax(0, 1fr);
-  gap: var(--s-1);
+  gap: 2px;
   min-width: 0;
-  width: 100%;
 }
 
 .tileLabel {
   font: var(--t-label);
-  /* Fits "Misinformation" on one line in a 2-column tile at 360 px without hyphenating. */
-  font-size: min(var(--t-base-size), max(1rem, 4.3vw));
-  line-height: 1.3;
+  font-size: 1.0625rem;
+  line-height: 1.25;
   /* Never hyphenate: a label breaks between words, or (only when a single word cannot fit) at the edge. */
   overflow-wrap: break-word;
   hyphens: manual;
@@ -194,45 +183,75 @@
 }
 
 .tick {
-  position: absolute;
-  top: 10px;
-  right: 10px;
   display: grid;
+  flex: none;
   place-items: center;
-  width: 26px;
-  height: 26px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
-  background: var(--ink);
-  color: var(--on-ink);
-  opacity: 0;
-  transform: scale(0.6);
+  box-shadow: inset 0 0 0 1.5px var(--rule-control);
+  color: transparent;
   transition:
-    transform 160ms var(--ease-pop),
-    opacity var(--dur-fade) ease;
+    background-color var(--dur-fade) ease,
+    color var(--dur-fade) ease;
+}
+
+.tick svg {
+  width: 16px;
+  height: 16px;
 }
 
 .tile[data-checked] .tick {
-  opacity: 1;
-  transform: scale(1);
+  background: var(--ink);
+  box-shadow: none;
+  color: var(--paper-raised);
 }
 
-/* ---------- YesNo ---------- */
+.tile[data-pop] .tick {
+  animation: tick-pop var(--dur-step) var(--ease-out);
+}
+
+/* The tick pops in: scale .5 to 1.12 to 1 while it fades in (240 ms); the edge and the disc tint
+   settle over 120 ms (their transitions). */
+@keyframes tick-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1.12);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tile,
+  .disc,
+  .tick {
+    transition: none;
+  }
+  .tile[data-pop] .tick {
+    animation: tick-fade 80ms linear;
+  }
+}
+
+@keyframes tick-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+/* ---------- YesNo: two tiles side by side ---------- */
 
 .yesNo {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, max(9.5rem, (100% - var(--s-3)) / 2)), 1fr));
-  gap: var(--s-3);
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, max(9.5rem, (100% - var(--s-2)) / 2)), 1fr));
+  gap: var(--s-2);
   clear: both;
-}
-
-.yesNo .tile {
-  --sweep-x: 28px;
-  --sweep-y: 50%;
-  min-height: 72px;
-  flex-direction: row;
-  align-items: center;
-  justify-content: flex-start;
-  padding: var(--s-4) calc(var(--s-3) + 34px) var(--s-4) var(--s-4);
 }
 
 .yesNo[data-stacked] {
@@ -245,46 +264,9 @@
   }
 }
 
-.yesNo .tile[data-tone="danger"]:not([data-checked]) {
-  border-color: var(--danger);
-}
-
-/* Answer icons sit in a 48 px disc: sun tint by default, danger tint for a danger answer. */
-.answerIcon {
-  position: relative;
-  display: grid;
-  flex: none;
-  place-items: center;
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  background: var(--sun-tint);
-  color: var(--ink);
-}
-
-/* Chosen: the tile fills with sunlight, so the disc turns to paper to stay visible. */
-.tile[data-checked] .answerIcon {
-  background: var(--paper-raised);
-}
-
-.tile[data-tone="danger"] .answerIcon {
-  background: var(--danger-bg);
-  color: var(--danger);
-}
-
-.answerIcon svg {
-  width: 26px;
-  height: 26px;
-}
-
-.yesNo .tick {
-  top: calc(50% - 13px);
-  right: var(--s-4);
-}
-
 .yesNo .tileLabel {
   font: var(--t-heading);
-  overflow-wrap: break-word;
+  font-size: 1.125rem;
 }
 
 /* ---------- Error ---------- */

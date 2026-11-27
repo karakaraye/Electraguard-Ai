@@ -9,71 +9,57 @@ export type HeroCardProps = {
   /** Navigates when set. */
   href?: string;
   onClick?: () => void;
-  /** Intake is paused: the sun greys, the card is not interactive and shows pausedText. */
+  /** Intake is paused: the card turns quiet and shows pausedText. It stays tappable, because a report can still be written. */
   paused?: boolean;
   pausedText?: ReactNode;
+  /** A second action under the main one inside the same card (for example "Continue your draft"). Interactive content goes here, never inside the main link. */
+  footer?: ReactNode;
   "data-testid"?: string;
 };
 
 function Art() {
   return (
-    <svg className={styles.art} viewBox="0 0 350 146" preserveAspectRatio="xMaxYMid slice" aria-hidden="true" focusable="false">
+    <svg className={styles.art} viewBox="0 0 350 146" preserveAspectRatio="xMaxYMin slice" aria-hidden="true" focusable="false">
       <g className={styles.sunGroup}>
-        <circle cx="262" cy="50" r="66" className={styles.sun} opacity=".08" />
-        <circle cx="262" cy="50" r="44" className={styles.sun} opacity=".14" />
-        <circle cx="262" cy="50" r="26" className={styles.sun} />
-      </g>
-      <path d="M140 146 Q210 102 262 110 T350 96 V146Z" fill="var(--hero-ink)" opacity=".07" />
-      <g fill="var(--hero-ink)" opacity=".18">
-        <path d="M214 118h28v-13l-14-10-14 10z" />
-        <circle cx="190" cy="110" r="8" />
-        <rect x="189" y="110" width="2" height="12" />
+        <circle cx="318" cy="2" r="66" className={styles.sunHalo} />
+        <circle cx="290" cy="30" r="20" className={styles.sun} />
       </g>
     </svg>
   );
 }
 
 /**
- * The "Report something" card: an ink card with a sun and a hill, one link, and a
- * round plus. Text sits in normal flow so it can grow with large type.
+ * The "Report something" card: an ink card with a sun, one tap target and a round plus.
+ * Text sits in normal flow so it can grow with large type. A footer can carry a second action.
  */
-export function HeroCard({ title, body, href, onClick, paused, pausedText, "data-testid": testId = "hero-card" }: HeroCardProps) {
+export function HeroCard({ title, body, href, onClick, paused, pausedText, footer, "data-testid": testId = "hero-card" }: HeroCardProps) {
+  const text = paused ? pausedText : body;
   const content = (
     <>
       <Art />
       <span className={styles.text}>
         <span className={styles.title}>{title}</span>
-        {paused ? (
-          pausedText ? <span className={styles.body}>{pausedText}</span> : null
-        ) : body ? (
-          <span className={styles.body}>{body}</span>
-        ) : null}
+        {text ? <span className={styles.body}>{text}</span> : null}
       </span>
-      {paused ? null : (
-        <span className={styles.plus} aria-hidden="true">
-          <PlusIcon size={26} strokeWidth={2.4} />
-        </span>
-      )}
+      <span className={styles.plus} aria-hidden="true">
+        <PlusIcon size={28} strokeWidth={2} />
+      </span>
     </>
   );
-
-  if (paused) {
-    return (
-      <div className={`${styles.card} ${styles.paused}`} data-paused="" data-testid={testId}>
-        {content}
-      </div>
-    );
-  }
-  if (href) {
-    return (
-      <Link href={href} className={styles.card} onClick={onClick} data-testid={testId}>
+  const main =
+    href && !paused ? (
+      <Link href={href} className={styles.main} onClick={onClick} data-testid={testId}>
         {content}
       </Link>
+    ) : (
+      <button type="button" className={styles.main} onClick={onClick} data-testid={testId}>
+        {content}
+      </button>
     );
-  }
   return (
-    <button type="button" className={styles.card} onClick={onClick} data-testid={testId}>
-      {content}
-    </button>
+    <div className={styles.card} data-paused={paused || undefined}>
+      {main}
+      {footer ? <div className={styles.footer}>{footer}</div> : null}
+    </div>
   );
 }

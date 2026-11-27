@@ -10,7 +10,7 @@
  * - Offline fallback: a small page in the five languages.
  */
 
-const VERSION = "v4";
+const VERSION = "v6";
 const SHELL = `eg-shell-${VERSION}`;
 const STATIC = `eg-static-${VERSION}`;
 const REFERENCE = `eg-reference-${VERSION}`;
@@ -26,6 +26,9 @@ const SHELL_PAGES = [
   "/o/new/describe",
   "/o/new/evidence",
   "/o/new/check",
+  // Check-in answers work offline: keep the Messages and answer screens (any id uses the same script files).
+  "/o/messages",
+  "/o/checkin/offline",
 ];
 const SHELL_FILES = [
   "/fonts/noto-sans-latin.woff2",
@@ -90,6 +93,13 @@ async function cachePage(path, seen) {
     const source = await cacheStatic(statics, asset);
     const chunks = source.match(/static\/chunks\/[^"'\s\\,:;]+\.(?:js|css)/g) || [];
     await Promise.all(chunks.map((chunk) => visit(`/_next/${chunk}`)));
+    // The webpack runtime names on-demand chunks from a table ("static/chunks/"+id+"."+{id:hash}[id]+".js"),
+    // so their file names never appear whole: read the table, or the message files would not be cached.
+    const named = [];
+    for (const table of source.matchAll(/"static\/chunks\/"\s*\+\s*\w+\s*\+\s*"\."\s*\+\s*\(?\{([^}]*)\}\)?\[\w+\]\s*\+\s*"\.js"/g)) {
+      for (const [, id, hash] of table[1].matchAll(/["']?(\d+)["']?:\s*"([0-9a-f]+)"/g)) named.push(`/_next/static/chunks/${id}.${hash}.js`);
+    }
+    await Promise.all(named.map(visit));
   }
   // Route groups put parentheses in chunk paths, for example
   // /_next/static/chunks/app/(observer)/o/page-….js, so ")" is allowed inside a path;
@@ -191,7 +201,7 @@ self.addEventListener("fetch", (event) => {
     event.respondWith(staleWhileRevalidate(request));
     return;
   }
-  if (SHELL_FILES.includes(url.pathname) || url.pathname.startsWith("/fonts/") || url.pathname.startsWith("/icons/")) {
+  if (SHELL_FILES.includes(url.pathname) || url.pathname.startsWith("/fonts/") || url.pathname.startsWith("/icons/") || url.pathname.startsWith("/art/observer/")) {
     event.respondWith(cacheFirst(request, SHELL));
   }
   // Everything else (report data, sessions) goes straight to the network and is never stored.

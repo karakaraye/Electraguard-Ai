@@ -174,3 +174,61 @@ export async function draftsOnPhone(page: Page) {
     return drafts;
   });
 }
+
+/* ---------- Community features: coordinators, places and seeded data ---------- */
+
+export type Area = {
+  state_code: string;
+  state_name: string;
+  lga_code: string;
+  lga_name: string;
+  wards: Array<{ ward_code: string; name: string; units: Array<[string, string]> }>;
+};
+export type Coordinator = { email: string; password: string; name: string };
+
+/** One LGA with three wards and five units each, picked by number so every spec uses its own. */
+export function areaNumber(index: number): Area {
+  return server<Area>("area", String(index));
+}
+
+/** A coordinator the server already knows, with two-step verification set up. */
+export function newCoordinator(name = ""): Coordinator {
+  return server<Coordinator>("staff", "coordinator", name);
+}
+
+/** Sign in on the staff page: email and password, then the current two-step code. */
+export async function staffSignIn(page: Page, who: Coordinator) {
+  await page.goto("/s/sign-in");
+  await page.locator("#staff-email").fill(who.email);
+  await page.locator("#staff-password").fill(who.password);
+  await page.getByRole("button", { name: /^sign in$/i }).click();
+  await page.getByTestId("staff-totp-input").fill(server<{ code: string }>("totp", who.email).code);
+  await page.waitForURL((url) => !url.pathname.startsWith("/s/sign-in"), { timeout: 30_000 });
+}
+
+/** The coordinator's Check-ins tab with the place and question lists loaded. */
+export async function openCheckins(page: Page) {
+  await page.goto("/s/ops?tab=checkins");
+  await expect(page.getByTestId("ci-compose")).toBeVisible();
+  await expect(page.getByTestId("ci-scope-code").locator("option").nth(1)).toBeAttached({ timeout: 30_000 });
+}
+
+/** Pick where the check-in goes. The list shows "Ward, LGA" labels; the value is the code. */
+export async function chooseScope(page: Page, kind: "ward" | "lga", code: string) {
+  await page.getByTestId("ci-scope-kind").getByRole("tab", { name: kind === "ward" ? "Ward" : "LGA", exact: true }).click();
+  await page.getByTestId("ci-scope-code").selectOption(code);
+}
+
+/** A signed-in observer who has reported from this ward and unit (the server places them by their latest report). */
+export async function observerAt(page: Page, ward: string, unit: string): Promise<Observer> {
+  const observer = await signInNewObserver(page);
+  server("place", observer.code, ward, unit);
+  await page.reload();
+  await expect(page.getByTestId("o04")).toBeVisible();
+  return observer;
+}
+
+/** Remove what an earlier run of the community specs left behind. */
+export function cleanCommunity() {
+  server("cleanup");
+}

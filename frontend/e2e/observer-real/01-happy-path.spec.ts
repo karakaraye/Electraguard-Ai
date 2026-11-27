@@ -61,8 +61,8 @@ test("first run: setup PIN, own PIN, report with a photo, receipt; one report an
   expect(creates[0].key).toBe(item.id);
   expect(reports[0].idempotency.find((r) => r.operation === "REP-01")?.key).toBe(item.id);
 
-  // Back from the receipt goes Home, which lists it; no draft is left.
-  await page.getByTestId("back").click();
+  // Done on the receipt goes Home, which lists it; no draft is left.
+  await page.getByTestId("o12-home").click();
   await page.waitForURL(/\/o$/);
   await expect(page.getByTestId("o04")).toContainText(receipt);
   await expect(page.getByTestId("o04-draft")).toHaveCount(0);

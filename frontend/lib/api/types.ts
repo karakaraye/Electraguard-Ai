@@ -90,6 +90,10 @@ export type ErrorCode =
   | "account_locked"
   | "rate_limited"
   | "intake_paused"
+  | "blocked_content"
+  | "notice_expired"
+  | "stale_answer"
+  | "invalid_timestamp"
   | "service_unavailable";
 
 export type FieldErrorCode =
@@ -123,6 +127,8 @@ export interface ApiErrorBody {
     message: string;
     /** Dotted paths, e.g. "result_sheet.votes.C", "answers.2.answer". */
     fields?: Record<string, FieldError>;
+    /** `blocked_content` only: every reason the notice text was refused, all at once. */
+    reasons?: string[];
   };
 }
 
@@ -1381,12 +1387,94 @@ export interface Claim {
   response: ClaimResponseView | null;
   created_by: string;
   created_at: DateTimeString;
+  /** Where the claim came from. Public asks are grouped onto one claim and counted. */
+  source?: "desk" | "public" | "sms";
+  ask_count?: number;
+  /** Asks in the last hour; 0 when none. */
+  ask_trend_1h?: number;
+  /** Detail only: ward check-in answers from the last six hours, counts under 5 as "fewer than 5". */
+  checkin_evidence?: ClaimCheckinEvidence[];
+}
+
+export type SuppressedCount = number | "fewer than 5";
+
+export interface ClaimCheckinEvidence {
+  question: string;
+  area: string;
+  /** Official name of the area; show this and keep `area` as the code. */
+  area_name?: string;
+  yes: SuppressedCount;
+  no: SuppressedCount;
+  not_seen: SuppressedCount;
+  window: string;
 }
 
 export interface ClaimListQuery extends PageQuery {
   status?: ClaimStatus;
   harm?: "high" | "medium" | "low";
   language?: Language;
+  source?: "desk" | "public" | "sms";
+  sort?: "recent" | "demand";
+}
+
+// ---------------------------------------------------------------------------
+// NOT: ward check-ins and notices, AREA: "Your LGA today"
+// ---------------------------------------------------------------------------
+
+export type NoticeType = "safety" | "logistics" | "instruction";
+export type NoticeStatus = "pending_approval" | "sent" | "expired" | "withdrawn";
+export type NoticeAnswerChoice = "yes" | "no" | "not_seen";
+
+export interface NoticeQuestion {
+  id: string;
+  category: string;
+  text_by_lang: Partial<Record<Language, string>>;
+  answers: string[];
+}
+
+export interface CoordinatorNotice {
+  id: Uuid;
+  scope: { kind: "ward" | "lga"; code: string };
+  type: NoticeType;
+  text: string;
+  question: NoticeQuestion | null;
+  status: NoticeStatus;
+  expires_at: DateTimeString;
+  created_at: DateTimeString;
+  created_by: string;
+  approved_by: string | null;
+}
+
+export interface ObserverNotice {
+  id: Uuid;
+  scope: { kind: "ward" | "lga"; code: string };
+  type: NoticeType;
+  text: string;
+  question: NoticeQuestion | null;
+  my_answer: { answer: NoticeAnswerChoice; answered_at: DateTimeString } | null;
+  expires_at: DateTimeString;
+  created_at: DateTimeString;
+}
+
+export interface CreateNoticeRequest {
+  scope: { kind: "ward" | "lga"; code: string };
+  type: NoticeType;
+  text: string;
+  question_id?: string;
+  expires_in_minutes?: number;
+}
+
+export interface NoticeResultsResponse {
+  notice_id: Uuid;
+  status: NoticeStatus;
+  wards: Record<string, { yes: number; no: number; not_seen: number; unanswered_units: string[] }>;
+}
+
+export interface AreaTodayResponse {
+  lga_code: string;
+  lga_name: string;
+  updated_at: DateTimeString;
+  by_category: Array<{ category: string; count: number | "fewer than 5" }>;
 }
 
 export interface ClaimMatchesResponse {

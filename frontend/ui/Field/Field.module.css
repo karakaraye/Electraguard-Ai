@@ -1,5 +1,6 @@
 .field {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--s-2);
   min-width: 0;
 }
@@ -103,6 +104,10 @@
   resize: vertical;
   field-sizing: content;
   max-height: 60vh;
+  /* A long unbroken string wraps inside the field; it never widens the field or the page. */
+  min-width: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
 }
 
 .countRow {
@@ -165,6 +170,7 @@
 /* A control in the text field's bottom corner (dictation). The text keeps clear of it. */
 .adorned {
   position: relative;
+  min-width: 0;
 }
 
 /* The field grows with its text, so the corner grip is dropped to keep the corner for the control. */

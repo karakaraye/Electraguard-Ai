@@ -5,7 +5,8 @@
 import type { AskResponse, Language } from "../../../../lib/api/types";
 import { useT } from "../../../../lib/i18n/client";
 import { localeNames } from "../../../../lib/i18n/config";
-import { AppShell, Banner, Button, DictationCorner, DictationStatus, TextArea, useDictation } from "../../../../ui";
+import { Banner, Button, DictationCorner, DictationStatus, TextArea, useDictation } from "../../../../ui";
+import { ObserverShell } from "../_components/ObserverShell";
 import { FileIcon, HelpIcon, InfoIcon } from "../../../../ui/icons";
 import styles from "../_components/observer.module.css";
 import s from "../_components/screens.module.css";
@@ -31,7 +32,7 @@ export function AskView(props: AskViewProps) {
   const { offline, state, answer } = props;
   const dictation = useDictation(props.dictationLang, props.onDictated);
   return (
-    <AppShell onBack={props.onBack} offline={offline} data-testid="o19">
+    <ObserverShell tab="other" title={t("o19.appTitle")} onBack={props.onBack} offline={offline} data-testid="o19">
       <div className={styles.screen}>
         <h1 className={styles.title}>{t("o19.title")}</h1>
         <p className={styles.note} data-testid="o19-note">
@@ -124,6 +125,6 @@ export function AskView(props: AskViewProps) {
           )}
         </section>
       </div>
-    </AppShell>
+    </ObserverShell>
   );
 }

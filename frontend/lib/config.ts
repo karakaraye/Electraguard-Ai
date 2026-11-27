@@ -12,5 +12,12 @@ export const NOTICE_VERSION = "2026-11-22";
  */
 export const SMS_SHORT_CODE = "20384";
 
+/**
+ * True while the SMS short code and the USSD code (USSD_SERVICE_CODE in app/(public)/_lib/public.ts)
+ * are test numbers, not yet leased. Every place that prints them adds "Test number for this
+ * prototype". Set it to false once both are live and every label goes away.
+ */
+export const SMS_SHORT_CODE_IS_TEST = true;
+
 /** Shown on O-20. Raise it with each release. */
 export const APP_VERSION = "1.0.0";

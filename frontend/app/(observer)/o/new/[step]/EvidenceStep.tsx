@@ -59,7 +59,7 @@ export function useMediaPreviews(media: DraftMedia[]): Record<string, string> {
 type Props = {
   handle: DraftHandle;
   nav: { done: () => void; back: () => void };
-  shell: { onBack: () => void; onDiscard?: () => void; offline: boolean };
+  shell: { onBack: () => void; onDiscard?: () => void; onLeave?: () => void; offline: boolean };
   offline: boolean;
 };
 

@@ -254,8 +254,9 @@ async function test(name, fn) {
     const chunks = log.filter((r) => r.method === "PATCH");
     assert.ok(chunks.length >= 1 && chunks[0].headers["upload-offset"] === "0" && chunks[0].headers["content-type"] === "application/offset+octet-stream");
     assert.ok(log.some((r) => r.path.endsWith("/complete") && r.headers["idempotency-key"]));
-    // Back from the receipt goes Home, never into the sent draft.
-    await page.click('[data-testid="back"]');
+    // The receipt has no Back; Done goes Home, never into the sent draft.
+    assert.equal(await page.locator('[data-testid="back"]').count(), 0);
+    await page.click('[data-testid="done"]');
     await page.waitForURL(`${BASE}/o`);
     await page.waitForSelector('[data-testid="o04"]');
     assert.equal(await page.locator('[data-testid="o04-draft"]').count(), 0);

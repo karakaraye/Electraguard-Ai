@@ -1,0 +1,40 @@
+.root {
+  position: relative;
+  display: inline-flex;
+}
+
+.panel {
+  position: absolute;
+  z-index: var(--z-menu);
+  min-width: 14rem;
+  max-width: min(22rem, calc(100vw - 2 * var(--gutter)));
+  padding: var(--s-2);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: var(--paper-raised);
+  box-shadow: var(--shadow-pop);
+  color: var(--ink);
+  animation: pop var(--dur-fade) var(--ease-enter) both;
+}
+
+.panel[data-placement="below-start"] {
+  top: calc(100% + 6px);
+  left: 0;
+}
+
+.panel[data-placement="below-end"] {
+  top: calc(100% + 6px);
+  right: 0;
+}
+
+.panel[data-placement="above-start"] {
+  bottom: calc(100% + 6px);
+  left: 0;
+}
+
+@keyframes pop {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}

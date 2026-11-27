@@ -16,6 +16,8 @@ import { MessagesView, MyReportsView, type ListRow, type MyReportsViewProps } fr
 import { ReportDetailView, type ReportDetailViewProps } from "../../../(observer)/o/_views/ReportDetailView";
 import { ResultSheetView, type ResultSheetViewProps } from "../../../(observer)/o/_views/ResultSheetView";
 import { SettingsView, type SettingsViewProps } from "../../../(observer)/o/_views/SettingsView";
+import { CheckinView } from "../../../(observer)/o/_views/CheckinView";
+import { NOTICE_LOGISTICS, NOTICE_NOW, NOTICE_SAFETY } from "./notices.fixtures";
 import { FIXTURE_CODE, FIXTURE_OCCURRED_AT, FIXTURE_PLACE, FIXTURE_RECEIPT, FIXTURE_RECEIVED_AT, FIXTURE_TEXT } from "./fixtures";
 
 type Translate = ReturnType<typeof useT>;
@@ -24,10 +26,10 @@ const noop = () => undefined;
 /* ---------- O-13 / O-17 ---------- */
 
 const rows: ListRow[] = [
-  { key: "q", href: "#", kind: "incident", category: "late_materials", place: "Gwammaja Open Space", at: FIXTURE_OCCURRED_AT, reference: "EG-9M2C-7TQA", status: "question" },
+  { key: "q", href: "#", kind: "incident", category: "late_materials", place: "Gwammaja Open Space", at: FIXTURE_OCCURRED_AT, reference: "EG-9M2C-7TQA", status: "question", preview: "Which materials were missing when the unit opened? Were ballot papers there?", previewAt: "2026-12-05T09:02:00+01:00" },
   { key: "p", href: "#", kind: "incident", category: "queues_crowding", place: FIXTURE_PLACE, at: FIXTURE_OCCURRED_AT, status: "on-phone" },
   { key: "c", href: "#", kind: "checklist", category: null, stage: "opening", place: "Kantudu Primary School I", at: FIXTURE_OCCURRED_AT, reference: "EG-2K8D-4XRA", status: "received" },
-  { key: "r", href: "#", kind: "incident", category: "intimidation_violence", place: "Kantudu Primary School I", at: FIXTURE_OCCURRED_AT, reference: FIXTURE_RECEIPT, status: "in-review", note: "1 new message" },
+  { key: "r", href: "#", kind: "incident", category: "intimidation_violence", place: "Kantudu Primary School I", at: FIXTURE_OCCURRED_AT, reference: FIXTURE_RECEIPT, status: "in-review", preview: "Thank you. Is everyone safe now? You can send a photo if it is safe to take one.", previewAt: "2026-12-05T08:57:00+01:00", unread: 1 },
   { key: "s", href: "#", kind: "result_sheet", category: null, place: "Kantudu Primary School I", at: FIXTURE_RECEIVED_AT, reference: "EG-7PQ3-H2MB", status: "received" },
 ];
 
@@ -323,7 +325,7 @@ const found = { receipt_code: FIXTURE_RECEIPT, status: "received" as const, outc
 export const MORE_SCREENS: Record<string, Record<string, (t: Translate) => ReactElement>> = {
   o13: {
     filled: () => <MyReportsView {...reportsBase} />,
-    "needs-you": () => <MyReportsView {...reportsBase} filter="needsYou" rows={rows.filter((r) => r.status === "question" || r.note)} />,
+    "needs-you": () => <MyReportsView {...reportsBase} filter="needsYou" rows={rows.filter((r) => r.status === "question" || r.unread)} />,
     offline: () => <MyReportsView {...reportsBase} offline load="offline" rows={rows.slice(1, 3)} updatedAt={null} />,
     error: () => <MyReportsView {...reportsBase} load="error" rows={rows.slice(1, 2)} counts={{ all: 1, needsYou: 0, onPhone: 1 }} />,
     loading: () => <MyReportsView {...reportsBase} load="loading" rows={[]} updatedAt={null} />,
@@ -410,17 +412,73 @@ export const MORE_SCREENS: Record<string, Record<string, (t: Translate) => React
     preview: () => (
       <MessagesView
         offline={false}
-        rows={[rows[0], { ...rows[3], note: "Reviewer · 11:02: Thank you. Two other observers reported the same gate." }]}
+        rows={[rows[0], { ...rows[3], preview: "Thank you. Two other observers reported the same gate.", previewAt: "2026-12-05T11:02:00+01:00", unread: 1 }]}
         load="ok"
         stale={false}
         onRetry={noop}
         onBack={noop}
       />
     ),
+    notices: () => (
+      <MessagesView
+        offline={false}
+        rows={[{ ...rows[3], preview: "Which materials were missing when the unit opened?", previewAt: "2026-12-05T09:02:00+01:00" }]}
+        load="ok"
+        stale={false}
+        onRetry={noop}
+        onBack={noop}
+        notices={[NOTICE_SAFETY, NOTICE_LOGISTICS]}
+        now={NOTICE_NOW}
+      />
+    ),
+    "notices-only": () => <MessagesView offline={false} rows={[]} load="ok" stale={false} onRetry={noop} onBack={noop} notices={[NOTICE_LOGISTICS]} now={NOTICE_NOW} />,
     loading: () => <MessagesView offline={false} rows={[]} load="loading" stale={false} onRetry={noop} onBack={noop} />,
     empty: () => <MessagesView offline={false} rows={[]} load="ok" stale={false} onRetry={noop} onBack={noop} />,
     offline: () => <MessagesView offline rows={[]} load="offline" stale={false} onRetry={noop} onBack={noop} />,
     unavailable: () => <MessagesView offline={false} rows={[]} load="unavailable" stale={false} onRetry={noop} onBack={noop} />,
+  },
+  o21: {
+    answering: () => <CheckinView notice={NOTICE_LOGISTICS} loading={false} offline={false} unit={FIXTURE_PLACE} waiting={0} now={NOTICE_NOW} onSave={noop} onBack={noop} />,
+    offline: () => <CheckinView notice={NOTICE_LOGISTICS} loading={false} offline unit={FIXTURE_PLACE} waiting={0} now={NOTICE_NOW} onSave={noop} onBack={noop} />,
+    "saved-offline": () => (
+      <CheckinView
+        notice={{ ...NOTICE_LOGISTICS, answer: { choice: "not_seen", at: "2026-12-05T09:46:00+01:00", state: "on_phone" } }}
+        loading={false}
+        offline
+        unit={FIXTURE_PLACE}
+        waiting={1}
+        now={NOTICE_NOW}
+        onSave={noop}
+        onBack={noop}
+      />
+    ),
+    sent: () => (
+      <CheckinView
+        notice={{ ...NOTICE_LOGISTICS, answer: { choice: "yes", at: "2026-12-05T09:46:00+01:00", state: "sent" } }}
+        loading={false}
+        offline={false}
+        unit={FIXTURE_PLACE}
+        waiting={0}
+        now={NOTICE_NOW}
+        onSave={noop}
+        onBack={noop}
+      />
+    ),
+    "not-counted": () => (
+      <CheckinView
+        notice={{ ...NOTICE_LOGISTICS, answer: { choice: "no", at: "2026-12-05T10:20:00+01:00", state: "expired" } }}
+        loading={false}
+        offline={false}
+        unit={FIXTURE_PLACE}
+        waiting={0}
+        now={NOTICE_NOW}
+        onSave={noop}
+        onBack={noop}
+      />
+    ),
+    safety: () => <CheckinView notice={NOTICE_SAFETY} loading={false} offline={false} unit={null} waiting={0} now={NOTICE_NOW} onSave={noop} onBack={noop} />,
+    closed: () => <CheckinView notice={NOTICE_LOGISTICS} loading={false} offline={false} unit={FIXTURE_PLACE} waiting={0} now={Date.parse("2026-12-05T11:00:00+01:00")} onSave={noop} onBack={noop} />,
+    gone: () => <CheckinView notice={null} loading={false} offline={false} unit={null} waiting={0} onSave={noop} onBack={noop} />,
   },
   o18: {
     list: () => <DiscussionListView offline={false} load="ok" items={discussions} busy={null} notice={null} onAnswer={noop} onRetry={noop} onBack={noop} />,

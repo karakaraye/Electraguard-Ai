@@ -2,9 +2,8 @@
 
 import { useEffect, useId, useState, type ComponentProps, type FormEvent, type ReactNode } from "react";
 import type { OrganisationSettings, UpdateSettingsRequest } from "../../../../lib/api/types";
-import { localeTags, type Locale } from "../../../../lib/i18n/config";
 import { useLocale, useT } from "../../../../lib/i18n/client";
-import { Banner, Button, Field, SegmentedControl, Sheet, Skeleton, StatusBadge } from "../../../../ui";
+import { Banner, Button, Field, SegmentedControl, Sheet, Skeleton, StatusBadge, Switch } from "../../../../ui";
 import { formatWatDateTime } from "../../../../ui/format";
 import { DownloadIcon, LockIcon, RetryIcon } from "../../../../ui/icons";
 import styles from "./AdminSettingsView.module.css";
@@ -132,16 +131,6 @@ function parseLabels(value: string): string[] | null {
   return valid ? labels : null;
 }
 
-/** "5 Dec 2026" for a YYYY-MM-DD value, so the native date field is never read as day-first or month-first. */
-function dayInWords(value: string, locale: Locale): string | null {
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return null;
-  const date = new Date(`${value}T12:00:00+01:00`);
-  if (Number.isNaN(date.getTime())) return null;
-  const tag = localeTags[locale];
-  const supported = Intl.DateTimeFormat.supportedLocalesOf([tag]);
-  return new Intl.DateTimeFormat(supported.length ? tag : "en-NG", { dateStyle: "medium", timeZone: "Africa/Lagos" }).format(date);
-}
-
 /** Today in Lagos as YYYY-MM-DD, shifted by some days. */
 function lagosDay(shiftDays = 0) {
   const parts = new Intl.DateTimeFormat("en-CA", { timeZone: "Africa/Lagos", year: "numeric", month: "2-digit", day: "2-digit" }).format(
@@ -216,32 +205,12 @@ function SaveRow({ label, busy, disabled, saved, message }: { label: string; bus
   );
 }
 
-/** A native date field with the chosen day written out in words underneath. */
+/** A native date field. The browser already shows the chosen day, so it is not repeated. */
 function DateField(props: Omit<ComponentProps<typeof Field>, "type">) {
-  const { locale } = useLocale();
-  const words = typeof props.value === "string" ? dayInWords(props.value, locale) : null;
   return (
     <div className={styles.dateField}>
       <Field {...props} type="date" />
-      {words ? <p className={`${styles.dayEcho} eg-tnum`}>{words}</p> : null}
     </div>
-  );
-}
-
-function Switch({ checked, onToggle, labelledBy, tone, busy }: { checked: boolean; onToggle: () => void; labelledBy: string; tone: "ink" | "danger"; busy?: boolean }) {
-  return (
-    <button
-      type="button"
-      role="switch"
-      aria-checked={checked}
-      aria-labelledby={labelledBy}
-      aria-busy={busy || undefined}
-      className={styles.switch}
-      data-tone={tone}
-      onClick={onToggle}
-    >
-      <span className={styles.thumb} aria-hidden="true" />
-    </button>
   );
 }
 
@@ -284,7 +253,7 @@ function IntakeCard({
     <Card id={titleId} title={t("s11.intakeCard.title")} hint={t("s11.intakeCard.hint")} wide>
       <div className={styles.switchRow}>
         <div className={styles.switchText}>
-          <StatusBadge tone={paused ? "danger" : "ok"} label={paused ? t("s11.intakeCard.paused") : t("s11.intakeCard.open")} />
+          <StatusBadge morph tone={paused ? "danger" : "ok"} label={paused ? t("s11.intakeCard.paused") : t("s11.intakeCard.open")} />
           <span id={`${titleId}-switch`} className={styles.switchLabel}>{t("s11.intakeCard.switch")}</span>
         </div>
         <Switch checked={paused} onToggle={() => setOpen(true)} labelledBy={`${titleId}-switch`} tone="danger" />

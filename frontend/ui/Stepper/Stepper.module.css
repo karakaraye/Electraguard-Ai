@@ -11,21 +11,44 @@
   font-variant-numeric: tabular-nums;
 }
 
+.head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s-3);
+}
+
+.saved {
+  margin: 0;
+  color: var(--ink-2);
+  font: var(--t-small);
+  text-align: end;
+}
+
 .track {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  gap: 4px;
+}
+
+.seg {
   height: 4px;
   border-radius: 2px;
   background: var(--rule);
-  overflow: hidden;
 }
 
-.fill {
-  height: 100%;
+.seg[data-on] {
   background: var(--ink);
-  transform-origin: left center;
-  transition: transform var(--dur-step) var(--ease-out);
-  will-change: transform;
 }
 
-:global([dir="rtl"]) .fill {
-  transform-origin: right center;
+/* Segments between the old and the new step fade in (or out) so the bar still grows on travel. */
+.seg[data-grow] {
+  animation: grow var(--dur-step) var(--ease-out) both;
+}
+
+@keyframes grow {
+  from {
+    background: var(--rule);
+  }
 }

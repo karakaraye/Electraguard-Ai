@@ -3,7 +3,7 @@
 import { useEffect, useId, useRef, useState, type FormEvent } from "react";
 import { useT } from "../../../../lib/i18n/client";
 import { Banner, BrandMark, Button, Field } from "../../../../ui";
-import { CheckIcon, CopyIcon, KeyIcon, LockIcon, ShieldCheckIcon } from "../../../../ui/icons";
+import { CheckIcon, CopyIcon } from "../../../../ui/icons";
 import styles from "./SignInView.module.css";
 
 export type SignInStep = "credentials" | "totp" | "enrol" | "invite";
@@ -99,21 +99,16 @@ export function SignInView({
     enrol: t("s01.enrolSubtitle"),
     invite: t("s01.inviteSubtitle"),
   };
-  const StepIcon = step === "credentials" ? LockIcon : step === "invite" ? KeyIcon : ShieldCheckIcon;
 
   return (
     <div className={styles.container} data-testid={testId}>
       <div className={styles.card} data-step={step}>
-        <div className={styles.strip} aria-hidden="true" />
         <div className={styles.inner}>
           <div className={styles.brand}>
-            <BrandMark size="md" />
+            <BrandMark variant="lockup" size="md" />
           </div>
 
           <div className={styles.head}>
-            <span className={styles.disc} aria-hidden="true">
-              <StepIcon size={20} />
-            </span>
             <div>
               <h1 className={styles.title}>{titles[step]}</h1>
               <p className={styles.lead}>{leads[step]}</p>

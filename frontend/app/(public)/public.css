@@ -16,15 +16,9 @@ body {
   overflow-x: clip;
 }
 
-/* Overscroll areas outside the shell match the paper in both themes */
+/* Overscroll areas outside the shell match the paper */
 html:has(.eg-public) {
   background: #ffffff;
-}
-
-@media (prefers-color-scheme: dark) {
-  html:has(.eg-public) {
-    background: #111112;
-  }
 }
 
 :target {

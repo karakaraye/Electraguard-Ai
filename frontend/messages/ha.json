@@ -18,6 +18,7 @@
     "stopListening": "Tsaya",
     "productName": "ElectraGuard",
     "skipToContent": "Tsallake zuwa abin da ke ciki",
+    "actionArea": "Ayyuka",
     "pleaseWait": "Ka jira ɗan lokaci",
     "errorPrefix": "Kuskure:",
     "yes": "Ee",
@@ -29,7 +30,8 @@
       "online": "Sabis ya dawo."
     },
     "stepper": {
-      "progress": "Mataki na {current} cikin {total}"
+      "progress": "Mataki na {current} cikin {total}",
+      "saved": "An ajiye shi a kan wannan wayar"
     },
     "textarea": {
       "count": "Haruffa {count} cikin {max}",
@@ -131,7 +133,11 @@
       "unknown": "Ba a duba jerin bayanan ba tukuna"
     },
     "nav": {
-      "main": "Babba"
+      "main": "Babba",
+      "report": "Kai rahoto",
+      "newReport": "Sabon rahoto",
+      "receipt": "Rasit",
+      "needYou": "{count, plural, one {# yana bukatar ka} other {# suna bukatar ka}}"
     }
   },
   "common": {
@@ -167,6 +173,12 @@
       "needsAttention": "Yana buƙatar hankalinka",
       "needsAttentionHint": "Ba mu iya karɓa ba tukuna. Ka buɗe shi, ka gyara abin da aka yi wa alama, sannan ka sake aikawa.",
       "label": "Ci gaban rahoto"
+    },
+    "statusShort": {
+      "received": "An karɓa",
+      "inReview": "Ana dubawa",
+      "question": "Tambaya",
+      "closed": "An rufe"
     },
     "outcome": {
       "confirmed": "Shaida ta tabbatar",
@@ -239,7 +251,7 @@
     "line5": "Idan ka yi amfani da Yi magana, sabis ɗin magana na wayarka na iya sarrafa muryarka don mayar da ita rubutu."
   },
   "o03": {
-    "title": "Kai wane ne?",
+    "title": "Yaya za ka kai rahoto?",
     "observer": "Ni mai sa ido ne da aka amince da shi",
     "observerHint": "Ka shiga da lamba da PIN da ke kan katinka",
     "citizen": "Kai rahoto a matsayin ɗan ƙasa",
@@ -307,6 +319,7 @@
     "citizenMode": "Rahoton ɗan ƙasa",
     "report": "Kai rahoto",
     "heroBody": "Faɗa mana abin da ka gani a rumfar zaɓenka.",
+    "heroOffline": "Har yanzu za ka iya kai rahoto. Zai jira a kan wannan wayar.",
     "continueDraft": "Ci gaba da rahotonka",
     "draftSaved": "An fara {time}",
     "checklist": "Jerin abubuwan ranar zaɓe",
@@ -348,7 +361,13 @@
   },
   "incident": {
     "draftKept": "An ajiye rahotonka a kan wannan wayar.",
-    "discard": "Goge wannan rahoton"
+    "discard": "Goge wannan rahoton",
+    "leave": {
+      "title": "Ka ajiye wannan rubutun ka fita?",
+      "body": "An ajiye rahotonka a kan wannan wayar. Za ka iya ci gaba daga Gida.",
+      "save": "Ajiye rubutun ka fita",
+      "keep": "Ka zauna ka kammala"
+    }
   },
   "o05": {
     "title": "Me ya faru?",
@@ -564,9 +583,11 @@
     "filter": {
       "all": "Duka",
       "needsYou": "Yana buƙatar ka",
-      "onPhone": "Yana kan wannan wayar"
+      "onPhone": "Kan wayar"
     },
     "empty": "Babu rahoto tukuna. Idan ka aika rahoto, zai bayyana a nan.",
+    "emptyTitle": "Babu rahoto tukuna",
+    "emptyBody": "Idan ka aika rahoto, zai bayyana a nan tare da lambar rasidinsa da matsayinsa.",
     "emptyFilter": "Babu komai a nan yanzu.",
     "offlineList": "Babu sabis. Ana nuna abin da wannan wayar ta sani. Matsayin zai iya zama tsoho.",
     "updated": "An sabunta {time}",
@@ -584,6 +605,7 @@
     "observed": "Ya faru {time}",
     "received": "An karɓa {time}",
     "notSentYet": "Ba a aika ba tukuna",
+    "copyShort": "Kwafi",
     "question": {
       "title": "Tambaya gare ka",
       "replyLabel": "Amsarka",
@@ -794,7 +816,10 @@
     "hint": "Rahotannin da mai dubawa ya rubuto maka a kansu.",
     "questionTag": "Tambaya gare ka",
     "newMessage": "{count, plural, one {Sabon saƙo #} other {Sababbin saƙonni #}}",
+    "newMessageLabel": "{count, plural, one {sabon saƙo} other {sababbin saƙonni}}",
     "empty": "Babu saƙo. Idan mai dubawa ya rubuto maka, zai bayyana a nan.",
+    "emptyTitle": "Babu saƙo",
+    "emptyBody": "Idan mai dubawa ya rubuta maka, zai bayyana a nan. Za ka kuma gan shi a Gida.",
     "loading": "Ana samo saƙonni",
     "loadError": "Ba mu iya samo saƙonninka ba. Sake gwadawa.",
     "offline": "Babu sabis. Sababbin saƙonni za su bayyana idan ka samu sabis.",
@@ -817,6 +842,8 @@
     "closesAt": "Za a rufe {time}",
     "closed": "An rufe wannan tattaunawa.",
     "empty": "Babu tattaunawa. Mai kula da tattaunawa zai iya gayyatar ka idan akwai matsalar da ta shafi yankinka.",
+    "emptyTitle": "Babu tattaunawa",
+    "emptyBody": "Mai kula da tattaunawa zai iya gayyatar ka idan akwai matsalar da ta shafi yankinka.",
     "loading": "Ana samo tattaunawa",
     "loadError": "Ba mu iya samo tattaunawa ba. Sake gwadawa.",
     "thread": {
@@ -893,8 +920,11 @@
     },
     "privacy": "Sanarwar sirri",
     "storage": "A kan wannan wayar: {reports, plural, =0 {babu rahoto da ke jira} one {rahoto # yana jira} other {rahotanni # suna jira}}, {size} na hotuna da bidiyo",
+    "storageTitle": "A kan wannan wayar",
+    "storageLine": "{reports, plural, =0 {babu rahoto da ke jira} one {rahoto # yana jira} other {rahotanni # suna jira}}, {size} na hotuna da bidiyo",
     "signOut": {
       "button": "Fita",
+      "rowHint": "Zaɓi ko za a ajiye ko a share wannan wayar",
       "clearButton": "Fita ka share wannan wayar",
       "clearHint": "Yi amfani da wannan a wayar da ake amfani da ita tare. Yana cire duk abin da ElectraGuard ke ajiyewa a nan.",
       "title": "Fita ka share wannan wayar?",
@@ -978,17 +1008,23 @@
   },
   "staff": {
     "nav": {
-      "queue": "[HA draft] Review Queue",
-      "cases": "[HA draft] Cases",
-      "assign": "[HA draft] Assign",
-      "ops": "[HA draft] Operations",
-      "rumours": "[HA draft] Rumour Desk",
-      "publish": "[HA draft] Publish",
-      "discussions": "[HA draft] Discussions",
-      "codes": "[HA draft] Observer Codes",
-      "staff": "[HA draft] Staff Accounts",
-      "settings": "[HA draft] Settings",
-      "security": "[HA draft] Security"
+      "queue": "Jerin shari'o'i",
+      "cases": "Shari'o'i",
+      "assign": "Rarraba",
+      "ops": "Ayyuka",
+      "rumours": "Teburin jita-jita",
+      "publish": "Wallafa",
+      "discussions": "Tattaunawa",
+      "codes": "Lambobin masu sa ido",
+      "staff": "Ma'aikata",
+      "settings": "Saituna",
+      "security": "Tsaro",
+      "groups": {
+        "review": "Dubawa",
+        "monitor": "Sa ido",
+        "moderate": "Daidaita tattaunawa",
+        "admin": "Gudanarwa"
+      }
     },
     "roles": {
       "reviewer": "[HA draft] Reviewer",
@@ -1009,7 +1045,31 @@
     "backToQueue": "[HA draft] Back to queue",
     "shell": {
       "more": "Ƙari",
-      "moreTitle": "Ƙarin sassa"
+      "moreTitle": "Ƙarin sassa",
+      "account": "Menu na asusu",
+      "breadcrumb": "Hanyar shafi",
+      "closeMenu": "Rufe menu",
+      "intake": {
+        "paused": "An dakatar da karɓar rahotanni",
+        "receiving": "Ana karɓar rahotanni"
+      },
+      "keys": {
+        "close": "Rufe taga",
+        "help": "Nuna gajerun hanyoyi",
+        "search": "Nemo shari'o'i",
+        "next": "Shari'a ta gaba",
+        "previous": "Shari'a ta baya",
+        "open": "Buɗe shari'ar"
+      },
+      "menu": "Buɗe menu",
+      "search": "Nema",
+      "searchLabel": "Nemi shari'o'i da lamba, wuri ko rukuni",
+      "searchPlaceholder": "Nemi shari'o'i",
+      "shortcuts": "Gajerun hanyoyin maɓalli"
+    },
+    "notFound": {
+      "title": "Ba a samu shafin ba",
+      "body": "Wataƙila adireshin ba daidai ba ne, ko shafin ya koma wani wuri. Koma jerin don ci gaba."
     }
   },
   "s01": {
@@ -1076,7 +1136,14 @@
       "hasEvidence": "[HA draft] Has media",
       "clear": "[HA draft] Reset filters",
       "label": "Matattarai",
-      "anyCategory": "Kowane rukuni"
+      "anyCategory": "Kowane rukuni",
+      "priority": "Mahimmanci",
+      "any": "Duka",
+      "more": "Tace",
+      "clearAll": "Share",
+      "removeToken": "Cire tacewa {name}",
+      "search": "Bincike",
+      "panel": "Tace shari'o'i"
     },
     "columns": {
       "urgency": "[HA draft] Urgency",
@@ -1086,7 +1153,9 @@
       "occurred": "[HA draft] Occurred",
       "evidence": "[HA draft] Evidence",
       "status": "[HA draft] Status",
-      "reasons": "Dalili"
+      "reasons": "Dalili",
+      "priority": "Mahimmanci",
+      "time": "Lokaci"
     },
     "urgency": {
       "urgent": "[HA draft] Urgent",
@@ -1129,7 +1198,8 @@
       "save": "Adana wannan ra'ayi",
       "name": "Sunan ra'ayi",
       "saveConfirm": "Adana",
-      "remove": "Cire ra'ayin {name}"
+      "remove": "Cire ra'ayin {name}",
+      "empty": "Ba a adana wani ra'ayi ba tukuna."
     },
     "evidence": {
       "photo": "{count, plural, one {Hoto #} other {Hotuna #}}",
@@ -1149,11 +1219,16 @@
       "place": "Wuri",
       "notGiven": "Ba a bayar ba",
       "received": "An karɓa",
-      "open": "Buɗe shari'a"
+      "open": "Buɗe shari'a",
+      "close": "Rufe samfoti",
+      "orPress": "ko danna"
     },
     "tabs": {
       "question": "Tambayoyi"
-    }
+    },
+    "shown": "ana nuna {shown} daga {total}",
+    "keysMove": "suna motsawa tsakanin shari'o'i.",
+    "keysOpen": "yana buɗe ɗaya."
   },
   "s03": {
     "title": "[HA draft] Case review",
@@ -1389,7 +1464,7 @@
     "today": "[HA draft] Today",
     "totals": {
       "totalReports": "[HA draft] Total reports",
-      "incidents": "[HA draft] Incidents after links",
+      "incidents": "Abubuwan da suka bambanta",
       "urgentOpen": "[HA draft] Urgent open",
       "openQuestions": "[HA draft] Questions open",
       "resultFlags": "[HA draft] Result sheet flags",
@@ -1462,7 +1537,14 @@
       "model": "Samfuri {version}",
       "error": "Matsakaicin kuskure awa {hours} (an duba {on})"
     },
-    "syntheticNote": "Waɗannan hasashe sun fito ne daga samfurin da aka horar da bayanan sufuri na gwaji, ba bayanan isar da kaya na INEC ba. Yi amfani da su don sanin inda za a fara dubawa."
+    "syntheticNote": "Waɗannan hasashe sun fito ne daga samfurin da aka horar da bayanan sufuri na gwaji, ba bayanan isar da kaya na INEC ba. Yi amfani da su don sanin inda za a fara dubawa.",
+    "tabs": {
+      "label": "Sassan ɗakin aiki",
+      "overview": "Taƙaitaccen bayani",
+      "checkins": "Tambayoyin bincike",
+      "coverage": "Rufewa",
+      "late": "Kayan da suka makara"
+    }
   },
   "s06": {
     "title": "[HA draft] Rumour desk",
@@ -1628,7 +1710,12 @@
       "body": "Yi amfani da wannan idan da'awar ba ta buƙatar amsa. Ba za a iya canza da'awar da aka yi watsi da ita ba.",
       "noteLabel": "Me ya sa aka yi watsi da ita?"
     },
-    "noteHint": "Haruffa 1 zuwa 500."
+    "noteHint": "Haruffa 1 zuwa 500.",
+    "level": {
+      "high": "Babba",
+      "medium": "Matsakaici",
+      "low": "Ƙasa"
+    }
   },
   "s07": {
     "title": "[HA draft] Publish snapshots",
@@ -1809,7 +1896,8 @@
       "resetPin": "Sake saita PIN",
       "revokeFor": "Soke {code}",
       "reissueFor": "Sake bayar da {code}",
-      "resetPinFor": "Sake saita PIN na {code}"
+      "resetPinFor": "Sake saita PIN na {code}",
+      "moreFor": "Ƙarin ayyuka na {code}"
     },
     "create": {
       "title": "Ƙirƙiri sabon rukuni",
@@ -2188,16 +2276,20 @@
   },
   "pub": {
     "homeLink": "Shafin farko na ElectraGuard AI",
+    "testNumber": "Lambar gwaji ce ta wannan samfurin gwaji",
+    "testNumbers": "Lambobin gwaji ne na wannan samfurin gwaji",
     "menu": "Menu",
+    "menuClose": "Rufe menu",
     "reportShort": "Kai rahoto",
     "nav": {
       "label": "Babba",
+      "here": "Kana nan",
       "home": "Gida",
       "results": "Sakamako",
       "ask": "Tambaya",
-      "check": "Duba",
+      "check": "Duba jita-jita",
       "guide": "Jagorori",
-      "phone": "Gwada SMS da USSD",
+      "phone": "SMS da USSD",
       "privacy": "Sirri"
     },
     "footer": {
@@ -2608,6 +2700,167 @@
       "title": "Ka ji jita-jita?",
       "body": "Ka duba ta da amsoshin da masu bitar mu suka amince da su.",
       "link": "Duba jita-jita"
+    }
+  },
+  "notice": {
+    "checkin": {
+      "title": "Tambayar bincike"
+    },
+    "fromCoordinator": "Daga mai gudanarwarka, {time}.",
+    "answerBy": "Ka amsa kafin {time}",
+    "needsYou": "Mai gudanarwarka yana tambaya: {question}",
+    "group": "Daga mai gudanarwarka",
+    "type": {
+      "logistics": "Kayan aiki",
+      "instruction": "Umarni",
+      "safety": "Tsaro"
+    },
+    "answer": {
+      "yes": "Ee",
+      "no": "A'a",
+      "not_seen": "Ban gani ba"
+    },
+    "notSeenHint": "Zaɓi \"Ban gani ba\" idan ba ka iya dubawa ba. Mai gudanarwarka yana ganin amsoshi a kowace mazaɓa da kuma rumfunan da ba su amsa ba.",
+    "save": "Ajiye amsata",
+    "offlineBanner": "Babu sabis. Za a aika amsarka idan ka samu sabis.",
+    "savedOnPhone": "An ajiye a wannan wayar. Za a aika ta tare da lokacin da ka amsa, don haka ko an aika a makare, za a ƙirga ta.",
+    "change": "Canza amsata",
+    "yourAnswer": "Amsarka",
+    "answered": "Lokacin amsawa",
+    "answeredPhone": "{time}, lokacin wannan wayar",
+    "statusLabel": "Matsayi",
+    "answerExpired": "Ba a ƙirga ba",
+    "expiredBanner": "An rufe wannan tambayar kafin amsarka ta isa ga mai gudanarwarka, saboda haka ba a ƙirga ta ba.",
+    "closed": "An rufe wannan tambayar.",
+    "expired": "Ta ƙare",
+    "backHome": "Koma Gida",
+    "loading": "Ana ɗaukar tambayar.",
+    "gone": {
+      "title": "Wannan tambayar ba ta nan",
+      "body": "Wataƙila an rufe ta ko an janye ta. Koma Gida don ganin abin da ke buɗe.",
+      "offline": "Buɗe ta daga Gida ko Saƙonni yayin da kake da sabis, sannan za ka iya amsa ta ba tare da sabis ba."
+    },
+    "waitingLabel": "{count, plural, one {Amsa # tana jiran aikawa} other {Amsoshi # suna jiran aikawa}}",
+    "fewerThan5": "ƙasa da 5",
+    "lga": {
+      "title": "{lga} a yau",
+      "updated": "An sabunta {time}",
+      "note": "Rahotanni da aka duba waɗanda suka girmi mintuna 60. Ana nuna lambobi ƙasa da 5 a matsayin \"ƙasa da 5\"."
+    },
+    "list": {
+      "title": "Tambayoyin bincike",
+      "empty": "Babu tambayar bincike tukuna. Rubuta ta farko.",
+      "sent": "{name} ya aika {time}",
+      "expires": "Za ta ƙare {time}",
+      "fixedNote": "Tambayoyi na dindindin: kayan zaɓe sun iso, an fara zaɓe, rumfa tana cikin kwanciyar hankali, jami'ai suna nan, tantancewa tana aiki, an manna sakamako. Masu sa ido suna amsa Ee, A'a ko Ban gani ba."
+    },
+    "status": {
+      "sent": "An aika",
+      "pending": "Tana buƙatar amincewa",
+      "expired": "Ta ƙare",
+      "withdrawn": "An mayar"
+    },
+    "scope": {
+      "ward": "Mazaɓa",
+      "lga": "Ƙaramar hukuma"
+    },
+    "new": {
+      "title": "Sabuwar tambayar bincike",
+      "sendTo": "Aika zuwa",
+      "chooseArea": "Zaɓi wuri",
+      "kind": "Nau'i",
+      "safetyHint": "Sanarwar tsaro tana jiran mai gudanarwa na biyu ya amince da ita kafin masu sa ido su gan ta.",
+      "what": "Abin da za a aika",
+      "fixed": "Yi tambaya ta dindindin",
+      "write": "Rubuta saƙo",
+      "question": "Tambaya",
+      "chooseQuestion": "Zaɓi tambaya",
+      "questionHint": "Masu sa ido suna karanta ta da harshensu.",
+      "message": "Saƙo",
+      "expires": "Za ta ƙare nan da",
+      "count": "{count} cikin {max}",
+      "send": "Aika tambayar bincike"
+    },
+    "expiry": {
+      "30": "Mintuna 30",
+      "60": "Awa 1",
+      "120": "Awa 2",
+      "360": "Awa 6",
+      "720": "Awa 12",
+      "1440": "Awa 24"
+    },
+    "check": {
+      "what": "Ana duba lambobin rumfa, lambobin waya, imel, hanyoyin haɗi, sunayen mutane da sunayen jam'iyya ko ɗan takara kafin a iya aikawa.",
+      "clear": "Ya wuce binciken abun ciki.",
+      "blocked": "Ba za a iya aika wannan ba tukuna. Cire:"
+    },
+    "reason": {
+      "pollingUnit": "lambar rumfar zaɓe",
+      "phone": "lambar waya",
+      "email": "adireshin imel",
+      "link": "hanyar haɗi",
+      "name": "sunan mutum",
+      "political": "sunan jam'iyya ko ɗan takara"
+    },
+    "errors": {
+      "blocked": "Binciken abun ciki ya hana wannan saƙon. Cire abin da aka lissafa sannan ka sake aikawa.",
+      "invalid": "Duba wurin, saƙon da lokacin ƙarewa, sannan ka sake gwadawa.",
+      "conflict": "An riga an yanke shawara kan wannan sanarwar.",
+      "samePerson": "Ba za ka iya amincewa da sanarwar tsaro da ka rubuta ba. Dole wani mai gudanarwa ya amince da ita."
+    },
+    "sent": "An aika tambayar bincike.",
+    "sentForApproval": "An ajiye sanarwar tsaro. Tana jiran mai gudanarwa na biyu ya amince da ita.",
+    "approved": "An amince kuma an aika wa masu sa ido.",
+    "rejected": "An mayar wa wanda ya rubuta.",
+    "sentAgain": "An sake tambaya da sabon lokacin ƙarewa.",
+    "results": {
+      "titleWard": "Mazaɓar {area}, rumfuna {answered} cikin {total} sun amsa",
+      "titleLga": "Ƙaramar hukumar {area}, rumfuna {answered} cikin {total} sun amsa",
+      "none": "Babu amsa tukuna.",
+      "ward": "Mazaɓa",
+      "answers": "Amsoshi",
+      "notAnswered": "Ba su amsa ba",
+      "allAnswered": "Duka sun amsa",
+      "barLabel": "Ee {yes}, A'a {no}, ban gani ba {notSeen}, ba su amsa ba {open}",
+      "raise": "Amsoshin \"A'a\" a {wards} suna ɗaga muhimmancin shari'o'in da suka dace a jerin.",
+      "openQueue": "Buɗe jerin"
+    },
+    "again": {
+      "title": "Sake yin tambayar nan",
+      "body": "Za a sake aika ta zuwa {area} da sabon lokacin ƙarewa. Masu sa ido da suka riga suka amsa za su iya sake amsawa.",
+      "button": "Sake tambaya"
+    },
+    "approve": {
+      "title": "Sanarwar tsaro tana jiran mai gudanarwa na biyu",
+      "meta": "Zuwa {area}. {name} ya rubuta da {time}. Za ta ƙare {expires}. Ta wuce binciken abun ciki.",
+      "approve": "Amince kuma aika",
+      "reject": "Mayar",
+      "noteLabel": "Me ya sa ake mayarwa?",
+      "noteHint": "Wanda ya rubuta zai karanta wannan.",
+      "rule": "Ba za ka iya amincewa da sanarwar tsaro da ka rubuta ba. Za a adana sunayen duka biyu.",
+      "mine": "Kai ne ka rubuta wannan sanarwar, don haka dole wani mai gudanarwa ya amince da ita."
+    },
+    "rumour": {
+      "asks": "Tambayoyi",
+      "source": "Tushe",
+      "sourceAll": "Duka",
+      "sourcePublic": "Daga jama'a",
+      "sourceDesk": "Tebur",
+      "sourceSms": "SMS",
+      "sort": "Tsara",
+      "sortRecent": "Sabbi",
+      "sortDemand": "Mafi yawan tambaya",
+      "inHour": "{count} cikin awa 1",
+      "noneInHour": "babu a awa 1",
+      "fromPublic": "Daga jama'a. An fara tambaya {time}.",
+      "asked": "Teburin ya rubuta.",
+      "askCount": "{count, plural, one {tambaya} other {tambayoyi}}",
+      "inLastHour": "{count} a awa ɗaya da ta wuce",
+      "noneInLastHour": "babu a awa ɗaya da ta wuce",
+      "evidenceTitle": "Shaidar tambayoyin bincike, awa 6 da suka wuce",
+      "evidenceNone": "Babu tambayar bincike ta mazaɓa a kan wannan tukuna.",
+      "evidenceQuestion": "\"{question}\" ({area})",
+      "evidenceNote": "Ana nuna lambobi ƙasa da 5 a matsayin \"ƙasa da 5\". Tambayoyin bincike ba rahotanni ba ne, kuma ba su zama shaida su kaɗai ba."
     }
   }
 }

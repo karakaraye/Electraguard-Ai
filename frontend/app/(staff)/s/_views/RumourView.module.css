@@ -76,8 +76,18 @@
 .claimCell {
   display: grid;
   gap: 2px;
-  width: clamp(9rem, 17vw, 14.5rem);
+  width: clamp(9rem, 24vw, 22rem);
   min-width: 0;
+}
+
+/* The claim uses the width it is given and wraps to two lines before it is cut. */
+.excerptWrap {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  white-space: normal;
+  text-overflow: clip;
 }
 
 .truncate {
@@ -330,4 +340,142 @@
 .tableFrame table th:first-child,
 .tableFrame table td:first-child {
   padding-left: var(--s-3);
+}
+
+/* Harm and check priority: a caption and a plain word, never "Harm: high" on a chip. */
+.levels {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2) var(--s-5);
+  margin: 0;
+}
+
+.levels > div {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+}
+
+.levels dt {
+  color: var(--ink-3);
+  font: var(--t-small);
+}
+
+.levels dd {
+  margin: 0;
+}
+
+.levelPair {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+}
+
+.levelCap {
+  color: var(--ink-3);
+  font: var(--t-small);
+}
+
+/* ---------- Public asks and check-in evidence ---------- */
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--s-3) var(--s-5);
+}
+
+.filterGroup {
+  display: grid;
+  gap: var(--s-1);
+  min-width: 0;
+}
+
+.asks {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: flex-end;
+  gap: 2px var(--s-2);
+  white-space: nowrap;
+}
+
+.asks strong {
+  font: 700 1rem/1.2 var(--font);
+}
+
+.trend {
+  color: var(--attn);
+  font: 600 0.8125rem/1.2 var(--font);
+}
+
+.askBox {
+  display: grid;
+  gap: var(--s-1);
+  padding: var(--s-3) var(--s-4);
+  border-radius: var(--radius);
+  background: var(--paper-2);
+}
+
+.askRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--s-1) var(--s-3);
+}
+
+.askBig {
+  font: 700 2rem/1 var(--font-display);
+}
+
+.askLabel {
+  color: var(--ink-2);
+  font: var(--t-label);
+  margin-inline-end: auto;
+}
+
+.evidenceList {
+  display: grid;
+  gap: var(--s-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.evidence {
+  display: grid;
+  gap: var(--s-2);
+  padding: var(--s-3) var(--s-4);
+  border-radius: var(--radius);
+  background: var(--paper-2);
+}
+
+.evidenceQ {
+  margin: 0;
+  font: var(--t-body);
+  text-wrap: pretty;
+}
+
+.evidenceCounts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--s-2);
+  margin: 0;
+}
+
+.evidenceCounts > div {
+  padding: var(--s-2) var(--s-3);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: var(--paper-raised);
+}
+
+.evidenceCounts dt {
+  color: var(--ink-2);
+  font: var(--t-small);
+}
+
+.evidenceCounts dd {
+  margin: 0;
+  font: 700 1rem/1.3 var(--font);
 }

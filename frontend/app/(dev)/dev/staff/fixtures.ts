@@ -30,7 +30,7 @@ export const FIXTURE_STAFF_ACCOUNT: StaffAccount = {
 
 export const FIXTURE_QUEUE_ITEM: QueueItem = {
   id: "rep-001",
-  receipt_code: "RC-7K2P9D",
+  receipt_code: "EG-7K2P-9DNQ",
   kind: "incident",
   channel: "app",
   status: "received",
@@ -80,7 +80,7 @@ export const FIXTURE_QUEUE_RESPONSE: QueueResponse = {
 
 export const FIXTURE_CASE_DETAIL: CaseDetail = {
   id: "rep-001",
-  receipt_code: "RC-7K2P9D",
+  receipt_code: "EG-7K2P-9DNQ",
   kind: "incident",
   channel: "app",
   status: "received",
@@ -176,7 +176,7 @@ export const FIXTURE_CASE_DETAIL: CaseDetail = {
         id: "ev-1",
         version: 1,
         action: "start",
-        actor_label: "F. Musa (Reviewer)",
+        actor_label: "F. Musa (Admin)",
         created_at: "2026-12-05T08:18:00+01:00",
         change: {},
       },
@@ -219,11 +219,11 @@ export const FIXTURE_OVERVIEW: OverviewResponse = {
   by_lga: [
     { state_code: "KN", lga_code: "1901", lga_name: "Kano Municipal", count: 350, urgent: 15 },
     { state_code: "KN", lga_code: "1902", lga_name: "Fagge", count: 280, urgent: 10 },
-    { state_code: "LA", lga_code: "2420", lga_name: "Surulere", count: 214, urgent: 9 },
-    { state_code: "RI", lga_code: "3217", lga_name: "Obio/Akpor", count: 166, urgent: 4 },
-    { state_code: "EN", lga_code: "1406", lga_name: "Enugu North", count: 92, urgent: 2 },
-    { state_code: "FC", lga_code: "1502", lga_name: "Bwari", count: 81, urgent: 1 },
-    { state_code: "OY", lga_code: "3109", lga_name: "Ibadan North", count: 57, urgent: 0 },
+    { state_code: "KN", lga_code: "1903", lga_name: "Dala", count: 214, urgent: 9 },
+    { state_code: "KN", lga_code: "1904", lga_name: "Gwale", count: 166, urgent: 4 },
+    { state_code: "KN", lga_code: "1905", lga_name: "Nassarawa", count: 92, urgent: 2 },
+    { state_code: "KN", lga_code: "1906", lga_name: "Tarauni", count: 81, urgent: 1 },
+    { state_code: "KN", lga_code: "1907", lga_name: "Ungogo", count: 57, urgent: 0 },
   ],
   generated_at: "2026-12-05T12:00:00+01:00",
 };
@@ -250,12 +250,12 @@ export const FIXTURE_COVERAGE: CoverageResponse = {
       units_without: 85,
       no_answers: 1,
     },
-    { lga_code: "2420", lga_name: "Surulere", expected_units: 212, units_with_checklist: 201, units_without: 11, no_answers: 7 },
-    { lga_code: "3217", lga_name: "Obio/Akpor", expected_units: 318, units_with_checklist: 176, units_without: 142, no_answers: 12 },
+    { lga_code: "1903", lga_name: "Dala", expected_units: 212, units_with_checklist: 201, units_without: 11, no_answers: 7 },
+    { lga_code: "1904", lga_name: "Gwale", expected_units: 318, units_with_checklist: 176, units_without: 142, no_answers: 12 },
   ],
   most_no_answers: [
-    { polling_unit_code: "32-17-04-011", polling_unit_name: "Rumuokoro Model School II", no_count: 4, questions: ["secrecy_kept", "party_agents_present", "device_working", "priority_given"] },
-    { polling_unit_code: "24-20-02-006", polling_unit_name: "Itire Community Hall", no_count: 3, questions: ["opened_on_time", "materials_all_present", "officials_present"] },
+    { polling_unit_code: "19-04-04-011", polling_unit_name: "Gwale Model School II", no_count: 4, questions: ["secrecy_kept", "party_agents_present", "device_working", "priority_given"] },
+    { polling_unit_code: "19-03-02-006", polling_unit_name: "Gwammaja Community Hall", no_count: 3, questions: ["opened_on_time", "materials_all_present", "officials_present"] },
   ],
 };
 
@@ -461,7 +461,7 @@ export const FIXTURE_QUEUE_ITEMS: QueueItem[] = [
     status: "in_review",
     urgency: { level: "urgent", source: "corrected", reasons: ["vote_buying", "photo"] },
     category: { value: "vote_buying", source: "suggested" },
-    area: area("LA", "Lagos", "Surulere", "Itire"),
+    area: area("KN", "Kano", "Dala", "Gwammaja"),
     occurred_at: "2026-12-05T08:30:00+01:00",
     media_counts: { photo: 3, video: 0, audio: 0 },
   }),
@@ -470,7 +470,7 @@ export const FIXTURE_QUEUE_ITEMS: QueueItem[] = [
     channel: "sms",
     urgency: { level: "high", source: "suggested", reasons: ["cluster", "sms_report"] },
     category: { value: "late_materials", source: "observer" },
-    area: area("RI", "Rivers", "Obio/Akpor", null),
+    area: area("KN", "Kano", "Gwale", null),
     occurred_at: "2026-12-05T08:12:00+01:00",
   }),
   queueRow(4, {
@@ -479,7 +479,7 @@ export const FIXTURE_QUEUE_ITEMS: QueueItem[] = [
     kind: "result_sheet",
     urgency: { level: "high", source: "suggested", reasons: ["result_sheet_flag"] },
     category: { value: "not_sure", source: "observer" },
-    area: area("EN", "Enugu", "Enugu North", "Ogui Urban"),
+    area: area("KN", "Kano", "Nassarawa", "Tudun Murtala"),
     occurred_at: "2026-12-05T07:58:00+01:00",
     media_counts: { photo: 2, video: 0, audio: 0 },
     has_open_question: true,
@@ -491,14 +491,14 @@ export const FIXTURE_QUEUE_ITEMS: QueueItem[] = [
     channel: "citizen",
     urgency: { level: "normal", source: "suggested", reasons: ["told_by_someone", "citizen_report"] },
     category: { value: "misinformation", source: "suggested" },
-    area: area("FC", "FCT", "Bwari", "Kubwa"),
+    area: area("KN", "Kano", "Tarauni", "Gyadi-Gyadi"),
     occurred_at: "2026-12-05T07:44:00+01:00",
   }),
   queueRow(6, {
     receipt_code: "EG-3W9F-20HC",
     urgency: { level: "normal", source: "suggested", reasons: ["seen_firsthand", "audio"] },
     category: { value: "access_barrier", source: "observer" },
-    area: area("OY", "Oyo", "Ibadan North", "Agbowo"),
+    area: area("KN", "Kano", "Ungogo", "Ungogo"),
     occurred_at: "2026-12-05T07:31:00+01:00",
     media_counts: { photo: 0, video: 0, audio: 1 },
   }),
@@ -508,7 +508,7 @@ export const FIXTURE_QUEUE_ITEMS: QueueItem[] = [
     simulated: true,
     urgency: { level: "low", source: "suggested", reasons: [] },
     category: { value: "queues_crowding", source: "observer" },
-    area: area("KD", "Kaduna", "Kaduna North", null),
+    area: area("KN", "Kano", "Kumbotso", null),
     occurred_at: "2026-12-05T07:20:00+01:00",
   }),
   queueRow(8, {
@@ -516,7 +516,7 @@ export const FIXTURE_QUEUE_ITEMS: QueueItem[] = [
     status: "closed",
     urgency: { level: "low", source: "suggested", reasons: ["seen_firsthand"] },
     category: { value: "good_practice", source: "observer" },
-    area: area("AN", "Anambra", "Awka South", "Amawbia"),
+    area: area("KN", "Kano", "Fagge", "Fagge A"),
     occurred_at: "2026-12-05T07:05:00+01:00",
     media_counts: { photo: 1, video: 0, audio: 0 },
   }),
@@ -576,16 +576,16 @@ export const FIXTURE_CASE_IN_REVIEW: CaseDetail = {
     chain_intact: true,
     events: [
       { id: "ev-1", version: 1, action: "received", actor_label: "System", created_at: "2026-12-05T08:16:30+01:00", change: {} },
-      { id: "ev-2", version: 3, action: "start", actor_label: "F. Musa (Reviewer)", created_at: "2026-12-05T08:48:00+01:00", change: {} },
-      { id: "ev-3", version: 4, action: "suggestion_accepted", actor_label: "F. Musa (Reviewer)", created_at: "2026-12-05T08:49:00+01:00", change: { urgency: "urgent" } },
-      { id: "ev-4", version: 5, action: "ask", actor_label: "F. Musa (Reviewer)", created_at: "2026-12-05T08:52:00+01:00", change: {} },
+      { id: "ev-2", version: 3, action: "start", actor_label: "F. Musa (Admin)", created_at: "2026-12-05T08:48:00+01:00", change: {} },
+      { id: "ev-3", version: 4, action: "suggestion_accepted", actor_label: "F. Musa (Admin)", created_at: "2026-12-05T08:49:00+01:00", change: { urgency: "urgent" } },
+      { id: "ev-4", version: 5, action: "ask", actor_label: "F. Musa (Admin)", created_at: "2026-12-05T08:52:00+01:00", change: {} },
     ],
   },
 };
 
 export const FIXTURE_CASE_MESSAGES: Message[] = [
   {
-    id: "m-1", kind: "formal_question", author: "reviewer", author_label: "F. Musa (Reviewer)",
+    id: "m-1", kind: "formal_question", author: "reviewer", author_label: "F. Musa (Admin)",
     body: "How many people with sticks did you see, and are they still there?", attachment: null,
     question_state: "open", reply_to: null, created_at: "2026-12-05T08:52:00+01:00", read: true,
   },
@@ -620,8 +620,8 @@ export const FIXTURE_ASSIGNMENTS: AssignmentListResponse = {
   next_cursor: null,
   reviewers: [
     { id: "st-1", display_name: "F. Musa", open_cases: 12, urgent_open: 3, areas: ["1901", "1902"], active_now: true },
-    { id: "st-2", display_name: "A. Okafor", open_cases: 9, urgent_open: 1, areas: ["0401"], active_now: true },
-    { id: "st-3", display_name: "T. Adeyemi", open_cases: 6, urgent_open: 0, areas: ["2501", "2502", "2503"], active_now: false },
+    { id: "st-2", display_name: "A. Okafor", open_cases: 9, urgent_open: 1, areas: ["1903"], active_now: true },
+    { id: "st-3", display_name: "T. Adeyemi", open_cases: 6, urgent_open: 0, areas: ["1904", "1905", "1906"], active_now: false },
     { id: "st-4", display_name: "H. Bello", open_cases: 3, urgent_open: 2, areas: ["1901"], active_now: true },
     { id: "st-5", display_name: "N. Eze", open_cases: 0, urgent_open: 0, areas: [], active_now: false },
   ],
@@ -666,7 +666,7 @@ export const FIXTURE_CLUSTERS: Cluster[] = [
   {
     id: "cl-2",
     category: "late_materials",
-    area: { state_code: "RI", state_name: "Rivers", lga_code: "3217", lga_name: "Obio/Akpor" } as Cluster["area"],
+    area: { state_code: "KN", state_name: "Kano", lga_code: "1904", lga_name: "Gwale" } as Cluster["area"],
     report_count: 14,
     baseline: 4,
     window_start: "2026-12-05T07:00:00+01:00",
