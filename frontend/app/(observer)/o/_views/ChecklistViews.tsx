@@ -425,9 +425,10 @@ function AnswerGroup({
   return (
     <fieldset className={s.answerGroup} aria-describedby={error ? errorId : undefined} data-testid={`o15-q-${name}`}>
       <legend className={s.answerLegend}>{legend}</legend>
-      <div className={`${s.answers} ${two ? s.answersTwo : ""}`}>
+      <div className={`${s.answers} ${two ? s.answersTwo : options.length === 3 ? s.answersThree : ""}`}>
         {options.map((option) => (
           <ChoiceTile
+            compact={!two && options.length === 3}
             key={option.value}
             name={name}
             value={option.value}
