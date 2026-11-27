@@ -35,12 +35,12 @@ STAFF_DOMAIN = "@demo.electraguard.test"
 
 # (key, role, first name, last name)
 STAFF = [
-    ("reviewer.amina", User.Role.REVIEWER, "Amina", "Reviewer"),
-    ("reviewer.chidi", User.Role.REVIEWER, "Chidi", "Reviewer"),
-    ("coordinator.ngozi", User.Role.COORDINATOR, "Ngozi", "Coordinator"),
-    ("coordinator.ibrahim", User.Role.COORDINATOR, "Ibrahim", "Coordinator"),
-    ("moderator.zainab", User.Role.MODERATOR, "Zainab", "Moderator"),
-    ("admin.tunde", User.Role.ORG_ADMIN, "Tunde", "Administrator"),
+    ("reviewer.amina", User.Role.REVIEWER, "Amina", "Bello"),
+    ("reviewer.chidi", User.Role.REVIEWER, "Chidi", "Okeke"),
+    ("coordinator.ngozi", User.Role.COORDINATOR, "Ngozi", "Eze"),
+    ("coordinator.ibrahim", User.Role.COORDINATOR, "Ibrahim", "Sani"),
+    ("moderator.zainab", User.Role.MODERATOR, "Zainab", "Yusuf"),
+    ("admin.tunde", User.Role.ORG_ADMIN, "Tunde", "Adeyemi"),
 ]
 
 # Short, plain, synthetic observations. {u} is the polling unit name, {n} a small number, {t} a time.
@@ -259,10 +259,16 @@ class Command(BaseCommand):
                 )
                 self.signins["staff"][email] = {"role": role, "name": f"{first} {last}", "password": chosen}
                 created += 1
-            elif password:
-                user.set_password(password)
-                user.save(update_fields=["password"])
-                self.signins["staff"].setdefault(email, {"role": role, "name": f"{first} {last}"})["password"] = password
+            else:
+                if (user.first_name, user.last_name) != (first, last):
+                    user.first_name, user.last_name = first, last
+                    user.save(update_fields=["first_name", "last_name"])
+                if password:
+                    user.set_password(password)
+                    user.save(update_fields=["password"])
+                    self.signins["staff"].setdefault(email, {"role": role})["password"] = password
+                if email in self.signins["staff"]:
+                    self.signins["staff"][email]["name"] = f"{first} {last}"
             self.staff[key] = user
         self.summary["staff accounts"] = f"{len(STAFF)} ({created} new)"
         self.save_signins()
@@ -286,25 +292,30 @@ class Command(BaseCommand):
 
         full_cost = observer_credentials.PIN_ITERATIONS
         observer_credentials.PIN_ITERATIONS = 100_000
-        for number in range(1, 13):
-            label = f"Demo observer {number:02d}"
-            credential = ObserverCode.objects.filter(label=label).select_related("user").first()
-            if credential is None:
-                with transaction.atomic():
-                    credential, setup = issue_code(self.org, label)
-                    created += 1
-                    if number <= 10:
-                        credential.pin_hash = pin_hash(fixed_pin)
-                        credential.setup_hash = ""
-                        credential.setup_prefix_hash = ""
-                        credential.status = ObserverCode.Status.ACTIVE
-                        credential.activated_at = self.now
-                        credential.save()
-                        self.signins["observers"][credential.code] = {"label": label, "state": "active", "pin": fixed_pin}
-                    else:
-                        self.signins["observers"][credential.code] = {"label": label, "state": "first sign-in", "setup_pin": setup}
-            self.observer_list.append(credential)
-        observer_credentials.PIN_ITERATIONS = full_cost
+        try:
+            for number in range(1, 13):
+                label = f"Demo observer {number:02d}"
+                credential = ObserverCode.objects.filter(label=label).select_related("user").first()
+                if credential is None:
+                    with transaction.atomic():
+                        credential, setup = issue_code(self.org, label)
+                        created += 1
+                        if number <= 10:
+                            credential.pin_hash = pin_hash(fixed_pin)
+                            credential.setup_hash = ""
+                            credential.setup_prefix_hash = ""
+                            credential.status = ObserverCode.Status.ACTIVE
+                            credential.activated_at = self.now
+                            credential.save()
+                            self.signins["observers"][credential.code] = {"label": label, "state": "active", "pin": fixed_pin}
+                        else:
+                            self.signins["observers"][credential.code] = {"label": label, "state": "first sign-in", "setup_pin": setup}
+                self.observer_list.append(credential)
+        finally:
+            observer_credentials.PIN_ITERATIONS = full_cost
+        # Keep only the cards that exist now, so a re-seed after a database reset never lists stale codes.
+        current = {credential.code for credential in self.observer_list}
+        self.signins["observers"] = {code: info for code, info in self.signins["observers"].items() if code in current}
         self.save_signins()
         self.summary["observer cards"] = f"12 ({created} new): 10 active, 2 for first sign-in"
 
@@ -692,14 +703,14 @@ class Command(BaseCommand):
             drafted_by = None
             if spec["status"] == "response_approved":
                 response = {
-                    "text": spec["answer"]["en"], "language": "en", "category": spec["category"], "drafted_by": "Ibrahim Coordinator",
-                    "drafted_at": (seen + timedelta(minutes=10)).isoformat(), "approved_by": "Ngozi Coordinator",
+                    "text": spec["answer"]["en"], "language": "en", "category": spec["category"], "drafted_by": "Ibrahim Sani",
+                    "drafted_at": (seen + timedelta(minutes=10)).isoformat(), "approved_by": "Ngozi Eze",
                     "approved_at": (seen + timedelta(minutes=24)).isoformat(), "rejection_note": None, "translations": spec["answer"],
                 }
                 drafted_by = ibrahim
             elif spec["status"] == "response_draft":
                 response = {
-                    "text": spec["draft"], "language": "en", "category": spec["category"], "drafted_by": "Ibrahim Coordinator",
+                    "text": spec["draft"], "language": "en", "category": spec["category"], "drafted_by": "Ibrahim Sani",
                     "drafted_at": (now - timedelta(minutes=8)).isoformat(), "approved_by": None, "approved_at": None, "rejection_note": None,
                 }
                 drafted_by = ibrahim

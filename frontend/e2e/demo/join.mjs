@@ -8,6 +8,7 @@ import { CLIPS, OUT } from "./recorder.mjs";
 const TITLES = [
   ["01a-citizen-phone", "Citizen: report without an account or a name", true],
   ["01b-check-rumour", "Citizen: check a rumour against approved answers", false],
+  ["01d-guides-ask", "Guides and Ask: quoted from approved guides", false],
   ["01c-phone-simulator", "SMS and USSD on a simulator (test numbers)", false],
   ["02-observer-phone", "Observer: works offline, sends itself on reconnect", true],
   ["03-reviewer", "Reviewer: AI suggests, a person decides", false],
