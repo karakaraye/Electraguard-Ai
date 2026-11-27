@@ -1,6 +1,111 @@
 # ElectraGuard AI
 
-Nonpartisan election observation and citizen accountability system for Nigeria, built by Cairn for the #AI4Elections hackathon (Track 5: Election Observation and Citizen Accountability, integrating Tracks 1–4).
+**Election observation and citizen accountability for Nigeria.** Observers and citizens report what they see at polling units, even with no network. Trained reviewers check every report, and the public sees only reviewed totals. AI suggests; a person decides every case.
+
+Built by **Team Cairn** for the #AI4Elections hackathon, Track 5: Election Observation and Citizen Accountability, integrating Tracks 1 to 4.
+
+<p align="center">
+  <a href="docs/media/electraguard-demo.mp4?raw=true"><img src="docs/media/demo-poster.jpg" alt="ElectraGuard AI demo video: click to watch (2 minutes 7 seconds)" width="100%"></a>
+  <br>
+  <a href="docs/media/electraguard-demo.mp4?raw=true"><b>Watch the demo (2:07)</b></a> · <a href="#see-it-in-action">Screens</a> · <a href="#how-a-report-travels">How it works</a> · <a href="#2-for-judges">For judges</a> · <a href="#3-for-engineers">Run it</a> · <a href="#team">Team</a>
+</p>
+
+> **Prototype.** Built and tested on synthetic data only. Not approved for operational electoral deployment. ElectraGuard never projects winners or declares results; that belongs to INEC.
+
+### At a glance
+
+| | |
+|---|---|
+| **Who uses it** | Accredited observers, citizens and voters, situation-room staff, the public and media |
+| **Languages** | English, Nigerian Pidgin (Naijá), Hausa, Yorùbá, Igbo |
+| **Channels** | Phone web app that works offline, website, SMS and USSD (simulated in this prototype) |
+| **Privacy** | No names asked for; names and phone numbers in reports are replaced with tokens (96.3% recall on 308 test items) |
+| **Human control** | Every category and urgency is a suggestion until a reviewer decides; safety notices need a second coordinator |
+| **Tested** | 32 browser tests against the real backend, plus the full backend suite and code checks; CI runs the backend suite and code checks on every pull request |
+
+---
+
+## See it in action
+
+Every image below is a frame from the demo video, recorded from the finished code against a seeded synthetic polling day in Kano.
+
+### 1. Citizens: no account, no name
+
+<p>
+  <img src="docs/media/01-citizen-home.jpg" alt="Citizen home page on a phone: report what you saw at a polling unit, or check a rumour" width="49%">
+  <img src="docs/media/02-check-a-rumour.jpg" alt="Check a rumour page: paste a message to compare it with answers reviewers have approved" width="49%">
+</p>
+
+**Left:** a voter reports what they saw without signing up, and gets a receipt code to follow the report. **Right:** anyone can paste a message they heard and see the answer reviewers approved for it.
+
+<p>
+  <img src="docs/media/03-sms-and-ussd.jpg" alt="On-screen phone simulator for SMS and USSD reporting" width="49%">
+  <img src="docs/media/15-naija-language.jpg" alt="The citizen home page in Nigerian Pidgin" width="49%">
+</p>
+
+**Left:** people with basic phones report by SMS or USSD. In this prototype the numbers are test values and run on an on-screen phone. **Right:** the same page in Nigerian Pidgin. Every screen is in five languages.
+
+### 2. Observers: seven steps, works offline
+
+<p>
+  <img src="docs/media/04-observer-report.jpg" alt="Observer report, step one: choose what happened from ten categories" width="49%">
+  <img src="docs/media/05-works-offline.jpg" alt="Observer home showing the report was saved on the phone and sent when the network returned" width="49%">
+</p>
+
+**Left:** accredited observers sign in with a code and PIN from a printed card, then report in seven short steps. **Right:** with no network the report waits on the phone and sends itself when the network returns.
+
+<p>
+  <img src="docs/media/06-reviewer-asks.jpg" alt="Observer answering a reviewer's question inside the app" width="49%">
+  <img src="docs/media/12-result-sheet.jpg" alt="Observer typing the votes from the posted result sheet" width="49%">
+</p>
+
+**Left:** a reviewer asks a question and the observer answers in the app. **Right:** the observer copies the posted result sheet (Form EC8A). The system flags numbers that do not add up, and never adds up votes.
+
+### 3. Reviewers: AI suggests, a person decides
+
+<p>
+  <img src="docs/media/07-names-become-tokens.jpg" alt="Case review: names and phone numbers in the report already replaced by tokens" width="49%">
+  <img src="docs/media/08-suggestion-person-decides.jpg" alt="Suggested category and urgency, each with Accept and Correct buttons" width="49%">
+</p>
+
+**Left:** before a reviewer sees a report, names and phone numbers are replaced by tokens such as `[NAME_ed13]`. **Right:** the system suggests a category and urgency and explains why. Nothing is decided until the reviewer accepts or corrects it, and every action goes into a tamper-evident record.
+
+<p>
+  <img src="docs/media/13-consistency-check.jpg" alt="Result sheet consistency check: party votes plus rejected votes differ from the accredited count" width="100%">
+</p>
+
+A result sheet consistency check, labelled "Consistency check for review. Not a result."
+
+### 4. Coordinators: check-ins, safety notices, surges
+
+<p>
+  <img src="docs/media/09-ward-check-ins.jpg" alt="Operations room: coordinators send fixed questions to observers by ward" width="49%">
+  <img src="docs/media/10-second-coordinator.jpg" alt="A safety notice waiting for a second coordinator to approve it" width="49%">
+</p>
+
+**Left:** coordinators send short fixed questions to observers by ward or LGA. **Right:** a safety notice is only sent after a different coordinator approves it.
+
+<p>
+  <img src="docs/media/11-surge-detector.jpg" alt="Surge detector compared with a fixed threshold: far fewer false alarms, fewer planted surges caught" width="100%">
+</p>
+
+The surge detector raised far fewer false alarms than a fixed threshold (0.39 an hour against 120.33), but also caught fewer planted surges (13 of 20 against 20 of 20). Both numbers are reported in [`docs/eval/emerging-alerts.md`](docs/eval/emerging-alerts.md).
+
+### 5. The public: reviewed totals only
+
+<p>
+  <img src="docs/media/14-public-results.jpg" alt="Public page of reviewed observations: totals only, small numbers hidden" width="100%">
+</p>
+
+The public sees totals of reviewed reports, released at least an hour later, with any number below 5 shown as "fewer than 5". Never names, report text or photos.
+
+---
+
+## How a report travels
+
+<p align="center"><img src="docs/media/how-a-report-travels.svg" alt="How a report travels: an observer or citizen reports by app, web, SMS or USSD; the privacy engine turns names and numbers into tokens; the system suggests a category and urgency; a reviewer accepts, corrects or asks; reviewed totals are published at least an hour later; the public page hides numbers below 5. Coordinators send check-ins and safety notices that need a second approver, and every action goes into a tamper-evident audit record." width="100%"></p>
+
+Each step links to its code in [For judges](#2-for-judges) below. The full design is in [`docs/submission/ARCHITECTURE.md`](docs/submission/ARCHITECTURE.md).
 
 ---
 
@@ -81,6 +186,7 @@ Each point below links to the code or a measured result in this repository. Numb
 
 ### Criterion 6: Demo and Documentation (5)
 - **Run the demonstration yourself:** [`docs/demo/RUN-THE-DEMO.md`](docs/demo/RUN-THE-DEMO.md) starts the backend, the website and a seeded synthetic polling day in Kano (about 69 reports, 8 rumour claims, 4 check-ins, a published snapshot) with four scripts in [`scripts/demo/`](scripts/demo/). Staff sign-in codes come from `manage.py demo_totp`, which works only with `DJANGO_DEBUG=true`. Sign-ins are written to a private file outside the project folder, never into the repository.
+- **Demo video (2:07):** [`docs/media/electraguard-demo.mp4`](docs/media/electraguard-demo.mp4?raw=true), recorded from the finished code with voiceover and captions.
 - **Video script:** [`docs/submission/VIDEO_SCRIPT.md`](docs/submission/VIDEO_SCRIPT.md). It notes where the demo stack differs from the product (for example, on a Windows demo laptop without Tesseract the result-sheet numbers are typed; the server image includes Tesseract, so deployed photo reading works).
 - **Tests:** 348 backend tests and 32 real-server browser tests (see "Tests and checks" below).
 - **Guides with screenshots of the current interface:** [`docs/guides/`](docs/guides/).
@@ -158,7 +264,7 @@ CI (`.github/workflows/verify.yml`) runs, against PostgreSQL 17:
 python backend/manage.py test accounts approved_answers clocks config discussions intelligence notices ops phone_channels privacy publicdata reference reports rumours security staff
 cd frontend && npm run lint && npm run typecheck && npm run build
 ```
-**Backend tests.** The suite for the 16 apps above contains **348 tests**. This was counted by loading the suite on this commit (`DiscoverRunner.build_suite`), and it matches a count of `def test_` in the test files. Per app: accounts 36, approved_answers 14, clocks 18, config 6, discussions 9, intelligence 10, notices 20, ops 20, phone_channels 19, privacy 24, publicdata 9, reports 99, rumours 4, security 5, staff 55 (`reference` has none). Two tests skip themselves where their engine is missing: Whisper voice-note transcription (needs a local Whisper model and `espeak-ng`) and reading a printed result sheet (needs Tesseract, which CI installs). The last recorded run (295 tests, 1 skipped, on 25 November, [`docs/reviews/2026-11-25-c17-emerging-alerts.md`](docs/reviews/2026-11-25-c17-emerging-alerts.md)) predates later work; the 348 figure is a count, not a recorded pass.
+**Backend tests.** The suite for the 16 apps above contains **348 tests**. This was counted by loading the suite on this commit (`DiscoverRunner.build_suite`), and it matches a count of `def test_` in the test files. Per app: accounts 36, approved_answers 14, clocks 18, config 6, discussions 9, intelligence 10, notices 20, ops 20, phone_channels 19, privacy 24, publicdata 9, reports 99, rumours 4, security 5, staff 55 (`reference` has none). Two tests skip themselves where their engine is missing: Whisper voice-note transcription (needs a local Whisper model and `espeak-ng`) and reading a printed result sheet (needs Tesseract, which CI installs). CI runs the whole suite on Linux with PostgreSQL 17 on every pull request and passed on the final code. The last full local run (27 November, on Windows) gave 326 passed and 2 skipped; the other failures there come only from tools missing on Windows (ffmpeg and `prlimit`) and do not occur on CI.
 
 **Frontend checks.** `npm run lint`, `npm run typecheck`, `npm run build`, and `npm run check` (contrast, message keys, glyphs, privacy). There are no component unit tests.
 
@@ -193,3 +299,22 @@ python scripts/eval/claim_matching.py      # rumour matching
 - [`docs/reviews/2026-11-26-final-verification.md`](docs/reviews/2026-11-26-final-verification.md): final accessibility and layout verification
 - Guides: [`observer`](docs/guides/observer-guide.md), [`citizen`](docs/guides/citizen-guide.md), [`staff`](docs/guides/staff-guide.md), [`glossary`](docs/guides/glossary.md)
 - [`docs/submission/ARCHITECTURE.md`](docs/submission/ARCHITECTURE.md), [`API_REFERENCE.md`](docs/submission/API_REFERENCE.md), [`THREAT_MODEL.md`](docs/submission/THREAT_MODEL.md), [`SAFETY_AND_LIMITATIONS.md`](docs/submission/SAFETY_AND_LIMITATIONS.md), [`MODEL_CARD.md`](docs/submission/MODEL_CARD.md), [`DATASHEET.md`](docs/submission/DATASHEET.md), [`EVALUATION.md`](docs/submission/EVALUATION.md), [`VIDEO_SCRIPT.md`](docs/submission/VIDEO_SCRIPT.md)
+
+---
+
+## Team
+
+**Team Cairn**
+
+| Member | GitHub | Role |
+|---|---|---|
+| Karakaraye Wari Sylva | [@karakaraye](https://github.com/karakaraye) | Team lead, backend engineering and deployment |
+| Nonso Charles | [@22Greatness](https://github.com/22Greatness) | Product, design and front-end engineering |
+
+## AI assistance
+
+The team used AI coding assistants. Every change was reviewed, tested and checked in the running app. See [`CONTRIBUTING.md`](CONTRIBUTING.md).
+
+## Licence
+
+Code is released under the licence in [`LICENSE`](LICENSE).

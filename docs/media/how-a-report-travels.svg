@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 640" width="1600" height="640" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#141210"/>
+    </marker>
+    <marker id="g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#8A6A2E"/>
+    </marker>
+  </defs>
+  <rect width="1600" height="640" fill="#F0EBE0"/>
+  <rect x="50" y="40" width="80" height="6" fill="#A8761A"/>
+  <text x="50" y="92" font-size="38" font-weight="700" fill="#141210">How a report travels</text>
+  <text x="50" y="130" font-size="22" fill="#5A544A">From a phone at the polling unit to the public page. A person decides every case.</text>
+
+  <!-- question loop -->
+  <path d="M1007 210 V180 H162 V206" stroke="#141210" stroke-width="2" fill="none" stroke-dasharray="7 6" marker-end="url(#a)"/>
+  <rect x="380" y="166" width="400" height="28" fill="#F0EBE0"/>
+  <text x="392" y="188" font-size="19" fill="#5A544A">Questions go back to the reporter</text>
+
+  <g font-size="22" fill="#141210">
+    <rect x="50" y="210" width="225" height="140" rx="14" fill="#FFFFFF" stroke="#141210" stroke-width="2"/>
+    <text x="70" y="246" font-size="16" font-weight="700" fill="#A8761A" letter-spacing="1">1 · REPORT</text>
+    <text x="70" y="278" font-weight="700">Observer</text>
+    <text x="70" y="306" fill="#5A544A">or citizen: app,</text>
+    <text x="70" y="332" fill="#5A544A">web, SMS, USSD</text>
+
+    <rect x="305" y="210" width="225" height="140" rx="14" fill="#FFFFFF" stroke="#141210" stroke-width="2"/>
+    <text x="325" y="246" font-size="16" font-weight="700" fill="#A8761A" letter-spacing="1">2 · PROTECT</text>
+    <text x="325" y="278" font-weight="700">Privacy engine</text>
+    <text x="325" y="306" fill="#5A544A">Names, numbers</text>
+    <text x="325" y="332" fill="#5A544A">become tokens</text>
+
+    <rect x="560" y="210" width="225" height="140" rx="14" fill="#FFFFFF" stroke="#141210" stroke-width="2"/>
+    <text x="580" y="246" font-size="16" font-weight="700" fill="#A8761A" letter-spacing="1">3 · SUGGEST</text>
+    <text x="580" y="278" font-weight="700">Suggestions</text>
+    <text x="580" y="306" fill="#5A544A">Category and</text>
+    <text x="580" y="332" fill="#5A544A">urgency, why</text>
+
+    <rect x="815" y="210" width="225" height="140" rx="14" fill="#141210"/>
+    <text x="835" y="246" font-size="16" font-weight="700" fill="#E3B354" letter-spacing="1">4 · DECIDE</text>
+    <text x="835" y="278" font-weight="700" fill="#FAF7F0">Reviewer</text>
+    <text x="835" y="306" fill="#D9D3C7">Accepts, corrects</text>
+    <text x="835" y="332" fill="#D9D3C7">or asks</text>
+
+    <rect x="1070" y="210" width="225" height="140" rx="14" fill="#FFFFFF" stroke="#141210" stroke-width="2"/>
+    <text x="1090" y="246" font-size="16" font-weight="700" fill="#A8761A" letter-spacing="1">5 · PUBLISH</text>
+    <text x="1090" y="278" font-weight="700">Reviewed totals</text>
+    <text x="1090" y="306" fill="#5A544A">At least an</text>
+    <text x="1090" y="332" fill="#5A544A">hour later</text>
+
+    <rect x="1325" y="210" width="225" height="140" rx="14" fill="#FFFFFF" stroke="#141210" stroke-width="2"/>
+    <text x="1345" y="246" font-size="16" font-weight="700" fill="#A8761A" letter-spacing="1">6 · PUBLIC</text>
+    <text x="1345" y="278" font-weight="700">Public page</text>
+    <text x="1345" y="306" fill="#5A544A">Numbers below</text>
+    <text x="1345" y="332" fill="#5A544A">5 are hidden</text>
+
+    <rect x="815" y="450" width="225" height="140" rx="14" fill="#FFFFFF" stroke="#141210" stroke-width="2"/>
+    <text x="835" y="486" font-weight="700">Coordinators</text>
+    <text x="835" y="514" fill="#5A544A">Check-ins, surges;</text>
+    <text x="835" y="540" fill="#5A544A">safety notices need</text>
+    <text x="835" y="566" fill="#5A544A">a second approver</text>
+
+    <rect x="1070" y="450" width="480" height="140" rx="14" fill="#F7F2E6" stroke="#8A6A2E" stroke-width="2" stroke-dasharray="8 6"/>
+    <text x="1090" y="486" font-weight="700">Tamper-evident audit record</text>
+    <text x="1090" y="514" fill="#5A544A">Every action is chained with SHA-256,</text>
+    <text x="1090" y="540" fill="#5A544A">so an edited past entry stops matching</text>
+  </g>
+
+  <g stroke="#141210" stroke-width="2.5" fill="none" marker-end="url(#a)">
+    <path d="M275 280 H301"/>
+    <path d="M530 280 H556"/>
+    <path d="M785 280 H811"/>
+    <path d="M1040 280 H1066"/>
+    <path d="M1295 280 H1321"/>
+    <path d="M927 350 V446"/>
+  </g>
+  <g stroke="#8A6A2E" stroke-width="2" fill="none" stroke-dasharray="5 5" marker-end="url(#g)">
+    <path d="M1040 520 H1066"/>
+    <path d="M1000 350 C1040 410 1150 400 1200 446"/>
+  </g>
+
+  <text x="50" y="384" font-size="18" fill="#5A544A">No network? It waits on the</text>
+  <text x="50" y="408" font-size="18" fill="#5A544A">phone and sends itself later.</text>
+</svg>

@@ -82,4 +82,9 @@ Before any operational or field deployment in a live Nigerian electoral contest,
 
 > **"This prototype is not approved for operational electoral deployment."**
 
-Signed: ____________ (Kara Wari Sylva, team lead), date: ________
+Signed on behalf of Team Cairn:
+
+| Name | Role | Signature | Date |
+|---|---|---|---|
+| Karakaraye Wari Sylva | Team lead | | |
+| Nonso Charles | Product and design | | |
