@@ -206,6 +206,16 @@ class CoordinatorTests(TestCase):
         self.assertNotIn("private-unit", response.content.decode())
         self.assertEqual(self.client.get(OPS, {**query, "to": "2026-12-24"}).status_code, 422)
 
+    def test_assignment_search_matches_ward_lga_and_reference_but_never_the_unit(self):
+        found = lambda q: {item["id"] for item in self.client.get("/api/v1/assignments", {"q": q}).json()["items"]}
+        first = self.report()
+        closed = self.report(status=Report.Status.CLOSED)
+        self.report(organisation=self.foreign)
+        self.assertEqual(found("fictional lga"), {str(first.pk), str(closed.pk)})
+        self.assertEqual(found(first.receipt_code), {str(first.pk)})
+        self.assertEqual(found("private unit"), set())
+        self.assertEqual(self.client.get("/api/v1/assignments", {"q": "a" * 65}).status_code, 422)
+
     def test_overview_counts_open_flagged_result_sheets(self):
         flag = [{"code": "votes_exceed_accredited"}]
         self.report(kind="result_sheet", result_flags=flag)

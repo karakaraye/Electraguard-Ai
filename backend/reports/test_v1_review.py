@@ -89,6 +89,21 @@ class ReviewerV1Tests(TestCase):
         Report.objects.filter(pk=urgent.pk).update(assigned_reviewer=self.other)
         self.assertEqual(self.client.get(self.case_path(urgent)).status_code, 404)
 
+    def test_queue_search_by_reference_place_and_category_across_statuses(self):
+        area = {"state_name": "Synthetic Kano", "lga_name": "Dala", "ward_name": "Kantudu", "polling_unit_name": "Kantudu Primary School I"}
+        dala = self.report(details={"area": area, "category_observer": "vote_buying"})
+        closed = self.report(status=Report.Status.CLOSED, details={"area": {**area, "ward_name": "Gwammaja", "polling_unit_name": "Gwammaja Primary School"}})
+        other = self.report(details={"area": {"lga_name": "Fagge"}, "category_observer": "access_barrier"})
+        self.report(reviewer=self.other, details={"area": area})
+        found = lambda q: {item["id"] for item in self.client.get(f"{ROOT}/queue", {"q": q}).json()["items"]}
+        self.assertEqual(found(dala.receipt_code.lower().replace("-", "")), {str(dala.pk)})
+        self.assertEqual(found("dala"), {str(dala.pk), str(closed.pk)})
+        self.assertEqual(found("Kantudu primary"), {str(dala.pk)})
+        self.assertEqual(found("vote buying"), {str(dala.pk)})
+        self.assertEqual(found("fagge"), {str(other.pk)})
+        self.assertEqual(self.client.get(f"{ROOT}/queue", {"q": "dala", "status": "received"}).json()["items"][0]["id"], str(dala.pk))
+        self.assertEqual(self.client.get(f"{ROOT}/queue", {"q": "x"}).status_code, 422)
+
     def test_version_idempotency_close_from_question_and_evidence_snapshot(self):
         report = self.report()
         path = self.case_path(report) + "/actions"

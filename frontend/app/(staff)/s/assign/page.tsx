@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { api } from "../../../../lib/api/client";
 import type { AssignItemResult, AssignmentListResponse } from "../../../../lib/api/types";
 import { useT } from "../../../../lib/i18n/client";
+import { useStaffHeaderState } from "../_lib/header";
 import { AssignView, type AssignScope, type AssignTarget } from "../_views/AssignView";
 
 export default function AssignPage() {
@@ -16,6 +17,9 @@ export default function AssignPage() {
   const [assigning, setAssigning] = useState(false);
   const [results, setResults] = useState<Record<string, AssignItemResult>>({});
   const [attempt, setAttempt] = useState(0);
+  // The header search reaches the server: every case in the organisation, closed ones included.
+  const { search, setSearch } = useStaffHeaderState();
+  const q = search.trim().length >= 2 ? search.trim().slice(0, 64) : undefined;
 
   const problem = useCallback(
     (res: { status: number }) =>
@@ -28,7 +32,7 @@ export default function AssignPage() {
     void (async () => {
       setLoading(true);
       setError(null);
-      const res = await api("ASG-01", { query: { assigned: scope } });
+      const res = await api("ASG-01", { query: { assigned: scope, q } });
       if (cancelled) return;
       setLoading(false);
       if (!res.ok) {
@@ -41,12 +45,12 @@ export default function AssignPage() {
     return () => {
       cancelled = true;
     };
-  }, [scope, attempt, problem]);
+  }, [scope, q, attempt, problem]);
 
   async function loadMore() {
     if (!data?.next_cursor) return;
     setLoadingMore(true);
-    const res = await api("ASG-01", { query: { assigned: scope, cursor: data.next_cursor } });
+    const res = await api("ASG-01", { query: { assigned: scope, q, cursor: data.next_cursor } });
     setLoadingMore(false);
     if (!res.ok) {
       setError(problem(res));
@@ -97,6 +101,8 @@ export default function AssignPage() {
       onRefresh={() => setAttempt((n) => n + 1)}
       onLoadMore={() => void loadMore()}
       loadingMore={loadingMore}
+      search={q ?? ""}
+      onClearSearch={() => setSearch("")}
     />
   );
 }

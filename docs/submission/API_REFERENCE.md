@@ -1086,9 +1086,10 @@ Discussion member labels are observer codes only. Posts are text only. No report
 - **Status:** CHANGE (from `GET /api/review`; adds urgency order, reasons, filters, paging).
 - **Screens:** S-02 (queue), S-03 (side list on tablet).
 - **Auth:** reviewer (only cases assigned to them).
-- `GET /api/v1/review/queue?status=&category=&urgency=&state_code=&lga_code=&channel=&kind=&has_evidence=&cursor=&limit=`
+- `GET /api/v1/review/queue?status=&category=&urgency=&state_code=&lga_code=&channel=&kind=&has_evidence=&q=&cursor=&limit=`
   - multi-value filters repeat the parameter (`status=received&status=question`).
-  - Default `status`: `received`, `in_review`, `question`.
+  - Default `status`: `received`, `in_review`, `question`. With `q` and no `status`, every status is searched, closed cases included.
+  - `q` (2 to 64 characters, `422 validation_failed` otherwise) matches the receipt code (case, spaces and dashes ignored), a place name or code (polling unit, ward, LGA, state) or the category. The staff header search sends it.
 - **Sort:** urgency (`urgent` > `high` > `normal` > `low`, using the reviewer's correction when present), then `danger_now` first, then `received_at` oldest first.
 - **200:**
   ```json
@@ -1235,7 +1236,8 @@ Category and rule-based urgency suggestions are available. The additional triage
 
 - **Status:** CHANGE (from `GET /api/assignments`; adds summaries, workload, suggestion, filters, paging).
 - **Screens:** S-04. **Auth:** coordinator.
-- `GET /api/v1/assignments?assigned=any|none|<reviewer_id>&status=&urgency=&state_code=&lga_code=&cursor=&limit=`
+- `GET /api/v1/assignments?assigned=any|none|<reviewer_id>&status=&urgency=&state_code=&lga_code=&q=&cursor=&limit=`
+  - `q` works as in Q-01 but matches only what this list shows (receipt code, ward, LGA, state, category), never the exact polling unit. With `q` and no `status`, every status is searched.
 - **200:**
   ```json
   {

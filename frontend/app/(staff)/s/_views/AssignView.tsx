@@ -5,7 +5,7 @@ import type { AssignItemResult, AssignmentListResponse, AssignmentRow, Category,
 import { useLocale, useT } from "../../../../lib/i18n/client";
 import { Banner, Button, EmptyState, SegmentedControl, Skeleton, StatusBadge, type StatusTone } from "../../../../ui";
 import { formatWatTime } from "../../../../ui/format";
-import { RetryIcon } from "../../../../ui/icons";
+import { CloseIcon, RetryIcon } from "../../../../ui/icons";
 import { CATEGORY_ROWS } from "../../../(public)/_lib/public";
 import { urgencyTone } from "./QueueTableView";
 import styles from "./AssignView.module.css";
@@ -30,6 +30,9 @@ export interface AssignViewProps {
   onRefresh?: () => void;
   onLoadMore?: () => void;
   loadingMore?: boolean;
+  /** Text from the header search; the server narrows the cases to it. */
+  search?: string;
+  onClearSearch?: () => void;
   "data-testid"?: string;
 }
 
@@ -46,6 +49,8 @@ export function AssignView({
   onRefresh,
   onLoadMore,
   loadingMore,
+  search = "",
+  onClearSearch,
   "data-testid": testId = "assign-view",
 }: AssignViewProps) {
   const t = useT();
@@ -112,6 +117,16 @@ export function AssignView({
                 ]}
                 data-testid="s04-scope"
               />
+            ) : null}
+            {search ? (
+              <span className={styles.token} data-testid="s04-search-token">
+                <em>{t("s02.filters.search")}</em> {search}
+                {onClearSearch ? (
+                  <button type="button" onClick={onClearSearch} aria-label={t("s02.filters.removeToken", { name: `${t("s02.filters.search")} ${search}` })}>
+                    <CloseIcon size={14} />
+                  </button>
+                ) : null}
+              </span>
             ) : null}
             {onRefresh ? <Button variant="quiet" icon={<RetryIcon />} onClick={onRefresh}>{t("s04.refresh")}</Button> : null}
           </div>
