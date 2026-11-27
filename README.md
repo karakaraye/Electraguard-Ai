@@ -5,9 +5,9 @@
 Built by **Team Cairn** for the #AI4Elections hackathon, Track 5: Election Observation and Citizen Accountability, integrating Tracks 1 to 4.
 
 <p align="center">
-  <a href="docs/media/electraguard-demo.mp4"><img src="docs/media/demo-poster.jpg" alt="ElectraGuard AI demo video: click to watch (2 minutes 7 seconds)" width="100%"></a>
+  <a href="docs/media/electraguard-demo.mp4?raw=true"><img src="docs/media/demo-poster.jpg" alt="ElectraGuard AI demo video: click to watch (2 minutes 7 seconds)" width="100%"></a>
   <br>
-  <a href="docs/media/electraguard-demo.mp4"><b>Watch the demo (2:07)</b></a> · <a href="#see-it-in-action">Screens</a> · <a href="#how-a-report-travels">How it works</a> · <a href="#2-for-judges">For judges</a> · <a href="#3-for-engineers">Run it</a> · <a href="#team">Team</a>
+  <a href="docs/media/electraguard-demo.mp4?raw=true"><b>Watch the demo (2:07)</b></a> · <a href="#see-it-in-action">Screens</a> · <a href="#how-a-report-travels">How it works</a> · <a href="#2-for-judges">For judges</a> · <a href="#3-for-engineers">Run it</a> · <a href="#team">Team</a>
 </p>
 
 > **Prototype.** Built and tested on synthetic data only. Not approved for operational electoral deployment. ElectraGuard never projects winners or declares results; that belongs to INEC.
@@ -186,7 +186,7 @@ Each point below links to the code or a measured result in this repository. Numb
 
 ### Criterion 6: Demo and Documentation (5)
 - **Run the demonstration yourself:** [`docs/demo/RUN-THE-DEMO.md`](docs/demo/RUN-THE-DEMO.md) starts the backend, the website and a seeded synthetic polling day in Kano (about 69 reports, 8 rumour claims, 4 check-ins, a published snapshot) with four scripts in [`scripts/demo/`](scripts/demo/). Staff sign-in codes come from `manage.py demo_totp`, which works only with `DJANGO_DEBUG=true`. Sign-ins are written to a private file outside the project folder, never into the repository.
-- **Demo video (2:07):** [`docs/media/electraguard-demo.mp4`](docs/media/electraguard-demo.mp4), recorded from the finished code with voiceover and captions.
+- **Demo video (2:07):** [`docs/media/electraguard-demo.mp4`](docs/media/electraguard-demo.mp4?raw=true), recorded from the finished code with voiceover and captions.
 - **Video script:** [`docs/submission/VIDEO_SCRIPT.md`](docs/submission/VIDEO_SCRIPT.md). It notes where the demo stack differs from the product (for example, on a Windows demo laptop without Tesseract the result-sheet numbers are typed; the server image includes Tesseract, so deployed photo reading works).
 - **Tests:** 348 backend tests and 32 real-server browser tests (see "Tests and checks" below).
 - **Guides with screenshots of the current interface:** [`docs/guides/`](docs/guides/).
