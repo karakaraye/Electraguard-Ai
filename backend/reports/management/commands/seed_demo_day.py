@@ -280,6 +280,12 @@ class Command(BaseCommand):
         self.signins["observer_pin"] = fixed_pin
         self.observer_list = []
         created = 0
+        # Demonstration cards use a lighter hashing cost (verification reads the cost from each stored hash),
+        # so twelve cards take seconds, not minutes. Real cards from issue_observer_codes keep the full cost.
+        from accounts import observer_credentials
+
+        full_cost = observer_credentials.PIN_ITERATIONS
+        observer_credentials.PIN_ITERATIONS = 100_000
         for number in range(1, 13):
             label = f"Demo observer {number:02d}"
             credential = ObserverCode.objects.filter(label=label).select_related("user").first()
@@ -298,6 +304,7 @@ class Command(BaseCommand):
                     else:
                         self.signins["observers"][credential.code] = {"label": label, "state": "first sign-in", "setup_pin": setup}
             self.observer_list.append(credential)
+        observer_credentials.PIN_ITERATIONS = full_cost
         self.save_signins()
         self.summary["observer cards"] = f"12 ({created} new): 10 active, 2 for first sign-in"
 
