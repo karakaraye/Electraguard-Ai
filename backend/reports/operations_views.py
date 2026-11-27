@@ -19,7 +19,7 @@ from .dashboard import incident_count
 from .idempotency import lock_key, request_digest
 from .incident_input import KINDS, WAT, aware_datetime, field
 from .models import AssignmentBatch, Report, ReviewEvent, TriageMatch
-from .reviewer_views import ACTIVE, URGENCIES, queue_item
+from .reviewer_views import ACTIVE, URGENCIES, queue_item, search_matches, search_needle
 from .v1_views import STATES
 from .workflow import record_change
 
@@ -102,7 +102,12 @@ def assignment_filters(request):
             problems[name] = field("invalid_choice", "Choose a valid filter.")
         if values:
             filters[name] = values
-    filters.setdefault("status", [STATES[state] for state in ACTIVE])
+    needle, problem = search_needle(query)
+    if problem:
+        problems["q"] = problem
+    elif needle:
+        filters["q"] = needle
+    filters.setdefault("status", list(STATES.values()) if needle else [STATES[state] for state in ACTIVE])
     assigned = query.get("assigned", "any")
     if assigned not in ("any", "none") and reviewer_id(assigned) is None:
         problems["assigned"] = field("invalid_choice", "Choose any, none or a Reviewer.")
@@ -186,6 +191,9 @@ def list_assignments(request):
         summary = assignment_summary(report, reviewers, loads)
         level = summary["urgency"]["level"]
         if "urgency" in filters and level not in filters["urgency"]:
+            continue
+        # Search only what a coordinator sees here: ward, LGA and state, never the exact polling unit.
+        if "q" in filters and not search_matches(summary, filters["q"]):
             continue
         key = (-URGENCIES.index(level), report.created_at, str(report.pk))
         if boundary is None or key > boundary:
@@ -387,9 +395,14 @@ def overview(request):
         if report.status == Status.CLOSED:
             outcomes[report.closure_outcome or "unrecorded"] += 1
 
+    # Open result sheets whose numbers the server flagged (totals that do not add up, more votes than
+    # accredited voters, and so on), in the same WAT dates. Each case screen lists the flags themselves.
+    flagged_sheets = 0 if kind not in (None, "result_sheet") else scope.filter(
+        kind="result_sheet", status__in=ACTIVE, occurred_at__range=(first, last),
+    ).exclude(result_flags=[]).count()
     totals = {
         "reports": len(references), "urgent_open": urgent_open,
-        "open_questions": statuses["question"], "result_sheet_flags_open": 0,
+        "open_questions": statuses["question"], "result_sheet_flags_open": flagged_sheets,
         "withdrawn": withdrawn.count(),
     }
     if capabilities.GROUPING_ENABLED:

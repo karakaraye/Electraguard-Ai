@@ -81,8 +81,8 @@ Each point below links to the code or a measured result in this repository. Numb
 
 ### Criterion 6: Demo and Documentation (5)
 - **Run the demonstration yourself:** [`docs/demo/RUN-THE-DEMO.md`](docs/demo/RUN-THE-DEMO.md) starts the backend, the website and a seeded synthetic polling day in Kano (about 69 reports, 8 rumour claims, 4 check-ins, a published snapshot) with four scripts in [`scripts/demo/`](scripts/demo/). Staff sign-in codes come from `manage.py demo_totp`, which works only with `DJANGO_DEBUG=true`. Sign-ins are written to a private file outside the project folder, never into the repository.
-- **Video script:** [`docs/submission/VIDEO_SCRIPT.md`](docs/submission/VIDEO_SCRIPT.md). It notes where the demo stack differs from the product (for example, result-sheet numbers are typed because photo reading needs a local Tesseract engine that the demo stack does not include).
-- **Tests:** 344 backend tests and 32 real-server browser tests (see "Tests and checks" below).
+- **Video script:** [`docs/submission/VIDEO_SCRIPT.md`](docs/submission/VIDEO_SCRIPT.md). It notes where the demo stack differs from the product (for example, on a Windows demo laptop without Tesseract the result-sheet numbers are typed; the server image includes Tesseract, so deployed photo reading works).
+- **Tests:** 348 backend tests and 32 real-server browser tests (see "Tests and checks" below).
 - **Guides with screenshots of the current interface:** [`docs/guides/`](docs/guides/).
 - **Documentation index:** [`docs/README.md`](docs/README.md).
 
@@ -158,7 +158,7 @@ CI (`.github/workflows/verify.yml`) runs, against PostgreSQL 17:
 python backend/manage.py test accounts approved_answers clocks config discussions intelligence notices ops phone_channels privacy publicdata reference reports rumours security staff
 cd frontend && npm run lint && npm run typecheck && npm run build
 ```
-**Backend tests.** The suite for the 16 apps above contains **344 tests**. This was counted by loading the suite on this commit (`DiscoverRunner.build_suite`), and it matches a count of `def test_` in the test files. Per app: accounts 36, approved_answers 14, clocks 18, config 6, discussions 9, intelligence 10, notices 20, ops 20, phone_channels 19, privacy 24, publicdata 9, reports 95, rumours 4, security 5, staff 55 (`reference` has none). One test, Whisper voice-note transcription, skips itself unless a local Whisper model and `espeak-ng` are installed. The last recorded run (295 tests, 1 skipped, on 25 November, [`docs/reviews/2026-11-25-c17-emerging-alerts.md`](docs/reviews/2026-11-25-c17-emerging-alerts.md)) predates later work; the 344 figure is a count, not a recorded pass.
+**Backend tests.** The suite for the 16 apps above contains **348 tests**. This was counted by loading the suite on this commit (`DiscoverRunner.build_suite`), and it matches a count of `def test_` in the test files. Per app: accounts 36, approved_answers 14, clocks 18, config 6, discussions 9, intelligence 10, notices 20, ops 20, phone_channels 19, privacy 24, publicdata 9, reports 99, rumours 4, security 5, staff 55 (`reference` has none). Two tests skip themselves where their engine is missing: Whisper voice-note transcription (needs a local Whisper model and `espeak-ng`) and reading a printed result sheet (needs Tesseract, which CI installs). The last recorded run (295 tests, 1 skipped, on 25 November, [`docs/reviews/2026-11-25-c17-emerging-alerts.md`](docs/reviews/2026-11-25-c17-emerging-alerts.md)) predates later work; the 348 figure is a count, not a recorded pass.
 
 **Frontend checks.** `npm run lint`, `npm run typecheck`, `npm run build`, and `npm run check` (contrast, message keys, glyphs, privacy). There are no component unit tests.
 

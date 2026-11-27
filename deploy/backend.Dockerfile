@@ -3,10 +3,12 @@ FROM python:3.12.16-slim-bookworm
 # onnxruntime (used by Whisper's speech detection) otherwise starts Microsoft telemetry uploads.
 ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 ORT_DISABLE_TELEMETRY=1
 WORKDIR /app
-# ffmpeg re-encodes video and voice notes (C12).
+# ffmpeg re-encodes video and voice notes (C12). Tesseract reads the numbers on result-sheet photos
+# (RS-01); without it every photo falls back to typed numbers. The version check fails the build if it is missing.
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends ffmpeg \
-    && rm -rf /var/lib/apt/lists/*
+    && apt-get install -y --no-install-recommends ffmpeg tesseract-ocr tesseract-ocr-eng \
+    && rm -rf /var/lib/apt/lists/* \
+    && tesseract --version
 COPY backend/requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt gunicorn==27.0.1 packaging==26.2 \
     && groupadd -g 10001 app \

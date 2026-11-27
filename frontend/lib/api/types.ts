@@ -979,6 +979,8 @@ export interface QueueQuery extends PageQuery {
   channel?: Channel[];
   kind?: ReportKind[];
   has_evidence?: boolean;
+  /** Search text, 2 to 64 characters: receipt code, place name or code, or category. */
+  q?: string;
 }
 
 export interface QueueItem {
@@ -1196,6 +1198,8 @@ export interface AssignmentQuery extends PageQuery {
   urgency?: Urgency[];
   state_code?: StateCode;
   lga_code?: LgaCode;
+  /** Search text, 2 to 64 characters: receipt code, ward, LGA or state, or category (never the exact polling unit). */
+  q?: string;
 }
 
 export interface AssignmentRow {

@@ -65,6 +65,14 @@
   flex: none;
 }
 
+/* The label takes the free space and wraps, so a long name (Hausa) never pushes the count past the edge. */
+.rowLabel {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding-block: 6px;
+  overflow-wrap: break-word;
+}
+
 .row[aria-current="page"] {
   background: var(--paper-sunk);
 }

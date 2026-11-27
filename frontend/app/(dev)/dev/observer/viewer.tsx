@@ -241,10 +241,14 @@ const uploads = (t: Translate): ReceiptViewProps["items"] => [
 
 export const SCREENS: Record<string, Record<string, (t: Translate) => ReactElement>> = {
   splash: {
+    // As in the app, the splash covers the first screen (language), which supplies the main landmark and heading.
     first: (t) => (
-      <div style={{ width: "100%", height: "100dvh" }}>
-        <Splash credit={t("ui.byCairn")} preview />
-      </div>
+      <>
+        <div style={{ width: "100%", height: "100dvh" }}>
+          <Splash credit={t("ui.byCairn")} preview />
+        </div>
+        <LanguageView selected={null} onChoose={noop} />
+      </>
     ),
   },
   o01: {

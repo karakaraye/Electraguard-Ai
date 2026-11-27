@@ -71,7 +71,7 @@ export function CheckinView({ notice, loading, offline, unit, waiting, now: nowP
           loading ? (
             <p className={styles.hint} data-testid="o21-loading">{t("notice.loading")}</p>
           ) : (
-            <ObserverEmpty art="messagesEmpty" title={t("notice.gone.title")} data-testid="o21-gone">
+            <ObserverEmpty art="messagesEmpty" title={t("notice.gone.title")} headingLevel={1} data-testid="o21-gone">
               {offline ? t("notice.gone.offline") : t("notice.gone.body")}
             </ObserverEmpty>
           )

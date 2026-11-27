@@ -171,7 +171,33 @@ def matches(item, filters):
         "urgency": item["urgency"]["level"], "has_evidence": "true" if any(item["media_counts"].values()) else "false",
         "clock_state": (item.get("clock") or {}).get("state"),
     }
-    return all(values.get(name) in choices for name, choices in filters.items())
+    return all(values.get(name) in choices for name, choices in filters.items() if name != "q")
+
+
+SEARCH_PLACE_FIELDS = ("polling_unit_name", "polling_unit_code", "ward_name", "ward_code", "lga_name", "lga_code", "state_name", "state_code")
+
+
+def search_needle(query):
+    """The header search text (`q`): 2 to 64 characters, compared without case, spaces or dashes."""
+    raw = query.get("q")
+    if raw is None:
+        return None, None
+    text = " ".join(raw.split())
+    if not 2 <= len(text) <= 64:
+        return None, field("invalid", "Search with 2 to 64 characters.")
+    return text.casefold(), None
+
+
+def search_matches(item, needle):
+    """True when the receipt code, a place name or code, or the category matches the search text."""
+    compact = needle.replace("-", "").replace(" ", "")
+    receipt = (item.get("receipt_code") or "").casefold()
+    if compact and compact in receipt.replace("-", ""):
+        return True
+    area = item.get("area") or {}
+    places = " ".join(str(area.get(name) or "") for name in SEARCH_PLACE_FIELDS).casefold()
+    category = (item.get("category") or {}).get("value") or ""
+    return needle in places or needle in category.replace("_", " ").casefold()
 
 
 def report_events(request):
@@ -184,7 +210,13 @@ def queue(request):
     if blocked is not None:
         return blocked
     filters, limit, problems = queue_parameters(request.GET)
-    filters.setdefault("status", [STATES[status] for status in ACTIVE])
+    needle, problem = search_needle(request.GET)
+    if problem:
+        problems["q"] = problem
+    elif needle:
+        filters["q"] = [needle]
+    # A search looks through every case the Reviewer holds, closed ones included, unless a status is chosen.
+    filters.setdefault("status", list(STATES.values()) if needle else [STATES[status] for status in ACTIVE])
     cursor = request.GET.get("cursor")
     boundary = None
     owner = str(request.user.public_id)
@@ -229,7 +261,7 @@ def queue(request):
     ordered = []
     for report in reports:
         item = queue_item(report, report.photo_count, report.case_events, report.video_count, report.audio_count)
-        if not matches(item, filters):
+        if not matches(item, filters) or (needle and not search_matches(item, needle)):
             continue
         if sort_by_due:
             due_str = (item.get("clock") or {}).get("due_at")

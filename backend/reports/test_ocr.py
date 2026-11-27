@@ -1,12 +1,13 @@
 from datetime import timedelta
 from hashlib import sha256
 from io import BytesIO, StringIO
+from unittest import skipUnless
 from unittest.mock import patch
 from uuid import uuid4
 
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.management import call_command
-from django.test import TestCase
+from django.test import SimpleTestCase, TestCase
 from django.utils import timezone
 from PIL import Image
 
@@ -35,6 +36,13 @@ class OcrParsingTests(TestCase):
         self.assertEqual(fields["votes"]["C"], {"value": 77, "confidence": 0.9})
         self.assertEqual(fields["rejected"]["value"], 12)
         self.assertEqual(fields["votes"]["E"], {"value": None, "confidence": 0.0})
+
+    def test_a_label_run_into_its_count_is_still_read(self):
+        # The engine often drops the space between the label and the count ("Party A210", "PartyB 180").
+        fields = parse_lines([("Party A210", 0.9), ("PartyB 180", 0.8), ("APC1200", 0.7), ("Page 3", 0.9)], ["A", "B", "APC"])
+        self.assertEqual(fields["votes"]["A"], {"value": 210, "confidence": 0.9})
+        self.assertEqual(fields["votes"]["B"]["value"], 180)
+        self.assertEqual(fields["votes"]["APC"]["value"], 1200)
 
     def test_out_of_range_and_unlabelled_numbers_are_ignored(self):
         fields = parse_lines([("Registered 123456", 0.9), ("Page 3", 0.9)], ["A"])
@@ -142,3 +150,39 @@ class OcrEndpointTests(TestCase):
         call_command("purge_expired_ocr", stdout=out)
         self.assertFalse(OcrRead.objects.exists())
         self.assertIn("Deleted 1", out.getvalue())
+
+
+def tesseract_installed():
+    try:
+        import pytesseract
+
+        pytesseract.get_tesseract_version()
+        return True
+    except Exception:
+        return False
+
+
+@skipUnless(tesseract_installed(), "Needs the Tesseract engine (installed in the backend image and in CI).")
+class RealEngineTests(SimpleTestCase):
+    """Reads a drawn result sheet with the real engine, so the photo path is proven, not only the parser."""
+
+    def test_reads_every_number_from_a_printed_sheet(self):
+        from PIL import ImageDraw, ImageFont
+
+        from .result_ocr import recognise_lines
+
+        rows = ["Registered voters 1,250", "Accredited voters 640", "Party A 210", "Party B 180",
+                "Party C 95", "Rejected ballots 12"]
+        sheet = Image.new("RGB", (1400, 120 * len(rows) + 80), "white")
+        draw = ImageDraw.Draw(sheet)
+        font = ImageFont.load_default(size=56)
+        for index, row in enumerate(rows):
+            draw.text((60, 60 + index * 120), row, fill="black", font=font)
+        lines = recognise_lines(sheet)
+        fields = parse_lines(lines, ["A", "B", "C"])
+        read = f"engine read: {[text for text, _ in lines]}"
+        self.assertEqual(fields["registered"]["value"], 1250, read)
+        self.assertEqual(fields["accredited"]["value"], 640, read)
+        self.assertEqual(fields["rejected"]["value"], 12, read)
+        self.assertEqual({label: fields["votes"][label]["value"] for label in "ABC"}, {"A": 210, "B": 180, "C": 95}, read)
+        self.assertGreater(fields["registered"]["confidence"], 0.5)

@@ -194,7 +194,9 @@ function StaffFrame({ children }: { children: ReactNode }) {
       onSignOut={handleSignOut}
       onSearch={(query) => {
         setSearch(query);
-        if (pathname !== "/s/queue") router.push("/s/queue");
+        // Reviewers search their own cases in the queue; coordinators search every case on Assign.
+        const target = isReviewer ? "/s/queue" : isCoordinator ? "/s/assign" : null;
+        if (target && pathname !== target) router.push(target);
       }}
     >
       {children}

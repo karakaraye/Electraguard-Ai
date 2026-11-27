@@ -58,6 +58,13 @@ jobs:
           fi
           ffmpeg -version | head -n 1
           ffprobe -version | head -n 1
+      - name: Install Tesseract for result-sheet photo reading
+        timeout-minutes: 6
+        run: |
+          set -euo pipefail
+          sudo timeout 300 apt-get -o Acquire::Retries=3 update
+          sudo timeout 300 apt-get -o Acquire::Retries=3 install -y --no-install-recommends tesseract-ocr tesseract-ocr-eng
+          tesseract --version | head -n 1
       - name: Install backend dependencies
         run: python -m pip install -r backend/requirements.txt
       - name: Configure the isolated test application

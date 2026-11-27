@@ -1,11 +1,10 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { api } from "../../../../lib/api/client";
 import type { QueueItem, QueueQuery, QueueResponse, ReportStatus } from "../../../../lib/api/types";
 import { useT } from "../../../../lib/i18n/client";
-import { CATEGORY_ROWS } from "../../../(public)/_lib/public";
 import { useStaffHeaderState } from "../_lib/header";
 import {
   EMPTY_QUEUE_FILTERS,
@@ -18,15 +17,17 @@ import {
 const POLL_MS = 30_000;
 const VIEWS_KEY = "eg.s02.savedViews";
 
-const CATEGORY_KEY = Object.fromEntries(CATEGORY_ROWS.map((row) => [row.value, row.key])) as Record<string, string>;
 
-function toQuery(filters: QueueTableFilters, cursor?: string): QueueQuery {
+function toQuery(filters: QueueTableFilters, search: string, cursor?: string): QueueQuery {
+  const q = search.trim();
   return {
     status: filters.status === "all" ? undefined : [filters.status as ReportStatus],
     urgency: filters.urgency.length ? filters.urgency : undefined,
     category: filters.category ? [filters.category] : undefined,
     channel: filters.channel.length ? filters.channel : undefined,
     has_evidence: filters.hasEvidence || undefined,
+    // The server searches every case the Reviewer holds, closed ones included (2 to 64 characters).
+    q: q.length >= 2 ? q.slice(0, 64) : undefined,
     cursor,
   };
 }
@@ -82,7 +83,7 @@ export default function QueuePage() {
       setLoading(true);
       setError(null);
       setPending([]);
-      const res = await api("Q-01", { query: toQuery(filters) });
+      const res = await api("Q-01", { query: toQuery(filters, search) });
       if (cancelled) return;
       setLoading(false);
       if (!res.ok) {
@@ -95,14 +96,14 @@ export default function QueuePage() {
     return () => {
       cancelled = true;
     };
-  }, [filters, attempt, problem]);
+  }, [filters, search, attempt, problem]);
 
   // Look for new cases without moving the rows the reviewer is reading.
   useEffect(() => {
     if (!data) return;
     const id = window.setInterval(async () => {
       if (document.visibilityState !== "visible") return;
-      const res = await api("Q-01", { query: toQuery(filters) });
+      const res = await api("Q-01", { query: toQuery(filters, search) });
       if (!res.ok) return;
       const fresh = res.data.items.filter((item) => !known.current.has(item.id));
       if (fresh.length) {
@@ -113,12 +114,12 @@ export default function QueuePage() {
       }
     }, POLL_MS);
     return () => window.clearInterval(id);
-  }, [data, filters]);
+  }, [data, filters, search]);
 
   async function loadMore() {
     if (!data?.next_cursor || loadingMore) return;
     setLoadingMore(true);
-    const res = await api("Q-01", { query: toQuery(filters, data.next_cursor) });
+    const res = await api("Q-01", { query: toQuery(filters, search, data.next_cursor) });
     setLoadingMore(false);
     if (!res.ok) {
       setError(problem(res));
@@ -148,28 +149,7 @@ export default function QueuePage() {
     writeViews(next);
   }
 
-  // The header search narrows the loaded rows by reference, place or category. There is no
-  // search endpoint yet, so this matches the cases already loaded in the queue.
-  const shown = useMemo(() => {
-    const needle = search.trim().toLowerCase();
-    if (!data || !needle) return data;
-    const matches = (item: QueueItem) => {
-      const area = item.area;
-      const haystack = [
-        item.receipt_code,
-        t(CATEGORY_KEY[item.category.value]),
-        area?.polling_unit_name,
-        area?.ward_name,
-        area?.lga_name,
-        area?.state_name,
-      ]
-        .filter(Boolean)
-        .join(" ")
-        .toLowerCase();
-      return haystack.includes(needle);
-    };
-    return { ...data, items: data.items.filter(matches) };
-  }, [data, search, t]);
+  const shown = data;
 
   return (
     <QueueTableView

@@ -100,7 +100,7 @@ The checklist has six stages: **Arrival, Opening, Accreditation, Voting, Closing
 
 ## 9. Result sheet check
 
-From the checklist's final stage you can **Check the result sheet**. Photograph the sheet that was posted for the public. The app can try to read the numbers from the photo, but that needs a local reading engine (Tesseract) on the server. If it is not installed, the app says "Photo reading is unavailable. Type the numbers instead." and you type them. Either way, check and type exactly what the sheet shows: registered voters, accredited voters, votes for each party and rejected ballots. Tick the box to confirm you checked every number and send for review.
+From the checklist's final stage you can **Check the result sheet**. Photograph the sheet that was posted for the public. The server reads the numbers from the photo with its built-in reading engine (Tesseract, included in the server image) and fills in what it could read; a number it could not read stays empty for you to type. If reading is ever unavailable, the app says "Photo reading is unavailable. Type the numbers instead." and you type them. Either way, check and type exactly what the sheet shows: registered voters, accredited voters, votes for each party and rejected ballots. Tick the box to confirm you checked every number and send for review.
 
 Reviewers see consistency flags: accredited voters exceed registered voters, votes plus rejected ballots differ from the accredited count, two digits that may be swapped, unusually round numbers, or numbers identical to another unit's sheet. The screen says: "Consistency check for review. This is not a result." ElectraGuard never adds up votes or names a winner.
 
