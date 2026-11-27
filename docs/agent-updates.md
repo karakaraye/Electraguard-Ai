@@ -65,27 +65,15 @@ The full plan is in [hackathon-plan.md](hackathon-plan.md).
 
 ## Updates
 
-### 26 Nov 2026 · Antigravity · Readable documentation overhaul for every reader
+### 26 Nov 2026 · Antigravity · Readable documentation overhaul, then fact-check
 
-- **Branch:** `docs/readable`
-- **Goal:** Make the documentation accessible and authoritative for three distinct readers at once: non-technical citizens/voters/observers, election organisation staff (coordinators, reviewers, admins), and hackathon judges/software engineers.
-- **Root README Rewrite (`README.md`):**
-  - Layer 1 ("ElectraGuard in Two Minutes"): Plain English overview of what the platform is, who it is for, what problem it solves in Nigerian elections, what observers and voters actually do, and what is published vs. never published.
-  - Layer 2 ("For Judges"): Rubric-aligned breakdown addressing all 6 hackathon criteria (Technology & Innovation [25], Electoral Relevance [20], Security/Privacy/Responsible AI [20], Inclusion & Multilingual [15], Scalability [15], Demo & Documentation [5]), with direct pointers to files, UI screenshots, API contracts, and tests.
-  - Layer 3 ("For Engineers"): Complete local setup guide (PostgreSQL 17, Django 5.1, Next.js 15), exact test commands, benchmark commands, and links to in-depth guides.
-- **User & Staff Guides (`docs/guides/`):**
-  - Created `docs/guides/img/` containing 25 real UI screenshots from `docs/design/redesign/screens/`.
-  - Authored `observer-guide.md`: Language switching, anonymous batch code/PIN sign-in, guided 7-step incident reporting, offline outbox caching and auto-sync, Form EC8A arithmetic checks, and replying to situation room questions.
-  - Authored `citizen-guide.md`: Anonymous reporting, receipt tracking at `/receipt`, rumour checking at `/check`, and feature phone intake (USSD `*384*24#` and SMS on `/phone`).
-  - Authored `staff-guide.md`: RBAC permissions, queue triage with live review clocks, automated PII redaction (`[NAME_xxxx]`, `[PHONE_xxxx]`), CASE-06 elevation, 60-LGA surveillance, dual-coordinator safety notices, and SHA-256 audit chaining.
-  - Authored `glossary.md`: Plain-English definitions for 17 Nigerian electoral and technical terms.
-- **Submission Documents Refreshed (`docs/submission/`):**
-  - Prepended a 3–5 line "In plain words" summary to all 10 submission files while preserving technical depth below.
-  - Aligned files with current backend components (PostgreSQL 17, C16 automated PII redaction, C17 Poisson+CUSUM volume surveillance, C18 review clocks, community features) and frontend features (warm dawn visual identity, 5 languages, offline ServiceWorker outbox).
-- **Video Script (`docs/submission/VIDEO_SCRIPT.md`):**
-  - Rewrote 3-minute (180s) shot-by-shot demonstration video script specifying exact routes, visual actions, voiceover narration, and second-by-second timing across 6 scenes.
-- **Documentation Sitemap (`docs/README.md`):**
-  - Created complete reader guide mapping every document in the repository by reader persona (Citizen, Observer, Situation Room, Judge, Engineer).
+- **Branch:** `docs/readable` (PR #33). No code changed.
+- **Goal:** Documentation that a citizen, an observer, a staff member and a judge can each read, and that matches the code.
+- **`README.md`:** three layers: a plain-English overview, "For Judges" with each criterion linked to code and measured results, and "For Engineers" with setup, tests and evaluation commands.
+- **Guides (`docs/guides/`):** observer, citizen and staff guides and a 20-term glossary, written from the interface strings and the code, with screenshots of the current "Ink and Paper" interface in `docs/guides/img/` (taken from `docs/design/redesign/screens-final/`).
+- **Submission documents (`docs/submission/`):** an "In plain words" summary added to each; numbers checked against `docs/eval/`, the data files and the code.
+- **`docs/submission/VIDEO_SCRIPT.md`:** a 180-second, six-scene script.
+- **`docs/README.md`:** index by reader.
 
 ### 25 Nov 2026 · Antigravity · Community features backend complete (Sections A, B, C, D)
 

@@ -1,7 +1,7 @@
 # Architecture and Technical Design: ElectraGuard AI
 
 > **In plain words:**  
-> ElectraGuard AI is built like a secure emergency-response system. Observers and voters send reports from phones even when there is no mobile data. The backend server automatically cleans names and phone numbers, groups similar reports, and measures review response times against strict deadlines. Human reviewers make every decision, and every change is locked into an unchangeable digital chain so no report can be quietly altered or deleted.
+> ElectraGuard AI is built like a secure emergency-response system. Observers and voters send reports from phones even when there is no mobile data. The backend server automatically hides names and phone numbers, suggests similar reports, and tracks review times against targets. Human reviewers make every decision, and every staff action is added to a hash chain so a quietly changed or deleted record can be detected.
 
 ---
 
@@ -14,18 +14,18 @@
 
 ## 1. System Overview
 
-ElectraGuard AI is a nonpartisan, offline-first election observation, incident verification, and civic accountability platform built specifically for low-connectivity environments in Nigeria.
+ElectraGuard AI is a nonpartisan election observation and incident verification prototype for low-connectivity settings in Nigeria. It is a prototype and has not been deployed.
 
 ### System Context Diagram
 ```mermaid
 flowchart TD
   subgraph Ingestion["Ingestion Channels"]
     Obs[Accredited Observer PWA] -->|Offline-First Queue| Outbox[Local Outbox (IndexedDB)]
-    Cit[Citizen Web Portal] -->|Anonymous Form| WebAPI[REST API Gateway]
-    Phone[Feature Phone User] -->|SMS / USSD *384*24# (Prototype)| Telecom[Telecom Webhook / Simulator]
+    Cit[Citizen Web Pages] -->|Anonymous Form| WebAPI[REST API Gateway]
+    Phone[Feature Phone User] -->|SMS 20384 / USSD *347*88# (test values, simulator)| Telecom[Telecom Webhook / Simulator]
   end
 
-  Outbox -->|Background Sync (TLS 1.3)| WebAPI
+  Outbox -->|Background Sync (HTTPS)| WebAPI
   Telecom -->|Webhook Callback| WebAPI
 
   subgraph Processing["Backend Application & AI Services"]
@@ -38,21 +38,21 @@ flowchart TD
     AI --> Abstain[Uncertainty Abstention]
     AI --> Dup[Near-Duplicate Matcher]
     AI --> Cluster[Poisson & CUSUM Surge Detector]
-    AI --> Clocks[Regulatory Review Clocks]
+    AI --> Clocks[Review Clocks]
     AI --> RSCheck[Result Sheet Consistency EC8A]
     AI --> Rumour[Multilingual Rumour Matching]
   end
 
   subgraph Review["Human Oversight & Operations"]
     Triage & Cluster & RSCheck & Clocks --> Queue[Staff Reviewer & Operations Room]
-    Queue -->|Accept / Correct / Dispatch| AuditChain[SHA-256 Merkle Audit Chain]
+    Queue -->|Accept / Correct / Dispatch| AuditChain[SHA-256 Audit Chain]
   end
 
   subgraph Output["Transparency & Feedback"]
     AuditChain --> PubAPI[Cell-Suppressed Snapshot Publisher]
     PubAPI --> PublicDash[Public Transparency Dashboard]
     PubAPI --> CitizenReceipt[Citizen Status Lookup]
-    AuditChain --> Export[Exportable Audit Chain Head]
+    AuditChain --> Verify[Audit verification]
   end
 ```
 
@@ -60,19 +60,23 @@ flowchart TD
 
 ## 2. Core Components
 
-| Component | Responsibility | Tech Stack | Location |
+| Component | Responsibility | Tech stack | Location |
 |---|---|---|---|
-| **Observer PWA (`app/(observer)`)** | Offline checklist, incident reporting, PIN management, client-side IndexedDB outbox with auto-flush on reconnection. | Next.js 16 App Router, React 19, CSS Modules, IndexedDB | `frontend/app/(observer)` |
-| **Staff Console (`app/(staff)`)** | Queue triage, case review, redaction, operations room, review clock monitoring, ward check-ins, rumour approval, audit export. | Next.js 16 App Router, React 19, CSS Modules | `frontend/app/(staff)` |
-| **Public Portal (`app/(public)`)** | Citizen reporting, receipt lookup, rumour checking, public transparency dashboard with `< 5` cell suppression. | Next.js 16, React 19, Server Components | `frontend/app/(public)` |
-| **API Gateway & Core (`backend/`)** | REST API endpoints, organisation scoping, observer code authentication, case transitions, and idempotency control. | Django 5, Django REST Framework, PostgreSQL 17 | `backend/` |
-| **Privacy Redactor (`backend/privacy`)** | Synchronous PII redaction (phones, VIN, NIN, BVN, Nigerian names) replacing sensitive text with scoped HMAC tokens. | Python 3.12, regex, HMAC-SHA256 | `backend/privacy` |
-| **Intelligence Engine (`backend/intelligence`)** | Triage classification, urgency scoring, uncertainty abstention, duplicate detection, result sheet EC8A arithmetic verification. | Python 3.12, scikit-learn, NumPy, SciPy | `backend/intelligence` |
-| **Emerging Alerts (`backend/ops`)** | Dual-window Poisson anomaly detection, Benjamini–Hochberg FDR control ($q=0.05$), and CUSUM drift scanning. | Python 3.12, SciPy, PostgreSQL | `backend/ops` |
-| **Review Clocks (`backend/clocks`)** | Regulatory time-to-review timers (urgent: 15m, high: 60m, normal: 240m), background sweep, and single overdue breach auditing. | Python 3.12, Django ORM | `backend/clocks` |
-| **Rumour Matching (`backend/rumours`)** | Semantic claim similarity matching against approved debunks with TF-IDF fallback and public check ranking. | Python 3.12, sentence-transformers, scikit-learn | `backend/rumours` |
-| **Telecom Channels (`backend/phone_channels`)** | SMS and USSD (`*384*24#`) callback webhooks, phone hashing, outbound receipt dispatch, interactive simulator. | Python 3.12, Django Channels | `backend/phone_channels` |
-| **Cryptographic Audit (`backend/reports`, `security`)** | Immutable SHA-256 tamper-evident hash chaining for all state transitions with on-demand verification. | Python `hashlib`, PostgreSQL | `backend/reports`, `backend/security` |
+| **Observer app** | Checklist, incident reports, PIN management, offline outbox that sends on reconnection, messages, discussions, "Ask". | Next.js 16 App Router, React 19, CSS Modules, IndexedDB, service worker | `frontend/app/(observer)/o`, `frontend/lib/outbox`, `frontend/public/sw.js` |
+| **Staff console** | Queue, case review, assignment, operations, check-ins, rumour desk, publishing, discussions moderation, observer codes, staff accounts, settings, security. | Next.js 16, React 19 | `frontend/app/(staff)/s` |
+| **Public pages** | Home, reviewed results, rumour check, guides, "Ask", privacy notice, SMS and USSD simulator, receipt status page. | Next.js 16, React 19 | `frontend/app/(public)`, `frontend/app/(citizen)` |
+| **API and core** | REST endpoints, organisation scoping, observer and staff authentication, case transitions, idempotency. | Django 5.2, Django REST framework, PostgreSQL 17 | `backend/` (`accounts`, `reports`, `staff`, `reference`) |
+| **Privacy redactor** | Synchronous redaction of phone numbers, VIN, NIN, BVN, emails, account numbers, addresses and listed names into keyed tokens. | Python 3.12, regular expressions, HMAC-SHA256 | `backend/privacy` |
+| **Intelligence** | Category and urgency suggestions, abstention, duplicate candidates, claim ranking, transit-risk model; evaluation command. | scikit-learn, NumPy | `backend/intelligence` |
+| **Result-sheet checks** | Five arithmetic and pattern flags on Form EC8A transcriptions. | Python | `backend/reports/result_checks.py` |
+| **Cluster and emerging alerts** | Count-in-window cluster warnings; Poisson (30 and 60 minute windows), Benjamini-Hochberg (q = 0.05) and one-sided CUSUM detector; coverage. | Python (statistics written in plain Python), PostgreSQL | `backend/ops` |
+| **Review clocks** | Per-case target times (urgent 15, high 60, normal 240, low 480, reply 120 minutes), overdue sweep, one alert per overdue case. | Django ORM | `backend/clocks` |
+| **Rumours** | Rumour desk, two-person approval of replies, matching of public queries to approved answers (TF-IDF; a multilingual sentence model is used only if installed locally). | scikit-learn, optional sentence-transformers | `backend/rumours` |
+| **Notices** | Ward and LGA check-ins; safety notices need a second coordinator. | Django | `backend/notices` |
+| **Phone channels** | SMS and USSD handlers, phone hashing, simulator. | Django views | `backend/phone_channels` |
+| **Audit record** | Per-organisation SHA-256 hash chain and verification. | Python `hashlib`, PostgreSQL | `backend/staff/audit.py` |
+| **Public results** | Snapshots of reviewed totals with small-number suppression and a publication delay of at least 60 minutes. | Django | `backend/publicdata` |
+
 
 ---
 
@@ -81,17 +85,17 @@ flowchart TD
 ```
 [Observer/Citizen Input]
        │
-       ▼ (Client: zero personal data collected; phone numbers hashed to HMAC-SHA256)
+       ▼ (Client: no name is asked for; SMS and USSD phone numbers are stored only as keyed hashes)
 [WebAPI / Django Gateway]
        │
-       ▼ (Encrypted in transit via TLS 1.3; Idempotency-Key validated)
+       ▼ (HTTPS in transit; Idempotency-Key validated)
 [Synchronous Redaction Engine]
        │
-       ▼ (PII replaced with [PHONE_xxxx], [NAME_xxxx], [ID_xxxx] tokens)
+       ▼ (personal details replaced with tokens such as [PHONE_xxxx], [NAME_xxxx], [VIN_xxxx])
 [Database Storage (PostgreSQL 17)]
-  ├── Redacted report narrative (raw original accessible only via audited CASE-06)
+  ├── Report text (reviewers are shown the redacted form; the original is reachable only through audited CASE-06)
   ├── Anonymous Reporter Hash (HMAC-SHA256)
-  └── Location: LGA / Ward / Polling Unit Code
+  └── Location: state, LGA, ward and polling unit, as far as the reporter gave it
        │
        ▼ (AI Inference: read-only feature extraction; generates suggestions only)
 [Reviewer Interface]
@@ -100,25 +104,20 @@ flowchart TD
        │
        ▼ (Appended to SHA-256 Audit Chain Head)
 [Public Transparency Engine]
-  └── Aggregation to LGA level; small-cell suppression (< 5 reports -> "< 5")
+  └── Totals by state, type and hour; counts below 5 shown as "fewer than 5"
 ```
 
 ---
 
 ## 4. Models and Algorithmic Logic
 
-1. **Category Triage:** Calibrated multi-class model predicting 7 product categories (`access_barrier`, `equipment_failure`, `good_practice`, `intimidation_violence`, `lack_of_information`, `late_materials`, `queues_crowding`).
-2. **Urgency Classification:** Cost-sensitive probability scoring tuned on validation split combined with deterministic escalation rules for immediate danger, violence, and local clusters.
+1. **Category Triage:** A character n-gram TF-IDF and logistic regression model predicting 7 model categories (the observer app offers 10 tiles, including "Not sure", "Misinformation seen here" and "Vote buying or inducement"; the model is scored on these 7) (`access_barrier`, `equipment_failure`, `good_practice`, `intimidation_violence`, `lack_of_information`, `late_materials`, `queues_crowding`).
+2. **Urgency:** A severity probability from the text model, with a threshold chosen on the validation split, combined with rules: danger reported now (+5), intimidation or violence (+3), a high severity probability (+3), firsthand, evidence and local cluster (+1 each). A score of 3 or more is urgent.
 3. **Uncertainty Abstention:** When model confidence falls below `0.40`, the model explicitly abstains (`abstain = true`), routing the item to human reviewers without automated pre-selection.
-4. **Duplicate Detection:** TF-IDF n-gram and character similarity constrained within matching polling unit / ward boundaries and 2-hour temporal windows.
-5. **Spatial Cluster Detection:** Dual-window (30m & 60m) Poisson scan statistic evaluated against earlier local baselines and peer LGAs, with Benjamini–Hochberg False Discovery Rate control ($q=0.05$) and one-sided CUSUM drift detection.
-6. **Result-Sheet Consistency (EC8A):** Five mathematical assertions:
-   - $V_{accredited} \le V_{registered}$
-   - $\sum V_{party} + V_{rejected} = V_{ballots\_cast}$
-   - Flagging identical vote totals repeated across consecutive polling units.
-   - Identifying Benford's law / round number anomalies ($V \pmod{50} = 0$).
-   - Digit transposition checks ($\text{diff} \pmod 9 = 0$).
-7. **Semantic Claim Matching:** Dense multilingual sentence embeddings comparing incoming citizen queries to approved debunks, with TF-IDF fallback when neural models are offline.
+4. **Duplicate Detection:** Cosine similarity of character 3-grams (threshold 0.65) between reports in the same ward within a 90-minute window.
+5. **Emerging Alerts:** Poisson tests over 30- and 60-minute windows against earlier local baselines and peer LGAs, with Benjamini-Hochberg false-discovery control (q = 0.05) and a one-sided CUSUM.
+6. **Result-Sheet Consistency (EC8A):** Five flags: accredited voters above registered voters; votes plus rejected ballots not equal to accredited voters; a swap of two adjacent digits that would reconcile the count; three or more vote entries that are multiples of ten; and numbers identical to another unit's sheet.
+7. **Claim Matching:** Compares a public query with reviewer-approved answers. It uses a multilingual sentence model only if one is installed locally (it is not in `requirements.txt`), otherwise word and character TF-IDF. The default match threshold is 0.35.
 
 ---
 
@@ -127,9 +126,9 @@ flowchart TD
 | Touchpoint | System Proposal | Human Action Required | Fallback if Human Unavailable |
 |---|---|---|---|
 | **Incident Review** | Suggested category & urgency level | Reviewer clicks "Accept" or selects "Correct" | Report remains marked "Received / In Review"; never auto-promoted. |
-| **Rumour Desk** | Suggested veracity score & harm score | Fact-checker verifies sources and drafts debunk | Debunk is held in draft; never published to public channels. |
-| **Safety Advisory** | Security alert for field observers | **Dual authorization:** requires two independent coordinators to sign off | Notice held in draft; never broadcast to observers or public. |
-| **Result-Sheet Flags** | Arithmetic inconsistency warning | Auditor examines physical/scanned Form EC8A photo | Warning displayed in dashboard; vote totals are never altered. |
+| **Rumour Desk** | Suggested harm and check priority | A coordinator drafts a reply; a different coordinator approves it | The reply stays in draft and is not shown to the public. |
+| **Safety notice** | A coordinator writes a check-in of type "safety" | A different coordinator must approve it | It stays pending and observers do not see it. |
+| **Result-Sheet Flags** | Arithmetic inconsistency flags | The reviewer compares with the photo of the sheet | Flags are shown with possible harmless causes; numbers are never altered. |
 | **Public Transparency** | Draft aggregated snapshot | Coordinator approves cutoff date and release | No new snapshot published; previous snapshot remains active. |
 
 ---
@@ -138,16 +137,17 @@ flowchart TD
 
 | Threat Category | Target Component | Technical Mitigation | Residual Risk |
 |---|---|---|---|
-| **Spoofing** | Observer Reporting | Random alphanumeric batch codes + 6-digit PINs; observer personal identity is never recorded. | Credential theft mitigated by PIN lockout after 5 failed attempts. |
-| **Tampering** | Audit & Case Records | Merkle-style SHA-256 hash chaining (`AuditChainHead`); every transition is tamper-evident. | Database compromise cannot forge historical chain hashes. |
-| **Repudiation** | Staff Review Actions | Cryptographic signing of review actions with actor UUID and timestamp in immutable audit log. | None. |
-| **Information Disclosure** | Informant / Reporter Identity | Zero PII stored; phone numbers converted to HMAC-SHA256; public dashboard suppresses cells < 5. | Re-identification via side-channels prevented by LGA aggregation. |
-| **Denial of Service** | Web & Telecom API | Gateway rate limiting (10 req/hour per IP/device on public check; 30 req/hour on CASE-06); UUIDv4 idempotency keys. | Distributed volumetric attacks mitigated by reverse proxy. |
-| **Elevation of Privilege** | Staff Workspace | Strict role-based access control (RBAC): Observer, Reviewer, Coordinator, Moderator, Org Admin. | Role boundary violations caught by unit tests and middleware. |
+| **Spoofing** | Observer sign-in | Random codes with a check character; PINs hashed with PBKDF2-SHA256; 5 wrong tries in 15 minutes lock the code for 15 minutes, 10 in 24 hours lock it until reset. | A stolen card and PIN work until revoked. |
+| **Tampering** | Audit and case records | Per-organisation SHA-256 hash chain (`AuditEvent`, `backend/staff/audit.py`); verification at `GET /api/v1/audit/verify`. | Someone controlling the database could rewrite the whole chain; the published fingerprint is the check. |
+| **Repudiation** | Staff actions | Review and audit events name the acting account. | Depends on accounts not being shared. |
+| **Information Disclosure** | Reporter identity | No name asked; phone numbers stored only as keyed hashes; small numbers hidden in public results. | Redaction recall is 96.3%; some details can slip through. |
+| **Denial of Service** | Web and phone APIs | Per-user and per-IP rate limits (for example 10 rumour checks an hour per IP and device; 30 original-text requests an hour per reviewer); UUID v4 idempotency keys. | Large distributed floods are not addressed in the code. |
+| **Elevation of Privilege** | Staff console | Server-side role checks: observer, reviewer, moderator, coordinator, organisation admin; records scoped to the organisation. | Only as complete as the tests (`backend/staff/test_boundaries.py`). |
+
 
 ---
 
 ## 7. Deployment and Operations
 
-- **Containerized Architecture:** Fully dockerized via `deploy/compose.yaml` (Django REST API, PostgreSQL 17, Next.js Node runtime, Redis cache, Nginx reverse proxy).
-- **Target Cloud Environment:** Microsoft Azure (Azure App Service / Container Apps, Azure Database for PostgreSQL 17, Azure Blob Storage with customer-managed keys). Detailed deployment scripts provided in `deploy/azure/`.
+- **Containers:** `deploy/compose.yaml` runs PostgreSQL 17, a migration job, the Django backend (gunicorn), a worker, a media worker, the Next.js frontend and an nginx gateway. There is no Redis.
+- **Azure (planned, not deployed):** `deploy/azure/` has Bicep templates for Azure Container Apps, Azure Database for PostgreSQL Flexible Server 17 (private subnet), an Azure Files share for private media, Key Vault and Container Registry, in South Africa North. The team was still waiting for Azure access; see `docs/azure-deployment.md`.

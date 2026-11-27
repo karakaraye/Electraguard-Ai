@@ -5,7 +5,7 @@
 **Date:** 2026-11-26  
 **Status:** Prototype
 
-> **In plain words:** This technical reference documents the REST API endpoints connecting ElectraGuard's observer web app, feature phone gateways, staff review consoles, and public transparency pages. All requests use structured JSON, ISO 8601 timestamps, role-based authentication, and cryptographic receipts. Data privacy rules, automated redaction, and small-cell suppression (< 5) are strictly enforced at the API boundary.
+> **In plain words:** This technical reference documents the REST API endpoints connecting ElectraGuard's observer web app, feature phone gateways, staff review consoles, and public transparency pages. All requests use structured JSON, ISO 8601 timestamps, role-based authentication, and receipt codes. Redaction of personal details and small-number suppression (counts below 5) are applied on the server.
 
 ---
 
