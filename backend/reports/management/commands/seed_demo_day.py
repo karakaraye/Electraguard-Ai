@@ -221,7 +221,7 @@ class Command(BaseCommand):
                     language=folder.name, source__document_id=f"guide-{path.stem}", source__section="1",
                     defaults={
                         "title": title[:200], "body": body, "observer_only": False,
-                        "source": {"document_id": f"guide-{path.stem}", "section": "1", "version": "2026-11", "url": "/guide"},
+                        "source": {"document_id": f"guide-{path.stem}", "section": "1", "version": "2026-11", "url": f"/guide/{path.stem}"},
                     },
                 )
                 count += 1

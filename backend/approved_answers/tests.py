@@ -56,3 +56,39 @@ class ApprovedAnswerTests(TestCase):
                                         content_type="application/json").json()
             self.assertEqual(response["passages"][0]["text"], text)
             self.assertFalse(response["fallback_language_used"])
+
+
+class GuideAndPassageTests(TestCase):
+    BODY = ("# How to Check Report Status\n\nA clear record of every report.\n\n"
+            "## Your Receipt Code\nEvery report gets a receipt code that looks like EG followed by two groups of four letters or numbers.\n\n"
+            "## Opening Hours\nThe help desk is open on election day.")
+
+    def setUp(self):
+        for language, title in (("en", "How to Check Report Status"), ("ha", "Yadda ake duba rahoto")):
+            ApprovedDocument.objects.create(
+                language=language, title=title, body=self.BODY,
+                source=dict(document_id="guide-checking-status", section="1", version="2026-11", url="/guide/checking-status"))
+        ApprovedDocument.objects.create(language="en", title="Private", body="Secret.", observer_only=True,
+                                        source=dict(document_id="guide-private", section="1", version="1", url="/guide/private"))
+
+    def test_guide_list_and_page_use_the_requested_language_and_hide_observer_pages(self):
+        listing = Client().get("/api/v1/public/guides", {"language": "ha"}).json()
+        self.assertEqual([d["slug"] for d in listing["documents"]], ["checking-status"])
+        self.assertEqual(listing["documents"][0]["language"], "ha")
+        page = Client().get("/api/v1/public/guides/checking-status", {"language": "en"}).json()
+        self.assertEqual([s["heading"] for s in page["sections"]],
+                         ["How to Check Report Status", "Your Receipt Code", "Opening Hours"])
+        self.assertEqual(Client().get("/api/v1/public/guides/private").status_code, 404)
+
+    def test_ask_quotes_the_matching_passage_with_its_section_and_abstains_otherwise(self):
+        client = Client()
+        csrf = client.get("/api/v1/auth/csrf").json()["csrf_token"]
+        ask = lambda q: client.post("/api/v1/ask", dict(question=q, language="en", audience="public"),
+                                    content_type="application/json", HTTP_X_CSRFTOKEN=csrf).json()
+        answer = ask("What does my receipt code look like?")
+        top = answer["passages"][0]
+        self.assertIn("groups of four letters or numbers", top["text"])
+        self.assertEqual(top["source"]["section"], "Your Receipt Code")
+        self.assertEqual(top["source"]["url"], "/guide/checking-status#your-receipt-code")
+        self.assertEqual(top["source"]["version"], "2026-11")
+        self.assertEqual(ask("What is the capital of France?")["status"], "abstained")

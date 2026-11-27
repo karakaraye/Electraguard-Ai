@@ -2,7 +2,7 @@ from django.urls import include, path
 
 from accounts import observer_auth, staff_admin, staff_auth, views
 from accounts.models import User
-from approved_answers.views import ask
+from approved_answers.views import ask, guide, guides
 from reports import conversation
 from reports.result_ocr import read_photo
 
@@ -40,6 +40,8 @@ urlpatterns = [
     path("api/v1/publish/snapshots/<uuid:snapshot_id>/discard", publish.snapshot_decision, {"decision": "discard"}),
     path("api/v1/publish/schedule", publish.schedule),
     path("api/v1/public/results", publish.results),
+    path("api/v1/public/guides", guides),
+    path("api/v1/public/guides/<slug:slug>", guide),
     path("api/v1/public/check", rumour_public.public_check_view),
     path("api/v1/observer/area-today", publish.observer_area_today),
     path("api/v1/rumours/claims", rumour_views.collection),

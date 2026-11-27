@@ -32,6 +32,16 @@ async function page(options = {}) {
   const check_ = await p.locator("body").innerText();
   check("rumour check gives an approved answer", /Checked by ElectraGuard/i.test(check_));
   await p.screenshot({ path: `${shots}/check.png` });
+  await p.goto(`${BASE}/guide`); await p.waitForLoadState("networkidle");
+  check("guide lists approved pages", (await p.getByTestId("guide-list").locator("li").count()) > 0);
+  await p.screenshot({ path: `${shots}/guide-list.png` });
+  await p.goto(`${BASE}/ask`);
+  await p.getByTestId("ask-question").fill("What does my receipt code look like?");
+  await p.getByTestId("ask-submit").click();
+  await p.getByTestId("ask-answer").waitFor({ timeout: 60000 });
+  await p.waitForTimeout(1000);
+  check("ask quotes the receipt code passage", /EG-····-····/.test(await p.getByTestId("ask-answer").innerText()));
+  await p.screenshot({ path: `${shots}/ask-receipt.png` });
   await p.goto(`${BASE}/phone`); await p.waitForLoadState("networkidle");
   const phone = await p.locator("body").innerText();
   check("phone simulator shows test-number label", /test/i.test(phone) && /simulat/i.test(phone));
