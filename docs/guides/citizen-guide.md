@@ -48,9 +48,17 @@ Go to `/check` (**Check a rumour**), paste or type the message (5 to 500 charact
 
 ---
 
-## 5. Basic phones: SMS and USSD
+## 5. Read the guides and ask a question
+
+Go to `/guide` (**Guides**) for short pages on what to report, what happens to your report, checking its status, staying safe and your rights. Choose a language in the header; a page that is not yet written in that language is shown in English and says so. Go to `/ask` (**Ask**) and type a question of 3 to 500 characters. ElectraGuard does not write an answer. It finds the paragraph in the approved guides that best matches your question and quotes it word for word, with the page and section it came from and a link to that section. If nothing in the guides matches, it says it has no approved answer. Questions are not stored, only counts by language.
+
+---
+
+## 6. Basic phones: SMS and USSD
 
 > **Prototype notice.** The SMS number **20384** is a test number for this prototype, and the USSD code is **\*347\*88#**. Neither is connected to a mobile network yet. They run on the on-screen phone at `/phone`. A commercial short code has to be leased from a telecom operator before real phones can use them.
+
+Each place that shows the number or the code adds the words "Test number for this prototype" (in all five languages). The label is switched by one setting, `SMS_SHORT_CODE_IS_TEST` in `frontend/lib/config.ts`, and goes away when it is set to false after a real short code is leased.
 
 On the simulator, or once connected:
 
@@ -68,7 +76,7 @@ The system stores your phone number only as a scrambled code, never in plain for
 
 ---
 
-## 6. Public results
+## 7. Public results
 
 The **Results** page shows totals of reports that reviewers have finished, by state, type and hour, published at least 60 minutes after the reports. Any number below 5 is shown as "fewer than 5". These are reviewed observations, **not official results**. Only INEC declares results.
 

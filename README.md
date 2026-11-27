@@ -32,9 +32,10 @@ An observer signs in with a code and PIN from a printed card (for example `OBS-7
 
 ### What a citizen does
 No account is needed.
-1. Report from the website (`/o/new/what?as=citizen`), or by SMS or USSD on a basic phone. **The SMS number `20384` and the USSD code `*347*88#` are test values for this prototype and run on an on-screen simulator at `/phone`. A commercial short code must be leased from a telecom operator before real phones can use them.**
+1. Report from the website (`/o/new/what?as=citizen`), or by SMS or USSD on a basic phone. **The SMS number `20384` and the USSD code `*347*88#` are test values for this prototype and run on an on-screen simulator at `/phone`. A commercial short code must be leased from a telecom operator before real phones can use them.** Every place that prints either number adds "Test number for this prototype" in all five languages; one flag, `SMS_SHORT_CODE_IS_TEST` in [`frontend/lib/config.ts`](frontend/lib/config.ts), switches those labels off once real numbers exist.
 2. Use the receipt code to check progress at `/status`, in the app, or by SMS (`STATUS <code>`).
 3. Check a rumour at `/check` (or `CHECK <message>` by SMS). If reviewers approved an answer, it is shown. If not, the claim can be passed to the rumour desk.
+4. Read the approved guides at `/guide` (five pages, in five languages; English fills any page not yet translated) and ask a question at `/ask`. Ask does not write text: it quotes the best-matching paragraph of an approved guide word for word, names the page and section, and links to that section. If nothing matches, it says it has no approved answer ([`backend/approved_answers/views.py`](backend/approved_answers/views.py)).
 
 ### What is published and what is not
 - **Published** on the public pages (`/` and `/results`): totals of reviewed reports by state, by type and by hour, released at least 60 minutes after the reports. Any number below 5 is shown as "fewer than 5". Approved rumour answers are shown on `/check`.
@@ -70,7 +71,7 @@ Each point below links to the code or a measured result in this repository. Numb
 ### Criterion 4: Inclusion and Multilingual (15)
 - **Five languages.** English, Nigerian Pidgin, Hausa, Yoruba and Igbo have a complete set of interface strings ([`frontend/messages/`](frontend/messages/)). No native-speaker review has been done.
 - **Basic phones.** SMS and USSD handlers with menus in five languages ([`backend/phone_channels/`](backend/phone_channels/)). In this prototype they are exercised only through the simulator at `/phone`.
-- **Accessibility.** Automated axe checks run in the real-server tests ([`frontend/e2e/observer-real/08-accessibility.spec.ts`](frontend/e2e/observer-real/08-accessibility.spec.ts)); earlier review notes in [`docs/reviews/`](docs/reviews/) record 0 serious or critical findings. Automated checks do not prove full WCAG conformance.
+- **Accessibility.** The final verification pass captured 925 screens-by-state-by-width and ran axe-core (WCAG 2.1 A and AA plus best practice) on each. Axe findings on product screens fell from 986 to 6, and captures with sideways page scroll fell from 27 to 0 on product screens (the one remaining overflow is the internal component gallery). The real public pages had 0 axe violations. The 6 left are on the observer splash overlay and the observer "gone" notice ([`docs/reviews/2026-11-26-final-verification.md`](docs/reviews/2026-11-26-final-verification.md)). A separate axe check also runs in the real-server tests ([`08-accessibility.spec.ts`](frontend/e2e/observer-real/08-accessibility.spec.ts)). Automated checks do not prove full WCAG conformance, and no assistive-technology user test has been done.
 - **Low bandwidth.** Offline outbox in IndexedDB and a service worker ([`frontend/lib/outbox/`](frontend/lib/outbox/), [`frontend/public/sw.js`](frontend/public/sw.js)). A first-load size under 300 KB is a design target ([`docs/design/design-contract.md`](docs/design/design-contract.md)); it was measured on earlier builds of the public pages and has not been re-measured on the current design.
 
 ### Criterion 5: Scalability (15)
@@ -79,7 +80,9 @@ Each point below links to the code or a measured result in this repository. Numb
 - **Deployment.** Docker Compose with an nginx gateway and PostgreSQL 17, and Azure Bicep templates for Azure Container Apps ([`deploy/compose.yaml`](deploy/compose.yaml), [`deploy/azure/`](deploy/azure/), [`docs/azure-deployment.md`](docs/azure-deployment.md)). **Nothing has been deployed to Azure yet.**
 
 ### Criterion 6: Demo and Documentation (5)
-- **Video script:** [`docs/submission/VIDEO_SCRIPT.md`](docs/submission/VIDEO_SCRIPT.md).
+- **Run the demonstration yourself:** [`docs/demo/RUN-THE-DEMO.md`](docs/demo/RUN-THE-DEMO.md) starts the backend, the website and a seeded synthetic polling day in Kano (about 69 reports, 8 rumour claims, 4 check-ins, a published snapshot) with four scripts in [`scripts/demo/`](scripts/demo/). Staff sign-in codes come from `manage.py demo_totp`, which works only with `DJANGO_DEBUG=true`. Sign-ins are written to a private file outside the project folder, never into the repository.
+- **Video script:** [`docs/submission/VIDEO_SCRIPT.md`](docs/submission/VIDEO_SCRIPT.md). It notes where the demo stack differs from the product (for example, result-sheet numbers are typed because photo reading needs a local Tesseract engine that the demo stack does not include).
+- **Tests:** 344 backend tests and 32 real-server browser tests (see "Tests and checks" below).
 - **Guides with screenshots of the current interface:** [`docs/guides/`](docs/guides/).
 - **Documentation index:** [`docs/README.md`](docs/README.md).
 
@@ -92,7 +95,7 @@ Each point below links to the code or a measured result in this repository. Numb
 Electraguard-Ai/
 ├── backend/                  # Python 3.12, Django 5.2, Django REST framework
 │   ├── accounts/             # Observer codes and PINs, staff sign-in, organisations
-│   ├── approved_answers/     # Approved guides behind "Ask ElectraGuard"
+│   ├── approved_answers/     # Approved guides: public guide pages and "Ask ElectraGuard"
 │   ├── clocks/               # Review clocks and the overdue sweep
 │   ├── discussions/          # Observer discussions and moderation
 │   ├── intelligence/         # Triage, urgency and duplicate models; evaluate_models command
@@ -111,13 +114,14 @@ Electraguard-Ai/
 │   ├── app/(citizen)/        # Receipt status page
 │   ├── app/(public)/         # Home, results, ask, check, guides, phone simulator, privacy
 │   ├── app/(staff)/s/        # Staff console
+│   ├── e2e/                  # observer-real (32 browser tests, real servers), demo (screen check, recorder), observer (older state scripts)
 │   ├── lib/                  # API client, offline outbox, drafts, i18n
 │   ├── messages/             # en, pcm, ha, yo, ig
 │   └── ui/                   # Components and design tokens
 ├── deploy/                   # Dockerfiles, Compose, nginx gateway, Azure Bicep
 ├── docs/                     # Guides, submission documents, evaluations, design
 ├── data/                     # Synthetic starter data and reference areas
-└── scripts/                  # Evaluation scripts, load test
+└── scripts/                  # Evaluation scripts, load test, demo run scripts (scripts/demo)
 ```
 
 ### Local setup
@@ -154,7 +158,26 @@ CI (`.github/workflows/verify.yml`) runs, against PostgreSQL 17:
 python backend/manage.py test accounts approved_answers clocks config discussions intelligence notices ops phone_channels privacy publicdata reference reports rumours security staff
 cd frontend && npm run lint && npm run typecheck && npm run build
 ```
-The full backend suite last had a recorded count of 295 tests (1 skipped) on 25 November ([`docs/reviews/2026-11-25-c17-emerging-alerts.md`](docs/reviews/2026-11-25-c17-emerging-alerts.md)); later work added tests, and the total has not been re-counted for this document. Further frontend checks: `npm run check` (contrast, message keys, glyphs, privacy). Real-server browser tests live in `frontend/e2e/observer-real/` and run with `npx playwright test -c e2e/observer-real` (see the header of its `playwright.config.ts`).
+**Backend tests.** The suite for the 16 apps above contains **344 tests**. This was counted by loading the suite on this commit (`DiscoverRunner.build_suite`), and it matches a count of `def test_` in the test files. Per app: accounts 36, approved_answers 14, clocks 18, config 6, discussions 9, intelligence 10, notices 20, ops 20, phone_channels 19, privacy 24, publicdata 9, reports 95, rumours 4, security 5, staff 55 (`reference` has none). One test, Whisper voice-note transcription, skips itself unless a local Whisper model and `espeak-ng` are installed. The last recorded run (295 tests, 1 skipped, on 25 November, [`docs/reviews/2026-11-25-c17-emerging-alerts.md`](docs/reviews/2026-11-25-c17-emerging-alerts.md)) predates later work; the 344 figure is a count, not a recorded pass.
+
+**Frontend checks.** `npm run lint`, `npm run typecheck`, `npm run build`, and `npm run check` (contrast, message keys, glyphs, privacy). There are no component unit tests.
+
+**Real-server browser tests: 32 tests in 15 files** in `frontend/e2e/observer-real/`, run against Django, PostgreSQL and Next with no mocks (the tests only cut the network the way a phone would). Run them with `npx playwright test -c e2e/observer-real` (set `EG_BASE`; see the header of its `playwright.config.ts`).
+
+| Files | Tests | What they cover |
+|---|---|---|
+| 01 to 04 | 4 | Observer: first run with PIN setup and a photo, offline send, a lost response retried with the same key, an upload killed at about 40% and resumed |
+| 05 | 2 | Drafts survive reload and language change; drafts are kept per code |
+| 06 | 3 | Session expiry, revoked code and paused intake while a report waits on the phone |
+| 07 | 3 | Phone-side blocks, server error codes, rejected file types |
+| 08, 09 | 2 | Axe scan of the place selector; the app shell, languages and polling-unit list work offline |
+| 10, 11 | 10 | Ward check-ins (including blocked personal details, two-person safety approval, offline answers, "fewer than 5" in "Your LGA today") and the rumour desk with public asks |
+| 12 | 2 | Staff review: queue by keyboard, redacted text, question and reply, closing a case; bulk assignment and forbidden pages |
+| 13 | 2 | Publishing a snapshot with small-number suppression, history, and the public results page; observer code batches, revoking a code, pausing intake |
+| 14 | 2 | The on-screen phone (SMS report, status, USSD menu) and the public rumour check with the ask count |
+| 15 | 2 | Guide pages and Ask quotes show lists and inline code from the approved text without changing its wording; a list stays with the sentence that introduces it |
+
+Counts per file come from the `test(` calls in each spec. **Demonstration screen check:** `node e2e/demo/verify.mjs` (from `frontend/`, with the demonstration stack running) opens each demo screen and prints PASS or FAIL; it is a smoke check, not part of CI. CI runs the backend tests, lint, typecheck and build; it does not run the browser tests.
 
 ### Evaluation
 ```bash
@@ -166,5 +189,7 @@ python scripts/eval/claim_matching.py      # rumour matching
 
 ### Documentation
 - [`docs/README.md`](docs/README.md): index by reader
+- [`docs/demo/RUN-THE-DEMO.md`](docs/demo/RUN-THE-DEMO.md): run the demonstration on one Windows laptop
+- [`docs/reviews/2026-11-26-final-verification.md`](docs/reviews/2026-11-26-final-verification.md): final accessibility and layout verification
 - Guides: [`observer`](docs/guides/observer-guide.md), [`citizen`](docs/guides/citizen-guide.md), [`staff`](docs/guides/staff-guide.md), [`glossary`](docs/guides/glossary.md)
 - [`docs/submission/ARCHITECTURE.md`](docs/submission/ARCHITECTURE.md), [`API_REFERENCE.md`](docs/submission/API_REFERENCE.md), [`THREAT_MODEL.md`](docs/submission/THREAT_MODEL.md), [`SAFETY_AND_LIMITATIONS.md`](docs/submission/SAFETY_AND_LIMITATIONS.md), [`MODEL_CARD.md`](docs/submission/MODEL_CARD.md), [`DATASHEET.md`](docs/submission/DATASHEET.md), [`EVALUATION.md`](docs/submission/EVALUATION.md), [`VIDEO_SCRIPT.md`](docs/submission/VIDEO_SCRIPT.md)

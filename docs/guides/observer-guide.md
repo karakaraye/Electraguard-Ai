@@ -100,7 +100,7 @@ The checklist has six stages: **Arrival, Opening, Accreditation, Voting, Closing
 
 ## 9. Result sheet check
 
-From the checklist's final stage you can **Check the result sheet**. Photograph the sheet that was posted for the public (the app tries to read the numbers, or you type them), then type exactly what the sheet shows: registered voters, accredited voters, votes for each party and rejected ballots. Tick the box to confirm you checked every number and send for review.
+From the checklist's final stage you can **Check the result sheet**. Photograph the sheet that was posted for the public. The app can try to read the numbers from the photo, but that needs a local reading engine (Tesseract) on the server. If it is not installed, the app says "Photo reading is unavailable. Type the numbers instead." and you type them. Either way, check and type exactly what the sheet shows: registered voters, accredited voters, votes for each party and rejected ballots. Tick the box to confirm you checked every number and send for review.
 
 Reviewers see consistency flags: accredited voters exceed registered voters, votes plus rejected ballots differ from the accredited count, two digits that may be swapped, unusually round numbers, or numbers identical to another unit's sheet. The screen says: "Consistency check for review. This is not a result." ElectraGuard never adds up votes or names a winner.
 
@@ -112,4 +112,4 @@ Reviewers see consistency flags: accredited voters exceed registered voters, vot
 
 - **Check-ins.** A coordinator can ask observers in a ward or LGA a short question. A banner on Home asks you to answer **Yes**, **No** or **Not seen**. You can answer offline; it is sent with the time you answered.
 - **Discussions.** A moderator may invite you to talk with other observers in your area about a shared problem. Others see only your observer code and what you write. Write the ward, never a polling unit, and no names or phone numbers.
-- **Ask ElectraGuard.** Answers are taken only from approved guides and show their source. If there is no approved answer, the app says so.
+- **Ask ElectraGuard.** The answer is the paragraph of an approved guide that best matches your question, quoted word for word and shown with its page and section. Nothing is written by the system. Signed in, you can also get answers from pages meant only for observers. If no approved paragraph matches, the app says so. A page not yet written in your language is shown in English.

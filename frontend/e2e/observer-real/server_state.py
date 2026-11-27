@@ -357,6 +357,31 @@ def approved_claim(text, answer, lga="AD-01"):
     out({"id": str(row.pk), "text": text, "answer": answer})
 
 
+GUIDE_SLUG = "e2e-formatting"
+GUIDE_BODY = """# E2E Formatting Guide
+
+A short introduction to the zebra checklist.
+
+## Zebra Checklist
+Bring the following items to the zebra desk:
+
+- your `ZEBRA-CARD` slip
+- a pen
+
+Then wait for the zebra call."""
+
+
+def guide(flag="on"):
+    from approved_answers.models import ApprovedDocument
+
+    ApprovedDocument.objects.filter(source__document_id="guide-" + GUIDE_SLUG).delete()
+    if flag == "on":
+        ApprovedDocument.objects.create(
+            language="en", title="E2E Formatting Guide", body=GUIDE_BODY,
+            source=dict(document_id="guide-" + GUIDE_SLUG, section="1", version="2026-11", url="/guide/" + GUIDE_SLUG))
+    out({"slug": GUIDE_SLUG})
+
+
 def assign(report_ref, email):
     user = User.objects.get(email=email)
     try:
@@ -372,7 +397,7 @@ COMMANDS = {
     "issue": issue, "revoke": revoke, "pause": pause, "simulator": simulator, "expire": expire, "reports": reports, "photo": photo,
     "cleanup": cleanup, "staff": staff, "totp": totp, "area": area, "place": place, "closed": closed,
     "notice-answers": notice_answers, "notice": notice, "answers": answers, "claim": claim, "withdraw": withdraw,
-    "assign": assign, "approved-claim": approved_claim,
+    "assign": assign, "approved-claim": approved_claim, "guide": guide,
 }
 
 if __name__ == "__main__":

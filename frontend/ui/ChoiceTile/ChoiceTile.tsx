@@ -64,6 +64,8 @@ export function GroupError({ error, id }: { error: ReactNode; id: string }) {
 }
 
 export type ChoiceTileProps = {
+  /** Short answers side by side (Yes / No / Not seen): label centred, a small tick in the corner, 56 px tall. */
+  compact?: boolean;
   name: string;
   value: string;
   checked: boolean;
@@ -96,6 +98,7 @@ export function ChoiceTile({
   tone,
   disabled,
   type = "radio",
+  compact,
   "data-testid": testId,
 }: ChoiceTileProps) {
   // The tick pops only when this tile is chosen now, never when a saved answer is shown again.
@@ -108,6 +111,7 @@ export function ChoiceTile({
       data-disabled={disabled || undefined}
       data-bare={icon ? undefined : ""}
       data-tone={tone}
+      data-compact={compact || undefined}
       data-testid={testId}
     >
       <input

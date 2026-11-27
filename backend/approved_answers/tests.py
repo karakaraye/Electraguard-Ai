@@ -4,7 +4,7 @@ from tempfile import TemporaryDirectory
 from unittest.mock import patch
 
 from django.core.management import call_command
-from django.test import Client, TestCase
+from django.test import Client, SimpleTestCase, TestCase
 
 from .models import ApprovedDocument
 
@@ -92,3 +92,16 @@ class GuideAndPassageTests(TestCase):
         self.assertEqual(top["source"]["url"], "/guide/checking-status#your-receipt-code")
         self.assertEqual(top["source"]["version"], "2026-11")
         self.assertEqual(ask("What is the capital of France?")["status"], "abstained")
+
+
+class GuideBlockTests(SimpleTestCase):
+    def test_a_lead_in_paragraph_keeps_its_list(self):
+        from .views import blocks
+
+        body = "## Desk\nBring these:\n\n- your card\n- a pen\n\nThen wait.\n\nA note:\n\nNot a list."
+        self.assertEqual(blocks(body), [
+            ("Desk", "Bring these:\n\n- your card\n- a pen"),
+            ("Desk", "Then wait."),
+            ("Desk", "A note:"),
+            ("Desk", "Not a list."),
+        ])

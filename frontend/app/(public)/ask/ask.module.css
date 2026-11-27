@@ -70,10 +70,32 @@
   color: var(--ink);
 }
 
-.passage blockquote p {
+.passage blockquote p,
+.passage blockquote ul {
   margin: 0;
   font: var(--t-body-lg);
   white-space: pre-line;
+}
+
+.passage blockquote ul {
+  display: grid;
+  gap: var(--s-2);
+  padding-inline-start: 1.5rem;
+  white-space: normal;
+}
+
+.passage blockquote p + p,
+.passage blockquote p + ul,
+.passage blockquote ul + p {
+  margin-top: var(--s-3);
+}
+
+.passage blockquote code {
+  padding: 0.1em 0.35em;
+  border-radius: 4px;
+  background: var(--rule);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.9em;
 }
 
 .source {

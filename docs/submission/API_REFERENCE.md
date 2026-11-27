@@ -9,7 +9,7 @@
 
 ---
 
-Base revision of `production-readiness` is `5adae65aa316`. The [design contract](../design/api-contracts.md) supplies the versioned request and response examples below. Availability annotations identify routes and features that need another merge. Contract fields can be ahead of the deployed base. The [versioned report URL table](../../backend/reports/v1_urls.py) and [root configuration](../../backend/config/urls.py) define the mounted paths.
+The [design contract](../design/api-contracts.md) supplies the versioned request and response examples below. All routes described here are merged into `production-readiness`. Contract fields can be ahead of what the code returns; where they differ, the code is the source of truth. The [versioned report URL table](../../backend/reports/v1_urls.py) and [root configuration](../../backend/config/urls.py) define the mounted paths.
 
 ## 1. Conventions (read first)
 
@@ -353,8 +353,6 @@ Template for each: **Status** · **Screens** · **Auth** · request · responses
 
 #### AUTH-04 · Staff sign-in
 
-**Pending merge** (PR #12).
-
 - **Status:** CHANGE (from `POST /api/auth/sign-in`, form-encoded, single step).
 - **Screens:** S-01. **Auth:** anonymous; CSRF required.
 - `POST /api/v1/auth/staff/sign-in` with `{"email": "a.bello@example.org", "password": "…"}` (email ≤ 254, password ≤ 128).
@@ -371,8 +369,6 @@ Template for each: **Status** · **Screens** · **Auth** · request · responses
 - An offboarded or inactive account gets `401 invalid_credentials`.
 
 #### AUTH-05 · Staff TOTP verify and enrol
-
-**Pending merge** (PR #12).
 
 - **Status:** NEW. **Screens:** S-01. **Auth:** pre-2FA session (verify, enrol) or an invite token (accept invite). CSRF required.
 - TOTP: RFC 6238, SHA-1, 6 digits, 30-second step, ±1 step accepted, each code usable once per account.
@@ -873,8 +869,6 @@ Originals are deleted after the re-encode. `original_sha256` (what the phone dec
 
 #### MSG-01 · List a report's conversation (and mark read)
 
-**Pending merge** (PR #16).
-
 - **Status:** CHANGE (from the `clarification` and `clarification_history` fields of report detail, and `history` for reviewers).
 - **Screens:** O-14, O-17, S-03.
 - **Auth:** observer (owner) or the assigned reviewer. Citizens use REP-07.
@@ -902,8 +896,6 @@ Originals are deleted after the re-encode. `original_sha256` (what the phone dec
 - **Reassignment:** the new reviewer sees the full history; the previous reviewer gets `404` at once.
 
 #### MSG-02 · Post a message or reply to a formal question
-
-**Pending merge** (PR #16).
 
 - **Status:** CHANGE (from `POST /api/reports/<reference>/clarification`, which required `version`).
 - **Screens:** O-14, S-03.
@@ -939,8 +931,6 @@ Discussion member labels are observer codes only. Posts are text only. No report
 
 #### DIS-01 · My discussions
 
-**Pending merge** (PR #16).
-
 - **Status:** NEW. **Screens:** O-18 (list, invitations), S-08 (moderator list).
 - **Auth:** observer (memberships and pending invitations); moderator (all discussions in the organisation).
 - `GET /api/v1/discussions?status=open|closed&cursor=&limit=`
@@ -956,8 +946,6 @@ Discussion member labels are observer codes only. Posts are text only. No report
   `membership`: `invited` · `member` · `left` · `removed` · `moderator` (moderators see all). Observers do not see `left` and `removed` discussions.
 
 #### DIS-02 · Thread
-
-**Pending merge** (PR #16).
 
 - **Status:** NEW. **Screens:** O-18 thread, S-08.
 - **Auth:** member, invited (title and area only, no posts) or moderator.
@@ -978,8 +966,6 @@ Discussion member labels are observer codes only. Posts are text only. No report
 
 #### DIS-03 · Post (and flag a post)
 
-**Pending merge** (PR #16).
-
 - **Status:** NEW. **Screens:** O-18.
 - **Auth:** member (post, flag); CSRF; `Idempotency-Key` required.
 
@@ -995,16 +981,12 @@ Discussion member labels are observer codes only. Posts are text only. No report
 
 #### DIS-04 · Accept or decline an invitation, leave
 
-**Pending merge** (PR #16).
-
 - **Status:** NEW. **Screens:** O-18. **Auth:** the invited or member observer; CSRF; `Idempotency-Key`.
 - `POST /api/v1/discussions/{id}/membership` with `{"action": "accept" | "decline" | "leave"}`.
 - **200:** `{"discussion_id": "7e2d…", "membership": "member"}` (`member` after accept, `declined` after decline, `left` after leave). Repeating the same action returns the same result.
 - **Errors:** `409 invalid_transition` (e.g. accept after being removed), `409 discussion_closed`, `404`, common errors.
 
 #### DIS-05 · Moderator: create, invite, hide, remove, close, flags
-
-**Pending merge** (PR #16).
 
 - **Status:** NEW. **Screens:** S-08. **Auth:** moderator; CSRF; `Idempotency-Key` on creates.
 
@@ -1027,11 +1009,21 @@ Discussion member labels are observer codes only. Posts are text only. No report
 
 ### ASK
 
+#### GUIDE-01 and GUIDE-02 · Public guides (list and page)
+
+- **Status:** NEW. **Screens:** P-04 (`/guide`, `/guide/<slug>`). **Auth:** anyone; GET only, no CSRF, no idempotency.
+- `GET /api/v1/public/guides?language=ha` lists the public guide pages (`observer_only` pages are never listed). `language` is one of `en`, `pcm`, `ha`, `yo`, `ig` and defaults to `en`. A page not yet written in that language is filled in from English and carries `fallback_language_used: true`.
+  ```json
+  { "language": "ha", "documents": [
+    { "slug": "checking-status", "document_id": "guide-checking-status", "title": "…", "version": "2026-11", "language": "ha", "fallback_language_used": false, "approved_on": "2026-11-01" }
+  ] }
+  ```
+- `GET /api/v1/public/guides/{slug}?language=…` returns the same summary plus `sections`: a list of `{ "id", "heading", "body" }`, where `id` is the anchor used by Ask source links (for example `your-receipt-code`). `404 not_found` for an unknown slug or an observer-only page.
+- Source: [`backend/approved_answers/views.py`](../../backend/approved_answers/views.py); test: `test_guide_list_and_page_use_the_requested_language_and_hide_observer_pages` in `backend/approved_answers/tests.py`.
+
 #### ASK-01 · Ask ElectraGuard (retrieval only, cited, abstains)
 
-**Pending merge** (PR #16).
-
-- **Status:** NEW. **Screens:** O-19, P-04.
+- **Status:** NEW. **Screens:** O-19, P-04 (`/ask`).
 - **Auth:** anyone; CSRF (POST). No idempotency (no side effects).
 - `POST /api/v1/ask` with `{"question": "…" (3–500), "language": "yo", "audience": "observer" | "public"}`. The server uses `observer` only for an observer session (observer guide included); otherwise `public`.
 - **200, answered:**
@@ -1040,7 +1032,7 @@ Discussion member labels are observer codes only. Posts are text only. No report
     "status": "answered",
     "language": "yo",
     "passages": [
-      { "text": "…approved passage text in Yorùbá…", "source": { "document_id": "observer-guide", "title": "Observer guide", "section": "3. If the polling unit opens late", "version": "2026-11-25", "language": "yo", "url": "/guide/opening-late#if-late" }, "score": 0.82 }
+      { "text": "…approved passage text in Yorùbá…", "source": { "document_id": "guide-checking-status", "title": "How to Check Report Status", "section": "Your Receipt Code", "version": "2026-11", "language": "yo", "url": "/guide/checking-status#your-receipt-code" }, "score": 0.82 }
     ],
     "fallback_language_used": false
   }
@@ -1050,6 +1042,7 @@ Discussion member labels are observer codes only. Posts are text only. No report
   { "status": "abstained", "language": "yo", "passages": [], "fallback_language_used": false }
   ```
   The screen shows its own message key `ask.abstain` ("I don't have an approved answer to that. Contact your coordinator.").
+- Retrieval works on passages, not whole documents: each approved guide is split into blocks (the lines between blank lines or headings; a paragraph that ends with a colon stays in one block with the list after it, so a quote never stops before its items), each block is scored against the question with word weighting (TF-IDF cosine), and up to 3 blocks with a score of at least 0.2 are returned, best first. `source.section` is the heading above the block, and for public guide pages `source.url` ends with that section's anchor so the screen can link straight to it. Everyday English filler words are ignored when matching English text.
 - Passages are quoted exactly from approved documents; nothing is generated. If an approved passage exists only in English, it is returned in English with `fallback_language_used: true` and the screen says so. Below the retrieval threshold the answer is `abstained`, never a weaker answer.
 - **Privacy:** questions are not stored; only counts by language and status are kept for the evaluation.
 - **Errors:** `422`, `429`, `403 csrf_failed`. **Limits:** 20/min per session or IP.
@@ -1059,8 +1052,6 @@ Discussion member labels are observer codes only. Posts are text only. No report
 ### RS
 
 #### RS-01 · Read a result-sheet photo (OCR → fields + confidence)
-
-**Pending merge** (PR #16).
 
 - **Status:** NEW. **Screens:** O-16.
 - **Auth:** observer; CSRF; `Idempotency-Key` required.
@@ -1076,14 +1067,14 @@ Discussion member labels are observer codes only. Posts are text only. No report
       "votes": { "A": { "value": 120, "confidence": 0.91 }, "B": { "value": 98, "confidence": 0.62 }, "C": { "value": 77, "confidence": 0.90 }, "D": { "value": 51, "confidence": 0.86 }, "E": { "value": null, "confidence": 0.0 } },
       "rejected": { "value": 12, "confidence": 0.80 }
     },
-    "model_version": "ocr-paddle-2026.11",
+    "model_version": "ocr-tesseract-1",
     "notice_key": "result_sheet.not_a_result"
   }
   ```
   `value: null` means it could not read that field; the screen asks the observer to type it. Confidence below 0.75 is shown as "Check this number".
 - The photo is cleaned (MED rules) and held for 24 h; REP-01 with `result_sheet.ocr_id` attaches it to the report as evidence. Unused OCR photos are deleted at `expires_at`.
 - **Offline:** O-16 lets the observer type the numbers (or use an on-phone reader); the report is sent with `entry_method: "manual"` or `"offline_ocr"` and the photo goes through MED-01..03. The server then runs OCR on the attached photo and shows any disagreement to the reviewer.
-- **Errors:** `415`, `413`, `422 media_unreadable` (`"We could not read this photo. Try again in better light, or type the numbers."`), `422 hash_mismatch`, common errors. **Limits:** 20 per hour per observer.
+- **Errors:** `415`, `413`, `422 media_unreadable` (`"We could not read this photo. Try again in better light, or type the numbers."`), `422 hash_mismatch`, `503 ocr_unavailable` (`"Photo reading is unavailable. Type the numbers instead."`) when the server has no local Tesseract engine, common errors. **Limits:** 20 per hour per observer.
 - **Privacy:** OCR output is never returned to anyone but the uploading observer and the assigned reviewer; never public.
 
 ---
@@ -1313,8 +1304,6 @@ All OPS contracts: **coordinator** only; aggregates and links, never report text
 
 #### OPS-02 · Cluster warnings (and mark reviewed, thresholds)
 
-**Pending merge** (PR #15).
-
 - **Status:** NEW. **Screens:** S-05.
 
 | Operation | Method and path | Body |
@@ -1334,8 +1323,6 @@ All OPS contracts: **coordinator** only; aggregates and links, never report text
 
 #### OPS-03 · Coverage gaps
 
-**Pending merge** (PR #15).
-
 - **Status:** NEW. **Screens:** S-05.
 - `GET /api/v1/ops/coverage?date=YYYY-MM-DD&stage=opening&lga_code=&cursor=`
 - Expected units = the organisation's coverage area (ADM-04). Without `lga_code`: one row per LGA. With `lga_code`: one row per unit in it.
@@ -1352,8 +1339,6 @@ All OPS contracts: **coordinator** only; aggregates and links, never report text
 - **Errors:** `422` (unknown stage or area), common errors.
 
 #### OPS-04 · Late-materials risk
-
-**Pending merge** (PR #14).
 
 - **Status:** NEW. **Screens:** S-05 (before election day).
 - `GET /api/v1/ops/late-materials-risk?state_code=&limit=50`
@@ -1374,8 +1359,6 @@ All OPS contracts: **coordinator** only; aggregates and links, never report text
 Rumour desk: **coordinator** only. Claims are not reports; they hold no reporter identity.
 
 #### RUM-01 · Claims list and create (text or image)
-
-**Pending merge** (PR #15).
 
 - **Status:** NEW. **Screens:** S-06.
 
@@ -1410,8 +1393,6 @@ Create fields: `text` (0–4000; required if no image), `image` (JPEG/PNG/WebP �
 
 #### RUM-02 · Claim matches
 
-**Pending merge** (PR #15).
-
 - **Status:** NEW. **Screens:** S-06.
 - `GET /api/v1/rumours/claims/{id}/matches`
 - **200:**
@@ -1425,8 +1406,6 @@ Create fields: `text` (0–4000; required if no image), `image` (JPEG/PNG/WebP �
 - Only **closed** reports with an outcome are matched, and `excerpt` is the English translation of the **redacted** text, at most 280 characters. No receipt codes, observer codes or media.
 
 #### RUM-03 · Response draft and second-person approval
-
-**Pending merge** (PR #15).
 
 - **Status:** NEW. **Screens:** S-06. **Auth:** coordinator; CSRF; `Idempotency-Key` on approve and reject.
 
@@ -1451,8 +1430,6 @@ Create fields: `text` (0–4000; required if no image), `image` (JPEG/PNG/WebP �
 ### PUB
 
 #### PUB-01 · Create and approve a public snapshot
-
-**Pending merge** (PR #15).
 
 - **Status:** NEW. **Screens:** S-07. **Auth:** coordinator; CSRF; `Idempotency-Key`.
 
@@ -1485,8 +1462,6 @@ Create fields: `text` (0–4000; required if no image), `image` (JPEG/PNG/WebP �
 - **Errors:** `422` (`"cutoff": {"code": "too_recent", "message": "The cutoff must be at least 60 minutes ago."}`), `409 stale_version`, `409 invalid_transition` (approve a discarded snapshot), common errors.
 
 #### PUB-02 · Public results
-
-**Pending merge** (PR #15).
 
 - **Status:** NEW. **Screens:** P-03 (results), P-02 (home summary).
 - **Auth:** anyone. `Cache-Control: public, max-age=300`, `ETag`.
@@ -1526,8 +1501,6 @@ All ADM contracts: **org_admin** only (exclusive role: an org_admin cannot also 
 
 #### ADM-01 · Observer code batches (create, print data)
 
-**Pending merge** (PR #15).
-
 - **Status:** NEW. **Screens:** S-09.
 
 | Operation | Method and path | Body |
@@ -1551,8 +1524,6 @@ All ADM contracts: **org_admin** only (exclusive role: an org_admin cannot also 
 
 #### ADM-02 · Revoke, reissue, reset PIN
 
-**Pending merge** (PR #15).
-
 - **Status:** NEW. **Screens:** S-09. `Idempotency-Key` on all.
 
 | Operation | Method and path | Body | 200 |
@@ -1565,8 +1536,6 @@ All ADM contracts: **org_admin** only (exclusive role: an org_admin cannot also 
 - **Errors:** `409 invalid_transition` (revoke a revoked code; reset a revoked code), `404`, common errors.
 
 #### ADM-03 · Staff accounts (create, roles, 2FA reset, offboard)
-
-**Pending merge** (PR #12).
 
 - **Status:** CHANGE (from the `provision_account` and `offboard_account` commands; adds an API and multi-role).
 - **Screens:** S-10.
@@ -1590,8 +1559,6 @@ All ADM contracts: **org_admin** only (exclusive role: an org_admin cannot also 
 - **Errors:** `409 last_admin`, `409 stale_version`, `422` (`"roles": {"code": "invalid", "message": "Organisation admin cannot be combined with other roles."}`, `"email": {"code": "duplicate"}`), `403 forbidden` (offboarding yourself), common errors.
 
 #### ADM-04 · Organisation settings (intake pause, retention and more)
-
-**Pending merge** (PR #15).
 
 - **Status:** CHANGE (intake pause moves from the deployment variable `OBSERVATION_INTAKE_ENABLED` to a per-organisation setting; the variable stays as a deployment-wide kill switch).
 - **Screens:** S-11; the effect shows on O-04 and the citizen flow via AUTH-07.
@@ -1625,8 +1592,6 @@ All ADM contracts: **org_admin** only (exclusive role: an org_admin cannot also 
 
 #### SEC-01 · Security alerts
 
-**Pending merge** (PR #15).
-
 - **Status:** NEW. **Screens:** S-12. **Auth:** coordinator and org_admin.
 
 | Operation | Method and path | Body |
@@ -1643,8 +1608,6 @@ All ADM contracts: **org_admin** only (exclusive role: an org_admin cannot also 
 - **Errors:** `409 stale_version`, `422`, common errors.
 
 #### AUD-01 · Audit export and hash-chain verify
-
-**Pending merge** (PR #15).
 
 - **Status:** NEW. **Screens:** S-11 (export), S-12 and S-03 (chain status).
 - **Auth:** org_admin (export, verify); coordinator (verify).
@@ -1670,8 +1633,6 @@ Gateway: Africa's Talking (sandbox for the hackathon). Callbacks are authenticat
 
 #### SMS-01 · Inbound SMS webhook
 
-**Pending merge** (PR #14).
-
 - **Status:** NEW. **Screens:** none directly (P-07 drives it through SIM-01).
 - **Auth:** gateway, `POST /api/v1/channels/sms/inbound/{webhook_secret}`; CSRF exempt.
 - Request (form, Africa's Talking format): `from` (`+2348012345678`), `to` (short code), `text`, `date`, `id` (gateway message id), `linkId`, `networkCode`.
@@ -1692,8 +1653,6 @@ Gateway: Africa's Talking (sandbox for the hackathon). Callbacks are authenticat
 - Outbound replies to a real network need a commercial short code; in the sandbox they go to the Africa's Talking simulator and to SIM-01.
 
 #### USSD-01 · USSD session webhook
-
-**Pending merge** (PR #14).
 
 - **Status:** NEW. **Screens:** none directly (P-07 through SIM-01).
 - **Auth:** gateway, `POST /api/v1/channels/ussd/{webhook_secret}`; CSRF exempt.
@@ -1719,8 +1678,6 @@ Gateway: Africa's Talking (sandbox for the hackathon). Callbacks are authenticat
 - **Limits:** per number 10 reports per hour.
 
 #### SIM-01 · Phone simulator (drives SMS-01 and USSD-01)
-
-**Pending merge** (PR #14).
 
 - **Status:** NEW. **Screens:** P-07.
 - **Auth:** anyone with an anonymous session; CSRF; `Idempotency-Key` on sends. Returns `404 not_found` when `simulator_enabled` is false for the public-intake organisation.

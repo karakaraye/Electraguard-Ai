@@ -290,3 +290,32 @@
   width: 20px;
   height: 20px;
 }
+
+/* Compact: short answers in a row of equal tiles. The label is centred and the tick sits in the corner,
+   so three answers fit across a 320 px phone without wrapping. */
+.tile[data-compact] {
+  justify-content: center;
+  min-height: 64px;
+  /* The tick keeps its own strip at the top, so a long answer uses the full width below it. */
+  padding: 26px 6px 10px;
+  text-align: center;
+}
+
+.tile[data-compact] .tileLabel {
+  font-size: 1rem;
+  line-height: 1.2;
+  text-wrap: balance;
+}
+
+.tile[data-compact] .tick {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 18px;
+  height: 18px;
+}
+
+.tile[data-compact] .tick svg {
+  width: 12px;
+  height: 12px;
+}
