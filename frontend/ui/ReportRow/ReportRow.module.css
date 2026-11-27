@@ -30,6 +30,10 @@
   transition: background-color var(--dur-fade) ease;
 }
 
+.row[data-count] {
+  grid-template-columns: 40px minmax(0, 1fr) auto 20px;
+}
+
 .row:focus-visible {
   outline: var(--focus-outline);
   outline-offset: -3px;

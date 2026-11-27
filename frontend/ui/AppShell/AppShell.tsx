@@ -77,7 +77,13 @@ function useBarTitle(contentRef: { current: HTMLElement | null }, enabled: boole
 
   useEffect(() => {
     if (!enabled || typeof IntersectionObserver === "undefined") return;
-    const heading = contentRef.current?.querySelector("h1") ?? null;
+    // A visually hidden heading (screen-reader only) is not "on screen", so it never hides the bar title.
+    const heading =
+      Array.from(contentRef.current?.querySelectorAll("h1") ?? []).find((h) => {
+        if (h.classList.contains("eg-sr-only")) return false;
+        const r = h.getBoundingClientRect();
+        return r.width > 1 && r.height > 1;
+      }) ?? null;
     if (heading === watching.current) return;
     observer.current?.disconnect();
     watching.current = heading;

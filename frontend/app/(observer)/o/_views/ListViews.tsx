@@ -61,6 +61,8 @@ export function Row({ row }: { row: ListRow }) {
       hideTime={row.at === null}
       reference={row.reference}
       status={row.status}
+      count={row.unread}
+      countLabel={row.unread ? t("o17.newMessageLabel", { count: row.unread }) : undefined}
       note={row.note ?? (!row.reference && row.status !== "received" ? t("o14.notSentYet") : undefined)}
       data-testid="report-row"
     />
@@ -326,7 +328,7 @@ function MessageRow({ row }: { row: ListRow }) {
         <span className={`${p3.msgCode} eg-tnum`}>{row.reference ?? label}</span>
         <span className={`${p3.msgTime} eg-tnum`}>
           {when ? formatWatTime(when, locale) : null}
-          {row.unread ? <Count value={row.unread} tone="needs" label={t("o17.newMessage", { count: row.unread })} /> : null}
+          {row.unread ? <Count value={row.unread} tone="needs" label={t("o17.newMessageLabel", { count: row.unread })} /> : null}
         </span>
         {text ? <p className={p3.msgPreview}>{text}</p> : null}
         <span className={p3.msgFoot}>

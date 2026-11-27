@@ -29,7 +29,7 @@ const rows: ListRow[] = [
   { key: "q", href: "#", kind: "incident", category: "late_materials", place: "Gwammaja Open Space", at: FIXTURE_OCCURRED_AT, reference: "EG-9M2C-7TQA", status: "question", preview: "Which materials were missing when the unit opened? Were ballot papers there?", previewAt: "2026-12-05T09:02:00+01:00" },
   { key: "p", href: "#", kind: "incident", category: "queues_crowding", place: FIXTURE_PLACE, at: FIXTURE_OCCURRED_AT, status: "on-phone" },
   { key: "c", href: "#", kind: "checklist", category: null, stage: "opening", place: "Kantudu Primary School I", at: FIXTURE_OCCURRED_AT, reference: "EG-2K8D-4XRA", status: "received" },
-  { key: "r", href: "#", kind: "incident", category: "intimidation_violence", place: "Kantudu Primary School I", at: FIXTURE_OCCURRED_AT, reference: FIXTURE_RECEIPT, status: "in-review", note: "1 new message", preview: "Thank you. Is everyone safe now? You can send a photo if it is safe to take one.", previewAt: "2026-12-05T08:57:00+01:00", unread: 1 },
+  { key: "r", href: "#", kind: "incident", category: "intimidation_violence", place: "Kantudu Primary School I", at: FIXTURE_OCCURRED_AT, reference: FIXTURE_RECEIPT, status: "in-review", preview: "Thank you. Is everyone safe now? You can send a photo if it is safe to take one.", previewAt: "2026-12-05T08:57:00+01:00", unread: 1 },
   { key: "s", href: "#", kind: "result_sheet", category: null, place: "Kantudu Primary School I", at: FIXTURE_RECEIVED_AT, reference: "EG-7PQ3-H2MB", status: "received" },
 ];
 
@@ -325,7 +325,7 @@ const found = { receipt_code: FIXTURE_RECEIPT, status: "received" as const, outc
 export const MORE_SCREENS: Record<string, Record<string, (t: Translate) => ReactElement>> = {
   o13: {
     filled: () => <MyReportsView {...reportsBase} />,
-    "needs-you": () => <MyReportsView {...reportsBase} filter="needsYou" rows={rows.filter((r) => r.status === "question" || r.note)} />,
+    "needs-you": () => <MyReportsView {...reportsBase} filter="needsYou" rows={rows.filter((r) => r.status === "question" || r.unread)} />,
     offline: () => <MyReportsView {...reportsBase} offline load="offline" rows={rows.slice(1, 3)} updatedAt={null} />,
     error: () => <MyReportsView {...reportsBase} load="error" rows={rows.slice(1, 2)} counts={{ all: 1, needsYou: 0, onPhone: 1 }} />,
     loading: () => <MyReportsView {...reportsBase} load="loading" rows={[]} updatedAt={null} />,

@@ -94,7 +94,6 @@ export function CitizenReceiptView(props: CitizenReceiptViewProps) {
           </ol>
         </section>
         <div className={p3.footnote} data-testid="c01-write-down">
-          <p>{t("c01.writeDown")}</p>
           <p className="eg-tnum" data-testid="c01-sms">
             {t("c01.sms", { code: props.code, shortCode })}
             <TestNumberNote label={t("pub.testNumber")} />

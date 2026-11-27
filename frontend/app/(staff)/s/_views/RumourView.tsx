@@ -180,7 +180,7 @@ export function RumourView({
       rowHeader: true,
       render: (row) => (
         <span className={styles.claimCell}>
-          <span className={`${styles.excerpt} ${styles.truncate}`} title={row.text ?? undefined}>{excerpt(row.text, 110) || t("s06.detail.noText")}</span>
+          <span className={`${styles.excerpt} ${styles.excerptWrap}`} title={row.text ?? undefined}>{excerpt(row.text, 160) || t("s06.detail.noText")}</span>
           <span className={`${styles.sub} ${styles.truncate}`}>{`${sourceLabel(row.seen_on)} · ${t(`s06.lang.${row.language}`)}`}</span>
         </span>
       ),

@@ -4,9 +4,20 @@ import type { Claim, ClaimMatchesResponse } from "../../../../../lib/api/types";
 
 export const S06_USER = "Folake Adeyemi";
 
+/** Asks from the public, and how many in the last hour, so "Most asked" ranks something. */
+export const S06_ASKS: Record<string, { ask_count: number; ask_trend_1h: number }> = {
+  c1: { ask_count: 46, ask_trend_1h: 12 },
+  c2: { ask_count: 19, ask_trend_1h: 7 },
+  c3: { ask_count: 11, ask_trend_1h: 0 },
+  c4: { ask_count: 8, ask_trend_1h: 3 },
+  c5: { ask_count: 6, ask_trend_1h: 2 },
+  c6: { ask_count: 3, ask_trend_1h: 0 },
+  c7: { ask_count: 14, ask_trend_1h: 5 },
+};
+
 const kanoMunicipal = { state_code: "KN", state_name: "Kano", lga_code: "1901", lga_name: "Kano Municipal" } as const;
-const ikeja = { state_code: "LA", state_name: "Lagos", lga_code: "2511", lga_name: "Ikeja" } as const;
-const enuguNorth = { state_code: "EN", state_name: "Enugu", lga_code: "1404", lga_name: "Enugu North" } as const;
+const dala = { state_code: "KN", state_name: "Kano", lga_code: "1903", lga_name: "Dala" } as const;
+const gwale = { state_code: "KN", state_name: "Kano", lga_code: "1904", lga_name: "Gwale" } as const;
 
 export const S06_CLAIMS: Claim[] = [
   {
@@ -37,11 +48,11 @@ export const S06_CLAIMS: Claim[] = [
     id: "c2",
     status: "new",
     version: 1,
-    text: "A voice note says thugs have burnt ballot boxes at a polling unit in Ikeja and everyone is running away.",
+    text: "A voice note says thugs have burnt ballot boxes at a polling unit in Dala and everyone is running away.",
     image: null,
     seen_on: "whatsapp",
     language: "pcm",
-    area: ikeja,
+    area: dala,
     harm: { level: "high", score: 0.9, reasons: ["violence_claim", "location_specific", "election_day"] },
     check_worthiness: { level: "high", score: 0.9 },
     image_check: null,
@@ -53,11 +64,11 @@ export const S06_CLAIMS: Claim[] = [
     id: "c3",
     status: "matched",
     version: 2,
-    text: "A screenshot of a Facebook post says results from Enugu North have been cancelled.",
+    text: "A screenshot of a Facebook post says results from Gwale have been cancelled.",
     image: { media_id: "m1", width: 1080, height: 1920 },
     seen_on: "facebook",
     language: "en",
-    area: enuguNorth,
+    area: gwale,
     harm: { level: "medium", score: 0.5, reasons: ["location_specific"] },
     check_worthiness: { level: "high", score: 0.75 },
     image_check: {
@@ -66,7 +77,7 @@ export const S06_CLAIMS: Claim[] = [
       error_level_hint: null,
     },
     response: {
-      text: "Results from Enugu North have not been cancelled.",
+      text: "Results from Gwale have not been cancelled.",
       language: "en",
       drafted_by: "Chinedu Okafor",
       drafted_at: "2026-12-05T09:20:00+01:00",
@@ -81,16 +92,16 @@ export const S06_CLAIMS: Claim[] = [
     id: "c4",
     status: "response_draft",
     version: 2,
-    text: "A radio caller said the voter machines are not working in any polling unit in Ibadan North.",
+    text: "A radio caller said the voter machines are not working in any polling unit in Nassarawa.",
     image: null,
     seen_on: "radio",
     language: "yo",
-    area: { state_code: "OY", state_name: "Oyo", lga_code: "3112", lga_name: "Ibadan North" },
+    area: { state_code: "KN", state_name: "Kano", lga_code: "1905", lga_name: "Nassarawa" },
     harm: { level: "medium", score: 0.4, reasons: ["location_specific"] },
     check_worthiness: { level: "medium", score: 0.55 },
     image_check: null,
     response: {
-      text: "Some machines in Ibadan North were slow this morning, and technicians are fixing them. Voting is going on.",
+      text: "Some machines in Nassarawa were slow this morning, and technicians are fixing them. Voting is going on.",
       language: "en",
       drafted_by: S06_USER,
       drafted_at: "2026-12-05T09:42:00+01:00",
@@ -129,11 +140,11 @@ export const S06_CLAIMS: Claim[] = [
     id: "c6",
     status: "dismissed",
     version: 2,
-    text: "A tweet jokes that a candidate has already won in Port Harcourt before the polls opened.",
+    text: "A tweet jokes that a candidate has already won in Tarauni before the polls opened.",
     image: null,
     seen_on: "x",
     language: "en",
-    area: { state_code: "RV", state_name: "Rivers", lga_code: "3217", lga_name: "Port Harcourt" },
+    area: { state_code: "KN", state_name: "Kano", lga_code: "1906", lga_name: "Tarauni" },
     harm: { level: "low", score: 0.2, reasons: ["location_specific"] },
     check_worthiness: { level: "low", score: 0.15 },
     image_check: null,
@@ -189,7 +200,7 @@ export const S06_MATCHES: ClaimMatchesResponse = {
   past_claims: [
     {
       claim_id: "p1",
-      text: "A message says the election has been postponed in Kaduna because of rain.",
+      text: "A message says the election has been postponed in Kumbotso because of rain.",
       similarity: 0.58,
       response: { text: "The election has not been postponed anywhere. Check the official notice.", approved_at: "2026-11-14T10:00:00+01:00" },
     },

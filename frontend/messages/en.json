@@ -29,7 +29,8 @@
       "online": "Back online."
     },
     "stepper": {
-      "progress": "Step {current} of {total}"
+      "progress": "Step {current} of {total}",
+      "saved": "Saved on this phone"
     },
     "textarea": {
       "count": "{count} of {max} characters",
@@ -172,6 +173,12 @@
       "needsAttentionHint": "We could not accept it yet. Open it, fix what is marked, and send again.",
       "label": "Report progress"
     },
+    "statusShort": {
+      "received": "Received",
+      "inReview": "In review",
+      "question": "Question",
+      "closed": "Closed"
+    },
     "outcome": {
       "confirmed": "Confirmed by evidence",
       "notEnough": "Not enough evidence",
@@ -243,7 +250,7 @@
     "line5": "If you use Speak, your phone's speech service may process your voice to turn it into words."
   },
   "o03": {
-    "title": "Who are you?",
+    "title": "How are you reporting?",
     "observer": "I am an accredited observer",
     "observerHint": "Sign in with the code and PIN from your card",
     "citizen": "Report as a citizen",
@@ -575,7 +582,7 @@
     "filter": {
       "all": "All",
       "needsYou": "Needs you",
-      "onPhone": "On this phone"
+      "onPhone": "On phone"
     },
     "empty": "No reports yet. When you send a report, it will show here.",
     "emptyTitle": "No reports yet",
@@ -808,6 +815,7 @@
     "hint": "Reports where a reviewer has written to you.",
     "questionTag": "Question for you",
     "newMessage": "{count, plural, one {# new message} other {# new messages}}",
+    "newMessageLabel": "{count, plural, one {new message} other {new messages}}",
     "empty": "No messages. When a reviewer writes to you, it will show here.",
     "emptyTitle": "No messages",
     "emptyBody": "When a reviewer writes to you, it will show here. You will also see it on Home.",

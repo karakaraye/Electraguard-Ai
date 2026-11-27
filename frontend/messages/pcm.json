@@ -30,7 +30,8 @@
       "online": "Network don come back."
     },
     "stepper": {
-      "progress": "Step {current} out of {total}"
+      "progress": "Step {current} out of {total}",
+      "saved": "We save am for this phone"
     },
     "textarea": {
       "count": "{count} out of {max} letters",
@@ -173,6 +174,12 @@
       "needsAttentionHint": "We no fit accept am yet. Open am, fix wetin dem mark, then send am again.",
       "label": "How the report dey go"
     },
+    "statusShort": {
+      "received": "Received",
+      "inReview": "In review",
+      "question": "Question",
+      "closed": "E don close"
+    },
     "outcome": {
       "confirmed": "Evidence confirm am",
       "notEnough": "Evidence no reach",
@@ -244,7 +251,7 @@
     "line5": "If you use Talk am, your phone speech service fit process your voice to turn am to words."
   },
   "o03": {
-    "title": "Who you be?",
+    "title": "How you wan report?",
     "observer": "I be accredited observer",
     "observerHint": "Sign in with the code and PIN wey dey your card",
     "citizen": "Report as citizen (ordinary person)",
@@ -809,6 +816,7 @@
     "hint": "Reports wey reviewer don write you about.",
     "questionTag": "Question dey for you",
     "newMessage": "{count, plural, one {# new message} other {# new messages}}",
+    "newMessageLabel": "{count, plural, one {new message} other {new messages}}",
     "empty": "No message. When reviewer write you, e go show here.",
     "emptyTitle": "No message",
     "emptyBody": "When reviewer write to you, e go show here. You go see am for Home too.",

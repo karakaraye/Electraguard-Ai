@@ -40,8 +40,20 @@
   min-width: 0;
 }
 
+/* All four drawings sit in one 4:3 box, 340 px wide at most, so no step is larger than another.
+   Whatever a drawing's own proportions, it fits inside this box. */
 .art {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 340px;
   min-width: 0;
+  aspect-ratio: 4 / 3;
+  margin-inline: auto;
+}
+
+.art svg {
+  width: 100%;
+  height: 100%;
 }
 
 .copy {
@@ -76,13 +88,22 @@
   }
 
   .step {
-    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+    grid-template-columns: 340px minmax(0, 1fr);
     align-items: center;
     gap: var(--s-7);
   }
 
+  .step:nth-child(even) {
+    grid-template-columns: minmax(0, 1fr) 340px;
+  }
+
   .step:nth-child(even) .art {
     order: 2;
+    margin-inline: 0;
+  }
+
+  .step .art {
+    margin-inline: 0;
   }
 
   .sentence {
@@ -128,7 +149,7 @@
     inset: 18px 20px auto;
     height: 3px;
     border-radius: 2px;
-    background: var(--sun-strong);
+    background: var(--ink);
     transform: scaleX(var(--p, 0));
     transform-origin: left center;
   }
@@ -185,10 +206,6 @@
     pointer-events: auto;
   }
 
-  .story[data-pin] .art svg {
-    max-height: calc(100dvh - 330px);
-    margin-inline: auto;
-  }
 }
 
 /* ---------- Drawing parts ---------- */

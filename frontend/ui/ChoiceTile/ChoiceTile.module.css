@@ -155,8 +155,9 @@
   color: var(--danger);
 }
 
-.tile[data-tone="danger"]:not([data-checked]) {
-  box-shadow: inset 0 0 0 1.5px var(--danger);
+/* Neutral edge until chosen; the danger colour shows only on the selected tile. */
+.tile[data-tone="danger"][data-checked] {
+  box-shadow: inset 0 0 0 2px var(--danger);
 }
 
 .tileText {

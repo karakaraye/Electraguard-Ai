@@ -30,7 +30,8 @@
       "online": "Netwọk alọghachila."
     },
     "stepper": {
-      "progress": "Nzọụkwụ {current} n'ime {total}"
+      "progress": "Nzọụkwụ {current} n'ime {total}",
+      "saved": "Echekwara ya na ekwentị a"
     },
     "textarea": {
       "count": "Mkpụrụedemede {count} n'ime {max}",
@@ -173,6 +174,12 @@
       "needsAttentionHint": "Anyị enweghị ike ịnabata ya ugbu a. Meghee ya, mezie ihe e depụtara, ziga ya ọzọ.",
       "label": "Ọganihu akụkọ"
     },
+    "statusShort": {
+      "received": "Anatala ya",
+      "inReview": "A na-enyocha",
+      "question": "Ajụjụ",
+      "closed": "Emechiela ya"
+    },
     "outcome": {
       "confirmed": "Ihe akaebe gosiri na ọ bụ eziokwu",
       "notEnough": "Ihe akaebe ezughị",
@@ -244,7 +251,7 @@
     "line5": "Ọ bụrụ na i jiri Kwuo okwu, ọrụ okwu ekwentị gị nwere ike ịhazi olu gị ka ọ bụrụ okwu."
   },
   "o03": {
-    "title": "Ònye ka ị bụ?",
+    "title": "Kedụ ka ị ga-esi zite akụkọ?",
     "observer": "Abụ m onye nlebanya nwere ikike",
     "observerHint": "Banye site na koodu na PIN dị na kaadị gị",
     "citizen": "Zite akụkọ dịka nwa amaala",
@@ -809,6 +816,7 @@
     "hint": "Akụkọ ndị onye nyocha degaara gị ozi.",
     "questionTag": "Ajụjụ maka gị",
     "newMessage": "{count, plural, one {Ozi ọhụrụ #} other {Ozi ọhụrụ #}}",
+    "newMessageLabel": "{count, plural, one {ozi ọhụrụ} other {ozi ọhụrụ}}",
     "empty": "Ozi adịghị. Mgbe onye nyocha degaara gị, ọ ga-apụta ebe a.",
     "emptyTitle": "Enweghị ozi",
     "emptyBody": "Mgbe onye nyocha dere gị ihe, ọ ga-apụta ebe a. Ị ga-ahụkwa ya na Ụlọ.",

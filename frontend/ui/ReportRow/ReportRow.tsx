@@ -5,6 +5,7 @@ import type { ComponentType, ReactNode } from "react";
 import { useLocale } from "../../lib/i18n/client";
 import { formatWatShort } from "../format";
 import { categoryPictograms, ChevronRightIcon, type IconProps, type IncidentCategory } from "../icons";
+import { Count } from "../Count/Count";
 import { StatusBadge, type ReportStatus } from "../StatusBadge/StatusBadge";
 import styles from "./ReportRow.module.css";
 
@@ -28,6 +29,10 @@ export type ReportRowProps = {
   hideTime?: boolean;
   /** Something new since the last visit: bold title and a dot. */
   unread?: boolean;
+  /** Unread messages: one Count at the end of the row instead of a text line. */
+  count?: number;
+  /** Spoken name of the count, for example "new messages". */
+  countLabel?: string;
   "data-testid"?: string;
 };
 
@@ -44,13 +49,15 @@ export function ReportRow({
   pictogram,
   hideTime,
   unread,
+  count,
+  countLabel,
   "data-testid": testId = "report-row",
 }: ReportRowProps) {
   const { locale } = useLocale();
   const Pictogram = pictogram ?? categoryPictograms[category];
   return (
     <li className={styles.item}>
-      <Link href={href} className={styles.row} data-testid={testId}>
+      <Link href={href} className={styles.row} data-count={count ? "" : undefined} data-testid={testId}>
         <span className={styles.disc}>
           <Pictogram size={24} />
         </span>
@@ -69,6 +76,7 @@ export function ReportRow({
             {note ? <span className={styles.note}>{note}</span> : null}
           </span>
         </span>
+        {count ? <Count value={count} tone="needs" label={countLabel} /> : null}
         <ChevronRightIcon className={styles.chevron} />
       </Link>
     </li>

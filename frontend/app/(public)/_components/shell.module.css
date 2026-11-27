@@ -216,15 +216,19 @@
     border-radius: 1px;
     background: var(--ink);
     pointer-events: none;
-    transition: opacity 120ms linear;
   }
 
   .wideBar[data-ready] {
-    transition: transform 200ms var(--ease-out), opacity 120ms linear;
+    transition: transform 200ms var(--ease-out);
   }
 
-  /* The sliding bar replaces the static one on the current item. */
-  .wideList a[aria-current="page"]:not(:hover)::after {
+  /* The static ink bar on the current item is the server-rendered fallback; once the sliding bar
+     is placed (same position, same ink) it takes over. Neither ever fades. */
+  .wideList a[aria-current="page"]::after {
+    background: var(--ink);
+  }
+
+  .wideList[data-bar] a[aria-current="page"]::after {
     background: transparent;
   }
 
@@ -254,9 +258,6 @@
     background: var(--rule-control);
   }
 
-  .wideList a[aria-current="page"]:hover::after {
-    background: transparent;
-  }
 }
 
 /* Between 1040 and 1239 px the five items, language chip and Report share the bar: tighten it so nothing wraps. */
@@ -339,6 +340,6 @@
 
 @media (prefers-reduced-motion: reduce) {
   .wideBar[data-ready] {
-    transition: opacity 80ms linear;
+    transition: none;
   }
 }

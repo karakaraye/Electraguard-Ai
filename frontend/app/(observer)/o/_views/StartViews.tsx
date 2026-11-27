@@ -123,7 +123,12 @@ export function WelcomeView({ onBack, onNext, onSkip, offline, banner }: Welcome
       onBack={onBack}
       offline={offline}
       banner={banner}
-      actions={<WelcomeBar page={1} onNext={onNext} onSkip={onSkip} />}
+      end={
+        <Button variant="quiet" onClick={onSkip} data-testid="ob1-skip">
+          {t("ob.skip")}
+        </Button>
+      }
+      actions={<WelcomeBar page={1} onNext={onNext} />}
       data-testid="ob1"
     >
       <div
@@ -197,8 +202,8 @@ function OfflineArt() {
   );
 }
 
-/** Page dots, Skip and Next: the welcome pages' action bar. */
-export function WelcomeBar({ page, onNext, onSkip, nextLabel, nextTestId }: { page: 1 | 2 | 3; onNext: () => void; onSkip?: () => void; nextLabel?: string; nextTestId?: string }) {
+/** Page dots centred above Next: the welcome pages' action bar (Skip lives in the app bar). */
+export function WelcomeBar({ page, onNext, nextLabel, nextTestId }: { page: 1 | 2 | 3; onNext: () => void; nextLabel?: string; nextTestId?: string }) {
   const t = useT();
   return (
     <div className={styles.welcomeBar}>
@@ -207,12 +212,7 @@ export function WelcomeBar({ page, onNext, onSkip, nextLabel, nextTestId }: { pa
           <i key={n} data-on={n === page || undefined} />
         ))}
       </span>
-      {onSkip ? (
-        <Button variant="quiet" onClick={onSkip} data-testid={`ob${page}-skip`}>
-          {t("ob.skip")}
-        </Button>
-      ) : null}
-      <Button onClick={onNext} data-testid={nextTestId ?? `ob${page}-next`}>
+      <Button block onClick={onNext} data-testid={nextTestId ?? `ob${page}-next`}>
         {nextLabel ?? t("ob.next")}
       </Button>
     </div>

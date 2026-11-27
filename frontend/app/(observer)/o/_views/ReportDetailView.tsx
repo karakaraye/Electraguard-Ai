@@ -217,7 +217,7 @@ export function ReportDetailView(props: ReportDetailViewProps) {
           return (
             <li key={step.key} className={p3.timelineStep} data-state={state} data-step={step.key} aria-current={state === "current" ? "step" : undefined}>
               <span className={p3.timelineBar} aria-hidden="true" />
-              <span className={p3.timelineLabel}>{t(`common.status.${step.key}`)}</span>
+              <span className={p3.timelineLabel}>{t(`common.statusShort.${step.key}`)}</span>
             </li>
           );
         })}
@@ -313,8 +313,10 @@ export function ReportDetailView(props: ReportDetailViewProps) {
     </section>
   );
 
+  // One add control on the screen: the composer's "+" when there is a composer, else the button under the files.
+  const hasComposer = source === "server" && props.canMessage && !props.writesRefused;
   const attachments =
-    props.attachments.length || props.canAddMedia ? (
+    props.attachments.length || (props.canAddMedia && !hasComposer) ? (
       <section aria-labelledby="o14-attachments" className={styles.tight}>
         <h2 className={styles.sectionTitle} id="o14-attachments">
           {t("o14.attachments")}
@@ -354,7 +356,7 @@ export function ReportDetailView(props: ReportDetailViewProps) {
             )}
           </ul>
         ) : null}
-        {props.canAddMedia ? (
+        {props.canAddMedia && !hasComposer ? (
           <div>
             <Button variant="secondary" icon={<ImageIcon />} loading={props.adding} disabled={offline} onClick={() => addInput.current?.click()} data-testid="o14-add">
               {t("o14.add")}
@@ -400,7 +402,7 @@ export function ReportDetailView(props: ReportDetailViewProps) {
             ))}
           </ol>
         ) : null}
-        {props.canMessage && !props.writesRefused ? (
+        {hasComposer ? (
           <div className={p3.composer}>
             {props.attachedName ? <p className={p3.composerNote}>{t("o14.conversation.attached", { name: props.attachedName })}</p> : null}
             {props.messageError ? (

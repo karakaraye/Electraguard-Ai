@@ -42,7 +42,7 @@ import { PREVIEWS } from "./previews";
 
 /** Screen 38 (S-01) states, from the spec's list. */
 const S01_STATES = [
-  "default", "loading", "invalid_credentials", "account_locked", "rate_limited",
+  "default", "filled", "loading", "invalid_credentials", "account_locked", "rate_limited",
   "totp", "totp_typing", "totp_invalid", "enrol", "invite", "invite_short", "invite_fair", "invite_strong", "invite_invalid",
 ] as const;
 
@@ -131,7 +131,7 @@ export function StaffStateViewer(): ReactElement {
     nav.push({ href: link("s11"), label: t("staff.nav.settings"), icon: SlidersIcon, group: groups.admin, current: screen === "s11" });
   }
   if (has("coordinator") || has("org_admin")) nav.push({ href: link("s12"), label: t("staff.nav.security"), icon: ShieldCheckIcon, group: groups.admin, current: screen === "s12" });
-  const roleLabel = roleParam === "all" ? t("staff.roles.org_admin") : t(`staff.roles.${roleParam}`);
+  const roleLabel = roleParam === "all" ? t("staff.roles.reviewer") : t(`staff.roles.${roleParam}`);
 
 
   const renderContent = () => {
@@ -141,7 +141,7 @@ export function StaffStateViewer(): ReactElement {
           <SignInView
             key={state}
             step={signInStep(state)}
-            email="f.musa@electraguard.ng"
+            email={state === "default" ? "" : "f.musa@electraguard.ng"}
             loading={state === "loading"}
             error={signInError(state, t)}
             enrolData={{
@@ -410,7 +410,7 @@ export function StaffStateViewer(): ReactElement {
           crumbs={screen === "s03" ? [{ label: t("staff.nav.queue"), href: link("s02") }] : [{ label: groups[GROUP_OF[screen] ?? "review"] }]}
           organisation="Kano observers network"
           intake={{ paused: state === "paused", href: link("s11") }}
-          user={{ name: "Fatima Musa", role: roleLabel }}
+          user={{ name: "F. Musa", role: roleLabel }}
           onSignOut={() => undefined}
           onSearch={setSearch}
         >

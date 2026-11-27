@@ -593,6 +593,14 @@
 
 /* ---------- Describe (O-09) ---------- */
 
+.hintLine {
+  display: block;
+}
+
+.hintLine + .hintLine {
+  margin-top: var(--s-1);
+}
+
 .hints {
   display: grid;
   gap: var(--s-1);
@@ -604,10 +612,7 @@
 
 @media (min-width: 720px) {
   .describe {
-    display: grid;
-    grid-template-columns: 13rem minmax(0, 1fr);
-    gap: var(--s-6);
-    align-items: start;
+    max-width: 40rem;
   }
 }
 
@@ -825,6 +830,25 @@
   margin-block: calc((var(--target-min) - 1.25rem) / -2);
 }
 
+/* One quiet edit control per row: small, regular weight, no underline. */
+.block dd.change button {
+  min-height: var(--target-min);
+  padding-inline: var(--s-3);
+  border-radius: var(--radius);
+  color: var(--ink-2);
+  font-weight: 500;
+  font-size: 0.9375rem;
+  text-decoration: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .block dd.change button:hover:not([aria-disabled="true"]) {
+    background: var(--paper-2);
+    color: var(--ink);
+    text-decoration: none;
+  }
+}
+
 @media (min-width: 720px) {
   .block[data-wide] {
     grid-column: 1 / -1;
@@ -928,17 +952,14 @@
 
 .welcomeBar {
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  align-items: stretch;
   gap: var(--s-3);
-}
-
-.welcomeBar > :last-child {
-  margin-inline-start: auto;
-  min-width: 132px;
 }
 
 .welcomeDots {
   display: flex;
+  justify-content: center;
   gap: 6px;
 }
 

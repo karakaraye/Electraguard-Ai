@@ -38,7 +38,7 @@ export function NavLinks({
     return () => window.removeEventListener("resize", place);
   }, [path, indicatorClassName]);
   return (
-    <ul className={className} ref={list} style={indicatorClassName ? { position: "relative" } : undefined}>
+    <ul className={className} ref={list} data-bar={bar ? "" : undefined} style={indicatorClassName ? { position: "relative" } : undefined}>
       {indicatorClassName ? (
         <span
           aria-hidden="true"

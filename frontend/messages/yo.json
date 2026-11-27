@@ -30,7 +30,8 @@
       "online": "Nẹ́tíwọ̀ọ̀kì ti padà dé."
     },
     "stepper": {
-      "progress": "Ìgbésẹ̀ {current} nínú {total}"
+      "progress": "Ìgbésẹ̀ {current} nínú {total}",
+      "saved": "A ti fi pamọ́ sórí fóònù yìí"
     },
     "textarea": {
       "count": "Lẹ́tà {count} nínú {max}",
@@ -173,6 +174,12 @@
       "needsAttentionHint": "A kò tíì lè gbà á. Ṣí i, tún ohun tí a fi àmì sí ṣe, kí o sì tún fi ránṣẹ́.",
       "label": "Ìtẹ̀síwájú ìròyìn"
     },
+    "statusShort": {
+      "received": "A ti gbà á",
+      "inReview": "À ń yẹ̀ wò",
+      "question": "Ìbéèrè",
+      "closed": "A ti parí rẹ̀"
+    },
     "outcome": {
       "confirmed": "Ẹ̀rí fìdí rẹ̀ múlẹ̀",
       "notEnough": "Ẹ̀rí kò tó",
@@ -244,7 +251,7 @@
     "line5": "Tí o bá lo Sọ̀rọ̀, iṣẹ́ ìsọ̀rọ̀ fóònù rẹ lè ṣe ohùn rẹ láti sọ ọ́ di ọ̀rọ̀."
   },
   "o03": {
-    "title": "Ta ni ọ́?",
+    "title": "Báwo ni o ṣe fẹ́ ròyìn?",
     "observer": "Olùwòye tí a fọwọ́ sí ni mí",
     "observerHint": "Wọlé pẹ̀lú kóòdù àti PIN tó wà lórí káàdì rẹ",
     "citizen": "Ròyìn gẹ́gẹ́ bí ọmọ ìlú",
@@ -809,6 +816,7 @@
     "hint": "Àwọn ìròyìn tí olùyẹ̀wò ti kọ̀wé sí ọ nípa wọn.",
     "questionTag": "Ìbéèrè fún ọ",
     "newMessage": "{count, plural, one {Ọ̀rọ̀ tuntun #} other {Ọ̀rọ̀ tuntun #}}",
+    "newMessageLabel": "{count, plural, one {ọ̀rọ̀ tuntun} other {ọ̀rọ̀ tuntun}}",
     "empty": "Kò sí ìfiránṣẹ́. Tí olùyẹ̀wò bá kọ̀wé sí ọ, yóò hàn níbí.",
     "emptyTitle": "Kò sí ìfiránṣẹ́",
     "emptyBody": "Nígbà tí olùyẹ̀wò bá kọ̀wé sí ọ, yóò hàn níbí. Wàá tún rí i lórí Ilé.",

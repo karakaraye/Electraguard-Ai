@@ -30,6 +30,7 @@ import { animate } from "../../../../ui/motion";
 import {
   CameraIcon,
   ChevronDownIcon,
+  ListIcon,
   CloseIcon,
   MicIcon,
   RetryIcon,
@@ -875,9 +876,11 @@ function SavedViews({
           type="button"
           className={styles.control}
           {...props}
+          aria-label={t("s02.views.title")}
           data-testid="s02-views-button"
         >
-          {t("s02.views.title")}
+          <ListIcon size={18} className={styles.viewsIcon} aria-hidden="true" />
+          <span className={styles.viewsLabel}>{t("s02.views.title")}</span>
           <ChevronDownIcon size={16} />
         </button>
       )}

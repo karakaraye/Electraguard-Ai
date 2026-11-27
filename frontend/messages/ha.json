@@ -30,7 +30,8 @@
       "online": "Sabis ya dawo."
     },
     "stepper": {
-      "progress": "Mataki na {current} cikin {total}"
+      "progress": "Mataki na {current} cikin {total}",
+      "saved": "An ajiye shi a kan wannan wayar"
     },
     "textarea": {
       "count": "Haruffa {count} cikin {max}",
@@ -173,6 +174,12 @@
       "needsAttentionHint": "Ba mu iya karɓa ba tukuna. Ka buɗe shi, ka gyara abin da aka yi wa alama, sannan ka sake aikawa.",
       "label": "Ci gaban rahoto"
     },
+    "statusShort": {
+      "received": "An karɓa",
+      "inReview": "Ana dubawa",
+      "question": "Tambaya",
+      "closed": "An rufe"
+    },
     "outcome": {
       "confirmed": "Shaida ta tabbatar",
       "notEnough": "Babu isasshiyar shaida",
@@ -244,7 +251,7 @@
     "line5": "Idan ka yi amfani da Yi magana, sabis ɗin magana na wayarka na iya sarrafa muryarka don mayar da ita rubutu."
   },
   "o03": {
-    "title": "Kai wane ne?",
+    "title": "Yaya za ka kai rahoto?",
     "observer": "Ni mai sa ido ne da aka amince da shi",
     "observerHint": "Ka shiga da lamba da PIN da ke kan katinka",
     "citizen": "Kai rahoto a matsayin ɗan ƙasa",
@@ -809,6 +816,7 @@
     "hint": "Rahotannin da mai dubawa ya rubuto maka a kansu.",
     "questionTag": "Tambaya gare ka",
     "newMessage": "{count, plural, one {Sabon saƙo #} other {Sababbin saƙonni #}}",
+    "newMessageLabel": "{count, plural, one {sabon saƙo} other {sababbin saƙonni}}",
     "empty": "Babu saƙo. Idan mai dubawa ya rubuto maka, zai bayyana a nan.",
     "emptyTitle": "Babu saƙo",
     "emptyBody": "Idan mai dubawa ya rubuta maka, zai bayyana a nan. Za ka kuma gan shi a Gida.",

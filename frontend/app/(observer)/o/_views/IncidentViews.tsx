@@ -37,7 +37,6 @@ import {
   CameraIcon,
   categoryPictograms,
   CheckIcon,
-  ClockIcon,
   MicIcon,
   PhoneIcon,
   PlaceIcon,
@@ -474,21 +473,22 @@ export function DescribeView({
     >
       <h1 className={styles.title}>{t("o09.title")}</h1>
       <div className={styles.describe}>
-        <ul className={styles.hints} id="o09-hints">
-          <li>{t("o09.hint1")}</li>
-          <li>{t("o09.hint2")}</li>
-          <li>{t("o09.hint3")}</li>
-        </ul>
         <div className={styles.stack}>
           <TextArea
             ref={textRef}
             label={t("o09.label")}
+            hint={
+              <>
+                <span className={styles.hintLine}>{t("o09.hint1")}</span>
+                <span className={styles.hintLine}>{t("o09.hint2")}</span>
+                <span className={styles.hintLine}>{t("o09.hint3")}</span>
+              </>
+            }
             value={text}
             onChange={(event) => onText(event.target.value)}
             rows={6}
             lang={locale}
             autoCorrect="on"
-            aria-describedby="o09-hints"
             error={errorText}
             adornment={<DictationCorner dictation={dictation} />}
             data-testid="o09-text"
@@ -743,7 +743,6 @@ export function CheckView({
   const { locale } = useLocale();
   const [all, setAll] = useState(false);
   const meta = category ? categoryMeta(category) : null;
-  const Pictogram = meta ? categoryPictograms[meta.pictogram] : null;
   const long = description.split("\n").length > 3 || description.length > 150;
   const busy = status === "sending" || status === "notConfirmed";
   const finished = status === "savedOffline" || status === "intakePaused" || status === "server" || status === "withdrawn";
@@ -857,12 +856,9 @@ export function CheckView({
         {block(
           "what",
           t("o11.what"),
-          meta && Pictogram ? (
+          meta ? (
             <span className={styles.tight}>
-              <span className={styles.valueRow}>
-                <Pictogram size={32} aria-hidden="true" />
-                <span>{t(`o05.tile.${meta.tile}`)}</span>
-              </span>
+              <span>{t(`o05.tile.${meta.tile}`)}</span>
               {category === "access_barrier" && access.length ? (
                 <span className={styles.meta}>{access.map((value) => t(`o05.access.${ACCESS_DETAILS.find((d) => d.value === value)?.key}`)).join(", ")}</span>
               ) : null}
@@ -872,30 +868,17 @@ export function CheckView({
         {block(
           "danger",
           t("o11.danger"),
-          danger === null ? null : danger ? (
-            <span className={styles.valueRow}>
-              <AlertIcon size={20} aria-hidden="true" />
-              {t("o11.dangerYes")}
-            </span>
-          ) : (
-            t("o11.dangerNo")
-          ),
+          danger === null ? null : danger ? t("o11.dangerYes") : t("o11.dangerNo"),
         )}
         {block(
           "where",
           t("o11.where"),
-          place ? (
-            <span className={styles.valueRow}>
-              <PlaceIcon size={20} aria-hidden="true" />
-              {place}
-            </span>
-          ) : null,
+          place || null,
         )}
         {block(
           "when",
           t("o11.when"),
-          <span className={`${styles.valueRow} eg-tnum`}>
-            <ClockIcon size={20} aria-hidden="true" />
+          <span className="eg-tnum">
             {justNow ? `${t("o08.justNow")} · ` : ""}
             {occurredAt ? formatWatDateTime(occurredAt, locale) : null}
           </span>,

@@ -3,7 +3,7 @@
 import type { Claim } from "../../../../../lib/api/types";
 import { useT } from "../../../../../lib/i18n/client";
 import { RumourView } from "../../../../(staff)/s/_views/RumourView";
-import { S06_CLAIMS, S06_MATCHES, S06_NO_MATCHES, S06_USER } from "./s06.fixtures";
+import { S06_ASKS, S06_CLAIMS, S06_MATCHES, S06_NO_MATCHES, S06_USER } from "./s06.fixtures";
 
 /** Screen 43 (S-06) preview states. Each state is one screenshot. */
 export const states = [
@@ -25,13 +25,7 @@ export const states = [
 
 const byId = (id: string) => S06_CLAIMS.find((claim) => claim.id === id) ?? S06_CLAIMS[0];
 
-const ASKS: Record<string, { ask_count: number; ask_trend_1h: number }> = {
-  c1: { ask_count: 46, ask_trend_1h: 12 },
-  c2: { ask_count: 19, ask_trend_1h: 7 },
-  c3: { ask_count: 11, ask_trend_1h: 0 },
-  c4: { ask_count: 8, ask_trend_1h: 0 },
-  c5: { ask_count: 6, ask_trend_1h: 2 },
-};
+
 
 export function Preview({ state }: { state: string }) {
   const t = useT();
@@ -47,7 +41,7 @@ export function Preview({ state }: { state: string }) {
             ? byId("c2")
             : byId("c1");
   const withAsks = (claim: Claim): Claim =>
-    isPublic ? { ...claim, source: "public", ...(ASKS[claim.id] ?? { ask_count: 0, ask_trend_1h: 0 }) } : claim;
+    ({ ...claim, ...(isPublic ? { source: "public" as const } : {}), ...(S06_ASKS[claim.id] ?? { ask_count: 0, ask_trend_1h: 0 }) });
   const list = (state === "empty" ? [] : state === "filtered" ? S06_CLAIMS.filter((claim) => claim.status === "new") : S06_CLAIMS).map(withAsks);
   const open = selected ? withAsks(selected) : null;
   const shown = isPublic ? [...list].sort((a, b) => (b.ask_count ?? 0) - (a.ask_count ?? 0)) : list;

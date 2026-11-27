@@ -90,6 +90,58 @@
   gap: var(--s-2) var(--s-3);
 }
 
+/* Saved views: icon only on phones, so it stays on the filter row; the label shows from 560 px. */
+.viewsLabel {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media (min-width: 560px) {
+  .viewsLabel {
+    position: static;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    clip-path: none;
+  }
+
+  .viewsIcon {
+    display: none;
+  }
+}
+
+@media (max-width: 559px) {
+  .filters {
+    flex-wrap: nowrap;
+    gap: var(--s-2);
+  }
+
+  .filters > * {
+    flex: none;
+  }
+
+  .filters .viewsRoot {
+    margin-inline-start: auto;
+  }
+}
+
+/* A hint that more tabs wait off the right edge. */
+.tabs {
+  -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent);
+  mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent);
+}
+
+@media (min-width: 900px) {
+  .tabs {
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+}
+
 .priority {
   display: inline-flex;
   align-items: center;

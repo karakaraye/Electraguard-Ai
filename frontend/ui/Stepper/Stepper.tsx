@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, type CSSProperties } from "react";
+import { useEffect } from "react";
 import { useT } from "../../lib/i18n/client";
 import styles from "./Stepper.module.css";
 
@@ -35,20 +35,29 @@ export function useStepTravel(step: number): { from: number; direction: -1 | 0 |
   return { from, direction: from > 0 && step !== from ? (step > from ? 1 : -1) : 0 };
 }
 
-/** "Step 3 of 7" with a thin progress rule. The rule is decorative; the text carries the meaning. */
+/** "Step 3 of 7" and "Saved on this phone", over one segment per step. The rule is decorative; the text carries the meaning. */
 export function Stepper({ current, total, from, "data-testid": testId = "stepper" }: StepperProps) {
   const t = useT();
   const safeTotal = Math.max(1, total);
   const step = Math.min(Math.max(1, current), safeTotal);
   return (
     <div className={styles.stepper} data-testid={testId}>
-      <p className={`${styles.text} eg-tnum`}>{t("ui.stepper.progress", { current: step, total: safeTotal })}</p>
+      <div className={styles.head}>
+        <p className={`${styles.text} eg-tnum`}>{t("ui.stepper.progress", { current: step, total: safeTotal })}</p>
+        <p className={styles.saved}>{t("ui.stepper.saved")}</p>
+      </div>
       <div className={styles.track} aria-hidden="true">
-        <div
-          className={styles.fill}
-          data-grow={from && from !== step ? "" : undefined}
-          style={{ transform: `scaleX(${step / safeTotal})`, "--from": from ? Math.min(Math.max(1, from), safeTotal) / safeTotal : undefined } as CSSProperties}
-        />
+        {Array.from({ length: safeTotal }, (_, i) => {
+          const n = i + 1;
+          return (
+            <span
+              key={n}
+              className={styles.seg}
+              data-on={n <= step || undefined}
+              data-grow={from && from !== step && n <= Math.max(step, from) && n > Math.min(step, from) ? "" : undefined}
+            />
+          );
+        })}
       </div>
     </div>
   );
