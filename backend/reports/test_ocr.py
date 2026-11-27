@@ -171,9 +171,11 @@ class RealEngineTests(SimpleTestCase):
         font = ImageFont.load_default(size=56)
         for index, row in enumerate(rows):
             draw.text((60, 60 + index * 120), row, fill="black", font=font)
-        fields = parse_lines(recognise_lines(sheet), ["A", "B", "C"])
-        self.assertEqual(fields["registered"]["value"], 1250)
-        self.assertEqual(fields["accredited"]["value"], 640)
-        self.assertEqual(fields["rejected"]["value"], 12)
-        self.assertEqual({label: fields["votes"][label]["value"] for label in "ABC"}, {"A": 210, "B": 180, "C": 95})
+        lines = recognise_lines(sheet)
+        fields = parse_lines(lines, ["A", "B", "C"])
+        read = f"engine read: {[text for text, _ in lines]}"
+        self.assertEqual(fields["registered"]["value"], 1250, read)
+        self.assertEqual(fields["accredited"]["value"], 640, read)
+        self.assertEqual(fields["rejected"]["value"], 12, read)
+        self.assertEqual({label: fields["votes"][label]["value"] for label in "ABC"}, {"A": 210, "B": 180, "C": 95}, read)
         self.assertGreater(fields["registered"]["confidence"], 0.5)

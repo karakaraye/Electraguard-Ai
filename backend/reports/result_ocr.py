@@ -62,7 +62,8 @@ def parse_lines(lines, labels):
             if pattern.search(lowered):
                 target = fields[name]
         if target is None:
-            match = re.match(r"(?i)\s*(?:party\s+)?([A-Za-z0-9]+)\b", text)
+            # "Party A 210", "PartyA 210" (the engine often drops that space) or "A 210".
+            match = re.match(r"(?i)\s*(?:party\s*(?=[A-Za-z0-9]{1,6}\b))?([A-Za-z0-9]+)\b", text)
             if match and match.group(1).upper() in fields["votes"]:
                 target = fields["votes"][match.group(1).upper()]
         if target is not None and 0 <= value <= 99999 and target["value"] is None:
