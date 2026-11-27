@@ -111,3 +111,7 @@ To only add anything missing without erasing, run `.\scripts\demo\seed.ps1` agai
 - **Six-digit code rejected:** wait for the next 30-second window and run `totp.ps1` again. The laptop clock must be right.
 - **Observer says the code is wrong:** codes are in `demo-signins.json`; type them exactly, `OBS-` and six characters.
 - **The site shows old pages after you changed settings:** stop window 3 and start it again.
+
+## Check the screens or re-record the draft video (technical)
+
+From the `frontend` folder with the stack running: `node e2e/demo/verify.mjs` opens every demo screen and prints PASS or FAIL. `node e2e/demo/record.mjs` records one clip per scene (no names records all), and `node e2e/demo/join.mjs` joins them into `draft-demo.mp4` (needs `ffmpeg` on the PATH). Recording changes the demo data (it sends a report, a safety notice and a published snapshot), so run **Reset** afterwards. The clips and the joined file are written outside the repository (`EG_VIDEO_OUT`, default `..\demo-video`).

@@ -18,7 +18,7 @@ const TITLES = [
   ["05c-publish-and-results", "Public results: reviewed only, small numbers hidden", false],
   ["06-privacy-languages", "Five languages. Synthetic data only. Prototype.", true],
 ];
-const font = "C:/Windows/Fonts/arialbd.ttf";
+const font = "arialbd.ttf"; // found by running ffmpeg inside the Windows fonts folder
 const tmp = join(OUT, "joined-parts");
 mkdirSync(tmp, { recursive: true });
 const parts = [];
@@ -26,12 +26,12 @@ for (const [name, title, phone] of TITLES) {
   const input = join(CLIPS, `${name}.webm`);
   if (!existsSync(input)) { console.log("missing", name); continue; }
   const out = join(tmp, `${name}.mp4`);
-  const text = title.replaceAll(":", "\:").replaceAll("'", "");
-  const draw = `drawbox=x=0:y=ih-110:w=iw:h=110:color=0x0f0e0c@0.82:t=fill,drawtext=fontfile='${font.replace(":", "\:")}':text='${text}':fontcolor=white:fontsize=44:x=60:y=h-78`;
+  const text = title.replaceAll(":", " -").replaceAll("'", "");
+  const draw = `drawbox=x=0:y=ih-110:w=iw:h=110:color=0x0f0e0c@0.82:t=fill,drawtext=fontfile=${font}:text='${text}':fontcolor=white:fontsize=44:x=60:y=h-78`;
   const filter = phone
-    ? `[0:v]scale=-2:1000[p];color=c=0xf6f1e4:s=1920x1080:r=25[bg];[bg][p]overlay=(W-w)/2:20,${draw}`
+    ? `[0:v]scale=-2:1000[p];color=c=0xf6f1e4:s=1920x1080:r=25[bg];[bg][p]overlay=(W-w)/2:20:shortest=1,${draw}`
     : `[0:v]scale=1920:1080:flags=lanczos,${draw}`;
-  execFileSync("ffmpeg", ["-y", "-loglevel", "error", "-i", input, "-filter_complex", filter, "-r", "25", "-c:v", "libx264", "-pix_fmt", "yuv420p", "-crf", "20", "-an", out]);
+  execFileSync("ffmpeg", ["-y", "-loglevel", "error", "-i", input, "-filter_complex", filter, "-r", "25", "-c:v", "libx264", "-preset", "veryfast", "-pix_fmt", "yuv420p", "-crf", "20", "-an", out], { cwd: "C:/Windows/Fonts" });
   parts.push(out);
   console.log("encoded", name);
 }
