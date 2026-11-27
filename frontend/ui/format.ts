@@ -19,18 +19,27 @@ function toDate(value: Date | number | string) {
 }
 
 /** "22 Nov 2026, 14:05 WAT". Election times are always shown in West Africa Time. */
-export function formatWatDateTime(value: Date | number | string, locale: Locale): string {
-  return `${formatter(locale, { dateStyle: "medium", timeStyle: "short", hourCycle: "h23" }, "dt").format(toDate(value))} WAT`;
+export function formatWatDateTime(value: Date | number | string | null | undefined, locale: Locale): string {
+  if (value === null || value === undefined || value === "") return "—";
+  const d = toDate(value);
+  if (Number.isNaN(d.getTime())) return "—";
+  return `${formatter(locale, { dateStyle: "medium", timeStyle: "short", hourCycle: "h23" }, "dt").format(d)} WAT`;
 }
 
 /** "22 Nov, 14:05 WAT": rows in a list, where the year is not needed. */
-export function formatWatShort(value: Date | number | string, locale: Locale): string {
-  return `${formatter(locale, { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit", hourCycle: "h23" }, "ds").format(toDate(value))} WAT`;
+export function formatWatShort(value: Date | number | string | null | undefined, locale: Locale): string {
+  if (value === null || value === undefined || value === "") return "—";
+  const d = toDate(value);
+  if (Number.isNaN(d.getTime())) return "—";
+  return `${formatter(locale, { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit", hourCycle: "h23" }, "ds").format(d)} WAT`;
 }
 
 /** "14:05 WAT" */
-export function formatWatTime(value: Date | number | string, locale: Locale): string {
-  return `${formatter(locale, { timeStyle: "short", hourCycle: "h23" }, "t").format(toDate(value))} WAT`;
+export function formatWatTime(value: Date | number | string | null | undefined, locale: Locale): string {
+  if (value === null || value === undefined || value === "") return "—";
+  const d = toDate(value);
+  if (Number.isNaN(d.getTime())) return "—";
+  return `${formatter(locale, { timeStyle: "short", hourCycle: "h23" }, "t").format(d)} WAT`;
 }
 
 /** "1.4 MB", "820 KB" */

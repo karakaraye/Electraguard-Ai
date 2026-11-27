@@ -14,7 +14,12 @@ export const OUT = join(REPO, "frontend", "test-results", "observer-real-files")
 
 function python(): string {
   if (process.env.EG_PYTHON) return process.env.EG_PYTHON;
-  for (const candidate of [join(REPO, "backend/.venv/Scripts/python.exe"), join(REPO, "backend/.venv/bin/python")]) {
+  for (const candidate of [
+    join(REPO, "backend/.venv/Scripts/python.exe"),
+    join(REPO, "backend/.venv/bin/python"),
+    join(REPO, "../Electraguard-Ai/backend/.venv/Scripts/python.exe"),
+    join(REPO, "../Electraguard-Ai/backend/.venv/bin/python"),
+  ]) {
     if (existsSync(candidate)) return candidate;
   }
   return process.platform === "win32" ? "python" : "python3";
@@ -111,6 +116,10 @@ export async function fillReport(page: Page, input: ReportInput = {}) {
   await page.locator("textarea").fill(input.description ?? "Young men at the gate told people in the queue to go home before voting started.");
   await page.getByTestId("o09-source").getByRole("radio").first().check({ force: true });
   await page.getByTestId("continue").click();
+  const nameKeep = page.getByTestId("o09-name-keep");
+  if (await nameKeep.isVisible({ timeout: 1500 }).catch(() => false)) {
+    await nameKeep.click();
+  }
   await stepIs(page, "evidence");
   if (input.photoPath) {
     await page.getByTestId("media-capture-photo-input").setInputFiles(input.photoPath);
@@ -184,7 +193,8 @@ export type Area = {
   lga_name: string;
   wards: Array<{ ward_code: string; name: string; units: Array<[string, string]> }>;
 };
-export type Coordinator = { email: string; password: string; name: string };
+export type StaffUser = { email: string; password: string; name: string };
+export type Coordinator = StaffUser;
 
 /** One LGA with three wards and five units each, picked by number so every spec uses its own. */
 export function areaNumber(index: number): Area {
@@ -196,8 +206,18 @@ export function newCoordinator(name = ""): Coordinator {
   return server<Coordinator>("staff", "coordinator", name);
 }
 
+/** A reviewer the server already knows, with two-step verification set up. */
+export function newReviewer(name = ""): StaffUser {
+  return server<StaffUser>("staff", "reviewer", name);
+}
+
+/** An org admin the server already knows, with two-step verification set up. */
+export function newOrgAdmin(name = ""): StaffUser {
+  return server<StaffUser>("staff", "org_admin", name);
+}
+
 /** Sign in on the staff page: email and password, then the current two-step code. */
-export async function staffSignIn(page: Page, who: Coordinator) {
+export async function staffSignIn(page: Page, who: StaffUser) {
   await page.goto("/s/sign-in");
   await page.locator("#staff-email").fill(who.email);
   await page.locator("#staff-password").fill(who.password);
