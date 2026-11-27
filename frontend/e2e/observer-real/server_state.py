@@ -359,7 +359,12 @@ def approved_claim(text, answer, lga="AD-01"):
 
 def assign(report_ref, email):
     user = User.objects.get(email=email)
-    Report.objects.filter(pk=report_ref).update(assigned_reviewer=user)
+    try:
+        from uuid import UUID
+        UUID(str(report_ref))
+        Report.objects.filter(pk=report_ref).update(assigned_reviewer=user)
+    except ValueError:
+        Report.objects.filter(receipt_code=report_ref).update(assigned_reviewer=user)
     out({"ok": True, "reviewer": email})
 
 

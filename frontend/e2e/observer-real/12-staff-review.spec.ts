@@ -78,9 +78,24 @@ test("reviewer reviews observer report: queue navigation, redacted text, Q&A cla
   await expect(targetRow).toBeVisible({ timeout: 20_000 });
   await expect(targetRow).toContainText(receiptCode);
 
-  // Keyboard navigation: focus targetRow, press Enter on targetRow to open case
+  // Priority, place and status are all shown on the row.
+  await expect(targetRow.locator("span[data-level]")).toHaveAttribute("data-level", /.+/);
+  await expect(targetRow.locator("td").nth(2)).not.toHaveText("");
+  await expect(targetRow.locator("td").last()).not.toHaveText("");
+  await expect(targetRow.locator("td").last()).toContainText(/submitted|new|received|to review/i);
+
+  // Keyboard: J and K move between rows, Enter opens the case.
   await targetRow.focus();
-  await targetRow.press("Enter");
+  await desk.page.keyboard.press("j");
+  await desk.page.keyboard.press("k");
+  await expect(targetRow).toBeFocused();
+  await desk.page.keyboard.press("Enter");
+  await desk.page.waitForURL(`**/s/cases/${serverReportId}`, { timeout: 20_000 });
+
+  // A click opens it too.
+  await desk.page.goBack();
+  await expect(targetRow).toBeVisible({ timeout: 20_000 });
+  await targetRow.locator("th").click();
   await desk.page.waitForURL(`**/s/cases/${serverReportId}`, { timeout: 20_000 });
 
   // 3. Reviewer verifies redacted text (PII name and/or phone redacted)
@@ -149,7 +164,6 @@ test("reviewer reviews observer report: queue navigation, redacted text, Q&A cla
 test("coordinator bulk case assignment with workload updates; reviewer sees forbidden state on restricted pages", async ({
   browser,
   context,
-  page,
 }) => {
   await knownPhone(context);
   const coordinator = newCoordinator("Chidi Coordinator");

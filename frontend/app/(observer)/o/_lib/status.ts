@@ -1,6 +1,6 @@
 /** Server and phone states → StatusBadge states and message keys (README R1, contract 2.1). */
 
-import type { Outcome, ReportStatus as ServerStatus } from "../../../../lib/api/types";
+import type { ReportStatus as ServerStatus } from "../../../../lib/api/types";
 import type { OutboxState } from "../../../../lib/outbox";
 import type { ReportStatus } from "../../../../ui";
 

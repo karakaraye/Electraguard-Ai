@@ -18,6 +18,7 @@ import {
   cleanCommunity,
   knownPhone,
   newCoordinator,
+  newReviewer,
   server,
   staffSignIn,
   type StaffUser,
@@ -41,6 +42,7 @@ test.beforeAll(() => {
 });
 
 test("on-screen phone simulator handles SMS report, receipt code status check, and interactive USSD flow", async ({
+  browser,
   page,
 }) => {
   // 1. Open the on-screen phone at /phone
@@ -122,6 +124,20 @@ test("on-screen phone simulator handles SMS report, receipt code status check, a
 
   // USSD ends with confirmation screen
   await expect(page.getByTestId("phone-ussd-end")).toBeVisible({ timeout: 15_000 });
+
+  // 6. The simulated SMS report is marked as simulated for staff and never reaches the public results.
+  const reviewer = newReviewer("Ngozi Phone Desk");
+  server("assign", receiptCode, reviewer.email);
+  const desk = await staffDesk(browser, reviewer);
+  await desk.page.goto("/s/queue");
+  const row = desk.page.locator("tr[data-row-key]", { hasText: receiptCode });
+  await expect(row).toBeVisible({ timeout: 30_000 });
+  await row.click();
+  await expect(desk.page.locator("body")).toContainText(/simulated/i);
+  await desk.context.close();
+
+  await page.goto("/results");
+  await expect(page.locator("body")).not.toContainText(receiptCode);
 });
 
 test("public rumour check displays approved answers, handles unknown queries, and increments rumour desk ask count", async ({
