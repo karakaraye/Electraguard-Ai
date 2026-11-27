@@ -2,128 +2,104 @@
 
 **Hackathon Challenge:** #AI4Elections Track 5 — Election Observation and Citizen Accountability  
 **Team:** Cairn  
-**Date:** 2026-11-24  
+**Date:** 2026-11-26  
 **Status:** Prototype
 
----
-
-This document provides datasheets for the four core dataset suites utilized during the development, training, and evaluation of ElectraGuard AI:
-1. **The Official Hackathon Synthetic Starter Pack**
-2. **The Authored Paraphrase and Robustness Dataset**
-3. **The 900-Unit Administrative Reference Release**
-4. **The Synthetic Result-Sheet (EC8A) Dataset**
+> **In plain words:** Every piece of data used to train and test ElectraGuard AI is synthetic. Most of it is the hackathon's own starter pack. The team added small hand-written sets to test Nigerian Pidgin, Hausa-Pidgin mixing, typing mistakes and automatic privacy redaction. No real voter names, phone numbers or ballots were collected or stored.
 
 ---
 
-# Dataset 1: Official Hackathon Synthetic Starter Pack
-
-## 1. Motivation
-- **Purpose:** Created by the #AI4Elections Hackathon organizers (Rise Networks) to provide realistic, standardized baseline data for training election observation models without exposing real personal or sensitive electoral records.
-- **Funding & Creation:** Rise Networks AI Labs / Hackathon Technical Committee.
-
-## 2. Composition
-- **Record Types & Counts:**
-  - `incident_reports_synthetic.csv`: 400 incident records.
-  - `polling_units_synthetic.csv`: 900 synthetic polling units mapped to 3 fictionalized states (Kano, Lagos, Rivers).
-  - `logistics_deliveries_synthetic.csv`: 300 logistics dispatch and delivery transit records.
-- **Fields in Incidents:** `incident_id`, `description`, `category`, `severity` (1–4), `state`, `lga`, `ward`, `polling_unit_id`, `timestamp`.
-- **Class Balance:** Approximately balanced across 7 incident categories: `late_materials` (69), `good_practice` (60), `intimidation_violence` (56), `access_barrier` (56), `lack_of_information` (56), `equipment_failure` (54), and `queues_crowding` (49).
-- **Personal / Sensitive Data:** **Zero.** All names, phone numbers, and polling units are synthetic and fictionalized.
-
-## 3. Collection Process
-- **Method:** Algorithmic synthetic generation using parameterized sentence templates combined with synthetic location placeholders.
-- **Timeframe:** November 2026.
-- **Licence:** Provided under Creative Commons Attribution 4.0 International (CC BY 4.0) for hackathon participants.
-
-## 4. Preprocessing
-- Cleaned whitespace, standardized category naming conventions, and verified schema alignment with backend data contracts (`docs/design/api-contracts.md`).
-
-## 5. Uses
-- **Intended Tasks:** Baseline model training, initial schema definition, and pipeline integration testing.
-- **Prohibited Uses:** Evaluating real-world natural language generalization (due to template repetition).
-
-## 6. Distribution & Maintenance
-- **Hosting:** Track template repository (`Rise-Networks-AI-Labs/-AI4Elections-Hackathon`).
-- **Owner:** Hackathon Organizing Committee.
-
-## 7. Known Limitations & Biases
-- **Template Repetition:** The 400 incidents share only **7 distinct syntactic templates** once place names are removed. Models trained solely on these records memorise templates rather than understanding natural variations.
+The datasets used for development, training and evaluation:
+1. The hackathon synthetic starter pack
+2. The hand-written paraphrase set (training, calibration and robustness rows)
+3. The 900-unit reference areas
+4. The synthetic result sheets (Form EC8A)
+5. The redaction benchmark
+6. The surge-detection simulation
 
 ---
 
-# Dataset 2: Authored Paraphrase and Robustness Dataset
+# Dataset 1: Hackathon Synthetic Starter Pack
 
-## 1. Motivation
-- **Purpose:** Authored by Team Cairn to serve as a rigorous, independent held-out evaluation benchmark that evaluates real-world linguistic diversity, spelling errors, colloquial phrasing, and Nigerian multilingual communication.
-- **Creators:** Team Cairn engineers and language contributors.
+Files are in `data/synthetic/` and are unmodified (see `data/synthetic/README.md` and `DATA_DICTIONARY.md`).
 
-## 2. Composition
-- **Records:** 56 hand-crafted synthetic incident descriptions (`incident_paraphrases_authored.csv`) and 28 calibration samples (`calibration_heldout.csv`).
-- **Slices Represented:**
-  - `paraphrase` (21 samples): Semantic reformulations with complex sentence structures.
-  - `pidgin` (14 samples): Authentic Nigerian Pidgin (Naijá) vocabulary, idioms, and syntax.
-  - `typo` (14 samples): Common mobile keyboard typographical errors and phonetic misspellings.
-  - `code_switched` (7 samples): Interleaved Hausa and Nigerian Pidgin phrases commonly used in northern multilingual areas.
-- **Personal / Sensitive Data:** Zero. Strictly synthetic narrative descriptions.
+## Motivation
+Provided by the #AI4Elections organisers (Rise Networks) as realistic but fictional data for building election-observation tools without real personal records.
 
-## 3. Collection Process
-- **Method:** Authored manually by native and fluent speakers reflecting lived polling-unit communication realities.
-- **Timeframe:** 22–23 November 2026.
-- **Licence:** Creative Commons Attribution 4.0 International (CC BY 4.0).
+## Composition
+- `incident_reports_synthetic.csv`: 400 incidents. Fields: `incident_id`, `timestamp` (fictional dates in 2030), `state`, `lga`, `pu_id`, `category`, `description`, `severity_0_4` (0 to 4), `reporter_type`, `verified`, `has_photo_evidence`.
+- `polling_units_synthetic.csv`: 900 synthetic polling units (`SIM-00001` to `SIM-00900`) across 20 states and 60 invented LGAs (45 units per state). Fields: `pu_id`, `zone`, `state`, `lga`, `ward`, `settlement`, `registered_voters`, `accessible_venue`, `has_grid_power`, `network_coverage`, `distance_to_lga_hq_km`.
+- `logistics_deliveries_synthetic.csv`: 300 delivery records (`pu_id`, `lga`, `distance_km`, `settlement`, `vehicle`, `dispatch_hour`, `transit_hours`, `materials_complete`).
+- `misinformation_claims_synthetic.jsonl`: 300 claims (also copied to `docs/eval/data/`).
+- Also in the pack: `results_synthetic.csv` and `anomaly_labels_HELD_OUT.csv` (Dataset 4).
+- **Incident categories in the pack** (the models use renamed labels): logistics_delay 69, positive_practice 60, intimidation 56, accessibility_barrier 56, information_gap 56, equipment_failure 54, queue_management 49.
+- **Personal data:** none. All records are fictional.
 
-## 4. Preprocessing
-- Label verification by secondary reviewer; standardized lowercase normalization and UTF-8 encoding.
+## Uses and limits
+Used for training and for the held-out split. Not suitable for judging accuracy on real text, because the 400 incidents share only **7 distinct sentences** once place names are removed.
 
-## 5. Uses
-- **Intended Tasks:** Held-out testing of model accuracy, macro-F1, error analysis, and uncertainty abstention calibration.
-- **Prohibited Uses:** **Never used for training or tuning.** Strictly held out to ensure benchmark integrity.
-
-## 6. Distribution & Maintenance
-- **Repository Location:** `backend/intelligence/data/synthetic/incident_paraphrases_authored.csv`.
-- **Owner:** Team Cairn.
-
-## 7. Known Limitations
-- The dataset comprises 56 records; while sufficient for statistical bootstrap intervals, future work should scale this benchmark to 1,000+ samples covering all 36 Nigerian states.
+## Licence and source
+Creative Commons Attribution 4.0 (CC BY 4.0), from the official #AI4Elections starter pack (Rise Networks).
 
 ---
 
-# Dataset 3: 900-Unit Administrative Reference Release
+# Dataset 2: Hand-written Paraphrase Set
 
-## 1. Motivation
-- **Purpose:** To provide a complete administrative spatial hierarchy (State -> LGA -> Ward -> Polling Unit) for validating location validation, spatial cluster detection (A5), and public aggregation maps.
-- **Creators:** Compiled from open Nigerian electoral boundary conventions and synthetic starter structures.
+## Motivation
+Written by the Cairn team to test what the starter pack cannot: paraphrases, spelling mistakes, Nigerian Pidgin, and Hausa-Pidgin mixing.
 
-## 2. Composition
-- **Records:** 900 polling units across Kano, Lagos, and Rivers states.
-- **Fields:** `state_code`, `state_name`, `lga_code`, `lga_name`, `ward_code`, `ward_name`, `polling_unit_code`, `polling_unit_name`, `registered_voters`, `latitude`, `longitude`.
-- **Class Balance:** Proportional distribution across urban, peri-urban, and rural wards.
-- **Personal Data:** None.
+## Composition
+`data/synthetic/incident_paraphrases_authored.csv`, 140 rows with columns `split`, `kind`, `category`, `description`:
+- `train` (56 rows, kind paraphrase): used in training.
+- `calibration` (28 rows): used only to choose the abstention threshold (0.40).
+- `robustness` (56 rows): never used for training, tuning or calibration. It is the headline benchmark: paraphrase 21, pidgin 14, typo 14, code_switched 7.
+- **Personal data:** none. All text is synthetic.
 
-## 3. Collection & Licensing
-- Open public geographic references; released under CC BY 4.0.
+## Limits
+56 benchmark rows are enough for a bootstrap interval but are small. The authors of the training and benchmark rows share vocabulary with the pack, so real text will likely score lower. The code-switched slice has only 7 rows. The rows were written by the team; no independent annotation was done.
 
-## 4. Uses & Preprocessing
-- Ingestion into PostgreSQL spatial reference tables (`backend/reference/models.py`). Used for bounding coordinates and preventing LGA-level geographic leaks in public dashboards.
+## Licence
+Released with the repository under its MIT licence (`LICENSE`).
 
 ---
 
-# Dataset 4: Synthetic Result-Sheet (EC8A) Dataset
+# Dataset 3: Reference Areas (900 units)
 
-## 1. Motivation
-- **Purpose:** To evaluate the mathematical consistency checker (A6) and OCR field extraction without using physical election return sheets from past elections.
-- **Creators:** Generated by Team Cairn's synthetic return generator.
+## Composition
+`data/reference/official-synthetic-areas.json` holds the same 900 synthetic polling units grouped as 20 states, 3 LGAs per state, wards and units. It is loaded into the reference tables by `python backend/manage.py load_reference_areas` and used for place search, validation, check-ins and coverage. `data/reference/synthetic-areas.json` is a smaller fixture for tests. The bundled data has no coordinates.
 
-## 2. Composition
-- **Records:** 900 synthetic EC8A polling unit return records.
-- **Fields:** `polling_unit_code`, `registered_voters`, `accredited_voters`, `ballots_issued`, `ballots_unused`, `ballots_spoiled`, `ballots_rejected`, `party_votes` (Record of party shares), `mathematical_flags`.
-- **Injected Anomaly Classes:**
-  - `accredited_exceeds_registered` (16 cases)
-  - `sum_mismatch` (8 cases)
-  - `suspicious_round_numbers` (12 cases)
-  - `duplicated_from_previous_unit` (5 cases)
-  - `digit_transposition` (1 case)
-- **Personal Data:** None.
+State names are real; LGA and ward names are invented labels (`data/synthetic/DATA_DICTIONARY.md`). The national totals quoted elsewhere (774 LGAs, 176,846 polling units) are INEC's and are not part of this data.
 
-## 3. Uses & Constraints
-- **Intended Use:** Validating automated arithmetic audits and alerting algorithms.
-- **Critical Disclaimer:** Labeled strictly: *"Consistency check for review. This is not a result."*
+## Personal data
+None.
+
+---
+
+# Dataset 4: Synthetic Result Sheets (Form EC8A)
+
+## Composition
+- `data/synthetic/results_synthetic.csv`: 900 rows with `pu_id`, `registered_voters`, `accredited_voters`, `votes_A` to `votes_E` (party labels A to E, not real parties) and `rejected_votes`.
+- `data/synthetic/anomaly_labels_HELD_OUT.csv`: the answer key, used only for evaluation. Injected anomalies: `accredited_exceeds_registered` 16, `suspicious_round_numbers` 12, `sum_mismatch` 8, `duplicated_from_previous_unit` 5, `digit_transposition` 1 (42 of 900 sheets).
+
+## Use
+Evaluating the result-sheet consistency checks (`backend/reports/result_checks.py`). Outputs carry the label "Consistency check for review. This is not a result."
+
+---
+
+# Dataset 5: Redaction Benchmark
+
+## Composition
+`docs/eval/data/redaction-set.jsonl`: 308 hand-written items in English, Nigerian Pidgin, Hausa, Yoruba and Igbo, with 430 labelled personal details (phone numbers, names, VIN, NIN, BVN, emails, account numbers, addresses) and more than 83 ordinary election sentences with nothing to redact. All numbers and names are fictitious.
+
+## Use
+Scoring the redactor (`scripts/eval/redaction.py`; results in `docs/eval/redaction.md`). Tokens look like `[PHONE_a1b2]`.
+
+---
+
+# Dataset 6: Surge-Detection Simulation
+
+## Composition
+Generated by `scripts/eval/emerging_alerts.py` in a throwaway test database from the 900 synthetic polling units (60 LGAs, 20 states): one 900-unit polling-day stream (07:00 to 17:00) with **20 planted surges** (4 to 15 reports over 15 to 60 minutes), and **10 independent quiet days** (80 evaluation hours in total) for counting false alarms. Aggregate counts only; no personal data.
+
+## Use
+Comparing the statistical detector with the previous fixed threshold (`docs/eval/emerging-alerts.md`).

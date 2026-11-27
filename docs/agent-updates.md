@@ -34,6 +34,7 @@ The full plan is in [hackathon-plan.md](hackathon-plan.md).
 
 | Area | Owner | Branch / location | Files |
 |---|---|---|---|
+| Readable documentation overhaul (all guides, submission docs, README, video script, sitemap) | Antigravity | `docs/readable` | `docs/`, `README.md` |
 | Coordination log and licence (Slice A) | Codex | `codex/coordination-and-license` | `docs/agent-updates.md`, `docs/hackathon-plan.md`, `LICENSE` |
 | C1 observer code and PIN sign-in, organisation scoping | Codex | `codex/observer-sign-in` | `docs/agent-updates.md`, `backend/accounts/`, `backend/config/settings.py`, `backend/config/urls.py`, `backend/reports/` (organisation fields and scoping only) |
 | C2 PIN follow-ups and place reference | Codex | `backend/v1-contracts` | `docs/agent-updates.md`, `backend/accounts/`, `backend/reference/`, `backend/config/settings.py`, `backend/config/urls.py`, `data/reference/` |
@@ -63,6 +64,16 @@ The full plan is in [hackathon-plan.md](hackathon-plan.md).
 | Observer and citizen screen specs, message files in 5 languages | Claude (UX agent) | `design/observer-screens` | `docs/design/screens/…`, `frontend/messages/…` |
 
 ## Updates
+
+### 26 Nov 2026 · Antigravity · Readable documentation overhaul, then fact-check
+
+- **Branch:** `docs/readable` (PR #33). No code changed.
+- **Goal:** Documentation that a citizen, an observer, a staff member and a judge can each read, and that matches the code.
+- **`README.md`:** three layers: a plain-English overview, "For Judges" with each criterion linked to code and measured results, and "For Engineers" with setup, tests and evaluation commands.
+- **Guides (`docs/guides/`):** observer, citizen and staff guides and a 20-term glossary, written from the interface strings and the code, with screenshots of the current "Ink and Paper" interface in `docs/guides/img/` (taken from `docs/design/redesign/screens-final/`).
+- **Submission documents (`docs/submission/`):** an "In plain words" summary added to each; numbers checked against `docs/eval/`, the data files and the code.
+- **`docs/submission/VIDEO_SCRIPT.md`:** a 180-second, six-scene script.
+- **`docs/README.md`:** index by reader.
 
 ### 25 Nov 2026 · Antigravity · Community features backend complete (Sections A, B, C, D)
 

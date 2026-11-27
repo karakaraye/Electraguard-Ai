@@ -1,129 +1,88 @@
-# 3-Minute Video Demo Script: ElectraGuard AI
+# 3-Minute Demonstration Video Script: ElectraGuard AI
 
 **Hackathon Challenge:** #AI4Elections Track 5 — Election Observation and Citizen Accountability  
-**Team:** Cairn (Lead: Kara Wari Sylva)  
-**Target Duration:** Exactly 3 minutes (180 seconds)  
-**Format:** Multi-camera screen recording, live mobile device capture, split-screen UI demonstrations, and clean voiceover.
+**Team:** Cairn  
+**Target duration:** 3 minutes (180 seconds)  
+**Look of the product:** "Ink and Paper": black ink on warm paper, one sun-yellow accent, hand-drawn illustrations, light mode only. Record the real running app with the synthetic sample data.
+
+> **In plain words:** A timed 180-second walkthrough in six scenes: a citizen reports and checks a rumour, an observer reports with and without network, a reviewer works a case, a coordinator watches operations and approves a safety notice with a second coordinator, the result-sheet check and public results, and a closing statement on privacy and limits. Every number shown on screen must come from the screen being recorded or from `docs/eval/`; do not add figures that are not in the repository.
 
 ---
 
-## Video Outline & Timing Overview
+## Timing
 
-| Scene | Time Window | Title & Theme | Core Track Coverage |
+| Scene | Time | Seconds | Focus and routes |
 |---|---|---|---|
-| **Scene 1** | 0:00 – 0:15 (15s) | The Problem: The Fog of Polling Day | Track 5 Overview |
-| **Scene 2** | 0:15 – 0:50 (35s) | The Observer: Offline-First Hausa Intake | 5A, 5C, Track 3, Track 4 |
-| **Scene 3** | 0:50 – 1:05 (15s) | The Citizen: USSD & SMS on a Feature Phone | 3B, 5E |
-| **Scene 4** | 1:05 – 1:25 (20s) | The Polling Unit: Result-Sheet Consistency | 2A, 2B, 2D |
-| **Scene 5** | 1:25 – 1:55 (30s) | The Situation Room: AI Triage with Human Review | 5B, 1A, Human Oversight |
-| **Scene 6** | 1:55 – 2:20 (25s) | Operations & Rumour Desk: Clusters & Dual Approval | 1A, 1B, 2A, 2C |
-| **Scene 7** | 2:20 – 2:40 (20s) | The Public: Transparency & Grounded Guidance | 5D, 5E, 3A, 4B |
-| **Scene 8** | 2:40 – 3:00 (20s) | Responsible AI Commitments & Summary | Ethics, NDPA 2023, Closing |
+| 1 | 0:00 – 0:25 | 25 | Citizen: `/`, `/o/new/what?as=citizen`, `/status`, `/check`, `/phone` |
+| 2 | 0:25 – 0:55 | 30 | Observer: `/o/start`, `/o/new/...`, outbox, `/o/messages` |
+| 3 | 0:55 – 1:25 | 30 | Reviewer: `/s/queue`, `/s/cases/<reference>` |
+| 4 | 1:25 – 1:55 | 30 | Coordinator: `/s/ops` (overview and check-ins), safety notice approval |
+| 5 | 1:55 – 2:30 | 35 | Result-sheet check (`/o/checklist/results/sheet`) and public `/results` |
+| 6 | 2:30 – 3:00 | 30 | Privacy, languages, limits |
 
 ---
 
-## Detailed Scene-by-Scene Script
+## Scenes
 
-### Scene 1: The Problem: The Fog of Polling Day (0:00 – 0:15)
-* **Visual:** Montage of a crowded Nigerian polling unit in morning sunlight, contrasting with a fast-moving, chaotic WhatsApp chat group overflowing with unverified messages, broken photos, and panicked audio notes.
-* **On-Screen Text:**  
-  *ElectraGuard AI*  
-  *#AI4Elections Track 5 — Election Observation & Citizen Accountability*  
-  *Team Cairn*
-* **Voiceover:**  
-  *"On election day across Nigeria's 176,000 polling units, observers and citizens witness crucial events. But in areas with weak or zero network, urgent incidents are never reported safely, chaotic chat groups create bottlenecks, and citizens who speak up never hear back."*
-
----
-
-### Scene 2: The Observer: Offline-First Hausa Reporting (0:15 – 0:50)
-* **Visual:** Over-the-shoulder close-up of a budget smartphone (Redmi 9A) running ElectraGuard in Hausa (`ha`). The device status bar clearly displays **Airplane Mode (No Network)**.
+### Scene 1: Citizen (0:00 – 0:25)
+* **Visual:** The public home page at phone width, then desktop.
 * **Action:**
-  1. Observer taps *"Aika Rahoto"* (Report).
-  2. Selects category: *Tsoratarwa da Tashin Hankali* (Intimidation & Violence).
-  3. Taps *"Ba a cikin gaggawa ba"* (Not in immediate physical danger).
-  4. Selects polling unit from offline database and taps *"Yanzu nan"* (Just now).
-  5. Speaks an audio observation in Hausa; records a 5-second video clip. The server-side media processing pipeline automatically executes **face blur** (OpenCV YuNet detector) across background bystanders.
-  6. Submits. An immediate alert confirms: *"An ajiye a wannan wayar"* (Saved in local on-device outbox).
-  7. Observer toggles Airplane Mode OFF. The background outbox reconnects via TLS 1.3: a green checkmark confirms upload, generating a cryptographic submission receipt code (`REC-KN-7492`).
-* **Voiceover:**  
-  *"ElectraGuard changes that. Here, an observer in Kano works completely offline in Hausa. She records an incident, attaches audio, and captures video with bystanders' faces automatically blurred. The report is queued safely in her local device outbox. The moment network returns, it syncs seamlessly, providing a tamper-proof cryptographic receipt."*
+  1. Switch the language from English to Hausa with the header language control.
+  2. Tap **Report what you saw**, choose a category tile (for example "Late or missing materials"), answer "Is anyone in danger right now?", choose a place, write two sentences, add no name or phone number, and send.
+  3. Show the receipt code, which looks like `EG-4H7Q-92KD`.
+  4. Open `/status`, enter the code, and show the status.
+  5. Open `/check`, paste a claim and show an approved answer ("Checked by ElectraGuard reviewers. Not an INEC statement.").
+  6. Show the SMS and USSD simulator at `/phone`, with the banner that says it is simulated.
+* **On-screen text:** "No account. No name. Five languages." and "SMS 20384 and USSD *347*88# are test values on a simulator."
+* **Voiceover:** "Voters see what happens at polling units, but their reports often vanish into chat groups. With ElectraGuard a citizen can report without an account or a name, get a receipt code, follow the report, and check a rumour against answers that reviewers have approved. The phone channels you see here run on a simulator in this prototype."
 
----
-
-### Scene 3: The Citizen: USSD & SMS on a Basic Feature Phone (0:50 – 1:05)
-* **Visual:** Split screen. On the left, an actor dials `*384*24#` on an inexpensive Nokia feature phone. On the right, the ElectraGuard phone simulator terminal reflects incoming gateway webhook callbacks (tested against Africa's Talking sandbox and simulator).
+### Scene 2: Observer (0:25 – 0:55)
+* **Visual:** Phone width, 390 px.
 * **Action:**
-  1. The user navigates the quick USSD menu: selects language (Pidgin), selects category (Late Materials), selects LGA.
-  2. Types short text: *"officials never show since 8am"*.
-  3. Within 3 seconds, a confirmation SMS arrives on the Nokia phone: *"ElectraGuard: Report REC-LG-1024 received. Check status at electraguard.ng/p or reply STATUS REC-LG-1024. No personal data kept."*
-* **Voiceover:**  
-  *"No smartphone? No problem. Any citizen can report via USSD on a basic phone. Phone numbers are converted to one-way cryptographic hashes immediately, and the citizen receives an instant SMS tracking receipt."*
+  1. Sign in at `/o/start` with an observer code (`OBS-` plus six characters) and PIN. Say that the card carries a setup PIN and the observer then chooses a 6-number PIN.
+  2. Start **Report something** and move through the seven steps: what happened, danger, where, when, what you saw, photos or voice, check and send.
+  3. Turn the network off in the browser tools. Tap **Save and send when online**; show the "Saved on this phone" message and the outbox.
+  4. Turn the network on. Show the report sending and the receipt code.
+  5. Open **Messages** and answer a reviewer's question.
+* **On-screen text:** "Works offline. Sends itself when the network returns."
+* **Voiceover:** "Accredited observers sign in with a code and a PIN. A report is seven short steps. If the network drops, the report waits on the phone and sends itself when the network is back. If a reviewer has a question, the observer answers it in the app."
 
----
-
-### Scene 4: The Polling Unit: Result-Sheet Consistency Check (1:05 – 1:25)
-* **Visual:** Smartphone camera snaps an EC8A polling unit result sheet.
+### Scene 3: Reviewer (0:55 – 1:25)
+* **Visual:** Desktop, staff console.
 * **Action:**
-  1. The observer inputs accredited voters (450) and entered party votes (totaling 485).
-  2. The screen instantly displays an amber warning badge:  
-     **"Sum mismatch: total party votes exceed accredited voters."**
-  3. An unequivocal, mandatory banner states across the top and bottom:  
-     *"Consistency check for review. This is not an official result."*
-* **Voiceover:**  
-  *"When polling closes, observers record result-sheet entries. The system runs five instant arithmetic sanity checks—flagging sum discrepancies and impossible accreditation numbers. It clearly disclaims: this is an observational consistency check, never an official result declaration."*
+  1. Show the queue ordered by urgency, with the reasons each case ranks where it does.
+  2. Open a case. Show the redacted text and the **Hide names** tool.
+  3. Show the AI suggestion card labelled "Suggested, not decided", with its reasons and confidence, and press **Accept** on the category and **Correct** on the urgency.
+  4. Show the evidence panel (SHA-256 verified, location removed, faces blurred) and the audit trail line "Record chain intact".
+  5. Send a formal question to the reporter.
+* **On-screen text:** "AI suggests. A person decides."
+* **Voiceover:** "Reviewers see the report with phone numbers and names already replaced by tokens. The system suggests a category and an urgency and says why, but only the reviewer decides. Every action goes into a chained record."
 
----
-
-### Scene 5: The Situation Room: AI Triage with Human Review (1:25 – 1:55)
-* **Visual:** Screen capture of the Staff Reviewer Console (`/s/queue` and `/s/cases/REC-KN-7492`).
+### Scene 4: Coordinator (1:25 – 1:55)
+* **Visual:** Operations page.
 * **Action:**
-  1. The Reviewer Queue displays incoming reports sorted strictly by urgency.
-  2. Reviewer opens our Hausa report. The UI displays the original Hausa narrative side-by-side with an English machine translation clearly badged: *"Machine translation. Check the original."*
-  3. AI components present suggestions:
-     - Suggested Category: `intimidation_violence` (Confidence: 0.89).
-     - Suggested Urgency: `High` (Elevated by rule: threats reported).
-  4. Reviewer clicks **Accept**.
-  5. Reviewer uses the interactive redaction tool to highlight an individual's private vehicle plate, clicking **Redact**.
-  6. Reviewer dispatches a formal clarification question to the observer's phone; the observer replies instantly from the field.
-* **Voiceover:**  
-  *"In the situation room, analysts see reports ranked by calibrated urgency. AI models suggest categories and detect duplicates, but human analysts remain in absolute control. Analysts verify original audio, read translations, redact personal details, and message field observers directly."*
+  1. Show the Overview tab: day totals, cluster warnings and reports by LGA.
+  2. Open the Check-ins tab and write a check-in of type "safety". Show that it is pending approval.
+  3. Sign in as a second coordinator and approve it.
+* **On-screen text:** "A safety notice needs a second coordinator."
+* **Voiceover:** "Coordinators watch for unusual surges and ask observers short questions by ward. A safety notice is only sent after a different coordinator approves it. In our test, the surge detector raised far fewer false alarms than a fixed threshold, but caught fewer of the planted surges."
 
----
-
-### Scene 6: Operations & Rumour Desk: Clusters & Dual Approval (1:55 – 2:20)
-* **Visual:** Switching to the Operations Room (`/s/ops`) and the Rumour Desk (`/s/rumours`).
+### Scene 5: Result sheet and public results (1:55 – 2:30)
+* **Visual:** Phone on the left, desktop on the right.
 * **Action:**
-  1. Operations map displays an automated cluster warning: a Poisson anomaly alert shows 8 independent late-materials reports across Dala LGA.
-  2. Rumour Desk interface displays a viral Twitter claim claiming ballot-snatching in Kano.
-  3. The system matches the claim against corroborated field reports from that exact ward, showing normal, peaceful voting.
-  4. Analyst drafts a public factual notice.
-  5. A second coordinator authenticates and approves the publication (*Second-Person Approval requirement*).
-* **Voiceover:**  
-  *"The operations room spots geographic clusters in real time—warning coordinators of localized logistics delays. When viral rumours spread on social media, the Rumour Desk cross-references ground reports, requiring dual two-person sign-off before publishing public debunks."*
+  1. The observer photographs the posted result sheet and types the numbers. Enter a sheet where votes plus rejected ballots do not equal accredited voters.
+  2. On the reviewer's case screen show the flag "Party votes plus rejected votes differs from accredited count" and the words "Consistency check for review. This is not a result."
+  3. Open `/results`: totals by state, type and hour, the "fewer than 5" labels, the line "Reviewed observations only. Not official results. Independent of INEC.", and the audit-record fingerprint.
+* **On-screen text:** "Not official results." and "Fewer than 5 is hidden."
+* **Voiceover:** "Observers type what the result sheet shows and the system flags numbers that do not add up. It never adds up votes or names a winner. The public sees only reviewed totals, published at least an hour later, with small numbers hidden."
 
----
-
-### Scene 7: The Public: Transparency & Grounded Guidance (2:20 – 2:40)
-* **Visual:** Mobile browser visiting the Public Transparency Portal (`/results` and `/ask`).
-* **Action:**
-  1. Demonstrating the transparency results table: rows showing verified incident counts by state. A cell with 3 reports clearly displays **`< 5`** under small-cell suppression rules.
-  2. Opening "Ask ElectraGuard": user types in Yorùbá: *"Kini ẹtọ mi ti wọn ba sọ pe orukọ mi ko si ninu iwe?"* (What are my rights if my name is not found on the register?).
-  3. The grounded engine returns the exact approved passage from Section 3.1 of the Field Guide with a clickable source citation link.
-* **Voiceover:**  
-  *"The public portal delivers aggregated transparency while fiercely protecting informants: any geographic cell with fewer than 5 reports is suppressed. Citizens can check their receipt status or query approved election guidance in five Nigerian languages—always backed by verified source citations."*
-
----
-
-### Scene 8: Responsible AI Commitments & Summary (2:40 – 3:00)
-* **Visual:** Split screen showing the Merkle audit chain hash (`AuditChainHead`), code repository structure, and closing credits.
-* **On-Screen Text:**
-  - *Zero Personal Identifiers Stored*
-  - *Offline-First Architecture (< 300 KB)*
-  - *Deterministic Reproducibility (Seed 42)*
-  - *NDPA 2023 Compliant*
-  - *Prototype: Not Approved for Operational Deployment*
-* **Voiceover:**  
-  *"No names. No voter profiling. No autonomous decisions. AI assists, but humans decide. ElectraGuard AI brings accountability, safety, and inclusion to election observation. Developed by Team Cairn for #AI4Elections."*
-* **Closing Card:**  
-  *ElectraGuard AI, by Cairn*  
-  *Code & Documentation: github.com/karakaraye/Electraguard-Ai*
+### Scene 6: Privacy and limits (2:30 – 3:00)
+* **Visual:** Phone screens in English, Pidgin, Hausa, Yoruba and Igbo, then the privacy notice.
+* **On-screen text:**
+  - "No names collected."
+  - "Five languages."
+  - "AI never decides alone."
+  - "Synthetic data only."
+  - "Prototype. Not approved for live elections."
+* **Voiceover:** "ElectraGuard does not ask for names, hides personal details it finds, and keeps people in charge of every decision. It was built and tested on synthetic data only, and it is a prototype: it has not been deployed, the phone channels are simulated, and it is not approved for live elections."
+* **Closing card:** ElectraGuard AI, Election Observation and Citizen Accountability, Team Cairn, #AI4Elections Track 5. "Prototype: not approved for operational electoral deployment." `github.com/karakaraye/Electraguard-Ai`

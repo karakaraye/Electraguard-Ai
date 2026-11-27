@@ -1,4 +1,13 @@
-# Local load and Azure election-day estimate
+# Local Load and Azure Election-Day Cost Estimate
+
+**Hackathon Challenge:** #AI4Elections Track 5 — Election Observation and Citizen Accountability  
+**Team:** Cairn  
+**Date:** 2026-11-26  
+**Status:** Prototype
+
+> **In plain words:** ElectraGuard AI is engineered to be affordable for civil society organisations. On an election day with 1,000 active observers submitting 3,000 incident reports with photographs, the estimated Azure cloud compute and storage cost is approximately $5.18 for 24 hours of operation with 30 days of retained data (or $42.60 per month for continuous server uptime). A small local load test was run, but it is not a capacity guarantee: it used the Django development server, and some PIN-setup requests timed out (see below). The cost figure is a planning estimate, not a bill: nothing has been deployed to Azure yet.
+
+---
 
 ## Local setup
 
@@ -26,7 +35,7 @@ Each virtual observer uses one fresh setup card and a cookie session. Each itera
 
 ## Measured locally on 24 November 2026
 
-Windows 11 Pro, Intel Core i7-1185G7, 8 logical CPUs, 31.7 GiB RAM. The client, Django development server and PostgreSQL 18 ran on the same machine. The configured shared PostgreSQL instance on port 55450 rejected the supplied credentials. An isolated loopback PostgreSQL instance on port 55453 served the same database name. The backend suite shared the host during the first run. The reported percentiles include initial sign-in and PIN setup, and reflect the client-observed HTTP request duration.
+Windows 11 Pro, Intel Core i7-1185G7, 8 logical CPUs, 31.7 GiB RAM. The client, Django development server and PostgreSQL 18 ran on the same machine (the project's Compose file and CI use PostgreSQL 17). The configured shared PostgreSQL instance on port 55450 rejected the supplied credentials. An isolated loopback PostgreSQL instance on port 55453 served the same database name. The backend suite shared the host during the first run. The reported percentiles include initial sign-in and PIN setup, and reflect the client-observed HTTP request duration.
 
 | Profile | Requests | Requests/sec | p50 | p95 | Errors | Photo completions |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
@@ -48,6 +57,6 @@ Assume 1,000 observers, one sign-in per observer and three incident reports with
 | Internet egress | 5 GB within an unspent account-level 100 GB monthly allowance | 0.00 |
 | **Total** | **One day of compute, 30 days of retained data** | **5.18** |
 
-This is a USD planning estimate based on public pay-as-you-go prices and stated allowances. If both compute tiers run for the entire month, the same storage and traffic assumptions bring the estimate to about $42.60. Taxes, SMS gateway charges, premium monitoring, high availability, and staff labour are excluded. Confirm regional availability, account rates and deployment sizing after Azure access arrives. Rerun the same synthetic flow on Azure and re-measure throughput, latency, errors, startup bursts and billing meters.
+This is a USD planning estimate based on public pay-as-you-go prices and stated allowances. It was priced on App Service plans and a Flexible Server; the deployment templates in `deploy/azure/` target Azure Container Apps, so the compute lines would need to be repriced. If both compute tiers run for the entire month, the same storage and traffic assumptions bring the estimate to about $42.60. Taxes, SMS gateway charges, premium monitoring, high availability, and staff labour are excluded. Confirm regional availability, account rates and deployment sizing after Azure access arrives. Rerun the same synthetic flow on Azure and re-measure throughput, latency, errors, startup bursts and billing meters.
 
 [App Service Linux pricing](https://azure.microsoft.com/en-us/pricing/details/app-service/linux/) · [PostgreSQL Flexible Server pricing](https://azure.microsoft.com/en-us/pricing/details/postgresql/flexible-server/) · [Blob storage pricing](https://azure.microsoft.com/en-us/pricing/details/storage/blobs/) · [Bandwidth pricing](https://azure.microsoft.com/en-us/pricing/details/bandwidth/)

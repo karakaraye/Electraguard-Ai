@@ -2,8 +2,10 @@
 
 **Hackathon Challenge:** #AI4Elections Track 5 — Election Observation and Citizen Accountability  
 **Team:** Cairn  
-**Date:** 2026-11-24  
+**Date:** 2026-11-26  
 **Status:** Prototype
+
+> **In plain words:** ElectraGuard AI was tested on hand-written cases that are harder than the repetitive starter-pack templates. The category classifier scored 0.824 macro-F1 on 56 hand-written examples with paraphrases, typos, Pidgin and Hausa-Pidgin mixing (Pidgin slice 0.848 on 14 examples; code-switched slice 1.000 on only 7). The privacy engine found 96.3% of personal details and 99.8% of what it replaced was correct, on 308 hand-written items in five languages. The statistical surge detector cut false alarms from 120.33 to 0.39 per hour, but it also detected fewer planted surges (65%, against 100% for the old fixed threshold). All data is synthetic, so none of these numbers predicts accuracy on real reports.
 
 ---
 
@@ -13,6 +15,7 @@ In accordance with the Track 5 technical brief, ElectraGuard AI was evaluated ag
 1. **Triage Accuracy & Urgency Prioritization (5B):** High classification accuracy on multi-class incidents and high recall on urgent threats (severity 3/4) to prevent life-safety incidents from lingering in backlogs.
 2. **Robustness across Nigerian Multilingual Realities (Track 3):** Performance parity across standard English, Nigerian Pidgin (Naijá), Hausa-Pidgin code-switching, and typographically noisy mobile inputs.
 3. **Forensic Integrity & Human Review Efficiency (5C, Track 2, Track 4):** Accurate duplicate clustering, high detection rates on spatial anomalies, and high sensitivity on mathematical result-sheet anomalies without overwhelming review staff.
+4. **Data Privacy & Operational Surveillance (C16, C17, C18):** Redaction of personal details, a low false-alarm rate on volume surges, and review clocks (the clocks are covered by unit tests, not by a measured benchmark).
 
 ---
 
@@ -20,10 +23,11 @@ In accordance with the Track 5 technical brief, ElectraGuard AI was evaluated ag
 
 ### 2.1 Held-Out Partitioning
 All evaluations use a strictly deterministic evaluation pipeline with **Seed 42** for every split, model, and bootstrap run (`python backend/manage.py evaluate_models`). Splits group by `incident_id`:
-- **Training Set (55%):** 240 pack incidents + 7 de-duplicated core templates + 56 training augmentations.
-- **Validation Set (25%):** 80 incidents used exclusively for tuning thresholds (e.g., urgency threshold 0.439, abstention cutoff 0.40).
-- **Held-out Test Split (20%):** 80 incidents from the synthetic starter pack.
-- **Independent Robustness Benchmark:** 56 hand-written, synthetic examples (`incident_paraphrases_authored.csv`) that were **never** used during training, tuning, or threshold calibration.
+- **Training:** the starter-pack incidents outside the validation and held-out splits (240 of 400), de-duplicated to the 7 distinct templates, plus 56 hand-written paraphrases (the `train` rows of `data/synthetic/incident_paraphrases_authored.csv`).
+- **Validation split:** 80 incidents, used to choose the urgency threshold (0.439).
+- **Held-out test split:** 80 incidents (20%) from the synthetic starter pack.
+- **Calibration:** 28 hand-written examples (the `calibration` rows) used to choose the abstention threshold (0.40).
+- **Independent robustness benchmark:** 56 hand-written examples (the `robustness` rows) never used for training, tuning or calibration.
 
 ### 2.2 Leakage Audit Findings
 A thorough lexical audit of the official 400-incident pack demonstrated that once geographic place names are normalized, only **7 unique description sentences exist** across the entire dataset (one template per category). Consequently:
@@ -36,8 +40,9 @@ A thorough lexical audit of the official 400-incident pack demonstrated that onc
 ## 3. Baselines
 
 We compare our calibrated multi-task system against standard operational baselines:
-- **Baseline 1 (Majority Class / Heuristic Rule):** Predicts the most frequent class (`late_materials`) or flags urgency only on explicit keyword matches (`"gun"`, `"fight"`). Yields an incident macro-F1 of `0.245` and urgent recall of `0.420`.
-- **Baseline 2 (Uncalibrated Standard Classifier):** Prior models achieved high precision but an unacceptable urgency recall of only **3.2%** on severity 3/4 cases, missing almost all urgent incidents.
+- **Urgency before rules were added:** the first text-only urgency model had recall of 3.2% on severity 3 or 4 incidents (recorded in `docs/reviews/2026-11-23-backend-ai-sms-slice.md`). The rules and the validation-chosen threshold below fixed that.
+- **Surge detection:** compared with the previous fixed threshold (2x the 7-period average, minimum 3), see section 4.9.
+- No majority-class or keyword baseline was measured for category triage, so none is reported.
 
 ---
 
@@ -71,7 +76,7 @@ Categories in order: `[access_barrier, equipment_failure, good_practice, intimid
 ```
 
 ### 4.2 Urgency Classification (A2)
-Missing an urgent case carries high democratic and human safety costs. The model threshold was calibrated on the validation split at `0.439` to achieve 90% recall. In addition, deterministic heuristics elevate the score if active danger (+5), violence (+3), or a local spike (+1) is detected (score >= 3 is urgent).
+Missing an urgent case carries high democratic and human safety costs. The model threshold was calibrated on the validation split at `0.439` to achieve 90% recall. In addition, rules add to the score: danger reported now (+5), category intimidation or violence (+3), a high severity probability from the text model (+3), and firsthand, evidence attached and local spike (+1 each). A score of 3 or more is urgent and 2 is high.
 
 | Split | n | Urgent Cases | Precision | Recall | F1 | False-Urgent Rate |
 |---|---|---|---|---|---|---|
@@ -84,7 +89,7 @@ Missing an urgent case carries high democratic and human safety costs. The model
 - `intimidation_violence` (n=12, 12 urgent): Recall `1.000` (12 flagged)
 - `lack_of_information` (n=10, 3 urgent): Recall `0.000` (1 flagged)
 - `late_materials` (n=9, 1 urgent): Recall `0.000` (0 flagged)
-*Note on Misses:* The missed urgent incidents in `lack_of_information` and `late_materials` shared identical text templates with non-urgent incidents in the starter pack (e.g., identical wording assigned severity 1 vs severity 3). The false-urgent rate of 0.122 is the necessary trade-off to guarantee 100% recall on physical violence, access barriers, and equipment breakdowns.
+*Note on Misses:* The missed urgent incidents in `lack_of_information` and `late_materials` shared identical text templates with non-urgent incidents in the starter pack (e.g., identical wording assigned severity 1 vs severity 3). The false-urgent rate of 0.122 is the price of the recall reached (0.871 overall; 1.000 within the access, equipment and intimidation categories on this split).
 
 ### 4.3 Uncertainty Abstention (A3)
 - Calibrated confidence threshold: `0.40` (tuned on 28 calibration samples).
@@ -115,13 +120,31 @@ Missing an urgent case carries high democratic and human safety costs. The model
 - Mean Absolute Error (MAE): **`0.817` hours**.
 - Top-Quintile Severe Delay Precision: **`0.667`**.
 
+### 4.8 Automated Privacy Redaction (C16, 308 Benchmark Items)
+- **Dataset:** 308 hand-authored items (`docs/eval/data/redaction-set.jsonl`) containing 430 target personal details across English, Pidgin, Hausa, Yoruba and Igbo, including 83 or more ordinary election sentences with nothing to redact.
+- **Token Detection Recall:** **`96.3%`** (414 / 430 target PII entities correctly identified and replaced).
+- **Token Replacement Precision:** **`99.8%`** (414 / 415 replacements valid; the one false positive wrapped a street address with the word "block").
+- **Weakest kinds:** bank account numbers (recall 87.5%, 5 missed) and names (92.4%, 10 missed, all of them the same two names repeated across the five languages). Phone, NIN, BVN, VIN and email were all found (100%). Full miss list: `docs/eval/redaction.md`.
+- **Sanitization Coverage:** Automated redaction protects incident narratives, observer review event notes (MESSAGE, RESPOND), and citizen conversation replies. The raw original text can be fetched only through contract CASE-06 by the assigned reviewer, with a written reason, and each use is written to the audit record.
+
+### 4.9 Emerging Volume Anomaly & Surge Detection (C17, 60 LGAs, 900 units)
+- **Methodology:** Poisson tests over 30- and 60-minute windows with Benjamini-Hochberg control (q = 0.05) and a one-sided CUSUM (`backend/ops/emerging.py`).
+- **Surge Detection Rate:** **`65.0%`** (13 of 20 planted surges detected; the old fixed threshold detected 20 of 20).
+- **Median Time to Detect:** **`19 minutes`** (the old threshold: 9 minutes).
+- **False Alarm Rate:** **`0.39` false alarms per hour** (31 warnings over 80 quiet evaluation hours: 10 independent quiet days of 8 hours).
+- **Comparison to the old threshold:** The old fixed-threshold detector produced 9,626 warnings, **`120.33` false alarms per hour**, on the same quiet days. The statistical detector is a 99.7% reduction in false alarms, but it misses more surges. Source: `docs/eval/emerging-alerts.md`.
+
+### 4.10 Review Clocks (C18)
+- **What they do:** the server keeps a clock per active case with a target (urgent 15 minutes, high 60, normal 240, low 480, reply to a reporter 120; configurable per organisation). A clock is on time, due soon (25% or less left) or overdue. A sweep (`sweep_review_clocks` in `backend/clocks/sweep.py`) raises one alert per overdue clock.
+- **Evidence:** unit tests in `backend/clocks/tests.py`. There is no benchmark, so no accuracy figure is reported. The staff screens in this build do not show a countdown.
+
 ---
 
 ## 5. Human-in-the-Loop Impact
 
-1. **Reviewer Workload Reduction:** Automatic near-duplicate clustering (A4) collapses redundant incident filings with **1.000 precision and recall** on synthetic distractor sets, eliminating up to 40% of duplicate review overhead.
-2. **Alert Frequency:** The result-sheet anomaly detector flags approximately 84 sheets per 1,000, allowing a review team of 5 auditors to monitor 50,000 polling unit returns effectively.
-3. **Dual-Authorization on Rumours:** The Rumour Desk (S-06) enforces second-person dual sign-off, ensuring no individual reviewer can unilaterally publish or dismiss public misinformation warnings.
+1. **Reviewer Workload Reduction:** Automatic near-duplicate clustering (A4) collapses redundant incident filings with 1.000 precision and recall on 80 held-out text perturbations plus one same-unit distractor. These are proxy cases built from the same templates, not independently labelled real duplicates, so the figure says little about real reports.
+2. **Alert Frequency:** The result-sheet check raises about 84 alerts per 1,000 sheets on the synthetic set. No staffing estimate was measured.
+3. **Second-person approval on rumour replies:** A reply drafted by one coordinator must be approved by another before the public sees it (`backend/rumours/views.py`).
 
 ---
 
@@ -138,12 +161,12 @@ Evaluation across text genres on the 56-sample authored robustness benchmark dem
 
 ---
 
-## 7. Usability & Accessibility Testing
+## 7. Usability & Accessibility
 
-- **Automated Axe Audits:** 0 serious and 0 critical accessibility violations across all Observer, Staff, and Public screens.
-- **Viewport Resilience:** 0 horizontal scrolling overflow detected on 360 px mobile viewports.
-- **Payload & Network Efficiency:** First load server-rendered bundle under 300 KB, functioning smoothly on simulated 2G cellular connections.
-- **High Contrast Assurance:** Text contrast strictly complies with WCAG 2.2 AA standards (body text over soft background art exceeds 7:1; secondary text exceeds 4.5:1).
+- **Automated accessibility checks:** the real-server browser tests include an axe scan of the observer flow (`frontend/e2e/observer-real/08-accessibility.spec.ts`). Earlier review notes (`docs/reviews/2026-11-23-*.md`) record 0 serious and 0 critical findings on observer, staff and public screens of the previous build. The final design has not been re-scanned for this document, and automated scans do not prove WCAG conformance.
+- **Phone width:** earlier review notes record no horizontal overflow at 360 px.
+- **First-load size:** under 300 KB is a design target (`docs/design/design-contract.md`). It was reported for earlier builds of the public pages and has not been re-measured on the current design. No 2G test was run.
+- **Contrast:** `npm run check:contrast` in `frontend/` checks the colour pairs in the design tokens.
 
 ---
 
@@ -159,8 +182,8 @@ Evaluation across text genres on the 56-sample authored robustness benchmark dem
    - *True Label:* `equipment_failure` | *Predicted:* `lack_of_information` | *Confidence:* `0.19`
    - *Fix:* Abstention intercepted the erroneous recommendation.
 3. **Urgency Misses on Identical Description Text:**
-   - Incident `INC-0031` (severity 3, `information_gap`) and `INC-0043` (severity 3, `logistics_delay`) were missed because their textual content was identical to severity 1 incidents in the starter pack.
-   - *Mitigation:* Explicit escalation rules trigger urgency whenever danger, weapons, or physical violence keywords appear, regardless of statistical prediction.
+   - Incidents `INC-0031`, `INC-0115` and `INC-0182` (severity 3, information gap) and `INC-0043` (severity 3, logistics delay) were missed because the starter pack gives the same text different severities (information gaps run from 1 to 3), so no text model can separate them.
+   - *Mitigation:* rules raise urgency when the reporter says someone is in danger now or the category is intimidation or violence, whatever the text model predicts.
 
 ---
 
@@ -171,5 +194,4 @@ To re-run the entire deterministic evaluation suite from the repository root:
 python backend/manage.py evaluate_models
 ```
 - **Configuration:** Random Seed `42`, deterministic split grouping by `incident_id`.
-- **Runtime:** Approximately 12 seconds on standard CPU.
-- **Environment:** Python 3.12+, PostgreSQL / SQLite test harness.
+- **Environment:** Python 3.12 and PostgreSQL 17 (the version used in CI). The command writes `docs/eval/results.md`.
