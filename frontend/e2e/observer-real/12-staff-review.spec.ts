@@ -114,8 +114,10 @@ test("reviewer reviews observer report: queue navigation, redacted text, Q&A cla
   const questionInput = desk.page.locator("#s03-question");
   await expect(questionInput).toBeVisible({ timeout: 15_000 });
   await questionInput.fill("Did the security agents intervene after the threat?");
+  // The button disables at once; wait until the server has accepted the question before the observer looks.
+  const asked = desk.page.waitForResponse((r) => r.request().method() !== "GET" && (r.request().postData() ?? "").includes('"action":"ask"') && r.ok());
   await desk.page.getByTestId("s03-ask").click();
-  await expect(desk.page.getByTestId("s03-ask")).toBeDisabled();
+  await asked;
 
   // 5. Observer visits report detail page and sees the question
   await observerPage.goto(`/o/reports/${serverReportId}`);
