@@ -69,7 +69,7 @@ export function ObserverMenu({ code, unitLabel, onNavigate }: { code?: string; u
                 data-testid={`menu-${row.testId}`}
               >
                 <row.icon size={24} aria-hidden="true" />
-                <span>{t(row.key)}</span>
+                <span className={styles.rowLabel}>{t(row.key)}</span>
                 {row.aside ? <span className={`${styles.aside} eg-tnum`}>{row.aside}</span> : null}
               </Link>
             </li>
