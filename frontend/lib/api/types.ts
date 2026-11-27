@@ -1251,7 +1251,8 @@ export interface OverviewResponse {
   range: { from: DateString; to: DateString };
   totals: {
     reports: number;
-    incidents_after_links: number;
+    /** Absent when incident grouping is not enabled for the organisation. */
+    incidents_after_links?: number;
     urgent_open: number;
     open_questions: number;
     result_sheet_flags_open: number;
@@ -1270,7 +1271,10 @@ export interface Cluster {
   category: Category;
   area: LgaArea;
   report_count: number;
-  baseline: number;
+  /** Which comparison the warning used; null for a plain threshold warning. */
+  baseline: string | null;
+  /** Reports usually seen in this window and area; a number, absent on older warnings. */
+  expected?: number | null;
   window_start: DateTimeString;
   window_end: DateTimeString;
   report_ids: Uuid[];

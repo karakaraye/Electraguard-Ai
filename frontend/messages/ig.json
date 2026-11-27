@@ -1465,6 +1465,7 @@
     "totals": {
       "totalReports": "[IG draft] Total reports",
       "incidents": "Ihe omume dị iche",
+      "incidentsOff": "A gbanyụla nchịkọta akụkọ ndị metụtara onwe ha.",
       "urgentOpen": "[IG draft] Urgent open",
       "openQuestions": "[IG draft] Questions open",
       "resultFlags": "[IG draft] Result sheet flags",

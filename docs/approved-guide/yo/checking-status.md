@@ -5,7 +5,7 @@ Status: draft, owner review required
 ElectraGuard AI n rii daju pe gbogbo eniyan ti o fi iroyin ranṣẹ gba iwe-ẹri ati pe o le rii bi a ṣe n ṣe atọju rẹ.
 
 ## Nọmba Iwe-ẹri Rẹ (Receipt Code)
-Nigbakugba ti o ba fi iroyin ranṣẹ ni aṣeyọri, ẹrọ na yoo fun ọ ni nọmba pataki kan (fun apẹẹrẹ: `REC-KN-7492` tabi `REC-LG-1024`). Tọju nọmba yii daradara.
+Nigbakugba ti o ba fi iroyin ranṣẹ ni aṣeyọri, ẹrọ na yoo fun ọ ni nọmba pataki kan (o dabi `EG-····-····`: awọn lẹta EG, lẹhinna ẹgbẹ meji ti lẹta tabi nọmba mẹrin-mẹrin). Tọju nọmba yii daradara.
 
 ## Bii O Ṣe Le Ṣayẹwo Lori App Foonu
 Ti o ba fi iroyin ranṣẹ nipasẹ app ori ayelujara:
@@ -19,7 +19,7 @@ Ti o ba fi iroyin ranṣẹ nipasẹ app ori ayelujara:
 ## Bii O Ṣe Le Ṣayẹwo Pẹlu SMS Tabi Foonu Kekere
 Ti o ba fi iroyin ranṣẹ nipasẹ USSD (`*384*24#`) tabi SMS:
 - O yoo gba SMS ti o ni nọmba iwe-ẹri rẹ ninu.
-- Lati ṣayẹwo ipo rẹ nigbakugba, fi SMS ranṣẹ pẹlu ọrọ `STATUS` ati nọmba iwe-ẹri rẹ (apẹẹrẹ: `STATUS REC-LG-1024`) si nọmba kukuru na.
+- Lati ṣayẹwo ipo rẹ nigbakugba, fi SMS ranṣẹ pẹlu ọrọ `STATUS` ati nọmba iwe-ẹri rẹ (apẹẹrẹ: `STATUS EG-····-····`) si nọmba kukuru na.
 - O tun le tẹ nọmba iwe-ẹri na sinu oju opo wẹẹbu gbogbo eniyan ni `electraguard.ng/p`.
 
 Ti ipo iroyin rẹ ko ba yipada tabi ti o ba sọ nọmba rẹ nu, beere lọwọ alakoso rẹ.

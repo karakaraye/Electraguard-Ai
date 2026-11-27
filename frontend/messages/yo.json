@@ -1465,6 +1465,7 @@
     "totals": {
       "totalReports": "[YO draft] Total reports",
       "incidents": "Àwọn ìṣẹ̀lẹ̀ tó yàtọ̀",
+      "incidentsOff": "A ti pa ìṣọ̀kan àwọn ìròyìn tó jọra.",
       "urgentOpen": "[YO draft] Urgent open",
       "openQuestions": "[YO draft] Questions open",
       "resultFlags": "[YO draft] Result sheet flags",
