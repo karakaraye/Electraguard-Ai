@@ -413,6 +413,8 @@ export function PublicStateViewer(): ReactElement {
       {/* Dev Bar */}
       <div
         data-dev-bar
+        role="navigation"
+        aria-label="Viewer"
         style={{
           background: "var(--paper)",
           color: "var(--ink)",

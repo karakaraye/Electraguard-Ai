@@ -18,6 +18,7 @@
     "stopListening": "Tsaya",
     "productName": "ElectraGuard",
     "skipToContent": "Tsallake zuwa abin da ke ciki",
+    "actionArea": "Ayyuka",
     "pleaseWait": "Ka jira ɗan lokaci",
     "errorPrefix": "Kuskure:",
     "yes": "Ee",
@@ -575,7 +576,7 @@
     "filter": {
       "all": "Duka",
       "needsYou": "Yana buƙatar ka",
-      "onPhone": "Yana kan wannan wayar"
+      "onPhone": "Kan wayar"
     },
     "empty": "Babu rahoto tukuna. Idan ka aika rahoto, zai bayyana a nan.",
     "emptyTitle": "Babu rahoto tukuna",
@@ -2267,6 +2268,8 @@
   },
   "pub": {
     "homeLink": "Shafin farko na ElectraGuard AI",
+    "testNumber": "Lambar gwaji ce ta wannan samfurin gwaji",
+    "testNumbers": "Lambobin gwaji ne na wannan samfurin gwaji",
     "menu": "Menu",
     "menuClose": "Rufe menu",
     "reportShort": "Kai rahoto",

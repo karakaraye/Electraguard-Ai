@@ -305,7 +305,7 @@ export function AppShell({
       </Root>
 
       {actions ? (
-        <div ref={actionsRef} className={styles.actions} data-keyboard={keyboard > 0 || undefined} data-testid="action-area">
+        <div ref={actionsRef} className={styles.actions} role="region" aria-label={t("ui.actionArea")} data-keyboard={keyboard > 0 || undefined} data-testid="action-area">
           <div className={styles.actionsInner}>{actions}</div>
         </div>
       ) : null}

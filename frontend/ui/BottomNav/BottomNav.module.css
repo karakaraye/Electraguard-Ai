@@ -23,7 +23,7 @@
   justify-content: center;
   gap: 2px;
   min-height: 56px;
-  padding: 0 2px;
+  padding: 4px 2px;
   color: var(--ink-3);
   font: 600 0.75rem/1rem var(--font);
   text-align: center;
@@ -104,9 +104,9 @@
 
 .label {
   max-width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  overflow-wrap: anywhere;
+  text-align: center;
+  text-wrap: balance;
 }
 
 @media (prefers-reduced-motion: reduce) {

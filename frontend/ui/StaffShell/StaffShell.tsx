@@ -296,7 +296,7 @@ export function StaffShell({
     };
   }, [theme, preview]);
 
-  const Main = preview ? "div" : "main";
+  const Main = "main";
   const split = list !== undefined && detail !== undefined;
 
   const [menuOpen, setMenuOpen] = useState(false);

@@ -18,6 +18,7 @@
     "stopListening": "Kwụsị",
     "productName": "ElectraGuard",
     "skipToContent": "Wufee gaa n'ọdịnaya",
+    "actionArea": "Ihe ị nwere ike ime",
     "pleaseWait": "Chere obere oge",
     "errorPrefix": "Njehie:",
     "yes": "Ee",
@@ -575,7 +576,7 @@
     "filter": {
       "all": "Ha niile",
       "needsYou": "Ọ chọrọ gị",
-      "onPhone": "Ọ nọ na ekwentị a"
+      "onPhone": "Na ekwentị"
     },
     "empty": "Akụkọ adịbeghị. Mgbe i zigara akụkọ, ọ ga-apụta ebe a.",
     "emptyTitle": "Enwebeghị akụkọ ọ bụla",
@@ -2267,6 +2268,8 @@
   },
   "pub": {
     "homeLink": "Ibe mbụ ElectraGuard AI",
+    "testNumber": "Nọmba nnwale maka ụdị nnwale a",
+    "testNumbers": "Nọmba nnwale dị iche iche maka ụdị nnwale a",
     "menu": "Menu",
     "menuClose": "Mechie menu",
     "reportShort": "Kọọ akụkọ",

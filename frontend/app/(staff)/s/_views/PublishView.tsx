@@ -472,7 +472,7 @@ function Detail({ record, onApprove, onDiscard }: { record: SnapshotRecord; onAp
       </header>
 
       <div className={styles.split}>
-        <aside className={styles.excluded} aria-labelledby={`${titleId}-left`} data-testid="s07-exclusions">
+        <section className={styles.excluded} aria-labelledby={`${titleId}-left`} data-testid="s07-exclusions">
           <h3 id={`${titleId}-left`} className={styles.miniTitle}>{t("s07.exclusions.title")}</h3>
           <p className={styles.hint}>{t("s07.exclusions.note")}</p>
           <ul className={styles.leftList}>
@@ -482,7 +482,7 @@ function Detail({ record, onApprove, onDiscard }: { record: SnapshotRecord; onAp
               </li>
             ))}
           </ul>
-        </aside>
+        </section>
 
         <div className={styles.previewCol}>
           <div className={styles.previewCaption}>

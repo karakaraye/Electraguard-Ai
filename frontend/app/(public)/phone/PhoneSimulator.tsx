@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState, type FormEvent, type Keyboard
 import { api, uuidv4 } from "../../../lib/api/client";
 import type { SimMessage } from "../../../lib/api/types";
 import { SMS_SHORT_CODE } from "../../../lib/config";
+import { TestNumberNote } from "../../../ui/TestNumberNote/TestNumberNote";
 import { useLocale, useT } from "../../../lib/i18n/client";
 import { formatWatTime } from "../../../ui/format";
 import { Banner } from "../../../ui/Banner/Banner";
@@ -336,6 +337,7 @@ export function PhoneSimulator({ seed, start = "home" }: { seed?: PhoneSeed; sta
           data-testid="phone-dial"
         />
         <p className={styles.hint}>{t("p07.home.hint", { code: USSD_SERVICE_CODE })}</p>
+        <TestNumberNote label={t("pub.testNumber")} className={styles.hint} />
       </form>
     );
   } else if (view.name === "ussd") {
@@ -365,6 +367,7 @@ export function PhoneSimulator({ seed, start = "home" }: { seed?: PhoneSeed; sta
     screen = (
       <form className={styles.compose} onSubmit={(event: FormEvent) => { event.preventDefault(); call(); }}>
         <p className={styles.to}>{t("p07.sms.to", { shortCode: SMS_SHORT_CODE })}</p>
+        <TestNumberNote label={t("pub.testNumber")} className={styles.hint} />
         <label className={styles.screenLabel} htmlFor="eg-sms">{t("p07.sms.label")}</label>
         <textarea
           id="eg-sms"
@@ -509,6 +512,7 @@ export function PhoneSimulator({ seed, start = "home" }: { seed?: PhoneSeed; sta
               <div className={styles.tryBody}>
                 <p>{t("p07.how.ussd", { code: USSD_SERVICE_CODE })}</p>
                 <p className={`${styles.command} eg-tnum`}>{USSD_SERVICE_CODE}</p>
+                <TestNumberNote label={t("pub.testNumber")} />
               </div>
             </li>
             <li className={styles.try}>

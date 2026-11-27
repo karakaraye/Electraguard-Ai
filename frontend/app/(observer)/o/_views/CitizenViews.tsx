@@ -6,6 +6,7 @@ import type { Outcome, ReportStatus as ServerStatus } from "../../../../lib/api/
 import { useLocale, useT } from "../../../../lib/i18n/client";
 import { AppShell, Banner, Button, Field, ReceiptCard, Sheet, StatusBadge, Switch, TextArea, UploadItem, UploadList } from "../../../../ui";
 import { CheckIcon, CloseIcon, ShieldCheckIcon } from "../../../../ui/icons";
+import { TestNumberNote } from "../../../../ui/TestNumberNote/TestNumberNote";
 import { OUTCOME_KEY } from "../_lib/status";
 import type { ReceiptItem } from "./ReceiptView";
 import styles from "../_components/observer.module.css";
@@ -96,6 +97,7 @@ export function CitizenReceiptView(props: CitizenReceiptViewProps) {
           <p>{t("c01.writeDown")}</p>
           <p className="eg-tnum" data-testid="c01-sms">
             {t("c01.sms", { code: props.code, shortCode })}
+            <TestNumberNote label={t("pub.testNumber")} />
           </p>
           <p>{t("c01.citizenLabel")}</p>
         </div>
@@ -339,7 +341,10 @@ export function StatusView(props: StatusViewProps) {
             ) : null}
           </div>
         </div>
-        <p className={styles.meta}>{t("p01.sms", { shortCode: props.shortCode })}</p>
+        <p className={styles.meta}>
+          {t("p01.sms", { shortCode: props.shortCode })}
+          <TestNumberNote label={t("pub.testNumber")} />
+        </p>
       </div>
 
       <Sheet

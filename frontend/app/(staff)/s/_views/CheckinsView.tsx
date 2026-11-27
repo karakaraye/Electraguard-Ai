@@ -375,7 +375,7 @@ function Results({ notice, results, places, onAskAgain, actionError, now }: Chec
             <li data-k="notSeen">{t("notice.answer.not_seen")}</li>
             <li data-k="open">{t("notice.results.notAnswered")}</li>
           </ul>
-          <div className={styles.tableWrap}>
+          <div className={styles.tableWrap} role="region" aria-label={title} tabIndex={0}>
             <table className={styles.table} data-testid="ci-results-table">
               <caption className="eg-sr-only">{title}</caption>
               <thead>

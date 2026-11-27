@@ -18,6 +18,7 @@
     "stopListening": "Stop",
     "productName": "ElectraGuard",
     "skipToContent": "Skip go the main part",
+    "actionArea": "Wetin you fit do",
     "pleaseWait": "Wait small",
     "errorPrefix": "Wahala:",
     "yes": "Yes",
@@ -575,7 +576,7 @@
     "filter": {
       "all": "All",
       "needsYou": "Need you",
-      "onPhone": "E dey this phone"
+      "onPhone": "For phone"
     },
     "empty": "No report yet. When you send report, e go show here.",
     "emptyTitle": "No report yet",
@@ -2267,6 +2268,8 @@
   },
   "pub": {
     "homeLink": "ElectraGuard AI home",
+    "testNumber": "Test number for this prototype only",
+    "testNumbers": "Test numbers for this prototype only",
     "menu": "Menu",
     "menuClose": "Close menu",
     "reportShort": "Report am",

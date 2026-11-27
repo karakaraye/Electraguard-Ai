@@ -17,6 +17,7 @@
     "stopListening": "Stop",
     "productName": "ElectraGuard",
     "skipToContent": "Skip to content",
+    "actionArea": "Actions",
     "pleaseWait": "Please wait",
     "errorPrefix": "Error:",
     "yes": "Yes",
@@ -2266,6 +2267,8 @@
   },
   "pub": {
     "homeLink": "ElectraGuard AI home",
+    "testNumber": "Test number for this prototype",
+    "testNumbers": "Test numbers for this prototype",
     "menu": "Menu",
     "menuClose": "Close menu",
     "reportShort": "Report",

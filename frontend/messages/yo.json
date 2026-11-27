@@ -18,6 +18,7 @@
     "stopListening": "Dúró",
     "productName": "ElectraGuard",
     "skipToContent": "Fò lọ sí àkóónú",
+    "actionArea": "Àwọn ìgbésẹ̀",
     "pleaseWait": "Dúró díẹ̀",
     "errorPrefix": "Àṣìṣe:",
     "yes": "Bẹ́ẹ̀ ni",
@@ -575,7 +576,7 @@
     "filter": {
       "all": "Gbogbo rẹ̀",
       "needsYou": "Ó nílò rẹ",
-      "onPhone": "Ó wà lórí fóònù yìí"
+      "onPhone": "Lórí fóònù"
     },
     "empty": "Kò sí ìròyìn kankan síbẹ̀. Tí o bá fi ìròyìn ránṣẹ́, yóò hàn níbí.",
     "emptyTitle": "Kò sí ìròyìn kankan sí i",
@@ -2267,6 +2268,8 @@
   },
   "pub": {
     "homeLink": "Ojú-ìwé àkọ́kọ́ ElectraGuard AI",
+    "testNumber": "Nọ́ńbà àyẹ̀wò fún àpẹẹrẹ ìdánwò yìí",
+    "testNumbers": "Àwọn nọ́ńbà àyẹ̀wò fún àpẹẹrẹ ìdánwò yìí",
     "menu": "Àkójọ",
     "menuClose": "Ti àkójọ náà",
     "reportShort": "Ròyìn",

@@ -188,6 +188,8 @@
 /* ---------- Codes: table ---------- */
 
 .scroller {
+  position: relative;
+  min-width: 0;
   max-width: 100%;
   overflow-x: auto;
   border: 1px solid var(--rule);

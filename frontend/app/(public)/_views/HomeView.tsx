@@ -4,6 +4,7 @@ import type { Translate } from "../../../lib/i18n";
 import type { Cell, GuideSummary } from "../../../lib/api/types";
 import { SMS_SHORT_CODE } from "../../../lib/config";
 import { ButtonLink } from "../../../ui/Button/Button";
+import { TestNumberNote } from "../../../ui/TestNumberNote/TestNumberNote";
 import { ArrowRightIcon, PhoneIcon } from "../../../ui/icons";
 import { formatWatDateTime } from "../../../ui/format";
 import type { Locale } from "../../../lib/i18n";
@@ -102,7 +103,7 @@ export function HomeView({ t, locale, results, guides, check, reportLines }: Hom
             <PhoneIcon size={24} className={styles.basicIcon} />
             <span>
               {t("p02.basicPhone", { ussd: USSD_SERVICE_CODE, shortCode: SMS_SHORT_CODE })}
-              <br />
+              <TestNumberNote label={t("pub.testNumbers")} />
               <Link href="/phone">{t("p02.tryPhone")}</Link>
             </span>
           </p>
@@ -184,6 +185,7 @@ export function HomeView({ t, locale, results, guides, check, reportLines }: Hom
             <div className={styles.wayText}>
               <h3 id="way-sms" className={styles.wayTitle}>{t("p02.ways.sms.title", { shortCode: SMS_SHORT_CODE })}</h3>
               <p className={styles.wayBody}>{t("p02.ways.sms.body")}</p>
+              <TestNumberNote label={t("pub.testNumber")} />
               <Link className={styles.more} href="/phone?start=sms" aria-describedby="way-sms">
                 {withArrow(t("p02.tryPhone"))}
               </Link>
@@ -196,6 +198,7 @@ export function HomeView({ t, locale, results, guides, check, reportLines }: Hom
             <div className={styles.wayText}>
               <h3 id="way-ussd" className={styles.wayTitle}>{t("p02.ways.ussd.title", { ussd: USSD_SERVICE_CODE })}</h3>
               <p className={styles.wayBody}>{t("p02.ways.ussd.body")}</p>
+              <TestNumberNote label={t("pub.testNumber")} />
               <Link className={styles.more} href="/phone?start=ussd" aria-describedby="way-ussd">
                 {withArrow(t("p02.tryPhone"))}
               </Link>

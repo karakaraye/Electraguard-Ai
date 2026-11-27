@@ -1,0 +1,6 @@
+.note {
+  display: block;
+  margin-block-start: var(--s-1);
+  color: var(--ink-2);
+  font: 600 0.875rem/1.25rem var(--font);
+}
