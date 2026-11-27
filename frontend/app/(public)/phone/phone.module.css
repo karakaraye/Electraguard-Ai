@@ -392,7 +392,7 @@
   background: var(--paper);
 }
 
-/* Each way to try it: an icon in a sun disc, joined to the next by a sun line. */
+/* Each way to try it: an icon in a quiet disc, joined to the next by a rule. */
 .tries {
   display: grid;
   gap: 0;
@@ -421,7 +421,7 @@
   inset-inline-start: 19px;
   width: 2px;
   border-radius: 1px;
-  background: var(--sun-line);
+  background: var(--rule);
 }
 
 .tryBody {
@@ -444,7 +444,7 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: var(--sun-tint);
+  background: var(--paper-sunk);
   color: var(--ink);
 }
 
@@ -482,7 +482,7 @@
 }
 
 .screen:focus-visible {
-  outline: 3px solid var(--sun);
+  outline: 3px solid var(--ink);
   outline-offset: 2px;
 }
 
@@ -554,9 +554,9 @@
   justify-items: start;
   gap: var(--s-2);
   padding: var(--s-5);
-  border: 1px solid var(--sun-line);
+  border: 1px solid var(--rule);
   border-radius: var(--radius);
-  background: var(--sun-wash);
+  background: var(--paper-2);
 }
 
 .number p {

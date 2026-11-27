@@ -111,7 +111,7 @@
   }
 }
 
-/* Each heading carries an icon in a sun disc. */
+/* Each heading carries an icon in a quiet disc. */
 .heading {
   display: flex;
   align-items: center;
@@ -125,7 +125,7 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: var(--sun-tint);
+  background: var(--paper-sunk);
   color: var(--ink);
 }
 

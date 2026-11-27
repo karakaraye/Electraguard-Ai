@@ -133,7 +133,7 @@
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  background: var(--sun-tint);
+  background: var(--paper-sunk);
 }
 
 .cardText {
@@ -156,7 +156,7 @@
 .chip {
   padding: 1px var(--s-2);
   border-radius: var(--radius-pill);
-  background: var(--sun-tint);
+  background: var(--paper-sunk);
   color: var(--ink);
   font-weight: 600;
 }

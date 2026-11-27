@@ -526,7 +526,7 @@
 }
 
 .qAsked::before {
-  content: "- ";
+  content: " · ";
 }
 
 .qBody {

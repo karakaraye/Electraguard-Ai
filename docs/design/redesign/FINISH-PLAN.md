@@ -134,3 +134,4 @@ All motion uses transform and opacity, and falls back to a short fade under redu
 - **Polling-unit data:** the prototype keeps the synthetic reference list, which is what a competition demo should use. INEC publishes no downloadable list; the full list is a paid request, and a volunteer platform exists. Loading real data is a production task after the competition, through the existing `load_reference_areas` format.
 - **Translations:** the strings are written in all five languages; native-speaker review comes after the competition, as the owner said.
 - **Election name** in the staff sidebar comes from organisation settings (shown as the organisation name until an election name field exists).
+- **Gold (sun) use:** the hero sun, the observer home "Report something" sun motif, and the selected-choice and dictation icon discs from the approved mockups. Everything else, including charts and result bars, is ink on paper.

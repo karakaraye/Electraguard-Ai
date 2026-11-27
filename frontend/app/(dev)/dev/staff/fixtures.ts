@@ -176,7 +176,7 @@ export const FIXTURE_CASE_DETAIL: CaseDetail = {
         id: "ev-1",
         version: 1,
         action: "start",
-        actor_label: "F. Musa (Reviewer)",
+        actor_label: "F. Musa (Admin)",
         created_at: "2026-12-05T08:18:00+01:00",
         change: {},
       },
@@ -576,16 +576,16 @@ export const FIXTURE_CASE_IN_REVIEW: CaseDetail = {
     chain_intact: true,
     events: [
       { id: "ev-1", version: 1, action: "received", actor_label: "System", created_at: "2026-12-05T08:16:30+01:00", change: {} },
-      { id: "ev-2", version: 3, action: "start", actor_label: "F. Musa (Reviewer)", created_at: "2026-12-05T08:48:00+01:00", change: {} },
-      { id: "ev-3", version: 4, action: "suggestion_accepted", actor_label: "F. Musa (Reviewer)", created_at: "2026-12-05T08:49:00+01:00", change: { urgency: "urgent" } },
-      { id: "ev-4", version: 5, action: "ask", actor_label: "F. Musa (Reviewer)", created_at: "2026-12-05T08:52:00+01:00", change: {} },
+      { id: "ev-2", version: 3, action: "start", actor_label: "F. Musa (Admin)", created_at: "2026-12-05T08:48:00+01:00", change: {} },
+      { id: "ev-3", version: 4, action: "suggestion_accepted", actor_label: "F. Musa (Admin)", created_at: "2026-12-05T08:49:00+01:00", change: { urgency: "urgent" } },
+      { id: "ev-4", version: 5, action: "ask", actor_label: "F. Musa (Admin)", created_at: "2026-12-05T08:52:00+01:00", change: {} },
     ],
   },
 };
 
 export const FIXTURE_CASE_MESSAGES: Message[] = [
   {
-    id: "m-1", kind: "formal_question", author: "reviewer", author_label: "F. Musa (Reviewer)",
+    id: "m-1", kind: "formal_question", author: "reviewer", author_label: "F. Musa (Admin)",
     body: "How many people with sticks did you see, and are they still there?", attachment: null,
     question_state: "open", reply_to: null, created_at: "2026-12-05T08:52:00+01:00", read: true,
   },
