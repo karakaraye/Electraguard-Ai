@@ -390,7 +390,10 @@ def case(request, reference):
         ],
         "suggestions": suggestions(report, *(sum(item["kind"] == kind for item in media) for kind in ("photo", "video", "audio"))), "duplicates": [], "result_sheet_flags": report.result_flags,
         "related_claims": [], "name_check": {"possible_names": False},
-        "open_question": next((item for item in messages if item["question_state"] == "open"), None),
+        "open_question": next(
+            ({"id": item["id"], "body": item["body"], "asked_at": item["created_at"]}
+             for item in messages if item["question_state"] == "open"), None,
+        ),
         "conversation": messages, "allowed_actions": [*actions, "redact"],
         "history": {"chain_intact": None, "events": [
             {
