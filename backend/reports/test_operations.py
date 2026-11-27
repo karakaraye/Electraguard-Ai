@@ -205,3 +205,15 @@ class CoordinatorTests(TestCase):
         self.assertNotIn("incidents_after_links", body["totals"])
         self.assertNotIn("private-unit", response.content.decode())
         self.assertEqual(self.client.get(OPS, {**query, "to": "2026-12-24"}).status_code, 422)
+
+    def test_overview_counts_open_flagged_result_sheets(self):
+        flag = [{"code": "votes_exceed_accredited"}]
+        self.report(kind="result_sheet", result_flags=flag)
+        self.report(kind="result_sheet", result_flags=flag, status=Report.Status.NEEDS_CLARIFICATION)
+        self.report(kind="result_sheet", result_flags=[])
+        self.report(kind="result_sheet", result_flags=flag, status=Report.Status.CLOSED)
+        self.report(kind="result_sheet", result_flags=flag, date="2026-11-25T09:00:00+01:00")
+        self.report(kind="result_sheet", result_flags=flag, organisation=self.foreign)
+        query = {"from": "2026-11-23", "to": "2026-11-23"}
+        self.assertEqual(self.client.get(OPS, query).json()["totals"]["result_sheet_flags_open"], 2)
+        self.assertEqual(self.client.get(OPS, {**query, "kind": "incident"}).json()["totals"]["result_sheet_flags_open"], 0)

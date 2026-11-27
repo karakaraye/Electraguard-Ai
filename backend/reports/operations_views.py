@@ -387,9 +387,14 @@ def overview(request):
         if report.status == Status.CLOSED:
             outcomes[report.closure_outcome or "unrecorded"] += 1
 
+    # Open result sheets whose numbers the server flagged (totals that do not add up, more votes than
+    # accredited voters, and so on), in the same WAT dates. Each case screen lists the flags themselves.
+    flagged_sheets = 0 if kind not in (None, "result_sheet") else scope.filter(
+        kind="result_sheet", status__in=ACTIVE, occurred_at__range=(first, last),
+    ).exclude(result_flags=[]).count()
     totals = {
         "reports": len(references), "urgent_open": urgent_open,
-        "open_questions": statuses["question"], "result_sheet_flags_open": 0,
+        "open_questions": statuses["question"], "result_sheet_flags_open": flagged_sheets,
         "withdrawn": withdrawn.count(),
     }
     if capabilities.GROUPING_ENABLED:
