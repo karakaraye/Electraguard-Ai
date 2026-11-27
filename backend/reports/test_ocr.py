@@ -37,6 +37,13 @@ class OcrParsingTests(TestCase):
         self.assertEqual(fields["rejected"]["value"], 12)
         self.assertEqual(fields["votes"]["E"], {"value": None, "confidence": 0.0})
 
+    def test_a_label_run_into_its_count_is_still_read(self):
+        # The engine often drops the space between the label and the count ("Party A210", "PartyB 180").
+        fields = parse_lines([("Party A210", 0.9), ("PartyB 180", 0.8), ("APC1200", 0.7), ("Page 3", 0.9)], ["A", "B", "APC"])
+        self.assertEqual(fields["votes"]["A"], {"value": 210, "confidence": 0.9})
+        self.assertEqual(fields["votes"]["B"]["value"], 180)
+        self.assertEqual(fields["votes"]["APC"]["value"], 1200)
+
     def test_out_of_range_and_unlabelled_numbers_are_ignored(self):
         fields = parse_lines([("Registered 123456", 0.9), ("Page 3", 0.9)], ["A"])
         self.assertIsNone(fields["registered"]["value"])

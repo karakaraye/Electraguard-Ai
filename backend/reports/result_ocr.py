@@ -46,6 +46,17 @@ def recognise_lines(image):
     return [(" ".join(w for w, _ in words), min(c for _, c in words)) for words in lines.values()]
 
 
+def joined_label(token, votes):
+    """The party label a token names: the label itself, or a label with its count run on ("A210")."""
+    if token in votes:
+        return token
+    for label in sorted(votes, key=len, reverse=True):
+        rest = token[len(label):]
+        if token.startswith(label.upper()) and rest.isdigit():
+            return label
+    return None
+
+
 def parse_lines(lines, labels):
     """Map recognised lines to sheet fields. A field that was not found stays null with zero confidence."""
     unread = lambda: {"value": None, "confidence": 0.0}
@@ -62,10 +73,12 @@ def parse_lines(lines, labels):
             if pattern.search(lowered):
                 target = fields[name]
         if target is None:
-            # "Party A 210", "PartyA 210" (the engine often drops that space) or "A 210".
-            match = re.match(r"(?i)\s*(?:party\s*(?=[A-Za-z0-9]{1,6}\b))?([A-Za-z0-9]+)\b", text)
-            if match and match.group(1).upper() in fields["votes"]:
-                target = fields["votes"][match.group(1).upper()]
+            # "Party A 210", "PartyA 210" or "Party A210" (the engine often drops either space) or "A 210".
+            match = re.match(r"(?i)\s*(?:party\s*(?=[A-Za-z0-9]{1,8}\b))?([A-Za-z0-9]+)\b", text)
+            if match:
+                label = joined_label(match.group(1).upper(), fields["votes"])
+                if label is not None:
+                    target = fields["votes"][label]
         if target is not None and 0 <= value <= 99999 and target["value"] is None:
             target.update(value=value, confidence=round(confidence, 2))
     return fields
