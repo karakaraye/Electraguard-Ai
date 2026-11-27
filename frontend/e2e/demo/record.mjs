@@ -97,6 +97,18 @@ const clips = {
       await beat(page, 3000);
     });
   },
+  async "01d-guides-ask"() {
+    await clip("01d-guides-ask", {}, async (page) => {
+      await page.goto(BASE + "/guide");
+      await beat(page, 3000);
+      await page.goto(BASE + "/ask");
+      await beat(page, 1500);
+      await typeSlowly(page, page.getByTestId("ask-question"), "What does my receipt code look like?", 50);
+      await tap(page, page.getByTestId("ask-submit"), { after: 3000 });
+      await page.getByTestId("ask-answer").waitFor({ timeout: 60000 });
+      await beat(page, 4000);
+    });
+  },
   async "01c-phone-simulator"() {
     await clip("01c-phone-simulator", {}, async (page) => {
       await page.goto(BASE + "/phone");
