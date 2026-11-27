@@ -1,6 +1,6 @@
 # C12 review: video, voice notes, face blur and transcripts
 
-Branch `claude/fervent-knuth-s7h3i1`, on top of `production-readiness`. Backend only; no `frontend/` paths changed.
+The C12 branch, on top of `production-readiness`. Backend only; no `frontend/` paths changed.
 
 ## What changed
 

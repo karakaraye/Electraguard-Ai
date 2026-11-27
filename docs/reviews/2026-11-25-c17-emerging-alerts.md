@@ -100,4 +100,4 @@ Branch `backend/c17-emerging-alerts`, on top of `backend/c16-redaction`. Backend
 ## Not done / Open
 
 - Ward-level time series were not built (detection operates at `LGA x category` granularity).
-- Awaiting Claude's `docs/design/api-contracts.md` update for the new `total_reports` field on `OPS-02`.
+- Awaiting the design update to `docs/design/api-contracts.md` for the new `total_reports` field on `OPS-02`.

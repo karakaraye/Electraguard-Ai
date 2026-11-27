@@ -22,7 +22,7 @@ The mockups are the specification. Each one is in `docs/design/redesign/vision/`
 2. All 78 screen defects and 14 system issues in `docs/reviews/2026-11-26-light-mode-ui-audit.md` are fixed.
 3. Light mode only. The dark tokens stay in `tokens.css`, but nothing switches to them; the theme pickers are removed.
 4. Art made in Blender, rendered in our palette, blended into the page, with motion that respects reduced motion and Save Data.
-5. The community-features screens are built against Antigravity's merged backend.
+5. The community-features screens are built against the merged community backend.
 6. Verification: every flow tested against the real backend, all screens recaptured, axe clean, home page fast on slow 4G, finish-gate review passed. CI is green on `production-readiness`.
 
 ## 3. Work, in order

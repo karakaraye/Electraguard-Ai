@@ -20,7 +20,7 @@
 | Company | **Cairn**, co-owned by the owner and Kara; registration on hold (22 Nov) | Footer and README credit: "ElectraGuard AI, by Cairn". No Cairn logo on the product. |
 | Product mark | **E+G monogram** (direction B, `design/brand`) | Used in the app bar, icons and favicon; Cairn stones and the tally mark are rejected |
 | Build order | **Front end designed first, properly, then the logic behind it**; both designed together so every screen has a real API behind it and every API has a screen | Section 11.2 changed: a design phase with screen-by-screen API contracts comes before feature logic |
-| Coordination | One place where all agents are updated | `docs/agent-updates.md`: every agent reads it before starting and writes to it after each slice |
+| Coordination | One shared plan | This plan, the reviews in `docs/reviews/` and the pull request history |
 | Languages | Owner translates and approves | All text is drafted in English, Pidgin, Hausa, Yorùbá and Igbo. The owner corrects and signs off each language. |
 | Template fork | Use the official repo | Section 1.2 explains it and gives the exact steps |
 
@@ -38,31 +38,31 @@ I read every file in `Rise-Networks-AI-Labs/-AI4Elections-Hackathon`, including 
 
 | # | Missing item | Why it matters | Who | By |
 |---|---|---|---|---|
-| 1 | **Our repo is not a fork of the official repo** | Bootcamp 1 expects "Team repo forked"; the rules say "Public repo forked from the hackathon template" | Kara (it is Kara's account) with Codex | 24 Nov |
-| 2 | **No `LICENSE` file** | Required; the template says MIT/Apache for code, CC BY 4.0 for docs/data | Codex | 24 Nov |
-| 3 | **No starter notebook running in our repo** | Bootcamp success measure: "running notebook and repo" | Codex | 24 Nov |
-| 4 | **One-page sprint plan** | Bootcamp 6 output, due 27 Nov | Claude drafts from this plan, owner sends | 27 Nov |
-| 5 | **README does not follow the official template** (track, team, problem ID, does/does NOT, demo, results table, languages, team, licence, AI note) | Judges compare against the template | Claude | 12 Dec |
-| 6 | **Model/System Card** | Mandatory | Claude | 12 Dec |
-| 7 | **Safety and Limitations** (risk register + signed statement) | Mandatory; "honest limits score better" | Claude, signed by Kara | 12 Dec |
-| 8 | **Datasheet** for every dataset we create (translations, paraphrases, generated result sheets, voice and video test clips) | Mandatory | Claude | 12 Dec |
-| 9 | **Evaluation report** (official template: test data, baselines, per-slice results, human-in-the-loop impact, robustness, usability, failures, reproducibility) | Mandatory evidence | Claude + Codex | 12 Dec |
-| 10 | **Architecture doc** (official template incl. STRIDE table and decisions log) | Expected | Claude | 12 Dec |
-| 11 | **API reference** (official template) | Expected | Codex | 12 Dec |
-| 12 | **Problem statement, 1 page** | Mandatory | Claude | 30 Nov |
-| 13 | **Methodology** | Mandatory | Claude | 12 Dec |
-| 14 | **Demo video, max 3 minutes** | Mandatory | Owner + Claude | 12 Dec |
-| 15 | **Hosted demo link** (Azure) | "demo link or reproducible setup" | Codex once Azure access arrives | 9 Dec |
-| 16 | **Usability test with real users, with consent** | Track 3 and 5 success criteria; Bootcamp 5 | Owner runs, Claude scripts | 10 Dec |
-| 17 | **Per-language evaluation table** | Bootcamp 3 output; Track 1/3 criteria | Codex runs, Claude designs | 9 Dec |
-| 18 | **Threat model** | Bootcamp 4 output; M6 task | Claude | 5 Dec |
-| 19 | **Harm/benefit table** | M1 task; goes into Safety doc | Claude | 30 Nov |
-| 20 | **Electoral process map** (where humans and INEC decide) | M0 task; strengthens "electoral relevance" | Claude | 30 Nov |
-| 21 | **Accessibility audit** (axe/Lighthouse + TalkBack) | M7 task; WCAG 2.2 AA | Codex runs, owner checks on Redmi | 10 Dec |
+| 1 | **Our repo is not a fork of the official repo** | Bootcamp 1 expects "Team repo forked"; the rules say "Public repo forked from the hackathon template" | Kara (it is Kara's account) with engineering | 24 Nov |
+| 2 | **No `LICENSE` file** | Required; the template says MIT/Apache for code, CC BY 4.0 for docs/data | Engineering | 24 Nov |
+| 3 | **No starter notebook running in our repo** | Bootcamp success measure: "running notebook and repo" | Engineering | 24 Nov |
+| 4 | **One-page sprint plan** | Bootcamp 6 output, due 27 Nov | Drafted from this plan, owner sends | 27 Nov |
+| 5 | **README does not follow the official template** (track, team, problem ID, does/does NOT, demo, results table, languages, team, licence, AI note) | Judges compare against the template | Design | 12 Dec |
+| 6 | **Model/System Card** | Mandatory | Design | 12 Dec |
+| 7 | **Safety and Limitations** (risk register + signed statement) | Mandatory; "honest limits score better" | Design, signed by Kara | 12 Dec |
+| 8 | **Datasheet** for every dataset we create (translations, paraphrases, generated result sheets, voice and video test clips) | Mandatory | Design | 12 Dec |
+| 9 | **Evaluation report** (official template: test data, baselines, per-slice results, human-in-the-loop impact, robustness, usability, failures, reproducibility) | Mandatory evidence | Design + engineering | 12 Dec |
+| 10 | **Architecture doc** (official template incl. STRIDE table and decisions log) | Expected | Design | 12 Dec |
+| 11 | **API reference** (official template) | Expected | Engineering | 12 Dec |
+| 12 | **Problem statement, 1 page** | Mandatory | Design | 30 Nov |
+| 13 | **Methodology** | Mandatory | Design | 12 Dec |
+| 14 | **Demo video, max 3 minutes** | Mandatory | Owner + design | 12 Dec |
+| 15 | **Hosted demo link** (Azure) | "demo link or reproducible setup" | Engineering once Azure access arrives | 9 Dec |
+| 16 | **Usability test with real users, with consent** | Track 3 and 5 success criteria; Bootcamp 5 | Owner runs, design scripts | 10 Dec |
+| 17 | **Per-language evaluation table** | Bootcamp 3 output; Track 1/3 criteria | Engineering runs, design plans | 9 Dec |
+| 18 | **Threat model** | Bootcamp 4 output; M6 task | Design | 5 Dec |
+| 19 | **Harm/benefit table** | M1 task; goes into Safety doc | Design | 30 Nov |
+| 20 | **Electoral process map** (where humans and INEC decide) | M0 task; strengthens "electoral relevance" | Design | 30 Nov |
+| 21 | **Accessibility audit** (axe/Lighthouse + TalkBack) | M7 task; WCAG 2.2 AA | Engineering runs, owner checks on Redmi | 10 Dec |
 | 22 | **Mentor clinics booked** (legal/data protection, accessibility, electoral) | Clinics end 30 Nov | Owner/Kara | 24 Nov |
 | 23 | **Azure login details** from the organisers | Needed for hosting | Owner/Kara | ASAP |
 | 24 | **Team contact and prize recipient nominated, agreed in writing** | Onboarding checklist | Kara | 24 Nov |
-| 25 | **AI-assistance note** | Code of Conduct + template | Claude | 12 Dec |
+| 25 | **AI-assistance note** | Code of Conduct + template | Design | 12 Dec |
 
 ### 1.2 The "template fork", in plain words
 
@@ -72,7 +72,7 @@ Steps. Kara must do 1–3 because the repo is on Kara's account:
 1. On GitHub, rename `karakaraye/Electraguard-Ai` to `Electraguard-Ai-archive` (Settings → Repository name). Nothing is lost.
 2. Open `github.com/Rise-Networks-AI-Labs/-AI4Elections-Hackathon` and click **Fork**, under `karakaraye`.
 3. Rename the fork to `Electraguard-Ai`.
-4. Codex then pushes all our branches into the fork and merges our code with the template files (`git merge --allow-unrelated-histories`).
+4. Engineering then pushes all our branches into the fork and merges our code with the template files (`git merge --allow-unrelated-histories`).
    - Our README stays the main one; the template README moves to `docs/hackathon/README.md`.
    - The official `data/`, `notebooks/` and `docs/05_templates/` stay where they are. We use them directly.
 5. Push the GitHub Actions workflows again, and check that the CI runs pass on the fork.
@@ -420,7 +420,7 @@ Every Accept/Correct is recorded. Corrections feed the evaluation and the next m
 
 | Item | Detail |
 |---|---|
-| 5 languages | Observer, citizen, status, public, Ask, guide, SMS/USSD. Claude drafts every string in all five; the owner corrects and approves each language. Staff screens are in English first, then the others if time allows. |
+| 5 languages | Observer, citizen, status, public, Ask, guide, SMS/USSD. The team drafts every string in all five; the owner corrects and approves each language. Staff screens are in English first, then the others if time allows. |
 | Picture categories | Simple black line icons with short labels |
 | Voice | Dictation button, voice notes, audio playback of key screens (pre-recorded by the owner in each language) |
 | Low literacy | Reading age 9–11; numbers and pictures over words; one question per screen |
@@ -486,7 +486,7 @@ Exact services will be confirmed once we see what the organisers' Azure access i
 
 ## 11. How the work is organised
 
-### 11.1 Workstreams (run in parallel by separate Codex agents on separate files)
+### 11.1 Workstreams (run in parallel on separate files)
 
 | WS | Workstream | Main contents |
 |---|---|---|
@@ -510,7 +510,7 @@ Exact services will be confirmed once we see what the organisers' Azure access i
 
 | Dates | Milestone | Content |
 |---|---|---|
-| **22–24 Nov** | **Set-up** | Fork migration (1.2), LICENSE, notebook running, park Codex's uncommitted observer edits on a branch, freeze infrastructure work, book mentors, request Azure access. Claude: observer specs and boards. |
+| **22–24 Nov** | **Set-up** | Fork migration (1.2), LICENSE, notebook running, park uncommitted observer edits on a branch, freeze infrastructure work, book mentors, request Azure access. Design: observer specs and boards. |
 | **24–27 Nov** | **Foundations** (during bootcamps) | Data model (section 10) and migrations; organisations + codes + PIN + TOTP; PWA shell + offline queue; Blob Storage media service + chunked upload; i18n framework with all 5 language files; AI evaluation harness and baselines; design boards approved on the Redmi by **26 Nov**. Sprint plan to organisers on **27 Nov**. |
 | **28 Nov–3 Dec** | **Sprint 1: core loop** | W1 observer app complete with photo; W2 admin; W3 photo pipeline + EXIF + hashes; W5 A1–A3; W6 urgency queue + case page; W7 status page; W8 Azure staging up (when access arrives). **Gate: the Redmi passes the full observer flow (date → receipt → photo retry → airplane-mode send) before any reviewer/coordinator polish.** |
 | **4–7 Dec** | **Sprint 2: full features** | Video + voice notes + blur + transcription; messages; discussions + moderator; checklist; result-sheet check + OCR; duplicates; clusters; rumour desk; public transparency page; audit chain; translations in all views. |
@@ -528,8 +528,8 @@ Exact services will be confirmed once we see what the organisers' Azure access i
 |---|---|
 | **Kara (team lead)** | GitHub fork steps, organiser contact, Azure access, team nominations, signs the Safety statement |
 | **Owner** | Decisions, translations and sign-off for all 5 languages, Redmi testing at every gate, usability sessions, voice recordings for audio prompts, video voice-over |
-| **Claude** | This plan, specs and boards, all copy in 5 languages (drafts), evaluation design, review of every slice, all submission documents, video script |
-| **Codex** | All code, migrations, tests, Azure deployment, evaluation runs, API reference |
+| **Product and design** | This plan, specs and boards, all copy in 5 languages (drafts), evaluation design, review of every slice, all submission documents, video script |
+| **Engineering** | All code, migrations, tests, Azure deployment, evaluation runs, API reference |
 
 ### 11.4 Honest risk on the schedule
 
@@ -568,19 +568,19 @@ The order above makes sure the system is complete and working at every step: cor
 
 | Required | File | Owner |
 |---|---|---|
-| Working prototype | Azure link + README quick start (`docker compose up` + synthetic data loader) | Codex |
-| Forked public repo with licence | Section 1.2 + `LICENSE` | Kara + Codex |
-| Problem statement (≤1 page) | `docs/submission/PROBLEM.md` | Claude |
-| Methodology | `docs/submission/METHODOLOGY.md` | Claude |
-| Evidence | `docs/submission/EVALUATION.md` (official template) + `docs/submission/screens/` | Claude + Codex |
-| Model/System Card | `docs/submission/MODEL_CARD.md` | Claude |
-| Safety and Limitations | `docs/submission/SAFETY_AND_LIMITATIONS.md`, signed | Claude, Kara signs |
-| Datasheets | `docs/submission/DATASHEET.md` (one section per dataset) | Claude |
-| Architecture (incl. STRIDE, decisions log) | `docs/submission/ARCHITECTURE.md` | Claude |
-| Threat model | `docs/submission/THREAT_MODEL.md` | Claude |
-| API reference | `docs/submission/API_REFERENCE.md` | Codex |
-| Contributing and code style | `CONTRIBUTING.md` (official template) | Codex |
-| Demo video ≤ 3 min | Link in README | Owner + Claude |
+| Working prototype | Azure link + README quick start (`docker compose up` + synthetic data loader) | Engineering |
+| Forked public repo with licence | Section 1.2 + `LICENSE` | Kara + engineering |
+| Problem statement (≤1 page) | `docs/submission/PROBLEM.md` | Design |
+| Methodology | `docs/submission/METHODOLOGY.md` | Design |
+| Evidence | `docs/submission/EVALUATION.md` (official template) + `docs/submission/screens/` | Design + engineering |
+| Model/System Card | `docs/submission/MODEL_CARD.md` | Design |
+| Safety and Limitations | `docs/submission/SAFETY_AND_LIMITATIONS.md`, signed | Design, Kara signs |
+| Datasheets | `docs/submission/DATASHEET.md` (one section per dataset) | Design |
+| Architecture (incl. STRIDE, decisions log) | `docs/submission/ARCHITECTURE.md` | Design |
+| Threat model | `docs/submission/THREAT_MODEL.md` | Design |
+| API reference | `docs/submission/API_REFERENCE.md` | Engineering |
+| Contributing and code style | `CONTRIBUTING.md` (official template) | Engineering |
+| Demo video ≤ 3 min | Link in README | Owner + design |
 
 ### 13.2 README structure (official template)
 
@@ -617,7 +617,7 @@ Text to place in the README under "Licence and acknowledgements":
 |---|---|
 | Too much for 19 days | Parallel workstreams; core loop first; each feature finished before the next; daily review |
 | Azure access late | Build and test on the existing Docker stack; the Azure deployment is scripted and ready; the laptop stack is the fallback |
-| Translation load on the owner | Claude drafts everything early (by 27 Nov); one language per day of review |
+| Translation load on the owner | The team drafts everything early (by 27 Nov); one language per day of review |
 | Speech/translation weak in Hausa, Yorùbá, Igbo | Measure and report honestly; the original text and audio always stay visible; never block a report on AI |
 | Video on 2G | Compression, 60 s limit, resumable chunks, upload after the receipt; the photo path is always available |
 | Discussions expose observers | Opt-in, codes only, no media or fine location, moderator, auto-close |
@@ -629,7 +629,7 @@ Text to place in the README under "Licence and acknowledgements":
 
 ## 16. Still needed from the team
 
-1. **Kara:** the fork steps in 1.2 (or permission for Codex to do steps 4–5 after Kara's 1–3).
+1. **Kara:** the fork steps in 1.2 (or permission for engineering to do steps 4–5 after Kara's 1–3).
 2. **Azure login details** when the organisers send them.
 3. **Team names and GitHub handles** for the README (team of 1–4, as registered).
 4. **Mentor clinic bookings** before 30 Nov.
