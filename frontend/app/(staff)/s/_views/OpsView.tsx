@@ -6,6 +6,7 @@ import { useLocale, useT } from "../../../../lib/i18n/client";
 import { Banner, Button, Count, DataTable, MetricTile, Skeleton, StatusBadge, TextArea, type Column, type StatusTone } from "../../../../ui";
 import { formatWatDateTime, formatWatTime } from "../../../../ui/format";
 import { localeTags, type Locale } from "../../../../lib/i18n/config";
+import { formatNumber } from "../../../../lib/i18n";
 import { CheckIcon, RetryIcon } from "../../../../ui/icons";
 import { CATEGORY_ROWS } from "../../../(public)/_lib/public";
 import { QUESTIONS } from "../../../(observer)/o/_lib/checklist";
@@ -148,7 +149,7 @@ export function OpsView({
         ) : totals ? (
           <div className={styles.tiles}>
             <MetricTile value={totals.reports} label={t("s05.totals.totalReports")} period={period} />
-            <MetricTile value={totals.incidents_after_links} label={t("s05.totals.incidents")} period={period} />
+            <MetricTile value={totals.incidents_after_links ?? null} label={t("s05.totals.incidents")} period={totals.incidents_after_links === undefined ? t("s05.totals.incidentsOff") : period} pendingText="-" />
             <MetricTile value={totals.urgent_open} label={t("s05.totals.urgentOpen")} period={period} />
             <MetricTile value={totals.open_questions} label={t("s05.totals.openQuestions")} period={period} />
             <div className={styles.flagTile}>
@@ -278,7 +279,9 @@ function Clusters({ clusters, reviewing, onReview }: { clusters: Section<Cluster
                   {" · "}
                   <span className="eg-tnum">{`${formatWatTime(cluster.window_start, locale)}–${formatWatTime(cluster.window_end, locale)}`}</span>
                 </p>
-                <p className={`${styles.muted} eg-tnum`}>{t("s05.clusters.baseline", { baseline: cluster.baseline })}</p>
+                {typeof cluster.expected === "number" ? (
+                  <p className={`${styles.muted} eg-tnum`}>{t("s05.clusters.baseline", { baseline: formatNumber(cluster.expected, localeTags[locale]) })}</p>
+                ) : null}
                 {reviewed ? (
                   <p className={styles.reviewed}>
                     <CheckIcon size={16} />

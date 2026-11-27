@@ -1465,6 +1465,7 @@
     "totals": {
       "totalReports": "[HA draft] Total reports",
       "incidents": "Abubuwan da suka bambanta",
+      "incidentsOff": "An kashe haɗa rahotanni masu alaƙa.",
       "urgentOpen": "[HA draft] Urgent open",
       "openQuestions": "[HA draft] Questions open",
       "resultFlags": "[HA draft] Result sheet flags",

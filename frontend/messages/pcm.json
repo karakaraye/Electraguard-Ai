@@ -1465,6 +1465,7 @@
     "totals": {
       "totalReports": "[PCM draft] Total reports",
       "incidents": "Different incidents",
+      "incidentsOff": "Grouping of related reports dey off.",
       "urgentOpen": "[PCM draft] Urgent open",
       "openQuestions": "[PCM draft] Questions open",
       "resultFlags": "[PCM draft] Result sheet flags",

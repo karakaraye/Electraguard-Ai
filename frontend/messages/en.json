@@ -1464,6 +1464,7 @@
     "totals": {
       "totalReports": "Total reports",
       "incidents": "Distinct incidents",
+      "incidentsOff": "Grouping of related reports is switched off.",
       "urgentOpen": "Urgent open",
       "openQuestions": "Questions open",
       "resultFlags": "Result sheet flags",
