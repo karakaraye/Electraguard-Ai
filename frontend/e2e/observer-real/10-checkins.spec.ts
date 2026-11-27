@@ -94,7 +94,7 @@ test("a coordinator asks a fixed question, the observer in that ward answers Yes
   await expect(wardRow.locator("td").nth(1)).toHaveText("1"); // Yes
   await expect(wardRow.locator("td").nth(2)).toHaveText("0"); // No
   await expect(wardRow.locator("td").nth(3)).toHaveText("0"); // Not seen
-  await expect(wardRow.getByRole("img")).toHaveAttribute("aria-label", "1 yes, 0 no, 0 not seen, 0 not answered");
+  await expect(wardRow.getByRole("img")).toHaveAttribute("aria-label", `1 yes, 0 no, 0 not seen, ${ward.units.length - 1} not answered`);
   await expect(wardRow.getByRole("img").locator("span[data-k=yes]")).toHaveCSS("width", /[1-9]/);
   await desk.context.close();
 });
@@ -313,7 +313,8 @@ test("Your LGA today shows real counts and says \"fewer than 5\" for anything sm
   expect(counts.filter((text) => text === "6")).toHaveLength(1);
   expect(counts.filter((text) => text === "fewer than 5")).toHaveLength(total - 1);
   for (const text of counts) expect(text === "6" || text === "fewer than 5").toBe(true);
-  await expect(card).not.toContainText(/\b[0-4]\b/);
+  // The LGA name itself may contain digits ("Bauchi LGA-1"), so the small-number check covers the count cells only.
+  for (const text of counts) expect(text).not.toMatch(/\b[0-4]\b/);
   await expect(card).toContainText("Updated");
 });
 
