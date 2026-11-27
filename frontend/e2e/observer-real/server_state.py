@@ -89,6 +89,14 @@ def pause(flag):
     out({"intake_paused": organisation.intake_paused})
 
 
+def simulator(flag="on"):
+    with transaction.atomic():
+        organisation = Organisation.objects.select_for_update().get(pk=INITIAL_ORGANISATION)
+        organisation.simulator_enabled = flag == "on"
+        organisation.save(update_fields=["simulator_enabled"])
+    out({"simulator_enabled": organisation.simulator_enabled})
+
+
 def expire(code):
     """End the code's sessions without revoking it (what idle or absolute expiry does)."""
     user = ObserverCode.objects.get(code=code).user
@@ -167,6 +175,7 @@ def cleanup():
     from django.db.models import Q
 
     from notices.models import Notice, NoticeAnswer, NoticeRequest
+    from publicdata.models import Snapshot
     from rumours.models import Claim
 
     users = User.objects.filter(email__endswith=DOMAIN)
@@ -176,6 +185,7 @@ def cleanup():
     notices.delete()
     Claim.objects.filter(text__startswith=MARK).delete()
     Report.objects.filter(location=MARK).delete()
+    Snapshot.objects.filter(organisation_id=INITIAL_ORGANISATION).delete()
     out({"ok": True})
 
 
@@ -225,12 +235,14 @@ def place(code, ward, unit):
 
     user = ObserverCode.objects.get(code=code).user
     where = resolve_place(unit, ward)
+    rc = f"EG-{secrets.token_hex(4).upper()}"
     Report.objects.create(
         organisation_id=user.organisation_id, observer=user, submission_key=uuid4(), status=Report.Status.SUBMITTED,
         occurred_at=timezone.now(), location=MARK, polling_unit_code=unit, description="Where this observer is.",
+        receipt_code=rc,
         incident_details={"category_observer": "late_materials", "area": where},
     )
-    out({"area": where})
+    out({"area": where, "receipt_code": rc})
 
 
 def closed(lga, *counts):
@@ -238,19 +250,26 @@ def closed(lga, *counts):
     for state in newest_states().values():
         for item in state["lgas"]:
             if item["lga_code"] == lga:
-                where = {"state_code": state["state_code"], "lga_code": lga, "ward_code": item["wards"][0]["ward_code"]}
+                where = {"state_code": state["state_code"], "state_name": state["name"], "lga_code": lga, "ward_code": item["wards"][0]["ward_code"]}
     Report.objects.filter(location=MARK, incident_details__area__lga_code=lga, status=Report.Status.CLOSED).delete()
     observer = User.objects.filter(role=User.Role.OBSERVER).first()
+    if not observer:
+        observer = User.objects.create_user(f"obs-{secrets.token_hex(4)}{DOMAIN}", "Observer123!", role=User.Role.OBSERVER)
+    from reports.models import ReviewEvent
     made = 0
     for pair in counts:
         category, number = pair.split("=")
         age = 15 if category.startswith("recent:") else 90
         category = category.removeprefix("recent:")
         for _ in range(int(number)):
-            Report.objects.create(
+            rep = Report.objects.create(
                 organisation_id=INITIAL_ORGANISATION, observer=observer, submission_key=uuid4(), status=Report.Status.CLOSED,
-                occurred_at=timezone.now() - timedelta(minutes=age), location=MARK, description="Reviewed report.",
-                incident_details={"category_observer": category, "area": where},
+                occurred_at=timezone.now() - timedelta(minutes=age), location=MARK, description="Secret observation narrative that should never leak.",
+                incident_details={"category_observer": category, "category": category, "area": where},
+            )
+            ReviewEvent.objects.create(
+                organisation_id=INITIAL_ORGANISATION, report=rep, action=ReviewEvent.Action.CLOSE,
+                actor=observer, version=1, change={"outcome": "corroborated"},
             )
             made += 1
     out({"made": made})
@@ -314,10 +333,41 @@ def claim(text, asks, lga, category, source="public"):
     out({"id": str(row.pk)})
 
 
+def approved_claim(text, answer, lga="AD-01"):
+    from rumours.models import Claim, ClaimAskHour
+
+    states = newest_states()
+    state_code = next(code for code, state in states.items() if any(item["lga_code"] == lga for item in state["lgas"]))
+    now = timezone.now()
+    row = Claim.objects.create(
+        organisation_id=INITIAL_ORGANISATION, text=text, seen_on="whatsapp", language="en", source="public",
+        ask_count=5, area={"state_code": state_code, "lga_code": lga}, status="response_approved",
+        harm={"level": "medium", "score": 0.5, "reasons": ["location_specific"]}, check_worthiness={"level": "medium", "score": 0.5, "reasons": []},
+        response={
+            "text": answer,
+            "language": "en",
+            "drafted_by": "Coordinator",
+            "drafted_at": now.isoformat(),
+            "approved_by": "Coordinator",
+            "approved_at": now.isoformat(),
+            "rejection_note": None,
+        },
+    )
+    ClaimAskHour.objects.create(organisation_id=INITIAL_ORGANISATION, claim=row, hour=now.replace(minute=0, second=0, microsecond=0), count=5)
+    out({"id": str(row.pk), "text": text, "answer": answer})
+
+
+def assign(report_ref, email):
+    user = User.objects.get(email=email)
+    Report.objects.filter(pk=report_ref).update(assigned_reviewer=user)
+    out({"ok": True, "reviewer": email})
+
+
 COMMANDS = {
-    "issue": issue, "revoke": revoke, "pause": pause, "expire": expire, "reports": reports, "photo": photo,
+    "issue": issue, "revoke": revoke, "pause": pause, "simulator": simulator, "expire": expire, "reports": reports, "photo": photo,
     "cleanup": cleanup, "staff": staff, "totp": totp, "area": area, "place": place, "closed": closed,
     "notice-answers": notice_answers, "notice": notice, "answers": answers, "claim": claim, "withdraw": withdraw,
+    "assign": assign, "approved-claim": approved_claim,
 }
 
 if __name__ == "__main__":

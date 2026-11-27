@@ -761,11 +761,11 @@ function ClaimDetail({
             <Banner tone="wait" title={t("s06.response.dismissedLock")} data-testid="s06-dismissed" />
           ) : (
             <>
-              {response ? (
+              {response?.drafted_by && response.drafted_at ? (
                 <p className={`${styles.sub} eg-tnum`}>
                   {t("s06.response.draftedBy", { name: response.drafted_by, time: formatWatDateTime(response.drafted_at, locale) })}
                 </p>
-              ) : (
+              ) : response ? null : (
                 <p className={styles.sub}>{t("s06.response.none")}</p>
               )}
               {response?.approved_by && response.approved_at ? (

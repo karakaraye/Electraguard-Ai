@@ -31,10 +31,15 @@ export const SERVER_HINT: Record<ServerStatus, string> = {
 };
 
 /** REP-03 / REP-06 outcome → common.outcome.* */
-export const OUTCOME_KEY: Record<Outcome, string> = {
+export const OUTCOME_KEY: Record<string, string> = {
   corroborated: "common.outcome.confirmed",
   insufficient_evidence: "common.outcome.notEnough",
   out_of_scope: "common.outcome.outside",
+  Corroborated: "common.outcome.confirmed",
+  "Insufficient Evidence": "common.outcome.notEnough",
+  "Insufficient evidence": "common.outcome.notEnough",
+  "Out of Scope": "common.outcome.outside",
+  "Out of scope": "common.outcome.outside",
 };
 
 /** Minutes to wait from a Retry-After header (at least 1). */

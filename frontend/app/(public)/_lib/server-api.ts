@@ -23,7 +23,7 @@ export async function publicGet<T>(
   try {
     const response = await fetch(url, {
       headers: { Accept: "application/json", "Accept-Language": options.language ?? "en" },
-      ...(options.revalidate ? { next: { revalidate: options.revalidate } } : { cache: "no-store" as const }),
+      cache: "no-store",
       signal: AbortSignal.timeout(8_000),
     });
     if (response.ok) return { ok: true, data: (await response.json()) as T };
