@@ -1,181 +1,115 @@
 # Field Observer Guide
 
-This guide explains how an accredited election observer uses ElectraGuard AI on voting day. The observer web application runs in any modern mobile browser, works without an internet connection, and never asks for your name or phone number.
+This guide explains how an accredited election observer uses the ElectraGuard observer app on voting day. The app runs in a mobile browser, keeps working when the network drops, and never asks for your name, email or phone number.
+
+Screenshots show the current "Ink and Paper" interface, captured from the development build with sample data.
 
 ---
 
-## 1. Choosing Your Language
+## 1. Choose your language
 
-When you first open ElectraGuard AI, choose the language you prefer:
-- **English**
-- **Naijá** (Nigerian Pidgin)
-- **Hausa**
-- **Yorùbá**
-- **Igbo**
+On first opening the app you choose a language: **English**, **Naijá** (Nigerian Pidgin), **Hausa**, **Yorùbá** or **Igbo**. You can change it later in **Settings**. The whole interface is available in all five.
 
-You can switch your language at any time from the bottom of any screen or the settings tab.
-
-![Language selection screen](img/observer-01-language.png)
+![Language screen](img/observer-01-language.png)
 
 ---
 
-## 2. Signing In with Observer Code and PIN
+## 2. Sign in with your observer code and PIN
 
-Your election observation organisation issues you an **Observer Code** and a temporary **6-digit PIN** before deployment.
+Your observation organisation prints a card for you with an **observer code** and a **setup PIN**.
 
-1. Navigate to `/o/sign-in` (or tap **Observer Sign-in** on the home screen).
-2. Enter your 8-character code (for example: `OB-7K4M2`).
-3. Enter your 6-digit PIN.
-4. If this is your first sign-in, you will be prompted to set your personal secret PIN.
+1. On the "Who are you?" screen (`/o/start`) choose **I am an accredited observer**.
+2. Enter the observer code from your card. Codes look like `OBS-7K2P9X`.
+3. Enter the **8-number setup PIN** on your card.
+4. The first time, the app asks you to **choose your own 6-number PIN**. It refuses PINs that are easy to guess, such as 123456 or a birth year, and the one on your card.
+5. From then on you sign in with the code and your 6-number PIN.
 
-> **Privacy Guarantee:** ElectraGuard AI does not collect your name, phone number, email address, or National Identity Number. If your phone is inspected or seized at a polling unit, there is nothing on the device connecting your personal identity to the reports filed.
+You need network to sign in. After 5 wrong tries in 15 minutes the code is locked for 15 minutes. After 10 wrong tries in 24 hours it stays locked until your coordinator resets it.
 
-![Observer sign-in screen](img/observer-02-signin.png)
+![Who are you](img/observer-02-who.png)
+![Sign-in form](img/observer-03-signin.png)
 
----
-
-## 3. The Observer Home Screen
-
-After signing in, you reach the observer home screen. The top bar shows your current network status (**Online** or **Working offline**) and your assigned Local Government Area.
-
-From this screen you can access:
-- **Report Something:** Start a new incident report.
-- **Polling Day Checklist:** Open your stage-by-stage monitoring checklist.
-- **Result Sheet (Form EC8A):** Record official vote counts once counting concludes.
-- **My Reports:** View your filed reports, receipts, and reviewer messages.
-- **Outbox:** Check reports waiting to upload.
-
-![Observer home screen](img/observer-03-home.png)
+The app does not ask for your name. The organisation that issued your card knows who holds each code; ElectraGuard itself does not store that link.
 
 ---
 
-## 4. Reporting an Incident Step by Step
+## 3. Home
 
-Filing an incident report takes seven simple steps.
+Home shows a greeting, your observer code, **Report something**, **My reports**, the **Polling-day checklist**, **Messages**, **Discussions** and **Ask ElectraGuard**. A bar at the top tells you when you are offline. The bottom bar has **Home**, **Report**, **My reports** and **Messages**.
 
-### Step 1: What Happened?
-Select the category that best matches what you witnessed:
-- **Late arrival of materials** (ballot boxes, BVAS, ballot papers)
-- **BVAS issues** (biometric accreditation failure or power loss)
-- **Intimidation or violence** (threats, fighting, or weapon display)
-- **Vote buying or inducement** (cash, food, or token distribution)
-- **Access barrier** (canopy, wheelchair, or security barricade)
-- **Counting or procedure dispute**
-- **Other issue**
-
-![Report category selection](img/observer-04-category.png)
-
-### Step 2: Immediate Danger
-Answer whether anyone is in immediate danger right now.
-- If you select **Yes**, the platform marks your report as **Urgent**, alerting situation-room reviewers within 15 minutes.
-- You are shown emergency contact advice: *Your personal safety comes first. Move to a safe location before continuing.*
-
-![Immediate danger prompt](img/observer-05-danger.png)
-
-### Step 3: Where Did It Happen?
-Confirm your polling unit location. You can select your assigned polling unit with one tap or search by Ward or Polling Unit Code (for example: `012/04/01`).
-
-![Polling unit selection](img/observer-06-where.png)
-
-### Step 4: When Did It Happen?
-Choose whether the event happened **Just now**, **Earlier today**, or at an exact time.
-
-### Step 5: Describe What You Saw
-Write a brief, factual description.
-- Stick to what you witnessed firsthand.
-- Avoid recording bystander names. If you accidentally type a Nigerian phone number, voter card number, or full personal name, the system redacts it automatically.
-
-### Step 6: Evidence (Photos & Audio)
-Add evidence when it is safe to do so:
-- **Photos:** Up to 6 photos per report.
-- **Voice Notes:** Record short audio notes explaining the situation.
-- Faces in photos and videos are automatically blurred by the server before any staff review to protect people on site.
-
-![Evidence attachment screen](img/observer-07-evidence.png)
-
-### Step 7: Check and Send
-Review your report summary. Tap **Submit Report**.
-
-![Report review screen](img/observer-08-review.png)
+![Observer home](img/observer-04-home.png)
 
 ---
 
-## 5. Offline Operation and the Outbox
+## 4. Report an incident
 
-ElectraGuard AI is built offline-first using browser ServiceWorkers and IndexedDB local storage:
-- If cellular signal drops to 2G, 1G, or disconnects completely, you will see a gentle indicator: **Saved on this phone**.
-- Your report is encrypted and saved into the local **Outbox**.
-- You can continue completing checklists, entering result sheets, and filing new reports.
-- As soon as your phone detects connectivity, the outbox automatically uploads queued items in the background. You do not need to keep the screen open or re-enter details.
+A report is seven short screens, each marked "Step n of 7". Your answers are saved on the phone as you go, so you can leave and continue from Home.
 
-![Outbox synchronization screen](img/observer-13-outbox.png)
+1. **What happened?** Pick a picture tile: Late or missing materials, Equipment failure, Queues or crowding, Intimidation or violence, Access barrier, People lack information, Misinformation seen here, Vote buying or inducement, Good practice, or Not sure. "Access barrier" asks a follow-up about the kind of barrier.
+2. **Is anyone in danger right now?** If you answer yes, the app first shows "Get safe first": move away, call 112, tell your coordinator. The app does not send help; reports go to reviewers, not to the police.
+3. **Where did it happen?** Search by polling unit code or name, tap "Use my polling unit today", or choose state, LGA and ward. If you do not know the unit you can report by ward only. The app never uses your phone's GPS.
+4. **When did it happen?** Just now, Earlier today, or Another day. Times are West Africa Time.
+5. **Tell us what happened.** Type, or use Speak. Say who was affected by role, not by name; the app warns you if the text may name a person.
+6. **Add photos, video or voice (optional).** Up to 6 items per report: video up to 60 seconds, voice notes up to 2 minutes. Location data is removed from photos on your phone and again on the server. Faces the detector finds are blurred.
+7. **Check and send.** Review each part, tap **Change** to fix anything, then **Send report**.
 
----
-
-## 6. Report Receipts and Tracking
-
-Every submitted report generates an official **Receipt Code** (such as `EG-88F4-A92B`).
-
-- Your receipt proves that your report reached the situation room database.
-- The receipt timestamp is stored in West Africa Time (WAT).
-- You can share the receipt code with your team lead to verify submission.
-
-![Report receipt screen](img/observer-09-receipt.png)
+![What happened](img/observer-05-category.png)
+![Danger question](img/observer-06-danger.png)
+![Where](img/observer-07-where.png)
+![Describe](img/observer-08-describe.png)
+![Evidence](img/observer-09-evidence.png)
+![Check and send](img/observer-10-review.png)
 
 ---
 
-## 7. Answering Reviewer Questions
+## 5. Receipt
 
-When a situation room reviewer needs more information (for example: *"Did polling officials resume voting after the rain stopped?"*), your report status changes to **Question for you**.
+When the server has received the report you see **Report received** and a **receipt code** such as `EG-4H7Q-92KD`. You can copy it. The screen shows each attachment uploading until it says Saved; keep the app open until then.
 
-1. Tap the notification on your home screen or open **My Reports**.
-2. Read the reviewer's question.
-3. Type your reply and attach extra photos if available.
-4. Tap **Send Reply**. The review clock resumes immediately.
+You can withdraw a report from **My reports** until a reviewer starts on it. Withdrawing deletes your text and files.
 
-![Reviewer question screen](img/observer-10-question.png)
+![Receipt](img/observer-11-receipt.png)
 
 ---
 
-## 8. The Polling-Day Checklist
+## 6. No network
 
-The checklist tracks the four standard phases of voting day:
-1. **Setup & Opening (07:30–08:30):** Officials present, ballot box shown empty and sealed, security officers present, party agents verified.
-2. **Accreditation & Voting (08:30–14:30):** BVAS functioning, voter register checked, secrecy of the ballot booth preserved.
-3. **Closing & Sorting (14:30+):** Queue cutoff at 14:30 enforced, unused ballots cancelled.
-4. **Counting & Announcement:** Ballots sorted and counted loudly in public view, results recorded on Form EC8A.
+If there is no network, **Send report** becomes "Save and send when online". The report waits in the outbox on the phone, and the app sends it by itself when the network is back, in the order you made them. Keep the app open while it sends.
 
-Checklist answers can be filled offline and sync automatically.
+The outbox is stored in the browser on the phone. It is not additionally encrypted by the app. On a shared phone use **Settings > Sign out and clear this phone**, which removes drafts, saved reports and messages from the phone.
 
-![Checklist progress screen](img/observer-11-checklist.png)
+![Outbox](img/observer-12-outbox.png)
 
 ---
 
-## 9. Result Sheet Transcription (Form EC8A)
+## 7. Messages from reviewers
 
-At the end of counting, polling officials complete and sign Form EC8A.
+When a reviewer needs more information, the report shows **Question for you** and Home shows a banner. Open **Messages** or the report, type your answer and tap **Send answer**. You can also write a plain message to the reviewer at any time and attach a photo or voice note.
 
-1. Tap **Result Sheet** from the home screen.
-2. Take a clear, well-lit photo of the physical paper sheet.
-3. Enter the numerical totals:
-   - Registered Voters in polling unit.
-   - Accredited Voters on BVAS.
-   - Votes scored by each political party.
-   - Rejected / spoiled ballots.
-4. **Automatic Consistency Check:** The platform immediately checks two arithmetic rules:
-   - Total votes cast cannot exceed accredited voters.
-   - Sum of party votes + rejected ballots must equal total votes cast.
-   - If numbers do not balance, the screen flags the arithmetic inconsistency before submission.
-
-> *Note:* Result sheet transcription is for observer verification and collation reconciliation only. It is **not** an official declaration of results.
-
-![Result sheet consistency check](img/observer-12-resultsheet.png)
+![Question](img/observer-15-question.png)
 
 ---
 
-## 10. Responding to Ward Check-Ins
+## 8. Polling-day checklist
 
-During voting, situation-room coordinators may send a **Ward Check-in** asking all observers in an LGA or Ward a quick status question (for example: *"Are voting materials present at your unit as of 10:00?"*).
+The checklist has six stages: **Arrival, Opening, Accreditation, Voting, Closing and counting, Results posted**. Each stage is a few yes/no or choice questions (for example "Did it open on time?", "Was the accreditation device working?", "How big was the queue?"). Each stage is sent on its own and also works offline. "I did not see" is always a valid answer. A stage can be turned into an incident report with one tap.
 
-- An alert banner appears on your home screen with simple response options (**Yes**, **No**, **Partial**).
-- One tap logs your response and updates the situation-room live operations map.
+![Checklist](img/observer-13-checklist.png)
+
+---
+
+## 9. Result sheet check
+
+From the checklist's final stage you can **Check the result sheet**. Photograph the sheet that was posted for the public (the app tries to read the numbers, or you type them), then type exactly what the sheet shows: registered voters, accredited voters, votes for each party and rejected ballots. Tick the box to confirm you checked every number and send for review.
+
+Reviewers see consistency flags: accredited voters exceed registered voters, votes plus rejected ballots differ from the accredited count, two digits that may be swapped, unusually round numbers, or numbers identical to another unit's sheet. The screen says: "Consistency check for review. This is not a result." ElectraGuard never adds up votes or names a winner.
+
+![Result sheet](img/observer-14-resultsheet.png)
+
+---
+
+## 10. Check-ins and discussions
+
+- **Check-ins.** A coordinator can ask observers in a ward or LGA a short question. A banner on Home asks you to answer **Yes**, **No** or **Not seen**. You can answer offline; it is sent with the time you answered.
+- **Discussions.** A moderator may invite you to talk with other observers in your area about a shared problem. Others see only your observer code and what you write. Write the ward, never a polling unit, and no names or phone numbers.
+- **Ask ElectraGuard.** Answers are taken only from approved guides and show their source. If there is no approved answer, the app says so.

@@ -1,117 +1,87 @@
 # Situation Room Staff Guide
 
-This guide covers situation-room operations in ElectraGuard AI. It describes the four staff roles, how incoming incident queues are handled, review clock enforcement, rumour verification, ward check-ins, safety advisories, and cryptographic transparency publishing.
+This guide covers the staff console (`/s/...`) for people at an observation organisation: reviewers, coordinators, moderators and administrators. Screenshots show the current "Ink and Paper" interface, captured from the development build with sample data (the "Staff Dev Viewer" bar at the top of some shots is a development tool, not part of the product).
 
 ---
 
-## 1. Staff Roles and Permissions
+## 1. Signing in and roles
 
-ElectraGuard AI uses strict role-based access control (RBAC):
+Staff sign in at `/s/sign-in` with a work email, a password, and a six-digit code from an authenticator app (two-step sign-in is required; first-time users are walked through setting it up). Observers do not use this page; they sign in on the observer app.
 
-| Role | Primary Responsibilities | Main Screens |
+A person can hold more than one role. The menu shows only what the role allows.
+
+| Role | What they can do | Menu entries |
 |---|---|---|
-| **Reviewer** | Investigates assigned incidents, redacts personal details, asks clarification questions, and closes cases. | Queue (`/workspace/queue`), Case Detail (`/workspace/cases/[id]`) |
-| **Coordinator** | Manages case distribution, monitors operations overview, issues ward check-ins, approves safety alerts, and schedules public releases. | Operations Room (`/workspace/operations`), Case Assignment (`/workspace/assignment`), Publishing (`/workspace/publishing`) |
-| **Moderator** | Researches viral election claims, verifies sources, and drafts approved fact-checks for the public rumour check. | Rumour Desk (`/workspace/rumours`), Discussions Moderation (`/workspace/discussions`) |
-| **Administrator** | Provisions staff accounts, generates observer code batches, configures organisation review targets, and audits cryptographic security. | Observer Codes (`/workspace/codes`), Staff Accounts (`/workspace/staff`), Settings (`/workspace/settings`), Security Audit (`/workspace/security`) |
+| **Reviewer** | Work the cases assigned to them: start review, ask the reporter a question, accept or correct suggestions, close with an outcome. | Queue |
+| **Coordinator** | Assign cases, watch operations, send check-ins and notices, run the rumour desk, publish reviewed results, view security alerts and verify the audit record. | Assign, Operations, Rumour desk, Publish, Security |
+| **Moderator** | Moderate observer discussions: hide posts, remove members, close discussions. | Discussions |
+| **Admin** | Create observer code batches, manage staff accounts, set organisation settings, view security alerts. | Observer codes, Staff, Settings, Security |
 
 ---
 
-## 2. The Reviewer Workflow
+## 2. Reviewer: queue and case
 
-### The Queue (`/workspace/queue`)
-Reviewers manage incidents in an active queue sorted by urgency, danger, and regulatory deadline:
-- **Urgency Badges:** **Urgent** (red triangle), **High** (amber diamond), **Normal** (blue semi-circle), **Low** (grey circle).
-- **Review Clocks:** Each item displays a live countdown timer showing minutes remaining before a regulatory breach. Clocks turn red and count negative when overdue.
-- **Filter Bar:** Filter by category, urgency, channel (App, Citizen, SMS, USSD), state, LGA, and clock state (`on_time`, `due_soon`, `overdue`).
+**Queue** (`/s/queue`) lists cases assigned to the reviewer, ordered by urgency and danger, with tabs by status (received, in review, waiting on answer). Filters cover status, urgency, category and channel (observer app, citizen web, SMS, USSD) and whether there is media. Each row shows the reasons it ranks where it does (for example "Danger reported", "Firsthand", "Result sheet flag"). Keyboard: J and K move between cases, Enter opens one. Filters can be saved as named views.
 
-![Reviewer queue screen](img/staff-01-queue.png)
+![Queue](img/staff-01-queue.png)
 
-### Reviewing an Incident Case (`/workspace/cases/[id]`)
-Opening an incident displays the unified case workspace:
-1. **Auto-Redacted Description:** Personal names, phone numbers, and voter card numbers are replaced with tokens (`[NAME_xxxx]`, `[PHONE_xxxx]`) to prevent unconscious bias and safeguard reporters.
-2. **AI Triage Suggestions:** Calibrated models suggest the category and urgency level. Reviewers can **Accept** the suggestion or **Correct** it with a single click.
-3. **Review Clock:** Shows the active deadline (urgent: 15 min, high: 60 min, normal: 240 min).
-4. **Case Actions:**
-   - **Start Review:** Moves the status from `received` to `in_review`.
-   - **Ask Question:** Sends a targeted clarification prompt to the observer or citizen. This pauses the first-action clock until a reply arrives.
-   - **Close Case:** Concludes the review, recording a required nonpartisan outcome rationale.
+**Case** (`/s/cases/<reference>`) has three columns: the report, help, and the decision.
 
-![Case review workspace](img/staff-02-case.png)
+- **Report.** The description, with a switch to an English machine translation (marked as machine translation). The text shown has personal details such as phone numbers, ID numbers and listed names already replaced by tokens. The **Hide names** tool lets the reviewer hide further names before text is shared. Details show the category given, whether danger was reported now, whether it was seen firsthand, the place, and when it happened and arrived. **Evidence and integrity** shows for each file whether its SHA-256 checksum was verified, whether location data was stripped and whether faces were blurred. **View unblurred** needs a written reason, which is recorded in the audit trail, and works only while the file is still being processed.
+- **Help.** The system suggests a category and an urgency, always labelled "Suggested, not decided", with its confidence and reasons. The reviewer chooses **Accept** or **Correct**. If the system is not confident it says so and suggests nothing. Possible duplicates are listed side by side; the reviewer chooses **Link as duplicate** or **Keep separate**. For result-sheet reports, consistency flags are shown with possible harmless explanations, under the words "This is not a result."
+- **Decision.** **Start review**, **Ask formal question** (the reporter sees it in the app, on the status page or by SMS), message the reporter, and **Close case** with an outcome (Corroborated, Insufficient evidence, Out of scope), an internal rationale that reporters never see, and a confirmation of the evidence considered. The **Audit trail** shows each action and whether the record chain is intact.
 
-### Controlled Original Access (CASE-06)
-If unredacted text is strictly necessary to investigate a life-safety issue:
-- Click **View Original**.
-- Enter a mandatory written justification (1–500 characters).
-- The action is rate-limited to 30 requests per hour per reviewer and immediately logged as a permanent `case.original_viewed` audit event.
+![Case review](img/staff-02-case.png)
+
+The server can also return the full, unredacted original text to the assigned reviewer, but only with a written reason of 1 to 500 characters, at most 30 times an hour, and each use is written to the audit record (API contract CASE-06). This build's case screen does not have a button for it.
 
 ---
 
-## 3. The Coordinator Workflow
+## 3. Coordinator
 
-### Case Assignment (`/workspace/assignment`)
-Coordinators oversee unassigned reports and balance workload across active reviewers:
-- Filter unassigned cases by LGA or category.
-- Bulk-assign cases to available reviewers.
-- Reassign cases if an active reviewer goes offline or exceeds review clock limits.
+**Assign** (`/s/assign`) shows unassigned cases, reviewer workload and a suggested reviewer for each case (fewest open cases, or same LGA today). Select cases and assign them in bulk.
 
-![Case assignment view](img/staff-02b-assign.png)
+![Assign](img/staff-03-assign.png)
 
-### Operations Room (`/workspace/operations`)
-The operations room provides a real-time operational picture across all polling units:
-- **Overdue Clock Summary:** Displays counts of overdue incidents across urgent, high, and normal priorities.
-- **Statistical Volume Alerts:** Highlights anomalous spikes detected by dual-window Poisson models and slow multi-hour CUSUM drift detection.
-- **Ward Check-Ins:** Broadcasts targeted status checks to all observers in a specific ward (for example: *"Has BVAS accreditation commenced?"*). Responses aggregate into live percentage bars.
-- **Dual-Coordinator Safety Advisories:** If a security threat arises, a coordinator can draft an urgent safety notice. To prevent false alarms or panic, safety advisories require **second-coordinator approval** before being broadcast to observers or the public.
+**Operations** (`/s/ops`) has four sections:
 
-![Operations room overview](img/staff-03-ops.png)
+- **Overview.** Totals for the day (reports, distinct incidents, urgent open, questions open, result-sheet flags), cluster warnings, reports by LGA, and thresholds for cluster warnings. A cluster warning means more reports than usual from one area; it is a lead for a person, not a finding.
+- **Check-ins.** Send a short question to observers in a ward or LGA (types: logistics, instruction, safety). Answers are Yes, No or Not seen, and you see which wards and units have not answered. A **safety** notice does not go out until a different coordinator approves it.
+- **Coverage.** Which expected polling units have reported their checklist, and where there are most "No" answers.
+- **Late materials.** A risk estimate for delayed delivery. It comes from a model trained on synthetic logistics data, not INEC records.
 
-### Publishing and Transparency (`/workspace/publishing`)
-Coordinators control the release of reviewed data to the public transparency dashboard:
-- Create a scheduled publication snapshot.
-- Automatic verification enforces the **small-number suppression rule**: any state or LGA cell with fewer than 5 reports (`< 5`) is automatically masked to prevent informant exposure.
-- Preview and approve the public release.
+![Operations](img/staff-04-ops.png)
 
-![Public snapshot publishing](img/staff-05-publish.png)
+**Rumour desk** (`/s/rumours`). Log a claim (what was said, where it was seen, optional image), see field reports that match it, and draft a short factual reply in a chosen language. **A second coordinator must approve a reply you drafted** before the public can see it on `/check` and by SMS. Claims can be sent back or dismissed. Harm and check priority are suggestions.
+
+![Rumour desk](img/staff-05-rumours.png)
+
+**Publish** (`/s/publish`). Preview a release of reviewed totals with a cutoff time at least 60 minutes in the past, check it, then **Approve and publish**, or discard it. Counts below 5 are hidden in public. An hourly automatic release can be turned on; your name is recorded as approver.
+
+![Publish](img/staff-06-publish.png)
 
 ---
 
-## 4. The Moderator Workflow: Rumour Desk (`/workspace/rumours`)
+## 4. Moderator
 
-Moderators investigate social media rumours and unverified claims:
-1. **Incoming Claims:** Claims submitted via the public web form (`/check`), SMS (`CHECK`), or flagged by field observers appear in the rumour queue.
-2. **Harm Assessment:** The platform ranks claims by public safety harm and check-worthiness score.
-3. **Semantic Matching:** Checks whether the new claim is a variation of an already answered claim.
-4. **Drafting Debunks:** Moderators draft clear, nonpartisan answers citing authoritative sources (INEC press releases, verified observer consensus).
-5. Once approved, the answer is immediately live on `/check` and SMS across English, Naijá, Hausa, Yorùbá, and Igbo.
-
-![Rumour desk workspace](img/staff-04-rumours.png)
+**Discussions** (`/s/discussions`) lists posts that observers flagged or that may name a person. A moderator can hide or unhide a post with a reason, remove a member, close a discussion, or create one on a topic.
 
 ---
 
-## 5. The Administrator Workflow
+## 5. Admin
 
-### Observer Code Batches (`/workspace/codes`)
-Administrators generate and manage anonymous observer credentials:
-- Generate batches of random 8-character codes and temporary 6-digit PINs.
-- Print credentials or export secure CSVs for field distribution.
-- Reissue PINs or immediately revoke compromised codes.
+- **Observer codes** (`/s/admin/codes`). Create a batch (a label of up to 80 characters and 1 to 500 codes). Each code comes with a setup PIN that is shown only once, on the cards you print. Codes can be revoked, reissued, or have their PIN reset. A revoked code signs the observer out on every phone.
+- **Staff** (`/s/admin/staff`). Add staff with one or more roles, reset someone's two-step code, or offboard them.
+- **Settings** (`/s/admin/settings`). Pause or resume report intake (reports already received are not affected), switch the practice SMS and USSD simulator on or off (turn it off for a live election), and set data retention from 30 to 730 days. Records older than that are deleted when the retention purge is run.
+- **Security** (`/s/security`, also for coordinators). Alerts raised by security rules (repeated wrong PINs, repeated failed staff sign-ins, unusual download volume, sign-in from a new network, a sudden burst of reports, receipt codes being guessed, offboarded staff who still hold cases), each with a status and a note. It also checks that the audit record has not been changed: every action is chained with the hash of the one before, so changing a past entry breaks the chain.
 
-![Observer codes management](img/staff-06-codes.png)
+![Observer codes](img/staff-07-codes.png)
+![Staff accounts](img/staff-08-staff.png)
+![Settings](img/staff-09-settings.png)
+![Security](img/staff-10-security.png)
 
-### Staff Account Administration (`/workspace/staff`)
-- Invite new staff members with specified roles (Reviewer, Coordinator, Moderator, Admin).
-- Reset credentials and enforce session termination.
+---
 
-### Organisation Settings (`/workspace/settings`)
-- **Review Targets:** Configure organisation review target windows (5 to 1,440 minutes) for urgent, high, normal, low, and question-reply clocks.
-- **Intake Kill Switch:** Temporarily pause observation intake during maintenance or after official poll closure while preserving existing case workflows.
-- **Data Retention Policies:** Enforce automated data pruning windows.
+## 6. Review clocks
 
-![Organisation settings screen](img/staff-08-settings.png)
-
-### Cryptographic Security Audit (`/workspace/security`)
-- **SHA-256 Audit Chain Verification:** Run on-demand cryptographic verification of the complete event ledger. Confirms that no past report, triage decision, or reviewer action has been altered or deleted.
-- **Security Alerts:** Monitor rate-limit triggers, CSRF anomalies, and unauthorized access attempts.
-
-![Cryptographic audit screen](img/staff-09-security.png)
+Each active case has a review clock on the server. Default targets: urgent 15 minutes, high 60, normal 240, low 480, and 120 for answering a reporter's reply. A clock is "on time", "due soon" (25% or less of the time left) or "overdue". Clocks can be paused and stop when a case closes. When a clock goes overdue, a background sweep raises one alert on the server. The staff screens in this build do not show a countdown or a labelled clock alert.

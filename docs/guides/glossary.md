@@ -7,10 +7,10 @@ This glossary explains election terms, Nigerian administrative boundaries, and t
 ## Electoral & Administrative Terms (Nigeria)
 
 ### Polling Unit (PU)
-The primary voting location where citizens cast their ballots on election day. Nigeria has 176,846 official polling units across the country. Each polling unit has a unique numeric code (for example: `012/04/01`).
+The primary voting location where citizens cast their ballots on election day. INEC reports 176,846 polling units across the country. In ElectraGuard each polling unit has a code from the reference data loaded into the system.
 
 ### Registration Area / Ward
-An administrative grouping of polling units. Nigeria is divided into 8,809 wards. Wards serve as the first level of election collation above individual polling units.
+An administrative grouping of polling units. INEC reports 8,809 registration areas (wards). Wards serve as the first level of election collation above individual polling units.
 
 ### Local Government Area (LGA)
 The second-tier administrative division in Nigeria. There are 774 Local Government Areas across the 36 states and the Federal Capital Territory (FCT).
@@ -38,13 +38,13 @@ The unique 19-character identification code printed on every Permanent Voter Car
 ## ElectraGuard AI Concepts
 
 ### Observer Code
-An anonymous 8-character identifier (for example: `OB-7K4M2`) paired with a 6-digit PIN, issued by an election observation organisation to accredited field observers. It enables authenticated reporting and checklist submission without storing the observer's name, phone number, or personal credentials.
+An anonymous identifier of the form `OBS-` plus six characters (for example: `OBS-7K2P9X`), paired with a PIN, issued by an election observation organisation to accredited field observers. The card carries an 8-number setup PIN; the observer then chooses a 6-number PIN. The code enables authenticated reporting and checklist submission without storing the observer's name, phone number, or personal credentials.
 
 ### Receipt Code
-An 8-character cryptographic reference (for example: `EG-92D1-B48C`) generated upon report submission. It allows observers and anonymous citizens to look up review progress, answer follow-up questions from situation-room staff, and verify resolution without an account.
+A random reference of the form `EG-` plus two groups of four characters (for example: `EG-4H7Q-92KD`), with a built-in check character, generated when a report is received. It allows observers and anonymous citizens to look up review progress, answer follow-up questions from situation-room staff, and verify resolution without an account.
 
 ### Review Clock
-A regulatory timer enforced on situation-room staff that counts down the maximum allowable time to review and triage an incident based on its urgency level:
+An internal target time, tracked by the server, for how long a case may wait for review based on its urgency level. The defaults below can be changed per organisation:
 - **Urgent:** 15 minutes
 - **High:** 60 minutes
 - **Normal:** 240 minutes
@@ -57,22 +57,22 @@ A regulatory timer enforced on situation-room staff that counts down the maximum
 - **`overdue`:** Deadline has expired ($\text{minutes remaining} \le 0$).
 
 ### Small-Number Suppression (`< 5`)
-A privacy-protecting statistical rule. When reporting public aggregate numbers on `/results`, any geographic cell or incident category with fewer than 5 incidents is masked as `< 5`. This prevents bad actors from identifying or retaliating against individual informants in low-turnout or isolated communities.
+A privacy-protecting statistical rule. When reporting public aggregate numbers on `/results`, any state, category or outcome with fewer than 5 reviewed reports is shown as "fewer than 5". This prevents bad actors from identifying or retaliating against individual informants in low-turnout or isolated communities.
 
 ### Automatic PII Redaction
-The automated redaction engine that scans descriptions and notes for personal identifying information (PII) — including Nigerian phone numbers, voter card numbers (VIN/PVC), National Identity Numbers (NIN), Bank Verification Numbers (BVN), and curated Nigerian names — replacing them with keyed cryptographic tokens (`[PHONE_xxxx]`, `[NAME_xxxx]`) before text is viewed by staff.
+The automated redaction engine that scans descriptions and notes for personal identifying information (PII) — including Nigerian phone numbers, voter card numbers (VIN), National Identity Numbers (NIN), Bank Verification Numbers (BVN), email addresses, bank account numbers, street addresses and a curated list of Nigerian names — replacing them with keyed tokens (such as `[PHONE_a1b2]` or `[NAME_a1b2]`) before text is viewed by staff.
 
 ### SHA-256 Audit Chain
-An immutable append-only ledger that records every case action, status transition, triage correction, and publication event in cryptographic sequence. Each entry includes the hash of the preceding event, ensuring that the historical observation record cannot be silently modified or deleted.
+An append-only record, kept per organisation, of case actions, status changes, triage corrections and publication events. Each entry includes the hash of the preceding event, so a changed or deleted past entry is detected when the record is verified.
 
 ### Ward Check-In
-A short status inquiry broadcast by situation-room coordinators to all accredited observers stationed within a specific ward or LGA to verify critical election milestones (e.g., arrival of materials, commencement of voting, presence of security).
+A short question sent by a coordinator to the accredited observers in a specific ward or LGA to check a milestone (for example, arrival of materials). Observers answer Yes, No or Not seen.
 
 ### Safety Advisory
-An urgent security notification issued to field observers or the public regarding verified physical violence or disruption. In ElectraGuard AI, safety advisories require two independent coordinator approvals before dispatch to prevent false panic.
+A check-in of type "safety" sent to observers. A different coordinator than the one who wrote it must approve it before observers see it.
 
 ### Rumour Desk
-The situation-room section dedicated to monitoring viral misinformation, assessing public harm, verifying facts against authoritative sources, and publishing rapid debunks to `/check` and SMS.
+The situation-room section dedicated to monitoring viral misinformation, assessing public harm, and drafting short replies. A second coordinator must approve a reply before it appears on `/check` and by SMS.
 
 ### Reviewed Totals vs. Election Results
 - **Reviewed Totals:** Aggregated summaries of incidents and observations filed by observers and citizens that have been verified by situation-room analysts.
